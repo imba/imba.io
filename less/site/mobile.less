@@ -1,0 +1,155 @@
+@import "../util.less";
+
+@media (max-width: 700px) {
+	._home {
+		.welcome h1 + p { font-size: 1.8em; }
+		.welcome ul { display: block; }
+	}
+}
+
+@media (max-width: 600px) {
+	html { font-size: 9px; }
+	._home #hero ._snippet > .main {
+		font-size: 12px;
+		line-height: 14px;
+	}
+
+	.md.huge h1 + p {
+		font-size: 2rem;
+	}
+
+	._home > .body > .content ._example {
+		display: block;
+
+		.main {
+			font-size: 12px;
+			line-height: 14px;
+			font-weight: 400;
+			margin: 0 -3rem;
+		}
+
+		.inspector {
+			margin-top: 3rem;
+			width: auto;
+			min-height: 50px;
+		}
+	}
+}
+
+@media (max-width: 500px) {
+	._home > .body > .content ._example {
+		display: block;
+
+		.main {
+			font-size: 11px;
+			line-height: 13px;
+			font-weight: 400;
+		}
+	}
+}
+
+@media (max-width: 720px) {
+	body {
+		overflow-x: hidden;
+	}
+	#header a {
+		padding: 6px 6px;
+	}
+	#header a.home {
+		display: none;
+	}
+
+	#header a.menu {
+		display: block;
+		position: relative;
+		text-align: center;
+		height: 50px;
+		width: 40px;
+		line-height: 50px;
+		vertical-align: middle;
+		padding: 0px;
+		opacity: 0.3;
+		transition: opacity 0.3s ease-in-out;
+
+		b {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin-left: -10px;
+			margin-top: -2px;
+		}
+
+		b,b:before,b:after {
+			display: block;
+			width: 20px;
+			height: 3px;
+			background: white;
+			border-radius: 1px;
+		}
+
+		b:before {
+			content: " ";
+			position: absolute;
+			top: -8px;
+		}
+
+		b:after {
+			content: " ";
+			position: absolute;
+			top: 8px;
+		}
+	}
+
+	._page {
+		overflow-x: hidden;
+	}
+
+	._home {
+		& > .body > .content {
+			padding: 0px;
+		}
+	}
+
+	._page:not(._home) {
+		& > .body {
+			margin: 0px;
+			padding: 70px 20px 20px;
+		}
+
+		& > .nav {
+			position: fixed;
+			top: 0px;
+			width: 85%;
+			z-index: 15000;
+			// left: -120%;
+			left: 0px;
+			background: fade(white,96%);
+			// transition: left 0.3s ease-in-out;
+			.util-hw;
+			box-shadow: 0px 0px 40px fade(black,15%);
+			transform: translate3d(-120%,0%,0px);
+			transition: -webkit-transform 0.3s ease-in-out;
+			transition: transform 0.4s ease-in-out;
+		}
+	}
+
+	body.menu {
+		#header a.menu {
+			opacity: 0.99;
+		}
+		._page.scoped > .nav {
+			
+			transform: translate3d(0%,0%,0px);
+			transition: transform 0.3s ease-in-out;
+			// transition: left 0.6s ease-in-out;
+		}
+	}
+
+	._snippet {
+		& > .main {
+			font-size: 12px;
+			line-height: 15px;
+			font-weight: 500;
+		}
+	}
+}

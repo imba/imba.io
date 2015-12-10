@@ -1,0 +1,282 @@
+@import 'colors.less';
+
+.hl-outline() {
+	content: " ";
+	position: absolute;
+	top: 2px;
+	left: 0px;
+	right: 0px;
+	bottom: 1px;
+	margin: -2px -5px;
+	border-radius: 12px;
+	border: 1px solid @hl-border;
+	box-shadow: 0px 0px 12px 4px @hl-shadow;
+}
+
+.imba-syntax(){
+	q,s,b,i,u {
+		text-decoration: none;
+		font-weight: inherit;
+		font-style: normal;
+		text-decoration: none;
+	}
+
+	b { font-weight: inherit; }
+	i { font-style: inherit; }
+
+	-moz-tab-size: 4;
+	-o-tab-size:   4;
+	tab-size:      4;
+	white-space: pre;
+	code { white-space: pre; font-family: inherit; }
+	font-family: @monofont;
+}
+
+.base-syntax() {
+	._imopen,._imclose {
+		color: inherit;
+	}
+	b { font-weight: inherit; }
+
+	code {
+		white-space: pre;
+		font-family: inherit;
+		color: @color;
+	}
+
+	q,.comment,._imcomment {
+		color: @comment;
+		font-style: normal;
+		s { opacity: 1; font-weight: inherit; font-style: inherit; }
+		a { color: @comment-link; }
+		em { font-weight: bold; font-style: inherit; }
+	}
+
+	.keyword {
+		color: @keyword;
+		&.var { color: @var; }
+		&.self { color: @self; }
+	}
+	.new { color: @keyword; }
+	// .rb { color: @brackets; }
+	.op { color: @op; }
+	.regex { color: @regex; }
+	.sel,.selector,._imtagid { color: @selector; }
+	.number { color: @number; }
+	.neostring,.string,._imistring { color: @string; }
+
+	.bool,.false,.true,.null,.undefined,.literal { color: @bool; }
+
+	.identifier { color: @identifier; }
+	.const { color: @const; }
+	.access{ color: @identifier; }
+
+	.ivar { color: @ivar; }
+	.lvar,.title{ color: @lvar; }
+	.const.lvar { color: @const; }
+
+	// Nesting tag
+	._imtagnode {
+		color: @tag;
+
+		& > ._imopen, & > ._imclose { color: @tag-brackets; }
+		& > ._identifier:not(.lvar) { color: inherit; }
+		& > .eq { color: inherit; }
+		
+		.tag_attr { color: @tag-attr-key; }
+		& > .tag_type { color: @tag-name; }
+		& > ._imopen:first-child + .identifier { color: @tag-name; }
+		.dot + .identifier { color: @tag-class; }
+
+		& > .eq + .identifier { color: @identifier; }
+		& > .eq + .lvar { color: @lvar; }
+		
+		& > .dot { color: inherit; }
+		& > .hash { color: inherit; }
+		& > .hash + .identifier { color: inherit; }
+
+		& > .self, & > .ivar { color: @tag-name; }
+		& > .paren > .rb:not(.call) { color: inherit; }
+		& > .string {
+			s { color: @tag-string-quotes; }
+		}
+	}
+
+	._imwhitespace { color: @invisibles; }
+	._imtab { color: @invisibles; }
+	._imsemicolon { color: inherit; }
+
+	.curly {
+		& > .identifier:not(.lvar) {
+			color: @obj-key;
+		}
+	}
+
+	.identifier.idref { color: @selector; }
+
+	// Method-name
+	.def + .identifier { color: @decl; }
+	.prop + .identifier { color: @decl; }
+	.attr + .identifier { color: @decl; }
+	.class + .const { color: @decl; }
+
+	.def + ._imspace + .identifier { color: @decl; }
+	.prop + ._imspace + .identifier { color: @decl; }
+	.attr + ._imspace + .identifier { color: @decl; }
+	.class + ._imspace + .const { color: @decl; }
+
+	.keyword.tag + .tag_id { color: @decl; }
+	.keyword.tag + .identifier { color: @decl; }
+	.keyword.tag + .identifier + .op + .identifier { color: @decl; }
+	.keyword.tag + .tag_id + .op + .identifier { color: @decl; }
+
+	.keyword.tag + ._imspace + .tag_id { color: @decl; }
+	.keyword.tag + ._imspace + .identifier { color: @decl; }
+	.keyword.tag + ._imspace + .identifier + ._imspace + .op + ._imspace + .identifier { color: @decl; }
+	.keyword.tag + ._imspace + .tag_id + ._imspace + .op + ._imspace + .identifier { color: @decl; }
+
+	.keyword.for + ._imspace + .identifier { color: @lvar; }
+	.keyword.for + ._imspace + .identifier + .comma + .identifier { color: @lvar; }
+	.keyword.for + ._imspace + .identifier + .comma + ._imspace + .identifier { color: @lvar; }
+
+	.keyword.own + ._imspace + .identifier { color: @lvar; }
+	.keyword.own + ._imspace + .identifier + .comma + .identifier { color: @lvar; }
+	.keyword.own + ._imspace + .identifier + .comma + ._imspace + .identifier { color: @lvar; }
+
+	// ._imopen,._imclose {color: @brackets; }
+	// .call > ._imopen,.call > ._imclose {color: inherit; }
+	._imblockparams > ._imopen,._imblockparams > ._imclose {color: @blockparam-brackets; }
+
+	.identifier + ._imparens {
+		color: @call-brackets;
+	}
+
+	._imiexpr {
+		& > ._imopen,
+		& > ._imclose {
+			color: @istr-brackets;
+		}
+	}
+
+	._imistring > ._imopen, ._imistring > ._imclose { color: inherit; }
+	._imsel > ._imopen, ._imsel > ._imclose { color: inherit; }
+
+	._imcaret {
+		.caret { background-color: @caret; }
+		.start,.mid,.end { background-color: @selbg; }
+	}
+
+	.tag_type { color: @decl; }
+	.var + .identifier { color: @lvar; }
+	.var + ._imspace + .identifier { color: @lvar; }
+	.let + .identifier { color: @lvar; }
+	.let + ._imspace + .identifier { color: @lvar; }
+
+	.string.focus_ {
+		background: fade(@string,8%);
+		border-radius: 2px;
+	}
+
+	.comma { color: inherit; }
+	.dot + .identifier { color: @accessor; }
+	.cdot + .identifier { color: @accessor; }
+
+	b.err[error],b[hint-type='error'] {
+		color: @err;
+		background: fade(@err,20%);
+	}
+}
+
+.dark-syntax () {
+	.dark-colors;
+	.base-syntax;
+}
+
+.light-syntax () {
+	.light-colors;
+	.base-syntax;
+}
+
+._imtagnodez() {
+	// background-color: rgba(255, 178, 110, 0.16);
+	position: relative;
+
+	&:befores {
+		box-sizing: border-box;
+		position: absolute;
+		border-bottom: 0.5em solid rgba(255, 178, 110, 0.3);
+		border-top: 0.5em solid rgba(255, 178, 110, 0.3);
+		border-left: 1ch solid transparent;
+		border-right: 1ch solid transparent;
+		width: 100%;
+		height: 100%;
+		content: " ";
+		top: 0px;
+		left: 0px;
+	}
+
+	&:afters {
+		position: absolute;
+		right: -2px;
+		top: 0px;
+		content: "▶";
+		color: rgba(255, 178, 110, 0.9);
+		font-size: 17px;
+	}
+
+
+	& > ._imclose {
+		// background-color: white;
+	}
+
+	@color: #FFE6D4;
+	background-color: rgba(255, 178, 110, 0.2);
+	outline: 1px solid white;
+	outline-offset: -1px;
+
+
+	& > ._imopen {
+		&:befores {
+			box-sizing: border-box;
+			position: absolute;
+			border-bottom: 0.5em solid rgba(255, 178, 110, 0.2);
+			border-left: 1ch solid transparent;
+			border-right: 1ch solid transparent;
+			width: 100%;
+			height: 50%;
+			content: " ";
+			top: 0px;
+			left: 0px;
+		}
+	}
+
+	& > ._imclose:before {
+		content: "▶";
+		color: @color;
+		content: "▷";
+		color: white;
+		position: absolute;
+		pointer-events: none;
+		font-family: 'Imbahelp';
+		top: -1px;
+		right: -2px;
+		font-size: 17px;
+		line-height: inherit;
+		// background-color: white;
+	}
+
+	& > ._imopen:before {
+		content: "◀";
+		content: "◁";
+		color: @color;
+		color: white;
+		position: absolute;
+		pointer-events: none;
+		font-family: 'Imbahelp';
+		top: -1px;
+		left: -2px;
+		font-size: 17px;
+		line-height: inherit;
+		// background-color: white;
+	}
+}

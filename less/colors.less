@@ -1,0 +1,228 @@
+// @monofont: 'Menlo', 'Source Code Pro', monospace, sans-serif;
+@monofont: 'Source Code Pro', monospace, sans-serif;
+@basefont: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+@site-contrast-bg: #202B31;
+@site-contrast-color: white;
+@site-bg: white;
+@site-dim-bg: #EFF2F5;
+@site-light-bg: #F3F5F7;
+
+
+.rect (@top: 0px, @right: 0px, @bottom: 0px, @left: 0px) {
+	position: absolute;
+	top: @top;
+	left: @left;
+	bottom: @bottom;
+	right: @right;
+}
+
+.base-colors {
+	@border: black;
+	@selbg: black;
+	@obj-key: #0068a1;
+	@h1: black;
+	@h2: black;
+	@hl-border: #FFFF00;
+	@text: black;
+	@err: red;
+	@brackets: inherit;
+}
+
+.dark-colors {
+	.base-colors;
+	@text: white;
+	@hl-border: #FFFF00;
+	@hl-shadow: fade(black,10%);
+	@border: transparent;
+	@color: white;
+	@codebg: #1c2024;
+	@codebg: #202B31;
+	@basebg: rgba(24, 28, 32, 1);
+	@altbg: rgba(24, 28, 32, 1);
+
+	@mdbg: #282C32;
+	@selbg: rgba(122, 172, 217, 0.17);
+	@invisibles: fade(white,5%);
+	@caret: fade(white,50%);
+
+	@err: #FF6666;
+
+	@keyword: #FF8D66;
+	@var: @keyword;
+	@op: @keyword;
+	@self: @keyword;
+	@h1: @keyword;
+	@brackets: @op;
+
+	@number: #598DA6;
+	@string: #B7DE95;
+	@regex: rgb(253, 146, 49);
+	@bool: #598DA6;
+
+	@identifier: white;
+	@obj-key: @identifier;
+	@accessor: @identifier;
+	@const: #BD9AC2;
+	@decl: #75AAFF;
+
+
+	@selector: #D9BB72;
+
+	@tag: #D9BB72;
+	@tag-brackets: inherit;
+	@tag-class: @tag;
+	@tag-id: @tag;
+	@tag-attr-key: @tag;
+	@tag-attr-value: @tag;
+	@tag-name: @tag;
+	@tag-string-quotes: @string;
+
+	@ivar: #7FD0FF;
+
+	@lvar: rgb(255, 244, 209);
+	@comment: #5D6E7A; // #768188;
+	@comment-link: rgb(114, 149, 169);
+
+	@mdcolor: #a0adb6;
+	@mdcontrast: white;
+
+	@istr-brackets: #DDFFC3;
+	@call-brackets: white;
+	@blockparam-brackets: @op;
+}
+
+.light-colors {
+	.base-colors;
+	@hl-border: #008D1B;
+	@hl-shadow: fade(#008D1B,10%);
+	@border: #DFDFDF;
+	@color: #53534E;
+	@invisibles: fade(black,5%);
+	@caret: fade(black,50%);
+
+	@codebg: #F8F8F7;
+	@altbg: #F8F8F7;
+	@selbg: rgba(107, 62, 57, 0.14);
+
+	// markdown
+	@mdbg: white;
+	@mdcolor: #68655E;
+	@mdcontrast: black;
+
+	// @keyword: #e0683f;
+	// @keyword: #c90091;
+	// @keyword: #ab864d;
+
+	@keyword: #AB4D4D;
+	@var: @keyword;
+	@op: @keyword;
+	@self: @keyword;
+	
+
+	@number: #598DA6;
+	@string: #449300;
+	@regex: rgb(253, 146, 49);
+	@bool: #598DA6;
+
+	@identifier: rgb(120, 120, 111);
+	@identifier: #437997;
+
+	@brackets: @identifier;
+
+
+	@const: #8D278C; // #94719A;
+	@decl: #4D74C3;
+
+	@selector: #A15600; // #BDA058;
+
+	@lvar: #53534e; // rgb(255, 244, 209);
+
+	@ivar: #6588CD;
+	
+	@self: @keyword;
+
+	@comment-link: rgb(114, 149, 169);
+
+	@tag: #a30082;
+	@tag-brackets: inherit;
+	@tag-class: @tag;
+	@tag-id: @tag;
+	@tag-attr-key: #b24100;
+	@tag-attr-value: @tag;
+	@tag-name: @tag;
+
+	// string 4939b3
+	@string: #e6001f;
+	@string: #d54c04;
+	// @string: #327B29;
+
+	@m: #0068a0;
+	@darker: #003761;
+	@accessor: #0068a1;
+	@accessor: #437997;
+
+	@decl: #0068a1;
+	@lvar: #3A4652;
+
+	@comment: #777672;
+	@comment: #8C96A1;
+
+	@regex: #d44c03;
+	@ivar: #003761;
+
+	@obj-key: #0068a1;
+	// @const: @darker;
+	@const: #88428F;
+	@const: #8F4242;
+
+	@tag: #BB7637;
+	// @tag: #18191a;
+	// @tag-name: @darker;
+	@tag-name: #B35F12;
+	@tag-attr-key: @tag-name;
+	@tag-class: @tag-name;
+	@tag-id: @tag-name;
+	@tag-string-quotes: #17191a;
+
+	@h1: @string;
+
+	@call-brackets: @brackets;
+	@call-brackets: #437997;
+	@blockparam-brackets: @op;
+	@istr-brackets: @op;
+}
+
+.devtools-colors {
+	.light-colors;
+	@string: #e6001f;
+	@comment: #007600;
+}
+
+.firefox-colors {
+	.light-colors;
+}
+
+.hw () {
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+
+	transform-style: preserve-3d;
+	-webkit-transform-style: preserve-3d;
+
+	transform: translate3d(0px,0px,0px);
+	-webkit-transform: translate3d(0px,0px,0px);
+}
+
+.flat () {
+	transform-style: flat;
+	-webkit-transform-style: flat;
+}
+
+.sourcecode () {
+	-moz-tab-size: 4;
+	-o-tab-size:   4;
+	tab-size:      4;
+	white-space: pre;
+	font-family: 'Source Code Pro', monospaced, sans-serif;
+}

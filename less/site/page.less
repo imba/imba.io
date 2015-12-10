@@ -1,0 +1,275 @@
+@import "../util.less";
+
+.page-body () {
+	margin-left: @nav-width;
+	padding: 20px 40px;
+	padding-top: (@header-height + 20px);
+	max-width: 760px;
+}
+
+._page {
+	color: #75818E;
+	// drop toggleable theme for now
+	code.cli {
+		display: block;
+		.dark-colors;
+		background: @codebg;
+		color: @color;
+		padding: 2ex 3ch;
+		font-family: @monofont;
+	}
+
+	&:not(.scoped) {
+		display: none;
+	}
+
+	& > .body {
+		.page-body;
+	}
+}
+
+
+.square(@color: #000000; @text: " ") {
+	@size: 12px;
+	content: @text;
+	width: @size;
+	height: @size;
+	text-align: center;
+	line-height: @size;
+	display: block;
+	background: @color;
+	color: white;
+	border: 1px solid darken(@color,4%);
+	border-radius: 1px;
+	font-size: 9px;
+	margin-right: -@size;
+	position: relative;
+	left: -(@size + 6px);
+	top: 1px;
+	opacity: 0.3;
+}
+
+._api-item {
+	.light-colors;
+
+	position: relative;
+
+	.toc-anchor {
+		position: absolute;
+		top: -80px;
+		width: 0px;
+		bottom: 0px;
+		// outline: 1px solid red;
+		display: block;
+	}
+
+	._api-link {
+		font-size: 14px;
+		.desc {
+			font-weight: normal;
+			padding-left: 1ch;
+		}
+		.value {
+			display: inline-block;
+			font-size: inherit;
+		}
+	}
+
+	.section {
+		& > .header {
+			border-bottom: 2px solid;
+			font-size: 16px;
+			color: @keyword;
+			margin-top: 2rem;
+			text-transform: uppercase;
+		}
+	}
+
+	._api-ref {
+		display: inline-block;
+		color: #E06D65;
+		font-weight: 600;
+	}
+
+	._api-desc {
+		color: inherit;
+	}
+
+	& > .header {
+		._api-path {
+			font-size: 18px;
+			color: #437997;
+			b:first-child { color: @identifier; }
+		}
+
+		.params {
+			padding: 0px 0.5ch;
+			// margin: 0px 0.2ch;
+			font-size: 18px;
+			font-weight: normal;
+			* { display: inline-block; }
+			white-space: nowrap;
+			color: #509DB5;
+
+			._api-param {
+				white-space: pre;
+			}
+
+			._api-param + ._api-param:before {
+				content: ", ";
+				color: @op;
+			}
+
+			// &:before { content: "( "; }
+			// &:after { content: " )"; }
+		}
+
+		padding-bottom: 2px;
+	}
+
+	.tags {
+		font-size: 12px;
+		font-weight: 600;
+		padding: 4px 0px;
+
+		.red {
+			color: #C5273F;
+		}
+	}
+
+	._api-link[name]:before {
+		content: attr(name) + ' ';
+		font-weight: 600;
+		color: @keyword;
+	}
+}
+
+._api-class {
+	& > .header {
+		padding: 18px 0px 18px;
+		margin: 0px 0px 6px;
+		color: #297198;
+
+		._api-path {
+			font-size: 24px;
+			.const { color: #297198; }
+		}
+		border-bottom: 2px solid;
+	}
+}
+
+._api-method {
+	margin: 0rem -2rem;
+	padding: 1.7rem 2rem 1.5rem;
+}
+
+
+.doc {
+	.light-colors;
+
+	._api-link {
+		font-size: 14px;
+		.desc {
+			font-weight: normal;
+			padding-left: 1ch;
+		}
+		.value {
+			display: inline-block;
+			font-size: inherit;
+		}
+	}
+
+	._api-ref {
+		display: inline-block;
+		color: #E06D65;
+		font-weight: 600;
+	}
+
+	._api-desc {
+		color: inherit;
+	}
+
+	& > .header {
+		i { color: @op; font-style: inherit; }
+		.util-hbox(flex-start,flex-end);
+		color: inherit;
+		font-weight: 600;
+
+		.title {
+			flex: 1 1 0;
+			font-size: 18px;
+			color: #0068a1;
+			color: #437997;
+			b:first-child { color: @identifier; }
+		}
+		padding-bottom: 2px;
+	}
+
+	.tags {
+		font-size: 12px;
+		font-weight: 600;
+		padding: 4px 0px;
+
+		.red {
+			color: #C5273F;
+		}
+	}
+
+	._api-link[name]:before {
+		content: attr(name) + ' ';
+		font-weight: 600;
+		color: @keyword;
+	}
+
+	code.inline.inline.inline {
+		font-family: inherit;
+		background-color: transparent;
+		font-size: inherit;
+		font-weight: inherit;
+	}
+
+	.label {
+		@bg: #C5273F;
+		padding: 0px 4px;
+		border-radius: 1px;
+		font-size: inherit;
+		color: white;
+		background: @bg;
+		display: inline-block;
+		margin-right: 8px;
+		border: 1px solid darken(@bg,5%);
+	}
+
+	.block {
+		border: 1px solid #CDD8DE;
+		margin: 20px 0px;
+
+		& > .header {
+			background: #F3F5F7;
+			min-height: 26px;
+			line-height: 25px;
+			padding: 4px 10px;
+			border-bottom: 1px solid #CDD8DE;
+		}
+
+		& > .content {
+			padding: 20px 20px;
+		}
+	}
+
+	&.l {
+		& > .header {
+			padding: 18px 0px 18px;
+			margin: 0px 0px 6px;
+			color: #297198;
+
+			.title {
+				font-size: 24px;
+				font-weight: bold;
+				.const { color: #297198; }
+			}
+
+			border-bottom: 2px solid;
+		}
+	}
+}

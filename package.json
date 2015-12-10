@@ -1,0 +1,49 @@
+{
+  "name": "imba.io",
+  "description": "Official website for Imba",
+  "keywords": [
+    "imba",
+    "website"
+  ],
+  "author": "Sindre Aarsaether",
+  "bugs": "https://github.com/somebee/imba.io/issues",
+  "version": "1.0.0",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/somebee/imba.io/raw/master/LICENSE"
+    }
+  ],
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "scripts": {
+    "build": "webpack -p --define DEBUG=0 --colors --display-modules",
+    "watch": "webpack --define DEBUG=1 --devtool inline-source-map --watch --progress --colors --display-modules"
+  },
+  "files": [],
+  "directories": {},
+  "main": "./index.js",
+  "homepage": "http://imba.io",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/somebee/imba.io.git"
+  },
+  "devDependencies": {
+
+  },
+  "dependencies": {
+    "express": "^4.13.2",
+    "gulp": "^3.9.0",
+    "gulp-less": "^3.0.3",
+    "gulp-rename": "^1.2.2",
+    "highlight.js": "^8.8.0",
+    "imba": "^0.14.1",
+    "imba-loader": "^1.0.1",
+    "scrimbla": "^0.5.0",
+    "less": "^2.5.1",
+    "less-plugin-autoprefix": "^1.4.2",
+    "marked": "^0.3.5",
+    "webpack": "^1.12.9"
+  }
+}

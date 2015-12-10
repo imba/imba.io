@@ -1,0 +1,46 @@
+@nav-width: 250px;
+@header-height: 60px;
+@page-width: 960px;
+
+.util-rect (@top: 0px, @right: 0px, @bottom: 0px, @left: 0px) {
+	position: absolute;
+	top: @top;
+	left: @left;
+	bottom: @bottom;
+	right: @right;
+}
+
+.util-center (@width: 800px) {
+	margin-left: auto;
+	margin-right: auto;
+	max-width: @width;
+}
+
+.util-hw () {
+	backface-visibility: hidden;
+	transform: translate3d(0px,0px,0px);
+	-webkit-backface-visibility: hidden;
+}
+
+.util-hbox (@justify: center; @align: center) {
+	display: flex;
+	flex-direction: row;
+	justify-content: @justify;
+	align-items: @align;
+}
+
+.util-vbox (@justify: center; @align: center) {
+	display: flex;
+	flex-direction: column;
+	justify-content: @justify;
+	align-items: @align;
+}
+
+.util-noselect () {
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+
+@import 'colors.less';
+@import 'syntax.less';

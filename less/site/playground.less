@@ -1,0 +1,251 @@
+@import "../util.less";
+
+
+.playground {
+	font-size: 1.4rem;
+	color: #6E6F71;
+
+	vertical-align: top;
+	
+	& > canvas {
+		vertical-align: top;
+		background: #F5F2EC;
+	}
+
+	& > form {
+		background: #F5F2EC;
+		& > input {
+
+		}
+	}
+
+	input {
+		display: block;
+		padding: 12px 12px;
+		background: transparent;
+		border: none;
+		width: 100%;
+		
+		font-size: 14px;
+	}
+
+	input + ul {
+		border-top: 1px solid #EFEAE0;
+	}
+
+	ul {
+		list-style: none inside none;
+		margin: 0px 8px;
+		min-height: 8px;
+	}
+
+	li,.item,._todo {
+		// z-index: 2;
+		margin: 1px 0px;
+		padding: 8px 18px;
+		line-height: 1.2em;
+		// color: #767E87;
+		// font-weight: bold;
+		position: relative;
+		border-bottom: 1px solid #F1F1F1;
+		padding-left: 24px;
+
+		font-size: 14px;
+
+		&:before {
+			// content: "✗ ";
+			position: absolute;
+			content: "★";
+			left: 6px;
+			top: 8px;
+			color: fade(black,30%);
+			font-size: 12px;
+		}
+
+		&.done {
+			color: #DFF8AC;
+			&:before { color: #8BBF23; }
+			._bar,.bar {
+				opacity: 0.25;
+			}
+		}
+
+		&:hover {
+			background: fade(black,2%);
+		}
+	}
+
+	.todo,._todo {
+		
+		&:before { content: "✔"; }
+
+		&.done {
+			color: #6E902A;
+			background: rgba(67, 128, 0, 0.06);
+		}
+	}
+
+	footer {
+		padding: 0;
+	}
+
+	.clocks {
+		margin: -6px -6px;
+		& > ._clock:before {
+			border: 6px solid white;
+		}
+	}
+
+	._clock {
+		width: 120px;
+		// height: 120px;
+		font-size: 12px;
+		// border: 5px solid #202B31;
+		position: relative;
+		color: fade(black,30%);
+		vertical-align: top;
+		// border-radius: 50%;
+		border: none;
+		margin: 0px;
+		display: inline-block;
+		width: 50%;
+		padding-top: 25%;
+		padding-bottom: 25%;
+		// border-radius: 50%;
+		// float: left;
+
+		&:before {
+			content: " ";
+			position: absolute;
+			display: block;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			// margin: 1.5rem;
+			// border: 3px solid #202B31;
+			background-color: #F5F2EC;
+			// border-radius: 50%;
+		}
+
+		&[title]:after {
+			content: attr(title);
+			position: absolute;
+			bottom: 15px;
+			width: 100%;
+			text-align: center;
+			text-transform: uppercase;
+			color: #B7AFAA;
+			font-weight: bold;
+			font-size: 18px;
+		}
+
+		&.large {
+			width: 242px;
+			height: 242px;
+			font-size: 24px;
+		}
+
+		.label {
+			position: absolute;
+			bottom: 10%;
+			width: 100%;
+			text-align: center;
+			text-transform: uppercase;
+			color: #A2A2A2;
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		& > div, ._dial {
+			pointer-events: none;
+			transform-origin: 50% 100%;
+			background: black;
+			height: 0px;
+			width: 0px;
+			position: absolute;
+			bottom: 50%;
+			left: 50%;
+			will-change: transform;
+			backface-visibility: hidden;
+			background: linear-gradient(black,#525252);
+			color: black;
+
+			&:before {
+				content: " ";
+				position: absolute;
+				bottom: 0px;
+				width: 100%;
+				height: 53px;
+				background: inherit;
+				transform: translate3d(-50%,0px,0px);
+				box-sizing: border-box;
+			}
+
+			&.s {
+				background: red;
+
+				&:before {
+					width: 1px;
+					height: 4.3em;
+					bottom: -8px;
+					box-shadow: 0px 0px 0px 1px white;
+				}
+
+				&:after {
+					box-sizing: border-box;
+					content: " ";
+					position: absolute;
+					width: 6px;
+					height: 6px;
+					background: red;
+					border: 2px solid white;
+					border-radius: 50%;
+					transform: translate3d(-50%,-50%,0px);
+					border-color: white;
+				}
+			}
+
+			&.m {
+				&:before {
+					width: 2px;
+					height: 4em;
+					// border-top: 2px solid #476D80;
+			    	// background-color: #709CB2;
+			    	bottom: -0px;
+			    	height: 0;
+			    	width: 3px;
+			    	background: transparent;
+					border-bottom: 4.2em solid black;
+					border-left: 1px solid transparent;
+					border-right: 1px solid transparent;
+					bottom: 0px;
+				}
+
+				
+			}
+
+			&.h {
+				&:before {
+					height: 3em;
+					// border-top: 2px solid red;
+					// background: linear-gradient(black,#525252);
+					height: 0;
+					width: 4px;
+					background: transparent;
+					border-bottom: 2.6em solid black;
+					border-left: 1px solid transparent;
+					border-right: 1px solid transparent;
+					bottom: 0px;
+				}
+			}
+		}
+
+		&.night {
+			background: #202B31;
+			._dial { background: white; }
+			.sec { background: red; }
+			.label { color: white; }
+		}
+	}
+}
