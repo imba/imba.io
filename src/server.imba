@@ -1,6 +1,7 @@
 require 'imba'
 Imbac = require 'imba/compiler'
-DEBUG = 1
+
+DEBUG = 0
 Imba.SERVER = 1
 ENV_CLIENT = 0
 
@@ -14,11 +15,6 @@ var hl = require 'scrimbla/src/core/highlighter'
 
 app.disable('etag')
 app.use(express.static('./www'))
-
-# connection to github
-var github = require 'octonode'
-var ghclient = github.client('585e26874810a933142ad98ebc5d247cec474994')
-var ghrepo = ghclient.repo('somebee/imba')
 
 # creating the local app
 APP = App.new
@@ -55,39 +51,6 @@ app.get '/install' do |req,res| res.redirect('/guides#toc-getting-started-instal
 app.get(/^([^\.]*)$/) do |req,res|
 
 	res.render do <site>
-
-var issueCache = {}
-
-app.get '/api/issues.json' do |req,res|
-	console.log 'get issues',req:params[0]
-	if issueCache:issues
-		return res.send issueCache:issues
-	# issues should be synced and cached by the server instead
-	ghrepo.issues do |err, body|
-		console.log(arguments)
-		res.send(issueCache:issues = body)
-
-app.get '/api/issues/:nr.json' do |req,res|
-
-	if issueCache[req:params:nr]
-		return res.send issueCache[req:params:nr]
-	# console.log 'get issue',req:params[0],req:params:nr,req:query:nr
-	# var md = renderer.render("{__dirname}/../docs/welcome.md")
-	var issue = ghclient.issue('somebee/imba', req:params:nr)
-	# issues should be synced and cached by the server instead
-	issue.info do |err, info|
-
-		issue.comments do |err,comments|
-			# console.log(arguments)
-			if info:body
-				info:md = APP.Markdown.render(info:body)[:body]
-
-			info:comments = comments.map do |comment|
-				if comment:body
-					comment:md = APP.Markdown.render(comment:body)[:body]
-				comment
-			console.log 'returned from issue',info
-			res.send issueCache[req:params:nr] = info
 
 # rendering markdown
 app.get(/^(.+\.(md|json|imba))$/) do |req,res|
