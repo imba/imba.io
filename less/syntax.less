@@ -75,6 +75,22 @@
 	.lvar,.title{ color: @lvar; }
 	.const.lvar { color: @const; }
 
+	.hl[eref] {
+		@color: fade(@lvar-hl-shadow,50%);
+		// text-shadow: 0px 1px 0px fade(@lvar,30%); // rgba(255, 244, 209, 0.45)
+		text-shadow: 2px 0px 1px @color, -2px 0px 1px @color, 0px 2px 1px @color, 0px -2px 1px @color;
+
+		// font-weight: 600;
+		font-weight: 500;
+		color: @lvar-hl !important;
+		border-bottom: 1px solid fade(@lvar-hl,50%);
+		border-radius: 2px;
+
+		&:before {
+			position: absolute;
+		}
+	}
+
 	// Nesting tag
 	._imtagnode {
 		color: @tag;
