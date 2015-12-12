@@ -33,6 +33,7 @@ class Guide
 		@object = doc
 		@meta = doc:meta or {}
 		@ready = yes
+		Imba.emit(self,'ready')
 		self
 
 	def title
@@ -110,15 +111,21 @@ tag guides < page
 			# <guide@doc.md.l src="{router.path}">
 
 	def onroute e
-		log 'onroute guides',router.hash
+		# log 'onroute guides',router.hash
 		e.halt
 
+		var scroll = do
+			if let el = first('#' + router.hash)
+				el.dom.scrollIntoView(true)
+				@scrollFreeze = window:scrollY
+				return el
+			return no
+
 		if router.hash
-			setTimeout(&,0) do
-				if let el = first('#' + router.hash)
-					log 'found element?!?',el
-					el.dom.scrollIntoView(true)
-					@scrollFreeze = window:scrollY
+			render
+			scroll() or setTimeout(scroll,20) do
+
+				
 		self
 
 	def guide

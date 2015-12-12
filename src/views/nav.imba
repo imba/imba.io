@@ -3,7 +3,6 @@
 tag navmenu
 
 	def onroute e
-		console.log 'navmenu onroute',e
 		document:body:classList.remove('menu')
 		self
 
