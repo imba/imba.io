@@ -14,22 +14,13 @@ tag blog < page
 	def nav
 		<navmenu@nav>
 			<.content>
-				# <h1> "No items?"
-				# for item in APP.ISSUES
-				#	<h3> item:title
-				# <div>
-				#	for post in meta.object
-				#		<h2> "Post {post:title}"
-
 				for issue in APP.issues.object
 					<issue-li[issue]>
-					# <h2> "Issue!!! {issue:title}"
 
 	def body
 		<@body.light>
 			if doc
 				<issue[doc]>
-			<h4> "No posts"
 
 tag blogpost
 
