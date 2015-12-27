@@ -32,8 +32,12 @@ tag site < html
 	def render
 		# dirty workarounds
 		APP.site = self
-		deps = {}
+		deps = {
+			"/issues/all.json": yes
+		}
+
 		APP.fetchDocument('/guides.md')
+		APP.fetchDocument('/blog.json')
 		var body = body
 		body.append(scripts)
 

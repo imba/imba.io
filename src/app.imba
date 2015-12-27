@@ -7,6 +7,7 @@ export class App
 	prop deps
 	prop site
 	prop cache
+	prop issues
 
 	def initialize
 		cache = {}
@@ -92,6 +93,8 @@ export class App
 
 		return self
 
+	def issues
+		@issues ||= Doc.get('/issues/all.json')
 
 export class Doc
 
@@ -102,6 +105,7 @@ export class Doc
 		cache['doc-' + path] ||= self.new(path)
 
 	prop path
+	prop object
 
 	def ready
 		@ready
@@ -115,11 +119,11 @@ export class Doc
 	def fetch
 		if Imba.SERVER
 			# console.log 'fetch Guide on server',path
-			return APP.fetchDocument(@path + '.md') do |res|
+			return APP.fetchDocument(@path) do |res|
 				# console.log 'fetch Guide on server done',path
 				load(res)
 
-		@promise ||= APP.fetchDocument(@path + '.md') do |res|
+		@promise ||= APP.fetchDocument(@path) do |res|
 			load(res)
 
 	def load doc

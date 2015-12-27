@@ -29,9 +29,7 @@
     "type": "git",
     "url": "git://github.com/somebee/imba.io.git"
   },
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "dependencies": {
     "express": "^4.13.2",
     "gulp": "^3.9.0",
@@ -40,10 +38,11 @@
     "highlight.js": "^8.8.0",
     "imba": "^0.14.1",
     "imba-loader": "^1.0.1",
-    "scrimbla": "^0.5.0",
     "less": "^2.5.1",
     "less-plugin-autoprefix": "^1.4.2",
     "marked": "^0.3.5",
+    "octonode": "^0.7.4",
+    "scrimbla": "^0.5.0",
     "webpack": "^1.12.9"
   }
 }

@@ -1,8 +1,13 @@
 extend tag element
 	attr route
 
+	# def html= html
+	# 	@dom:innerHTML = html
+	# 	self
+
 	def html= html
-		@dom:innerHTML = html
+		if html != @html
+			dom:innerHTML = @html = html
 		self
 
 	def go route
@@ -21,6 +26,13 @@ extend tag element
 
 	def transform
 		css(:transform)
+
+extend tag htmlelement
+
+	def html= html
+		if html != @html
+			dom:innerHTML = @html = html
+		self
 
 extend tag script
 	
