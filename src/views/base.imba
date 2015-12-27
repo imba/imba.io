@@ -63,6 +63,7 @@ extend tag a
 			router.go(href,{})
 			Imba.Events.trigger('route',self)
 		else
+			e.@responder = null
 			return e.halt		
 		self
 

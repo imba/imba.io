@@ -24,8 +24,9 @@ var info =
     inspiration: ['ruby','python','react','coffeescript']
     creator: 'Sindre Aarsaether'
     contributors: [
-        'Magnus Holm' # github.com/judofyr
         'Sindre Aarsaether' # github.com/somebee
+        'Magnus Holm' # github.com/judofyr
+        'Slee Woo' # github.com/sleewoo
     ]
 ```
 
@@ -115,3 +116,20 @@ Unofficial plugin or vim, Vimba, can be found at [simeng/vim-imba](https://githu
 
 Next up, read about [the language](/guides/language) itself!
 
+# Examples
+
+Since Imba is a new language, there aren't that many open-source examples out in the wild. It is being used in several 100kloc+ commercial projects, so it should definitely be production-ready.
+
+### Hello World
+
+If you want to get started with Imba right away, it is recommended to download our starter pack and get it running.
+
+### Imba.io
+
+This whole website is written in Imba. It uses the same code for server and clent. After the initial load, all navigation in the browser is happening with history push/popState, and rendered directly on the client, yet any hard refresh should land you at the same spot when rendered from the server, thanks to using the same logic for routing as well. Grab it over at [github](https://github.com/somebee/imba.io)
+
+### Scrimbla
+
+The inline editor used throughout this site is written in Imba, and available at [github](https://github.com/somebee/scrimbla). It is a decent example of a project.
+
+# Contributing

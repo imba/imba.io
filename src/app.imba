@@ -90,6 +90,50 @@ export class App
 			xhr.open("GET", src)
 			xhr.send
 
-			
-
 		return self
+
+
+export class Doc
+
+	var cache = {}
+
+	def self.get path
+		var cache = APP.cache
+		cache['doc-' + path] ||= self.new(path)
+
+	prop path
+
+	def ready
+		@ready
+
+	def initialize path
+		@path = path
+		@ready = no
+		fetch
+		self
+
+	def fetch
+		if Imba.SERVER
+			# console.log 'fetch Guide on server',path
+			return APP.fetchDocument(@path + '.md') do |res|
+				# console.log 'fetch Guide on server done',path
+				load(res)
+
+		@promise ||= APP.fetchDocument(@path + '.md') do |res|
+			load(res)
+
+	def load doc
+		@object = doc
+		@meta = doc:meta or {}
+		@ready = yes
+		Imba.emit(self,'ready')
+		self
+
+	def title
+		@object:title or 'path'
+
+	def toc
+		@object and @object:toc[0]
+
+	def body
+		@object and @object:body

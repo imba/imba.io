@@ -32,7 +32,8 @@ def renderer.heading text, level
 		flags.push(m[1])
 		text = text.slice(m[0][:length])
 
-	var slug = Router.slug(text)
+	var plain = text.replace(/\<[^\>]+\>/g,'')
+	var slug = Router.slug(plain)
 	meta:title = unescape(text)
 
 	if next:type == 'code' and level == 4
@@ -53,10 +54,10 @@ def renderer.heading text, level
 	var par = stack[stack:length - 1]
 
 	if par
-		meta:slug = par:slug + '-' + Router.slug(text)
+		meta:slug = par:slug + '-' + slug
 		par:children.push(meta)
 	else
-		meta:slug = 'toc-' + Router.slug(text)
+		meta:slug = 'toc-' + slug
 		this:toc.push(meta)
 
 	stack.push(meta)
