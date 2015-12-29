@@ -206,6 +206,12 @@ hr + p {
   margin-bottom: 4px;
   font-weight: 600;
 }
+.md h1,
+.md h2,
+.md h3,
+.md h4 {
+  color: #3A4652;
+}
 .md h1 {
   color: #AB4D4D;
   color: #297198;
@@ -230,16 +236,12 @@ hr + p {
 }
 .md h2 {
   font-size: 2.2rem;
-  color: #AB4D4D;
   margin-top: 2rem;
 }
 .md h3 {
-  color: #3A4652;
-  color: #AB4D4D;
   font-size: 1.8rem;
 }
 .md h4 {
-  color: #3A4652;
   font-size: 1.5rem;
   font-weight: 600;
 }

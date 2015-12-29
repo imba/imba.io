@@ -26,7 +26,8 @@ npm run watch
 # to build www/client.js for development
 # this will include sourcemaps++ and
 # recompile whenever files change
-
-gulp watch
-# to continually recompile stylesheets from less/
 ```
+
+`gulp watch` to continually recompile stylesheets from less/
+
+`gulp default` to start server and automatically restart on changes
