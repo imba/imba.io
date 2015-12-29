@@ -15,7 +15,7 @@ tag blog < page
 		<navmenu@nav>
 			<.content>
 				for issue in APP.issues.object
-					<issue-li[issue]>
+					<issue-entry.entry[issue]>
 
 	def body
 		<@body.light>

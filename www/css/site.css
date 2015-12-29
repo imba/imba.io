@@ -1359,6 +1359,10 @@ hr + p {
   font-size: 14px;
   line-height: 1.2em;
 }
+._page > .nav > .content > ._toc.compact .legend,
+._page > .nav .section.compact .legend {
+  display: none;
+}
 ._page > .nav a.scoped:before {
   display: block;
   opacity: 0.7;
@@ -1418,6 +1422,11 @@ hr + p {
 }
 ._page > .nav .entry a:hover span {
   text-decoration: underline;
+}
+._page > .nav .entry > .legend {
+  font-size: smaller;
+  color: #8F9A9F;
+  line-height: 10px;
 }
 ._page > .nav .entry > .content {
   padding-left: 16px;

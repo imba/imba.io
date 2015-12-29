@@ -1,5 +1,5 @@
 
-tag issue-li
+tag issue-entry
 
 	def render
 		<self>
