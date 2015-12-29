@@ -25,21 +25,3 @@ tag blog < page
 		<@body.light>
 			if doc
 				<issue[doc]>
-
-tag blogpost
-
-	def render
-		return self unless object?.ready
-		<self.md body=(object.body)>
-
-	def body= body
-		if body != @body
-			@body = body
-			dom:innerHTML = body
-			reawaken if Imba.isClient
-		self
-
-	def reawaken
-		for snippet in %(snippet)
-			snippet
-		self

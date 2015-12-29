@@ -1,11 +1,7 @@
 require 'imba'
 Imbac = require 'imba/compiler'
 
-
-
 DEBUG = 0
-Imba.SERVER = 1
-ENV_CLIENT = 0
 
 require '../src/views'
 import App from '../src/app'

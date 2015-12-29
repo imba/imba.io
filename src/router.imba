@@ -25,7 +25,6 @@ export class Router
 		if Imba.isClient
 			window:onpopstate = do |e|
 				refresh
-				console.log 'popstate'
 				Imba.setTimeout(0) do yes
 		self
 

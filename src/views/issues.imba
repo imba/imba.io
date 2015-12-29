@@ -38,6 +38,7 @@ tag issue
 
 	def commit
 		if object and object.ready
+			console.log 'commit issue'
 			unflag('loading')
 			render
 		else

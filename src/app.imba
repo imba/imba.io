@@ -49,8 +49,6 @@ export class App
 	def fetchDocument src, &cb
 
 		if Imba.SERVER
-			console.log 'fetch document',src
-
 			var fs = require 'fs'
 			var path = require 'path'
 
@@ -131,6 +129,8 @@ export class Doc
 		@meta = doc:meta or {}
 		@ready = yes
 		Imba.emit(self,'ready')
+		console.log "loaded {@path}"
+		Imba.setTimeout(0) do yes
 		self
 
 	def title

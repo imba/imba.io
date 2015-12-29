@@ -2,8 +2,8 @@ require 'imba'
 Imbac = require 'imba/compiler'
 
 DEBUG = 0
-Imba.SERVER = 1
-ENV_CLIENT = 0
+
+console.log Imba:setTimeout
 
 require './views'
 import App from './app'

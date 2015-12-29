@@ -24,4 +24,4 @@ tag page
 		assemble
 
 	def awaken
-		schedule(fps: 1)
+		schedule(fps: 1, events: yes)
