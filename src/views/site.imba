@@ -37,7 +37,6 @@ tag site < html
 		}
 
 		APP.fetchDocument('/guides.md')
-		APP.fetchDocument('/blog.json')
 		var body = body
 		body.append(scripts)
 
@@ -61,7 +60,7 @@ tag site-nav
 				<span.greedy>
 				<a.tab.home href='/home'> <i> 'home'
 				<a.tab.guides href='/guides'> <i> 'guides'
-				<a.tab.docs href='/docs'> <i> 'docs'
+				<a.tab.docs href='/docs'> <i> 'api'
 				<a.tab.blog href='/blog'> <i> 'blog'
 
 				<a.github href='https://github.com/somebee/imba'> <i> 'github'

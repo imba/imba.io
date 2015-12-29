@@ -7,15 +7,19 @@ tag blog < page
 	def doc
 		if let nr = router.scoped(/blog\/(\d+)/,1)
 			Doc.get('/issues/' + nr + '.json')
+		else
+			Doc.get('/issues/' + posts[0][:number] + '.json')
+		
 
-	def meta
-		Doc.get('/blog.json')
+	def posts
+		APP.issues.object
 
 	def nav
 		<navmenu@nav>
 			<.content>
-				for issue in APP.issues.object
+				for issue in posts
 					<issue-entry.entry[issue]>
+
 
 	def body
 		<@body.light>

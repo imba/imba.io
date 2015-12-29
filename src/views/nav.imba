@@ -17,5 +17,7 @@ tag nav-link
 
 tag toc
 
+	attr level
+
 	def toggle
 		toggleFlag('collapsed')

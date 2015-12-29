@@ -66,6 +66,8 @@ extend tag a
 		@route or href
 
 	def ontap e
+		var href = href.replace(/^http\:\/\/imba\.io/,'')
+
 		if e.event:metaKey or e.event:altKey
 			e.@responder = null
 			return e.halt
@@ -81,3 +83,10 @@ extend tag a
 
 	def render
 		reroute
+
+tag star < a
+	attr repo
+
+	def render
+		<self href="http://github.com/{repo}"> "★ Star"
+		# <a href="http://github.com/{repo}"> "★ Star"

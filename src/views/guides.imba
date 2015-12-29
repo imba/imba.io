@@ -49,8 +49,6 @@ class Guide
 tag guide-toc < toc
 
 	prop toc
-	attr level
-	attr route
 
 	def toc
 		@toc or object.toc
@@ -103,6 +101,12 @@ tag guides < page
 			<.content>
 				<guide-toc[Guide.get('/guides')]>
 				<guide-toc[Guide.get('/guides/language')]>
+				<guide-toc[Guide.get('/guides/rendering')]>
+				<toc.entry level=0>
+					<.header> <a> "Tips"
+					<.content>
+						<toc.entry level=3> <a> "Hello"
+						<toc.entry level=3> <a> "Other tip here"
 				# <guide-toc[Guide.get('/guides/tips')]>
 
 	def body

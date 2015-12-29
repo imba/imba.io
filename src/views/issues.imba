@@ -1,12 +1,13 @@
+import Router from '../router'
 
 tag issue-entry
 
 	def render
 		<self>
 			<.header>
-				<a.title href="/blog/{object:number}"> object:title
+				<a.title href="/blog/{object:number}-{Router.slug(object:title)}"> object:title
 			<.legend>
-				"Written by "
+				"by "
 				<gh-user[object:user]>
 
 			<.labels>
@@ -31,6 +32,17 @@ tag issue
 
 	def doc
 		object.object
+
+	def build
+		commit
+
+	def commit
+		if object and object.ready
+			unflag('loading')
+			render
+		else
+			flag('loading')
+		
 
 	def render
 		<self>

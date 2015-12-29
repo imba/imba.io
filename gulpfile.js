@@ -29,7 +29,7 @@ gulp.task('server', function() {
 gulp.task('default', function() {
   gulp.run('server')
 
-  gulp.watch(['./src/**/*.imba','./docs/**/*.md','./docs/**/*.imba'], function() {
+  gulp.watch(['./src/**/*.imba','./docs/**/*.md','./docs/**/*.json','./docs/**/*.imba'], function() {
   	console.log('watching');
     gulp.run('server');
   })

@@ -27,8 +27,40 @@
 		.legend {
 			font-size: 13px;
 		}
-		border-bottom: 2px solid #F3F5F7;
+		border-bottom: 1px solid #F3F5F7;
 		padding-bottom: 12px;
 		margin-bottom: 12px;
 	}
+
+	&.loading {
+		-webkit-filter: grayscale(1) opacity(0.4);
+	}
+}
+
+._page > .nav {
+	._issue-entry {
+		border-bottom: 1px solid #F3F5F7;
+		padding: 10px 0px 12px;
+		line-height: 1.1em;
+		font-weight: 500;
+		a { padding: 0px; }
+		a.title { padding: 4px 0px; }
+		a:before { display: none !important; }
+
+		.legend {
+			text-transform: uppercase;
+			font-size: 10px;
+		}
+	}
+}
+
+._gh-label {
+	display: inline-block;
+	padding: 0px 3px;
+	color: white;
+	text-transform: uppercase;
+	font-size: 9px;
+	line-height: 13px;
+	border-radius: 2px;
+	margin-right: 4px;
 }

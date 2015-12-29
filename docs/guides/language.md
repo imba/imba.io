@@ -299,7 +299,33 @@ tom.move
 
 Loops in Imba behaves similar to array comprehensions in CoffeeScript and Python. They are expressions, and can be returned and assigned. When used as expressions they will always return an array (like Array#map, but with a few additional powerful features, like break / continue).
 
-## Forin
+#### for in
+```imba
+for num in [1,2,3]
+    num * 2
+```
+
+#### for of
+```imba
+for key,value of {a: 1, b: 2}
+    value * 2
+```
+
+#### while
+```imba
+while true
+    break if Math.random < 0.1
+```
+
+#### until
+```imba
+until Math.random < 0.1
+    gamble
+```
+
+
+
+### For in
 
 #### loops are expressions
 ```imba
@@ -328,7 +354,7 @@ for num in list when num > 1
 
 > **Tip!** Any type of object can support being iterated with forin in Imba. If the compiler does not know that the target is an array (at compiletime) it will look for (and call) `target.toArray` if it exists, and then loop through this.
 
-## Forof
+### For of
 
 #### for of (all keys)
 ```imba
@@ -347,7 +373,7 @@ for own key,value of obj
     "{key} is {value}"
 ```
 
-## Break/Continue
+### Break / Continue
 
 #### Continue
 ```imba
@@ -375,20 +401,6 @@ for num in [1,2,3,4,5]
 for num in [1,2,3,4,5]
     break -1 if num == 3
     num * 2
-```
-
-## While/Until
-
-#### While
-```imba
-while true
-    break if Math.random < 0.1
-```
-
-#### Until
-```imba
-until Math.random < 0.1
-    gamble
 ```
 
 

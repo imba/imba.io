@@ -1,7 +1,7 @@
 
 # connection to github
 var github = require 'octonode'
-var ghclient = github.client('')
+var ghclient = github.client('TOKEN')
 var ghrepo = ghclient.repo('somebee/imba.io')
 
 var cache = {}
@@ -30,13 +30,3 @@ export def issue nr, &cb
 		info = format(info)
 		info:md = APP.Markdown.render(info:body)[:body]
 		cb(cache[nr] = info)
-
-# 	issue.info do |err, info|
-# 
-# 		issue.comments do |err,comments|
-# 			if info:body
-# 				info:md = APP.Markdown.render(info:body)[:body]
-# 
-# 			info:comments = comments.map do |comment|
-# 				if comment:body
-# 					comment:md = APP.Markdown.render(comment:body)[:body]

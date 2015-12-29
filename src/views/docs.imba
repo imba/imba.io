@@ -147,7 +147,7 @@ tag doc-group < toc
 
 tag docs < page
 
-	prop version default: '0.14.1'
+	prop version default: 'current'
 	prop roots
 
 	def src

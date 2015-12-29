@@ -66,22 +66,23 @@
 		b { color: #437997; font-weight: inherit; }
 		.const { color: #2A607D; }
 
-		&:before {
-			position: absolute;
-			content: " ";
-			display: block;
-			top: 50%;
-			width: 4px;
-			height: 4px;
-			margin-top: -2px;
-			right: 100%;
-			margin-right: 6px;
-			background: #C6D5DF;
-			border-radius: 2px;
-			opacity: 0.4;
-			display: none;
-		}
+		
+	}
 
+	a:before {
+		position: absolute;
+		content: " ";
+		display: block;
+		top: 50%;
+		width: 4px;
+		height: 4px;
+		margin-top: -2px;
+		right: 100%;
+		margin-right: 6px;
+		background: #C6D5DF;
+		border-radius: 2px;
+		opacity: 0.4;
+		display: none;
 	}
 
 	a.scoped {
@@ -125,7 +126,7 @@
 			}
 		}
 		& > .content {
-			padding-left: 16px;
+			padding-left: 12px;
 		}
 
 		&.large {
@@ -172,14 +173,23 @@
 		}
 	}
 
+	.entry[level="0"] {
+		font-size: 16px;
+		line-height: 1.3em;
+		& > .header > a:before { display: none !important; }
+	}
+
 	.entry[level="1"] {
 		font-size: 16px;
 		line-height: 1.3em;
+
+		&.scoped .entry[level="2"] { display: block; }
 	}
 
 	.entry[level="2"] {
-		font-size: 16px;
+		font-size: 15px;
 		line-height: 1.3em;
+		// display: none;
 	}
 
 	.entry[level="3"] {
@@ -221,7 +231,8 @@
 		& > .legend {
 			font-size: smaller;
 			color: #8F9A9F;
-			line-height: 10px;
+			line-height: 15px;
+			font-size: 12px;
 		}
 
 		& > .content {
