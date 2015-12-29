@@ -129,8 +129,9 @@ export class Doc
 		@meta = doc:meta or {}
 		@ready = yes
 		Imba.emit(self,'ready')
-		console.log "loaded {@path}"
-		Imba.setTimeout(0) do yes
+		# console.log "loaded {@path}"
+		# Imba.setTimeout(0) do yes
+		Imba.emit(Imba,'event',[{_responder: self}])
 		self
 
 	def title
