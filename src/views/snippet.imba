@@ -342,6 +342,7 @@ tag snippet
 		# console.log 'runError',o
 		# only show error if we have a line and column
 		view.hints.add(o).activate
+		render
 
 	def runLog o
 		o:type = 'log'
@@ -363,6 +364,7 @@ tag snippet
 
 				# o:loc = logs[o:nr].region.toJSON
 		view.hints.add(o).activate
+		render
 
 	def runResult o
 		# console.log 'runResult',o

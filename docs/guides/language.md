@@ -264,7 +264,7 @@ class Todo
 Classes can inherit from other classes. The implementation relies on JavaScript prototypal inheritance, with some added conveniences.
 
 ```imba
-# Example borrowed from CoffeeScript
+# Example borrowed from coffeescript.org
 class Animal
 
     def initialize name
@@ -278,7 +278,7 @@ class Snake < Animal
         window.alert "Slithering..."
         super 5
 
-class Cat < Animal
+class Horse < Animal
     def move
         window.alert "Galloping..."
         super 45

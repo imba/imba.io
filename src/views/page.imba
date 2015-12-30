@@ -14,11 +14,21 @@ tag page
 	def ready
 		yes
 
+	def scoped
+		self
+
+	def unscoped
+		self
+
 	def render
 		# log 'render page',route
 		var scoped = router.scoped(route,self)
-		flag('scoped',scoped)
-		flag('selected',router.match(route,self))
+
+		if scoped != @scoped
+			@scoped = scoped
+			@scoped ? self.scoped : self.unscoped
+			flag('scoped',scoped)
+			flag('selected',router.match(route,self))
 
 		return self unless scoped and ready
 		assemble

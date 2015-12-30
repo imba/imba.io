@@ -1886,6 +1886,9 @@ code {
 ._snippet.focus ._tool {
   background: #BACDD4;
 }
+._snippet.focus ._tool:hover {
+  background: #a4bdc6;
+}
 ._snippet ._jsview {
   display: none;
 }
