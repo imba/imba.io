@@ -66,13 +66,14 @@ tag site-nav
 			<nav.content>
 				<a.menu :tap='toggleMenu'> <b>
 				<a.tab.logo href='/home'> <i> 'imba'
-				<span.greedy>
 				<a.tab.home href='/home'> <i> 'home'
 				<a.tab.guides href='/guides'> <i> 'guides'
 				<a.tab.docs href='/docs'> <i> 'api'
 				<a.tab.blog href='/blog'> <i> 'blog'
-
+				<span.greedy>
+				<a.twitter href='http://twitter.com/imbajs'> <i> 'twitter'
 				<a.github href='https://github.com/somebee/imba'> <i> 'github'
+				<a.issues href='https://github.com/somebee/imba/issues'> <i> 'issues'
 
 	def awaken
 		schedule(fps: 0)
