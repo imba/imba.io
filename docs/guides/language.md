@@ -71,7 +71,7 @@ class Todo
 
 If you are coming from JavaScript, there are a few things you really need to know when learning Imba. Imba is not like CoffeeScript, in the sense that it does not try to just be a slightly different dialect of JavaScript. Imba compiles to javascript, but the syntax and semantics affects how you would structure your code.
 
-If you are not familiar with ruby, many parts of Imba will probably seem slightly confusing, until you understand the concepts of implicit self and inplicit calling. Any lowercase identifier that is not explicitly declared as a variable is treated as an implicit call on the `self` of the current scope. The analyzer / highlighter will help by highlighting variables differently.
+If you are not familiar with ruby, many parts of Imba will probably seem slightly confusing, until you understand the concepts of implicit self and implicit calling. Any lowercase identifier that is not explicitly declared as a variable is treated as an implicit call on the `self` of the current scope. The analyzer / highlighter will help by highlighting variables differently.
 
 
 
@@ -537,5 +537,3 @@ var pad = <sketchpad width=500 height=300>
 
 Custom tags still use native supported node types in the DOM tree. Our `<sketchpad>` will render as a `<canvas class='_sketchpad'>` in the DOM, while `<task>` will render as `<li class='_entry _task'>`. This means that css/styling can also be inherited, and we can use query selectors to select all entries (including inherited tags project and task).
 
-
-## Rendering

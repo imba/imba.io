@@ -134,6 +134,10 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 	hr + p {
 		font-size: 12px;
 	}
+
+	p > code {
+		background: darken(#F7F2E3,5%);
+	}
 }
 
 .md {
@@ -224,6 +228,15 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 			font-size: inherit;
 			line-height: inherit;
 			font-weight: inherit;
+
+			display: inline-block;
+			font-size: 12px;
+			font-weight: 500;
+			background: rgb(243, 245, 247);
+			padding: 0px 4px;
+			line-height: 1.5em;
+			font-family: @monofont;
+			border-radius: 2px;
 		}
 	}
 

@@ -68,8 +68,8 @@ Once you have installed Imba (globally), you should have access to the imba exec
 
 Used to compile a file or a group of files to javascript. When compiling files and folders without specifying an output location Imba will try to guess. If the path includes a src/ directory, and there is a sibling lib/ directory, Imba will automatically choose this path. If you have the directories `/myapp/src` and `/myapp/lib`, running `imba compile /myapp/src/app.imba` will by default write the compiled code to `/myapp/lib/app.js`. The same goes for imba watch.
 
-- `imba sample.imba`
-  Run the file sample.imba
+`imba sample.imba`
+Run the file sample.imba
 
 - `imba compile src/`
   Will compile all imba files inside src (recursively). By default, Imba will look for a matching lib/ directory, and save the resulting files there. If no such directory exists, it will save the resulting js files in the same directories as their corresponding imba files.
@@ -131,5 +131,3 @@ This whole website is written in Imba. It uses the same code for server and clen
 ### Scrimbla
 
 The inline editor used throughout this site is written in Imba, and available at [github](https://github.com/somebee/scrimbla). It is a decent example of a project.
-
-# Contributing

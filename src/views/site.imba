@@ -21,6 +21,15 @@ tag site < html
 			<guides route='/guides'>
 			<docs route='/docs'>
 			<blog route='/blog'>
+			<footer> 
+				<hr>
+				<.lft> "Imba © 2015-2016"
+				<.rgt>
+					<a href='http://twitter.com/imbajs'> 'Twitter'
+					<a href='http://github.com/sombee/imba'> 'GitHub'
+					<a href='http://github.com/sombee/imba/issues'> 'Issues'
+					<a href='http://gitter.im/sombee/imba'> 'Chat'
+
 
 	def scripts
 		<.scripts>

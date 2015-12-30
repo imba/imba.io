@@ -107,3 +107,28 @@ footer {
 @import "site/issues.less";
 @import "site/playground.less";
 @import "site/mobile.less";
+
+body > footer {
+	font-size: 14px;
+	color: #9FA7A3;
+
+	hr {
+		display: block;
+		height: 1px;
+		border: 0px;
+		margin: 0px;
+		background: #F3F5F7;
+		margin-bottom: 10px;
+	}
+	
+	.lft {
+		float: left;
+	}
+	.rgt {
+		// float: right;
+		text-align: right;
+	}
+	.rgt a + a {
+		margin-left: 1ex;
+	}
+}
