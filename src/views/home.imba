@@ -142,10 +142,10 @@ tag home < page
 
 				<example.dark heading="Custom canvas" src='/home/examples/canvas.imba'>
 
-				<footer>
-					<nav>
-						<a.button.huge.main href='/install'> "Install"
-						<a.button.huge href='/guides'> "Learn more"
+				# <footer>
+				# 	<nav>
+				# 		<a.button.huge.main href='/install'> "Install"
+				# 		<a.button.huge href='/guides'> "Learn more"
 
 	# def awaken
 	# 	# awaken the snippets
