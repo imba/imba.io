@@ -113,7 +113,7 @@ tag guides < page
 		var scroll = do
 			if let el = first('#' + router.hash)
 				el.dom.scrollIntoView(true)
-				@scrollFreeze = window:scrollY
+				@scrollFreeze = window:pageYOffset
 				return el
 			return no
 
@@ -129,12 +129,9 @@ tag guides < page
 
 
 	def awaken
-		if Imba.isClient
-			# @doc = %%(guide)
+		if Imba.CLIENT
 			schedule(fps: 1)
-			window.addEventListener('scroll') do
-				# console.log 'check scrolling'
-				scrolled
+			window.addEventListener('scroll') do scrolled
 		self
 
 	def scrolled
@@ -144,7 +141,7 @@ tag guides < page
 		var match
 
 		# should probably cache these periodically
-		var scrollTop = window:scrollY
+		var scrollTop = window:pageYOffset
 		var wh = window:innerHeight
 		var dh = document:body:scrollHeight
 
