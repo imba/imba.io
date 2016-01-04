@@ -1081,6 +1081,12 @@ hr + p {
 ._imview ._imcaret .end {
   background-color: rgba(122, 172, 217, 0.17);
 }
+._imtab {
+  width: 4ch;
+  display: inline-block;
+  height: 1ex;
+  overflow: visible;
+}
 #header {
   position: fixed;
   top: 0px;
@@ -1919,7 +1925,6 @@ code {
 }
 ._snippet.hero {
   background: #EFF2F5;
-  min-height: 300px;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -2054,6 +2059,8 @@ blockquote ._snippet {
   top: 62px;
   overflow: hidden;
   width: 100%;
+  left: 0px;
+  top: 0px;
 }
 ._home ._pattern > div {
   -webkit-transform-origin: 50% 0%;
@@ -2118,7 +2125,7 @@ blockquote ._snippet {
   margin: 0px auto 0px;
   padding: 0px;
   width: 100%;
-  max-width: initial;
+  max-width: 100%;
 }
 ._home > .body > .content {
   width: 960px;
@@ -2134,9 +2141,9 @@ blockquote ._snippet {
   width: 100%;
   padding-top: 60px;
   overflow: hidden;
+  min-height: 360px;
 }
 ._home #hero ._snippet {
-  display: block;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -2149,10 +2156,15 @@ blockquote ._snippet {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  min-height: 300px;
   position: relative;
   margin-bottom: 0px;
   background: linear-gradient(#202b31, rgba(32, 43, 49, 0));
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 500;
+  padding-top: 40px;
+  display: block;
+  text-align: center;
 }
 ._home #hero ._snippet > .main {
   -webkit-flex: 0;
@@ -2168,6 +2180,8 @@ blockquote ._snippet {
   -webkit-align-self: center;
       -ms-flex-item-align: center;
           align-self: center;
+  text-align: left;
+  display: inline-block;
 }
 ._home #hero ._snippet > .main > .header {
   display: none;

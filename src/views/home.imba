@@ -43,7 +43,7 @@ tag pattern
 		var all = [].concat(shuffled)
 		var count = items:length - 1
 
-		for ln in [0 .. 12]
+		for ln in [0 .. 14]
 			let chars = 0
 			lines[ln] = []
 			while chars < 300

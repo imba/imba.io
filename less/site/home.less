@@ -19,6 +19,8 @@
 		top: 62px;
 		overflow: hidden;
 		width: 100%;
+		left: 0px;
+		top: 0px;
 
 		& > div {
 			transform-origin: 50% 0%;
@@ -86,7 +88,7 @@
 		margin: 0px auto 0px;
 		padding: 0px;
 		width: 100%;
-		max-width: initial;
+		max-width: 100%;
 
 		& > .content {
 			width: @page-width;
@@ -105,15 +107,20 @@
 		width: 100%;
 		padding-top: @header-height;
 		overflow: hidden;
+		min-height: 360px;
 		// transform: translate3d(0,0,0);
 
 		._snippet {
 			display: block;
 			.util-vbox(center,center);
-			min-height: 300px;
+			// min-height: 300px;
 			position: relative;
 			margin-bottom: 0px;
 			background: linear-gradient(rgb(32, 43, 49),rgba(32, 43, 49, 0));
+			font-size: 18px;
+			line-height: 26px;
+			font-weight: 500;
+			padding-top: 40px;
 
 			& > .main {
 				flex: 0;
@@ -125,7 +132,9 @@
 				font-weight: 500;
 				overflow: visible;
 				align-self: center;
+				text-align: left;
 				& > .header { display: none; }
+				display: inline-block;
 			}
 
 			& > .inspector {
@@ -136,6 +145,9 @@
 				height: 80px;
 				flex: 0 0 auto;
 			}
+
+			display: block;
+			text-align: center;
 		}
 
 		.playground {
