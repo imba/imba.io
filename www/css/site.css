@@ -1082,7 +1082,7 @@ hr + p {
   background-color: rgba(122, 172, 217, 0.17);
 }
 ._imtab {
-  width: 4ch;
+  width: 2.4em;
   display: inline-block;
   height: 1ex;
   overflow: visible;
