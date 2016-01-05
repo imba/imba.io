@@ -377,6 +377,25 @@ tag example < snippet
 	def autorun
 		yes
 
+tag herosnippet < example
+
+	def oneditedasync
+		flag('dirty')
+		refit
+		self
+
+	def refit
+		var ow = dom:offsetWidth
+		var cs = view.charWidth
+		var iw = view.root.dom:offsetWidth
+		var chars = iw / cs
+		var font-size = Math.floor((ow / chars) / 0.6)
+
+		# calculate the desired font size
+		log ow,iw,cs, chars,font-size
+		
+
+
 unless Imba.SERVER
 	Imba.Event.PROCESSING
 

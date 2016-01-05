@@ -91,6 +91,8 @@ def renderer.codespan code
 		code = code.slice(m[0]:length)
 	elif code[0] == '>'
 		lang = 'cli'
+	elif code.indexOf('</') >= 0
+		lang = 'html'
 
 	self.code(code,lang, inline: yes)
 
@@ -139,7 +141,7 @@ def renderer.code code, lang, opts = {}
 		code = code.replace(/\</g,'&lt;')
 		code = code.replace(/\>/g,'&gt;')
 
-	return (<code.code.md .{lang}> code).toString
+	return (<code.code.md .{lang} .inline=(opts:inline) > code).toString
 
 marked.setOptions
 	gfm: true

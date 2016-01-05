@@ -210,8 +210,6 @@ item.save do
 
 # Classes
 
-Classes are basically Java
-
 ## Declaration
 
 ```imba
@@ -220,9 +218,6 @@ class Point
         @x = x
         @y = y
 ```
-
-Class body
-
 
 ## Instances
 
@@ -407,33 +402,16 @@ This one of the main differentiators of Imba. The language has native support fo
 
 > imba.io is written entirely in Imba, and the views are generated using tags. The same code is rendering both on the server and the client, using the same logic for routing etc. If you are interested, the sourcecode is publicly available at [github](https://github.com/somebee/imba.io).
 
-## Spawning
-
-Imba is indentation-based, and the tag syntax follows the same pattern.
-
-```
-<div> # spawning a basic div
-```
-
-You can set id and classes using a css-like syntax
+In JavaScript you can create tags using `document.createElement('div')`. Tags are first-class citizens in Imba. To create a div you simply write `<div>`. You can look at tags in Imba as a native shorthand syntax for spawning html elements. As you will also learn, this syntax for creating tags support a css-like syntax for setting id,classes,events,attributes and more. `<div.red>` will create a div with class 'red'. `<div#main.one>` creates a tag with id 'main' and a class 'one'. Attributes are set like `<div.large tabindex=0 data-level=10>`. Here are a few more example of literal tags and their resulting HTML.
 
 ```imba
-<div#main.one.two.three>
+<div> 'Some text' # <div>Some text</div>
+<div.red.blue>    # <div class='red blue'></div>
+<div title='App'> # <div title='App'></div>
+<b> <i> 'Coolio'  # <b><i>Coolio</i></b>
 ```
 
-You can set attributes
-
-```imba
-<div#main.one.two.three tabindex=0 data-level=10>
-```
-
-```imba
-# you can also toggle a flag dynamically.
-# this div only has the class 'red' if isUrgent is truthy
-<div.one.two .red=isUrgent>
-```
-
-Tags are nested based on indentation.
+As you can see, tags are not explicitly closed, instead relying on indentation like the rest of Imba. This works for arbitrarily deep tag trees.
 
 ```imba
 <ul.contributors>
@@ -442,95 +420,125 @@ Tags are nested based on indentation.
     <li> 'Slee Woo'
 ```
 
-Tags are entities like any other type of object in Imba. They can be spawned, referenced, and manipulated after creation.
+Since tags are first-class entities like any other type of object in Imba, they can be spawned, referenced, and manipulated after creation.
+
+```
+var node = <div.red>
+node.unflag('red')
+node.flag('blue')
+node.append <div.child>
+node.css display: 'block'
+```
+
+To browse through the available methods for tags, [check out the API](/docs#api-Imba_Tag__build)
+
 
 ```imba
-var team = ['Sindre Aarsaether','Magnus Holm','Slee Woo']
 var list = <ul.contributors>
 
-# loop through the array
-for name in team
-    # add a tag for each name to our list
-    list.append <li> name
+for name in ['Sindre Aarsaether','Magnus Holm','Slee Woo']
+    list.append <li> name # add tag for each name
 
-# create a wrapper around the list with a header etc
-var page = <div>
+# include the list in a tag tree
+<article>
     <header> "Contributors"
     <section> list
+
 ```
 
-You can also use if-statements, loops and other control flow inside tags
+You can also use if-statements, loops and other control flow inside tags, to easily write all your views in the order they are to be rendered.
 
 ```imba
-var team = ['Sindre Aarsaether','Magnus Holm','Slee Woo']
-
-var page = <div>
+<div>
     <header> "Contributors"
     <section>
-        <ul> for name in team
-            <li.member> name
+        <ul> for alias in ['somebee','judofyr','sleewoo']
+            <li> <a href="http://github/{alias}"> alias
 ```
 
+To fully appreciate how tags work in Imba (and to get a glimpse into why [Imba is so fast](http://somebee.github.io/todomvc-render-benchmark/index.html)), it is important to understand they way in which tags are created in the compiled code. Frameworks for creating tags usually passes the attributes in an object, like `tag('div',{title: 'Yeah', className: 'red'})`.
 
-### Setting attributes
-```imba
-<div title='Example' tabindex=0 data-name='ok'>
-```
-
-```imba
-var title = <h1> 'This is a title'
-
-# id and classes can be set using a css/haml-like syntax
-var main = <div#main.red.large title='welcome'> 'Main div'
-
-# tags can naturally be nested using indentation
-var list = <ul.products>
-    <li> 'Milk'
-    <li> 'Coolaid'
-    <li> 'Bacon'
-
-# and be referenced in other tag trees
-var app = <div#app>
-    <header> title
-    <section> list
-```
+Imba takes a different approach, by building the tags using a **chain of setters/calls**. `<div.red.blue title='Yeah'>` compiles to `tag.div().flag('red').setTitle('Yeah').end()`. Besides being *much* faster on modern JS engines, it is of paramount importance when we move on to static / cached tag trees, our alternative to the virtual DOM approach of many well-known frameworks.
 
 ## Declaring
 
 Tags are basically a separate Class hierarchy with syntactic sugar for instantiating nodes. All html elements are predefined, but you can also extend these tags, or inherit from them with your own tags. The syntax for creating new tags is very similar to our class syntax.
 
 ```imba
-tag todo
+tag todo < li
     attr title
     attr completed
 
-# Now you can spawn this tag like any other
-var list = <div.todos>
+    def complete
+        completed = yes
+
+var list = <ul.todos>
     <todo title='Buy milk' completed=yes>
-    <todo title='Finish documentation' completed=no>
-    <todo.urgent title='Launch new website' completed=no>
+    <todo title='Finish documentation'>
+    <todo.urgent title='Launch new website'>
+
+# finish the second todo with custom method
+list.child(1).complete
 ```
 
-### Inheritance
-
-Since tags are just a separate hierarchy of classes, we can also subclass tags (both our own and the native tags).
+But will my custom tags be valid HTML? In short, yes. The native DOM node will always be the real tag in the inheritance chain. In the above example, todo tags spawn as li tags: `<li class='_todo'></li>`. As you can see, custom tags will automatically add a prefixed className to identify its type. This also works for deeper inheritance:
 
 ```imba
+# define custom tags
 tag entry < li
-tag group < entry
 tag project < entry
-tag task < entry
+tag todo < entry
+
+# spawning these tags
+<entry>   # <li class='_entry'></li>
+<project> # <li class='_entry _project'></li>
+<todo>    # <li class='_entry _todo'></li>
 ```
+
+This makes custom tags even more useful. Since the inheritance chain is represented on the actual DOM node, we can query the dom for all entries (including *todos* and *projects*). `querySelectorAll('._entry')` will match all of them.
+
+> **Tip!** The fact that tags include their inheritance chain as class names also makes it easier to structure your styles. In the example above, you can style all entries through ._entry, and target only projects with ._project etc.
+
+## Events
+
+You can define methods for handling events just like you would define other methods or attributes on tags. Events are efficiently handled by Imba at the root document. You can define and override as many events as you'd like, no matter if you have 10 or 10000 instances of the affected tags. Binding to the click/tap event of *all* tags of a certain type is as simple as declaring a method:
 
 ```imba
-tag sketchpad < canvas
+tag todo
+    attr completed
 
-    def ontouchstart touch
-        yes
-
-# Now you can spawn this tag like any other
-var pad = <sketchpad width=500 height=300>
+    def ontap
+        # triggered when a <todo> is tapped
+        completed = yes
 ```
 
-Custom tags still use native supported node types in the DOM tree. Our `<sketchpad>` will render as a `<canvas class='_sketchpad'>` in the DOM, while `<task>` will render as `<li class='_entry _task'>`. This means that css/styling can also be inherited, and we can use query selectors to select all entries (including inherited tags project and task).
+Since tags are just like any other class hierarchy, it is easy to override event handlers in subclasses.
 
+```imba
+tag special-todo < todo
+    
+    def ontap
+        completed = yes
+        title = "{title} finally done!"
+```
+
+> Todo! Explain unified mouse/touch api [Imba.Touch](/docs#api-Imba_Touch) and `ontouchstart`, `ontouchmove`, `ontouchend`.
+
+## Extending
+
+Like classes, tags can also be reopened and extended. Although it is certainly not recommended, it is easy to override the click-event of all links by extending the native tag:
+
+```imba
+extend tag a
+    def onclick event
+        event.cancel
+        window.alert('Intercepted!')
+```
+
+The code above *will* override the click action of all links on the page, including the links that already exists. This is a natural result of the fact that DOM nodes are linked with their lightweight Imba counterpart. Binding events to tags have never been easier or more performant!
+
+> Extending native tags is not recommended unless you know what you are doing, *and* you're not interacting with external imba code. We are working on support for namespacing to avoid collisions across projects.
+
+## Rendering
+
+Even though it is possible to build your views by creating tags and assembling them programmatically

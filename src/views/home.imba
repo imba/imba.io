@@ -94,7 +94,7 @@ tag home < page
 			<div#hero.dark>
 				<pattern@pattern.awaken>
 				<.gradient>
-				<example.hero.dark src='/home/examples/hero.imba'>
+				<herosnippet.hero.dark src='/home/examples/hero.imba'>
 
 			<@content>
 				<marked.section.md.welcome.huge.light> """
