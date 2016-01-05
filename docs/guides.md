@@ -114,8 +114,6 @@ There is an [unofficial Atom plugin](https://atom.io/packages/language-imba) tha
 
 Unofficial plugin or vim, Vimba, can be found at [simeng/vim-imba](https://github.com/simeng/vim-imba). It is very much under development.
 
-Next up, read about [the language](/guides/language) itself!
-
 # Examples
 
 Since Imba is a new language, there aren't that many open-source examples out in the wild. It is being used in several 100kloc+ commercial projects, so it should definitely be production-ready.
@@ -131,3 +129,5 @@ This whole website is written in Imba. It uses the same code for server and clen
 ### Scrimbla
 
 The inline editor used throughout this site is written in Imba, and available at [github](https://github.com/somebee/scrimbla). It is a decent example of a project.
+
+Next up, read about [the language](/guides/language) itself!

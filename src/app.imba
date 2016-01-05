@@ -27,13 +27,11 @@ export class App
 		Imba.SERVER ? req:path : @path
 
 	def hash
-		''
-
-	def hash
 		Imba.SERVER ? '' : document:location:hash.substr(1)
 
 	def tick
 		unless Imba.SERVER
+			# path and hash should be moved into router
 			@path = document:location:pathname
 
 		self

@@ -63,6 +63,9 @@
 		}
 	}
 
+	body > footer {
+		padding: 20px 20px;
+	}
 	
 }
 
@@ -89,7 +92,7 @@
 		line-height: 50px;
 		vertical-align: middle;
 		padding: 0px;
-		opacity: 0.3;
+		opacity: 0.5;
 		transition: opacity 0.3s ease-in-out;
 
 		b {
@@ -134,7 +137,7 @@
 	._page:not(._home) {
 		& > .body {
 			margin: 0px;
-			padding: 70px 20px 20px;
+			padding: 80px 20px 20px;
 		}
 
 		& > .nav {
@@ -152,6 +155,10 @@
 			transition: -webkit-transform 0.3s ease-in-out;
 			transition: transform 0.4s ease-in-out;
 		}
+	}
+
+	body[data-route='home'] {
+		#header a.menu { display: none; }
 	}
 
 	body.menu {

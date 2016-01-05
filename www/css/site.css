@@ -2401,7 +2401,7 @@ blockquote ._snippet {
   margin-bottom: 12px;
 }
 ._issue > .header h1 {
-  margin: 0;
+  margin: 0 0 0.2em;
 }
 ._issue > .header .legend {
   font-size: 13px;
@@ -2721,6 +2721,9 @@ blockquote ._snippet {
     width: auto;
     min-height: 50px;
   }
+  body > footer {
+    padding: 20px 20px;
+  }
 }
 @media (max-width: 720px) {
   body {
@@ -2742,7 +2745,7 @@ blockquote ._snippet {
     line-height: 50px;
     vertical-align: middle;
     padding: 0px;
-    opacity: 0.3;
+    opacity: 0.5;
     transition: opacity 0.3s ease-in-out;
   }
   #header a.menu b {
@@ -2779,7 +2782,7 @@ blockquote ._snippet {
   }
   ._page:not(._home) > .body {
     margin: 0px;
-    padding: 70px 20px 20px;
+    padding: 80px 20px 20px;
   }
   ._page:not(._home) > .nav {
     position: fixed;
@@ -2799,6 +2802,9 @@ blockquote ._snippet {
     transition: -webkit-transform 0.3s ease-in-out;
     transition: -webkit-transform 0.4s ease-in-out;
     transition: transform 0.4s ease-in-out;
+  }
+  body[data-route='home'] #header a.menu {
+    display: none;
   }
   body.menu #header a.menu {
     opacity: 0.99;

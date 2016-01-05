@@ -15,7 +15,7 @@ tag site < html
 			<script src="/vendor/ga.js">
 
 	def body
-		<body#site>
+		<body#site data-route=(router.segment(0))>
 			<site-nav#header.awaken>
 			<home route='/home'>
 			<guides route='/guides'>

@@ -22,13 +22,16 @@ export class Router
 	def initialize app
 		@app = app
 
-		if Imba.isClient
+		if Imba.CLIENT
 			window:onpopstate = do |e|
 				refresh
 				Imba.setTimeout(0) do yes
 		self
 
 	def refresh
+		if Imba.CLIENT
+			@app.tick
+			document:body.setAttribute('data-route',segment(0))
 		self
 
 	def path
@@ -42,6 +45,9 @@ export class Router
 		var m = path.match(/\.([^\/]+)$/)
 		m and m[1] or ''
 
+	def segment nr = 0
+		path.split('/')[nr + 1] or ''
+
 	def go href, state = {}, replace = no
 		if href == '/install'
 			# redirects here
@@ -49,8 +55,10 @@ export class Router
 			
 		if replace
 			history.replaceState(state,null,href)
+			refresh
 		else
 			history.pushState(state,null,href)
+			refresh
 
 		if !href.match(/\#/)
 			window.scrollTo(0,0)
