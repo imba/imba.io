@@ -1,5 +1,119 @@
 @import "../util.less";
 
+
+#hero {
+	position: relative;
+	background-color: #202B31;
+	width: 100%;
+	padding-top: @header-height;
+	overflow: hidden;
+	min-height: 360px;
+	.util-vbox(center, center);
+	// transform: translate3d(0,0,0);
+
+	& > .gradient {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(rgb(32, 43, 49),rgba(32, 43, 49, 0));
+	}
+
+	._snippet {
+		position: relative;
+		margin-bottom: 0px;
+		background: linear-gradient(rgb(32, 43, 49),rgba(32, 43, 49, 0));
+		font-size: 18px;
+		line-height: 26px;
+		font-weight: 500;
+		background: transparent;
+		transform: translate3d(0px,0px,0px);
+		-webkit-font-smoothing: antialiased;
+		// padding-top: 40px;
+
+		& > .main {
+			flex: 0;
+			min-width: 200px;
+			width: auto;
+			margin: 0 auto;
+			padding: 0;
+			font-size: 18px;
+			line-height: 23px;
+			font-weight: 500;
+			overflow: visible;
+			align-self: center;
+			text-align: left;
+			& > .header { display: none; }
+			display: inline-block;
+		}
+
+		& > .inspector {
+			position: relative;
+			background: transparent;
+			align-self: center;
+			width: 100%;
+			height: 80px;
+			flex: 0 0 auto;
+		}
+
+		display: block;
+		text-align: center;
+	}
+
+	.playground {
+		.util-hbox(center, center);
+		font-size: 12px;
+		// should move these to a general place
+		a {
+			display: inline-block;
+			background: #75aaff;
+			padding: 0.6rem 1.8rem;
+			text-transform: uppercase;
+			color: #232933;
+			font-weight: 500;
+			font-size: 1.2em;
+			margin: 0.5rem;
+			border-radius: 3rem;
+			border: 1px solid #709CB2;
+			background: rgba(32, 43, 49, 0.68);
+			color: #709CB2;
+
+			&:hover {
+				text-decoration: none;
+				color: #A0D0E8;
+				border-color: #A0D0E8;
+				background: rgba(32, 43, 49, 0.8);
+			}
+		}
+
+		a._star {
+			background-image: linear-gradient(to bottom,#fcfcfc 0,#eee 100%);
+			border: 1px solid #fff;
+			color: #333;
+			text-shadow: 0 1px 0 #fff;
+
+			&:hover {
+				background-image: linear-gradient(to bottom,#eee 0,#ddd 100%);
+			}
+		}
+
+		a.main {
+			background: rgba(112, 156, 178, 0.88);
+			color: fade(white,96%);
+
+			&:hover {
+				background: #78ADC7;
+				color: white;
+			}
+		}
+
+		div {
+			text-align: center;
+		}
+	}
+}
+
 ._home {
 	._pattern {
 		.dark-colors;
@@ -100,107 +214,6 @@
 
 	#footer {
 		min-height: 80px;
-	}
-
-	#hero {
-		background-color: #202B31;
-		width: 100%;
-		padding-top: @header-height;
-		overflow: hidden;
-		min-height: 360px;
-		// transform: translate3d(0,0,0);
-
-		._snippet {
-			display: block;
-			.util-vbox(center,center);
-			// min-height: 300px;
-			position: relative;
-			margin-bottom: 0px;
-			background: linear-gradient(rgb(32, 43, 49),rgba(32, 43, 49, 0));
-			font-size: 18px;
-			line-height: 26px;
-			font-weight: 500;
-			padding-top: 40px;
-
-			& > .main {
-				flex: 0;
-				min-width: 200px;
-				width: auto;
-				margin: 0 auto;
-				font-size: 18px;
-				line-height: 23px;
-				font-weight: 500;
-				overflow: visible;
-				align-self: center;
-				text-align: left;
-				& > .header { display: none; }
-				display: inline-block;
-			}
-
-			& > .inspector {
-				position: relative;
-				background: transparent;
-				align-self: center;
-				width: 100%;
-				height: 80px;
-				flex: 0 0 auto;
-			}
-
-			display: block;
-			text-align: center;
-		}
-
-		.playground {
-			.util-hbox(center, center);
-			font-size: 12px;
-			// should move these to a general place
-			a {
-				display: inline-block;
-				background: #75aaff;
-				padding: 0.6rem 1.8rem;
-				text-transform: uppercase;
-				color: #232933;
-				font-weight: 500;
-				font-size: 1.2em;
-				margin: 0.5rem;
-				border-radius: 3rem;
-				border: 1px solid #709CB2;
-				background: rgba(32, 43, 49, 0.68);
-				color: #709CB2;
-
-				&:hover {
-					text-decoration: none;
-					color: #A0D0E8;
-					border-color: #A0D0E8;
-					background: rgba(32, 43, 49, 0.8);
-				}
-			}
-
-			a._star {
-				background-image: linear-gradient(to bottom,#fcfcfc 0,#eee 100%);
-				border: 1px solid #fff;
-				color: #333;
-				text-shadow: 0 1px 0 #fff;
-
-				&:hover {
-					background-image: linear-gradient(to bottom,#eee 0,#ddd 100%);
-				}
-			}
-
-			a.main {
-				background: rgba(112, 156, 178, 0.88);
-				color: fade(white,96%);
-
-				&:hover {
-					background: #78ADC7;
-					color: white;
-				}
-			}
-
-			div {
-				text-align: center;
-			}
-		}
 	}
 
 	.content > ._snippet {

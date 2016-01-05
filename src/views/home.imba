@@ -93,6 +93,7 @@ tag home < page
 		<@body>
 			<div#hero.dark>
 				<pattern@pattern.awaken>
+				<.gradient>
 				<example.hero.dark src='/home/examples/hero.imba'>
 
 			<@content>

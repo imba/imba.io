@@ -64,7 +64,6 @@ tag site-nav
 	def render
 		<self>
 			<nav.content>
-				<a.menu :tap='toggleMenu'> <b>
 				<a.tab.logo href='/home'> <i> 'imba'
 				<a.tab.home href='/home'> <i> 'home'
 				<a.tab.guides href='/guides'> <i> 'guides'
@@ -74,6 +73,7 @@ tag site-nav
 				<a.twitter href='http://twitter.com/imbajs'> <i> 'twitter'
 				<a.github href='https://github.com/somebee/imba'> <i> 'github'
 				<a.issues href='https://github.com/somebee/imba/issues'> <i> 'issues'
+				<a.menu :tap='toggleMenu'> <b>
 
 	def awaken
 		schedule(fps: 0)

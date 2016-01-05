@@ -7,6 +7,34 @@
 	}
 }
 
+@media (max-width: 480px) {
+	#hero {
+		.playground a {
+			padding: 0.2rem 1.2rem;
+			font-size: 1em;
+			margin: 0.3rem;
+		}
+	}
+
+	#header {
+		a.issues,a.github,a.twitter {
+			display: none;
+		}
+	}
+}
+
+@media (max-width: 500px) {
+	._home > .body > .content ._example {
+		display: block;
+
+		.main {
+			font-size: 11px;
+			line-height: 13px;
+			font-weight: 400;
+		}
+	}
+}
+
 @media (max-width: 600px) {
 	html { font-size: 9px; }
 	._home #hero ._snippet > .main {
@@ -34,18 +62,8 @@
 			min-height: 50px;
 		}
 	}
-}
 
-@media (max-width: 500px) {
-	._home > .body > .content ._example {
-		display: block;
-
-		.main {
-			font-size: 11px;
-			line-height: 13px;
-			font-weight: 400;
-		}
-	}
+	
 }
 
 @media (max-width: 720px) {
@@ -55,8 +73,11 @@
 	#header a {
 		padding: 6px 6px;
 	}
-	#header a.home {
-		display: none;
+	
+	#header {
+		a.home,a.twitter {
+			display: none;
+		}
 	}
 
 	#header a.menu {
