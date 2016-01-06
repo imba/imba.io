@@ -1099,10 +1099,13 @@ hr + p {
   height: 1ex;
   overflow: visible;
 }
+.xray {
+  font-size: 11px;
+}
 .xray * {
   border: 1px solid;
-  padding: 2px;
-  margin: 2px;
+  padding: 0px 4px;
+  margin: 4px 0px;
   color: #CC66FF;
 }
 .xray :nth-child(2n) {
@@ -2739,12 +2742,13 @@ blockquote ._snippet {
   background: rgba(76, 76, 76, 0.2);
 }
 #gist {
-  background: #202B319;
+  background: #202B31;
   position: fixed;
   top: 50%;
   left: 10px;
   right: 10px;
   bottom: 10px;
+  z-index: 200000;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -2757,7 +2761,6 @@ blockquote ._snippet {
   -webkit-align-items: stretch;
       -ms-flex-align: stretch;
           align-items: stretch;
-  display: none;
 }
 #gist ._pane.main {
   -webkit-flex: 0 0 auto;
