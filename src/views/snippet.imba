@@ -265,8 +265,11 @@ tag snippet
 				<overlays@overlays view=view> overlays
 				<jsview@jsview>
 				@view.end
-				<console@console.dark editor=self>
+				self.console
 			<@inspector> playground
+
+	def console
+		<console@console.dark editor=self>
 
 	def sandbox
 		<sandbox@sandbox.playground editor=self>

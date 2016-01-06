@@ -29,7 +29,7 @@ tag site < html
 					<a href='http://github.com/sombee/imba'> 'GitHub'
 					<a href='http://github.com/sombee/imba/issues'> 'Issues'
 					<a href='http://gitter.im/sombee/imba'> 'Chat'
-
+			<gist#gist.awaken>
 
 	def scripts
 		<.scripts>

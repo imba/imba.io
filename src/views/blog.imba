@@ -6,9 +6,9 @@ tag blog < page
 
 	def doc
 		if let nr = router.scoped(/blog\/(\d+)/,1)
-			Doc.get('/issues/' + nr + '.json')
+			Doc.get('/issues/' + nr, 'json')
 		else
-			Doc.get('/issues/' + posts[0][:number] + '.json')
+			Doc.get('/issues/' + posts[0][:number],'json')
 		
 
 	def posts

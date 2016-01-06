@@ -90,15 +90,15 @@ export class App
 		return self
 
 	def issues
-		@issues ||= Doc.get('/issues/all.json')
+		@issues ||= Doc.get('/issues/all','json')
 
 export class Doc
 
 	var cache = {}
 
-	def self.get path
+	def self.get path, type
 		var cache = APP.cache
-		cache['doc-' + path] ||= self.new(path)
+		cache['doc-' + path + '.' + type] ||= self.new(path,type)
 
 	prop path
 	prop object
@@ -106,20 +106,24 @@ export class Doc
 	def ready
 		@ready
 
-	def initialize path
+	def initialize path, type
+		@type = type
 		@path = path
 		@ready = no
 		fetch
 		self
 
+	def src
+		path + (@type ? ".{@type}" : '')
+
 	def fetch
 		if Imba.SERVER
-			# console.log 'fetch Guide on server',path
-			return APP.fetchDocument(@path) do |res|
+			# console.log 'fetch Guide on server',path,src
+			return APP.fetchDocument(src) do |res|
 				# console.log 'fetch Guide on server done',path
 				load(res)
 
-		@promise ||= APP.fetchDocument(@path) do |res|
+		@promise ||= APP.fetchDocument(src) do |res|
 			load(res)
 
 	def load doc

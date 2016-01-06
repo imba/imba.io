@@ -206,6 +206,16 @@
 .dark-syntax () {
 	.dark-colors;
 	.base-syntax;
+
+	._imtagnode > ._imopen, ._imtagnode > ._imclose {
+		color: #987A32;	
+	}
+	._imtagnode:hover {
+		& > ._imopen, & > ._imclose {
+			color: inherit;
+		}
+	}
+	
 }
 
 .light-syntax () {

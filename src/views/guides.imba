@@ -1,50 +1,6 @@
 require './page'
 
-class Guide
-
-	var cache = {}
-
-	def self.get path
-		var cache = APP.cache
-		cache['guide-' + path] ||= self.new(path)
-
-	prop path
-
-	def ready
-		@ready
-
-	def initialize path
-		@path = path
-		@ready = no
-		fetch
-		self
-
-	def fetch
-		if Imba.SERVER
-			# console.log 'fetch Guide on server',path
-			return APP.fetchDocument(@path + '.md') do |res|
-				# console.log 'fetch Guide on server done',path
-				load(res)
-
-		@promise ||= APP.fetchDocument(@path + '.md') do |res|
-			load(res)
-
-	def load doc
-		@object = doc
-		@meta = doc:meta or {}
-		@ready = yes
-		Imba.emit(self,'ready')
-		self
-
-	def title
-		@object:title or 'path'
-
-	def toc
-		@object and @object:toc[0]
-
-	def body
-		@object and @object:body
-
+import Doc from '../app'
 
 tag guide-toc < toc
 
@@ -99,9 +55,8 @@ tag guides < page
 	def nav
 		<navmenu@nav>
 			<.content>
-				<guide-toc[Guide.get('/guides')]>
-				<guide-toc[Guide.get('/guides/language')]>
-				# <guide-toc[Guide.get('/guides/rendering')]>
+				<guide-toc[Doc.get('/guides','md')]>
+				<guide-toc[Doc.get('/guides/language','md')]>
 
 	def body
 		<@body.light>
@@ -125,7 +80,7 @@ tag guides < page
 
 	def guide
 		if router.scoped('/guides')
-			Guide.get(router.path)
+			Doc.get(router.path,'md')
 
 
 	def awaken
