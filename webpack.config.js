@@ -16,7 +16,7 @@ module.exports = {
 	},
 	resolveLoader: { root: path.join(__dirname, "node_modules") },
 	resolve: {extensions: ['', '.js', '.imba']},
-	entry: "./src/client.imba",
-	output: { filename: "./www/client.js" },
+	entry: {client: "./src/client.imba", sandbox: "./src/sandbox.imba"},
+	output: { filename: "./www/[name].js" },
 	plugins: plugins
 }

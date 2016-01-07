@@ -1,7 +1,7 @@
 
 # connection to github
 var github = require 'octonode'
-var ghclient = github.client('TOKEN')
+var ghclient = github.client('5010c35936b455b4ddefb47d44888ed41a59a2c9')
 var ghrepo = ghclient.repo('somebee/imba.io')
 
 var cache = {}
@@ -30,3 +30,10 @@ export def issue nr, &cb
 		info = format(info)
 		info:md = APP.Markdown.render(info:body)[:body]
 		cb(cache[nr] = info)
+
+# export def gists id, &cb
+# 	ghclient.gist.starred do |err,res|
+# 		console.log 'result from starred gists',res
+# 
+# export def get-gist id, &cb
+# 	var gists = ghclient.gist

@@ -57,5 +57,17 @@ def fetch-issues deep = no
 			fetch-issue(item:number) for item in items
 		fs.writeFileSync("{__dirname}/../docs/issues/all.json",JSON.stringify(items))
 
+def fetch-gist id
+	ghclient.gist.get(id) do |err,gist|
+		fs.writeFileSync("{__dirname}/../docs/gists/{gist:id}.json",JSON.stringify(gist))
+
+def fetch-gists
+	ghclient.gist.starred do |err,res|
+		console.log 'result from starred gists',res
+
+		fetch-gist(gist:id) for gist in res
+		# fs.writeFileSync("{__dirname}/../docs/gists/{gist:id}.json",JSON.stringify(gist))
+
 
 fetch-issues(yes)
+fetch-gists

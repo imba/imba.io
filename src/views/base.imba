@@ -72,6 +72,11 @@ extend tag a
 			e.@responder = null
 			return e.halt
 
+		if let m = href.match(/gist\.github\.com\/([^\/]+)\/([A-Za-z\d]+)/)
+			console.log 'gist!!',m[1],m[2]
+			#gist.open(m[2])
+			return e.cancel.halt
+
 		if href[0] == '#' or href[0] == '/'
 			e.cancel.halt
 			router.go(href,{})

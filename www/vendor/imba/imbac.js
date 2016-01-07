@@ -82,7 +82,7 @@
 		var tokens = code instanceof Array ? (code) : (tokenize(code,o));
 		try {
 			// console.log("Tokens",tokens)
-			o._source = code;
+			if (tokens != code) o._source || (o._source = code);
 			o._tokens = tokens;
 			return parser.parse(tokens);
 		} catch (err) {
@@ -1790,7 +1790,7 @@
 					console.log("what??");
 				};
 				
-				if (!(value = value.replace(HEREGEX_OMIT,''))) { continue };
+				if (!(value = value.replace(HEREGEX_OMIT,''))) { continue; };
 				
 				value = value.replace(/\\/g,'\\\\');
 				tokens.push(T.token('STRING',this.makeString(value,'"',true),0)); // FIX
@@ -5829,9 +5829,9 @@
 	
 	subclass$(PropertyDeclaration,Node);
 	exports.PropertyDeclaration = PropertyDeclaration; // export class 
-	var propTemplate = '\n${headers}\n${path}.${getter} = function(v){ return ${get}; }\n${path}.${setter} = function(v){ ${set}; return this; }\n${init}';
+	var propTemplate = '${headers}\n${path}.${getter} = function(v){ return ${get}; }\n${path}.${setter} = function(v){ ${set}; return this; }\n${init}';
 	
-	var propWatchTemplate = '\n${headers}\n${path}.${getter} = function(v){ return ${get}; }\n${path}.${setter} = function(v){\n	var a = this.${getter}();\n	if(v != a) { v = ${set}; }\n	if(v != a) { ${ondirty} }\n	return this;\n}\n${init}';
+	var propWatchTemplate = '${headers}\n${path}.${getter} = function(v){ return ${get}; }\n${path}.${setter} = function(v){\n	var a = this.${getter}();\n	if(v != a) { ${set}; }\n	if(v != a) { ${ondirty} }\n	return this;\n}\n${init}';
 	
 	
 	
@@ -5921,17 +5921,19 @@
 			js.get = ("this.getAttribute('" + attrKey + "')");
 		} else if (o.key('delegate')) {
 			// if we have a delegate
-			js.set = ("this.__" + key + ".delegate.set(this,'" + key + "',v,this.__" + key + ")");
+			js.set = ("v = this.__" + key + ".delegate.set(this,'" + key + "',v,this.__" + key + ")");
 			js.get = ("this.__" + key + ".delegate.get(this,'" + key + "',this.__" + key + ")");
 		};
 		
 		
 		
 		if (pars.default) {
-			// add better default-support here - go through class-method setAttribute instead
 			if (o.key('dom')) {
+				// FIXME go through class-method setAttribute instead
 				js.init = ("" + (js.scope) + ".dom().setAttribute('" + key + "'," + (pars.default.c()) + ");");
 			} else {
+				// if this is not a primitive - it MUST be included in the
+				// getter / setter instead
 				js.init = ("" + (js.scope) + ".prototype._" + key + " = " + (pars.default.c()) + ";");
 			};
 		};
@@ -5952,7 +5954,8 @@
 		var out = tpl.replace(reg,function(m,a) { return js[a]; });
 		// run another time for nesting. hacky
 		out = out.replace(reg,function(m,a) { return js[a]; });
-		out = out.replace(/\n\s*$/,'');
+		// out = out.replace(/\n\s*$/,'')
+		out = out.replace(/^\s+|\s+$/g,'');
 		
 		// if o.key(:v)
 		return out;
@@ -8997,6 +9000,7 @@
 			// are we sure? _really_?
 			vars.len = scope.declare('len',src.right()); // util.len(o,yes).predeclare
 			// make the scope be the declarator
+			// TODO would like to be able to have counter in range as well
 			vars.index = scope.register(o.name,scope,{type: 'let',declared: true});
 			// p "registered {vars:index:constructor}"
 			// p "index-var is declareod?!?! {vars:index.@declared}"
@@ -9060,11 +9064,12 @@
 		var assignee = null;
 		// might only work for locals?
 		if (node instanceof Assign) {
+			// p "node isa assign {node} {node.left}"
 			if (receiver = node.left()) {
-				assignee = receiver._variable;
-				if (receiver._variable) {
-					// assignee
-					reuseable = true;
+				if (assignee = receiver._variable) {
+					// we can only pull the var reference into the scope
+					// if we know that the variable is declared in this scope
+					reuseable = (receiver instanceof VarReference);
 				};
 			};
 		};
@@ -9195,7 +9200,8 @@
 		// possibly proxy the index-variable?
 		
 		if (o.own) {
-			var i = vars.index = this.scope().declare('i',0,{system: true,type: 'let'}); // mark as a counter?
+			// var i = vars:index = scope.declare('i',0,system: true, type: 'let') # mark as a counter?
+			var i = vars.index = this.util().counter(0,true,this.scope()).predeclare();
 			// systemvariable -- should not really be added to the map
 			var keys = vars.keys = this.scope().declare('keys',Util.keys(src.accessor()),{system: true,type: 'let'}); // the outer one should resolve first
 			var l = vars.len = this.scope().declare('l',Util.len(keys.accessor()),{system: true,type: 'let'});
@@ -9978,7 +9984,7 @@
 			num -= 1;
 			str = String.fromCharCode(base + (num % 26)) + str;
 			num = Math.floor(num / 26);
-			if (num <= 0) { break };
+			if (num <= 0) { break; };
 		};
 		
 		str = (this._owner.type() instanceof Self ? ("$") : ("$$")) + str.toLowerCase();

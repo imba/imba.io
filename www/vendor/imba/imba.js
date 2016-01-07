@@ -17,6 +17,8 @@
 		require('./dom.events');
 		require('./dom.static');
 		return require('./selector');
+	} else {
+		return console.warn("Imba is already loaded");
 	};
 
 })()
@@ -123,7 +125,7 @@
 		
 		// if there exists an unprefixed version -- always use this
 		if (prefixed != unprefixed) {
-			if (styles.hasOwnProperty(unprefixed)) { continue };
+			if (styles.hasOwnProperty(unprefixed)) { continue; };
 		};
 		
 		// register the prefixes
@@ -164,36 +166,10 @@
 	var doc = document;
 	var win = window;
 	
-	var hasTouchEvents = window && window.ontouchstart !== undefined; // .hasOwnProperty('ontouchstart')
-	
-	// will remove
-	function RingBuffer(len){
-		if(len === undefined) len = 10;
-		this._array = [];
-		this._keep = len;
-		this._head = 0;
-		return this;
-	};
-	
-	
-	
-	RingBuffer.prototype.head = function(v){ return this._head; }
-	RingBuffer.prototype.setHead = function(v){ this._head = v; return this; };
-	
-	RingBuffer.prototype.push = function (obj){
-		var i = this._head++;
-		this._array[i % this._keep] = obj;
-		return i;
-	};
-	
-	RingBuffer.prototype.last = function (){
-		return this._array[this._head % this._keep];
-	};
-	
+	var hasTouchEvents = window && window.ontouchstart !== undefined;
 	
 	Imba.Pointer = function Pointer(){
 		this.setButton(-1);
-		this.setEvents(new RingBuffer(10));
 		this.setEvent({x: 0,y: 0,type: 'uninitialized'});
 		return this;
 	};
@@ -228,10 +204,7 @@
 	Imba.Pointer.prototype.setTouch = function(v){ this._touch = v; return this; };
 	
 	Imba.Pointer.prototype.update = function (e){
-		// console.log(e)
 		this.setEvent(e);
-		// normalize the event / touch?
-		this.events().push(e);
 		this.setDirty(true);
 		return this;
 	};
@@ -247,14 +220,25 @@
 			// button should only change on mousedown etc
 			if (e1.type == 'mousedown') {
 				this.setButton(e1.button);
+				
+				// do not create touch for right click
+				if (this.button() == 2 || (this.touch() && this.button() != 0)) {
+					return;
+				};
+				
+				// cancel the previous touch
+				if (this.touch()) { this.touch().cancel() };
 				this.setTouch(new Imba.Touch(e1,this));
 				this.touch().mousedown(e1,e1);
 			} else if (e1.type == 'mousemove') {
 				if (this.touch()) { this.touch().mousemove(e1,e1) };
 			} else if (e1.type == 'mouseup') {
 				this.setButton(-1);
-				if (this.touch()) { this.touch().mouseup(e1,e1) };
-				this.setTouch(null); // reuse?
+				
+				if (this.touch() && this.touch().button() == e1.button) {
+					this.touch().mouseup(e1,e1);
+					this.setTouch(null);
+				};
 				// trigger pointerup
 			};
 		} else {
@@ -325,7 +309,9 @@
 		this.setEvent(event);
 		this.setData({});
 		this.setActive(true);
-		this._suppress = false;
+		this._button = event && event.button || 0;
+		this._suppress = false; // deprecated
+		this._captured = false;
 		this.setBubble(false);
 		pointer = pointer;
 		this.setUpdates(0);
@@ -341,12 +327,7 @@
 	};
 	
 	Imba.Touch.lookup = function (item){
-		// return touch if var touch = item:__touch__
 		return item && (item.__touch__ || identifiers[item.identifier]);
-		// look for lookup
-		// var id = item:identifier
-		// if id != undefined and (touch = IMBA_TOUCH_IDENTIFIERS{id})
-		// 	return touch 
 	};
 	
 	Imba.Touch.release = function (item,touch){
@@ -359,7 +340,7 @@
 	Imba.Touch.ontouchstart = function (e){
 		for (var i = 0, ary = iter$(e.changedTouches), len = ary.length, t; i < len; i++) {
 			t = ary[i];
-			if (this.lookup(t)) { continue };
+			if (this.lookup(t)) { continue; };
 			var touch = identifiers[t.identifier] = new this(e); // (e)
 			t.__touch__ = touch;
 			touches.push(touch);
@@ -443,7 +424,7 @@
 	
 	
 	Imba.Touch.prototype.target = function(v){ return this._target; }
-	Imba.Touch.prototype.setTarget = function(v){ this._target = v; return this; }; // if 'safe' we can cache multiple uses
+	Imba.Touch.prototype.setTarget = function(v){ this._target = v; return this; };
 	
 	
 	Imba.Touch.prototype.handler = function(v){ return this._handler; }
@@ -470,7 +451,6 @@
 	Imba.Touch.prototype.gestures = function(v){ return this._gestures; }
 	Imba.Touch.prototype.setGestures = function(v){ this._gestures = v; return this; };
 	
-	// duration etc -- important
 	/*
 		
 	
@@ -478,11 +458,14 @@
 		@constructor
 		*/
 	
-	Imba.Touch.prototype.preventDefault = function (){
-		this._preventDefault = true;
-		this.event() && this.event().preventDefault();
-		// pointer.event.preventDefault
+	Imba.Touch.prototype.capture = function (){
+		this._captured = true;
+		this._event && this._event.preventDefault();
 		return this;
+	};
+	
+	Imba.Touch.prototype.isCaptured = function (){
+		return !!this._captured;
 	};
 	
 	/*
@@ -521,31 +504,34 @@
 		return this;
 	};
 	
+	Imba.Touch.prototype.setSuppress = function (value){
+		console.warn('Imba.Touch#suppress= is deprecated');
+		this._supress = value;
+		return this;
+	};
+	
 	Imba.Touch.prototype.touchstart = function (e,t){
-		// console.log 'native ontouchstart',e,t
 		this._event = e;
 		this._touch = t;
+		this._button = 0;
 		this._x = t.clientX;
 		this._y = t.clientY;
 		this.began();
-		if (e && this._suppress) { e.preventDefault() };
+		if (e && this.isCaptured()) { e.preventDefault() };
 		return this;
 	};
 	
 	Imba.Touch.prototype.touchmove = function (e,t){
-		// console.log 'native ontouchmove',e,t
 		this._event = e;
 		this._x = t.clientX;
 		this._y = t.clientY;
 		this.update();
-		if (e && this._suppress) { e.preventDefault() };
+		if (e && this.isCaptured()) { e.preventDefault() };
 		return this;
 	};
 	
 	Imba.Touch.prototype.touchend = function (e,t){
-		// console.log 'native ontouchend',e,t,e:timeStamp
 		this._event = e;
-		// log "touchend"
 		this._x = t.clientX;
 		this._y = t.clientY;
 		this.ended();
@@ -559,7 +545,7 @@
 			if (tap._responder) { e.preventDefault() };
 		};
 		
-		if (e && this._suppress) {
+		if (e && this.isCaptured()) {
 			e.preventDefault();
 		};
 		
@@ -567,22 +553,19 @@
 	};
 	
 	Imba.Touch.prototype.touchcancel = function (e,t){
-		// log "touchcancel"
-		return this;
+		return this.cancel();
 	};
 	
-	
 	Imba.Touch.prototype.mousedown = function (e,t){
-		// log "mousedown"
 		var self = this;
+		self._event = e;
+		self._button = e.button;
 		self._x = t.clientX;
 		self._y = t.clientY;
 		self.began();
 		
 		self._mousemove = function(e) { return self.mousemove(e,e); };
 		doc.addEventListener('mousemove',self._mousemove,true);
-		// inside here -- start tracking mousemove directly
-		
 		return self;
 	};
 	
@@ -590,7 +573,7 @@
 		this._x = t.clientX;
 		this._y = t.clientY;
 		this._event = e;
-		if (this._suppress) { e.preventDefault() };
+		if (this.isCaptured()) { e.preventDefault() };
 		this.update();
 		this.move();
 		return this;
@@ -609,7 +592,6 @@
 		return this.update();
 	};
 	
-	
 	Imba.Touch.prototype.began = function (){
 		this._maxdr = this._dr = 0;
 		this._x0 = this._x;
@@ -626,7 +608,7 @@
 				this._bubble = false;
 				this.setTarget(node);
 				this.target().ontouchstart(this);
-				if (!this._bubble) { break };
+				if (!this._bubble) { break; };
 			};
 			dom = dom.parentNode;
 		};
@@ -636,6 +618,7 @@
 	};
 	
 	Imba.Touch.prototype.update = function (){
+		var target_;
 		if (!this._active) { return this };
 		
 		var dr = Math.sqrt(this.dx() * this.dx() + this.dy() * this.dy());
@@ -660,11 +643,12 @@
 			};
 		};
 		
-		if (this.target() && this.target().ontouchupdate) { this.target().ontouchupdate(this) };
+		(target_ = this.target()) && target_.ontouchupdate  &&  target_.ontouchupdate(this);
 		return this;
 	};
 	
 	Imba.Touch.prototype.move = function (){
+		var target_;
 		if (!this._active) { return this };
 		
 		if (this._gestures) {
@@ -674,11 +658,12 @@
 			};
 		};
 		
-		if (this.target() && this.target().ontouchmove) { this.target().ontouchmove(this,this._event) };
+		(target_ = this.target()) && target_.ontouchmove  &&  target_.ontouchmove(this,this._event);
 		return this;
 	};
 	
 	Imba.Touch.prototype.ended = function (){
+		var target_;
 		if (!this._active) { return this };
 		
 		this._updates++;
@@ -689,12 +674,35 @@
 			};
 		};
 		
-		if (this.target() && this.target().ontouchend) { this.target().ontouchend(this) };
+		(target_ = this.target()) && target_.ontouchend  &&  target_.ontouchend(this);
 		
 		return this;
 	};
 	
+	Imba.Touch.prototype.cancel = function (){
+		if (!this._cancelled) {
+			this._cancelled = true;
+			this.cancelled();
+			if (this._mousemove) { doc.removeEventListener('mousemove',this._mousemove,true) };
+		};
+		return this;
+	};
+	
 	Imba.Touch.prototype.cancelled = function (){
+		var target_;
+		if (!this._active) { return this };
+		
+		this._cancelled = true;
+		this._updates++;
+		
+		if (this._gestures) {
+			for (var i = 0, ary = iter$(this._gestures), len = ary.length, g; i < len; i++) {
+				g = ary[i];
+				if (g.ontouchcancel) { g.ontouchcancel(this) };
+			};
+		};
+		
+		(target_ = this.target()) && target_.ontouchcancel  &&  target_.ontouchcancel(this);
 		return this;
 	};
 	
@@ -766,8 +774,9 @@
 		@return {Number}
 		*/
 	
-	Imba.Touch.prototype.offsetX = function (){
-		return this._touch ? (this._touch.offsetX) : (this._event.offsetX);
+	Imba.Touch.prototype.tx = function (){
+		this._targetBox || (this._targetBox = this._target.dom().getBoundingClientRect());
+		return this._x - this._targetBox.left;
 	};
 	
 	/*
@@ -775,8 +784,9 @@
 		@return {Number}
 		*/
 	
-	Imba.Touch.prototype.offsetY = function (){
-		return this._touch ? (this._touch.offsetY) : (this._event.offsetY);
+	Imba.Touch.prototype.ty = function (){
+		this._targetBox || (this._targetBox = this._target.dom().getBoundingClientRect());
+		return this._y - this._targetBox.top;
 	};
 	
 	/*
@@ -785,8 +795,8 @@
 		*/
 	
 	Imba.Touch.prototype.button = function (){
-		return this._pointer ? (this._pointer.button()) : (0);
-	};
+		return this._button;
+	}; // @pointer ? @pointer.button : 0
 	
 	Imba.Touch.prototype.sourceTarget = function (){
 		return this._sourceTarget;
@@ -958,6 +968,15 @@
 		return this;
 	};
 	
+	Imba.Event.prototype.silence = function (){
+		this._silenced = true;
+		return this;
+	};
+	
+	Imba.Event.prototype.isSilenced = function (){
+		return !!this._silenced;
+	};
+	
 	/*
 		Indicates whether or not event.cancel has been called.
 	
@@ -1082,7 +1101,7 @@
 	
 	
 	Imba.Event.prototype.processed = function (){
-		Imba.emit(Imba,'event',[this]);
+		if (!this._silenced) { Imba.emit(Imba,'event',[this]) };
 		return this;
 	};
 	
@@ -1166,7 +1185,7 @@
 	Imba.EventManager.prototype.enabled = function(v){ return this._enabled; }
 	Imba.EventManager.prototype.setEnabled = function(v){
 		var a = this.enabled();
-		if(v != a) { v = this._enabled = v; }
+		if(v != a) { this._enabled = v; }
 		if(v != a) { this.enabledDidSet && this.enabledDidSet(v,a,this.__enabled) }
 		return this;
 	}
@@ -1247,8 +1266,8 @@
 			this.root().addEventListener(keys[i],o[keys[i]],true);
 		};
 		
-		for (var j = 0, ary = iter$(this.listeners()), len = ary.length, item; j < len; j++) {
-			item = ary[j];
+		for (var i = 0, ary = iter$(this.listeners()), len = ary.length, item; i < len; i++) {
+			item = ary[i];
 			this.root().addEventListener(item[0],item[1],item[2]);
 		};
 		return this;
@@ -1259,8 +1278,8 @@
 			this.root().removeEventListener(keys[i],o[keys[i]],true);
 		};
 		
-		for (var j = 0, ary = iter$(this.listeners()), len = ary.length, item; j < len; j++) {
-			item = ary[j];
+		for (var i = 0, ary = iter$(this.listeners()), len = ary.length, item; i < len; i++) {
+			item = ary[i];
 			this.root().removeEventListener(item[0],item[1],item[2]);
 		};
 		return this;
@@ -1303,7 +1322,7 @@
 	};
 	
 	Imba.Events.register('click',function(e) {
-		
+		// Only for main mousebutton, no?
 		if ((e.timeStamp - lastNativeTouchTimeStamp) > lastNativeTouchTimeout) {
 			var tap = new Imba.Event(e);
 			tap.setType('tap');
@@ -1405,8 +1424,12 @@
 		tag.prototype.height = function (){
 			return this.dom().height;
 		};
+		
+		tag.prototype.context = function (type){
+			if(type === undefined) type = '2d';
+			return this.dom().getContext(type);
+		};
 	});
-	
 	
 	tag$.defineTag('caption');
 	tag$.defineTag('cite');
@@ -1599,6 +1622,14 @@
 		
 		tag.prototype.type = function(v){ return this.getAttribute('type'); }
 		tag.prototype.setType = function(v){ this.setAttribute('type',v); return this; };
+		
+		
+		tag.prototype.async = function(v){ return this.getAttribute('async'); }
+		tag.prototype.setAsync = function(v){ this.setAttribute('async',v); return this; };
+		
+		
+		tag.prototype.defer = function(v){ return this.getAttribute('defer'); }
+		tag.prototype.setDefer = function(v){ this.setAttribute('defer',v); return this; };
 	});
 	
 	tag$.defineTag('section');
@@ -1772,6 +1803,14 @@
 		tag.prototype.role = function(v){ return this.getAttribute('role'); }
 		tag.prototype.setRole = function(v){ this.setAttribute('role',v); return this; };
 		
+		tag.prototype.width = function (){
+			return this._dom.offsetWidth;
+		};
+		
+		tag.prototype.height = function (){
+			return this._dom.offsetHeight;
+		};
+		
 		tag.prototype.setChildren = function (nodes,type){
 			this._empty ? (this.append(nodes)) : (this.empty().append(nodes));
 			this._children = null;
@@ -1866,8 +1905,8 @@
 			
 			if (!dataset) {
 				dataset = {};
-				for (var i1 = 0, ary = iter$(this.dom().attributes), len = ary.length, atr; i1 < len; i1++) {
-					atr = ary[i1];
+				for (var i = 0, ary = iter$(this.dom().attributes), len = ary.length, atr; i < len; i++) {
+					atr = ary[i];
 					if (atr.name.substr(0,5) == 'data-') {
 						dataset[Imba.toCamelCase(atr.name.slice(5))] = atr.value;
 					};
@@ -1936,8 +1975,9 @@
 			};
 			
 			if (sel.query) { sel = sel.query() };
-			if (fn = (this._dom.webkitMatchesSelector || this._dom.matches)) { return fn.call(this._dom,sel) };
-			// TODO support other browsers etc?
+			if (fn = (this._dom.matches || this._dom.matchesSelector || this._dom.webkitMatchesSelector || this._dom.msMatchesSelector || this._dom.mozMatchesSelector)) {
+				return fn.call(this._dom,sel);
+			};
 		};
 		
 		/*
@@ -2413,7 +2453,7 @@
 		if (k == old.length && new$[0] === old[0]) {
 			// running through to compare
 			while (i--){
-				if (new$[i] !== old[i]) { break };
+				if (new$[i] !== old[i]) { break; };
 			};
 		};
 		
@@ -2641,7 +2681,31 @@
 		Imba.attr(tag,'viewbox');
 	});
 	
-	tag$.SVG.defineTag('rect');
+	tag$.SVG.defineTag('g');
+	
+	tag$.SVG.defineTag('defs');
+	
+	tag$.SVG.defineTag('symbol', function(tag){
+		Imba.attr(tag,'preserveAspectRatio');
+		Imba.attr(tag,'viewBox');
+	});
+	
+	tag$.SVG.defineTag('marker', function(tag){
+		Imba.attr(tag,'markerUnits');
+		Imba.attr(tag,'refX');
+		Imba.attr(tag,'refY');
+		Imba.attr(tag,'markerWidth');
+		Imba.attr(tag,'markerHeight');
+		Imba.attr(tag,'orient');
+	});
+	
+	
+	// Basic shapes
+	
+	tag$.SVG.defineTag('rect', function(tag){
+		Imba.attr(tag,'rx');
+		Imba.attr(tag,'ry');
+	});
 	
 	tag$.SVG.defineTag('circle', function(tag){
 		Imba.attr(tag,'cx');
@@ -2661,11 +2725,36 @@
 		Imba.attr(tag,'pathLength');
 	});
 	
-	return tag$.SVG.defineTag('line', function(tag){
+	tag$.SVG.defineTag('line', function(tag){
 		Imba.attr(tag,'x1');
 		Imba.attr(tag,'x2');
 		Imba.attr(tag,'y1');
 		Imba.attr(tag,'y2');
+	});
+	
+	tag$.SVG.defineTag('polyline', function(tag){
+		Imba.attr(tag,'points');
+	});
+	
+	tag$.SVG.defineTag('polygon', function(tag){
+		Imba.attr(tag,'points');
+	});
+	
+	tag$.SVG.defineTag('text', function(tag){
+		Imba.attr(tag,'dx');
+		Imba.attr(tag,'dy');
+		Imba.attr(tag,'text-anchor');
+		Imba.attr(tag,'rotate');
+		Imba.attr(tag,'textLength');
+		Imba.attr(tag,'lengthAdjust');
+	});
+	
+	return tag$.SVG.defineTag('tspan', function(tag){
+		Imba.attr(tag,'dx');
+		Imba.attr(tag,'dy');
+		Imba.attr(tag,'rotate');
+		Imba.attr(tag,'textLength');
+		Imba.attr(tag,'lengthAdjust');
 	});
 
 })()
@@ -2683,7 +2772,8 @@
 	*/
 	
 	Imba = {
-		VERSION: '0.14.1'
+		VERSION: '0.14.1',
+		DEBUG: false
 	};
 	
 	var reg = /-./g;
@@ -2817,7 +2907,9 @@
 	
 	Imba.tick = function (d){
 		if (this._scheduled) { raf(Imba.ticker()) };
+		Imba.Scheduler.willRun();
 		this.emit(this,'tick',[d]);
+		Imba.Scheduler.didRun();
 		return;
 	};
 	
@@ -2871,7 +2963,8 @@
 	Imba.setTimeout = function (delay,block){
 		return setTimeout(function() {
 			block();
-			return Imba.emit(Imba,'timeout',[block]);
+			return Imba.Scheduler.markDirty();
+			// Imba.emit(Imba,'timeout',[block])
 		},delay);
 	};
 	
@@ -2886,7 +2979,8 @@
 	Imba.setInterval = function (interval,block){
 		return setInterval(function() {
 			block();
-			return Imba.emit(Imba,'interval',[block]);
+			return Imba.Scheduler.markDirty();
+			// Imba.emit(Imba,'interval',[block])
 		},interval);
 	};
 	
@@ -2939,6 +3033,28 @@
 		self._flushes = 0;
 	};
 	
+	Imba.Scheduler.markDirty = function (){
+		this._dirty = true;
+		return this;
+	};
+	
+	Imba.Scheduler.isDirty = function (){
+		return !!this._dirty;
+	};
+	
+	Imba.Scheduler.willRun = function (){
+		return this._active = true;
+	};
+	
+	Imba.Scheduler.didRun = function (){
+		this._active = false;
+		return this._dirty = false;
+	};
+	
+	Imba.Scheduler.isActive = function (){
+		return !!this._active;
+	};
+	
 	/*
 		Create a new Imba.Scheduler for specified target
 		@return {Imba.Scheduler}
@@ -2963,8 +3079,8 @@
 	};
 	
 	/*
-		Delta time between the two last ticks
-		@return {Number}
+		Configure the scheduler
+		@return {self}
 		*/
 	
 	Imba.Scheduler.prototype.configure = function (pars){
@@ -2975,10 +3091,6 @@
 		if (fps != null) { this._fps = fps };
 		return this;
 	};
-	
-	// def reschedule
-	// 	raf(@ticker)
-	// 	self
 	
 	/*
 		Mark the scheduler as dirty. This will make sure that
@@ -3049,7 +3161,7 @@
 			};
 		};
 		
-		if (this._marked) this.flush();
+		if (this._marked || (this._events && Imba.Scheduler.isDirty())) this.flush();
 		// reschedule if @active
 		return this;
 	};

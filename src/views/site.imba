@@ -69,6 +69,9 @@ tag site-nav
 				<a.tab.guides href='/guides'> <i> 'guides'
 				<a.tab.docs href='/docs'> <i> 'api'
 				<a.tab.blog href='/blog'> <i> 'blog'
+				if router.segment(0) == 'gists'
+					<a.tab.blog href='/gists'> <i> 'gists'
+
 				<span.greedy>
 				<a.twitter href='http://twitter.com/imbajs'> <i> 'twitter'
 				<a.github href='https://github.com/somebee/imba'> <i> 'github'

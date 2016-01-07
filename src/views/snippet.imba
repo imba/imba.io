@@ -82,6 +82,8 @@ tag overlay-hint
 
 tag jsview
 
+	attr autosize
+
 	def render
 		<self> <code@code>
 
@@ -91,16 +93,29 @@ tag jsview
 		code = code.replace(/^\(function\(\)\{\n/,'')
 		code = code.replace(/\n?\}\)\(\)\n?$/,'')
 		# code = code.replace(/^\t/mg,'')
-		@code:textContent = code
+
+		if code != @code.dom:textContent
+			@code.dom:textContent = code
+			@code.@html = null
 
 		flag('huge',code:length > 1000)
+
+		if autosize
+			refit 
 
 		setTimeout(&,0) do
 			hljs.configure classPrefix: ''
 			var hl = hljs.highlight('javascript',code)
 			@code.html = hl:value
 			cb and cb(self)
+		self
 
+	def refit
+		var h = height
+		var ih = @code.height
+		var top = (h - ih) / 2
+		@code.css top: Math.max(0,top)
+		# log 'refit js',h,ih,top
 		self
 
 tag console
@@ -151,7 +166,13 @@ tag snippet
 		dom:id ||= "snippet{counter++}"
 
 	def activeDidSet bool
-		bool ? schedule(fps: 60) : unschedule
+		bool ? activated : deactivated
+
+	def activated
+		schedule(fps: 60)
+
+	def deactivated
+		unschedule
 
 	def input
 		<imcaptor@input>
@@ -224,7 +245,12 @@ tag snippet
 
 	def compile code, o = copts, &blk
 		# cache latest compilation - return?
-		Scrimbla.worker.compile(code,o,blk)
+		Scrimbla.worker.compile(code,o) do |res|
+			oncompiled(res,o)
+			blk and blk(res,o)
+
+	def oncompiled res
+		self
 
 	def overlays
 		for hint,i in view.hints when hint.active	
@@ -262,11 +288,12 @@ tag snippet
 						<tool.reset title='reset' :tap='reset'> 'reset'
 						<tool.js title='show js' :tap='toggleJS'> 'show js'
 						<tool.run title='run' :tap='run'> 'run'
+						<tool.fullscreen title='+' :tap='openInFullscreen'> '+'
 				<overlays@overlays view=view> overlays
-				<jsview@jsview>
 				@view.end
+				js
 				self.console
-			<@inspector> playground
+			<@inspector> output
 
 	def console
 		<console@console.dark editor=self>
@@ -274,8 +301,11 @@ tag snippet
 	def sandbox
 		<sandbox@sandbox.playground editor=self>
 
-	def playground
+	def output
 		sandbox
+
+	def js
+		<jsview@jsview>
 
 	def reload
 		return unless @built
@@ -324,6 +354,7 @@ tag snippet
 			view.hints.rem do |hint| hint.group == 'runtime'
 
 			if res:data and res:data:code
+				@runData = res:data
 				# @jsview.load(res:data:code) if res:data
 				try @sandbox.run(res:data) catch e
 					console.log 'error'
@@ -334,7 +365,7 @@ tag snippet
 
 		compile(code, o) do |res|
 			if res:data and res:data:code
-				@jsview.load(res:data:code) do tab = 'js'
+				js.load(res:data:code) do tab = 'js'
 
 			elif res:data and res:data:error
 				console.log 'has error'
@@ -361,8 +392,6 @@ tag snippet
 
 			if node
 				let reg = node.region # node.next ? node.next.region : 
-				console.log 'found loc!!',node,reg
-				# let col = view.buffer.line(reg.row)[:length]
 				o:loc = reg.endAtLine.collapse # {line: reg.row, column: col} #  reg.toJSON # {line: reg.row, column: 100}
 
 				# o:loc = logs[o:nr].region.toJSON
@@ -374,6 +403,12 @@ tag snippet
 		flag('repl',!!o)
 		@console.log(o)
 		self
+
+	def open-in-fullscreen
+		console.log 'open in fullscreen!'
+		#gist.open(code: view.buffer.toString)
+		self
+
 
 tag example < snippet
 
@@ -421,6 +456,7 @@ tag sandbox
 	def console
 		editor.@console
 
+	# should be a shared method for all editors instead
 	def onerror msg,url,line,col,err
 
 		if url.match(/snippet(\d+)\.(imba|js)/)
@@ -429,7 +465,7 @@ tag sandbox
 			var snippet = tag(document.getElementById(id))
 
 			if snippet
-				snippet.playground.onerror(msg,'',line,col,err)
+				snippet.output.onerror(msg,'',line,col,err)
 				return
 
 		elif url == 'undefined'
@@ -439,7 +475,7 @@ tag sandbox
 			if ev and ev.target
 				var snippet = ev.target.closest(%snippet)
 				if snippet
-					return snippet.playground.onerror(msg,'',line,col,err)
+					return snippet.output.onerror(msg,'',line,col,err)
 
 		console.log 'caught the error here!!!',arguments,this
 		var locs = []

@@ -9,7 +9,11 @@ var LessPluginAutoPrefix = require('less-plugin-autoprefix'),
 gulp.task('less',function(){
 	gulp.src('./less/site.less')
 		.pipe(less({plugins: [autoprefix]}))
-		.pipe(gulp.dest('./www/css'));	
+		.pipe(gulp.dest('./www/css'));
+
+  gulp.src('./less/sandbox.less')
+    .pipe(less({plugins: [autoprefix]}))
+    .pipe(gulp.dest('./www/css'));  
 })
 
 gulp.task('watch',function(){

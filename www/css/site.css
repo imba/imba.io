@@ -21,6 +21,9 @@ body {
   font-size: 10px;
   background: white;
 }
+iframe {
+  border: 0px;
+}
 :focus {
   outline: none !important;
 }
@@ -1108,18 +1111,6 @@ hr + p {
   margin: 4px 0px;
   color: #CC66FF;
 }
-.xray :nth-child(2n) {
-  color: #CCFF66;
-}
-.xray :nth-child(3n) {
-  color: #66FFFF;
-}
-.xray :nth-child(4n) {
-  color: #6666FF;
-}
-.xray :nth-child(5n) {
-  color: #CC66FF;
-}
 #header {
   position: fixed;
   top: 0px;
@@ -1759,6 +1750,8 @@ code {
 ._snippet {
   font-size: 13px;
   line-height: 17px;
+  font-weight: 500;
+  font-family: 'Source Code Pro', monospace, sans-serif;
   position: relative;
   background: #f3f5f7;
 }
@@ -1918,15 +1911,18 @@ code {
 ._snippet.dirty ._tool.reset {
   display: inline-block;
 }
-._snippet[tab=js] ._tool.js {
-  background: #ab4d4d;
-  opacity: 0.99;
-}
 ._snippet.focus ._tool {
   background: #BACDD4;
 }
 ._snippet.focus ._tool:hover {
   background: #a4bdc6;
+}
+._snippet[tab=js] ._tool.js {
+  background: #ab4d4d;
+  opacity: 0.99;
+}
+._snippet[tab=js] ._tool.js:hover {
+  background: #a04848;
 }
 ._snippet ._jsview {
   display: none;
@@ -2713,6 +2709,7 @@ blockquote ._snippet {
       -ms-flex: 1 1 auto;
           flex: 1 1 auto;
   height: 100%;
+  position: relative;
 }
 ._gist ._group.ver {
   display: -webkit-flex;
@@ -2735,32 +2732,30 @@ blockquote ._snippet {
   -webkit-align-self: stretch;
       -ms-flex-item-align: stretch;
           align-self: stretch;
+  position: relative;
+}
+._gist ._pane.hide {
+  display: none;
 }
 ._gist ._sep {
-  width: 4px;
+  width: 0px;
   height: auto;
-  background: rgba(76, 76, 76, 0.2);
+  background: #233038;
+  background: transparent;
 }
 #gist {
-  background: #202B31;
+  background: rgba(32, 43, 49, 0.98);
   position: fixed;
   top: 50%;
   left: 10px;
   right: 10px;
   bottom: 10px;
   z-index: 200000;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-align-items: stretch;
-      -ms-flex-align: stretch;
-          align-items: stretch;
+  color: white;
+  display: none;
+}
+#gist.show {
+  display: block;
 }
 #gist ._pane.main {
   -webkit-flex: 0 0 auto;
@@ -2788,6 +2783,27 @@ blockquote ._snippet {
       -ms-flex-align: center;
           align-items: center;
 }
+#gist ._jsview {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  padding: 0px 0px;
+  display: block;
+  background: #202B31;
+  overflow: auto;
+  text-align: center;
+}
+#gist ._jsview code {
+  position: relative;
+  padding: 20px;
+  text-align: left;
+  display: inline-block;
+}
+#gist .sandbox {
+  background: #202B31;
+}
 #gist .xray {
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -2804,6 +2820,123 @@ blockquote ._snippet {
 }
 #gist .xray > * {
   display: inline-block;
+}
+#gist.hide {
+  display: none;
+}
+#gist > .header {
+  height: 40px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: #1e282d;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-justify-content: flex-start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-align-items: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+}
+#gist > .header .grow {
+  -webkit-flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+}
+#gist > .header > .path {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-justify-content: flex-start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-left: 12px;
+  font-size: 14px;
+}
+#gist > .header > .path .title {
+  padding-left: 6px;
+}
+#gist > .header .tools {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  -webkit-align-items: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+}
+#gist > .header ._tab {
+  padding: 0px 8px;
+  opacity: 0.3;
+  text-transform: uppercase;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+#gist > .header ._tab:hover {
+  opacity: 0.7;
+}
+#gist > .header ._tab.active {
+  opacity: 1;
+  background: #202B31;
+}
+#gist > .header ._tab.close {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+}
+#gist > .header ._tab.close:before {
+  content: '✕';
+}
+#gist > ._group {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 40px;
+  height: auto;
+}
+#gist .sandbox {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+}
+body[data-route='gists'] ._page {
+  display: none !important;
+}
+body[data-route='gists'] #gist {
+  top: 60px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: block;
 }
 @media (max-width: 700px) {
   ._home .welcome h1 + p {

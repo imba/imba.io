@@ -1,6 +1,6 @@
 require './page'
 
-import Doc from '../app'
+import Doc from '../data/doc'
 
 tag blog < page
 
