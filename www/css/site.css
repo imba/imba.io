@@ -2004,6 +2004,9 @@ code {
 ._example ._console {
   display: none !important;
 }
+._example ._tool.fullscreen {
+  display: none !important;
+}
 ._example > .main {
   -webkit-flex: 2 1 60%;
       -ms-flex: 2 1 60%;
