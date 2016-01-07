@@ -58,7 +58,7 @@ This will install imba as a dependency, and add it to your package.json if
 you have one set up. Then, make sure to `require 'imba'`, usually
 the entry point of your application.
 
-# Usage
+## Usage
 
 ### CLI
 
@@ -80,7 +80,7 @@ For real projects, you might not want to keep the compiled code in the repositor
 
 Since Imba compiles to plain old javascript, you can use browserify as well. Until there is a plugin for browserify you will need to compile/watch the imba files/directories using the CLI and use browserify on the compiled code.
 
-# Plugins
+## Plugins
 
 Support for Atom and other editors is on the roadmap, but currently Sublime Text 3 is the only official editor/ide for Imba.
 

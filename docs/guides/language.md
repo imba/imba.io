@@ -72,9 +72,6 @@ If you are coming from JavaScript, there are a few things you really need to kno
 
 If you are not familiar with ruby, many parts of Imba will probably seem slightly confusing until you understand the concepts of implicit self and implicit calling. Any lowercase identifier that is not explicitly declared as a variable is treated as an implicit call on the `self` of the current scope.The analyzer / highlighter will help by highlighting variables differently.
 
-- Self is implicit
-- Parenthesis are implicit for lowercase identifiers
-
 ### Implicit self
 
 ```imba
@@ -91,7 +88,7 @@ var hello = "string"
 hello # compiles to hello
 ```
 
-> Imba has some predeclared global variables: `window`, `document`, `console`, `process`, `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `parseInt`, `parseFloat`
+> Imba has some predeclared global variables: `window`, `document`, `console`, `process`, `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `parseInt`, `parseFloat`, `__dirname`
 > 
 > This means that these will always resolve to variables. If you have defined a `console` method on an object, it must be called with explicit self: `self.console('something')`  
 
@@ -117,7 +114,7 @@ class Item
 
 > `this` *always* refers to the this you know and love (or hate) from JavaScript. So if you really need to access the this inside a callback or block, you should use this explicitly.
 
-### Invocation vs Access
+### Implicit invocation
 
 In Imba you are invoking methods with the regular dot-operator. In JavaScript `car.start` will access the `start` property of car. In Imba it will actually *invoke* the `start` method of car. Parenthesis are optional. You can read more about the reasons for this [here]. If you're thinking in JavaScript, this might seem impractical and confusing. The same behaviour can be seen in languages like Ruby.
 
@@ -125,25 +122,7 @@ So, how do we access properties then? You can do it with `car['start']`, just li
 
 > If you end up using `object:access` repeatedly in your Imba code, it is very likely because you are thinking in JavaScript. In Imba, a class should only expose information and behaviour through methods.
 
-### Setters
-
-Unlike Ruby, Imba has implicit setters as well. Since all variables are explicitly declared in Imba, assigning to something that is not declared is just seen as any other method.
-
-```imba
-class Item
-
-    def title= value
-        @title = value
-
-    def setup
-        # setters are just methods (like in ruby)
-        self.title = 'An item'
-
-        # since title is not a declared variable
-        # the setter will also use implicit self
-        title = 'An item'
-
-```
+Unlike Ruby, Imba has implicit setters as well. Since all variables are explicitly declared in Imba, assigning to something that is not declared is just seen as any other method. `name = 1` resolves to a setter, and compiles to `self.setName(1)` if `name` is not a declared variable.
 
 
 # Functions
@@ -220,12 +199,7 @@ class Point
 
 ## Instances
 
-To create instances of classes in Imba you use the `new` method. This is not special for classes created in Imba, but is used for creating any object, be it built in constructors in JavaScript like `Array` and any other class/constructor from other languages.
-
-```imba
-Point.new(1,2)
-
-```
+To create instances of classes in Imba you use the `new` method like `Array.new`, as opposed to the special `new Array()` syntax in JavaScript. This is not special for classes created in Imba, but is used for creating any object, be it built in constructors in JavaScript like `Array`, `Object`, `RegEx` and any other class/constructor from other languages.
 
 ## Properties
 
@@ -251,7 +225,7 @@ class Todo
 
 ```
 
-
+> **TODO** Explain advanced features of `prop` and `attr`.
 
 ## Inheritance
 
@@ -265,16 +239,16 @@ class Animal
         @name = name
 
     def move meters
-        window.alert "{@name} moved {meters}m."
+        console.log "{@name} moved {meters}m."
 
 class Snake < Animal
     def move
-        window.alert "Slithering..."
+        console.log "Slithering..."
         super 5
 
 class Horse < Animal
     def move
-        window.alert "Galloping..."
+        console.log "Galloping..."
         super 45
 
 var sam = Snake.new "Sammy the Python"
@@ -540,5 +514,4 @@ The code above *will* override the click action of all links on the page, includ
 
 ## Rendering
 
-Even though it is possible to build your views by creating tags and assembling them programmatically [See gist](https://gist.github.com/somebee/1780e1ddcc26af847cca). See [other gist](https://gist.github.com/somebee/955ce5dcb4c90eb76e1c).
-
+> A detailed guide about views and rendering is right around the corner. Get in touch and we'll try to help you along. Until then it might be enlightening to check the [sourcecode](http://github.com/somebee/imba.io) of this site! 
