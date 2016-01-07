@@ -182,17 +182,13 @@ tag gist < snippet
 		<gist-output@sandbox editor=self>
 
 	def awaken
-		object = Gist.get(gist-id)
-		view.load("#code",{})
 		configure({})
 		pane('output').maximize
 		self
 
 	def load o
-		log 'load gist!!'
 		if o isa Gist
 			for own name,item of o.files
-				log 'file here?!',name,item
 				# only single file now
 				view.load(item:content,item)
 		elif o:code
@@ -210,13 +206,11 @@ tag gist < snippet
 			load(o) if o.ready
 		else
 			load(o)
-		
-		# load(o) if o.ready
+
 		show
 		self
 
 	def onrunerror msg,url,line,col,err
-		console.log 'caight error here?',msg,url,line,col
 		var locs = []
 		var map = @runData?:sourcemap
 
