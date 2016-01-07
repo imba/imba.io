@@ -12,9 +12,6 @@ tag guide-toc < toc
 	def route
 		"{object.path}#{toc:slug}"
 
-	def toggle
-		toggleFlag('collapsed')
-
 	def render
 		return self unless object.ready
 
@@ -22,7 +19,7 @@ tag guide-toc < toc
 
 		<self.entry level=(toc:level)>
 			if toc:children:length and toc:level < 2
-				<.header :tap='toggle'>
+				<.header>
 					<a href=route> toc:title
 				<.content>
 					for child in toc:children
