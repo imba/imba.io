@@ -101,7 +101,7 @@ tag jsview
 		flag('huge',code:length > 1000)
 
 		if autosize
-			refit 
+			refit
 
 		setTimeout(&,0) do
 			hljs.configure classPrefix: ''
@@ -113,7 +113,7 @@ tag jsview
 	def refit
 		var h = height
 		var ih = @code.height
-		var top = (h - ih) / 2
+		var top = Math.floor((h - ih) / 2)
 		@code.css top: Math.max(0,top)
 		# log 'refit js',h,ih,top
 		self

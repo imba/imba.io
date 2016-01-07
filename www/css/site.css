@@ -2747,8 +2747,8 @@ blockquote ._snippet {
   background: rgba(32, 43, 49, 0.98);
   position: fixed;
   top: 50%;
-  left: 0px;
-  right: 0px;
+  left: 10px;
+  right: 10px;
   bottom: 00px;
   z-index: 200000;
   color: white;
@@ -2910,6 +2910,7 @@ blockquote ._snippet {
   width: 40px;
   height: 40px;
   text-align: center;
+  font-size: 1.3em;
 }
 #gist > ._group {
   position: absolute;
@@ -2927,6 +2928,13 @@ blockquote ._snippet {
   right: 0px;
   width: 100%;
   height: 100%;
+}
+#gist.fullscreen {
+  top: 60px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: block;
 }
 body[data-route='gists'] ._page {
   display: none !important;

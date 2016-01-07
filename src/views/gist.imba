@@ -101,23 +101,30 @@ tag gist < snippet
 	def objectDidEmit
 		load(object)
 
+	def route
+		'/gists'
+
+	def didscope
+		log '#gist didscope'
+		show.maximize
+
+	def didunscope
+		log '#gist didunscope'
+		hide.minimize
+
 	def hide
 		flag('hide').unflag('show')
-		unschedule
 
 	def show
 		unless hasFlag('show')
 			flag('show').unflag('hide')
-			schedule
 		self
 
 	def activated
 		self
-		# schedule(fps: 1)
 
 	def deactivated
 		self
-		# schedule(fps: 0) # only events
 
 	def onscroll e
 		# rerender on scroll
@@ -131,16 +138,22 @@ tag gist < snippet
 		self
 
 	def maximize
-		if object isa Gist
-			router.go("/gists/{object.id}")
+		flag('fullscreen')
+		# if object isa Gist
+		# 	router.go("/gists/{object.id}")
 
 	def maximized
-		router.segment(0) == 'gists'
+		router.segment(0) == 'gists' or hasFlag('fullscreen')
+
+	def minimize
+		unflag('fullscreen')
 
 	def render
 		return self if Imba.SERVER
 
-		log 'gist render'
+		let routeid = router.match(/\gists\/([\w]+)/,1)
+
+		reroute
 
 		<self.dark>
 			<.header>
@@ -153,10 +166,15 @@ tag gist < snippet
 					<tab name='imba'> 'Imba'
 					<tab name='js'> 'JavaScript'
 					<tab name='output'> 'Output'
-					if object isa Gist and !maximized
-						<tab.ico :tap='maximize' title='Fullscreen'> '△'
-					# should only show if we are in a history state
-					<tab.close.ico :tap='hide'> '✕'
+
+					unless routeid
+						if !maximized
+							<tab.ico :tap='maximize' title='Fullscreen'> '▲'
+						else
+							<tab.ico :tap='minimize' title='Halfscreen'> '▼'
+						
+						# should only show if we are in a history state
+						<tab.close.ico :tap='hide'> '✕'
 
 			<group.hor>
 				<pane@main name='imba'>
@@ -166,10 +184,8 @@ tag gist < snippet
 				<pane name='js' autosize=yes> js
 				<pane name='output'> output
 
-		if let id = router.match(/\gists\/([\w]+)/,1)
-			show
-			if !object or object?.id != id
-				open(id)
+		if routeid and (!object or object?.id != routeid)
+			open(routeid)
 		self
 
 	def pane name
@@ -184,6 +200,7 @@ tag gist < snippet
 	def awaken
 		configure({})
 		pane('output').maximize
+		schedule(fps: 1, events: yes)
 		self
 
 	def load o

@@ -17,8 +17,19 @@ extend tag element
 		APP.router
 
 	def reroute
-		flag('scoped',router.scoped(route,self))
+		var scoped = router.scoped(route,self)
+		flag('scoped',scoped)
 		flag('selected',router.match(route,self))
+		if scoped != @scoped
+			@scoped = scoped
+			scoped ? didscope : didunscope
+		return self
+
+	def didscope
+		self
+
+	def didunscope
+		self
 
 	def transform= value
 		css(:transform, value)
