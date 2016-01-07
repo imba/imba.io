@@ -14,7 +14,7 @@
 	}
 
 	._pane {
-		flex: 1 1 auto;
+		flex: 1 1 50%;
 		align-self: stretch;
 		position: relative;
 		// outline: 1px solid red;
@@ -54,9 +54,9 @@
 	// .util-vbox(center,stretch);
 
 	._pane.main {
-		flex: 0 0 auto;
 		width: 50%;
 		height: 100%;
+		display: block;
 	}
 
 	.console {
@@ -79,7 +79,7 @@
 		text-align: center;
 		code {
 			position: relative;
-			padding: 20px;
+			padding: 16px 22px;
 			text-align: left;
 			display: inline-block;
 		}
@@ -107,26 +107,36 @@
 		height: @height;
 		font-family: @page-font;
 		background: rgb(30, 40, 45);
+		text-transform: uppercase;
 		.util-hbox(flex-start,stretch);
 
 		.grow {
 			flex: 1 1 auto;
 		}
 		& > .path {
-			.util-hbox(flex-start,center);
+			white-space: nowrap;
+			align-self: center;
 			padding-left: 12px;
 			font-size: 14px;
-			.title { padding-left: 6px; }
+			.title {
+				padding-left: 6px;
+				white-space: nowrap;
+				display: inline-block;
+			}
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
 		.tools {
 			.util-hbox(flex-end,stretch);
+			flex: 1 0 auto;
 		}
 		
 		._tab {
 			padding: 0px 8px;
 			opacity: 0.3;
 			text-transform: uppercase;
+			flex: 0 0 auto;
 			.util-hbox(center,center);
 
 			&:hover {

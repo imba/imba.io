@@ -83,18 +83,15 @@ tag gist < snippet
 		attr name
 
 		def pane
-			@pane ||= up(%snippet)?.find(%pane[name={name}]).first
+			@pane ||= up(%snippet)?.pane(name)
 
 		def ontap e
 			console.log 'tap?',pane,e
-			console.log Q = up(%snippet).find(%pane[name={name}])
-			if pane
-				pane.maximize
+			e.event:metaKey ? pane?.show : pane?.maximize
 			e.halt
 
 		def render
 			<self .active=(pane?.shown)>
-
 
 	tag group
 
@@ -109,15 +106,18 @@ tag gist < snippet
 		unschedule
 
 	def show
-		flag('show').unflag('hide')
-		schedule
+		unless hasFlag('show')
+			flag('show').unflag('hide')
+			schedule
 		self
 
 	def activated
-		schedule(fps: 1)
+		self
+		# schedule(fps: 1)
 
 	def deactivated
-		schedule(fps: 0) # only events
+		self
+		# schedule(fps: 0) # only events
 
 	def onscroll e
 		# rerender on scroll
@@ -150,24 +150,24 @@ tag gist < snippet
 						<.title> object.title
 
 				<.tools>
-					<tab name='js'> 'JS'
+					<tab name='imba'> 'Imba'
+					<tab name='js'> 'JavaScript'
 					<tab name='output'> 'Output'
 					if object isa Gist and !maximized
 						<tab.ico :tap='maximize' title='Fullscreen'> '△'
+					# should only show if we are in a history state
 					<tab.close.ico :tap='hide'> '✕'
 
 			<group.hor>
-				<pane@main>
+				<pane@main name='imba'>
 					@input
 					<overlays@overlays view=view> overlays
 					@view.end
-				<sep>
-				<group.ver>
-					<pane name='js' autosize=yes> js
-					<pane name='output'> output
-					self.console
+				<pane name='js' autosize=yes> js
+				<pane name='output'> output
 
 		if let id = router.match(/\gists\/([\w]+)/,1)
+			show
 			if !object or object?.id != id
 				open(id)
 		self

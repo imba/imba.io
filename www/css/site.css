@@ -2724,9 +2724,9 @@ blockquote ._snippet {
           align-items: stretch;
 }
 ._gist ._pane {
-  -webkit-flex: 1 1 auto;
-      -ms-flex: 1 1 auto;
-          flex: 1 1 auto;
+  -webkit-flex: 1 1 50%;
+      -ms-flex: 1 1 50%;
+          flex: 1 1 50%;
   -webkit-align-self: stretch;
       -ms-flex-item-align: stretch;
           align-self: stretch;
@@ -2758,11 +2758,9 @@ blockquote ._snippet {
   display: block;
 }
 #gist ._pane.main {
-  -webkit-flex: 0 0 auto;
-      -ms-flex: 0 0 auto;
-          flex: 0 0 auto;
   width: 50%;
   height: 100%;
+  display: block;
 }
 #gist .console {
   display: none;
@@ -2797,7 +2795,7 @@ blockquote ._snippet {
 }
 #gist ._jsview code {
   position: relative;
-  padding: 20px;
+  padding: 16px 22px;
   text-align: left;
   display: inline-block;
 }
@@ -2828,6 +2826,7 @@ blockquote ._snippet {
   height: 40px;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background: #1e282d;
+  text-transform: uppercase;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -2847,23 +2846,19 @@ blockquote ._snippet {
           flex: 1 1 auto;
 }
 #gist > .header > .path {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-justify-content: flex-start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
+  white-space: nowrap;
+  -webkit-align-self: center;
+      -ms-flex-item-align: center;
+          align-self: center;
   padding-left: 12px;
   font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #gist > .header > .path .title {
   padding-left: 6px;
+  white-space: nowrap;
+  display: inline-block;
 }
 #gist > .header .tools {
   display: -webkit-flex;
@@ -2878,11 +2873,17 @@ blockquote ._snippet {
   -webkit-align-items: stretch;
       -ms-flex-align: stretch;
           align-items: stretch;
+  -webkit-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
 }
 #gist > .header ._tab {
   padding: 0px 8px;
   opacity: 0.3;
   text-transform: uppercase;
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -2992,6 +2993,16 @@ body[data-route='gists'] #gist {
   }
   body > footer {
     padding: 20px 20px;
+  }
+  #gist {
+    left: 0px;
+    right: 0px;
+  }
+  #gist ._pane.main.hide {
+    display: none;
+  }
+  #gist ._imview {
+    display: block !important;
   }
 }
 @media (max-width: 720px) {
