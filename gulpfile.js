@@ -32,8 +32,8 @@ gulp.task('server', function() {
 
 gulp.task('default', function() {
   gulp.run('server')
-
-  gulp.watch(['./src/**/*.imba','./docs/**/*.md','./docs/**/*.json','./docs/**/*.imba'], function() {
+  // ,'./docs/**/*.md','./docs/**/*.json','./docs/**/*.imba'
+  gulp.watch(['./src/**/*.imba'], function() {
   	console.log('watching');
     gulp.run('server');
   })

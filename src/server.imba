@@ -6,6 +6,7 @@ DEBUG = 0
 require './views'
 import App from './app'
 
+var chokidar = require 'chokidar'
 var hl = require 'scrimbla/src/core/highlighter'
 
 # creating the local app
@@ -47,6 +48,11 @@ srv.get(/^([^\.]*)$/) do |req,res|
 	var view = <site>
 	res.send view.toString
 	# res.render do <site>
+
+# watch for changes to documents to prune cache
+chokidar.watch("{__dirname}/../docs/").on('change') do |path|
+	var src = path.split('/docs').pop
+	APP.deps[src] = null
 
 var server = srv.listen(3011) do
 	console.log 'server is running'
