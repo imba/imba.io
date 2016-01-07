@@ -37,12 +37,15 @@
 	background: fade(#202B31,98%);
 	position: fixed;
 	top: 50%;
-	left: 10px;
-	right: 10px;
-	bottom: 10px;
+	left: 0px;
+	right: 0px;
+	bottom: 00px;
 	z-index: 200000;
 	color: white;
 	display: none;
+
+	font-weight: 500;
+	font-family: @monofont;
 
 	&.show {
 		display: block;
@@ -139,12 +142,12 @@
 				// border-left: 1px solid lighten(#233038,5%);
 			}
 		}
-		._tab.close {
+		._tab.ico {
 			// line-height: @height;
 			width: @height;
 			height: @height;
 			text-align: center;
-			&:before { content: '✕'; }
+			// &:before { content: '✕'; }
 		}
 	}
 

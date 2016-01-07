@@ -1750,8 +1750,6 @@ code {
 ._snippet {
   font-size: 13px;
   line-height: 17px;
-  font-weight: 500;
-  font-family: 'Source Code Pro', monospace, sans-serif;
   position: relative;
   background: #f3f5f7;
 }
@@ -2747,12 +2745,14 @@ blockquote ._snippet {
   background: rgba(32, 43, 49, 0.98);
   position: fixed;
   top: 50%;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
+  left: 0px;
+  right: 0px;
+  bottom: 00px;
   z-index: 200000;
   color: white;
   display: none;
+  font-weight: 500;
+  font-family: 'Source Code Pro', monospace, sans-serif;
 }
 #gist.show {
   display: block;
@@ -2903,13 +2903,10 @@ blockquote ._snippet {
   opacity: 1;
   background: #202B31;
 }
-#gist > .header ._tab.close {
+#gist > .header ._tab.ico {
   width: 40px;
   height: 40px;
   text-align: center;
-}
-#gist > .header ._tab.close:before {
-  content: '✕';
 }
 #gist > ._group {
   position: absolute;

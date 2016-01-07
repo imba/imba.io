@@ -195,12 +195,16 @@ tag snippet
 							<tool.reset title='reset' :tap='reset'> 'reset'
 							<tool.js title='show js' :tap='toggleJS'> 'show js'
 							<tool.run title='run' :tap='run'> 'run'
+							<tool.fullscreen title='+' :tap='openInFullscreen'> '+'
 					<div@view> <code.imbacode data-src=(src)> imba
 				<@inspector>
 			return self
 
 		super
 		reload if src
+
+	def onannotate
+		scheduler.mark
 
 	def config= cfg
 		if cfg != @options

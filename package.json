@@ -31,6 +31,7 @@
   },
   "devDependencies": {},
   "dependencies": {
+    "chokidar": "^1.4.2",
     "express": "^4.13.2",
     "gulp": "^3.9.0",
     "gulp-less": "^3.0.3",

@@ -130,6 +130,13 @@ tag gist < snippet
 			o:bare ? js.load(res:data:code) : compile(code,bare: yes, standalone: no)
 		self
 
+	def maximize
+		if object isa Gist
+			router.go("/gists/{object.id}")
+
+	def maximized
+		router.segment(0) == 'gists'
+
 	def render
 		return self if Imba.SERVER
 
@@ -145,7 +152,9 @@ tag gist < snippet
 				<.tools>
 					<tab name='js'> 'JS'
 					<tab name='output'> 'Output'
-					<tab.close :tap='hide'>
+					if object isa Gist and !maximized
+						<tab.ico :tap='maximize' title='Fullscreen'> '△'
+					<tab.close.ico :tap='hide'> '✕'
 
 			<group.hor>
 				<pane@main>
@@ -158,6 +167,11 @@ tag gist < snippet
 					<pane name='output'> output
 					self.console
 
+		if let id = router.match(/\gists\/([\w]+)/,1)
+			if !object or object?.id != id
+				open(id)
+		self
+
 	def pane name
 		%%(pane[name={name}])
 
@@ -168,7 +182,7 @@ tag gist < snippet
 		<gist-output@sandbox editor=self>
 
 	def awaken
-		object = Gist.new(gist-id)
+		object = Gist.get(gist-id)
 		view.load("#code",{})
 		configure({})
 		pane('output').maximize
@@ -188,7 +202,7 @@ tag gist < snippet
 
 	def open o
 		if o isa String
-			o = Gist.new(o)
+			o = Gist.get(o)
 
 		object = o
 

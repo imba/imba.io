@@ -43,6 +43,7 @@ tag site < html
 		APP.site = self
 		deps = {
 			"/issues/all.json": yes
+			"/gists/all.json": yes
 		}
 
 		APP.fetchDocument('/guides.md')
