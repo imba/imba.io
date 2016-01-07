@@ -1513,11 +1513,11 @@ hr + p {
 ._page {
   color: #75818E;
 }
-._page code.cli {
+._page code.cli:not(.inline) {
+  padding: 1ex 1ch;
   display: block;
   background: #202B31;
   color: white;
-  padding: 2ex 3ch;
   font-family: 'Source Code Pro', monospace, sans-serif;
 }
 ._page:not(.scoped) {

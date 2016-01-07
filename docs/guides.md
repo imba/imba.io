@@ -40,9 +40,7 @@ run in any JavaScript environment, or in the browser.
 
 > Some people might be confused by the comparison to React. React is a framework, Imba is a language - are these two comparable? [see discussion](https://news.ycombinator.com/item?id=10094371)
 
-# Getting started
-
-## Installation
+# Installation
 
 Get [node](http://nodejs.org) and [npm](http://npmjs.org), then install imba
 via npm. If your npm installation is global, you might need to use sudo.
@@ -60,25 +58,19 @@ This will install imba as a dependency, and add it to your package.json if
 you have one set up. Then, make sure to `require 'imba'`, usually
 the entry point of your application.
 
-## Usage
+# Usage
 
-### Command-line interface
+### CLI
 
 Once you have installed Imba (globally), you should have access to the imba executable in your terminal. You can use this to run, compile, and analyze your imba-files. 
 
-Used to compile a file or a group of files to javascript. When compiling files and folders without specifying an output location Imba will try to guess. If the path includes a src/ directory, and there is a sibling lib/ directory, Imba will automatically choose this path. If you have the directories `/myapp/src` and `/myapp/lib`, running `imba compile /myapp/src/app.imba` will by default write the compiled code to `/myapp/lib/app.js`. The same goes for imba watch.
+`> imba sample.imba` will run the file sample.imba
 
-`imba sample.imba`
-Run the file sample.imba
+`> imba compile src/` will compile all imba files inside src (recursively). By default, Imba will look for a matching lib/ directory, and save the resulting files there. If no such directory exists, it will save the resulting js files in the same directories as their corresponding imba files.
 
-- `imba compile src/`
-  Will compile all imba files inside src (recursively). By default, Imba will look for a matching lib/ directory, and save the resulting files there. If no such directory exists, it will save the resulting js files in the same directories as their corresponding imba files.
+`> imba watch src/` will compile like above, but watch for changes as well, and recompile when needed. It takes all the same options as imba compile.
 
-- `imba watch [options] src/`
-  Same as compile, only Imba will keep watching the directory for changes and recompile when needed. It takes all the same options as imba compile.
-
-- `imba analyze [options] sample.imba`
-  Used to analyze code. It will return a description of the file, including scopes, local variables (with locations), and other information about the code. Useful for integration with IDEs to do custom highlighting and autocompletions.
+> Tip! When compiling files and folders without specifying an output location Imba will follow a specific convention. If the path includes a src/ directory, and there is a sibling lib/ directory, Imba will automatically choose this path. If you have the directories `/myapp/src` and `/myapp/lib`, running `> imba compile /myapp/src/app.imba` will by default write the compiled code to `/myapp/lib/app.js`.
 
 ### Webpack
 
@@ -88,7 +80,7 @@ For real projects, you might not want to keep the compiled code in the repositor
 
 Since Imba compiles to plain old javascript, you can use browserify as well. Until there is a plugin for browserify you will need to compile/watch the imba files/directories using the CLI and use browserify on the compiled code.
 
-## Integration
+# Plugins
 
 Support for Atom and other editors is on the roadmap, but currently Sublime Text 3 is the only official editor/ide for Imba.
 

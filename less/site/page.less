@@ -10,14 +10,19 @@
 ._page {
 	color: #75818E;
 	// drop toggleable theme for now
-	code.cli {
+	code.cli:not(.inline) {
+		padding: 1ex 1ch;
 		display: block;
 		.dark-colors;
 		background: @codebg;
 		color: @color;
-		padding: 2ex 3ch;
 		font-family: @monofont;
 	}
+
+	// code.cli {
+	// 	padding: 2ex 3ch;
+	// 	display: block;
+	// }
 
 	&:not(.scoped) {
 		display: none;

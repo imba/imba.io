@@ -51,7 +51,7 @@ export class Router
 	def go href, state = {}, replace = no
 		if href == '/install'
 			# redirects here
-			href = '/guides#toc-getting-started-installation'
+			href = '/guides#toc-installation'
 			
 		if replace
 			history.replaceState(state,null,href)

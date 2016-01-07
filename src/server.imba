@@ -22,7 +22,7 @@ srv.disable('etag')
 srv.use(express.static('./www'))
 
 srv.get '/' do |req,res| res.redirect('/home')
-srv.get '/install' do |req,res| res.redirect('/guides#toc-getting-started-installation')
+srv.get '/install' do |req,res| res.redirect('/guides#toc-installation')
 
 # rendering markdown
 srv.get(/^([^\.]+\.(md|json|imba))$/) do |req,res|
@@ -56,4 +56,3 @@ chokidar.watch("{__dirname}/../docs/").on('change') do |path|
 
 var server = srv.listen(3011) do
 	console.log 'server is running'
-
