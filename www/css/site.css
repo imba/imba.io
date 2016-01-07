@@ -945,6 +945,7 @@ hr + p {
 ._imview {
   position: relative;
   font-family: 'Source Code Pro', monospace, sans-serif;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 ._scrimbla-overlays {
   position: absolute;
@@ -1778,6 +1779,7 @@ code {
 ._snippet .view,
 ._snippet .jsview {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 16px 22px;
 }
 ._snippet > .main {

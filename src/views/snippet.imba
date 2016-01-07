@@ -409,7 +409,6 @@ tag snippet
 		self
 
 	def open-in-fullscreen
-		console.log 'open in fullscreen!'
 		#gist.open(code: view.buffer.toString)
 		self
 
