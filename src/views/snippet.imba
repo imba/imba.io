@@ -126,11 +126,10 @@ tag console
 		self
 
 	def log val
-		console.log(*arguments)
+		# console.log(*arguments)
 
 		if editor
 			editor.flag('console')
-		# console.log 'logging val',val
 
 		if val == self
 			return

@@ -61,7 +61,7 @@ tag guides < page
 
 	def onroute e
 		e.halt
-
+		# log 'guides routed'
 		var scroll = do
 			if let el = first('#' + router.hash)
 				el.dom.scrollIntoView(true)
@@ -87,12 +87,13 @@ tag guides < page
 		self
 
 	def scrolled
-		return unless hasFlag('scoped')
+		return unless hasFlag('scoped') and router.scoped('/guides')
+
+		# should cache the offsets for anchors
 
 		var items = %([id])
 		var match
 
-		# should probably cache these periodically
 		var scrollTop = window:pageYOffset
 		var wh = window:innerHeight
 		var dh = document:body:scrollHeight
@@ -104,8 +105,6 @@ tag guides < page
 
 		var scrollBottom = dh - (scrollTop + wh)
 
-		# console.log scrollTop,wh,dh,scrollBottom
-
 		if scrollBottom == 0
 			match = items.last
 
@@ -113,13 +112,11 @@ tag guides < page
 			for item in items
 				var t = (item.dom:offsetTop + 30 + 60) # hack
 				var dist = scrollTop - t
-				# console.log "{item.id} {t} {dist}"
 
 				if dist < 0
 					break match = item
 		
 		if match
-			# console.log "match is {match.id}"
 			if @hash != match.id
 				@hash = match.id
 				router.go('#' + @hash,{},yes)
