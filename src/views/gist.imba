@@ -105,11 +105,9 @@ tag gist < snippet
 		'/gists'
 
 	def didscope
-		log '#gist didscope'
 		show.maximize
 
 	def didunscope
-		log '#gist didunscope'
 		hide.minimize
 
 	def hide

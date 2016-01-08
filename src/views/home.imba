@@ -126,7 +126,7 @@ tag home < page
 					## Reusable components
 					
 					A custom tag / component can maintain internal state and control how to render itself.
-					With the performance of DOM reconciliation in Imba, you can use one-way declarative binding,
+					With the performance of DOM reconciliation in Imba, you can use one-way declarative bindings,
 					even for animations. Write all your views in a straight-forward linear fashion as if you could
 					rerender your whole application on **every single** data/state change.
 					"""

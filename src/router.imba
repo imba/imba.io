@@ -1,4 +1,4 @@
-extern history
+extern history, ga
 
 export class Router
 
@@ -6,13 +6,9 @@ export class Router
 
 	def self.slug str
 		str = str.replace(/^\s+|\s+$/g, '').toLowerCase # trim
-		# remove accents, swap ñ for n, etc
+
 		var from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
 		var to   = "aaaaaeeeeiiiioooouuuunc------"
-
-		# for (var i=0, l=from.length ; i<l ; i++)
-		# 	str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i))
-
 		str = str.replace(/[^a-z0-9 -]/g, '') # remove invalid chars
 		str = str.replace(/\s+/g, '-') # collapse whitespace and replace by -
 		str = str.replace(/-+/g, '-') # collapse dashes
@@ -59,6 +55,7 @@ export class Router
 		else
 			history.pushState(state,null,href)
 			refresh
+			ga('send', 'pageview', href)
 
 		if !href.match(/\#/)
 			window.scrollTo(0,0)

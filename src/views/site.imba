@@ -2,6 +2,12 @@ tag site < html
 
 	prop deps
 
+	let analytics = """
+	window.ga=window.ga||function()\{(ga.q=ga.q||[]).push(arguments)\};ga.l=+new Date;
+	ga('create', 'UA-65877753-1', 'auto');
+	ga('send', 'pageview');
+	"""
+
 	def head
 		<head>
 			<title> "imba"
@@ -12,7 +18,8 @@ tag site < html
 			<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'>
 			<link rel="stylesheet" href="/css/site.css" media="screen">
 			<script> 'DEPS = {};'
-			<script src="/vendor/ga.js">
+			<script> analytics
+			<script async='async' src="//www.google-analytics.com/analytics.js">
 
 	def body
 		<body#site data-route=(router.segment(0))>
