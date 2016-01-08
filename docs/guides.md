@@ -116,7 +116,7 @@ If you want to get started with Imba right away, it is recommended to download o
 
 ### Imba.io
 
-This whole website is written in Imba. It uses the same code for server and clent. After the initial load, all navigation in the browser is happening with history push/popState, and rendered directly on the client, yet any hard refresh should land you at the same spot when rendered from the server, thanks to using the same logic for routing as well. Grab it over at [github](https://github.com/somebee/imba.io)
+This whole website is written in Imba. It uses the same code for server and client. After the initial load, all navigation in the browser is happening with history push/popState, and rendered directly on the client, yet any hard refresh should land you at the same spot when rendered from the server, thanks to using the same logic for routing as well. Grab it over at [github](https://github.com/somebee/imba.io)
 
 ### Scrimbla
 
