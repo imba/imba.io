@@ -98,7 +98,7 @@ tag home < page
 
 			<@content>
 				<marked.section.md.welcome.huge.light> """
-					# Ruby, Python and React got together. Nine months later, Imba was born.
+					# Create complex web apps with ease!
 
 					Imba is a new programming language for the web that compiles to highly 
 					performant and readable JavaScript. It has language level support for defining, 
