@@ -110,15 +110,15 @@ Unofficial plugin or vim, Vimba, can be found at [simeng/vim-imba](https://githu
 
 Since Imba is a new language, there aren't that many open-source examples out in the wild. It is being used in several 100kloc+ commercial projects, so it should definitely be production-ready.
 
-### Hello World
+### [TodoMVC](https://github.com/somebee/todomvc-imba)
 
-If you want to get started with Imba right away, it is recommended to download our starter pack and get it running.
+The basic Imba implementation of TodoMVC is a good place to start playing around. 
 
-### Imba.io
+### [Imba.io](https://github.com/somebee/imba.io)
 
 This whole website is written in Imba. It uses the same code for server and client. After the initial load, all navigation in the browser is happening with history push/popState, and rendered directly on the client, yet any hard refresh should land you at the same spot when rendered from the server, thanks to using the same logic for routing as well. Grab it over at [github](https://github.com/somebee/imba.io)
 
-### Scrimbla
+### [Scrimbla](https://github.com/somebee/scrimbla)
 
 The inline editor used throughout this site is written in Imba, and available at [github](https://github.com/somebee/scrimbla). It is a decent example of a project.
 
