@@ -10,7 +10,7 @@ tag site < html
 
 	def head
 		<head>
-			<title> "imba"
+			<title> "Imba - Create complex web apps with ease!"
 			<meta charset="utf-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,minimum-scale=1">
 			<meta name="Description" content="Imba is a rich programming language for the web.">
