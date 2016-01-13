@@ -11,6 +11,9 @@ cd imba.io
 # install dependencies
 npm install
 
+# compile javsacript
+npm run build
+
 # run server (on port 3011)
 gulp server
 
@@ -26,6 +29,9 @@ npm run watch
 # to build www/client.js for development
 # this will include sourcemaps++ and
 # recompile whenever files change
+
+gulp watch
+# to build/watch less to css
 ```
 
 `gulp watch` to continually recompile stylesheets from less/
