@@ -1,4 +1,5 @@
-require 'imba/lib/imba/browser'
+# require 'imba/lib/imba/browser' # why not just require imba?
+require 'imba'
 
 # need to use webpack for this include to work as intended
 Scrimbla = require 'scrimbla/src/index'

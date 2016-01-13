@@ -3,10 +3,8 @@ var path = require('path');
 var webpack = require('webpack');
 var plugins = [
 	new webpack.DefinePlugin({
-		ENV_SERVER: 0,
-		ENV_CLIENT: 1,
 		"Imba.SERVER": false,
-		"typeof window": JSON.stringify("object")
+		"Imba.CLIENT": true
 	})
 ]
 
@@ -15,7 +13,7 @@ module.exports = {
 		loaders: [{ "test": /\.imba$/, "loader": 'imba-loader'}]
 	},
 	resolveLoader: { root: path.join(__dirname, "node_modules") },
-	resolve: {extensions: ['', '.js', '.imba']},
+	resolve: {extensions: ['', '.imba', '.js']},
 	entry: {client: "./src/client.imba", sandbox: "./src/sandbox.imba"},
 	output: { filename: "./www/[name].js" },
 	plugins: plugins
