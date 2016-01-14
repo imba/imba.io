@@ -138,7 +138,7 @@ def randomize
 
 ```imba
 # A single argument
-def sqrt num
+def square num
     num * num
 ```
 
@@ -171,7 +171,7 @@ def animate values, ease: 'linear', duration: 1
 ## Blocks
 
 ```imba
-var sqrt = do |v| v * v
+var square = do |v| v * v
 ```
 
 Blocks are like anonymous function expressions in JavaScript. They can be assigned and passed around. They have their own lexical scope / closure, but no dynamic scope. This means that self (implicit *and* explicit) inside the block still refers to the self of the outer scope.
