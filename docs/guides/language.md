@@ -429,9 +429,9 @@ You can also use if-statements, loops and other control flow inside tags, to eas
             <li> <a href="http://github/{alias}"> alias
 ```
 
-To fully appreciate how tags work in Imba (and to get a glimpse into why [Imba is so fast](http://somebee.github.io/todomvc-render-benchmark/index.html)), it is important to understand they way in which tags are created in the compiled code. Frameworks for creating tags usually passes the attributes in an object, like `tag('div',{title: 'Yeah', className: 'red'})`.
+To fully appreciate how tags work in Imba (and to get a glimpse into why [Imba is so fast](http://somebee.github.io/todomvc-render-benchmark/index.html)), it is important to understand they way in which tags are created in the compiled code. Frameworks for creating tags usually passes the attributes in an object, like `tag('div', {title: 'Yeah', className: 'red blue'})`.
 
-Imba takes a different approach, by building the tags using a **chain of setters/calls**. `<div.red.blue title='Yeah'>` compiles to `tag.div().flag('red').setTitle('Yeah').end()`. Besides being *much* faster on modern JS engines, it is of paramount importance when we move on to static / cached tag trees, our alternative to the virtual DOM approach of many well-known frameworks.
+Imba takes a different approach, by building the tags using a **chain of setters/calls**. `<div.red.blue title='Yeah'>` compiles to `tag.div().flag('red').flag('blue').setTitle('Yeah').end()`. Besides being *much* faster on modern JS engines, it is of paramount importance when we move on to static / cached tag trees, our alternative to the virtual DOM approach of many well-known frameworks.
 
 ## Declaring
 
