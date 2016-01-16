@@ -28,8 +28,6 @@ tag pattern
 			parts:methods.push("<em>{k}</em>")
 
 		for k in HTML_TAGS
-			# for own k,v of Imba.TAGS
-			# if v and v:prototype isa Imba.Tag
 			items.push("<u>&lt;{k}&gt;</u>")
 			parts:tags.push("<u>&lt;{k}&gt;</u>")
 
@@ -54,20 +52,14 @@ tag pattern
 				else
 					chars = 400
 
-		dom:innerHTML = '<div>' + lines.map(|ln|
-			'<div class="line">' + ln.join(" ") + '</div>'
+		dom:innerHTML = '<div>' + lines.map(|ln,i|
+			let o = Math.max(0,((i - 2) * 0.3 / 14)).toFixed(2)
+			"<div class='line' style='opacity: {o};'>" + ln.join(" ") + '</div>'
 		).join('') + '</div>'
 		self
 
 	def awaken
-		log 'awakening pattern!!'
 		return self
-
-		for el,i in %(.line)
-			var z = 20 + i * 10
-			# z = parseInt(-z + Math.random * z * 2)
-			el.css('transform',"translateZ({z}px)")
-		self
 
 tag home < page
 
@@ -93,7 +85,6 @@ tag home < page
 		<@body>
 			<div#hero.dark>
 				<pattern@pattern.awaken>
-				<.gradient>
 				<herosnippet.hero.dark src='/home/examples/hero.imba'>
 
 			<@content>
