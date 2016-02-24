@@ -137,8 +137,6 @@ tag gist < snippet
 
 	def maximize
 		flag('fullscreen')
-		# if object isa Gist
-		# 	router.go("/gists/{object.id}")
 
 	def maximized
 		router.segment(0) == 'gists' or hasFlag('fullscreen')

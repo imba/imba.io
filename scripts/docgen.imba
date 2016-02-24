@@ -5,8 +5,10 @@ var path = '/repos/imba/src'
 var imbac = require 'imba/lib/compiler'
 var mdr = require './../src/markdown'
 
+require '../src/views/snippet'
+
 var entityBased = yes
-var version = '0.14.1'
+var version = Imba.VERSION
 
 var doc = {
 	version: version
@@ -157,6 +159,7 @@ def generate
 	# classes go in a separate thing?
 	var path = "{__dirname}/../docs/api/{version}.json"
 	fs.writeFileSync(path, JSON.stringify(doc), 'utf-8')
+	fs.writeFileSync(path.replace(version,'current'), JSON.stringify(doc), 'utf-8')
 	self
 
 

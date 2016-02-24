@@ -2940,6 +2940,14 @@ blockquote ._snippet {
   bottom: 0px;
   display: block;
 }
+#gist.chromeless {
+  top: 0px !important;
+  background: #202B31;
+  z-index: 1000000;
+}
+#gist.chromeless > .header {
+  display: none;
+}
 body[data-route='gists'] ._page {
   display: none !important;
 }

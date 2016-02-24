@@ -184,6 +184,13 @@
 		bottom: 0px;
 		display: block;
 	}
+
+	&.chromeless {
+		top: 0px !important;
+		background: #202B31;
+		& > .header { display: none; }
+		z-index: 1000000;
+	}
 }
 
 body[data-route='gists'] {
