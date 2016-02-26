@@ -356,19 +356,19 @@ tag snippet
 		compile(code, copts) do |res|
 			view.hints.rem do |hint| hint.group == 'runtime'
 
-			if res:data and res:data:code
-				@runData = res:data
+			if res:js and res:js:body
+				@runData = res:js
 				# @jsview.load(res:data:code) if res:data
-				try @sandbox.run(res:data) catch e
-					console.log 'error'
+				try @sandbox.run(res:js) catch e
+					console.log 'error',e
 		self
 
 	def showjs
 		var o = {bare: yes, standalone: no, filename: 'a.imba'}
 
 		compile(code, o) do |res|
-			if res:data and res:data:code
-				js.load(res:data:code) do tab = 'js'
+			if res:js and res:js:body
+				js.load(res:js:body) do tab = 'js'
 
 			elif res:data and res:data:error
 				console.log 'has error'
@@ -521,7 +521,7 @@ tag sandbox
 		self.console.log(node or res)
 
 	def run src
-		var code = src:code
+		var code = src:body
 		return self unless code
 
 		@object = src
