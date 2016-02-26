@@ -11,6 +11,10 @@ cd imba.io
 # install dependencies
 npm install
 
+# init submodules
+git submodule init
+git submodule update
+
 # compile javsacript
 npm run build
 
