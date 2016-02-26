@@ -37,7 +37,7 @@
     "gulp-less": "^3.0.3",
     "gulp-rename": "^1.2.2",
     "highlight.js": "^8.8.0",
-    "imba": "^0.14.2",
+    "imba": "^0.14.5",
     "imba-loader": "^1.0.1",
     "less": "^2.5.1",
     "less-plugin-autoprefix": "^1.4.2",
