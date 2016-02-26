@@ -130,9 +130,9 @@ tag gist < snippet
 		scheduler.mark
 
 	def oncompiled res, o
-		if res:data and res:data:code
+		if res:js and res:js:body
 			# compile again
-			o:bare ? js.load(res:data:code) : compile(code,bare: yes, standalone: no)
+			o:bare ? js.load(res:js:body) : compile(code,bare: yes, standalone: no)
 		self
 
 	def maximize

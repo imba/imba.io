@@ -66,7 +66,9 @@
 	._imview {
 		width: 100%;
 		height: 100%;
-		.util-vbox(center,center);
+		.util-vbox(flex-start,flex-start);
+		padding: 60px 30px;
+		& > .body { margin: auto; }
 	}
 
 	._jsview {
@@ -77,6 +79,11 @@
 		background: #202B31;
 		overflow: auto;
 		text-align: center;
+		.util-vbox(flex-start,flex-start);
+		padding: 60px 30px;
+
+		& > .body { margin: auto; }
+
 		code {
 			position: relative;
 			padding: 16px 22px;

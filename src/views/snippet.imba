@@ -85,7 +85,7 @@ tag jsview
 	attr autosize
 
 	def render
-		<self> <code@code>
+		<self> <.body> <code@code>
 
 	def load code, &cb
 		# should compile bare
@@ -111,6 +111,8 @@ tag jsview
 		self
 
 	def refit
+		return self
+
 		var h = height
 		var ih = @code.height
 		var top = Math.floor((h - ih) / 2)
