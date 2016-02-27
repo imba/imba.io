@@ -166,7 +166,7 @@ tag docs < page
 		super
 
 	def load
-		if Imba.SERVER
+		if !Imba.CLIENT
 			# return self
 			APP.fetchDocument(src) do |res|
 				@docs = JSON.parse(JSON.stringify(res))

@@ -17,7 +17,7 @@ def shuffle array
 tag pattern
 
 	def build
-		return self if Imba.SERVER
+		return self if !Imba.CLIENT
 
 		var parts = {tags: [], keywords: [], methods: []}
 		var items = []

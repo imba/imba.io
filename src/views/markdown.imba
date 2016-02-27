@@ -20,7 +20,7 @@ tag md
 		self
 
 	def render
-		if Imba.SERVER
+		if !Imba.CLIENT
 			APP.fetchDocument(src + '.md') do |doc|
 				assemble(doc)
 			

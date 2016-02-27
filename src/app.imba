@@ -25,13 +25,13 @@ export class App
 		@router ||= Router.new(self)
 
 	def path
-		Imba.SERVER ? req:path : @path
+		Imba.CLIENT ? @path : req:path
 
 	def hash
-		Imba.SERVER ? '' : document:location:hash.substr(1)
+		Imba.CLIENT ? document:location:hash.substr(1) : ''
 
 	def tick
-		unless Imba.SERVER
+		if Imba.CLIENT
 			# path and hash should be moved into router
 			@path = document:location:pathname
 
@@ -47,7 +47,7 @@ export class App
 
 	def fetchDocument src, &cb
 
-		if Imba.SERVER
+		if !Imba.CLIENT
 			var fs = require 'fs'
 			var path = require 'path'
 

@@ -18,8 +18,8 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "build": "webpack -p --define DEBUG=0 --colors --display-modules",
-    "watch": "webpack --define DEBUG=1 --devtool inline-source-map --watch --progress --colors --display-modules"
+    "build": "webpack -p --define DEBUG=0 --define Imba.CLIENT=1 --colors --display-modules",
+    "watch": "webpack --define DEBUG=1 --define Imba.CLIENT=1 --devtool inline-source-map --watch --progress --colors --display-modules"
   },
   "files": [],
   "directories": {},

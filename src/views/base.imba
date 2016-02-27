@@ -1,10 +1,6 @@
 extend tag element
 	attr route
 
-	# def html= html
-	# 	@dom:innerHTML = html
-	# 	self
-
 	def html= html
 		if html != @html
 			dom:innerHTML = @html = html
@@ -29,20 +25,6 @@ extend tag element
 		self
 
 	def didunscope
-		self
-
-	def transform= value
-		css(:transform, value)
-		self
-
-	def transform
-		css(:transform)
-
-extend tag htmlelement
-
-	def html= html
-		if html != @html
-			dom:innerHTML = @html = html
 		self
 
 extend tag script

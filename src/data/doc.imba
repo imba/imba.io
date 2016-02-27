@@ -23,7 +23,7 @@ export class Doc
 		path + (@type ? ".{@type}" : '')
 
 	def fetch
-		if Imba.SERVER
+		if !Imba.CLIENT
 			# console.log 'fetch Guide on server',path,src
 			return APP.fetchDocument(src) do |res|
 				# console.log 'fetch Guide on server done',path

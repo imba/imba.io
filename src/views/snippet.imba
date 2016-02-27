@@ -183,7 +183,7 @@ tag snippet
 
 	def build
 
-		if Imba.SERVER
+		if !Imba.CLIENT
 			if src and src.match(/\.imba$/)
 				APP.fetchDocument(src) do |res|
 					imba = res:html
@@ -282,7 +282,7 @@ tag snippet
 		self
 
 	def render
-		return self if Imba.SERVER
+		return self if !Imba.CLIENT
 
 		<self>
 			@input
@@ -438,7 +438,7 @@ tag herosnippet < example
 		
 
 
-unless Imba.SERVER
+if Imba.CLIENT
 	Imba.Event.PROCESSING
 
 	extend class Imba.Event

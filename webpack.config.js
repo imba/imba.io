@@ -1,12 +1,7 @@
 var path = require('path');
 
 var webpack = require('webpack');
-var plugins = [
-	new webpack.DefinePlugin({
-		"Imba.SERVER": false,
-		"Imba.CLIENT": true
-	})
-]
+var plugins = []
 
 var mod = {
 	loaders: [{ "test": /\.imba$/, "loader": 'imba-loader'}]

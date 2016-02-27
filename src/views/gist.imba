@@ -145,7 +145,7 @@ tag gist < snippet
 		unflag('fullscreen')
 
 	def render
-		return self if Imba.SERVER
+		return self if !Imba.CLIENT
 
 		let routeid = router.match(/\gists\/([\w]+)/,1)
 
