@@ -147,28 +147,6 @@ tag console
 
 		return
 
-Imba.@schedulers = 0
-
-def Imba.schedule target, method = 'tick'
-	@schedulers++
-	console.log 'Imba.schedule',target,@schedulers
-	listen(self,'tick',target,method)
-	# start scheduling now if this was the first one
-	unless @scheduled
-		@scheduled = yes
-		raf(Imba.ticker)
-	self
-
-def Imba.unschedule target, method
-	@schedulers--
-	console.log 'Imba.unschedule',@schedulers
-
-	unlisten(self,'tick',target,method)
-	var cbs = self:__listeners__ ||= {}
-	if !cbs:tick or !cbs:tick:next or !cbs:tick:next:listener
-		@scheduled = no
-	self
-
 # this is basically like an editor
 tag snippet
 
