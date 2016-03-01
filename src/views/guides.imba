@@ -81,7 +81,7 @@ tag guides < page
 
 
 	def awaken
-		if Imba.CLIENT
+		if $web$
 			schedule(fps: 1)
 			window.addEventListener('scroll') do scrolled
 		self

@@ -17,7 +17,7 @@ def shuffle array
 tag pattern
 
 	def build
-		return self if !Imba.CLIENT
+		return self if $node$
 
 		var parts = {tags: [], keywords: [], methods: []}
 		var items = []
@@ -63,17 +63,10 @@ tag pattern
 
 tag home < page
 
-	var todos = {demo: yes, autorun: yes}
-	var clock = {demo: yes, autorun: yes}
-	var reminders = {demo: yes, autorun: yes}
-	var hero = {autorun: yes}
-	var canvas = {demo: yes, autorun: yes}
-
 	def awaken
 		var snippets = document.querySelectorAll('code[data-src]')
 		for snippet in snippets
 			var src = snippet.getAttribute('data-src')
-			# console.log 'fetching snippet for ',src
 			DEPS[src] = {html: snippet:innerHTML}
 
 		super
@@ -133,25 +126,3 @@ tag home < page
 					"""
 
 				<example.dark heading="Custom canvas" src='/home/examples/canvas.imba'>
-
-				# <footer>
-				# 	<nav>
-				# 		<a.button.huge.main href='/install'> "Install"
-				# 		<a.button.huge href='/guides'> "Learn more"
-
-	# def awaken
-	# 	# awaken the snippets
-	# 	schedule
-	# 	for el in %(snippet)
-	# 		el
-	# 	self
-
-	# def tick
-	# 	log 'home.tick'
-	# 	self
-
-	# def assemble
-	# 	return self if Imba.isClient
-	# 	super
-	# 	# flag('scoped',router.scoped(route,self))
-	# 	# flag('selected',router.match(route,self))

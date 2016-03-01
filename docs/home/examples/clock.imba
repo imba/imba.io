@@ -1,7 +1,7 @@
 tag clock
 	prop utc
 
-	def build
+	def mount
 		schedule(fps: 30, events: no)
 
 	def turns div
@@ -10,8 +10,8 @@ tag clock
 	
 	def render
 		<self>
-			<div.m transform=turns(60)>
 			<div.h transform=turns(720)>
+			<div.m transform=turns(60)>
 			<div.s transform=turns(1)>
 
 <div.clocks> # spawn 4 clocks

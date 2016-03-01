@@ -18,14 +18,14 @@ export class Router
 	def initialize app
 		@app = app
 
-		if Imba.CLIENT
+		if $web$
 			window:onpopstate = do |e|
 				refresh
 				Imba.setTimeout(0) do yes
 		self
 
 	def refresh
-		if Imba.CLIENT
+		if $web$
 			@app.tick
 			document:body.setAttribute('data-route',segment(0))
 		self

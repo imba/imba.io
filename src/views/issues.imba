@@ -18,7 +18,7 @@ tag gh-label
 
 	def render
 		<self title=(object:name)> object:name
-		if Imba.CLIENT
+		if $web$
 			css(background-color: '#' + object:color)
 		self
 

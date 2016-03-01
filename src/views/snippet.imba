@@ -147,6 +147,27 @@ tag console
 
 		return
 
+Imba.@schedulers = 0
+
+def Imba.schedule target, method = 'tick'
+	@schedulers++
+	console.log 'Imba.schedule',target,@schedulers
+	listen(self,'tick',target,method)
+	# start scheduling now if this was the first one
+	unless @scheduled
+		@scheduled = yes
+		raf(Imba.ticker)
+	self
+
+def Imba.unschedule target, method
+	@schedulers--
+	console.log 'Imba.unschedule',@schedulers
+
+	unlisten(self,'tick',target,method)
+	var cbs = self:__listeners__ ||= {}
+	if !cbs:tick or !cbs:tick:next or !cbs:tick:next:listener
+		@scheduled = no
+	self
 
 # this is basically like an editor
 tag snippet
@@ -175,6 +196,12 @@ tag snippet
 	def deactivated
 		unschedule
 
+	def mount
+		log 'snippet mount!'
+
+	def unmount
+		log 'snippet unmount!'
+
 	def input
 		<imcaptor@input>
 
@@ -183,7 +210,7 @@ tag snippet
 
 	def build
 
-		if !Imba.CLIENT
+		if $node$
 			if src and src.match(/\.imba$/)
 				APP.fetchDocument(src) do |res|
 					imba = res:html
@@ -282,7 +309,7 @@ tag snippet
 		self
 
 	def render
-		return self if !Imba.CLIENT
+		return self if $node$
 
 		<self>
 			@input
@@ -438,7 +465,7 @@ tag herosnippet < example
 		
 
 
-if Imba.CLIENT
+if $web$
 	Imba.Event.PROCESSING
 
 	extend class Imba.Event

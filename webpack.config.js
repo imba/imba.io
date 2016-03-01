@@ -4,7 +4,7 @@ var webpack = require('webpack');
 var plugins = []
 
 var mod = {
-	loaders: [{ "test": /\.imba$/, "loader": 'imba-loader'}]
+	loaders: [{ "test": /\.imba$/, "loader": 'imba/loader'}]
 }
 
 module.exports = [{
@@ -20,6 +20,7 @@ module.exports = [{
 		filename: "./www/imbac.worker.js"
 	},
 	module: mod,
+	resolveLoader: { root: path.join(__dirname, "node_modules") },
 	resolve: {extensions: ['', '.imba', '.js']},
 	plugins: plugins
 

@@ -4,9 +4,6 @@ import Gist from '../data/gist'
 
 var gist-id = '1780e1ddcc26af847cca'
 
-# var code = "# code"
-# Imba.Events.register(['scroll']) if Imba.CLIENT
-
 tag gist-output < iframe
 
 	prop ready
@@ -145,7 +142,7 @@ tag gist < snippet
 		unflag('fullscreen')
 
 	def render
-		return self if !Imba.CLIENT
+		return self if $node$
 
 		let routeid = router.match(/\gists\/([\w]+)/,1)
 
