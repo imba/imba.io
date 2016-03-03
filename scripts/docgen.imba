@@ -21,9 +21,6 @@ var doc = {
 	}
 }
 
-# def lines str
-# 	desc.split('\n').map do ||
-
 class DocString
 
 	def initialize str
@@ -165,9 +162,16 @@ def generate
 
 
 inc(path + '/imba/imba.imba')
-inc(path + '/imba/dom.events.imba')
-inc(path + '/imba/tag.imba')
 inc(path + '/imba/scheduler.imba')
-# console.log doc
+
+inc(path + '/imba/dom/tag.imba')
+inc(path + '/imba/dom/html.imba')
+inc(path + '/imba/dom/svg.imba')
+
+inc(path + '/imba/dom/event-manager.imba')
+inc(path + '/imba/dom/event.imba')
+inc(path + '/imba/dom/touch.imba')
+inc(path + '/imba/dom/pointer.imba')
+
 
 generate

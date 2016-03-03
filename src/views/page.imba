@@ -18,6 +18,7 @@ tag page
 		self
 
 	def unscoped
+		children = null # empty page
 		self
 
 	def render
@@ -30,8 +31,9 @@ tag page
 			flag('scoped',scoped)
 			flag('selected',router.match(route,self))
 
+
 		return self unless scoped and ready
 		assemble
 
 	def awaken
-		schedule(fps: 1, events: yes)
+		schedule(events: yes)

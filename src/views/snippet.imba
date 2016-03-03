@@ -169,9 +169,11 @@ tag snippet
 		bool ? activated : deactivated
 
 	def activated
-		schedule(fps: 60)
+		log 'snippet activated'
+		schedule(events: yes)
 
 	def deactivated
+		log 'snippet deactivated'
 		unschedule
 
 	def mount
@@ -209,6 +211,12 @@ tag snippet
 		super
 		reload if src
 
+	def onevent e
+		# log "onevent {e.type}"
+		e.silence
+		scheduler.mark if e.responder
+		self
+
 	def onannotate
 		scheduler.mark
 
@@ -236,6 +244,7 @@ tag snippet
 		render
 
 	def awaken
+		log 'awakened snippet'
 		var config = {}
 		var code = try %%(.imbacode).dom:innerHTML
 
@@ -274,11 +283,13 @@ tag snippet
 		self
 
 	def oninputfocus e
-		VIEW = self # hack
+		# VIEW = self # hack
+		log 'oninputfocus',e
 		flag('focus')
 		active = yes
 
 	def oninputblur e
+		log 'oninputblur',e
 		unflag('focus')
 		var rel = e.event:relatedTarget
 		unless rel and dom.contains(rel) 
@@ -329,6 +340,7 @@ tag snippet
 
 		# get imba document?!?
 		APP.fetchDocument(src) do |res|
+			console.log 'fetching document for snippet'
 			view.load(res:body, filename: src)
 			if autorun
 				setTimeout(&,50) do run
@@ -526,6 +538,9 @@ tag sandbox
 			node.end
 		
 		self.console.log(node or res)
+		log 'calling Imba.commit'
+		Imba.commit
+		self
 
 	def run src
 		var code = src:body

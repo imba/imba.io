@@ -26,8 +26,10 @@ export class Router
 
 	def refresh
 		if $web$
-			@app.tick
 			document:body.setAttribute('data-route',segment(0))
+			# @app.tick
+			Imba.emit(Imba,'event',['route'])
+
 		self
 
 	def path

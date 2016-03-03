@@ -15,6 +15,9 @@ export class App
 		deps = {}
 		reset
 		tick
+
+		if $web$
+			@loc = document:location
 		self
 
 	def reset
@@ -25,16 +28,12 @@ export class App
 		@router ||= Router.new(self)
 
 	def path
-		$web$ ? @path : req:path
+		$web$ ? @loc:pathname : req:path
 
 	def hash
-		$web$ ? document:location:hash.substr(1) : ''
+		$web$ ? @loc:hash.substr(1) : ''
 
 	def tick
-		if $web$
-			# path and hash should be moved into router
-			@path = document:location:pathname
-
 		self
 
 	def schedule

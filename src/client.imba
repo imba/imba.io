@@ -11,5 +11,6 @@ APP.schedule
 require './views'
 
 # awaken pages etc
-$(page).map do |el| el
-$(.awaken).map do |el| el
+Imba.TICKER.add do
+	$(page).map do |el| el
+	$(.awaken).map do |el| el

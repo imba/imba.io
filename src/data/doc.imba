@@ -37,7 +37,10 @@ export class Doc
 		@meta = doc:meta or {}
 		@ready = yes
 		Imba.emit(self,'ready')
-		Imba.Scheduler.markDirty
+		Imba.emit(Imba,'event',['doc:load'])
+		Imba.commit
+		# force mark dirty?
+		# Imba.Scheduler.markDirty
 		self
 
 	def title

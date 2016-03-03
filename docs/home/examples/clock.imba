@@ -2,7 +2,7 @@ tag clock
 	prop utc
 
 	def mount
-		schedule(fps: 30, events: no)
+		schedule(interval: 1000)
 
 	def turns div
 		let num = (Date.now/60000 + utc * 60) / div

@@ -82,7 +82,7 @@ tag guides < page
 
 	def awaken
 		if $web$
-			schedule(fps: 1)
+			schedule(events: yes)
 			window.addEventListener('scroll') do scrolled
 		self
 

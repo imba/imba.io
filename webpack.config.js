@@ -21,7 +21,12 @@ module.exports = [{
 	},
 	module: mod,
 	resolveLoader: { root: path.join(__dirname, "node_modules") },
-	resolve: {extensions: ['', '.imba', '.js']},
+	resolve: {
+		extensions: ['', '.imba', '.js'],
+		alias: {
+			imba: path.join(__dirname, "node_modules","imba")
+		}
+	},
 	plugins: plugins
 
 }]

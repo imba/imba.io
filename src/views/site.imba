@@ -87,4 +87,4 @@ tag site-nav
 				<a.menu :tap='toggleMenu'> <b>
 
 	def awaken
-		schedule(fps: 0)
+		schedule
