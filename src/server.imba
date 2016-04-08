@@ -7,7 +7,7 @@ require './views'
 import App from './app'
 
 var chokidar = require 'chokidar'
-var hl = require 'scrimbla/src/core/highlighter'
+var hl = require '../scrimbla/src/core/highlighter'
 
 # creating the local app
 APP = App.new

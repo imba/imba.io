@@ -7,7 +7,7 @@ require '../src/views'
 import App from '../src/app'
 
 var fs = require 'fs'
-var hl = require 'scrimbla/src/core/highlighter'
+var hl = require '../scrimbla/src/core/highlighter'
 
 # creating the local app
 APP = App.new
