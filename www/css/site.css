@@ -435,7 +435,7 @@ hr + p {
 }
 .light ._imtagnode > ._imopen,
 .light ._imtagnode > ._imclose {
-  color: inherit;
+  color: tag;
 }
 .light ._imtagnode > ._identifier:not(.lvar) {
   color: inherit;
@@ -700,17 +700,28 @@ hr + p {
 .light .identifier {
   color: #437997;
 }
+.light .key {
+  color: #0068a1;
+}
+.light .key + .colon {
+  color: #0068a1;
+}
 .light .const {
   color: #8F4242;
 }
 .light .access {
   color: #437997;
 }
+.light .symbol {
+  color: #449300;
+}
 .light .ivar {
   color: #003761;
 }
-.light .lvar,
-.light .title {
+.light .lvar {
+  color: #3A4652;
+}
+.light .methref {
   color: #3A4652;
 }
 .light .const.lvar {
@@ -726,18 +737,12 @@ hr + p {
 .light .hl[eref]:before {
   position: absolute;
 }
-.light ._imtagnode {
+.light ._imtagnode > :not(.value) {
   color: #BB7637;
 }
 .light ._imtagnode > ._imopen,
 .light ._imtagnode > ._imclose {
-  color: inherit;
-}
-.light ._imtagnode > ._identifier:not(.lvar) {
-  color: inherit;
-}
-.light ._imtagnode > .eq {
-  color: inherit;
+  color: tag;
 }
 .light ._imtagnode .tag_attr {
   color: #B35F12;
@@ -748,30 +753,17 @@ hr + p {
 .light ._imtagnode > ._imopen:first-child + .identifier {
   color: #B35F12;
 }
-.light ._imtagnode .dot + .identifier {
+.light ._imtagnode > .dot + .identifier {
   color: #B35F12;
-}
-.light ._imtagnode > .eq + .identifier {
-  color: #437997;
-}
-.light ._imtagnode > .eq + .lvar {
-  color: #3A4652;
-}
-.light ._imtagnode > .dot {
-  color: inherit;
 }
 .light ._imtagnode > .hash {
-  color: inherit;
+  color: #BB7637;
 }
-.light ._imtagnode > .hash + .identifier {
-  color: inherit;
+.light ._imtagnode > .self {
+  color: #BB7637;
 }
-.light ._imtagnode > .self,
 .light ._imtagnode > .ivar {
-  color: #B35F12;
-}
-.light ._imtagnode > .paren > .rb:not(.call) {
-  color: inherit;
+  color: #BB7637;
 }
 .light ._imtagnode > .string s {
   color: #17191a;
@@ -916,6 +908,18 @@ hr + p {
 .light b[hint-type='error'] {
   color: red;
   background: rgba(255, 0, 0, 0.2);
+}
+.light .show-tabs ._imtab {
+  position: relative;
+}
+.light .show-tabs ._imtab:before {
+  content: "-";
+  color: transparent;
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  right: 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 .light ._imopen,
 .light ._imclose {
@@ -1026,7 +1030,7 @@ hr + p {
 }
 .light ._imtagnode > ._imopen,
 .light ._imtagnode > ._imclose {
-  color: inherit;
+  color: tag;
 }
 .light ._imtagnode > ._identifier:not(.lvar) {
   color: inherit;
@@ -1291,17 +1295,28 @@ hr + p {
 .light .identifier {
   color: #437997;
 }
+.light .key {
+  color: #0068a1;
+}
+.light .key + .colon {
+  color: #0068a1;
+}
 .light .const {
   color: #8F4242;
 }
 .light .access {
   color: #437997;
 }
+.light .symbol {
+  color: #449300;
+}
 .light .ivar {
   color: #003761;
 }
-.light .lvar,
-.light .title {
+.light .lvar {
+  color: #3A4652;
+}
+.light .methref {
   color: #3A4652;
 }
 .light .const.lvar {
@@ -1317,18 +1332,12 @@ hr + p {
 .light .hl[eref]:before {
   position: absolute;
 }
-.light ._imtagnode {
+.light ._imtagnode > :not(.value) {
   color: #BB7637;
 }
 .light ._imtagnode > ._imopen,
 .light ._imtagnode > ._imclose {
-  color: inherit;
-}
-.light ._imtagnode > ._identifier:not(.lvar) {
-  color: inherit;
-}
-.light ._imtagnode > .eq {
-  color: inherit;
+  color: tag;
 }
 .light ._imtagnode .tag_attr {
   color: #B35F12;
@@ -1339,30 +1348,17 @@ hr + p {
 .light ._imtagnode > ._imopen:first-child + .identifier {
   color: #B35F12;
 }
-.light ._imtagnode .dot + .identifier {
+.light ._imtagnode > .dot + .identifier {
   color: #B35F12;
-}
-.light ._imtagnode > .eq + .identifier {
-  color: #437997;
-}
-.light ._imtagnode > .eq + .lvar {
-  color: #3A4652;
-}
-.light ._imtagnode > .dot {
-  color: inherit;
 }
 .light ._imtagnode > .hash {
-  color: inherit;
+  color: #BB7637;
 }
-.light ._imtagnode > .hash + .identifier {
-  color: inherit;
+.light ._imtagnode > .self {
+  color: #BB7637;
 }
-.light ._imtagnode > .self,
 .light ._imtagnode > .ivar {
-  color: #B35F12;
-}
-.light ._imtagnode > .paren > .rb:not(.call) {
-  color: inherit;
+  color: #BB7637;
 }
 .light ._imtagnode > .string s {
   color: #17191a;
@@ -1507,6 +1503,18 @@ hr + p {
 .light b[hint-type='error'] {
   color: red;
   background: rgba(255, 0, 0, 0.2);
+}
+.light .show-tabs ._imtab {
+  position: relative;
+}
+.light .show-tabs ._imtab:before {
+  content: "-";
+  color: transparent;
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  right: 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 .light code {
   color: #3a4652;
@@ -1620,7 +1628,7 @@ hr + p {
 }
 .dark ._imtagnode > ._imopen,
 .dark ._imtagnode > ._imclose {
-  color: inherit;
+  color: #D9BB72;
 }
 .dark ._imtagnode > ._identifier:not(.lvar) {
   color: inherit;
@@ -1675,7 +1683,7 @@ hr + p {
   color: inherit;
 }
 .dark .curly > .identifier:not(.lvar) {
-  color: white;
+  color: #badeff;
 }
 .dark .identifier.idref {
   color: #D9BB72;
@@ -1885,18 +1893,29 @@ hr + p {
 .dark .identifier {
   color: white;
 }
+.dark .key {
+  color: #badeff;
+}
+.dark .key + .colon {
+  color: #badeff;
+}
 .dark .const {
   color: #BD9AC2;
 }
 .dark .access {
   color: white;
 }
+.dark .symbol {
+  color: #B7DE95;
+}
 .dark .ivar {
   color: #7FD0FF;
 }
-.dark .lvar,
-.dark .title {
+.dark .lvar {
   color: #fff4d1;
+}
+.dark .methref {
+  color: #B2D0FF;
 }
 .dark .const.lvar {
   color: #BD9AC2;
@@ -1911,18 +1930,12 @@ hr + p {
 .dark .hl[eref]:before {
   position: absolute;
 }
-.dark ._imtagnode {
+.dark ._imtagnode > :not(.value) {
   color: #D9BB72;
 }
 .dark ._imtagnode > ._imopen,
 .dark ._imtagnode > ._imclose {
-  color: inherit;
-}
-.dark ._imtagnode > ._identifier:not(.lvar) {
-  color: inherit;
-}
-.dark ._imtagnode > .eq {
-  color: inherit;
+  color: #D9BB72;
 }
 .dark ._imtagnode .tag_attr {
   color: #D9BB72;
@@ -1933,30 +1946,17 @@ hr + p {
 .dark ._imtagnode > ._imopen:first-child + .identifier {
   color: #D9BB72;
 }
-.dark ._imtagnode .dot + .identifier {
+.dark ._imtagnode > .dot + .identifier {
   color: #D9BB72;
-}
-.dark ._imtagnode > .eq + .identifier {
-  color: white;
-}
-.dark ._imtagnode > .eq + .lvar {
-  color: #fff4d1;
-}
-.dark ._imtagnode > .dot {
-  color: inherit;
 }
 .dark ._imtagnode > .hash {
-  color: inherit;
-}
-.dark ._imtagnode > .hash + .identifier {
-  color: inherit;
-}
-.dark ._imtagnode > .self,
-.dark ._imtagnode > .ivar {
   color: #D9BB72;
 }
-.dark ._imtagnode > .paren > .rb:not(.call) {
-  color: inherit;
+.dark ._imtagnode > .self {
+  color: #D9BB72;
+}
+.dark ._imtagnode > .ivar {
+  color: #d98772;
 }
 .dark ._imtagnode > .string s {
   color: #B7DE95;
@@ -1971,7 +1971,7 @@ hr + p {
   color: inherit;
 }
 .dark .curly > .identifier:not(.lvar) {
-  color: white;
+  color: #badeff;
 }
 .dark .identifier.idref {
   color: #D9BB72;
@@ -2101,6 +2101,18 @@ hr + p {
 .dark b[hint-type='error'] {
   color: #FF6666;
   background: rgba(255, 102, 102, 0.2);
+}
+.dark .show-tabs ._imtab {
+  position: relative;
+}
+.dark .show-tabs ._imtab:before {
+  content: "-";
+  color: transparent;
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  right: 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 .dark ._imtagnode > ._imopen,
 .dark ._imtagnode > ._imclose {
@@ -2219,7 +2231,7 @@ hr + p {
 }
 .dark ._imtagnode > ._imopen,
 .dark ._imtagnode > ._imclose {
-  color: inherit;
+  color: #D9BB72;
 }
 .dark ._imtagnode > ._identifier:not(.lvar) {
   color: inherit;
@@ -2274,7 +2286,7 @@ hr + p {
   color: inherit;
 }
 .dark .curly > .identifier:not(.lvar) {
-  color: white;
+  color: #badeff;
 }
 .dark .identifier.idref {
   color: #D9BB72;
@@ -2484,18 +2496,29 @@ hr + p {
 .dark .identifier {
   color: white;
 }
+.dark .key {
+  color: #badeff;
+}
+.dark .key + .colon {
+  color: #badeff;
+}
 .dark .const {
   color: #BD9AC2;
 }
 .dark .access {
   color: white;
 }
+.dark .symbol {
+  color: #B7DE95;
+}
 .dark .ivar {
   color: #7FD0FF;
 }
-.dark .lvar,
-.dark .title {
+.dark .lvar {
   color: #fff4d1;
+}
+.dark .methref {
+  color: #B2D0FF;
 }
 .dark .const.lvar {
   color: #BD9AC2;
@@ -2510,18 +2533,12 @@ hr + p {
 .dark .hl[eref]:before {
   position: absolute;
 }
-.dark ._imtagnode {
+.dark ._imtagnode > :not(.value) {
   color: #D9BB72;
 }
 .dark ._imtagnode > ._imopen,
 .dark ._imtagnode > ._imclose {
-  color: inherit;
-}
-.dark ._imtagnode > ._identifier:not(.lvar) {
-  color: inherit;
-}
-.dark ._imtagnode > .eq {
-  color: inherit;
+  color: #D9BB72;
 }
 .dark ._imtagnode .tag_attr {
   color: #D9BB72;
@@ -2532,30 +2549,17 @@ hr + p {
 .dark ._imtagnode > ._imopen:first-child + .identifier {
   color: #D9BB72;
 }
-.dark ._imtagnode .dot + .identifier {
+.dark ._imtagnode > .dot + .identifier {
   color: #D9BB72;
-}
-.dark ._imtagnode > .eq + .identifier {
-  color: white;
-}
-.dark ._imtagnode > .eq + .lvar {
-  color: #fff4d1;
-}
-.dark ._imtagnode > .dot {
-  color: inherit;
 }
 .dark ._imtagnode > .hash {
-  color: inherit;
-}
-.dark ._imtagnode > .hash + .identifier {
-  color: inherit;
-}
-.dark ._imtagnode > .self,
-.dark ._imtagnode > .ivar {
   color: #D9BB72;
 }
-.dark ._imtagnode > .paren > .rb:not(.call) {
-  color: inherit;
+.dark ._imtagnode > .self {
+  color: #D9BB72;
+}
+.dark ._imtagnode > .ivar {
+  color: #d98772;
 }
 .dark ._imtagnode > .string s {
   color: #B7DE95;
@@ -2570,7 +2574,7 @@ hr + p {
   color: inherit;
 }
 .dark .curly > .identifier:not(.lvar) {
-  color: white;
+  color: #badeff;
 }
 .dark .identifier.idref {
   color: #D9BB72;
@@ -2701,13 +2705,24 @@ hr + p {
   color: #FF6666;
   background: rgba(255, 102, 102, 0.2);
 }
-.dark ._imtagnode > ._imopen,
-.dark ._imtagnode > ._imclose {
-  color: #987A32;
+.dark .show-tabs ._imtab {
+  position: relative;
+}
+.dark .show-tabs ._imtab:before {
+  content: "-";
+  color: transparent;
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  right: 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 .dark ._imtagnode:hover > ._imopen,
 .dark ._imtagnode:hover > ._imclose {
-  color: inherit;
+  color: #D9BB72;
+}
+.dark .identifier + .op.colon {
+  color: white;
 }
 .dark code {
   color: #FBFBFB;
@@ -2742,6 +2757,11 @@ hr + p {
    -ms-user-select: none;
        user-select: none;
   -webkit-user-select: none;
+  min-height: 2ch;
+}
+._imview > .body > .markers {
+  position: absolute;
+  color: transparent;
 }
 ._imview:not(:focus) .caret.local {
   opacity: 0.4;
@@ -2890,16 +2910,175 @@ hr + p {
 ._imcaret.multi .start {
   width: auto !important;
 }
+._imcaret.remote .caret {
+  width: 8px;
+  border: 4px solid transparent;
+  border-top: 4px solid #FFFB60;
+  background: transparent !important;
+  box-sizing: border-box;
+  margin-left: -4px;
+}
 ._imview ._imcaret .start,
 ._imview ._imcaret .mid,
 ._imview ._imcaret .end {
   background-color: rgba(122, 172, 217, 0.17);
 }
-._imtab {
+.emulate-tabs ._imtab {
   width: 2.4em;
   display: inline-block;
   height: 1ex;
   overflow: visible;
+}
+.RangeView {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  opacity: 1;
+  color: transparent;
+  will-change: opacity;
+}
+.RangeView .part {
+  position: absolute;
+  height: 100%;
+}
+.RangeView .loc {
+  position: absolute;
+  height: 100%;
+}
+._imcaret {
+  display: none;
+}
+._caretview {
+  display: none;
+}
+._caretview.active {
+  display: block;
+}
+._caretview .part {
+  position: absolute;
+  height: 100%;
+  background: #2c3c46;
+  border-radius: 2px;
+}
+._caretview .loc .mark {
+  width: 7px;
+  height: 100%;
+  border: 3px solid transparent;
+  border-top: 3px solid #FFFB60;
+  background: transparent !important;
+  box-sizing: border-box;
+  margin-left: -4px;
+  position: absolute;
+}
+._caretview .loc .vbar {
+  position: absolute;
+  top: 5px;
+  bottom: 1px;
+  background: rgba(255, 251, 96, 0.5);
+  width: 1px;
+  left: -1px;
+}
+._caretview .loc.a {
+  display: none;
+}
+._caretview.blink .loc {
+  opacity: 0.1;
+}
+._caretview.collapsed .loc.a {
+  display: none;
+}
+._hintview {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  opacity: 1;
+  color: transparent;
+  will-change: opacity;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+._hintview .part {
+  position: absolute;
+  height: 100%;
+}
+._hintview .tip {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 5px;
+  padding: 5px 8px;
+  background: white;
+  color: black;
+  font-size: 13px;
+  border-radius: 2px;
+  font-weight: bold;
+  left: 50%;
+  -webkit-transform: translate3d(-50%, -10px, 0px);
+          transform: translate3d(-50%, -10px, 0px);
+  transition: -webkit-transform 0.1s ease-out;
+  transition: transform 0.1s ease-out;
+  transition: transform 0.1s ease-out, -webkit-transform 0.1s ease-out;
+}
+._hintview .tip .label {
+  white-space: nowrap;
+}
+._hintview .arrow {
+  width: 0px;
+  height: 0px;
+  top: 100%;
+  position: absolute;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top-width: 8px;
+  border-top-style: solid;
+  border-top-color: inherit;
+  left: 50%;
+  -webkit-transform: translate3d(-50%, 0px, 0px);
+          transform: translate3d(-50%, 0px, 0px);
+}
+._hintview > .line {
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  position: absolute;
+  border-bottom: 2px solid;
+  border-color: inherit;
+  border-radius: 4px;
+  -webkit-transform: translate3d(0px, 0px, 0px);
+          transform: translate3d(0px, 0px, 0px);
+  transition: -webkit-transform 0.1s ease-out;
+  transition: transform 0.1s ease-out;
+  transition: transform 0.1s ease-out, -webkit-transform 0.1s ease-out;
+}
+._hintview.active {
+  opacity: 0.99;
+}
+._hintview.active .tip {
+  -webkit-transform: translate3d(-50%, 0px, 0px);
+          transform: translate3d(-50%, 0px, 0px);
+}
+._hintview.active .line {
+  -webkit-transform: translate3d(0px, 0px, 0px);
+          transform: translate3d(0px, 0px, 0px);
+}
+._hintview.error {
+  border-color: #EC4C51;
+}
+._hintview.error .tip {
+  background: #EC4C51;
+  border-color: #EC4C51;
+  color: white;
+  box-shadow: 0px 0px 10px #192329;
+}
+._hintview.error .tip .arrow {
+  border-top-color: rgba(236, 78, 82, 0.82);
 }
 #header {
   position: fixed;

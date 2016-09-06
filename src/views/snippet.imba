@@ -56,16 +56,22 @@ tag overlay-hint
 	prop col watch: yes
 	prop len watch: yes
 
+	def lineHeight
+		view.@origo.dom:offsetHeight
+
+	def charWidth
+		view.@origo.dom:offsetWidth
+
 	def rowDidSet new, old
-		var val = "{object.row * view.lineHeight}px"
+		var val = "{object.row * lineHeight}px"
 		@dom:style:top = val
 
 	def colDidSet new, old
-		var val = "{object.col * view.charWidth}px"
+		var val = "{object.col * charWidth}px"
 		@dom:style:left = val
 
 	def lenDidSet new, old
-		var width = "{new * view.charWidth}px"
+		var width = "{new * charWidth}px"
 		@dom:style:width = width
 
 	def render
@@ -182,11 +188,8 @@ tag snippet
 	def unmount
 		log 'snippet unmount!'
 
-	def input
-		<imcaptor@input>
-
 	def view
-		@view ||= <imview@view input=input>
+		@view ||= <imview@view>
 
 	def build
 
@@ -249,6 +252,7 @@ tag snippet
 		var code = try %%(.imbacode).dom:innerHTML
 
 		if code
+			log 'loading code',code
 			config:html = code
 			view.load(null,html: code)
 			configure(config)
@@ -445,7 +449,7 @@ tag herosnippet < example
 
 	def refit
 		var ow = dom:offsetWidth
-		var cs = view.charWidth
+		var cs = view.@origo.dom:offsetWidth
 		var iw = view.root.dom:offsetWidth
 		var chars = iw / cs
 		var font-size = Math.floor((ow / chars) / 0.6)

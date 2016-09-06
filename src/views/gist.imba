@@ -84,7 +84,8 @@ tag gist < snippet
 
 		def ontap e
 			console.log 'tap?',pane,e
-			e.event:metaKey ? pane?.show : pane?.maximize
+			if pane
+				e.event:metaKey ? pane.show : pane.maximize
 			e.halt
 
 		def render

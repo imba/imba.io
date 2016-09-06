@@ -17,6 +17,7 @@ gulp.task('less',function(){
 })
 
 gulp.task('watch',function(){
+  gulp.run('less');
 	gulp.watch('./less/**/*.less', ['less']);
 })
 
