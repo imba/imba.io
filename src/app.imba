@@ -38,6 +38,15 @@ export class App
 
 	def schedule
 		Imba.schedule(self)
+
+		if $web$
+			@blinker = Imba.setInterval(1000) do
+				for caret in $(._caretview.active)
+					caret.blink
+
+				setTimeout(&,500) do
+					for caret in $(._caretview.active)
+						caret.unblink
 		self
 
 	def unschedule

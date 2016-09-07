@@ -27,7 +27,7 @@ tag pattern
 			items.push("<em>{k}</em>")
 			parts:methods.push("<em>{k}</em>")
 
-		for k in HTML_TAGS
+		for k in Imba.HTML_TAGS or HTML_TAGS
 			items.push("<u>&lt;{k}&gt;</u>")
 			parts:tags.push("<u>&lt;{k}&gt;</u>")
 
