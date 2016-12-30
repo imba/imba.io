@@ -19,8 +19,8 @@ tag api-path < span
 
 	def setup
 		var items = []
-		if object isa String
-			html = object.replace(/\b([\w]+|\.|\#)\b/g) do |m,i|
+		if data isa String
+			html = data.replace(/\b([\w]+|\.|\#)\b/g) do |m,i|
 				if i == '.' or i == '#'
 					"<i>{i}</i>"
 				elif i[0] == i[0].toUpperCase
@@ -35,71 +35,71 @@ tag api-link
 
 	def render
 		<self>
-			<api-path[object:value].value>
-			<span.desc> object:desc
+			<api-path[data:value].value>
+			<span.desc> data:desc
 
 tag api-return < api-link
 
 tag api-class < api-item
 
-	prop object watch: :parse
+	prop data watch: :parse
 
 	def parse
-		@statics = (m for m in object['.'] when m:desc)
-		@methods = (m for m in object['#'] when m:desc)
+		@statics = (m for m in data['.'] when m:desc)
+		@methods = (m for m in data['#'] when m:desc)
 		@properties = []
 		self
 
 	def render
 		<self>
-			<span.toc-anchor id=pathToAnchor(object:namepath)>
-			<.header> <.title> <api-path[object:namepath]>
-			<api-desc html=object:html>
-			if object:ctor
+			<span.toc-anchor id=pathToAnchor(data:namepath)>
+			<.header> <.title> <api-path[data:namepath]>
+			<api-desc html=data:html>
+			if data:ctor
 				<.content.ctor>
-					<api-method[object:ctor] path=(object:namepath + '.new')>
+					<api-method[data:ctor] path=(data:namepath + '.new')>
 
 			<.content>
 				if @statics:length > 0
 					<.section>
 						<h2.header> 'Static Methods'
 						<.content.list> for item in @statics
-							<api-method[item].doc iname=object:namepath>
+							<api-method[item].doc iname=data:namepath>
 
 				if @methods:length > 0
 					<.section>
 						<h2.header> 'Instance Methods'
 						<.content.list> for item in @methods
-							<api-method[item].doc iname=object:iname>
+							<api-method[item].doc iname=data:iname>
 
 tag api-value
 
 	def render
-		if object:type
-			<self .{object:type}>
-				object:value
-		elif object isa String
-			<self.str text=object>
-		elif object isa Number
-			<self.num text=object>
+		if data:type
+			<self .{data:type}>
+				data:value
+		elif data isa String
+			<self.str text=data>
+		elif data isa Number
+			<self.num text=data>
 		self
 		
 
 tag api-param
 
 	def type
-		object:type
+		data:type
 
 	def render
 		<self .{type}>
 			if type == 'NamedParams'
-				for param in object:nodes
+				for param in data:nodes
 					<api-param[param]>
 			else
-				<.name> object:name
-				if object:defaults
+				<.name> data:name
+				if data:defaults
 					<i> type == 'NamedParam' ? ': ' : ' = '
-					<api-value[object:defaults]>
+					<api-value[data:defaults]>
 
 tag api-method < api-item
 
@@ -108,31 +108,31 @@ tag api-method < api-item
 
 	def tags
 		<div@tags>
-			if object:deprecated
+			if data:deprecated
 				<.deprecated.red> 'Method is deprecated'
-			<api-return[object:return] name='returns'> if object:return
+			<api-return[data:return] name='returns'> if data:return
 
 	def path
-		@path or (iname + '.' + object:name)
+		@path or (iname + '.' + data:name)
 
 	def slug
-		pathToAnchor(object:namepath)
+		pathToAnchor(data:namepath)
 
 	def render
-		<self .deprecated=object:deprecated >
+		<self .deprecated=(data:deprecated) >
 			<span.toc-anchor id=slug>
 			<.header>
 				<api-path[path]>
-				<.params> for param in object:params
+				<.params> for param in data:params
 					<api-param[param]>
 				<.grow>
-			<api-desc.md html=object:html>
+			<api-desc.md html=data:html>
 			tags
 
 tag doc-link < a
 
 	def render
-		<self href="/docs#{pathToAnchor(object:namepath)}"> <api-path[object:namepath]>
+		<self href="/docs#{pathToAnchor(data:namepath)}"> <api-path[data:namepath]>
 		super
 
 	def ontap
