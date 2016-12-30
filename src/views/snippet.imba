@@ -191,8 +191,7 @@ tag snippet
 	def view
 		@view ||= <imview@view>
 
-	def build
-
+	def setup
 		if $node$
 			if src and src.match(/\.imba$/)
 				APP.fetchDocument(src) do |res|
@@ -247,14 +246,15 @@ tag snippet
 		render
 
 	def awaken
-		log 'awakened snippet'
 		var config = {}
+		# console.log 'awakening snippet!!',dom:innerHTML,%%(.imbacode).dom:innerHTML
 		var code = try %%(.imbacode).dom:innerHTML
+		var bareCode = try %%(.imbacode).dom:textContent
 
 		if code
-			log 'loading code',code
 			config:html = code
-			view.load(null,html: code)
+			V = view
+			view.load(bareCode,html: code, lang: 'imba')
 			configure(config)
 
 		return self
@@ -333,11 +333,12 @@ tag snippet
 		<jsview@jsview>
 
 	def reload
-		return unless @built
+		return unless @initialized
 
 		if DEPS[src]
 			var res = DEPS[src]
-			view.load(null,html: res:html, filename: src)
+			console.log("LOAD VIEW!!!")
+			view.load(null,html: res:html, filename: src, lang: 'imba')
 			if autorun
 				setTimeout(&,50) do run
 			return self
@@ -345,7 +346,7 @@ tag snippet
 		# get imba document?!?
 		APP.fetchDocument(src) do |res|
 			console.log 'fetching document for snippet'
-			view.load(res:body, filename: src)
+			view.load(res:body, filename: src, lang: 'imba')
 			if autorun
 				setTimeout(&,50) do run
 		self
@@ -367,7 +368,7 @@ tag snippet
 	def reset e
 		@console.reset
 		if @options:html
-			view.load(null,html: @options:html)
+			view.load(null,html: @options:html, lang: 'imba')
 		if e
 			e.cancel
 		unflag('dirty')

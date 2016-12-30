@@ -16,7 +16,7 @@ def shuffle array
 
 tag pattern
 
-	def build
+	def setup
 		return self if $node$
 
 		var parts = {tags: [], keywords: [], methods: []}

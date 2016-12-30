@@ -17,7 +17,7 @@ tag api-item
 
 tag api-path < span
 
-	def build
+	def setup
 		var items = []
 		if object isa String
 			html = object.replace(/\b([\w]+|\.|\#)\b/g) do |m,i|
@@ -161,7 +161,7 @@ tag docs < page
 		schedule
 		self
 
-	def build
+	def setup
 		load
 		super
 

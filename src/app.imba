@@ -34,11 +34,12 @@ export class App
 		$web$ ? @loc:hash.substr(1) : ''
 
 	def tick
+		Imba.ticker.add(self) if @scheduled
 		self
 
 	def schedule
-		Imba.schedule(self)
-
+		Imba.ticker.add(self)
+		@scheduled = yes
 		if $web$
 			@blinker = Imba.setInterval(1000) do
 				for caret in $(._caretview.active)
@@ -50,7 +51,8 @@ export class App
 		self
 
 	def unschedule
-		Imba.unschedule(self)
+		@scheduled = no
+		Imba.clearInterval(@blinker)
 		self
 
 	def fetchDocument src, &cb

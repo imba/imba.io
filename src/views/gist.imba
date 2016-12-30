@@ -9,8 +9,8 @@ tag gist-output < iframe
 	prop ready
 	prop editor
 
-	def build
-		dom:onload = do setup
+	def setup
+		dom:onload = do loaded
 		self
 
 	def ctx
@@ -30,7 +30,7 @@ tag gist-output < iframe
 		ctx.run(data,editor)
 		self
 
-	def setup
+	def loaded
 		doc:head:innerHTML = head.dom:innerHTML
 		var script = doc.createElement("script")
 		script:type = 'text/javascript'

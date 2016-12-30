@@ -1,8 +1,7 @@
 tag todos < form
 
-	def build
+	def setup
 		@items = []
-		super
 
 	def onsubmit event
 		@items.push(title: @input.value)

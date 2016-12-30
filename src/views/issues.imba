@@ -33,9 +33,6 @@ tag issue
 	def doc
 		object.object
 
-	def build
-		commit
-
 	def commit
 		if object and object.ready
 			unflag('loading')

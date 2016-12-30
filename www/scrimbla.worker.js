@@ -50,7 +50,7 @@
 
 	var compiler = __webpack_require__(2);
 
-	var ImbaParseError = __webpack_require__(8).ImbaParseError;
+	var ImbaParseError = __webpack_require__(7).ImbaParseError;
 	var api = {};
 
 	function normalizeError(e,o){
@@ -152,15 +152,26 @@
 /* 1 */
 /***/ function(module, exports) {
 
-	
+	var isClient = (typeof window == 'object' && this == window);
+
+	if (isClient) {
+		// should not go there
+		window.global || (window.global = window);
+	};
+
 	/*
 	Imba is the namespace for all runtime related utilities
 	@namespace
 	*/
 
-	Imba = {VERSION: '1.0.0-beta'};
+	Imba = {
+		VERSION: '0.14.5',
+		CLIENT: isClient,
+		SERVER: !isClient,
+		DEBUG: false
+	};
 
-
+	var reg = /-./g;
 
 	/*
 	True if running in client environment.
@@ -168,7 +179,7 @@
 	*/
 
 	Imba.isClient = function (){
-		return false;
+		return Imba.CLIENT == true;
 	};
 
 	/*
@@ -177,7 +188,7 @@
 	*/
 
 	Imba.isServer = function (){
-		return false;
+		return Imba.SERVER == true;
 	};
 
 	Imba.subclass = function (obj,sup){
@@ -214,7 +225,7 @@
 	*/
 
 	Imba.iterable = function (o){
-		return (o) ? (((o.toArray) ? (o.toArray()) : (o))) : ([]);
+		return o ? ((o.toArray ? (o.toArray()) : (o))) : ([]);
 	};
 
 	/*
@@ -235,22 +246,16 @@
 		};
 	};
 
-	var dashRegex = /-./g;
+	Imba.toCamelCase = function (str){
+		return str.replace(reg,function(m) { return m.charAt(1).toUpperCase(); });
+	};
 
 	Imba.toCamelCase = function (str){
-		if (str.indexOf('-') >= 0) {
-			return str.replace(dashRegex,function(m) { return m.charAt(1).toUpperCase(); });
-		} else {
-			return str;
-		};
+		return str.replace(reg,function(m) { return m.charAt(1).toUpperCase(); });
 	};
 
 	Imba.indexOf = function (a,b){
-		return ((b && b.indexOf)) ? (b.indexOf(a)) : ([].indexOf.call(a,b));
-	};
-
-	Imba.len = function (a){
-		return a && ((a.len instanceof Function) ? (a.len.call(a)) : (a.length)) || 0;
+		return (b && b.indexOf) ? (b.indexOf(a)) : ([].indexOf.call(a,b));
 	};
 
 	Imba.prop = function (scope,name,opts){
@@ -289,89 +294,6 @@
 		return;
 	};
 
-
-	// Basic events
-	function emit__(event,args,node){
-		// var node = cbs[event]
-		var prev,cb,ret;
-		
-		while ((prev = node) && (node = node.next)){
-			if (cb = node.listener) {
-				if (node.path && cb[node.path]) {
-					ret = (args) ? (cb[node.path].apply(cb,args)) : (cb[node.path]());
-				} else {
-					// check if it is a method?
-					ret = (args) ? (cb.apply(node,args)) : (cb.call(node));
-				};
-			};
-			
-			if (node.times && --node.times <= 0) {
-				prev.next = node.next;
-				node.listener = null;
-			};
-		};
-		return;
-	};
-
-	// method for registering a listener on object
-	Imba.listen = function (obj,event,listener,path){
-		var $1;
-		var cbs,list,tail;
-		cbs = obj.__listeners__ || (obj.__listeners__ = {});
-		list = cbs[($1 = event)] || (cbs[$1] = {});
-		tail = list.tail || (list.tail = (list.next = {}));
-		tail.listener = listener;
-		tail.path = path;
-		list.tail = tail.next = {};
-		return tail;
-	};
-
-	// register a listener once
-	Imba.once = function (obj,event,listener){
-		var tail = Imba.listen(obj,event,listener);
-		tail.times = 1;
-		return tail;
-	};
-
-	// remove a listener
-	Imba.unlisten = function (obj,event,cb,meth){
-		var node,prev;
-		var meta = obj.__listeners__;
-		if (!meta) { return };
-		
-		if (node = meta[event]) {
-			while ((prev = node) && (node = node.next)){
-				if (node == cb || node.listener == cb) {
-					prev.next = node.next;
-					// check for correct path as well?
-					node.listener = null;
-					break;
-				};
-			};
-		};
-		return;
-	};
-
-	// emit event
-	Imba.emit = function (obj,event,params){
-		var cb;
-		if (cb = obj.__listeners__) {
-			if (cb[event]) { emit__(event,params,cb[event]) };
-			if (cb.all) { emit__(event,[event,params],cb.all) }; // and event != 'all'
-		};
-		return;
-	};
-
-	Imba.observeProperty = function (observer,key,trigger,target,prev){
-		if (prev && typeof prev == 'object') {
-			Imba.unlisten(prev,'all',observer,trigger);
-		};
-		if (target && typeof target == 'object') {
-			Imba.listen(target,'all',observer,trigger);
-		};
-		return this;
-	};
-
 	Imba;
 
 
@@ -383,17 +305,16 @@
 	// var imba = require '../imba'
 	var T = __webpack_require__(3);
 	var util = __webpack_require__(4);
-	var lexer = __webpack_require__(6);
-	var rewriter = __webpack_require__(9);
-	var parser = exports.parser = __webpack_require__(10).parser;
-	var ast = __webpack_require__(11);
+	var lexer = __webpack_require__(5);
+	var rewriter = __webpack_require__(6);
+	var parser = exports.parser = __webpack_require__(8).parser;
+	var ast = __webpack_require__(9);
 
-	var ImbaParseError = __webpack_require__(8).ImbaParseError;
+	var ImbaParseError = __webpack_require__(7).ImbaParseError;
 
 	// Instantiate a Lexer for our use here.
 	var lex = exports.lex = new (lexer.Lexer)();
 	var Rewriter = exports.Rewriter = rewriter.Rewriter;
-	rewriter = new Rewriter();
 
 	parser.lexer = lex.jisonBridge();
 	parser.yy = ast; // everything is exported right here now
@@ -402,17 +323,9 @@
 	function tokenize(code,o){
 		if(o === undefined) o = {};
 		try {
-			// console.log('tokenize') if o:profile
-			if (o.profile) { console.time('tokenize') };
 			o._source = code;
 			lex.reset();
-			var tokens = lex.tokenize(code,o);
-			if (o.profile) { console.timeEnd('tokenize') };
-			
-			if (o.rewrite !== false) {
-				tokens = rewriter.rewrite(tokens,o);
-			};
-			return tokens;
+			return lex.tokenize(code,o);
 		} catch (err) {
 			throw err;
 		};
@@ -420,26 +333,24 @@
 
 	function rewrite(tokens,o){
 		if(o === undefined) o = {};
+		var rewriter = new Rewriter();
 		try {
-			if (o.profile) { console.time('rewrite') };
-			tokens = rewriter.rewrite(tokens,o);
-			if (o.profile) { console.timeEnd('rewrite') };
+			return rewriter.rewrite(tokens,o);
 		} catch (err) {
 			throw err;
 		};
-		return tokens;
 	}; exports.rewrite = rewrite;
 
 
 	function parse(code,o){
 		if(o === undefined) o = {};
-		var tokens = (code instanceof Array) ? (code) : (tokenize(code,o));
+		var tokens = code instanceof Array ? (code) : (tokenize(code,o));
 		try {
+			// console.log("Tokens",tokens)
 			if (tokens != code) o._source || (o._source = code);
 			o._tokens = tokens;
 			return parser.parse(tokens);
 		} catch (err) {
-			err._code = code;
 			if (o.filename) { err._filename = o.filename };
 			throw err;
 		};
@@ -449,19 +360,35 @@
 	function compile(code,o){
 		if(o === undefined) o = {};
 		try {
-			// check if code is completely blank
-			if (!/\S/.test(code)) {
-				return {js: ""};
-			};
-			
 			var tokens = tokenize(code,o);
 			var ast = parse(tokens,o);
 			return ast.compile(o);
 		} catch (err) {
-			err._code = code;
 			if (o.filename) { err._filename = o.filename };
-			if (o.evaling) {
-				console.log("error during compile",o.filename);
+			tokens || (tokens = o._tokens);
+			
+			if (tokens && (err instanceof ImbaParseError)) {
+				try {
+					var tok = err.start();
+				} catch (e) {
+					throw err;
+				};
+				
+				var locmap = util.locationToLineColMap(code);
+				var lines = code.split(/\n/g);
+				
+				var lc = locmap[tok._loc] || [0,0];
+				var ln = lc[0];
+				var col = lc[1];
+				var line = lines[ln];
+				
+				var message = err.message + ("\n\n" + ln) + ("\n" + (ln + 1) + " " + line) + ("\n" + (ln + 2));
+				var reducer = function(s,c,i) {
+					return s += i == col ? ("^") : ((c == "\t" ? (c) : (" ")));
+				};
+				message += line.split('').reduce(reducer,"");
+				
+				err.message = message;
 			};
 			throw err;
 		};
@@ -474,6 +401,7 @@
 			var ast = parse(code,o);
 			meta = ast.analyze(o);
 		} catch (e) {
+			// console.log "something wrong {e:message}"
 			if (!((e instanceof ImbaParseError))) {
 				if (e.lexer) {
 					e = new ImbaParseError(e,{tokens: e.lexer.tokens,pos: e.lexer.pos});
@@ -505,13 +433,12 @@
 	function Token(type,value,loc,len){
 		this._type = type;
 		this._value = value;
-		this._loc = (loc != null) ? (loc) : (-1);
+		this._loc = loc != null ? (loc) : (-1);
 		this._len = len || 0;
 		this._meta = null;
 		this.generated = false;
 		this.newLine = false;
 		this.spaced = false;
-		this.call = false;
 		return this;
 	};
 
@@ -549,7 +476,7 @@
 	};
 
 	Token.prototype.sourceMapMarker = function (){
-		return (this._loc == -1) ? (':') : (("%$" + (this._loc) + "$%"));
+		return this._loc == -1 ? (':') : (("%$" + (this._loc) + "$%"));
 		// @col == -1 ? '' : "%%{@line}${@col}%%"
 	};
 
@@ -618,9 +545,9 @@
 
 /***/ },
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {
+	
 	function brace(str){
 		var lines = str.match(/\n/);
 		// what about indentation?
@@ -651,7 +578,7 @@
 
 	function flatten(arr){
 		var out = [];
-		arr.forEach(function(v) { return (v instanceof Array) ? (out.push.apply(out,flatten(v))) : (out.push(v)); });
+		arr.forEach(function(v) { return v instanceof Array ? (out.push.apply(out,flatten(v))) : (out.push(v)); });
 		return out;
 	}; exports.flatten = flatten;
 
@@ -666,22 +593,13 @@
 		return str.replace(/([\-\_\s])(\w)/g,function(m,v,l) { return l.toUpperCase(); });
 	}; exports.camelCase = camelCase;
 
-	function dashToCamelCase(str){
-		str = String(str);
-		if (str.indexOf('-') >= 0) {
-			// should add shortcut out
-			str = str.replace(/([\-\s])(\w)/g,function(m,v,l) { return l.toUpperCase(); });
-		};
-		return str;
-	}; exports.dashToCamelCase = dashToCamelCase;
-
 	function snakeCase(str){
 		var str = str.replace(/([\-\s])(\w)/g,'_');
 		return str.replace(/()([A-Z])/g,"_$1",function(m,v,l) { return l.toUpperCase(); });
 	}; exports.snakeCase = snakeCase;
 
 	function setterSym(sym){
-		return dashToCamelCase(("set-" + sym));
+		return camelCase(("set-" + sym));
 	}; exports.setterSym = setterSym;
 
 	function quote(str){
@@ -722,37 +640,6 @@
 		return '(' + String(str) + ')';
 	}; exports.parenthesize = parenthesize;
 
-	function unionOfLocations(){
-		var $0 = arguments, j = $0.length;
-		var locs = new Array(j>0 ? j : 0);
-		while(j>0) locs[j-1] = $0[--j];
-		var a = Infinity;
-		var b = -Infinity;
-		
-		for (var i = 0, ary = Imba.iterable(locs), len = ary.length, loc; i < len; i++) {
-			loc = ary[i];
-			if (loc && loc._loc != undefined) {
-				loc = loc._loc;
-			};
-			
-			if (loc && (loc.loc instanceof Function)) {
-				loc = loc.loc();
-			};
-			
-			if (loc instanceof Array) {
-				if (a > loc[0]) { a = loc[0] };
-				if (b < loc[0]) { b = loc[1] };
-			} else if ((typeof loc=='number'||loc instanceof Number)) {
-				if (a > loc) { a = loc };
-				if (b < loc) { b = loc };
-			};
-		};
-		
-		return [a,b];
-	}; exports.unionOfLocations = unionOfLocations;
-
-
-
 	function locationToLineColMap(code){
 		var lines = code.split(/\n/g);
 		var map = [];
@@ -782,213 +669,22 @@
 		return this;
 	}; exports.markLineColForTokens = markLineColForTokens;
 
-	function parseArgs(argv,o){
-		var env_;
-		if(o === undefined) o = {};
-		var aliases = o.alias || (o.alias = {});
-		var groups = o.groups || (o.groups = []);
-		var schema = o.schema || {};
-		
-		schema.main = {};
-		
-		var options = {};
-		var explicit = {};
-		argv = argv || process.argv.slice(2);
-		var curr = null;
-		var i = 0;
-		var m;
-		
-		while ((i < argv.length)){
-			var arg = argv[i];
-			i++;
-			
-			if (m = arg.match(/^\-([a-zA-Z]+)$/)) {
-				curr = null;
-				var chars = m[1].split('');
-				
-				for (var i1 = 0, ary = Imba.iterable(chars), len = ary.length, item; i1 < len; i1++) {
-					// console.log "parsing {item} at {i}",aliases
-					item = ary[i1];
-					var key = aliases[item] || item;
-					chars[i1] = key;
-					options[key] = true;
-				};
-				
-				if (chars.length == 1) {
-					curr = chars;
-				};
-			} else if (m = arg.match(/^\-\-([a-z0-9\-\_A-Z]+)$/)) {
-				var val = true;
-				key = m[1];
-				
-				if (key.indexOf('no-') == 0) {
-					key = key.substr(3);
-					val = false;
-				};
-				
-				for (var j = 0, items = Imba.iterable(groups), len_ = items.length, g; j < len_; j++) {
-					g = items[j];
-					if (key.substr(0,g.length) == g) {
-						console.log('should be part of group');
-					};
-				};
-				
-				key = dashToCamelCase(key);
-				
-				options[key] = val;
-				curr = key;
-			} else {
-				if (!(curr && schema[curr])) {
-					curr = 'main';
-				};
-				
-				if (arg.match(/^\d+$/)) {
-					arg = parseInt(arg);
-				};
-				
-				val = options[curr];
-				if (val == true || val == false) {
-					options[curr] = arg;
-				} else if ((typeof val=='string'||val instanceof String) || (typeof val=='number'||val instanceof Number)) {
-					options[curr] = [val].concat(arg);
-				} else if (val instanceof Array) {
-					val.push(arg);
-				} else {
-					options[curr] = arg;
-				};
-			};
-		};
-		
-		
-		if ((typeof (env_ = options.env)=='string'||env_ instanceof String)) {
-			options[("ENV_" + (options.env))] = true;
-		};
-		
-		return options;
-	}; exports.parseArgs = parseArgs;
-
-	var ansi = exports.ansi = {
-		bold: function(text) { return '\u001b[1m' + text + '\u001b[22m'; },
-		red: function(text) { return '\u001b[31m' + text + '\u001b[39m'; },
-		green: function(text) { return '\u001b[32m' + text + '\u001b[39m'; },
-		gray: function(text) { return '\u001b[90m' + text + '\u001b[39m'; },
-		white: function(text) { return '\u001b[37m' + text + '\u001b[39m'; }
-	};
-
-
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
 /* 5 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-
-	var process = module.exports = {};
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-
-	function cleanUpNextTick() {
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = setTimeout(cleanUpNextTick);
-	    draining = true;
-
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    clearTimeout(timeout);
-	}
-
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        setTimeout(drainQueue, 0);
-	    }
-	};
-
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ },
-/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
 	var T = __webpack_require__(3);
 	var Token = T.Token;
 
-	var INVERSES = __webpack_require__(7).INVERSES;
+	var rw = __webpack_require__(6);
+	var Rewriter = rw.Rewriter;
+	var INVERSES = rw.INVERSES;
 
 	var K = 0;
 
-	var ERR = __webpack_require__(8);
+	var ERR = __webpack_require__(7);
 
 	// Constants
 	// ---------
@@ -1013,10 +709,26 @@
 	// some words (like tokid) should be context-specific
 	var IMBA_KEYWORDS = [
 		'undefined','then','unless','until','loop','of','by',
-		'when','def','tag','do','elif','begin','var','let','self','await','import','require'
+		'when','def','tag','do','elif','begin','var','let','self','await','import'
 	];
 
 	var IMBA_CONTEXTUAL_KEYWORDS = ['extend','static','local','export','global','prop'];
+
+	var IMBA_ALIAS_MAP = {
+		'and': '&&',
+		'or': '||',
+		'is': '==',
+		'isnt': '!=',
+		'not': '!',
+		'yes': 'true',
+		'no': 'false',
+		'isa': 'instanceof',
+		'case': 'switch',
+		'nil': 'null'
+	};
+
+	var IMBA_ALIASES = Object.keys(IMBA_ALIAS_MAP);
+	IMBA_KEYWORDS = IMBA_KEYWORDS.concat(IMBA_ALIASES);
 
 	// FixedArray for performance
 	// var ALL_KEYWORDS = JS_KEYWORDS.concat(IMBA_KEYWORDS)
@@ -1028,7 +740,7 @@
 		'class','extends','super','return',
 		'undefined','then','unless','until','loop','of','by',
 		'when','def','tag','do','elif','begin','var','let','self','await','import',
-		'and','or','is','isnt','not','yes','no','isa','case','nil','require'
+		'and','or','is','isnt','not','yes','no','isa','case','nil'
 	];
 
 	// The list of keywords that are reserved by JavaScript, but not used, or are
@@ -1048,7 +760,7 @@
 	// added hyphens to identifiers now - to test
 	var IDENTIFIER = /^((\$|@@|@|\#)[\wA-Za-z_\-\x7f-\uffff][$\w\x7f-\uffff]*(\-[$\w\x7f-\uffff]+)*|[$A-Za-z_][$\w\x7f-\uffff]*(\-[$\w\x7f-\uffff]+)*)([^\n\S]*:(?![\*\=:$\w\x7f-\uffff]))?/;
 
-	var OBJECT_KEY = /^((\$|@@|@|)[$A-Za-z_\x7f-\uffff\-][$\w\x7f-\uffff\-]*)([^\n\S\s]*:(?![\*\=:$A-Za-z\_\x7f-\uffff]))/;
+	var OBJECT_KEY = /^((\$|@@|@|)[$A-Za-z_\x7f-\uffff\-][$\w\x7f-\uffff\-]*)([^\n\S\s]*:(?![\*\=:$\w\x7f-\uffff]))/;
 
 	var TAG = /^(\<|%)(?=[A-Za-z\#\.\{\@\>])/;
 
@@ -1065,14 +777,14 @@
 	var SELECTOR_ATTR_OP = /^(\$=|\~=|\^=|\*=|\|=|=|\!=)/;
 	var SELECTOR_ATTR = /^\[([\w\_\-]+)(\$=|\~=|\^=|\*=|\|=|=|\!=)/;
 
-	var SYMBOL = /^\:((([\*\@$\w\x7f-\uffff]+)+([\-\\\:][\w\x7f-\uffff]+)*)|==|\<=\>)/;
+	var SYMBOL = /^\:((([\*\@$\w\x7f-\uffff]+)+([\-\\/\\\:][\w\x7f-\uffff]+)*)|==|\<=\>|\[\]|\[\]\=|\*|[\\/,\\])/;
 
 
 	var NUMBER = /^0x[\da-f]+|^0b[01]+|^\d*\.?\d+(?:e[+-]?\d+)?/i;
 
 	var HEREDOC = /^("""|''')([\s\S]*?)(?:\n[^\n\S]*)?\1/;
 
-	var OPERATOR = /^(?:[-=]=>|===|->|=>|!==|[-+*\/%<>&|^!?=]=|=<|>>>=?|([-+:])\1|([&|<>])\2=?|\?\.|\?\:|\.{2,3}|\*(?=[a-zA-Z\_]))/;
+	var OPERATOR = /^(?:[-=]=>|===|->|!==|[-+*\/%<>&|^!?=]=|=<|>>>=?|([-+:])\1|([&|<>])\2=?|\?\.|\?\:|\.{2,3}|\*(?=[a-zA-Z\_]))/;
 
 	// FIXME splat should only be allowed when the previous thing is spaced or inside call?
 
@@ -1111,8 +823,6 @@
 
 	var CONST_IDENTIFIER = /^[A-Z]/;
 
-	var ENV_FLAG = /^\$\w+\$/;
-
 	var ARGVAR = /^\$\d$/;
 
 	// Compound assignment tokens.
@@ -1122,7 +832,7 @@
 	var UNARY = ['!','~','NEW','TYPEOF','DELETE'];
 
 	// Logical tokens.
-	var LOGIC = ['&&','||','&','|','^','and','or'];
+	var LOGIC = ['&&','||','&','|','^'];
 
 	// Bit-shifting tokens.
 	var SHIFT = ['<<','>>','>>>'];
@@ -1158,16 +868,14 @@
 
 	// } should not be callable anymore!!! '}', '::',
 	var CALLABLE = ['IDENTIFIER','STRING','REGEX',')',']','THIS','SUPER','TAG_END','IVAR','GVAR','SELF','CONST','NEW','ARGVAR','SYMBOL','RETURN'];
-
+	// var INDEXABLE = CALLABLE.concat 'NUMBER', 'BOOL', 'TAG_SELECTOR', 'IDREF', 'ARGUMENTS','}' # are booleans indexable? really?
 	// optimize for FixedArray
 	var INDEXABLE = [
 		'IDENTIFIER','STRING','REGEX',')',']','THIS','SUPER','TAG_END','IVAR','GVAR','SELF','CONST','NEW','ARGVAR','SYMBOL','RETURN',
-		'NUMBER','BOOL','TAG_SELECTOR','ARGUMENTS','}','TAG_TYPE','TAGID'
+		'NUMBER','BOOL','TAG_SELECTOR','IDREF','ARGUMENTS','}','TAG_TYPE'
 	];
 
-	var NOT_KEY_AFTER = ['.','?','?.','UNARY','?:','+','-','*'];
-
-	var GLOBAL_IDENTIFIERS = ['global','exports'];
+	var GLOBAL_IDENTIFIERS = ['global','exports','require'];
 
 	// Tokens that, when immediately preceding a `WHEN`, indicate that the `WHEN`
 	// occurs at the start of a line. We disambiguate these from trailing whens to
@@ -1227,7 +935,6 @@
 		this._code = null;
 		this._chunk = null; // The remainder of the source code.
 		this._opts = null;
-		this._state = {};
 		
 		this._indent = 0; // The current indentation level.
 		this._indebt = 0; // The over-indentation at the current level.
@@ -1238,12 +945,10 @@
 		this._contexts = []; // suplements @ends
 		this._scopes = [];
 		this._nextScope = null; // the scope to add on the next indent
-		this._context = null;
 		// should rather make it like a statemachine that moves from CLASS_DEF to CLASS_BODY etc
 		// Things should compile differently when you are in a CLASS_BODY than when in a DEF_BODY++
 		
 		this._indentStyle = null;
-		this._inTag = false;
 		
 		this._tokens = []; // Stream of parsed tokens in the form `['TYPE', value, line]`.
 		this._seenFor = false;
@@ -1253,7 +958,6 @@
 		this._end = null;
 		this._char = null;
 		this._bridge = null;
-		
 		this._last = null;
 		this._lastTyp = '';
 		this._lastVal = null;
@@ -1275,7 +979,6 @@
 
 	Lexer.prototype.tokenize = function (code,o){
 		
-		var m;
 		if(o === undefined) o = {};
 		if (code.length == 0) {
 			return [];
@@ -1297,46 +1000,40 @@
 		this._code = code;
 		this._opts = o;
 		this._locOffset = o.loc || 0;
-		this._indentStyle = o.indentation || null;
 		
-		// if the very first line is indented, take this as a gutter
-		if (m = code.match(/^([\ \t]*)[^\n\s\t]/)) {
-			this._state.gutter = m[1];
-		};
-		
-		if (o.gutter !== undefined) {
-			this._state.gutter = o.gutter;
-		};
-		
+		o.indent || (o.indent = {style: null,size: null});
+		// add a reference to the options object
 		o._tokens = this._tokens;
+		// what about col here?
 		
+		// @indent  = 0 # The current indentation level.
+		// @indebt  = 0 # The over-indentation at the current level.
+		// @outdebt = 0 # The under-outdentation at the current level.
+		// @indents = [] # The stack of all current indentation levels.
+		// @ends    = [] # The stack for pairing up tokens.
+		// @tokens  = [] # Stream of parsed tokens in the form `['TYPE', value, line]`.
+		// @char = nil
+		
+		if (o.profile) { console.time("tokenize:lexer") };
 		this.parse(code);
-		
 		if (!o.inline) this.closeIndentation();
-		
 		if (!o.silent && this._ends.length) {
-			console.log(this._ends);
 			this.error(("missing " + (this._ends.pop())));
 		};
 		
-		return this._tokens;
+		if (o.profile) { console.timeEnd("tokenize:lexer") };
+		if (o.rewrite == false || o.norewrite) { return this._tokens };
+		return new Rewriter().rewrite(this._tokens,o);
 	};
 
 	Lexer.prototype.parse = function (code){
 		var i = 0;
 		var pi = 0;
-		this._loc = this._locOffset + i;
 		
 		while (this._chunk = code.slice(i)){
-			if (this._context && this._context.pop) {
-				if (this._context.pop.test(this._chunk)) {
-					this.popEnd();
-				};
-			};
-			
+			this._loc = this._locOffset + i;
 			pi = (this._end == 'TAG' && this.tagDefContextToken()) || (this._inTag && this.tagContextToken()) || this.basicContext();
 			i += pi;
-			this._loc = this._locOffset + i;
 		};
 		
 		return;
@@ -1359,35 +1056,19 @@
 		return o && o[key];
 	};
 
-	Lexer.prototype.pushEnd = function (val,ctx){
+	Lexer.prototype.pushEnd = function (val){
+		// console.log "pushing end",val
 		this._ends.push(val);
-		this._contexts.push(this._context = (ctx || {}));
+		this._contexts.push(null);
 		this._end = val;
 		this.refreshScope();
-		
-		if (ctx && ctx.id) {
-			ctx.start = new Token(ctx.id + '_START',val,this._last.region()[1],0);
-			this._tokens.push(ctx.start);
-		};
 		return this;
 	};
 
 	Lexer.prototype.popEnd = function (val){
-		var popped = this._ends.pop();
-		this._end = this._ends[this._ends.length - 1];
-		
-		// automatically adding a closer if this is defined
-		var ctx = this._context;
-		if (ctx && ctx.start) {
-			ctx.end = new Token(ctx.id + '_END',popped,this._last.region()[1],0);
-			ctx.end._start = ctx.start;
-			ctx.start._end = ctx.end;
-			this._tokens.push(ctx.end);
-		};
-		
+		this._ends.pop();
 		this._contexts.pop();
-		this._context = this._contexts[this._contexts.length - 1];
-		
+		this._end = this._ends[this._ends.length - 1];
 		this.refreshScope();
 		return this;
 	};
@@ -1401,6 +1082,8 @@
 
 
 	Lexer.prototype.queueScope = function (val){
+		// console.log("pushing scope {val} - {@indents} {@indents:length}")
+		// @scopes.push(val) # no no
 		this._scopes[this._indents.length] = val;
 		return this;
 	};
@@ -1437,12 +1120,16 @@
 	Lexer.prototype.closeDef = function (){
 		if (this.context() == 'DEF') {
 			var prev = last(this._tokens);
-			
+			// console.log "close def {prev}"
+			// console.log('closeDef with last>',prev)
 			if (tT(prev) == 'DEF_FRAGMENT') {
 				true;
 			} else if (tT(prev) == 'TERMINATOR') {
+				// console.log "here?!??"
 				var n = this._tokens.pop();
+				// console.log n
 				this.token('DEF_BODY','DEF_BODY',0);
+				// token('TERMINATOR', '',0) unless n.@value.indexOf('//') >= 0
 				this._tokens.push(n);
 			} else {
 				this.token('DEF_BODY','DEF_BODY',0);
@@ -1461,12 +1148,23 @@
 		};
 		
 		if (match = TAG_ATTR.exec(this._chunk)) {
+			// console.log 'TAG_SDDSATTR IN tokid',match
+			// var prev = last @tokens
+			// if the prev is a terminator, we dont really need to care?
+			if (this._lastTyp != 'TAG_NAME') {
+				if (this._lastTyp == 'TERMINATOR') {
+					// console.log('prev was terminator -- drop it?')
+					true;
+				} else {
+					this.token(",",",");
+				};
+			};
+			
 			var l = match[0].length;
 			
 			this.token('TAG_ATTR',match[1],l - 1); // add to loc?
 			this._loc += l - 1;
 			this.token('=','=',1);
-			this.pushEnd('TAG_ATTR',{id: 'VALUE',pop: /^[\s\n\>]/}); //  [' ','\n','>']
 			return l;
 		};
 		return 0;
@@ -1530,7 +1228,7 @@
 		
 		// special handling if we are in this context
 		if (this._end == '%') {
-			var chr = this._chunk[0];
+			var chr = this._chunk.charAt(0);
 			var open = this.inContext('open');
 			
 			// should add for +, ~ etc
@@ -1606,14 +1304,17 @@
 		};
 		
 		if (!(match = SELECTOR.exec(this._chunk))) { return 0 };
-		
 		var ary = Imba.iterable(match);var input = ary[0],id = ary[1],kind = ary[2];
 		
 		// this is a closed selector
 		if (kind == '(') {
 			// token '(','('
 			this.token('SELECTOR_START',id,id.length + 1);
+			// self.pushEnd(')') # are we so sure about this?
 			this.pushEnd('%');
+			
+			// @ends.push ')'
+			// @ends.push '%'
 			return id.length + 1;
 		} else if (id == '%') {
 			// we are already scoped in on a selector
@@ -1621,7 +1322,7 @@
 			this.token('SELECTOR_START',id,id.length);
 			// this is a separate - scope. Full selector should rather be $, and keep the single selector as %
 			
-			this.pushEnd('%',{open: true});
+			this.scope('%',{open: true});
 			// @ends.push '%'
 			// make sure a terminator breaks out
 			return id.length;
@@ -1638,17 +1339,17 @@
 		// we can optimize this by after a def simply
 		// fetching all the way after the def until a space or (
 		// and then add this to the def-token itself (as with fragment)
-		if (this._chunk[0] == ' ') { return 0 };
+		if (this._chunk.charAt(0) == ' ') { return 0 };
 		
 		var match;
 		
 		if (this._end == ')') {
-			if (this._ends.length > 1) {
-				var outerctx = this._ends[this._ends.length - 2];
-				if (outerctx == '%' && (match = TAG_ATTR.exec(this._chunk))) {
-					this.token('TAG_ATTR_SET',match[1]);
-					return match[0].length;
-				};
+			var outerctx = this._ends[this._ends.length - 2];
+			// weird assumption, no?
+			// console.log 'context is inside!!!'
+			if (outerctx == '%' && (match = TAG_ATTR.exec(this._chunk))) {
+				this.token('TAG_ATTR_SET',match[1]);
+				return match[0].length;
 			};
 		};
 		
@@ -1679,8 +1380,6 @@
 		
 		if (id == 'new') {
 			// console.log 'NEW here?'
-			// this is wrong -- in the case of <div value=Date.new>
-			// we are basically in a nested scope until the next space or >
 			if (!(ltyp == '.' && this.inTag())) { typ = 'NEW' };
 		};
 		
@@ -1695,9 +1394,11 @@
 			if (ltyp == '(' || ltyp == 'CALL_START') {
 				this.token('DO','DO',0);
 				this.pushEnd('|');
+				// @ends.push '|'
 				this.token('BLOCK_PARAM_START',id,1);
 				return length;
 			} else if (ltyp == 'DO' || ltyp == '{') {
+				// @ends.push '|'
 				this.pushEnd('|');
 				this.token('BLOCK_PARAM_START',id,1);
 				return length;
@@ -1725,16 +1426,17 @@
 			typ = 'IVAR';
 		} else if (pre == '$') {
 			true;
+			// typ = 'GVAR'
 		} else if (pre == '#') {
 			typ = 'TAGID';
-		} else if (CONST_IDENTIFIER.test(pre) || id == 'global' || id == 'exports') {
+		} else if (CONST_IDENTIFIER.test(pre) || id == 'require' || id == 'global' || id == 'exports') {
 			// really? seems very strange
 			// console.log('global!!',typ,id)
 			typ = 'CONST';
 		};
 		
 		// what is this really for?
-		if (match[5] && ['IDENTIFIER','CONST','GVAR','CVAR','IVAR','SELF','THIS',']','}',')','NUMBER','STRING'].indexOf(ltyp) >= 0) {
+		if (match[5] && ['IDENTIFIER','CONST','GVAR','CVAR','IVAR','SELF','THIS',']','}',')','NUMBER','STRING','IDREF'].indexOf(ltyp) >= 0) {
 			this.token('.','.',0);
 		};
 		
@@ -1752,7 +1454,7 @@
 		var len = this._ends.length;
 		if (len > 0) {
 			var ctx0 = this._ends[len - 1];
-			var ctx1 = (len > 1) ? (this._ends[len - 2]) : (ctx0);
+			var ctx1 = len > 1 ? (this._ends[len - 2]) : (ctx0);
 			return ctx0 == 'TAG_END' || (ctx1 == 'TAG_END' && ctx0 == 'OUTDENT');
 		};
 		return false;
@@ -1782,8 +1484,8 @@
 		var ary;
 		var match;
 		
-		var ctx0 = (this._ends.length > 0) ? (this._ends[this._ends.length - 1]) : (null);
-		var ctx1 = (this._ends.length > 1) ? (this._ends[this._ends.length - 2]) : (null);
+		var ctx0 = this._ends[this._ends.length - 1];
+		var ctx1 = this._ends[this._ends.length - 2];
 		var innerctx = ctx0;
 		var typ;
 		var reserved = false;
@@ -1820,13 +1522,26 @@
 		// are accessable as keys or strings etc
 		if (match = OBJECT_KEY.exec(this._chunk)) {
 			var id = match[1];
-			typ = 'KEY';
+			typ = 'IDENTIFIER';
 			
+			// FIXME loc of key includes colon
+			// moveCaret(id:length)
+			// console.log "ok"
+			
+			// console.log "got here? {match}"
 			this.token(typ,id,id.length);
 			this.moveCaret(id.length);
-			// console.log "MATCH",match
 			this.token(':',':',match[3].length);
 			this.moveCaret(-id.length);
+			// moveCaret(match[3]:length)
+			return match[0].length;
+			
+			
+			// moveCaret(match[2]:length)
+			// return 0
+			// console.log match[3]:length
+			this.token(typ,id,match[0].length);
+			this.token(':',':',1);
 			return match[0].length;
 		};
 		
@@ -1886,20 +1601,23 @@
 				typ = 'ARGVAR';
 				id = id.substr(1);
 			};
-		} else if (typ == '$' && ENV_FLAG.test(id)) {
-			typ = 'ENV_FLAG';
-			id = id.toUpperCase().slice(1,-1);
 		} else if (typ == '@') {
 			typ = 'IVAR';
+			
 			// id:reserved = yes if colon
 		} else if (typ == '#') {
-			typ = 'TAGID';
+			// we are trying to move to generic tokens,
+			// so we are starting to splitting up the symbols and the items
+			// we'll see if that works
+			typ = 'IDENTIFIER';
+			this.token('#','#');
+			id = id.substr(1);
 		} else if (typ == '@@') {
 			typ = 'CVAR';
 		} else if (typ == '$' && !colon) {
 			typ = 'IDENTIFIER';
 			// typ = 'GVAR'
-		} else if (CONST_IDENTIFIER.test(id) || id == 'global' || id == 'exports') {
+		} else if (CONST_IDENTIFIER.test(id) || id == 'require' || id == 'global' || id == 'exports') {
 			// thous should really be handled by the ast instead
 			typ = 'CONST';
 		} else if (id == 'elif') {
@@ -1915,7 +1633,6 @@
 		// this catches all 
 		if (!forcedIdentifier && (isKeyword = this.isKeyword(id))) {
 			// (id in JS_KEYWORDS or id in IMBA_KEYWORDS)
-			
 			typ = id.toUpperCase();
 			addLoc = true;
 			
@@ -1934,6 +1651,7 @@
 				true;
 			} else if (typ == 'TAG') {
 				this.pushEnd('TAG');
+				// @ends.push('TAG')
 			} else if (typ == 'DEF') {
 				// should probably shift context and optimize this
 				this.openDef();
@@ -1953,9 +1671,10 @@
 					this._seenFor = false;
 				} else {
 					typ = 'RELATION';
-					
-					if (prev._type == 'UNARY') {
-						prev._type = 'NOT';
+					if (String(this.value()) == '!') {
+						this._tokens.pop(); // is fucked up??!
+						// WARN we need to keep the loc, no?
+						id = '!' + id;
 					};
 				};
 			};
@@ -1969,30 +1688,20 @@
 		if (!forcedIdentifier) {
 			// should already have dealt with this
 			
-			if (this._lastVal == 'export' && id == 'default') {
-				// console.log 'id is default!!!'
-				tTs(prev,'EXPORT');
-				typ = 'DEFAULT';
-			};
-			
+			if (isKeyword && IMBA_ALIASES.indexOf(id) >= 0) { id = IMBA_ALIAS_MAP[id] };
 			// these really should not go here?!?
 			switch (id) {
 				case '!':
-				case 'not':
 					typ = 'UNARY';break;
 				
 				case '==':
 				case '!=':
 				case '===':
 				case '!==':
-				case 'is':
-				case 'isnt':
 					typ = 'COMPARE';break;
 				
 				case '&&':
 				case '||':
-				case 'and':
-				case 'or':
 					typ = 'LOGIC';break;
 				
 				case 'break':
@@ -2016,8 +1725,12 @@
 			while (i){
 				prev = this._tokens[--i];
 				var ctrl = "" + tV(prev);
+				// console.log("ctrl is {ctrl}")
+				// need to coerce to string because of stupid CS ===
+				// console.log("prev is",prev[0],prev[1])
 				if (Imba.indexOf(ctrl,IMBA_CONTEXTUAL_KEYWORDS) >= 0) {
 					tTs(prev,ctrl.toUpperCase());
+					// prev[0] = ctrl.toUpperCase # FIX
 				} else {
 					break;
 				};
@@ -2027,6 +1740,7 @@
 		} else if (typ == 'IMPORT') {
 			// could manually parse the whole ting here?
 			this.pushEnd('IMPORT');
+			// @ends.push 'IMPORT'
 		} else if (id == 'from' && ctx0 == 'IMPORT') {
 			typ = 'FROM';
 			this.pair('IMPORT');
@@ -2043,19 +1757,11 @@
 		};
 		
 		if (colon) {
-			// console.log 'colon',colon,typ
-			if (typ == 'IDENTIFIER' && NOT_KEY_AFTER.indexOf(this._lastTyp) == -1) {
-				typ = 'KEY';
-			};
-			
 			this.token(typ,id,idlen);
-			var colonOffset = colon.indexOf(':');
-			
-			this.moveCaret(idlen + colonOffset);
-			// TODO Stop moving caret back and forth
-			// console.log idlen,colon,colonOffset
-			this.token(':',':',1);
-			this.moveCaret(-(idlen + colonOffset));
+			this.moveCaret(idlen);
+			// console.log "add colon?"
+			this.token(':',':',colon.length);
+			this.moveCaret(-idlen);
 		} else {
 			this.token(typ,id,idlen);
 		};
@@ -2096,27 +1802,30 @@
 		var match,symbol,prev;
 		
 		if (!(match = SYMBOL.exec(this._chunk))) { return 0 };
-		symbol = match[0];
+		symbol = match[0].substr(1);
 		prev = last(this._tokens);
 		
 		// is this a property-access?
 		// should invert this -- only allow when prev IS .. 
+		
 		// : should be a token itself, with a specification of spacing (LR,R,L,NONE)
-		if (prev && !prev.spaced && Imba.indexOf(tT(prev),['(','{','[','.','CALL_START','INDEX_START',',','=','INDENT','TERMINATOR','VALUE_START']) == -1) {
-			var access = symbol.split(':')[1]; // really?
-			
+		
+		// FIX
+		if (prev && !prev.spaced && Imba.indexOf(tT(prev),['(','{','[','.','CALL_START','INDEX_START',',','=','INDENT','TERMINATOR']) == -1) {
 			this.token('.:',':',1);
-			
-			this.token('IDENTIFIER',access,access.length,1);
-			return access.length + 1;
+			var sym = symbol.split(/[\:\\\/]/)[0]; // really?
+			// token 'SYMBOL', "'#{symbol}'"
+			this.token('IDENTIFIER',sym,sym.length,1);
+			return (sym.length + 1);
 		} else {
+			// token 'SYMBOL', "'#{symbol}'"
 			this.token('SYMBOL',symbol,match[0].length);
 			return match[0].length;
 		};
 	};
 
 	Lexer.prototype.escapeStr = function (str,heredoc,q){
-		str = str.replace(MULTILINER,((heredoc) ? ('\\n') : ('')));
+		str = str.replace(MULTILINER,(heredoc ? ('\\n') : ('')));
 		if (q) {
 			var r = RegExp(("\\\\[" + q + "]"),"g");
 			str = str.replace(r,q);
@@ -2177,18 +1886,14 @@
 		
 		heredoc = match[0];
 		quote = heredoc.charAt(0);
-		var opts = {quote: quote,indent: null,offset: 0};
-		doc = this.sanitizeHeredoc(match[2],opts);
-		// doc = match[2]
+		doc = this.sanitizeHeredoc(match[2],{quote: quote,indent: null});
 		// console.log "found heredoc {match[0]:length} {doc:length}"
 		
 		if (quote == '"' && doc.indexOf('{') >= 0) {
 			var open = match[1];
 			// console.log doc.substr(0,3),match[1]
-			// console.log 'heredoc here',open:length,open
-			
 			this.token('STRING_START',open,open.length);
-			this.interpolateString(doc,{heredoc: true,offset: (open.length + opts.offset),quote: quote,indent: opts.realIndent});
+			this.interpolateString(doc,{heredoc: true,offset: open.length,quote: quote});
 			this.token('STRING_END',open,open.length,heredoc.length - open.length);
 		} else {
 			this.token('STRING',this.makeString(doc,quote,true),0);
@@ -2286,13 +1991,21 @@
 		
 		prev = last(this._tokens);
 		// FIX
-		if (prev && (Imba.indexOf(tT(prev),((prev.spaced) ? (
+		if (prev && (Imba.indexOf(tT(prev),(prev.spaced ? (
 			NOT_REGEX
 		) : (
 			NOT_SPACED_REGEX
 		))) >= 0)) { return 0 };
 		if (!(match = REGEX.exec(this._chunk))) { return 0 };
 		var ary = Imba.iterable(match);var m = ary[0],regex = ary[1],flags = ary[2];
+		
+		// FIXME
+		// if regex[..1] is '/*'
+		//	error 'regular expressions cannot begin with `*`'
+		
+		if (regex == '//') {
+			regex = '/(?:)/';
+		};
 		
 		this.token('REGEX',("" + regex + flags),m.length);
 		return m.length;
@@ -2303,7 +2016,66 @@
 	Lexer.prototype.heregexToken = function (match){
 		var ary;
 		var ary = Imba.iterable(match);var heregex = ary[0],body = ary[1],flags = ary[2];
-		this.token('REGEX',heregex,heregex.length);
+		
+		if (0 > body.indexOf('#{')) {
+			
+			var re = body.replace(HEREGEX_OMIT,'').replace(/\//g,'\\/');
+			
+			if (re.match(/^\*/)) {
+				this.error('regular expressions cannot begin with `*`');
+			};
+			
+			this.token('REGEX',("/" + (re || '(?:)') + "/" + flags),heregex.length);
+			return heregex.length;
+		};
+		
+		// use more basic regex type
+		
+		this.token('CONST','RegExp');
+		this._tokens.push(T.token('CALL_START','(',0));
+		var tokens = [];
+		
+		for (var i = 0, items = Imba.iterable(this.interpolateString(body,{regex: true})), len = items.length, pair; i < len; i++) {
+			
+			pair = items[i];
+			var tok = tT(pair); // FIX
+			var value = tV(pair); // FIX
+			
+			if (tok == 'TOKENS') {
+				// FIXME what is this?
+				tokens.push.apply(tokens,value);
+			} else {
+				
+				// if !value
+				//	throw error?
+				
+				if (!(value = value.replace(HEREGEX_OMIT,''))) { continue; };
+				
+				value = value.replace(/\\/g,'\\\\');
+				tokens.push(T.token('STRING',this.makeString(value,'"',true),0)); // FIX
+			};
+			
+			tokens.push(T.token('+','+',0)); // FIX
+		};
+		
+		tokens.pop();
+		
+		// FIX
+		if (!(tokens[0] && tT(tokens[0]) == 'STRING')) {
+			// FIX
+			this._tokens.push(T.token('STRING','""'),T.token('+','+'));
+		};
+		
+		this._tokens.push.apply(this._tokens,tokens); // what is this?
+		// FIX
+		
+		if (flags) {
+			this._tokens.push(T.token(',',',',0));
+			this._tokens.push(T.token('STRING','"' + flags + '"',0));
+		};
+		
+		this.token(')',')',0);
+		
 		return heregex.length;
 	};
 
@@ -2318,7 +2090,6 @@
 	// Keeps track of the level of indentation, because a single outdent token
 	// can close multiple indents, so we need to know how far in we happen to be.
 	Lexer.prototype.lineToken = function (){
-		var gutter;
 		var match;
 		
 		if (!(match = MULTI_DENT.exec(this._chunk))) { return 0 };
@@ -2328,8 +2099,10 @@
 		
 		this._seenFor = false;
 		// reset column as well?
+		
 		var prev = last(this._tokens,1);
 		var whitespace = indent.substr(indent.lastIndexOf('\n') + 1);
+		var size = whitespace.length;
 		var noNewlines = this.unfinished();
 		
 		if ((/^\n#\s/).test(this._chunk)) {
@@ -2337,37 +2110,7 @@
 			return 0;
 		};
 		
-		// decide the general line-prefix by the very first line with characters
-		
-		// if gutter is undefined - we create it on the very first chance we have
-		if (this._state.gutter == undefined) {
-			this._state.gutter = whitespace;
-		};
-		
-		// if we have a gutter -- remove it
-		if (gutter = this._state.gutter || this._opts.gutter) {
-			if (whitespace.indexOf(gutter) == 0) {
-				whitespace = whitespace.slice(gutter.length);
-			} else if (this._chunk[indent.length] === undefined) {
-				// if this is the end of code we're okay
-				true;
-			} else {
-				this.warn('incorrect indentation');
-				// console.log "GUTTER IS INCORRECT!!",JSON.stringify(indent),JSON.stringify(@chunk[indent:length]),@last # @chunk[indent:length - 1]
-			};
-			
-			// should throw error otherwise?
-		};
-		
-		var size = whitespace.length;
-		
-		if (this._opts.dropIndentation) {
-			return size;
-		};
-		
 		if (size > 0) {
-			// seen indent?
-			
 			if (!this._indentStyle) {
 				this._opts.indent = this._indentStyle = whitespace;
 			};
@@ -2382,15 +2125,11 @@
 					offset += this._indentStyle.length;
 				} else if (offset == whitespace.length) {
 					break;
-				} else if (this._opts.silent) {
-					break;
 				} else {
 					// workaround to report correct location
 					this._loc += indent.length - whitespace.length;
 					this.token('INDENT',whitespace,whitespace.length);
-					if (!this._opts.silent) {
-						return this.error(("inconsistent " + (this._indentStyle) + " indentation"));
-					};
+					return this.error('inconsistent indentation');
 				};
 			};
 			
@@ -2398,7 +2137,7 @@
 		};
 		
 		
-		if ((size - this._indebt) == this._indent) {
+		if (size - this._indebt == this._indent) {
 			if (noNewlines) {
 				this.suppressNewlines();
 			} else {
@@ -2415,8 +2154,12 @@
 			};
 			
 			if (this.inTag()) {
+				// console.log "indent inside tokid?!?"
+				// @indebt = size - @indent
+				// suppressNewlines()
 				return indent.length;
 			};
+			
 			
 			var diff = size - this._indent + this._outdebt;
 			this.closeDef();
@@ -2425,7 +2168,6 @@
 			
 			if (immediate && tT(immediate) == 'TERMINATOR') {
 				tTs(immediate,'INDENT');
-				// should add terminator inside indent?
 				immediate._meta || (immediate._meta = {pre: tV(immediate),post: ''});
 				
 				// should rather add to meta somehow?!?
@@ -2442,6 +2184,7 @@
 			
 			this._indents.push(diff);
 			this.pushEnd('OUTDENT');
+			// @ends.push 'OUTDENT'
 			this._outdebt = this._indebt = 0;
 			this.addLinebreaks(brCount);
 		} else {
@@ -2490,6 +2233,7 @@
 		};
 		
 		if (!(this.lastTokenType() == 'TERMINATOR' || noNewlines)) { this.token('TERMINATOR','\n',0) };
+		
 		// capping scopes so they dont hang around 
 		this._scopes.length = this._indents.length;
 		
@@ -2510,7 +2254,6 @@
 		if (prev) {
 			if (match) {
 				prev.spaced = true;
-				// prev.@s = match[0]
 				return match[0].length;
 			} else {
 				prev.newLine = true;
@@ -2575,8 +2318,9 @@
 	// Generate a newline token. Consecutive newlines get merged together.
 	Lexer.prototype.newlineToken = function (lines){
 		
-		// while lastTokenValue == ';'
-		//	@tokens.pop
+		while (this.lastTokenValue() == ';'){
+			this._tokens.pop();
+		};
 		
 		this.addLinebreaks(lines);
 		
@@ -2624,8 +2368,9 @@
 			
 			if (pv == '||' || pv == '&&') { // in ['||', '&&']
 				tTs(prev,'COMPOUND_ASSIGN');
-				tVs(prev,pv + '='); // need to change the length as well
-				prev._len = this._loc - prev._loc + value.length;
+				tVs(prev,pv + '=');
+				// prev[0] = 'COMPOUND_ASSIGN'
+				// prev[1] += '='
 				return value.length;
 			};
 		};
@@ -2638,9 +2383,6 @@
 			// FIXME - should rather add a special token like TAG_PARAMS_START
 			this.token(',',',');
 		} else if (value == '->' && inTag) {
-			tokid = 'TAG_END';
-			this.pair('TAG_END');
-		} else if (value == '=>' && inTag) {
 			tokid = 'TAG_END';
 			this.pair('TAG_END');
 		} else if (value == '/>' && inTag) {
@@ -2680,7 +2422,10 @@
 		} else if (Imba.indexOf(value,LOGIC) >= 0) {
 			tokid = 'LOGIC'; // or value is '?' and prev?:spaced 
 		} else if (prev && !prev.spaced) {
-			if (value == '(' && Imba.indexOf(pt,CALLABLE) >= 0) {
+			// need a better way to do these
+			if (value == '(' && end1 == '%') {
+				tokid = 'TAG_ATTRS_START';
+			} else if (value == '(' && Imba.indexOf(pt,CALLABLE) >= 0) {
 				// not using this ???
 				// prev[0] = 'FUNC_EXIST' if prev[0] is '?'
 				tokid = 'CALL_START';
@@ -2738,13 +2483,7 @@
 		};
 		
 		if (indent) { doc = doc.replace(RegExp(("\\n" + indent),"g"),'\n') };
-		if (!herecomment) {
-			if (doc[0] == '\n') {
-				options.offset = indent.length + 1;
-			};
-			doc = doc.replace(/^\n/,'');
-		};
-		options.realIndent = indent;
+		if (!herecomment) { doc = doc.replace(/^\n/,'') };
 		return doc;
 	};
 
@@ -2787,7 +2526,6 @@
 
 	// Close up all remaining open blocks at the end of the file.
 	Lexer.prototype.closeIndentation = function (){
-		if (this.context() == 'IMPORT') { this.pair(this.context()) };
 		this.closeDef();
 		this.closeSelector();
 		return this.outdentToken(this._indent,false,0);
@@ -2800,6 +2538,7 @@
 	Lexer.prototype.balancedString = function (str,end){
 		var match,letter,prev;
 		
+		// console.log 'balancing string!', str, end
 		var stack = [end];
 		var i = 0;
 		
@@ -2841,21 +2580,20 @@
 	};
 
 	// Expand variables and expressions inside double-quoted strings using
-	// braces for substitution of arbitrary expressions.
+	// Ruby-like notation for substitution of arbitrary expressions.
 	//
-	//     "Hello {name.capitalize}."
+	//     "Hello #{name.capitalize()}."
 	//
 	// If it encounters an interpolation, this method will recursively create a
 	// new Lexer, tokenize the interpolated contents, and merge them into the
 	// token stream.
 	Lexer.prototype.interpolateString = function (str,options){
-		
+		// console.log "interpolate string"
 		if(options === undefined) options = {};
 		var heredoc = options.heredoc;
 		var quote = options.quote;
 		var regex = options.regex;
 		var prefix = options.prefix;
-		var indent = options.indent;
 		
 		var startLoc = this._loc;
 		var tokens = [];
@@ -2868,18 +2606,13 @@
 		
 		var isInterpolated = false;
 		// out of bounds
-		
-		while (letter = str[i += 1]){
+		while (letter = str.charAt(i += 1)){
 			if (letter == '\\') {
 				i += 1;
 				continue;
 			};
 			
-			if (letter == '\n' && indent) {
-				locOffset += indent.length;
-			};
-			
-			if (!(str[i] == '{' && (expr = this.balancedString(str.slice(i),'}')))) {
+			if (!(str.charAt(i) == '{' && (expr = this.balancedString(str.slice(i),'}')))) {
 				continue;
 			};
 			
@@ -2897,7 +2630,7 @@
 			tokens.push(new Token('{{','{',this._loc + i + locOffset,1));
 			
 			var inner = expr.slice(1,-1);
-			
+			// console.log 'inner is',inner
 			// remove leading spaces 
 			// need to keep track of how much whitespace we dropped from the start
 			inner = inner.replace(/^[^\n\S]+/,'');
@@ -2961,7 +2694,7 @@
 		var letter;
 		var stack = [end];
 		// FIXME
-		for (var len = str.length, i = 1, rd = len - i; (rd > 0) ? (i < len) : (i > len); (rd > 0) ? (i++) : (i--)) {
+		for (var len = str.length, i = 1; i < len; i++) {
 			switch (letter = str.charAt(i)) {
 				case '\\':
 					i++;
@@ -2997,7 +2730,7 @@
 	Lexer.prototype.pair = function (tok){
 		var wanted = last(this._ends);
 		if (tok != wanted) {
-			if (!('OUTDENT' == wanted)) { this.error(("unmatched " + tok)) };
+			if ('OUTDENT' != wanted) { this.error(("unmatched " + tok)) };
 			var size = last(this._indents);
 			this._indent -= size;
 			this.outdentToken(size,true,0);
@@ -3021,12 +2754,12 @@
 
 	Lexer.prototype.lastTokenType = function (){
 		var token = this._tokens[this._tokens.length - 1];
-		return (token) ? (tT(token)) : ('NONE');
+		return token ? (tT(token)) : ('NONE');
 	};
 
 	Lexer.prototype.lastTokenValue = function (){
 		var token = this._tokens[this._tokens.length - 1];
-		return (token) ? (token._value) : ('');
+		return token ? (token._value) : ('');
 	};
 
 	// Peek at a tokid in the current token stream.
@@ -3035,6 +2768,8 @@
 		if (tok = last(this._tokens,index)) {
 			if (val) { tTs(tok,val) };
 			return tT(tok);
+			// tok.@type = tokid if tokid # why?
+			// tok.@type
 		} else {
 			return null;
 		};
@@ -3046,6 +2781,8 @@
 		if (tok = last(this._tokens,index)) {
 			if (val) { tVs(tok,val) };
 			return tV(tok);
+			// tok.@value = val if val # why?
+			// tok.@value
 		} else {
 			return null;
 		};
@@ -3058,16 +2795,18 @@
 		return UNFINISHED.indexOf(this._lastTyp) >= 0;
 	};
 
+	// var tokens = ['\\','.', '?.', 'UNARY', 'MATH', '+', '-', 'SHIFT', 'RELATION', 'COMPARE', 'LOGIC', 'COMPOUND_ASSIGN', 'THROW', 'EXTENDS']
+
 	// Converts newlines for string literals.
 	Lexer.prototype.escapeLines = function (str,heredoc){
-		return str.replace(MULTILINER,((heredoc) ? ('\\n') : ('')));
+		return str.replace(MULTILINER,(heredoc ? ('\\n') : ('')));
 	};
 
 	// Constructs a string token by escaping quotes and newlines.
 	Lexer.prototype.makeString = function (body,quote,heredoc){
 		if (!body) { return quote + quote };
 		body = body.replace(/\\([\s\S])/g,function(match,contents) {
-			return ((contents == '\n' || contents == quote)) ? (contents) : (match);
+			return (contents == '\n' || contents == quote) ? (contents) : (match);
 		});
 		// Does not work now
 		body = body.replace(RegExp(("" + quote),"g"),'\\$&');
@@ -3090,21 +2829,674 @@
 		throw err;
 	};
 
-	Lexer.prototype.warn = function (message){
-		var ary = this._tokens.warnings || (this._tokens.warnings = []);
-		ary.push(message);
-		console.warn(message);
-		return this;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	// The Imba language has a good deal of optional syntax, implicit syntax,
+	// and shorthand syntax. This can greatly complicate a grammar and bloat
+	// the resulting parse table. Instead of making the parser handle it all, we take
+	// a series of passes over the token stream, using this **Rewriter** to convert
+	// shorthand into the unambiguous long form, add implicit indentation and
+	// parentheses, and generally clean things up.
+
+	var T = __webpack_require__(3);
+	var Token = T.Token;
+
+	// Based on the original rewriter.coffee from CoffeeScript
+	function Rewriter(){ };
+
+	exports.Rewriter = Rewriter; // export class 
+	Rewriter.prototype.tokens = function (){
+		return this._tokens;
+	};
+
+	// Helpful snippet for debugging:
+	//     console.log (t[0] + '/' + t[1] for t in @tokens).join ' '
+	// Rewrite the token stream in multiple passes, one logical filter at
+	// a time. This could certainly be changed into a single pass through the
+	// stream, with a big ol' efficient switch, but it's much nicer to work with
+	// like this. The order of these passes matters -- indentation must be
+	// corrected before implicit parentheses can be wrapped around blocks of code.
+	Rewriter.prototype.rewrite = function (tokens,opts){
+		var token;
+		if(opts === undefined) opts = {};
+		this._tokens = tokens;
+		this._options = opts;
+		
+		// console.log "tokens in: " + tokens:length
+		if (opts.profile) { console.time("tokenize:rewrite") };
+		
+		var i = 0;
+		// flag empty methods
+		while (token = tokens[i]){
+			var next = tokens[i + 1];
+			if (token._type == 'DEF_BODY' && next && next._type == 'TERMINATOR') {
+				token._type = 'DEF_EMPTY';
+			};
+			i++;
+		};
+		
+		this.step("ensureFirstLine");
+		this.step("removeLeadingNewlines");
+		this.step("removeMidExpressionNewlines");
+		this.step("tagDefArguments");
+		this.step("closeOpenCalls");
+		this.step("closeOpenIndexes");
+		this.step("closeOpenTags");
+		this.step("closeOpenTagAttrLists");
+		this.step("addImplicitIndentation");
+		this.step("tagPostfixConditionals");
+		this.step("addImplicitBraces");
+		this.step("addImplicitParentheses");
+		
+		if (opts.profile) { console.timeEnd("tokenize:rewrite") };
+		// console.log "tokens out: " + @tokens:length
+		return this._tokens;
+	};
+
+	Rewriter.prototype.step = function (fn){
+		if (this._options.profile) {
+			console.log(("---- starting " + fn + " ---- "));
+			console.time(fn);
+		};
+		
+		this[fn]();
+		
+		if (this._options.profile) {
+			console.timeEnd(fn);
+			console.log("\n\n");
+		};
+		return;
+	};
+
+	// Rewrite the token stream, looking one token ahead and behind.
+	// Allow the return value of the block to tell us how many tokens to move
+	// forwards (or backwards) in the stream, to make sure we don't miss anything
+	// as tokens are inserted and removed, and the stream changes length under
+	// our feet.
+	Rewriter.prototype.scanTokens = function (block){
+		var token;
+		var tokens = this._tokens;
+		
+		var i = 0;
+		while (token = tokens[i]){
+			i += block.call(this,token,i,tokens);
+		};
+		
+		return true;
+	};
+
+	Rewriter.prototype.detectEnd = function (i,condition,action){
+		var tokens = this._tokens;
+		var levels = 0;
+		var starts = [];
+		var token;
+		var t,v;
+		
+		while (token = tokens[i]){
+			if (levels == 0 && condition.call(this,token,i,starts)) {
+				return action.call(this,token,i);
+			};
+			if (!token || levels < 0) {
+				return action.call(this,token,i - 1);
+			};
+			
+			t = T.typ(token);
+			
+			if (EXPRESSION_START.indexOf(t) >= 0) {
+				if (levels == 0) { starts.push(i) };
+				levels += 1;
+			} else if (EXPRESSION_END.indexOf(t) >= 0) {
+				levels -= 1;
+			};
+			i += 1;
+		};
+		return i - 1;
+	};
+
+	Rewriter.prototype.ensureFirstLine = function (){
+		var tok = this._tokens[0];
+		
+		if (T.typ(tok) == 'TERMINATOR') {
+			// console.log "adding bodystart"
+			this._tokens = [T.token('BODYSTART','BODYSTART')].concat(this._tokens);
+			// T.setTyp(tok,'HEADER')
+		};
+		return;
+	};
+
+	// Leading newlines would introduce an ambiguity in the grammar, so we
+	// dispatch them here.
+	Rewriter.prototype.removeLeadingNewlines = function (){
+		var at = 0;
+		
+		for (var i = 0, ary = Imba.iterable(this._tokens), len = ary.length; i < len; i++) {
+			if (T.typ(ary[i]) != 'TERMINATOR') {
+				at = i;break;
+			};
+		};
+		
+		if (at) { this._tokens.splice(0,at) };
+		
+		return;
+	};
+
+	// Some blocks occur in the middle of expressions -- when we're expecting
+	// this, remove their trailing newlines.
+	Rewriter.prototype.removeMidExpressionNewlines = function (){
+		var self = this;
+		return self.scanTokens(function(token,i,tokens) { // do |token,i,tokens|
+			var next = self.tokenType(i + 1);
+			
+			if (!(T.typ(token) == 'TERMINATOR' && EXPRESSION_CLOSE.indexOf(next) >= 0)) { return 1 };
+			if (next == 'OUTDENT') { return 1 };
+			tokens.splice(i,1);
+			return 0;
+		});
 	};
 
 
+	Rewriter.prototype.tagDefArguments = function (){
+		return true;
+	};
 
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
+	// The lexer has tagged the opening parenthesis of a method call. Match it with
+	// its paired close. We have the mis-nested outdent case included here for
+	// calls that close on the same line, just before their outdent.
+	Rewriter.prototype.closeOpenCalls = function (){
+		var self = this;
+		var condition = function(token,i) {
+			var t = T.typ(token);
+			return (t == ')' || t == 'CALL_END') || t == 'OUTDENT' && self.tokenType(i - 1) == ')';
+		};
+		
+		var action = function(token,i) {
+			var t = T.typ(token);
+			var tok = self._tokens[t == 'OUTDENT' ? (i - 1) : (i)];
+			return T.setTyp(tok,'CALL_END');
+		};
+		
+		return self.scanTokens(function(token,i) {
+			if (T.typ(token) == 'CALL_START') { self.detectEnd(i + 1,condition,action) };
+			return 1;
+		});
+	};
+
+	// The lexer has tagged the opening parenthesis of an indexing operation call.
+	// Match it with its paired close.
+	Rewriter.prototype.closeOpenIndexes = function (){
+		var self = this;
+		var condition = function(token,i) { return Imba.indexOf(T.typ(token),[']','INDEX_END']) >= 0; };
+		var action = function(token,i) { return T.setTyp(token,'INDEX_END'); };
+		
+		return self.scanTokens(function(token,i) {
+			if (T.typ(token) == 'INDEX_START') { self.detectEnd(i + 1,condition,action) };
+			return 1;
+		});
+	};
+
+
+	Rewriter.prototype.closeOpenTagAttrLists = function (){
+		var self = this;
+		var condition = function(token,i) { return Imba.indexOf(T.typ(token),[')','TAG_ATTRS_END']) >= 0; };
+		var action = function(token,i) { return T.setTyp(token,'TAG_ATTRS_END'); }; // 'TAG_ATTRS_END'
+		
+		return self.scanTokens(function(token,i) {
+			if (T.typ(token) == 'TAG_ATTRS_START') { self.detectEnd(i + 1,condition,action) };
+			return 1;
+		});
+	};
+
+	// The lexer has tagged the opening parenthesis of an indexing operation call.
+	// Match it with its paired close. Should be done in lexer directly
+	Rewriter.prototype.closeOpenTags = function (){
+		var self = this;
+		var condition = function(token,i) { return Imba.indexOf(T.typ(token),['>','TAG_END']) >= 0; };
+		var action = function(token,i) { return T.setTyp(token,'TAG_END'); }; // token[0] = 'TAG_END'
+		
+		return self.scanTokens(function(token,i) {
+			if (T.typ(token) == 'TAG_START') { self.detectEnd(i + 1,condition,action) };
+			return 1;
+		});
+	};
+
+	Rewriter.prototype.addImplicitCommas = function (){
+		return;
+	};
+
+	Rewriter.prototype.addImplicitBlockCalls = function (){
+		var token;
+		var i = 1;
+		var tokens = this._tokens;
+		
+		while (token = tokens[i]){
+			var t = token._type;
+			var v = token._value;
+			// hmm
+			if (t == 'DO' && (v == 'INDEX_END' || v == 'IDENTIFIER' || v == 'NEW')) {
+				tokens.splice(i + 1,0,T.token('CALL_END',')'));
+				tokens.splice(i + 1,0,T.token('CALL_START','('));
+				i++;
+			};
+			i++;
+		};
+		
+		return;
+	};
+
+	// Object literals may be written with implicit braces, for simple cases.
+	// Insert the missing braces here, so that the parser doesn't have to.
+	Rewriter.prototype.addImplicitBraces = function (){
+		var self = this;
+		var stack = [];
+		var start = null;
+		var startIndent = 0;
+		var startIdx = null;
+		
+		var noBraceTag = ['CLASS','IF','UNLESS','TAG','WHILE','FOR','UNTIL','CATCH','FINALLY','MODULE','LEADING_WHEN'];
+		var noBraceContext = ['IF','TERNARY','FOR'];
+		
+		var noBrace = false;
+		
+		var scope = function() {
+			return stack[stack.length - 1] || [];
+		};
+		
+		var action = function(token,i) {
+			return self._tokens.splice(i,0,T.RBRACKET);
+		};
+		
+		var open = function(token,i) {
+			return self._tokens.splice(i,0,T.LBRACKET);
+		};
+		
+		var close = function(token,i) {
+			return self._tokens.splice(i,0,T.RBRACKET);
+		};
+		
+		var stackToken = function(a,b) {
+			return [a,b];
+		};
+		
+		return self.scanTokens(function(token,i,tokens) {
+			var type = T.typ(token);
+			var v = T.val(token);
+			var ctx = stack[stack.length - 1] || [];
+			var idx;
+			
+			if (noBraceContext.indexOf(type) >= 0) {
+				// console.log "found noBraceTag {type}"
+				stack.push(stackToken(type,i));
+				return 1;
+			};
+			
+			if (v == '?') {
+				// console.log('TERNARY OPERATOR!')
+				stack.push(stackToken('TERNARY',i));
+				return 1;
+			};
+			
+			// no need to test for this here as well as in
+			if (EXPRESSION_START.indexOf(type) >= 0) {
+				if (type == 'INDENT' && noBraceContext.indexOf(ctx[0]) >= 0) {
+					stack.pop();
+				};
+				
+				// console.log('expression start',type,ctx[0])
+				if (type == 'INDENT' && self.tokenType(i - 1) == '{') {
+					// stack ?!? no token
+					stack.push(stackToken('{',i)); // should not autogenerate another?
+				} else {
+					stack.push(stackToken(type,i));
+				};
+				return 1;
+			};
+			
+			if (EXPRESSION_END.indexOf(type) >= 0) {
+				// console.log "EXPRESSION_END at {type} - stack is {ctx[0]}"
+				if (ctx[0] == 'TERNARY') { // FIX?
+					stack.pop();
+				};
+				
+				start = stack.pop();
+				if (!start) {
+					console.log("NO STACK!!");
+				};
+				start[2] = i;
+				
+				// seems like the stack should use tokens, no?)
+				if (start[0] == '{' && start.generated) { //  # type != '}' # and start:generated
+					close(token,i);
+					return 1;
+				};
+				
+				return 1;
+			};
+			
+			// is this correct? same for if/class etc?
+			if (ctx[0] == 'TERNARY' && (type == 'TERMINATOR' || type == 'OUTDENT')) {
+				stack.pop();
+				return 1;
+			};
+			
+			if (noBraceContext.indexOf(ctx[0]) >= 0 && type == 'INDENT') {
+				console.log("popping noBraceContext");
+				stack.pop();
+				return 1;
+			};
+			
+			
+			if (type == ',') {
+				// automatically add an ending here if inside:generated scope?
+				// it is important that this is:generated(!)
+				if (ctx[0] == '{' && ctx.generated) {
+					tokens.splice(i,0,T.RBRACKET);
+					stack.pop();
+					return 2;
+				} else {
+					return 1;
+				};
+				true;
+			};
+			
+			// found a type
+			if (type == ':' && ctx[0] != '{' && ctx[0] != 'TERNARY' && (noBraceContext.indexOf(ctx[0]) == -1)) {
+				// could just check if the end was right before this?
+				
+				if (start && start[2] == i - 1) {
+					// console.log('this expression was just ending before colon!')
+					idx = start[1] - 1; // these are the stackTokens
+				} else {
+					// console.log "rewrite here? #{i}"
+					idx = i - 2; // if start then start[1] - 1 else i - 2
+					// idx = idx - 1 if tokenType(idx) is 'TERMINATOR'
+				};
+				
+				while (self.tokenType(idx - 1) == 'HERECOMMENT'){
+					idx -= 2;
+				};
+				
+				var t0 = tokens[idx - 1];
+				
+				if (t0 && T.typ(t0) == '}' && t0.generated) {
+					tokens.splice(idx - 1,1);
+					var s = stackToken('{');
+					s.generated = true;
+					stack.push(s);
+					return 0;
+				} else if (t0 && T.typ(t0) == ',' && self.tokenType(idx - 2) == '}') {
+					tokens.splice(idx - 2,1);
+					s = stackToken('{');
+					s.generated = true;
+					stack.push(s);
+					return 0;
+				} else {
+					s = stackToken('{');
+					s.generated = true;
+					stack.push(s);
+					open(token,idx + 1);
+					return 2;
+				};
+			};
+			
+			// we probably need to run through autocall first?!
+			
+			if (type == 'DO') { // and ctx:generated
+				var prev = T.typ(tokens[i - 1]); // [0]
+				if (['NUMBER','STRING','REGEX','SYMBOL',']','}',')','STRING_END'].indexOf(prev) >= 0) {
+					
+					var tok = T.token(',',',');
+					tok.generated = true;
+					tokens.splice(i,0,tok);
+					
+					if (ctx.generated) {
+						close(token,i);
+						stack.pop();
+						return 2;
+					};
+				};
+			};
+			
+			if ((type == 'TERMINATOR' || type == 'OUTDENT' || type == 'DEF_BODY') && ctx.generated) {
+				close(token,i);
+				stack.pop();
+				return 2;
+			};
+			
+			return 1;
+		});
+	};
+
+	// Methods may be optionally called without parentheses, for simple cases.
+	// Insert the implicit parentheses here, so that the parser doesn't have to
+	// deal with them.
+	// Practically everything will now be callable this way (every identifier)
+	Rewriter.prototype.addImplicitParentheses = function (){
+		
+		var self = this, token;
+		var noCallTag = ['CLASS','IF','UNLESS','TAG','WHILE','FOR','UNTIL','CATCH','FINALLY','MODULE','LEADING_WHEN'];
+		
+		var action = function(token,i) {
+			return self._tokens.splice(i,0,T.token('CALL_END',')'));
+		};
+		
+		// console.log "adding implicit parenthesis" # ,self:scanTokens
+		var tokens = self._tokens;
+		
+		var noCall = false;
+		var seenFor = false;
+		var endCallAtTerminator = false;
+		
+		var i = 0;
+		while (token = tokens[i]){
+			
+			// to handle cases like:
+			// if a(do yes).test
+			// 	yes
+			// we need to keep a stack for balanced pairs
+			// until then you must explicitly end the call like
+			// if a(do yes).test()
+			// 	yes
+			
+			var type = token._type;
+			
+			var prev = tokens[i - 1];
+			var current = tokens[i];
+			var next = tokens[i + 1];
+			
+			var pt = prev && prev._type;
+			var nt = next && next._type;
+			
+			// if pt == 'WHEN'
+			// Never make these tags implicitly call
+			// should we not just remove these from IMPLICIT_FUNC?
+			if ((pt == ')' || pt == ']') && type == 'INDENT') {
+				noCall = true;
+			};
+			
+			if (noCallTag.indexOf(pt) >= 0) {
+				// console.log("seen nocall tag {pt} ({pt} {type} {nt})")
+				endCallAtTerminator = true;
+				noCall = true;
+				if (pt == 'FOR') { seenFor = true };
+			};
+			
+			
+			var callObject = false;
+			var callIndent = false;
+			
+			// [prev, current, next] = tokens[i - 1 .. i + 1]
+			
+			// check for comments
+			// console.log "detect end??"
+			if (!noCall && type == 'INDENT' && next) {
+				var prevImpFunc = pt && IMPLICIT_FUNC.indexOf(pt) >= 0;
+				var nextImpCall = nt && IMPLICIT_CALL.indexOf(nt) >= 0;
+				callObject = ((next.generated && nt == '{') || nextImpCall) && prevImpFunc;
+				callIndent = nextImpCall && prevImpFunc;
+			};
+			
+			var seenSingle = false;
+			var seenControl = false;
+			// Hmm ?
+			
+			// this is not correct if this is inside a block,no?
+			if ((type == 'TERMINATOR' || type == 'OUTDENT' || type == 'INDENT')) {
+				endCallAtTerminator = false;
+				noCall = false;
+			};
+			
+			if (type == '?' && prev && !prev.spaced) { token.call = true };
+			
+			// where does fromThem come from?
+			if (token.fromThen) {
+				i += 1;continue;
+			};
+			// here we deal with :spaced and :newLine
+			if (!(callObject || callIndent || (prev && prev.spaced) && (prev.call || IMPLICIT_FUNC.indexOf(pt) >= 0) && (IMPLICIT_CALL.indexOf(type) >= 0 || !(token.spaced || token.newLine) && IMPLICIT_UNSPACED_CALL.indexOf(type) >= 0))) {
+				i += 1;continue;
+			};
+			
+			
+			tokens.splice(i,0,T.token('CALL_START','('));
+			// console.log "added ( {prev}"
+			var cond = function(token,i) {
+				var type = T.typ(token);
+				if (!seenSingle && token.fromThen) { return true };
+				var ifelse = type == 'IF' || type == 'UNLESS' || type == 'ELSE';
+				if (ifelse || type == 'CATCH') { seenSingle = true };
+				if (ifelse || type == 'SWITCH' || type == 'TRY') { seenControl = true };
+				var prev = self.tokenType(i - 1);
+				
+				if ((type == '.' || type == '?.' || type == '::') && prev == 'OUTDENT') { return true };
+				if (endCallAtTerminator && (type == 'INDENT' || type == 'TERMINATOR')) { return true };
+				if ((type == 'WHEN' || type == 'BY') && !seenFor) {
+					// console.log "dont close implicit call outside for"
+					return false;
+				};
+				
+				var post = tokens[i + 1];
+				var postTyp = post && T.typ(post);
+				// WTF
+				return !token.generated && prev != ',' && (IMPLICIT_END.indexOf(type) >= 0 || (type == 'INDENT' && !seenControl) || (type == 'DOS' && prev != '=')) && (type != 'INDENT' || (self.tokenType(i - 2) != 'CLASS' && IMPLICIT_BLOCK.indexOf(prev) == -1 && !(post && ((post.generated && postTyp == '{') || IMPLICIT_CALL.indexOf(postTyp) >= 0))));
+			};
+			
+			// The action for detecting when the call should end
+			// console.log "detect end??"
+			self.detectEnd(i + 1,cond,action);
+			if (T.typ(prev) == '?') { T.setTyp(prev,'FUNC_EXIST') };
+			i += 2;
+			// need to reset after a match
+			endCallAtTerminator = false;
+			noCall = false;
+			seenFor = false;
+		};
+		
+		
+		return;
+	};
+
+	// Because our grammar is LALR(1), it can't handle some single-line
+	// expressions that lack ending delimiters. The **Rewriter** adds the implicit
+	// blocks, so it doesn't need to. ')' can close a single-line block,
+	// but we need to make sure it's balanced.
+	Rewriter.prototype.addImplicitIndentation = function (){
+		
+		
+		var self = this, token;
+		var i = 0;
+		var tokens = self._tokens;
+		while (token = tokens[i]){
+			var type = T.typ(token);
+			var next = self.tokenType(i + 1);
+			
+			// why are we removing terminators after then? should be able to handle
+			if (type == 'TERMINATOR' && next == 'THEN') {
+				tokens.splice(i,1);
+				continue;
+			};
+			
+			if (type == 'CATCH' && Imba.indexOf(self.tokenType(i + 2),['OUTDENT','TERMINATOR','FINALLY']) >= 0) {
+				tokens.splice.apply(tokens,[].concat([i + 2,0], [].slice.call(self.indentation(token))));
+				i += 4;continue;
+			};
+			
+			if (SINGLE_LINERS.indexOf(type) >= 0 && (next != 'INDENT' && next != 'BLOCK_PARAM_START') && !(type == 'ELSE' && next == 'IF') && type != 'ELIF') {
+				
+				var starter = type;
+				
+				var indent = T.token('INDENT','2');
+				var outdent = T.OUTDENT;
+				// var indent, outdent = indentation(token)
+				if (starter == 'THEN') { indent.fromThen = true }; // setting special values for these -- cannot really reuse?
+				indent.generated = true;
+				// outdent:generated = true
+				tokens.splice(i + 1,0,indent);
+				
+				var condition = function(token,i) {
+					var t = T.typ(token);
+					return T.val(token) != ';' && SINGLE_CLOSERS.indexOf(t) >= 0 && !(t == 'ELSE' && starter != 'IF' && starter != 'THEN');
+				};
+				
+				var action = function(token,i) {
+					var idx = self.tokenType(i - 1) == ',' ? (i - 1) : (i);
+					return tokens.splice(idx,0,outdent);
+				};
+				
+				self.detectEnd(i + 2,condition,action);
+				if (type == 'THEN') { tokens.splice(i,1) };
+			};
+			
+			i++;
+		};
+		
+		return;
+	};
+
+	// Tag postfix conditionals as such, so that we can parse them with a
+	// different precedence.
+	Rewriter.prototype.tagPostfixConditionals = function (){
+		var self = this;
+		var condition = function(token,i) { return Imba.indexOf(T.typ(token),['TERMINATOR','INDENT']) >= 0; };
+		
+		return self.scanTokens(function(token,i) {
+			var typ = T.typ(token);
+			if (!(typ == 'IF' || typ == 'FOR')) { return 1 };
+			var original = token;
+			self.detectEnd(i + 1,condition,function(token,i) {
+				if (T.typ(token) != 'INDENT') { return T.setTyp(original,'POST_' + T.typ(original)) };
+			});
+			return 1;
+		});
+	};
+
+	// Generate the indentation tokens, based on another token on the same line.
+	Rewriter.prototype.indentation = function (token){
+		return [T.token('INDENT','2'),T.token('OUTDENT','2')];
+	};
+
+	// Look up a type by token index.
+	Rewriter.prototype.type = function (i){
+		// if i < 0 then return null
+		var tok = this._tokens[i];
+		return tok && T.typ(tok);
+		// if tok then tok[0] else null
+	};
+
+	Rewriter.prototype.tokenType = function (i){
+		var tok = this._tokens[i];
+		return tok && T.typ(tok);
+		// return tok and tok[0]
+	};
+
+	// Constants
+	// ---------
 
 	// List of the token pairs that must be balanced.
-	var BALANCED_PAIRS = exports.BALANCED_PAIRS = [
+	var BALANCED_PAIRS = [
 		['(',')'],
 		['[',']'],
 		['{','}'],
@@ -3114,6 +3506,8 @@
 		['PARAM_START','PARAM_END'],
 		['INDEX_START','INDEX_END'],
 		['TAG_START','TAG_END'],
+		['TAG_PARAM_START','TAG_PARAM_END'],
+		['TAG_ATTRS_START','TAG_ATTRS_END'],
 		['BLOCK_PARAM_START','BLOCK_PARAM_END']
 	];
 
@@ -3133,46 +3527,71 @@
 		INVERSES[left] = rite;
 	};
 
+	var EXPRESSION_START = ['(','[','{','INDENT','CALL_START','PARAM_START','INDEX_START','TAG_PARAM_START','BLOCK_PARAM_START','STRING_START','{{','TAG_START'];
+	var EXPRESSION_END = [')',']','}','OUTDENT','CALL_END','PARAM_END','INDEX_END','TAG_PARAM_END','BLOCK_PARAM_END','STRING_END','}}','TAG_END'];
 
-	var ALL_KEYWORDS = exports.ALL_KEYWORDS = [
-		'true','false','null','this',
-		'delete','typeof','in','instanceof',
-		'throw','break','continue','debugger',
-		'if','else','switch','for','while','do','try','catch','finally',
-		'class','extends','super','return',
-		'undefined','then','unless','until','loop','of','by',
-		'when','def','tag','do','elif','begin','var','let','self','await','import',
-		'and','or','is','isnt','not','yes','no','isa','case','nil','require'
+	var IDENTIFIERS = ['IDENTIFIER','GVAR','IVAR','CVAR','CONST','ARGVAR'];
+
+	// Tokens that indicate the close of a clause of an expression.
+	var EXPRESSION_CLOSE = ['CATCH','WHEN','ELSE','FINALLY'].concat(EXPRESSION_END);
+
+	// Tokens that, if followed by an `IMPLICIT_CALL`, indicate a function invocation.
+	var IMPLICIT_FUNC = ['IDENTIFIER','SUPER','@','THIS','SELF','EVENT','TRIGGER','TAG_END','IVAR',
+	'GVAR','CONST','ARGVAR','NEW','BREAK','CONTINUE','RETURN'];
+
+	// If preceded by an `IMPLICIT_FUNC`, indicates a function invocation.
+	var IMPLICIT_CALL = [
+		'SELECTOR','IDENTIFIER','NUMBER','STRING','SYMBOL','JS','REGEX','NEW','PARAM_START','CLASS',
+		'IF','UNLESS','TRY','SWITCH','THIS','BOOL','TRUE','FALSE','NULL','UNDEFINED','UNARY','SUPER','IVAR','GVAR','CONST','ARGVAR','SELF',
+		'@','[','(','{','--','++','SELECTOR','TAG_START','TAGID','#','SELECTOR_START','IDREF','SPLAT','DO','BLOCK_ARG',
+		'FOR','STRING_START','CONTINUE','BREAK'
+	]; // '->', '=>', why does it not work with symbol?
+
+	var IMPLICIT_INDENT_CALL = [
+		'FOR'
 	];
+	// is not do an implicit call??
 
-	var TOK = exports.TOK = {
-		TERMINATOR: 'TERMINATOR',
-		INDENT: 'INDENT',
-		OUTDENT: 'OUTDENT',
-		DEF_BODY: 'DEF_BODY',
-		THEN: 'THEN',
-		CATCH: 'CATCH'
-	};
+	var IMPLICIT_UNSPACED_CALL = ['+','-'];
 
-	var OPERATOR_ALIASES = exports.OPERATOR_ALIASES = {
-		and: '&&',
-		or: '||',
-		is: '==',
-		isnt: '!=',
-		isa: 'instanceof'
-	};
+	// Tokens indicating that the implicit call must enclose a block of expressions.
+	var IMPLICIT_BLOCK = ['{','[',',','BLOCK_PARAM_END','DO']; // '->', '=>', 
 
-	var HEREGEX_OMIT = exports.HEREGEX_OMIT = /\s+(?:#.*)?/g;
-	var HEREGEX = exports.HEREGEX = /^\/{3}([\s\S]+?)\/{3}([imgy]{0,4})(?!\w)/;
+	var CONDITIONAL_ASSIGN = ['||=','&&=','?=','&=','|='];
+	var COMPOUND_ASSIGN = ['-=','+=','/=','*=','%=','||=','&&=','?=','<<=','>>=','>>>=','&=','^=','|='];
+	var UNARY = ['!','~','NEW','TYPEOF','DELETE'];
+	var LOGIC = ['&&','||','&','|','^'];
+
+	// optimize for fixed arrays
+	var NO_IMPLICIT_BLOCK_CALL = [
+		'CALL_END','=','DEF_BODY','(','CALL_START',',',':','RETURN',
+		'-=','+=','/=','*=','%=','||=','&&=','?=','<<=','>>=','>>>=','&=','^=','|='
+	]; // .concat(COMPOUND_ASSIGN)
+
+
+	// console.log NO_IMPLICIT_BLOCK_CALL:length
+	// NO_IMPLICIT_BLOCK_CALL
+	// IMPLICIT_COMMA = ['->', '=>', '{', '[', 'NUMBER', 'STRING', 'SYMBOL', 'IDENTIFIER','DO']
+
+	var IMPLICIT_COMMA = ['DO'];
+
+	// Tokens that always mark the end of an implicit call for single-liners.
+	var IMPLICIT_END = ['POST_IF','POST_UNLESS','POST_FOR','WHILE','UNTIL','WHEN','BY','LOOP','TERMINATOR','DEF_BODY','DEF_FRAGMENT'];
+
+	// Single-line flavors of block expressions that have unclosed endings.
+	// The grammar can't disambiguate them, so we insert the implicit indentation.
+	var SINGLE_LINERS = ['ELSE','TRY','FINALLY','THEN','BLOCK_PARAM_END','DO','BEGIN','CATCH_VAR']; // '->', '=>', really?
+	var SINGLE_CLOSERS = ['TERMINATOR','CATCH','FINALLY','ELSE','OUTDENT','LEADING_WHEN'];
+
+	// Tokens that end a line.
+	var LINEBREAKS = ['TERMINATOR','INDENT','OUTDENT'];
 
 
 /***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/* 7 */
+/***/ function(module, exports) {
 
 	// create separate error-types with all the logic
-
-	var util = __webpack_require__(4);
 
 	function ImbaParseError(e,o){
 		this.error = e;
@@ -3226,1013 +3645,26 @@
 	ImbaParseError.prototype.toJSON = function (){
 		var o = this._options;
 		var tok = this.start();
+		// var tok = o:tokens and o:tokens[o:pos - 1]
+		// var loc = tok and [tok.@loc,tok.@loc + (tok.@len or tok.@value:length)] or [0,0]
+		// , col: tok.@col, line: tok.@line
+		// get the token itself?
 		return {warn: true,message: this.desc(),loc: this.loc()};
 	};
 
-	ImbaParseError.prototype.excerpt = function (pars){
-		
-		if(!pars||pars.constructor !== Object) pars = {};
-		var gutter = pars.gutter !== undefined ? pars.gutter : true;
-		var colors = pars.colors !== undefined ? pars.colors : false;
-		var details = pars.details !== undefined ? pars.details : true;
-		var code = this._code;
-		var loc = this.loc();
-		var lines = code.split(/\n/g);
-		var locmap = util.locationToLineColMap(code);
-		var lc = locmap[loc[0]] || [0,0];
-		var ln = lc[0];
-		var col = lc[1];
-		var line = lines[ln];
-		
-		var ln0 = Math.max(0,ln - 2);
-		var ln1 = Math.min(ln0 + 5,lines.length);
-		var lni = ln - ln0;
-		var l = ln0;
-		
-		var res = [];while (l < ln1){
-			res.push((line = lines[l++]));
-		};var out = res;
-		
-		if (gutter) {
-			out = out.map(function(line,i) {
-				var prefix = ("" + (ln0 + i + 1));
-				while (prefix.length < String(ln1).length){
-					prefix = (" " + prefix);
-				};
-				if (i == lni) {
-					return ("   -> " + prefix + " | " + line);
-				} else {
-					return ("      " + prefix + " | " + line);
-				};
-			});
-		};
-		
-		if (colors) {
-			out[lni] = util.ansi.red(util.ansi.bold(out[lni]));
-		};
-		
-		if (details) {
-			out.unshift(this.message);
-		};
-		
-		return out.join('\n');
-	};
-
-	ImbaParseError.prototype.prettyMessage = function (){
-		var excerpt;
-		return excerpt = this.excerpt();
-	};
-
 
 /***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {
-	// The Imba language has a good deal of optional syntax, implicit syntax,
-	// and shorthand syntax. This can greatly complicate a grammar and bloat
-	// the resulting parse table. Instead of making the parser handle it all, we take
-	// a series of passes over the token stream, using this **Rewriter** to convert
-	// shorthand into the unambiguous long form, add implicit indentation and
-	// parentheses, and generally clean things up.
-
-
-	var T = __webpack_require__(3);
-	var Token = T.Token;
-
-	var v8;
-
-
-	var constants$ = __webpack_require__(7), INVERSES = constants$.INVERSES, BALANCED_PAIRS = constants$.BALANCED_PAIRS, TOK = constants$.TOK;
-
-	// var TERMINATOR = TERMINATOR
-
-	var TERMINATOR = 'TERMINATOR';
-	var INDENT = 'INDENT';
-	var OUTDENT = 'OUTDENT';
-	var DEF_BODY = 'DEF_BODY';
-	var THEN = 'THEN';
-	var CATCH = 'CATCH';
-
-	var arrayToHash = function(ary) {
-		var hash = {};
-		for (var i = 0, items = Imba.iterable(ary), len = items.length; i < len; i++) {
-			hash[items[i]] = 1;
-		};
-		return hash;
-	};
-
-	// var EXPRESSION_START = ['(','[','{','INDENT','CALL_START','PARAM_START','INDEX_START','BLOCK_PARAM_START','STRING_START','{{', 'TAG_START']
-	// var EXPRESSION_END   = [')',']','}','OUTDENT','CALL_END','PARAM_END','INDEX_END','BLOCK_PARAM_END','STRING_END','}}', 'TAG_END']
-	// Tokens that indicate the close of a clause of an expression.
-	var EXPRESSION_CLOSE = [')',']','}','OUTDENT','CALL_END','PARAM_END','INDEX_END','BLOCK_PARAM_END','STRING_END','}}','TAG_END','CATCH','WHEN','ELSE','FINALLY'];
-
-	var EXPRESSION_CLOSE_HASH = arrayToHash(EXPRESSION_CLOSE);
-
-	var EXPRESSION_START = {
-		'(': 1,
-		'[': 1,
-		'{': 1,
-		'{{': 1,
-		'INDENT': 1,
-		'CALL_START': 1,
-		'PARAM_START': 1,
-		'INDEX_START': 1,
-		'BLOCK_PARAM_START': 1,
-		'STRING_START': 1,
-		'TAG_START': 1
-	};
-
-	var EXPRESSION_END = {
-		')': 1,
-		']': 1,
-		'}': 1,
-		'}}': 1,
-		'OUTDENT': 1,
-		'CALL_END': 1,
-		'PARAM_END': 1,
-		'INDEX_END': 1,
-		'BLOCK_PARAM_END': 1,
-		'STRING_END': 1,
-		'TAG_END': 1
-	};
-
-	var SINGLE_LINERS = {
-		ELSE: 1,
-		TRY: 1,
-		FINALLY: 1,
-		THEN: 1,
-		BLOCK_PARAM_END: 1,
-		DO: 1,
-		BEGIN: 1,
-		CATCH_VAR: 1
-	};
-
-	var SINGLE_CLOSERS_MAP = {
-		TERMINATOR: true,
-		CATCH: true,
-		FINALLY: true,
-		ELSE: true,
-		OUTDENT: true,
-		LEADING_WHEN: true
-	};
-
-	var IMPLICIT_FUNC_MAP = {
-		'IDENTIFIER': 1,
-		'SUPER': 1,
-		'@': 1,
-		'THIS': 1,
-		'SELF': 1,
-		'TAG_END': 1,
-		'IVAR': 1,
-		'GVAR': 1,
-		'CONST': 1,
-		'ARGVAR': 1,
-		'NEW': 1,
-		'BREAK': 1,
-		'CONTINUE': 1,
-		'RETURN': 1
-	};
-
-	var IMPLICIT_CALL_MAP = {
-		'SELECTOR': 1,
-		'IDENTIFIER': 1,
-		'NUMBER': 1,
-		'STRING': 1,
-		'SYMBOL': 1,
-		'JS': 1,
-		'REGEX': 1,
-		'NEW': 1,
-		'CLASS': 1,
-		'IF': 1,
-		'UNLESS': 1,
-		'TRY': 1,
-		'SWITCH': 1,
-		'THIS': 1,
-		'BOOL': 1,
-		'TRUE': 1,
-		'FALSE': 1,
-		'NULL': 1,
-		'UNDEFINED': 1,
-		'UNARY': 1,
-		'SUPER': 1,
-		'IVAR': 1,
-		'GVAR': 1,
-		'CONST': 1,
-		'ARGVAR': 1,
-		'SELF': 1,
-		'@': 1,
-		'[': 1,
-		'(': 1,
-		'{': 1,
-		'--': 1,
-		'++': 1,
-		'TAGID': 1,
-		'#': 1,
-		'TAG_START': 1,
-		'PARAM_START': 1,
-		'SELECTOR_START': 1,
-		'STRING_START': 1,
-		'IDREF': 1,
-		'SPLAT': 1,
-		'DO': 1,
-		'BLOCK_ARG': 1,
-		'FOR': 1,
-		'CONTINUE': 1,
-		'BREAK': 1
-	};
-
-
-	var IDENTIFIERS = ['IDENTIFIER','GVAR','IVAR','CVAR','CONST','ARGVAR'];
-
-
-
-	// Tokens that, if followed by an `IMPLICIT_CALL`, indicate a function invocation.
-	var IMPLICIT_FUNC = ['IDENTIFIER','SUPER','@','THIS','SELF','EVENT','TRIGGER','TAG_END','IVAR',
-	'GVAR','CONST','ARGVAR','NEW','BREAK','CONTINUE','RETURN'];
-
-	// If preceded by an `IMPLICIT_FUNC`, indicates a function invocation.
-	var IMPLICIT_CALL = [
-		'SELECTOR','IDENTIFIER','NUMBER','STRING','SYMBOL','JS','REGEX','NEW','PARAM_START','CLASS',
-		'IF','UNLESS','TRY','SWITCH','THIS','BOOL','TRUE','FALSE','NULL','UNDEFINED','UNARY','SUPER','IVAR','GVAR','CONST','ARGVAR','SELF',
-		'@','[','(','{','--','++','SELECTOR','TAG_START','TAGID','#','SELECTOR_START','IDREF','SPLAT','DO','BLOCK_ARG',
-		'FOR','STRING_START','CONTINUE','BREAK'
-	]; // '->', '=>', why does it not work with symbol?
-
-	var IMPLICIT_INDENT_CALL = [
-		'FOR'
-	];
-	// is not do an implicit call??
-
-	var IMPLICIT_UNSPACED_CALL = ['+','-'];
-
-	// Tokens indicating that the implicit call must enclose a block of expressions.
-	var IMPLICIT_BLOCK = ['{','[',',','BLOCK_PARAM_END','DO']; // '->', '=>', 
-
-	var IMPLICIT_BLOCK_MAP = arrayToHash(IMPLICIT_BLOCK);
-
-	var CONDITIONAL_ASSIGN = ['||=','&&=','?=','&=','|='];
-	var COMPOUND_ASSIGN = ['-=','+=','/=','*=','%=','||=','&&=','?=','<<=','>>=','>>>=','&=','^=','|='];
-	var UNARY = ['!','~','NEW','TYPEOF','DELETE'];
-	var LOGIC = ['&&','||','&','|','^'];
-
-	// optimize for fixed arrays
-	var NO_IMPLICIT_BLOCK_CALL = [
-		'CALL_END','=','DEF_BODY','(','CALL_START',',',':','RETURN',
-		'-=','+=','/=','*=','%=','||=','&&=','?=','<<=','>>=','>>>=','&=','^=','|='
-	]; // .concat(COMPOUND_ASSIGN)
-
-	var NO_CALL_TAG = ['CLASS','IF','UNLESS','TAG','WHILE','FOR','UNTIL','CATCH','FINALLY','MODULE','LEADING_WHEN'];
-
-	var NO_CALL_TAG_MAP = arrayToHash(NO_CALL_TAG);
-
-
-	// console.log NO_IMPLICIT_BLOCK_CALL:length
-	// NO_IMPLICIT_BLOCK_CALL
-	// IMPLICIT_COMMA = ['->', '=>', '{', '[', 'NUMBER', 'STRING', 'SYMBOL', 'IDENTIFIER','DO']
-
-	var IMPLICIT_COMMA = ['DO'];
-
-	// Tokens that always mark the end of an implicit call for single-liners.
-	var IMPLICIT_END = ['POST_IF','POST_UNLESS','POST_FOR','WHILE','UNTIL','WHEN','BY','LOOP','TERMINATOR','DEF_BODY','DEF_FRAGMENT'];
-
-	var IMPLICIT_END_MAP = {
-		POST_IF: true,
-		POST_UNLESS: true,
-		POST_FOR: true,
-		WHILE: true,
-		UNTIL: true,
-		WHEN: true,
-		BY: true,
-		LOOP: true,
-		TERMINATOR: true,
-		DEF_BODY: true,
-		DEF_FRAGMENT: true
-	};
-
-	// Single-line flavors of block expressions that have unclosed endings.
-	// The grammar can't disambiguate them, so we insert the implicit indentation.
-	// var SINGLE_LINERS    = ['ELSE', 'TRY', 'FINALLY', 'THEN','BLOCK_PARAM_END','DO','BEGIN','CATCH_VAR'] # '->', '=>', really?
-	var SINGLE_CLOSERS = ['TERMINATOR','CATCH','FINALLY','ELSE','OUTDENT','LEADING_WHEN'];
-	var LINEBREAKS = ['TERMINATOR','INDENT','OUTDENT']; // Tokens that end a line.
-
-	var CALLCOUNT = 0;
-	// Based on the original rewriter.coffee from CoffeeScript
-	function Rewriter(){
-		this._tokens = [];
-		this._options = {};
-		this._len = 0;
-		this._starter = null;
-		this;
-	};
-
-	exports.Rewriter = Rewriter; // export class 
-	Rewriter.prototype.reset = function (){
-		return this;
-	};
-
-	Rewriter.prototype.tokens = function (){
-		return this._tokens;
-	};
-
-	// Helpful snippet for debugging:
-	//     console.log (t[0] + '/' + t[1] for t in @tokens).join ' '
-	// Rewrite the token stream in multiple passes, one logical filter at
-	// a time. This could certainly be changed into a single pass through the
-	// stream, with a big ol' efficient switch, but it's much nicer to work with
-	// like this. The order of these passes matters -- indentation must be
-	// corrected before implicit parentheses can be wrapped around blocks of code.
-	Rewriter.prototype.rewrite = function (tokens,opts){
-		if(opts === undefined) opts = {};
-		this.reset();
-		
-		this._tokens = tokens;
-		this._options = opts;
-		
-		var i = 0;
-		var k = tokens.length;
-		// flag empty methods
-		while (i < (k - 1)){
-			var token = tokens[i];
-			
-			if (token._type == 'DEF_BODY') {
-				var next = tokens[i + 1];
-				if (next && next._type == TERMINATOR) {
-					token._type = 'DEF_EMPTY';
-				};
-			};
-			i++;
-		};
-		
-		this.step("all");
-		if (CALLCOUNT) { console.log(CALLCOUNT) };
-		return this._tokens;
-	};
-
-	Rewriter.prototype.all = function (){
-		this.step("ensureFirstLine");
-		this.step("removeLeadingNewlines");
-		this.step("removeMidExpressionNewlines");
-		this.step("tagDefArguments");
-		this.step("closeOpenCalls");
-		this.step("closeOpenIndexes");
-		this.step("closeOpenTags");
-		this.step("addImplicitIndentation");
-		this.step("tagPostfixConditionals");
-		this.step("addImplicitBraces");
-		return this.step("addImplicitParentheses");
-	};
-
-	Rewriter.prototype.step = function (fn){
-		
-		
-		this[fn]();
-		
-		if (v8) {
-			var opt = v8.getOptimizationStatus(this[fn]);
-			if (opt != 1) {
-				process.stdout.write(("" + fn + ": " + opt + "\n"));
-				v8.optimizeFunctionOnNextCall(this[fn]);
-			};
-			
-			// if opt == 2
-			// v8.optimizeFunctionOnNextCall(this[fn])
-			//	v8:helpers.printStatus(this[fn])
-			// console.log v8.getOptimizationStatus(this[fn])
-		};
-		
-		
-		
-		return;
-	};
-
-	// Rewrite the token stream, looking one token ahead and behind.
-	// Allow the return value of the block to tell us how many tokens to move
-	// forwards (or backwards) in the stream, to make sure we don't miss anything
-	// as tokens are inserted and removed, and the stream changes length under
-	// our feet.
-	Rewriter.prototype.scanTokens = function (block){
-		var tokens = this._tokens;
-		
-		var i = 0;
-		while (i < tokens.length){
-			i += block.call(this,tokens[i],i,tokens);
-		};
-		return true;
-	};
-
-	Rewriter.prototype.detectEnd = function (i,condition,action,state){
-		
-		if(state === undefined) state = {};
-		var tokens = this._tokens;
-		var levels = 0;
-		var token;
-		var t,v;
-		
-		while (i < tokens.length){
-			token = tokens[i];
-			
-			if (levels == 0 && condition.call(this,token,i,tokens,state)) {
-				return action.call(this,token,i,tokens,state);
-			};
-			
-			if (!token || levels < 0) {
-				return action.call(this,token,i - 1,tokens,state);
-			};
-			
-			t = token._type;
-			
-			if (EXPRESSION_START[t]) {
-				levels += 1;
-			} else if (EXPRESSION_END[t]) {
-				levels -= 1;
-			};
-			i += 1;
-		};
-		
-		return i - 1;
-	};
-
-	Rewriter.prototype.ensureFirstLine = function (){
-		var token = this._tokens[0];
-		
-		if (token._type === TERMINATOR) {
-			this._tokens.unshift(T.token('BODYSTART','BODYSTART'));
-			// @tokens = [T.token('BODYSTART','BODYSTART')].concat(@tokens)
-		};
-		return;
-	};
-
-	// Leading newlines would introduce an ambiguity in the grammar, so we
-	// dispatch them here.
-	Rewriter.prototype.removeLeadingNewlines = function (){
-		var at = 0;
-		
-		var i = 0; // @tokens:length
-		var tokens = this._tokens;
-		var token;
-		var l = tokens.length;
-		
-		while (i < l){
-			token = tokens[i];
-			if (token._type !== TERMINATOR) {
-				at = i;break;
-			};
-			i++;
-		};
-		
-		if (at) { tokens.splice(0,at) };
-		return;
-	};
-
-	// Some blocks occur in the middle of expressions -- when we're expecting
-	// this, remove their trailing newlines.
-	Rewriter.prototype.removeMidExpressionNewlines = function (){
-		
-		return this.scanTokens(function(token,i,tokens) { // do |token,i,tokens|
-			var next = (tokens.length > (i + 1)) ? (tokens[i + 1]) : (null);
-			if (!(token._type === TERMINATOR && next && EXPRESSION_CLOSE_HASH[next._type])) { return 1 }; // .indexOf(next) >= 0
-			if (next && next._type == OUTDENT) { return 1 };
-			// return 1
-			tokens.splice(i,1);
-			return 0;
-		});
-	};
-
-
-	Rewriter.prototype.tagDefArguments = function (){
-		return true;
-	};
-
-	// The lexer has tagged the opening parenthesis of a method call. Match it with
-	// its paired close. We have the mis-nested outdent case included here for
-	// calls that close on the same line, just before their outdent.
-	Rewriter.prototype.closeOpenCalls = function (){
-		var condition = function(token,i,tokens) {
-			var t = token._type;
-			return (t == ')' || t == 'CALL_END') || t == OUTDENT && this.tokenType(i - 1) == ')';
-		};
-		
-		var action = function(token,i,tokens) {
-			var t = token._type;
-			if (t === OUTDENT) { token = tokens[i - 1] };
-			// var tok = @tokens[t == OUTDENT ? i - 1 : i]
-			token._type = 'CALL_END';
-			return;
-			// T.setTyp(tok,'CALL_END')
-		};
-		
-		this.scanTokens(function(token,i,tokens) {
-			if (token._type === 'CALL_START') { this.detectEnd(i + 1,condition,action) };
-			return 1;
-		});
-		
-		return;
-	};
-
-	// The lexer has tagged the opening parenthesis of an indexing operation call.
-	// Match it with its paired close.
-	Rewriter.prototype.closeOpenIndexes = function (){
-		// why differentiate between index and []
-		var self = this;
-		var condition = function(token,i) { return token._type === ']' || token._type === 'INDEX_END'; };
-		var action = function(token,i) { return token._type = 'INDEX_END'; };
-		
-		return self.scanTokens(function(token,i,tokens) {
-			if (token._type === 'INDEX_START') { self.detectEnd(i + 1,condition,action) };
-			return 1;
-		});
-	};
-
-	// The lexer has tagged the opening parenthesis of an indexing operation call.
-	// Match it with its paired close. Should be done in lexer directly
-	Rewriter.prototype.closeOpenTags = function (){
-		var self = this;
-		var condition = function(token,i) { return token._type == '>' || token._type == 'TAG_END'; };
-		var action = function(token,i) { return token._type = 'TAG_END'; };
-		
-		return self.scanTokens(function(token,i,tokens) {
-			if (token._type === 'TAG_START') { self.detectEnd(i + 1,condition,action) };
-			return 1;
-		});
-	};
-
-	Rewriter.prototype.addImplicitBlockCalls = function (){
-		var i = 1;
-		var tokens = this._tokens;
-		
-		// can use shared states for these
-		while (i < tokens.length){
-			
-			var token = tokens[i];
-			var t = token._type;
-			var v = token._value;
-			// hmm
-			if (t == 'DO' && (v == 'INDEX_END' || v == 'IDENTIFIER' || v == 'NEW')) {
-				tokens.splice(i + 1,0,T.token('CALL_END',')'));
-				tokens.splice(i + 1,0,T.token('CALL_START','('));
-				i++;
-			};
-			i++;
-		};
-		
-		return;
-	};
-
-	// Object literals may be written with implicit braces, for simple cases.
-	// Insert the missing braces here, so that the parser doesn't have to.
-
-	Rewriter.prototype.addLeftBrace = function (){
-		return this;
-	};
-
-	Rewriter.prototype.addImplicitBraces = function (){
-		var self = this;
-		var stack = [];
-		var start = null;
-		var startIndent = 0;
-		var startIdx = null;
-		var baseCtx = ['ROOT',0];
-		
-		var noBraceContext = ['IF','TERNARY','FOR'];
-		
-		var noBrace = false;
-		
-		var action = function(token,i) {
-			return self._tokens.splice(i,0,T.RBRACKET);
-		};
-		
-		var open = function(token,i) {
-			return self._tokens.splice(i,0,T.LBRACKET);
-		};
-		
-		var close = function(token,i) {
-			return self._tokens.splice(i,0,T.RBRACKET);
-		};
-		
-		var stackToken = function(a,b) {
-			return [a,b];
-		};
-		
-		// method is called so many times
-		return self.scanTokens(function(token,i,tokens) {
-			var type = token._type;
-			var v = token._value;
-			
-			var ctx = (stack.length) ? (stack[stack.length - 1]) : (baseCtx);
-			var idx;
-			
-			if (noBraceContext.indexOf(type) >= 0) {
-				stack.push(stackToken(type,i));
-				return 1;
-			};
-			
-			if (v == '?') {
-				stack.push(stackToken('TERNARY',i));
-				return 1;
-			};
-			
-			// no need to test for this here as well as in
-			if (EXPRESSION_START[type]) {
-				if (type === INDENT && noBraceContext.indexOf(ctx[0]) >= 0) {
-					stack.pop();
-				};
-				
-				if (type === INDENT && self.tokenType(i - 1) == '{') {
-					stack.push(stackToken('{',i)); // should not autogenerate another?
-				} else {
-					stack.push(stackToken(type,i));
-				};
-				return 1;
-			};
-			
-			if (EXPRESSION_END[type]) {
-				if (ctx[0] == 'TERNARY') {
-					stack.pop();
-				};
-				
-				start = stack.pop();
-				start[2] = i;
-				
-				// seems like the stack should use tokens, no?)
-				if (start[0] == '{' && start.generated) {
-					close(token,i);
-					return 1;
-				};
-				
-				return 1;
-			};
-			
-			// is this correct? same for if/class etc?
-			if (ctx[0] == 'TERNARY' && (type === TERMINATOR || type === OUTDENT)) {
-				stack.pop();
-				return 1;
-			};
-			
-			if (noBraceContext.indexOf(ctx[0]) >= 0 && type === INDENT) {
-				stack.pop();
-				return 1;
-			};
-			
-			
-			if (type == ',') {
-				if (ctx[0] == '{' && ctx.generated) {
-					tokens.splice(i,0,T.RBRACKET);
-					stack.pop();
-					return 2;
-				} else {
-					return 1;
-				};
-				true;
-			};
-			
-			// found a type
-			if (type == ':' && ctx[0] != '{' && ctx[0] != 'TERNARY' && (noBraceContext.indexOf(ctx[0]) == -1)) {
-				// could just check if the end was right before this?
-				
-				if (start && start[2] == i - 1) {
-					idx = start[1] - 1; // these are the stackTokens
-				} else {
-					idx = i - 2; // if start then start[1] - 1 else i - 2
-					// idx = idx - 1 if tokenType(idx) is TERMINATOR
-				};
-				
-				while (self.tokenType(idx - 1) === 'HERECOMMENT'){
-					idx -= 2;
-				};
-				
-				var t0 = tokens[idx - 1];
-				
-				if (t0 && T.typ(t0) == '}' && t0.generated) {
-					tokens.splice(idx - 1,1);
-					var s = stackToken('{');
-					s.generated = true;
-					stack.push(s);
-					return 0;
-				} else if (t0 && T.typ(t0) == ',' && self.tokenType(idx - 2) == '}') {
-					tokens.splice(idx - 2,1);
-					s = stackToken('{');
-					s.generated = true;
-					stack.push(s);
-					return 0;
-				} else {
-					s = stackToken('{');
-					s.generated = true;
-					stack.push(s);
-					open(token,idx + 1);
-					return 2;
-				};
-			};
-			
-			// we probably need to run through autocall first?!
-			
-			if (type == 'DO') { // and ctx:generated
-				var prev = T.typ(tokens[i - 1]);
-				if (['NUMBER','STRING','REGEX','SYMBOL',']','}',')','STRING_END'].indexOf(prev) >= 0) {
-					
-					var tok = T.token(',',',');
-					tok.generated = true;
-					tokens.splice(i,0,tok);
-					
-					if (ctx.generated) {
-						close(token,i);
-						stack.pop();
-						return 2;
-					};
-				};
-			};
-			
-			if (ctx.generated && (type === TERMINATOR || type === OUTDENT || type === 'DEF_BODY')) {
-				close(token,i);
-				stack.pop();
-				return 2;
-			};
-			
-			return 1;
-		});
-	};
-
-	// Methods may be optionally called without parentheses, for simple cases.
-	// Insert the implicit parentheses here, so that the parser doesn't have to
-	// deal with them.
-	// Practically everything will now be callable this way (every identifier)
-	Rewriter.prototype.addImplicitParentheses = function (){
-		var self = this;
-		var tokens = self._tokens;
-		
-		var noCall = false;
-		var seenFor = false;
-		var endCallAtTerminator = false;
-		
-		var seenSingle = false;
-		var seenControl = false;
-		
-		var callObject = false;
-		var callIndent = false;
-		
-		var parensAction = function(token,i,tokens) {
-			return tokens.splice(i,0,T.token('CALL_END',')'));
-		};
-		
-		// function will not be optimized in single run
-		// could tro to move this out
-		var parensCond = function(token,i,tokens) {
-			
-			var type = token._type;
-			
-			if (!seenSingle && token.fromThen) {
-				return true;
-			};
-			
-			var ifelse = type == 'IF' || type == 'UNLESS' || type == 'ELSE';
-			
-			if (ifelse || type === 'CATCH') {
-				seenSingle = true;
-			};
-			
-			if (ifelse || type === 'SWITCH' || type == 'TRY') {
-				seenControl = true;
-			};
-			
-			var prev = self.tokenType(i - 1);
-			
-			if ((type == '.' || type == '?.' || type == '::') && prev === OUTDENT) {
-				return true;
-			};
-			
-			if (endCallAtTerminator && (type === INDENT || type === TERMINATOR)) {
-				return true;
-			};
-			
-			if ((type == 'WHEN' || type == 'BY') && !seenFor) {
-				// console.log "dont close implicit call outside for"
-				return false;
-			};
-			
-			var post = (tokens.length > (i + 1)) ? (tokens[i + 1]) : (null);
-			var postTyp = post && post._type;
-			
-			if (token.generated || prev === ',') {
-				return false;
-			};
-			
-			var cond1 = (IMPLICIT_END_MAP[type] || (type == INDENT && !seenControl) || (type == 'DOS' && prev != '='));
-			
-			if (!cond1) {
-				return false;
-			};
-			
-			if (type !== INDENT) {
-				return true;
-			};
-			
-			if (!IMPLICIT_BLOCK_MAP[prev] && self.tokenType(i - 2) != 'CLASS' && !(post && ((post.generated && postTyp == '{') || IMPLICIT_CALL_MAP[postTyp]))) {
-				return true;
-			};
-			
-			return false;
-		};
-		
-		var i = 0;
-		
-		while (tokens.length > (i + 1)){
-			var token = tokens[i];
-			var type = token._type;
-			
-			var prev = (i > 0) ? (tokens[i - 1]) : (null);
-			var next = tokens[i + 1];
-			
-			var pt = prev && prev._type;
-			var nt = next && next._type;
-			
-			if (type === INDENT && (pt == ')' || pt == ']')) {
-				noCall = true;
-			};
-			
-			if (NO_CALL_TAG_MAP[pt]) { // .indexOf(pt) >= 0
-				// CALLCOUNT++
-				// console.log("seen nocall tag {pt} ({pt} {type} {nt})")
-				endCallAtTerminator = true;
-				noCall = true;
-				if (pt == 'FOR') {
-					seenFor = true;
-				};
-			};
-			
-			callObject = false;
-			callIndent = false;
-			
-			if (!noCall && type == INDENT && next) {
-				var prevImpFunc = pt && IMPLICIT_FUNC_MAP[pt];
-				var nextImpCall = nt && IMPLICIT_CALL_MAP[nt];
-				
-				callObject = ((next.generated && nt == '{') || nextImpCall) && prevImpFunc;
-				callIndent = nextImpCall && prevImpFunc;
-			};
-			
-			seenSingle = false;
-			seenControl = false;
-			
-			// this is not correct if this is inside a block,no?
-			if ((type == TERMINATOR || type == OUTDENT || type == INDENT)) {
-				endCallAtTerminator = false;
-				noCall = false;
-			};
-			
-			if (type == '?' && prev && !prev.spaced) {
-				token.call = true;
-			};
-			
-			// where does fromThem come from?
-			if (token.fromThen) {
-				i += 1;continue;
-			};
-			
-			// here we deal with :spaced and :newLine
-			if (!(callObject || callIndent || (prev && prev.spaced) && (prev.call || IMPLICIT_FUNC_MAP[pt]) && (IMPLICIT_CALL_MAP[type] || !(token.spaced || token.newLine) && IMPLICIT_UNSPACED_CALL.indexOf(type) >= 0))) {
-				i += 1;continue;
-			};
-			
-			// cache where we want to splice -- add them later
-			tokens.splice(i,0,T.token('CALL_START','('));
-			// CALLCOUNT++
-			
-			self.detectEnd(i + 1,parensCond,parensAction);
-			
-			if (prev._type == '?') {
-				prev._type = 'FUNC_EXIST';
-			};
-			
-			i += 2;
-			
-			// need to reset after a match
-			endCallAtTerminator = false;
-			noCall = false;
-			seenFor = false;
-		};
-		
-		return;
-	};
-
-
-
-	Rewriter.prototype.indentCondition = function (token,i,tokens){
-		var t = token._type;
-		return SINGLE_CLOSERS_MAP[t] && token._value !== ';' && !(t == 'ELSE' && this._starter != 'IF' && this._starter != 'THEN');
-	};
-
-	Rewriter.prototype.indentAction = function (token,i,tokens){
-		var idx = (this.tokenType(i - 1) === ',') ? ((i - 1)) : (i);
-		tokens.splice(idx,0,T.OUTDENT);
-		return;
-	};
-
-
-	// Because our grammar is LALR(1), it can't handle some single-line
-	// expressions that lack ending delimiters. The **Rewriter** adds the implicit
-	// blocks, so it doesn't need to. ')' can close a single-line block,
-	// but we need to make sure it's balanced.
-	Rewriter.prototype.addImplicitIndentation = function (){
-		
-		var lookup1 = {
-			OUTDENT: 1,
-			TERMINATOR: 1,
-			FINALLY: 1
-		};
-		
-		var i = 0;
-		var tokens = this._tokens;
-		var starter;
-		
-		while (i < tokens.length){
-			var token = tokens[i];
-			var type = token._type;
-			var next = this.tokenType(i + 1);
-			
-			// why are we removing terminators after then? should be able to handle
-			if (type === TERMINATOR && next === THEN) {
-				tokens.splice(i,1);
-				continue;
-			};
-			
-			if (type === CATCH && lookup1[this.tokenType(i + 2)]) {
-				tokens.splice(i + 2,0,T.token(INDENT,'2'),T.token(OUTDENT,'2'));
-				i += 4;
-				continue;
-			};
-			
-			if (SINGLE_LINERS[type] && (next != INDENT && next != 'BLOCK_PARAM_START') && !(type == 'ELSE' && next == 'IF') && type != 'ELIF') {
-				this._starter = starter = type;
-				
-				var indent = T.token(INDENT,'2');
-				if (starter === THEN) { indent.fromThen = true };
-				indent.generated = true;
-				tokens.splice(i + 1,0,indent);
-				this.detectEnd(i + 2,this.indentCondition,this.indentAction);
-				if (type === THEN) { tokens.splice(i,1) };
-			};
-			i++;
-		};
-		
-		return;
-	};
-
-	// Tag postfix conditionals as such, so that we can parse them with a
-	// different precedence.
-	Rewriter.prototype.tagPostfixConditionals = function (){
-		var self = this;
-		var condition = function(token,i,tokens) { return token._type === TERMINATOR || token._type === INDENT; };
-		var action = function(token,i,tokens,s) {
-			if (token._type != INDENT) { return T.setTyp(s.original,'POST_' + s.original._type) };
-		};
-		
-		return self.scanTokens(function(token,i,tokens) {
-			var typ = token._type;
-			if (!(typ == 'IF' || typ == 'FOR')) { return 1 };
-			self.detectEnd(i + 1,condition,action,{original: token});
-			return 1;
-		});
-	};
-
-	// Look up a type by token index.
-	Rewriter.prototype.type = function (i){
-		// if i < 0 then return null
-		throw "deprecated";
-		var tok = this._tokens[i];
-		return tok && tok._type;
-	};
-
-	Rewriter.prototype.injectToken = function (index,token){
-		return this;
-	};
-
-	Rewriter.prototype.tokenType = function (i){
-		if (i < 0 || i >= this._tokens.length) {
-			// CALLCOUNT++
-			return null;
-		};
-		
-		var tok = this._tokens[i];
-		return tok && tok._type;
-	};
-
-	// Constants
-	// ---------
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
-
-/***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* parser generated by jison-fork */
 	var parser = (function(){
-	var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,4],$V1=[1,6],$V2=[1,33],$V3=[1,34],$V4=[1,35],$V5=[1,36],$V6=[1,77],$V7=[1,119],$V8=[1,95],$V9=[1,132],$Va=[1,125],$Vb=[1,126],$Vc=[1,127],$Vd=[1,124],$Ve=[1,128],$Vf=[1,135],$Vg=[1,118],$Vh=[1,136],$Vi=[1,82],$Vj=[1,83],$Vk=[1,84],$Vl=[1,85],$Vm=[1,86],$Vn=[1,87],$Vo=[1,88],$Vp=[1,75],$Vq=[1,122],$Vr=[1,117],$Vs=[1,90],$Vt=[1,73],$Vu=[1,38],$Vv=[1,68],$Vw=[1,69],$Vx=[1,70],$Vy=[1,114],$Vz=[1,92],$VA=[1,93],$VB=[1,89],$VC=[1,29],$VD=[1,30],$VE=[1,98],$VF=[1,97],$VG=[1,115],$VH=[1,116],$VI=[1,123],$VJ=[1,12],$VK=[1,130],$VL=[1,131],$VM=[1,99],$VN=[1,80],$VO=[1,39],$VP=[1,45],$VQ=[1,113],$VR=[1,71],$VS=[1,91],$VT=[1,129],$VU=[1,62],$VV=[1,76],$VW=[1,108],$VX=[1,109],$VY=[1,110],$VZ=[1,133],$V_=[1,134],$V$=[1,66],$V01=[1,107],$V11=[1,54],$V21=[1,55],$V31=[1,56],$V41=[1,57],$V51=[1,58],$V61=[1,59],$V71=[1,138],$V81=[1,6,11,148],$V91=[1,140],$Va1=[1,6,11,14,148],$Vb1=[1,148],$Vc1=[1,149],$Vd1=[1,152],$Ve1=[1,153],$Vf1=[1,145],$Vg1=[1,144],$Vh1=[1,146],$Vi1=[1,147],$Vj1=[1,150],$Vk1=[1,151],$Vl1=[1,156],$Vm1=[1,6,10,11,14,23,79,97,104,118,125,136,146,148,158,178,208,209,220,221,222,227,228,237,246,247,250,251,254,255,256,257],$Vn1=[2,268],$Vo1=[1,163],$Vp1=[1,167],$Vq1=[1,165],$Vr1=[1,166],$Vs1=[1,169],$Vt1=[1,168],$Vu1=[1,6,10,11,14,23,97,104,148],$Vv1=[1,6,11,14,148,220,222,227,228,246],$Vw1=[1,6,10,11,14,22,23,79,95,97,104,117,118,125,136,146,148,155,158,178,189,190,192,204,208,209,220,221,222,227,228,237,246,247,250,251,254,255,256,257],$Vx1=[2,237],$Vy1=[1,6,10,11,14,22,23,79,95,97,104,117,118,122,125,136,146,148,155,158,178,189,190,192,204,208,209,220,221,222,227,228,237,246,247,250,251,254,255,256,257],$Vz1=[2,233],$VA1=[61,62,95,98,112,117,119,121],$VB1=[1,213],$VC1=[1,218],$VD1=[1,6,10,11,14,22,23,79,95,97,104,117,118,122,125,136,146,148,155,158,178,189,190,192,204,208,209,220,221,222,227,228,237,246,247,250,251,252,253,254,255,256,257,258],$VE1=[1,228],$VF1=[1,225],$VG1=[1,230],$VH1=[1,268],$VI1=[1,269],$VJ1=[57,96],$VK1=[2,251],$VL1=[1,281],$VM1=[1,280],$VN1=[92,93,94,95,98,99,100,101,102,103,107,109],$VO1=[1,293],$VP1=[1,6,10,11,14,22,23,61,62,79,95,97,98,104,112,117,118,119,121,122,125,136,146,148,155,158,178,189,190,192,204,208,209,220,221,222,227,228,237,246,247,250,251,252,253,254,255,256,257,258],$VQ1=[1,299],$VR1=[57,96,103,233],$VS1=[1,6,10,11,14,22,23,75,77,78,79,95,97,104,117,118,125,136,146,148,155,158,178,189,190,192,204,208,209,220,221,222,227,228,237,246,247,250,251,254,255,256,257],$VT1=[1,6,10,11,14,22,23,79,95,97,104,117,118,125,136,146,148,155,158,178,189,190,192,204,208,209,215,216,220,221,222,227,228,237,240,242,245,246,247,250,251,254,255,256,257],$VU1=[57,61,62,66],$VV1=[1,331],$VW1=[1,332],$VX1=[1,6,10,11,14,23,79,97,104,118,125,146,148,158,208,209,220,221,222,227,228,237,246],$VY1=[1,6,10,11,14,23,79,97,104,118,125,136,146,148,158,178,208,209,220,221,222,227,228,237,246,247,250,251,254,255,257],$VZ1=[1,346],$V_1=[1,350],$V$1=[1,6,11,14,23,79,97,104,118,125,136,146,148,158,178,208,209,220,221,222,227,228,237,246,247,250,251,254,255,256,257],$V02=[1,6,10,11,14,22,23,79,96,97,104,118,125,136,146,148,158,178,208,209,220,221,222,227,228,237,246,247,250,251,254,255,256,257],$V12=[14,29],$V22=[1,6,11,14,29,148,220,222,227,228,246],$V32=[2,289],$V42=[1,6,10,11,14,22,23,79,95,97,104,117,118,122,125,136,146,148,155,158,178,189,190,192,204,208,209,220,221,222,227,228,235,236,237,246,247,250,251,252,253,254,255,256,257,258],$V52=[2,190],$V62=[1,374],$V72=[6,10,11,14,23,104],$V82=[2,192],$V92=[1,384],$Va2=[1,385],$Vb2=[1,386],$Vc2=[1,6,10,11,14,23,79,97,104,118,125,146,148,158,208,209,228,237,246],$Vd2=[1,6,10,11,14,23,79,97,104,118,125,146,148,158,208,209,221,228,237,246],$Ve2=[235,236],$Vf2=[14,235,236],$Vg2=[1,6,11,14,23,79,97,104,118,125,146,148,158,178,208,209,220,221,222,227,228,237,246,247,250,251,254,255,256,257],$Vh2=[1,400],$Vi2=[6,10,11,14,97],$Vj2=[6,10,11,14,97,146],$Vk2=[95,98],$Vl2=[1,410],$Vm2=[1,411],$Vn2=[22,95,98,170,171],$Vo2=[1,6,10,11,14,23,79,97,104,118,125,136,146,148,158,178,208,209,220,221,222,227,228,237,246,247,250,251,255,257],$Vp2=[1,6,10,11,14,23,79,97,104,118,125,146,148,158,208,209,221,237],$Vq2=[20,21,24,25,27,33,36,57,61,62,64,66,68,70,72,74,80,81,82,83,84,85,86,87,90,96,103,110,118,131,132,133,134,140,141,147,154,155,162,163,165,181,183,185,193,194,196,201,202,205,206,212,218,220,222,224,227,228,238,244,248,249,250,251,252,253],$Vr2=[1,6,10,11,14,23,79,97,104,118,125,136,146,148,158,178,208,209,220,221,222,227,228,237,240,245,246,247,250,251,254,255,256,257],$Vs2=[11,240,242],$Vt2=[1,460],$Vu2=[2,191],$Vv2=[6,10,11],$Vw2=[1,468],$Vx2=[14,23,158],$Vy2=[1,6,10,11,14,23,79,97,104,118,125,146,148,158,208,209,220,222,227,228,237,246],$Vz2=[1,483],$VA2=[57,66,96],$VB2=[14,23],$VC2=[1,498],$VD2=[10,14],$VE2=[1,544],$VF2=[6,10];
+	var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,4],$V1=[1,6],$V2=[1,32],$V3=[1,33],$V4=[1,34],$V5=[1,35],$V6=[1,75],$V7=[1,115],$V8=[1,128],$V9=[1,121],$Va=[1,122],$Vb=[1,123],$Vc=[1,120],$Vd=[1,124],$Ve=[1,131],$Vf=[1,114],$Vg=[1,132],$Vh=[1,80],$Vi=[1,81],$Vj=[1,82],$Vk=[1,83],$Vl=[1,84],$Vm=[1,85],$Vn=[1,86],$Vo=[1,73],$Vp=[1,118],$Vq=[1,113],$Vr=[1,91],$Vs=[1,88],$Vt=[1,71],$Vu=[1,65],$Vv=[1,66],$Vw=[1,110],$Vx=[1,90],$Vy=[1,87],$Vz=[1,28],$VA=[1,29],$VB=[1,95],$VC=[1,94],$VD=[1,111],$VE=[1,112],$VF=[1,126],$VG=[1,67],$VH=[1,68],$VI=[1,119],$VJ=[1,11],$VK=[1,127],$VL=[1,78],$VM=[1,37],$VN=[1,43],$VO=[1,109],$VP=[1,69],$VQ=[1,89],$VR=[1,125],$VS=[1,59],$VT=[1,74],$VU=[1,104],$VV=[1,105],$VW=[1,106],$VX=[1,129],$VY=[1,130],$VZ=[1,63],$V_=[1,103],$V$=[1,51],$V01=[1,52],$V11=[1,53],$V21=[1,54],$V31=[1,55],$V41=[1,56],$V51=[1,134],$V61=[1,6,11,137],$V71=[1,136],$V81=[1,6,11,14,137],$V91=[1,144],$Va1=[1,145],$Vb1=[1,147],$Vc1=[1,148],$Vd1=[1,141],$Ve1=[1,140],$Vf1=[1,142],$Vg1=[1,143],$Vh1=[1,146],$Vi1=[1,151],$Vj1=[1,6,10,11,14,22,71,90,97,106,112,126,135,137,147,171,200,201,212,213,214,219,220,229,238,239,242,243,246,247,248],$Vk1=[2,263],$Vl1=[1,158],$Vm1=[1,162],$Vn1=[1,160],$Vo1=[1,161],$Vp1=[1,164],$Vq1=[1,163],$Vr1=[1,6,10,11,14,22,90,97,137],$Vs1=[1,6,11,14,137,212,214,219,220,238],$Vt1=[1,6,10,11,14,21,22,71,88,90,97,106,111,112,126,135,137,144,147,171,180,181,183,196,200,201,212,213,214,219,220,229,238,239,242,243,246,247,248],$Vu1=[2,231],$Vv1=[1,175],$Vw1=[1,6,10,11,14,21,22,71,88,90,97,106,111,112,117,126,135,137,144,147,171,180,181,183,196,200,201,212,213,214,219,220,229,238,239,242,243,246,247,248],$Vx1=[2,227],$Vy1=[6,14,53,54,88,91,106,111,113,116],$Vz1=[1,210],$VA1=[1,215],$VB1=[1,6,10,11,14,21,22,71,88,90,97,106,111,112,117,126,135,137,144,147,171,180,181,183,196,200,201,212,213,214,219,220,229,238,239,242,243,244,245,246,247,248,249],$VC1=[1,225],$VD1=[1,222],$VE1=[1,227],$VF1=[1,263],$VG1=[1,264],$VH1=[51,89],$VI1=[2,244],$VJ1=[1,274],$VK1=[85,86,87,88,91,92,93,94,95,96,100,102],$VL1=[1,286],$VM1=[1,6,10,11,14,21,22,53,54,71,88,90,91,97,106,111,112,113,116,117,126,135,137,144,147,171,180,181,183,196,200,201,212,213,214,219,220,229,238,239,242,243,244,245,246,247,248,249],$VN1=[1,292],$VO1=[51,89,96,225],$VP1=[1,6,10,11,14,21,22,67,69,70,71,88,90,97,106,111,112,126,135,137,144,147,171,180,181,183,196,200,201,212,213,214,219,220,229,238,239,242,243,246,247,248],$VQ1=[1,6,10,11,14,21,22,71,88,90,97,106,111,112,126,135,137,144,147,171,180,181,183,196,200,201,207,208,212,213,214,219,220,229,232,234,237,238,239,242,243,246,247,248],$VR1=[51,53,54,58],$VS1=[1,323],$VT1=[1,324],$VU1=[1,6,10,11,14,22,71,90,97,106,112,135,137,147,200,201,212,213,214,219,220,229,238],$VV1=[1,337],$VW1=[1,341],$VX1=[1,6,11,14,22,71,90,97,106,112,126,135,137,147,171,200,201,212,213,214,219,220,229,238,239,242,243,246,247,248],$VY1=[6,14,106],$VZ1=[1,351],$V_1=[1,6,10,11,14,21,22,71,89,90,97,106,112,126,135,137,147,171,200,201,212,213,214,219,220,229,238,239,242,243,246,247,248],$V$1=[14,28],$V02=[1,6,11,14,28,137,212,214,219,220,238],$V12=[2,284],$V22=[1,6,10,11,14,21,22,71,88,90,97,106,111,112,117,126,135,137,144,147,171,180,181,183,196,200,201,212,213,214,219,220,227,228,229,238,239,242,243,244,245,246,247,248,249],$V32=[2,184],$V42=[1,366],$V52=[6,10,11,14,22,97],$V62=[2,186],$V72=[1,376],$V82=[1,377],$V92=[1,378],$Va2=[1,6,10,11,14,22,71,90,97,106,112,135,137,147,200,201,220,229,238],$Vb2=[1,6,10,11,14,22,71,90,97,106,112,135,137,147,200,201,213,220,229,238],$Vc2=[227,228],$Vd2=[14,227,228],$Ve2=[1,6,11,14,22,71,90,97,106,112,135,137,147,171,200,201,212,213,214,219,220,229,238,239,242,243,246,247,248],$Vf2=[1,392],$Vg2=[6,10,11,14,90],$Vh2=[6,10,11,14,90,135],$Vi2=[88,91],$Vj2=[1,402],$Vk2=[1,403],$Vl2=[21,88,91,164,165],$Vm2=[1,6,10,11,14,22,71,90,97,106,112,126,135,137,147,171,200,201,212,213,214,219,220,229,238,239,242,243,247,248],$Vn2=[1,6,10,11,14,22,71,90,97,106,112,135,137,147,200,201,213,229],$Vo2=[19,20,23,24,26,32,51,53,54,56,58,60,62,64,66,73,74,75,76,77,78,79,80,83,89,91,96,103,112,122,123,124,130,136,143,144,151,152,154,156,157,158,175,184,185,188,193,194,197,198,204,210,212,214,216,219,220,230,236,240,241,242,243,244,245],$Vp2=[1,6,10,11,14,22,71,90,97,106,112,126,135,137,147,171,200,201,212,213,214,219,220,229,232,237,238,239,242,243,246,247,248],$Vq2=[11,232,234],$Vr2=[1,450],$Vs2=[2,185],$Vt2=[6,10,11],$Vu2=[1,458],$Vv2=[14,22,147],$Vw2=[1,6,10,11,14,22,71,90,97,106,112,135,137,147,200,201,212,214,219,220,229,238],$Vx2=[1,473],$Vy2=[51,58,89],$Vz2=[14,22],$VA2=[1,488],$VB2=[10,14],$VC2=[1,537],$VD2=[6,10];
 	var parser = {trace: function trace() { },
 	yy: {},
-	symbols_: {"error":2,"Root":3,"Body":4,"Block":5,"TERMINATOR":6,"BODYSTART":7,"Line":8,"Terminator":9,"INDENT":10,"OUTDENT":11,"Splat":12,"Expression":13,",":14,"Comment":15,"Statement":16,"ExportStatement":17,"Return":18,"Throw":19,"STATEMENT":20,"BREAK":21,"CALL_START":22,"CALL_END":23,"CONTINUE":24,"DEBUGGER":25,"ImportStatement":26,"IMPORT":27,"ImportArgList":28,"FROM":29,"ImportFrom":30,"AS":31,"ImportArg":32,"STRING":33,"VarIdentifier":34,"Require":35,"REQUIRE":36,"RequireArg":37,"Literal":38,"Parenthetical":39,"Await":40,"Value":41,"Code":42,"Operation":43,"Assign":44,"If":45,"Ternary":46,"Try":47,"While":48,"For":49,"Switch":50,"Class":51,"Module":52,"TagDeclaration":53,"Tag":54,"Property":55,"Identifier":56,"IDENTIFIER":57,"Key":58,"KEY":59,"Ivar":60,"IVAR":61,"CVAR":62,"Gvar":63,"GVAR":64,"Const":65,"CONST":66,"Argvar":67,"ARGVAR":68,"Symbol":69,"SYMBOL":70,"AlphaNumeric":71,"NUMBER":72,"InterpolatedString":73,"STRING_START":74,"NEOSTRING":75,"Interpolation":76,"STRING_END":77,"{{":78,"}}":79,"JS":80,"REGEX":81,"BOOL":82,"TRUE":83,"FALSE":84,"NULL":85,"UNDEFINED":86,"RETURN":87,"Arguments":88,"TagSelector":89,"SELECTOR_START":90,"TagSelectorType":91,"SELECTOR_NS":92,"SELECTOR_ID":93,"SELECTOR_CLASS":94,".":95,"{":96,"}":97,"#":98,"SELECTOR_COMBINATOR":99,"SELECTOR_PSEUDO_CLASS":100,"SELECTOR_GROUP":101,"UNIVERSAL_SELECTOR":102,"[":103,"]":104,"SELECTOR_ATTR_OP":105,"TagSelectorAttrValue":106,"SELECTOR_TAG":107,"Selector":108,"SELECTOR_END":109,"TAG_START":110,"TagOptions":111,"TAG_END":112,"TagBody":113,"TagTypeName":114,"Self":115,"TAG_TYPE":116,"INDEX_START":117,"INDEX_END":118,"@":119,"TagAttr":120,"TAG_ATTR":121,"=":122,"TagAttrValue":123,"VALUE_START":124,"VALUE_END":125,"ArgList":126,"TagTypeDef":127,"EXPORT":128,"DEFAULT":129,"TagDeclarationBlock":130,"EXTEND":131,"LOCAL":132,"GLOBAL":133,"TAG":134,"TagType":135,"COMPARE":136,"TagDeclKeywords":137,"TAG_ID":138,"TagId":139,"IDREF":140,"TAGID":141,"Assignable":142,"Outdent":143,"AssignObj":144,"ObjAssignable":145,":":146,"(":147,")":148,"HERECOMMENT":149,"COMMENT":150,"Method":151,"Do":152,"Begin":153,"BEGIN":154,"DO":155,"BLOCK_PARAM_START":156,"ParamList":157,"BLOCK_PARAM_END":158,"PropType":159,"PropertyIdentifier":160,"Object":161,"PROP":162,"ATTR":163,"MethodDeclaration":164,"DEF":165,"MethodScope":166,"MethodScopeType":167,"MethodIdentifier":168,"MethodBody":169,"DEF_BODY":170,"DEF_EMPTY":171,"This":172,"OptComma":173,"Param":174,"Array":175,"ParamVar":176,"SPLAT":177,"LOGIC":178,"BLOCK_ARG":179,"VarReference":180,"VAR":181,"VarAssignable":182,"LET":183,"SimpleAssignable":184,"ENV_FLAG":185,"NEW":186,"Super":187,"SoakableOp":188,"?:":189,".:":190,"IndexValue":191,"?.":192,"SUPER":193,"AWAIT":194,"Range":195,"ARGUMENTS":196,"Invocation":197,"Slice":198,"AssignList":199,"ClassStart":200,"CLASS":201,"MODULE":202,"OptFuncExist":203,"FUNC_EXIST":204,"THIS":205,"SELF":206,"RangeDots":207,"..":208,"...":209,"Arg":210,"SimpleArgs":211,"TRY":212,"Catch":213,"Finally":214,"FINALLY":215,"CATCH":216,"CATCH_VAR":217,"THROW":218,"WhileSource":219,"WHILE":220,"WHEN":221,"UNTIL":222,"Loop":223,"LOOP":224,"ForBody":225,"ForKeyword":226,"FOR":227,"POST_FOR":228,"ForBlock":229,"ForStart":230,"ForSource":231,"ForVariables":232,"OWN":233,"ForValue":234,"FORIN":235,"FOROF":236,"BY":237,"SWITCH":238,"Whens":239,"ELSE":240,"When":241,"LEADING_WHEN":242,"IfBlock":243,"IF":244,"ELIF":245,"POST_IF":246,"?":247,"UNARY":248,"SQRT":249,"-":250,"+":251,"--":252,"++":253,"MATH":254,"SHIFT":255,"NOT":256,"RELATION":257,"COMPOUND_ASSIGN":258,"$accept":0,"$end":1},
-	terminals_: {2:"error",6:"TERMINATOR",7:"BODYSTART",10:"INDENT",11:"OUTDENT",14:",",20:"STATEMENT",21:"BREAK",22:"CALL_START",23:"CALL_END",24:"CONTINUE",25:"DEBUGGER",27:"IMPORT",29:"FROM",31:"AS",33:"STRING",36:"REQUIRE",57:"IDENTIFIER",59:"KEY",61:"IVAR",62:"CVAR",64:"GVAR",66:"CONST",68:"ARGVAR",70:"SYMBOL",72:"NUMBER",74:"STRING_START",75:"NEOSTRING",77:"STRING_END",78:"{{",79:"}}",80:"JS",81:"REGEX",82:"BOOL",83:"TRUE",84:"FALSE",85:"NULL",86:"UNDEFINED",87:"RETURN",90:"SELECTOR_START",92:"SELECTOR_NS",93:"SELECTOR_ID",94:"SELECTOR_CLASS",95:".",96:"{",97:"}",98:"#",99:"SELECTOR_COMBINATOR",100:"SELECTOR_PSEUDO_CLASS",101:"SELECTOR_GROUP",102:"UNIVERSAL_SELECTOR",103:"[",104:"]",105:"SELECTOR_ATTR_OP",107:"SELECTOR_TAG",109:"SELECTOR_END",110:"TAG_START",112:"TAG_END",116:"TAG_TYPE",117:"INDEX_START",118:"INDEX_END",119:"@",121:"TAG_ATTR",122:"=",124:"VALUE_START",125:"VALUE_END",128:"EXPORT",129:"DEFAULT",131:"EXTEND",132:"LOCAL",133:"GLOBAL",134:"TAG",136:"COMPARE",138:"TAG_ID",140:"IDREF",141:"TAGID",146:":",147:"(",148:")",149:"HERECOMMENT",150:"COMMENT",154:"BEGIN",155:"DO",156:"BLOCK_PARAM_START",158:"BLOCK_PARAM_END",162:"PROP",163:"ATTR",165:"DEF",170:"DEF_BODY",171:"DEF_EMPTY",177:"SPLAT",178:"LOGIC",179:"BLOCK_ARG",181:"VAR",183:"LET",185:"ENV_FLAG",186:"NEW",189:"?:",190:".:",192:"?.",193:"SUPER",194:"AWAIT",196:"ARGUMENTS",201:"CLASS",202:"MODULE",204:"FUNC_EXIST",205:"THIS",206:"SELF",208:"..",209:"...",212:"TRY",215:"FINALLY",216:"CATCH",217:"CATCH_VAR",218:"THROW",220:"WHILE",221:"WHEN",222:"UNTIL",224:"LOOP",227:"FOR",228:"POST_FOR",233:"OWN",235:"FORIN",236:"FOROF",237:"BY",238:"SWITCH",240:"ELSE",242:"LEADING_WHEN",244:"IF",245:"ELIF",246:"POST_IF",247:"?",248:"UNARY",249:"SQRT",250:"-",251:"+",252:"--",253:"++",254:"MATH",255:"SHIFT",256:"NOT",257:"RELATION",258:"COMPOUND_ASSIGN"},
-	productions_: [0,[3,0],[3,1],[3,2],[4,1],[4,1],[4,3],[4,2],[9,1],[5,2],[5,3],[5,4],[8,1],[8,1],[8,3],[8,3],[8,1],[8,1],[8,1],[16,1],[16,1],[16,1],[16,1],[16,4],[16,1],[16,4],[16,1],[16,1],[26,4],[26,4],[26,2],[30,1],[28,1],[28,3],[32,1],[35,2],[37,1],[37,1],[37,0],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[56,1],[58,1],[60,1],[60,1],[63,1],[65,1],[67,1],[69,1],[71,1],[71,1],[71,1],[71,1],[73,1],[73,2],[73,2],[73,2],[76,2],[76,3],[38,1],[38,1],[38,1],[38,1],[38,1],[38,1],[38,1],[38,1],[18,2],[18,2],[18,1],[89,1],[89,2],[89,2],[89,2],[89,2],[89,5],[89,5],[89,2],[89,2],[89,2],[89,2],[89,4],[89,6],[91,1],[108,2],[106,1],[106,1],[106,3],[54,3],[54,4],[54,5],[114,1],[114,1],[114,1],[114,0],[111,1],[111,3],[111,4],[111,3],[111,3],[111,5],[111,5],[111,3],[111,2],[111,5],[111,2],[120,1],[120,3],[123,3],[113,3],[113,3],[113,1],[127,1],[127,3],[17,3],[17,2],[53,1],[53,2],[53,2],[53,2],[130,2],[130,3],[130,4],[130,5],[137,0],[137,1],[135,1],[135,1],[139,1],[139,1],[44,3],[44,5],[144,1],[144,3],[144,5],[144,1],[145,1],[145,1],[145,1],[145,1],[145,1],[145,1],[145,3],[15,1],[15,1],[42,1],[42,1],[42,1],[153,2],[152,2],[152,5],[55,3],[55,5],[55,2],[159,1],[159,1],[160,1],[160,3],[151,1],[151,2],[164,8],[164,5],[164,6],[164,3],[167,1],[167,1],[168,1],[168,1],[168,3],[169,2],[169,2],[169,1],[166,1],[166,1],[166,1],[166,1],[173,0],[173,1],[157,0],[157,1],[157,3],[174,1],[174,1],[174,1],[174,2],[174,2],[174,2],[174,3],[176,1],[12,2],[180,3],[180,2],[180,2],[180,3],[34,1],[34,1],[182,1],[182,1],[182,1],[184,1],[184,1],[184,1],[184,1],[184,1],[184,1],[184,1],[184,1],[184,3],[184,3],[184,3],[184,3],[184,3],[184,3],[184,3],[184,3],[184,4],[188,1],[188,1],[187,1],[142,1],[142,1],[142,1],[40,2],[41,1],[41,1],[41,1],[41,1],[41,1],[41,1],[41,1],[41,1],[41,1],[41,1],[41,1],[191,1],[191,1],[161,4],[199,0],[199,1],[199,3],[199,4],[199,6],[51,1],[51,2],[51,2],[51,2],[200,2],[200,3],[200,4],[200,5],[52,2],[52,3],[197,3],[197,2],[203,0],[203,1],[88,2],[88,4],[172,1],[115,1],[175,2],[175,4],[207,1],[207,1],[195,5],[198,3],[198,2],[198,2],[126,1],[126,3],[126,4],[126,4],[126,6],[143,2],[143,1],[210,1],[210,1],[210,1],[210,1],[211,1],[211,3],[47,2],[47,3],[47,3],[47,4],[214,2],[213,3],[19,2],[39,3],[39,5],[219,2],[219,4],[219,2],[219,4],[48,2],[48,2],[48,2],[48,1],[223,2],[223,2],[49,2],[49,2],[49,2],[226,1],[226,1],[229,2],[225,2],[225,2],[230,2],[230,3],[234,1],[234,1],[234,1],[232,1],[232,3],[231,2],[231,2],[231,4],[231,4],[231,4],[231,6],[231,6],[50,5],[50,7],[50,4],[50,6],[239,1],[239,2],[241,3],[241,4],[243,3],[243,5],[243,4],[243,3],[45,1],[45,3],[45,3],[46,5],[43,2],[43,2],[43,2],[43,2],[43,2],[43,2],[43,2],[43,2],[43,3],[43,3],[43,3],[43,3],[43,3],[43,3],[43,4],[43,3],[43,3],[43,5]],
+	symbols_: {"error":2,"Root":3,"Body":4,"Block":5,"TERMINATOR":6,"BODYSTART":7,"Line":8,"Terminator":9,"INDENT":10,"OUTDENT":11,"Splat":12,"Expression":13,",":14,"Comment":15,"Statement":16,"Return":17,"Throw":18,"STATEMENT":19,"BREAK":20,"CALL_START":21,"CALL_END":22,"CONTINUE":23,"DEBUGGER":24,"ImportStatement":25,"IMPORT":26,"ImportArgList":27,"FROM":28,"ImportFrom":29,"AS":30,"ImportArg":31,"STRING":32,"VarIdentifier":33,"Await":34,"Value":35,"Code":36,"Operation":37,"Assign":38,"If":39,"Ternary":40,"Try":41,"While":42,"For":43,"Switch":44,"Class":45,"Module":46,"TagDeclaration":47,"Tag":48,"Property":49,"Identifier":50,"IDENTIFIER":51,"Ivar":52,"IVAR":53,"CVAR":54,"Gvar":55,"GVAR":56,"Const":57,"CONST":58,"Argvar":59,"ARGVAR":60,"Symbol":61,"SYMBOL":62,"AlphaNumeric":63,"NUMBER":64,"InterpolatedString":65,"STRING_START":66,"NEOSTRING":67,"Interpolation":68,"STRING_END":69,"{{":70,"}}":71,"Literal":72,"JS":73,"REGEX":74,"BOOL":75,"TRUE":76,"FALSE":77,"NULL":78,"UNDEFINED":79,"RETURN":80,"Arguments":81,"TagSelector":82,"SELECTOR_START":83,"TagSelectorType":84,"SELECTOR_NS":85,"SELECTOR_ID":86,"SELECTOR_CLASS":87,".":88,"{":89,"}":90,"#":91,"SELECTOR_COMBINATOR":92,"SELECTOR_PSEUDO_CLASS":93,"SELECTOR_GROUP":94,"UNIVERSAL_SELECTOR":95,"[":96,"]":97,"SELECTOR_ATTR_OP":98,"TagSelectorAttrValue":99,"SELECTOR_TAG":100,"Selector":101,"SELECTOR_END":102,"TAG_START":103,"TagOptions":104,"TagAttributes":105,"TAG_END":106,"TagBody":107,"TagTypeName":108,"Self":109,"TAG_TYPE":110,"INDEX_START":111,"INDEX_END":112,"@":113,"TagAttr":114,"OptComma":115,"TAG_ATTR":116,"=":117,"TagAttrValue":118,"ArgList":119,"TagTypeDef":120,"TagDeclarationBlock":121,"EXTEND":122,"LOCAL":123,"TAG":124,"TagType":125,"COMPARE":126,"TagDeclKeywords":127,"TAG_ID":128,"TagId":129,"IDREF":130,"Assignable":131,"Outdent":132,"AssignObj":133,"ObjAssignable":134,":":135,"(":136,")":137,"HERECOMMENT":138,"COMMENT":139,"Method":140,"Do":141,"Begin":142,"BEGIN":143,"DO":144,"BLOCK_PARAM_START":145,"ParamList":146,"BLOCK_PARAM_END":147,"PropType":148,"PropertyIdentifier":149,"Object":150,"PROP":151,"ATTR":152,"TupleAssign":153,"VAR":154,"MethodDeclaration":155,"GLOBAL":156,"EXPORT":157,"DEF":158,"MethodScope":159,"MethodScopeType":160,"MethodIdentifier":161,"MethodBody":162,"MethodReceiver":163,"DEF_BODY":164,"DEF_EMPTY":165,"This":166,"Param":167,"Array":168,"ParamVar":169,"SPLAT":170,"LOGIC":171,"BLOCK_ARG":172,"VarReference":173,"VarAssignable":174,"LET":175,"SimpleAssignable":176,"NEW":177,"Super":178,"SoakableOp":179,"?:":180,".:":181,"IndexValue":182,"?.":183,"SUPER":184,"AWAIT":185,"Parenthetical":186,"Range":187,"ARGUMENTS":188,"Invocation":189,"Slice":190,"AssignList":191,"ClassStart":192,"CLASS":193,"MODULE":194,"OptFuncExist":195,"FUNC_EXIST":196,"THIS":197,"SELF":198,"RangeDots":199,"..":200,"...":201,"Arg":202,"SimpleArgs":203,"TRY":204,"Catch":205,"Finally":206,"FINALLY":207,"CATCH":208,"CATCH_VAR":209,"THROW":210,"WhileSource":211,"WHILE":212,"WHEN":213,"UNTIL":214,"Loop":215,"LOOP":216,"ForBody":217,"ForKeyword":218,"FOR":219,"POST_FOR":220,"ForBlock":221,"ForStart":222,"ForSource":223,"ForVariables":224,"OWN":225,"ForValue":226,"FORIN":227,"FOROF":228,"BY":229,"SWITCH":230,"Whens":231,"ELSE":232,"When":233,"LEADING_WHEN":234,"IfBlock":235,"IF":236,"ELIF":237,"POST_IF":238,"?":239,"UNARY":240,"SQRT":241,"-":242,"+":243,"--":244,"++":245,"MATH":246,"SHIFT":247,"RELATION":248,"COMPOUND_ASSIGN":249,"$accept":0,"$end":1},
+	terminals_: {2:"error",6:"TERMINATOR",7:"BODYSTART",10:"INDENT",11:"OUTDENT",14:",",19:"STATEMENT",20:"BREAK",21:"CALL_START",22:"CALL_END",23:"CONTINUE",24:"DEBUGGER",26:"IMPORT",28:"FROM",30:"AS",32:"STRING",51:"IDENTIFIER",53:"IVAR",54:"CVAR",56:"GVAR",58:"CONST",60:"ARGVAR",62:"SYMBOL",64:"NUMBER",66:"STRING_START",67:"NEOSTRING",69:"STRING_END",70:"{{",71:"}}",73:"JS",74:"REGEX",75:"BOOL",76:"TRUE",77:"FALSE",78:"NULL",79:"UNDEFINED",80:"RETURN",83:"SELECTOR_START",85:"SELECTOR_NS",86:"SELECTOR_ID",87:"SELECTOR_CLASS",88:".",89:"{",90:"}",91:"#",92:"SELECTOR_COMBINATOR",93:"SELECTOR_PSEUDO_CLASS",94:"SELECTOR_GROUP",95:"UNIVERSAL_SELECTOR",96:"[",97:"]",98:"SELECTOR_ATTR_OP",100:"SELECTOR_TAG",102:"SELECTOR_END",103:"TAG_START",106:"TAG_END",110:"TAG_TYPE",111:"INDEX_START",112:"INDEX_END",113:"@",116:"TAG_ATTR",117:"=",122:"EXTEND",123:"LOCAL",124:"TAG",126:"COMPARE",128:"TAG_ID",130:"IDREF",135:":",136:"(",137:")",138:"HERECOMMENT",139:"COMMENT",143:"BEGIN",144:"DO",145:"BLOCK_PARAM_START",147:"BLOCK_PARAM_END",151:"PROP",152:"ATTR",154:"VAR",156:"GLOBAL",157:"EXPORT",158:"DEF",164:"DEF_BODY",165:"DEF_EMPTY",170:"SPLAT",171:"LOGIC",172:"BLOCK_ARG",175:"LET",177:"NEW",180:"?:",181:".:",183:"?.",184:"SUPER",185:"AWAIT",188:"ARGUMENTS",193:"CLASS",194:"MODULE",196:"FUNC_EXIST",197:"THIS",198:"SELF",200:"..",201:"...",204:"TRY",207:"FINALLY",208:"CATCH",209:"CATCH_VAR",210:"THROW",212:"WHILE",213:"WHEN",214:"UNTIL",216:"LOOP",219:"FOR",220:"POST_FOR",225:"OWN",227:"FORIN",228:"FOROF",229:"BY",230:"SWITCH",232:"ELSE",234:"LEADING_WHEN",236:"IF",237:"ELIF",238:"POST_IF",239:"?",240:"UNARY",241:"SQRT",242:"-",243:"+",244:"--",245:"++",246:"MATH",247:"SHIFT",248:"RELATION",249:"COMPOUND_ASSIGN"},
+	productions_: [0,[3,0],[3,1],[3,2],[4,1],[4,1],[4,3],[4,2],[9,1],[5,2],[5,3],[5,4],[8,1],[8,1],[8,3],[8,3],[8,1],[8,1],[16,1],[16,1],[16,1],[16,1],[16,4],[16,1],[16,4],[16,1],[16,1],[25,4],[25,4],[25,2],[29,1],[27,1],[27,3],[31,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[13,1],[50,1],[52,1],[52,1],[55,1],[57,1],[59,1],[61,1],[63,1],[63,1],[63,1],[63,1],[65,1],[65,2],[65,2],[65,2],[68,2],[68,3],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[72,1],[17,2],[17,2],[17,1],[82,1],[82,2],[82,2],[82,2],[82,2],[82,5],[82,5],[82,2],[82,2],[82,2],[82,2],[82,4],[82,6],[84,1],[101,2],[99,1],[99,1],[99,3],[48,4],[48,5],[48,5],[108,1],[108,1],[108,1],[108,0],[104,1],[104,3],[104,4],[104,3],[104,3],[104,5],[104,5],[104,3],[104,2],[104,5],[105,0],[105,1],[105,3],[105,4],[114,1],[114,3],[118,1],[107,3],[107,3],[120,1],[120,3],[47,1],[47,2],[47,2],[121,2],[121,3],[121,4],[121,5],[127,0],[127,1],[125,1],[125,1],[129,1],[129,2],[38,3],[38,5],[133,1],[133,3],[133,5],[133,1],[134,1],[134,1],[134,1],[134,1],[134,1],[134,3],[15,1],[15,1],[36,1],[36,1],[36,1],[142,2],[141,2],[141,5],[49,3],[49,5],[49,2],[148,1],[148,1],[149,1],[149,3],[153,4],[140,1],[140,2],[140,2],[155,8],[155,5],[155,6],[155,3],[160,1],[160,1],[161,1],[161,1],[161,3],[162,2],[162,2],[162,1],[159,1],[159,1],[159,1],[159,1],[115,0],[115,1],[146,0],[146,1],[146,3],[167,1],[167,1],[167,1],[167,2],[167,2],[167,2],[167,3],[169,1],[12,2],[173,3],[173,2],[173,2],[173,3],[173,2],[33,1],[33,1],[174,1],[174,1],[174,1],[176,1],[176,1],[176,1],[176,1],[176,1],[176,1],[176,1],[176,3],[176,3],[176,3],[176,3],[176,3],[176,3],[176,3],[176,3],[176,4],[179,1],[179,1],[178,1],[131,1],[131,1],[131,1],[34,2],[35,1],[35,1],[35,1],[35,1],[35,1],[35,1],[35,1],[35,1],[35,1],[35,1],[182,1],[182,1],[150,4],[191,0],[191,1],[191,3],[191,4],[191,6],[45,1],[45,2],[45,2],[45,2],[45,2],[45,3],[192,2],[192,3],[192,4],[192,5],[46,2],[46,3],[189,3],[189,2],[195,0],[195,1],[81,2],[81,4],[166,1],[109,1],[168,2],[168,4],[199,1],[199,1],[187,5],[190,3],[190,2],[190,2],[119,1],[119,3],[119,4],[119,4],[119,6],[132,2],[132,1],[202,1],[202,1],[202,1],[202,1],[203,1],[203,3],[41,2],[41,3],[41,3],[41,4],[206,2],[205,3],[18,2],[186,3],[186,5],[211,2],[211,4],[211,2],[211,4],[42,2],[42,2],[42,2],[42,1],[215,2],[215,2],[43,2],[43,2],[43,2],[218,1],[218,1],[221,2],[217,2],[217,2],[222,2],[222,3],[226,1],[226,1],[226,1],[224,1],[224,3],[223,2],[223,2],[223,4],[223,4],[223,4],[223,6],[223,6],[44,5],[44,7],[44,4],[44,6],[231,1],[231,2],[233,3],[233,4],[235,3],[235,5],[235,4],[235,3],[39,1],[39,3],[39,3],[40,5],[37,2],[37,2],[37,2],[37,2],[37,2],[37,2],[37,2],[37,2],[37,3],[37,3],[37,3],[37,3],[37,3],[37,3],[37,3],[37,3],[37,5]],
 	performAction: function performAction(self, yytext, yy, yystate /* action[1] */, $$ /* vstack */) {
 	/* self == yyval */
 
@@ -4265,658 +3697,661 @@
 	case 9:
 	self.$ = new yy.Block([]).indented($$[$0-1],$$[$0]);
 	break;
-	case 10: case 123:
+	case 10: case 120:
 	self.$ = $$[$0-1].indented($$[$0-2],$$[$0]);
 	break;
 	case 11:
 	self.$ = $$[$0-1].prebreak($$[$0-2]).indented($$[$0-3],$$[$0]);
 	break;
-	case 12: case 13: case 16: case 17: case 18: case 19: case 20: case 27: case 31: case 34: case 36: case 37: case 38: case 39: case 40: case 41: case 42: case 43: case 44: case 45: case 46: case 47: case 48: case 49: case 50: case 51: case 52: case 53: case 54: case 65: case 66: case 73: case 99: case 100: case 105: case 130: case 138: case 149: case 150: case 151: case 152: case 153: case 154: case 155: case 159: case 160: case 161: case 168: case 169: case 170: case 172: case 180: case 181: case 183: case 186: case 187: case 188: case 189: case 190: case 191: case 202: case 208: case 209: case 210: case 211: case 212: case 214: case 216: case 217: case 218: case 219: case 233: case 234: case 235: case 237: case 238: case 239: case 240: case 241: case 243: case 244: case 245: case 246: case 247: case 256: case 288: case 289: case 290: case 291: case 292: case 293: case 311: case 317: case 318: case 324: case 340: case 348:
+	case 12: case 13: case 16: case 17: case 18: case 19: case 26: case 30: case 33: case 34: case 35: case 36: case 37: case 38: case 39: case 40: case 41: case 42: case 43: case 44: case 45: case 46: case 47: case 48: case 49: case 59: case 60: case 67: case 93: case 94: case 99: case 119: case 124: case 131: case 142: case 143: case 144: case 145: case 146: case 147: case 151: case 152: case 153: case 160: case 161: case 162: case 165: case 174: case 175: case 177: case 180: case 181: case 182: case 183: case 184: case 185: case 196: case 203: case 204: case 205: case 206: case 207: case 208: case 210: case 211: case 212: case 213: case 227: case 228: case 229: case 231: case 232: case 233: case 234: case 235: case 237: case 238: case 239: case 240: case 249: case 283: case 284: case 285: case 286: case 287: case 288: case 306: case 312: case 313: case 319: case 335: case 343:
 	self.$ = $$[$0];
 	break;
 	case 14: case 15:
 	self.$ = $$[$0-2].addExpression($$[$0]);
 	break;
-	case 21: case 74:
+	case 20: case 68:
 	self.$ = new yy.Literal($$[$0]);
 	break;
-	case 22:
+	case 21:
 	self.$ = new yy.BreakStatement($$[$0]);
 	break;
-	case 23:
+	case 22:
 	self.$ = new yy.BreakStatement($$[$0-3],$$[$0-1]);
 	break;
-	case 24:
+	case 23:
 	self.$ = new yy.ContinueStatement($$[$0]);
 	break;
-	case 25:
+	case 24:
 	self.$ = new yy.ContinueStatement($$[$0-3],$$[$0-1]);
 	break;
-	case 26:
+	case 25:
 	self.$ = new yy.DebuggerStatement($$[$0]);
 	break;
-	case 28:
+	case 27:
 	self.$ = new yy.ImportStatement($$[$0-2],$$[$0]);
 	break;
-	case 29:
+	case 28:
 	self.$ = new yy.ImportStatement(null,$$[$0-2],$$[$0]);
 	break;
-	case 30:
+	case 29:
 	self.$ = new yy.ImportStatement(null,$$[$0]);
 	break;
-	case 32: case 193: case 327:
+	case 31: case 114: case 187: case 322:
 	self.$ = [$$[$0]];
 	break;
-	case 33: case 194:
+	case 32: case 115: case 188:
 	self.$ = $$[$0-2].concat($$[$0]);
 	break;
-	case 35:
-	self.$ = new yy.Require($$[$0]).set({keyword: $$[$0-1]});
-	break;
-	case 55: case 56:
+	case 50:
 	self.$ = new yy.Identifier($$[$0]);
 	break;
-	case 57: case 58:
+	case 51: case 52:
 	self.$ = new yy.Ivar($$[$0]);
 	break;
-	case 59:
+	case 53:
 	self.$ = new yy.Gvar($$[$0]);
 	break;
-	case 60:
+	case 54:
 	self.$ = new yy.Const($$[$0]);
 	break;
-	case 61:
+	case 55:
 	self.$ = new yy.Argvar($$[$0]);
 	break;
-	case 62:
+	case 56:
 	self.$ = new yy.Symbol($$[$0]);
 	break;
-	case 63:
+	case 57:
 	self.$ = new yy.Num($$[$0]);
 	break;
-	case 64:
+	case 58:
 	self.$ = new yy.Str($$[$0]);
 	break;
-	case 67:
+	case 61:
 	self.$ = new yy.InterpolatedString([],{open: $$[$0]});
 	break;
-	case 68:
+	case 62:
 	self.$ = $$[$0-1].add($$[$0]);
 	break;
-	case 69:
+	case 63:
 	self.$ = $$[$0] ? ($$[$0-1].add($$[$0])) : ($$[$0-1]);
 	break;
-	case 70:
+	case 64:
 	self.$ = $$[$0-1].option('close',$$[$0]);
 	break;
-	case 71:
+	case 65:
 	self.$ = null;
 	break;
-	case 72: case 98: case 101: case 122: case 124: case 156: case 171: case 182: case 287:
+	case 66: case 92: case 95: case 121: case 148: case 163: case 176: case 282:
 	self.$ = $$[$0-1];
 	break;
-	case 75:
+	case 69:
 	self.$ = new yy.RegExp($$[$0]);
 	break;
-	case 76:
+	case 70:
 	self.$ = new yy.Bool($$[$0]);
 	break;
-	case 77:
-	self.$ = new yy.True($$[$0]);
+	case 71:
+	self.$ = yy.TRUE;
 	break;
-	case 78:
-	self.$ = new yy.False($$[$0]);
+	case 72:
+	self.$ = yy.FALSE;
 	break;
-	case 79:
-	self.$ = new yy.Nil($$[$0]);
+	case 73:
+	self.$ = yy.NIL;
 	break;
-	case 80:
-	self.$ = new yy.Undefined($$[$0]);
+	case 74:
+	self.$ = yy.UNDEFINED;
 	break;
-	case 81: case 82:
+	case 75: case 76:
 	self.$ = new yy.Return($$[$0]);
 	break;
-	case 83:
+	case 77:
 	self.$ = new yy.Return();
 	break;
-	case 84:
+	case 78:
 	self.$ = new yy.Selector([],{type: $$[$0]});
 	break;
-	case 85:
+	case 79:
 	self.$ = $$[$0-1].add(new yy.SelectorType($$[$0]),'tag');
 	break;
-	case 86:
+	case 80:
 	self.$ = $$[$0-1].add(new yy.SelectorNamespace($$[$0]),'ns');
 	break;
-	case 87:
+	case 81:
 	self.$ = $$[$0-1].add(new yy.SelectorId($$[$0]),'id');
 	break;
-	case 88:
+	case 82:
 	self.$ = $$[$0-1].add(new yy.SelectorClass($$[$0]),'class');
 	break;
-	case 89:
+	case 83:
 	self.$ = $$[$0-4].add(new yy.SelectorClass($$[$0-1]),'class');
 	break;
-	case 90:
+	case 84:
 	self.$ = $$[$0-4].add(new yy.SelectorId($$[$0-1]),'id');
 	break;
-	case 91:
+	case 85:
 	self.$ = $$[$0-1].add(new yy.SelectorCombinator($$[$0]),'sep');
 	break;
-	case 92:
+	case 86:
 	self.$ = $$[$0-1].add(new yy.SelectorPseudoClass($$[$0]),'pseudoclass');
 	break;
-	case 93:
+	case 87:
 	self.$ = $$[$0-1].group();
 	break;
-	case 94:
+	case 88:
 	self.$ = $$[$0-1].add(new yy.SelectorUniversal($$[$0]),'universal');
 	break;
-	case 95:
+	case 89:
 	self.$ = $$[$0-3].add(new yy.SelectorAttribute($$[$0-1]),'attr');
 	break;
-	case 96:
+	case 90:
 	self.$ = $$[$0-5].add(new yy.SelectorAttribute($$[$0-3],$$[$0-2],$$[$0-1]),'attr');
 	break;
-	case 97: case 106: case 107: case 140: case 141:
+	case 91: case 100: case 101: case 133: case 134:
 	self.$ = new yy.TagTypeIdentifier($$[$0]);
 	break;
-	case 102:
-	self.$ = $$[$0-1].set({open: $$[$0-2],close: $$[$0]});
+	case 96:
+	self.$ = $$[$0-2].set({attributes: $$[$0-1],open: $$[$0-3],close: $$[$0]});
 	break;
-	case 103:
-	self.$ = $$[$0-2].set({body: $$[$0],open: $$[$0-3],close: $$[$0-1]});
+	case 97:
+	self.$ = $$[$0-3].set({attributes: $$[$0-2],body: $$[$0],open: $$[$0-4],close: $$[$0-1]});
 	break;
-	case 104:
+	case 98:
 	self.$ = new yy.TagWrapper($$[$0-2],$$[$0-4],$$[$0]);
 	break;
-	case 108:
+	case 102:
 	self.$ = new yy.TagTypeIdentifier('div');
 	break;
-	case 109:
+	case 103:
 	self.$ = new yy.Tag({type: $$[$0]});
 	break;
-	case 110:
+	case 104:
 	self.$ = $$[$0-2].addSymbol($$[$0]);
 	break;
-	case 111:
+	case 105:
 	self.$ = $$[$0-3].addIndex($$[$0-1]);
 	break;
-	case 112: case 113:
+	case 106: case 107:
 	self.$ = $$[$0-2].addClass($$[$0]);
 	break;
-	case 114:
+	case 108:
 	self.$ = $$[$0-4].addClass($$[$0-1]);
 	break;
-	case 115:
+	case 109:
 	self.$ = $$[$0-4].set({key: $$[$0-1]});
 	break;
-	case 116:
+	case 110:
 	self.$ = $$[$0-2].set({id: $$[$0]});
 	break;
-	case 117:
+	case 111:
 	self.$ = $$[$0-1].set({ivar: $$[$0]});
 	break;
-	case 118:
+	case 112:
 	self.$ = $$[$0-4].set({id: $$[$0-1]});
 	break;
-	case 119:
-	self.$ = $$[$0-1].addAttribute($$[$0]);
-	break;
-	case 120:
-	self.$ = new yy.TagAttr($$[$0],$$[$0]);
-	break;
-	case 121:
-	self.$ = new yy.TagAttr($$[$0-2],$$[$0],$$[$0-1]);
-	break;
-	case 125: case 282:
-	self.$ = new yy.ArgList([$$[$0]]);
-	break;
-	case 126:
-	self.$ = new yy.TagDesc($$[$0]);
-	break;
-	case 127:
-	self.$ = $$[$0-2].classes($$[$0]);
-	break;
-	case 128:
-	self.$ = new yy.Export($$[$0]).set({'default': $$[$0-1],keyword: $$[$0-2]});
-	break;
-	case 129:
-	self.$ = new yy.Export($$[$0]).set({keyword: $$[$0-1]});
-	break;
-	case 131:
-	self.$ = $$[$0].set({extension: true});
-	break;
-	case 132:
-	self.$ = $$[$0].set({local: true});
-	break;
-	case 133: case 173: case 259:
-	self.$ = $$[$0].set({global: $$[$0-1]});
-	break;
-	case 134:
-	self.$ = new yy.TagDeclaration($$[$0]).set({keyword: $$[$0-1]});
-	break;
-	case 135:
-	self.$ = new yy.TagDeclaration($$[$0-1],null,$$[$0]).set({keyword: $$[$0-2]});
-	break;
-	case 136:
-	self.$ = new yy.TagDeclaration($$[$0-2],$$[$0]).set({keyword: $$[$0-3]});
-	break;
-	case 137:
-	self.$ = new yy.TagDeclaration($$[$0-3],$$[$0-1],$$[$0]).set({keyword: $$[$0-4]});
-	break;
-	case 139:
-	self.$ = ['yy.extend'];
-	break;
-	case 142: case 143:
-	self.$ = new yy.TagId($$[$0]);
-	break;
-	case 144:
-	self.$ = new yy.Assign($$[$0-1],$$[$0-2],$$[$0]);
-	break;
-	case 145:
-	self.$ = new yy.Assign($$[$0-3],$$[$0-4],$$[$0-1].indented($$[$0-2],$$[$0]));
-	break;
-	case 146:
-	self.$ = new yy.ObjAttr($$[$0]);
-	break;
-	case 147:
-	self.$ = new yy.ObjAttr($$[$0-2],$$[$0],'object');
-	break;
-	case 148:
-	self.$ = new yy.ObjAttr($$[$0-4],$$[$0-1].indented($$[$0-2],$$[$0]),'object');
-	break;
-	case 157:
-	self.$ = new yy.Comment($$[$0],true);
-	break;
-	case 158:
-	self.$ = new yy.Comment($$[$0],false);
-	break;
-	case 162:
-	self.$ = new yy.Begin($$[$0]);
-	break;
-	case 163:
-	self.$ = new yy.Lambda([],$$[$0],null,null,{bound: true,keyword: $$[$0-1]});
-	break;
-	case 164:
-	self.$ = new yy.Lambda($$[$0-2],$$[$0],null,null,{bound: true,keyword: $$[$0-4]});
-	break;
-	case 165:
-	self.$ = new yy.PropertyDeclaration($$[$0-1],$$[$0],$$[$0-2]);
-	break;
-	case 166:
-	self.$ = new yy.PropertyDeclaration($$[$0-3],$$[$0-1],$$[$0-4]);
-	break;
-	case 167:
-	self.$ = new yy.PropertyDeclaration($$[$0],null,$$[$0-1]);
-	break;
-	case 174:
-	self.$ = new yy.MethodDeclaration($$[$0-2],$$[$0],$$[$0-4],$$[$0-6],$$[$0-5]).set({def: $$[$0-7]});
-	break;
-	case 175:
-	self.$ = new yy.MethodDeclaration([],$$[$0],$$[$0-1],$$[$0-3],$$[$0-2]).set({def: $$[$0-4]});
-	break;
-	case 176:
-	self.$ = new yy.MethodDeclaration($$[$0-2],$$[$0],$$[$0-4],null).set({def: $$[$0-5]});
-	break;
-	case 177:
-	self.$ = new yy.MethodDeclaration([],$$[$0],$$[$0-1],null).set({def: $$[$0-2]});
-	break;
-	case 178:
-	self.$ = {static: true};
-	break;
-	case 179:
-	self.$ = {};
-	break;
-	case 184:
-	self.$ = $$[$0].body();
-	break;
-	case 185: case 192:
+	case 113: case 179: case 186:
 	self.$ = [];
 	break;
-	case 195:
+	case 116:
+	self.$ = $$[$0-3].concat($$[$0]);
+	break;
+	case 117:
+	self.$ = new yy.TagAttr($$[$0],$$[$0]);
+	break;
+	case 118:
+	self.$ = new yy.TagAttr($$[$0-2],$$[$0],$$[$0-1]);
+	break;
+	case 122:
+	self.$ = new yy.TagDesc($$[$0]);
+	break;
+	case 123:
+	self.$ = $$[$0-2].classes($$[$0]);
+	break;
+	case 125:
+	self.$ = $$[$0].set({extension: true});
+	break;
+	case 126:
+	self.$ = $$[$0].set({local: true});
+	break;
+	case 127:
+	self.$ = new yy.TagDeclaration($$[$0]).set({keyword: $$[$0-1]});
+	break;
+	case 128:
+	self.$ = new yy.TagDeclaration($$[$0-1],null,$$[$0]).set({keyword: $$[$0-2]});
+	break;
+	case 129:
+	self.$ = new yy.TagDeclaration($$[$0-2],$$[$0]).set({keyword: $$[$0-3]});
+	break;
+	case 130:
+	self.$ = new yy.TagDeclaration($$[$0-3],$$[$0-1],$$[$0]).set({keyword: $$[$0-4]});
+	break;
+	case 132:
+	self.$ = ['yy.extend'];
+	break;
+	case 135: case 136:
+	self.$ = new yy.TagId($$[$0]);
+	break;
+	case 137:
+	self.$ = new yy.Assign($$[$0-1],$$[$0-2],$$[$0]);
+	break;
+	case 138:
+	self.$ = new yy.Assign($$[$0-3],$$[$0-4],$$[$0-1].indented($$[$0-2],$$[$0]));
+	break;
+	case 139:
+	self.$ = new yy.ObjAttr($$[$0]);
+	break;
+	case 140:
+	self.$ = new yy.ObjAttr($$[$0-2],$$[$0],'object');
+	break;
+	case 141:
+	self.$ = new yy.ObjAttr($$[$0-4],$$[$0-1].indented($$[$0-2],$$[$0]),'object');
+	break;
+	case 149:
+	self.$ = new yy.Comment($$[$0],true);
+	break;
+	case 150:
+	self.$ = new yy.Comment($$[$0],false);
+	break;
+	case 154:
+	self.$ = new yy.Begin($$[$0]);
+	break;
+	case 155:
+	self.$ = new yy.Lambda([],$$[$0],null,null,{bound: true,keyword: $$[$0-1]});
+	break;
+	case 156:
+	self.$ = new yy.Lambda($$[$0-2],$$[$0],null,null,{bound: true,keyword: $$[$0-4]});
+	break;
+	case 157:
+	self.$ = new yy.PropertyDeclaration($$[$0-1],$$[$0],$$[$0-2]);
+	break;
+	case 158:
+	self.$ = new yy.PropertyDeclaration($$[$0-3],$$[$0-1],$$[$0-4]);
+	break;
+	case 159:
+	self.$ = new yy.PropertyDeclaration($$[$0],null,$$[$0-1]);
+	break;
+	case 164:
+	self.$ = $$[$0-3];
+	break;
+	case 166: case 252:
+	self.$ = $$[$0].set({global: $$[$0-1]});
+	break;
+	case 167: case 202: case 253:
+	self.$ = $$[$0].set({export: $$[$0-1]});
+	break;
+	case 168:
+	self.$ = new yy.MethodDeclaration($$[$0-2],$$[$0],$$[$0-4],$$[$0-6],$$[$0-5]).set({def: $$[$0-7]});
+	break;
+	case 169:
+	self.$ = new yy.MethodDeclaration([],$$[$0],$$[$0-1],$$[$0-3],$$[$0-2]).set({def: $$[$0-4]});
+	break;
+	case 170:
+	self.$ = new yy.MethodDeclaration($$[$0-2],$$[$0],$$[$0-4],null).set({def: $$[$0-5]});
+	break;
+	case 171:
+	self.$ = new yy.MethodDeclaration([],$$[$0],$$[$0-1],null).set({def: $$[$0-2]});
+	break;
+	case 172:
+	self.$ = {static: true};
+	break;
+	case 173:
+	self.$ = {};
+	break;
+	case 178:
+	self.$ = $$[$0].body();
+	break;
+	case 189:
 	self.$ = new yy.NamedParams($$[$0]);
 	break;
-	case 196:
+	case 190:
 	self.$ = new yy.ArrayParams($$[$0]);
 	break;
-	case 197:
+	case 191:
 	self.$ = new yy.RequiredParam($$[$0]);
 	break;
-	case 198:
+	case 192:
 	self.$ = new yy.SplatParam($$[$0],null,$$[$0-1]);
 	break;
-	case 199: case 200:
+	case 193: case 194:
 	self.$ = new yy.BlockParam($$[$0],null,$$[$0-1]);
 	break;
-	case 201:
+	case 195:
 	self.$ = new yy.OptionalParam($$[$0-2],$$[$0],$$[$0-1]);
 	break;
-	case 203:
+	case 197:
 	self.$ = yy.SPLAT($$[$0]);
 	break;
-	case 204: case 207:
+	case 198: case 201:
 	self.$ = yy.SPLAT(new yy.VarReference($$[$0],$$[$0-2]),$$[$0-1]);
 	break;
-	case 205: case 206:
+	case 199: case 200:
 	self.$ = new yy.VarReference($$[$0],$$[$0-1]);
 	break;
-	case 213:
-	self.$ = new yy.EnvFlag($$[$0]);
-	break;
-	case 215:
+	case 209:
 	self.$ = new yy.IvarAccess('.',null,$$[$0]);
 	break;
-	case 220:
+	case 214:
 	self.$ = new yy.VarOrAccess($$[$0]);
 	break;
-	case 221:
+	case 215:
 	self.$ = new yy.New($$[$0-2]);
 	break;
-	case 222:
+	case 216:
 	self.$ = new yy.SuperAccess('.',$$[$0-2],$$[$0]);
 	break;
-	case 223:
+	case 217:
 	self.$ = new yy.PropertyAccess($$[$0-1],$$[$0-2],$$[$0]);
 	break;
-	case 224: case 225: case 226: case 228:
+	case 218: case 219: case 220: case 222:
 	self.$ = new yy.Access($$[$0-1],$$[$0-2],$$[$0]);
 	break;
-	case 227:
+	case 221:
 	self.$ = new yy.Access('.',$$[$0-2],new yy.Identifier($$[$0].value()));
 	break;
-	case 229:
+	case 223:
 	self.$ = new yy.IndexAccess('.',$$[$0-3],$$[$0-1]);
 	break;
-	case 232:
+	case 226:
 	self.$ = yy.SUPER;
 	break;
-	case 236:
+	case 230:
 	self.$ = new yy.Await($$[$0]).set({keyword: $$[$0-1]});
 	break;
-	case 242:
+	case 236:
 	self.$ = yy.ARGUMENTS;
 	break;
-	case 248:
+	case 241:
 	self.$ = new yy.Index($$[$0]);
 	break;
-	case 249:
+	case 242:
 	self.$ = new yy.Slice($$[$0]);
 	break;
-	case 250:
+	case 243:
 	self.$ = new yy.Obj($$[$0-2],$$[$0-3].generated);
 	break;
-	case 251:
+	case 244:
 	self.$ = new yy.AssignList([]);
 	break;
-	case 252:
+	case 245:
 	self.$ = new yy.AssignList([$$[$0]]);
 	break;
-	case 253: case 283:
+	case 246: case 278:
 	self.$ = $$[$0-2].add($$[$0]);
 	break;
-	case 254: case 284:
+	case 247: case 279:
 	self.$ = $$[$0-3].add($$[$0-1]).add($$[$0]);
 	break;
-	case 255:
+	case 248:
 	self.$ = $$[$0-5].concat($$[$0-2].indented($$[$0-3],$$[$0]));
 	break;
-	case 257:
+	case 250:
 	self.$ = $$[$0].set({extension: $$[$0-1]});
 	break;
-	case 258:
+	case 251:
 	self.$ = $$[$0].set({local: $$[$0-1]});
 	break;
-	case 260:
+	case 254:
+	self.$ = $$[$0].set({export: $$[$0-2],local: $$[$0-1]});
+	break;
+	case 255:
 	self.$ = new yy.ClassDeclaration($$[$0],null,[]).set({keyword: $$[$0-1]});
 	break;
-	case 261:
+	case 256:
 	self.$ = new yy.ClassDeclaration($$[$0-1],null,$$[$0]).set({keyword: $$[$0-2]});
 	break;
-	case 262:
+	case 257:
 	self.$ = new yy.ClassDeclaration($$[$0-2],$$[$0],[]).set({keyword: $$[$0-3]});
 	break;
-	case 263:
+	case 258:
 	self.$ = new yy.ClassDeclaration($$[$0-3],$$[$0-1],$$[$0]).set({keyword: $$[$0-4]});
 	break;
-	case 264:
+	case 259:
 	self.$ = new yy.Module($$[$0]);
 	break;
-	case 265:
+	case 260:
 	self.$ = new yy.Module($$[$0-1],null,$$[$0]);
 	break;
-	case 266:
+	case 261:
 	self.$ = new yy.Call($$[$0-2],$$[$0],$$[$0-1]);
 	break;
-	case 267:
+	case 262:
 	self.$ = $$[$0-1].addBlock($$[$0]);
 	break;
-	case 268:
+	case 263:
 	self.$ = false;
 	break;
-	case 269:
+	case 264:
 	self.$ = true;
 	break;
-	case 270:
+	case 265:
 	self.$ = new yy.ArgList([]);
 	break;
-	case 271:
+	case 266:
 	self.$ = $$[$0-2];
 	break;
-	case 272:
+	case 267:
 	self.$ = new yy.This($$[$0]);
 	break;
-	case 273:
+	case 268:
 	self.$ = new yy.Self($$[$0]);
 	break;
-	case 274:
+	case 269:
 	self.$ = new yy.Arr(new yy.ArgList([]));
 	break;
-	case 275:
+	case 270:
 	self.$ = new yy.Arr($$[$0-2]);
 	break;
-	case 276:
+	case 271:
 	self.$ = '..';
 	break;
-	case 277:
+	case 272:
 	self.$ = '...';
 	break;
-	case 278:
+	case 273:
 	self.$ = yy.OP($$[$0-2],$$[$0-3],$$[$0-1]);
 	break;
-	case 279:
+	case 274:
 	self.$ = new yy.Range($$[$0-2],$$[$0],$$[$0-1]);
 	break;
-	case 280:
+	case 275:
 	self.$ = new yy.Range($$[$0-1],null,$$[$0]);
 	break;
-	case 281:
+	case 276:
 	self.$ = new yy.Range(null,$$[$0],$$[$0-1]);
 	break;
-	case 285:
+	case 277:
+	self.$ = new yy.ArgList([$$[$0]]);
+	break;
+	case 280:
 	self.$ = $$[$0-2].indented($$[$0-3],$$[$0]);
 	break;
-	case 286:
+	case 281:
 	self.$ = $$[$0-5].concat($$[$0-2]);
 	break;
-	case 294:
+	case 289:
 	self.$ = [].concat($$[$0-2],$$[$0]);
 	break;
-	case 295:
+	case 290:
 	self.$ = new yy.Try($$[$0]);
 	break;
-	case 296:
+	case 291:
 	self.$ = new yy.Try($$[$0-1],$$[$0]);
 	break;
-	case 297:
+	case 292:
 	self.$ = new yy.Try($$[$0-1],null,$$[$0]);
 	break;
-	case 298:
+	case 293:
 	self.$ = new yy.Try($$[$0-2],$$[$0-1],$$[$0]);
 	break;
-	case 299:
+	case 294:
 	self.$ = new yy.Finally($$[$0]);
 	break;
-	case 300:
+	case 295:
 	self.$ = new yy.Catch($$[$0],$$[$0-1]);
 	break;
-	case 301:
+	case 296:
 	self.$ = new yy.Throw($$[$0]);
 	break;
-	case 302:
+	case 297:
 	self.$ = new yy.Parens($$[$0-1],$$[$0-2],$$[$0]);
 	break;
-	case 303:
+	case 298:
 	self.$ = new yy.Parens($$[$0-2],$$[$0-4],$$[$0]);
 	break;
-	case 304:
-	self.$ = new yy.While($$[$0],{keyword: $$[$0-1]});
+	case 299:
+	self.$ = new yy.While($$[$0]);
 	break;
-	case 305:
-	self.$ = new yy.While($$[$0-2],{guard: $$[$0],keyword: $$[$0-3]});
+	case 300:
+	self.$ = new yy.While($$[$0-2],{guard: $$[$0]});
 	break;
-	case 306:
-	self.$ = new yy.While($$[$0],{invert: true,keyword: $$[$0-1]});
+	case 301:
+	self.$ = new yy.While($$[$0],{invert: true});
 	break;
-	case 307:
-	self.$ = new yy.While($$[$0-2],{invert: true,guard: $$[$0],keyword: $$[$0-3]});
+	case 302:
+	self.$ = new yy.While($$[$0-2],{invert: true,guard: $$[$0]});
 	break;
-	case 308: case 316: case 319:
+	case 303: case 311: case 314:
 	self.$ = $$[$0-1].addBody($$[$0]);
 	break;
-	case 309: case 310:
+	case 304: case 305:
 	self.$ = $$[$0].addBody(yy.Block.wrap([$$[$0-1]]));
 	break;
-	case 312:
-	self.$ = new yy.While(new yy.Literal('true',{keyword: $$[$0-1]})).addBody($$[$0]);
+	case 307:
+	self.$ = new yy.While(new yy.Literal('true')).addBody($$[$0]);
 	break;
-	case 313:
-	self.$ = new yy.While(new yy.Literal('true',{keyword: $$[$0-1]})).addBody(yy.Block.wrap([$$[$0]]));
+	case 308:
+	self.$ = new yy.While(new yy.Literal('true')).addBody(yy.Block.wrap([$$[$0]]));
 	break;
-	case 314: case 315:
+	case 309: case 310:
 	self.$ = $$[$0].addBody([$$[$0-1]]);
 	break;
-	case 320:
+	case 315:
 	self.$ = {source: new yy.ValueNode($$[$0])};
 	break;
-	case 321:
+	case 316:
 	self.$ = $$[$0].configure({own: $$[$0-1].own,name: $$[$0-1][0],index: $$[$0-1][1],keyword: $$[$0-1].keyword});
 	break;
-	case 322:
+	case 317:
 	self.$ = ($$[$0].keyword = $$[$0-1]) && $$[$0];
 	break;
-	case 323:
+	case 318:
 	self.$ = ($$[$0].own = true) && ($$[$0].keyword = $$[$0-2]) && $$[$0];
 	break;
-	case 325: case 326:
+	case 320: case 321:
 	self.$ = new yy.ValueNode($$[$0]);
 	break;
-	case 328:
+	case 323:
 	self.$ = [$$[$0-2],$$[$0]];
 	break;
-	case 329:
+	case 324:
 	self.$ = new yy.ForIn({source: $$[$0]});
 	break;
-	case 330:
+	case 325:
 	self.$ = new yy.ForOf({source: $$[$0],object: true});
 	break;
-	case 331:
+	case 326:
 	self.$ = new yy.ForIn({source: $$[$0-2],guard: $$[$0]});
 	break;
-	case 332:
+	case 327:
 	self.$ = new yy.ForOf({source: $$[$0-2],guard: $$[$0],object: true});
 	break;
-	case 333:
+	case 328:
 	self.$ = new yy.ForIn({source: $$[$0-2],step: $$[$0]});
 	break;
-	case 334:
+	case 329:
 	self.$ = new yy.ForIn({source: $$[$0-4],guard: $$[$0-2],step: $$[$0]});
 	break;
-	case 335:
+	case 330:
 	self.$ = new yy.ForIn({source: $$[$0-4],step: $$[$0-2],guard: $$[$0]});
 	break;
-	case 336:
+	case 331:
 	self.$ = new yy.Switch($$[$0-3],$$[$0-1]);
 	break;
-	case 337:
+	case 332:
 	self.$ = new yy.Switch($$[$0-5],$$[$0-3],$$[$0-1]);
 	break;
-	case 338:
+	case 333:
 	self.$ = new yy.Switch(null,$$[$0-1]);
 	break;
-	case 339:
+	case 334:
 	self.$ = new yy.Switch(null,$$[$0-3],$$[$0-1]);
 	break;
-	case 341:
+	case 336:
 	self.$ = $$[$0-1].concat($$[$0]);
 	break;
-	case 342:
+	case 337:
 	self.$ = [new yy.SwitchCase($$[$0-1],$$[$0])];
 	break;
-	case 343:
+	case 338:
 	self.$ = [new yy.SwitchCase($$[$0-2],$$[$0-1])];
 	break;
-	case 344:
+	case 339:
 	self.$ = new yy.If($$[$0-1],$$[$0],{type: $$[$0-2]});
 	break;
-	case 345:
+	case 340:
 	self.$ = $$[$0-4].addElse(new yy.If($$[$0-1],$$[$0],{type: $$[$0-2]}));
 	break;
-	case 346:
+	case 341:
 	self.$ = $$[$0-3].addElse(new yy.If($$[$0-1],$$[$0],{type: $$[$0-2]}));
 	break;
-	case 347:
+	case 342:
 	self.$ = $$[$0-2].addElse($$[$0]);
 	break;
-	case 349:
+	case 344:
 	self.$ = new yy.If($$[$0],new yy.Block([$$[$0-2]]),{type: $$[$0-1],statement: true});
 	break;
-	case 350:
+	case 345:
 	self.$ = new yy.If($$[$0],new yy.Block([$$[$0-2]]),{type: $$[$0-1]});
 	break;
-	case 351:
+	case 346:
 	self.$ = yy.If.ternary($$[$0-4],$$[$0-2],$$[$0]);
 	break;
-	case 352: case 353:
+	case 347: case 348:
 	self.$ = yy.OP($$[$0-1],$$[$0]);
 	break;
-	case 354:
+	case 349:
 	self.$ = new yy.Op('-',$$[$0]);
 	break;
-	case 355:
+	case 350:
 	self.$ = new yy.Op('+',$$[$0]);
 	break;
-	case 356:
+	case 351:
 	self.$ = new yy.UnaryOp('--',null,$$[$0]);
 	break;
-	case 357:
+	case 352:
 	self.$ = new yy.UnaryOp('++',null,$$[$0]);
 	break;
-	case 358:
+	case 353:
 	self.$ = new yy.UnaryOp('--',$$[$0-1],null,true);
 	break;
-	case 359:
+	case 354:
 	self.$ = new yy.UnaryOp('++',$$[$0-1],null,true);
 	break;
-	case 360: case 361:
+	case 355: case 356:
 	self.$ = new yy.Op($$[$0-1],$$[$0-2],$$[$0]);
 	break;
-	case 362: case 363: case 364: case 365: case 367:
+	case 357: case 358: case 359: case 360:
 	self.$ = yy.OP($$[$0-1],$$[$0-2],$$[$0]);
 	break;
-	case 366:
-	self.$ = yy.OP($$[$0-1],$$[$0-3],$$[$0]).invert($$[$0-2]);
+	case 361:
+	self.$ = (function () {
+					if ($$[$0-1].charAt(0) == '!') {
+						return yy.OP($$[$0-1].slice(1),$$[$0-2],$$[$0]).invert();
+					} else {
+						return yy.OP($$[$0-1],$$[$0-2],$$[$0]);
+					};
+				}());
 	break;
-	case 368:
+	case 362:
 	self.$ = yy.OP_COMPOUND($$[$0-1]._value,$$[$0-1],$$[$0-2],$$[$0]);
 	break;
-	case 369:
+	case 363:
 	self.$ = yy.OP_COMPOUND($$[$0-3]._value,$$[$0-4],$$[$0-1].indented($$[$0-2],$$[$0]));
 	break;
 	}
 	},
-	table: [{1:[2,1],3:1,4:2,5:3,7:$V0,8:5,10:$V1,12:7,13:8,15:9,16:10,17:11,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,128:$Vu,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{1:[3]},{1:[2,2],6:$V71,9:137},{6:[1,139]},o($V81,[2,4]),o($V81,[2,5],{14:$V91}),{4:142,6:[1,143],7:$V0,8:5,11:[1,141],12:7,13:8,15:9,16:10,17:11,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,128:$Vu,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Va1,[2,12]),o($Va1,[2,13],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Va1,[2,16]),o($Va1,[2,17],{226:111,230:112,219:157,225:158,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vl1}),o($Va1,[2,18]),{13:159,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vm1,[2,39]),o($Vm1,[2,40],{203:161,152:162,188:164,22:$Vn1,95:$Vo1,117:$Vp1,155:$VF,189:$Vq1,190:$Vr1,192:$Vs1,204:$Vt1}),o($Vm1,[2,41]),o($Vm1,[2,42]),o($Vm1,[2,43]),o($Vm1,[2,44]),o($Vm1,[2,45]),o($Vm1,[2,46]),o($Vm1,[2,47]),o($Vm1,[2,48]),o($Vm1,[2,49]),o($Vm1,[2,50]),o($Vm1,[2,51]),o($Vm1,[2,52]),o($Vm1,[2,53]),o($Vm1,[2,54]),o($Vu1,[2,157]),o($Vu1,[2,158]),o($Vv1,[2,19]),o($Vv1,[2,20]),o($Vv1,[2,21]),o($Vv1,[2,22],{22:[1,170]}),o($Vv1,[2,24],{22:[1,171]}),o($Vv1,[2,26]),o($Vv1,[2,27]),{13:173,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,129:[1,172],130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:174,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vw1,$Vx1,{122:[1,175]}),o($Vw1,[2,238]),o($Vw1,[2,239]),o($Vw1,[2,240]),o($Vw1,[2,241]),o($Vw1,[2,242]),o($Vw1,[2,243]),o($Vw1,[2,244]),o($Vw1,[2,245]),o($Vw1,[2,246]),o($Vw1,[2,247]),o($Vm1,[2,159]),o($Vm1,[2,160]),o($Vm1,[2,161]),{13:176,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:177,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:178,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:179,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{33:$V7,35:50,36:$V8,38:42,39:43,41:181,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,115:104,139:47,140:$Vz,141:$VA,142:182,147:$VB,161:79,172:46,175:78,180:105,181:$VK,183:$VL,184:180,185:$VM,187:41,193:$VN,195:44,196:$VP,197:49,205:$VS,206:$VT},{33:$V7,35:50,36:$V8,38:42,39:43,41:181,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,115:104,139:47,140:$Vz,141:$VA,142:182,147:$VB,161:79,172:46,175:78,180:105,181:$VK,183:$VL,184:183,185:$VM,187:41,193:$VN,195:44,196:$VP,197:49,205:$VS,206:$VT},o($Vy1,$Vz1,{252:[1,184],253:[1,185],258:[1,186]}),o($Vm1,[2,348],{240:[1,187],245:[1,188]}),{5:189,10:$V1},{5:190,10:$V1},o($Vm1,[2,311]),{5:191,10:$V1},{10:[1,193],13:192,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vm1,[2,256]),{130:195,134:$Vy,200:194,201:$VQ},{130:197,134:$Vy,200:196,201:$VQ},{130:199,134:$Vy,164:200,165:$VI,200:198,201:$VQ},{33:$V7,35:50,36:$V8,38:42,39:43,41:181,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,115:104,139:47,140:$Vz,141:$VA,142:182,147:$VB,161:79,172:46,175:78,180:105,181:$VK,183:$VL,184:201,185:$VM,187:41,193:$VN,195:44,196:$VP,197:49,205:$VS,206:$VT},o($Vm1,[2,130]),o($VA1,[2,108],{111:202,114:204,115:205,57:[1,206],96:[1,203],116:[1,207],206:$VT}),{56:209,57:$V9,96:[1,210],160:208},o($Vv1,[2,83],{40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,18:31,19:32,26:37,142:40,187:41,38:42,39:43,195:44,172:46,139:47,108:48,197:49,35:50,151:51,152:52,153:53,184:60,243:61,219:63,223:64,225:65,200:67,130:72,159:74,175:78,161:79,71:81,89:94,164:96,65:100,60:101,63:102,67:103,115:104,180:105,56:106,226:111,230:112,69:120,73:121,16:160,13:211,88:212,20:$V2,21:$V3,22:$VB1,24:$V4,25:$V5,27:$V6,33:$V7,36:$V8,57:$V9,61:$Va,62:$Vb,64:$Vc,66:$Vd,68:$Ve,70:$Vf,72:$Vg,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,90:$Vq,96:$Vr,103:$Vs,110:$Vt,131:$Vv,132:$Vw,133:$Vx,134:$Vy,140:$Vz,141:$VA,147:$VB,154:$VE,155:$VF,162:$VG,163:$VH,165:$VI,181:$VK,183:$VL,185:$VM,193:$VN,194:$VO,196:$VP,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,224:$VY,238:$V$,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61}),{13:214,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{28:215,30:216,32:217,33:$VC1,34:219,56:221,57:$V9,65:220,66:$Vd},o($Vy1,[2,234]),o($Vy1,[2,235]),o($VD1,[2,232]),o($Vw1,[2,73]),o($Vw1,[2,74]),o($Vw1,[2,75]),o($Vw1,[2,76]),o($Vw1,[2,77]),o($Vw1,[2,78]),o($Vw1,[2,79]),o($Vw1,[2,80]),{4:222,7:$V0,8:5,10:[1,223],12:7,13:8,15:9,16:10,17:11,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,128:$Vu,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{10:$VE1,12:229,13:224,15:231,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,104:$VF1,108:48,110:$Vt,115:104,126:226,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,178:$VG1,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,210:227,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o([1,6,10,11,14,22,23,79,95,97,98,104,117,118,125,136,146,148,155,158,178,189,190,192,204,208,209,220,221,222,227,228,237,246,247,250,251,254,255,256,257],[2,272]),o($Vw1,[2,142]),o($Vw1,[2,143]),{91:233,92:[1,234],93:[1,235],94:[1,236],95:[1,237],98:[1,238],99:[1,239],100:[1,240],101:[1,241],102:[1,242],103:[1,243],107:[1,244],109:[1,232]},o($Vw1,[2,38],{71:81,69:120,73:121,37:245,38:246,39:247,33:$V7,70:$Vf,72:$Vg,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,147:$VB}),o($Vm1,[2,172]),{5:248,10:$V1,156:[1,249]},{5:250,10:$V1},o($VD1,[2,213]),o($VD1,[2,214]),o($VD1,[2,215]),o($VD1,[2,216]),o($VD1,[2,217]),o($VD1,[2,218]),o($VD1,[2,219]),o($VD1,[2,220]),{13:251,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:252,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:253,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{5:254,10:$V1,13:255,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{56:260,57:$V9,96:$Vr,103:$Vs,161:262,175:261,195:256,232:257,233:[1,258],234:259},{231:263,235:[1,264],236:[1,265]},{33:$V7,35:50,36:$V8,38:42,39:43,41:181,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,115:104,139:47,140:$Vz,141:$VA,142:182,147:$VB,161:79,172:46,175:78,180:105,181:$VK,183:$VL,184:266,185:$VM,187:41,193:$VN,195:44,196:$VP,197:49,205:$VS,206:$VT},{116:$VH1,135:267,138:$VI1},o($VJ1,[2,168]),o($VJ1,[2,169]),o([6,10,14,97],$VK1,{69:120,73:121,199:270,144:271,145:272,15:273,56:274,65:275,58:276,71:277,60:278,63:279,33:$V7,57:$V9,59:$VL1,61:$Va,62:$Vb,64:$Vc,66:$Vd,70:$Vf,72:$Vg,74:$Vh,147:$VM1,149:$VC,150:$VD}),o($Vw1,[2,63]),o($Vw1,[2,64]),o($Vw1,[2,65]),o($Vw1,[2,66],{76:283,75:[1,282],77:[1,284],78:[1,285]}),o($VN1,[2,84]),{56:291,57:$V9,63:290,64:$Vc,65:292,66:$Vd,96:$VO1,115:289,166:286,168:287,172:288,205:$VS,206:$VT},o([1,6,10,11,14,22,23,29,79,95,97,98,104,117,118,122,125,136,146,148,155,158,170,171,178,189,190,192,204,208,209,220,221,222,227,228,237,246,247,250,251,252,253,254,255,256,257,258],[2,60]),o($VP1,[2,57]),o($VP1,[2,58]),o([1,6,10,11,14,22,23,79,95,97,98,104,117,118,122,125,136,146,148,155,158,178,189,190,192,204,208,209,220,221,222,227,228,237,246,247,250,251,252,253,254,255,256,257,258],[2,59]),o($VD1,[2,61]),o($VP1,[2,273]),{56:297,57:$V9,65:296,66:$Vd,103:$VQ1,175:298,177:[1,294],182:295},{56:297,57:$V9,65:296,66:$Vd,103:$VQ1,175:298,177:[1,301],182:300},o([1,6,10,11,14,22,23,29,79,95,96,97,98,104,105,117,118,122,125,136,146,148,155,158,170,171,178,189,190,192,204,208,209,220,221,222,227,228,235,236,237,246,247,250,251,252,253,254,255,256,257,258],[2,55]),o($VR1,[2,317]),o($VR1,[2,318]),o($VD1,[2,62]),o($VS1,[2,67]),o($V81,[2,7],{12:7,13:8,15:9,16:10,17:11,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,18:31,19:32,26:37,142:40,187:41,38:42,39:43,195:44,172:46,139:47,108:48,197:49,35:50,151:51,152:52,153:53,184:60,243:61,219:63,223:64,225:65,200:67,130:72,159:74,175:78,161:79,71:81,89:94,164:96,65:100,60:101,63:102,67:103,115:104,180:105,56:106,226:111,230:112,69:120,73:121,8:302,20:$V2,21:$V3,24:$V4,25:$V5,27:$V6,33:$V7,36:$V8,57:$V9,61:$Va,62:$Vb,64:$Vc,66:$Vd,68:$Ve,70:$Vf,72:$Vg,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,90:$Vq,96:$Vr,103:$Vs,110:$Vt,128:$Vu,131:$Vv,132:$Vw,133:$Vx,134:$Vy,140:$Vz,141:$VA,147:$VB,149:$VC,150:$VD,154:$VE,155:$VF,162:$VG,163:$VH,165:$VI,177:$VJ,181:$VK,183:$VL,185:$VM,193:$VN,194:$VO,196:$VP,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,220:$VW,222:$VX,224:$VY,227:$VZ,228:$V_,238:$V$,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61}),o([1,6,11,20,21,24,25,27,33,36,57,59,61,62,64,66,68,70,72,74,80,81,82,83,84,85,86,87,90,96,103,110,128,131,132,133,134,140,141,147,148,149,150,154,155,162,163,165,177,178,181,183,185,193,194,196,201,202,205,206,212,218,220,222,224,227,228,238,244,248,249,250,251,252,253],[2,8]),{1:[2,3]},{12:304,13:303,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($VT1,[2,9]),{6:$V71,9:137,11:[1,305]},{4:306,7:$V0,8:5,12:7,13:8,15:9,16:10,17:11,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,128:$Vu,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:307,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:308,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:309,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:310,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:311,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:312,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{257:[1,313]},{13:314,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:315,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:316,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vm1,[2,310]),o($Vm1,[2,315]),{13:317,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vm1,[2,309]),o($Vm1,[2,314]),o([1,6,10,11,14,23,104,148],[2,203],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{219:157,220:$VW,222:$VX,225:158,226:111,227:$VZ,228:$V_,230:112,246:$Vl1},{22:$VB1,88:318},o($Vw1,[2,267]),o($VU1,[2,230],{187:320,69:321,70:$Vf,186:[1,319],193:$VN}),{56:322,57:$V9,60:323,61:$Va,62:$Vb,65:324,66:$Vd},{56:325,57:$V9},{56:326,57:$V9},{13:328,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,191:327,193:$VN,194:$VO,195:44,196:$VP,197:49,198:329,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,207:330,208:$VV1,209:$VW1,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{22:[2,269]},o($VU1,[2,231]),{13:333,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:334,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:335,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Va1,[2,129],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($VX1,[2,236],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{10:[1,337],13:336,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($VY1,[2,352],{226:111,230:112,219:154,225:155,256:$Vj1}),o($VY1,[2,353],{226:111,230:112,219:154,225:155,256:$Vj1}),o($VY1,[2,354],{226:111,230:112,219:154,225:155,256:$Vj1}),o($VY1,[2,355],{226:111,230:112,219:154,225:155,256:$Vj1}),o($Vm1,[2,356],{22:$Vz1,95:$Vz1,117:$Vz1,155:$Vz1,189:$Vz1,190:$Vz1,192:$Vz1,204:$Vz1}),{22:$Vn1,95:$Vo1,117:$Vp1,152:162,155:$VF,188:164,189:$Vq1,190:$Vr1,192:$Vs1,203:161,204:$Vt1},o([22,95,117,155,189,190,192,204],$Vx1),o($Vm1,[2,357],{22:$Vz1,95:$Vz1,117:$Vz1,155:$Vz1,189:$Vz1,190:$Vz1,192:$Vz1,204:$Vz1}),o($Vm1,[2,358]),o($Vm1,[2,359]),{10:[1,339],13:338,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{5:341,10:$V1,244:[1,340]},{13:342,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vm1,[2,295],{213:343,214:344,215:$VZ1,216:[1,345]}),o($Vm1,[2,308]),o($Vm1,[2,316]),{10:[1,347],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{239:348,241:349,242:$V_1},o($Vm1,[2,257]),o($Vm1,[2,131]),o($Vm1,[2,258]),o($Vm1,[2,132]),o($Vm1,[2,259]),o($Vm1,[2,133]),o($Vm1,[2,173]),o($V$1,[2,264],{5:351,10:$V1,22:$Vz1,95:$Vz1,117:$Vz1,155:$Vz1,189:$Vz1,190:$Vz1,192:$Vz1,204:$Vz1}),{60:357,61:$Va,62:$Vb,95:[1,353],98:[1,356],112:[1,352],117:[1,354],119:[1,355],120:358,121:[1,359]},{13:360,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($VA1,[2,109]),o($VA1,[2,105]),o($VA1,[2,106]),o($VA1,[2,107]),o($Vm1,[2,167],{161:361,22:[1,362],96:$Vr}),o($V02,[2,170]),{13:363,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vv1,[2,81],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vv1,[2,82]),{10:$VE1,12:229,13:366,15:231,16:160,18:31,19:32,20:$V2,21:$V3,23:[1,364],24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,126:365,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,178:$VG1,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,210:227,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vv1,[2,301],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{14:[1,368],29:[1,367]},o($Vv1,[2,30],{31:[1,369]}),o($V12,[2,32]),o([1,6,11,14,31,148,220,222,227,228,246],[2,31]),o($V22,[2,34]),o($V22,[2,208]),o($V22,[2,209]),{6:$V71,9:137,148:[1,370]},{4:371,7:$V0,8:5,12:7,13:8,15:9,16:10,17:11,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,128:$Vu,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o([6,10,14,104],$V32,{226:111,230:112,219:154,225:155,207:372,136:$Vb1,178:$Vc1,208:$VV1,209:$VW1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($V42,[2,274]),o([6,10,104],$V52,{173:373,14:$V62}),o($V72,[2,282]),{10:$VE1,12:229,13:366,15:231,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,126:375,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,178:$VG1,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,210:227,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($V72,[2,290]),o($V72,[2,291]),o($V72,[2,292]),o($Vw1,[2,98]),o($VN1,[2,85]),o($VN1,[2,86]),o($VN1,[2,87]),o($VN1,[2,88]),{96:[1,376]},{96:[1,377]},o($VN1,[2,91]),o($VN1,[2,92]),o($VN1,[2,93]),o($VN1,[2,94]),{56:378,57:$V9},o($VN1,[2,97]),o($Vw1,[2,35]),o($Vw1,[2,36]),o($Vw1,[2,37]),o($Vw1,[2,163]),o([14,158],$V82,{157:379,174:380,161:381,175:382,176:383,56:387,57:$V9,96:$Vr,103:$VQ1,177:$V92,178:$Va2,179:$Vb2}),o($Vm1,[2,162]),{5:388,10:$V1,136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($Vc2,[2,304],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,221:[1,389],222:$VX,227:$VZ,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vc2,[2,306],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,221:[1,390],222:$VX,227:$VZ,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vm1,[2,312]),o($Vd2,[2,313],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vm1,[2,320]),o($Ve2,[2,322]),{56:260,57:$V9,96:$Vr,103:$VQ1,161:262,175:261,232:391,234:259},o($Ve2,[2,327],{14:[1,392]}),o($Vf2,[2,324]),o($Vf2,[2,325]),o($Vf2,[2,326]),o($Vm1,[2,321]),{13:393,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:394,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vg2,[2,260],{5:395,10:$V1,22:$Vz1,95:$Vz1,117:$Vz1,155:$Vz1,189:$Vz1,190:$Vz1,192:$Vz1,204:$Vz1,136:[1,396]}),o($Vg2,[2,134],{5:397,10:$V1,136:[1,398]}),o($Vm1,[2,140]),o($Vm1,[2,141]),o([6,10,97],$V52,{173:399,14:$Vh2}),o($Vi2,[2,252]),o($Vi2,[2,146],{146:[1,401]}),o($Vi2,[2,149]),o($Vj2,[2,150]),o($Vj2,[2,151]),o($Vj2,[2,152]),o($Vj2,[2,153]),o($Vj2,[2,154]),o($Vj2,[2,155]),{13:402,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vj2,[2,56]),o($VS1,[2,68]),o($VS1,[2,69]),o($VS1,[2,70]),{13:404,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,79:[1,403],80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{95:[1,406],98:[1,407],167:405},o($Vk2,[2,186],{169:409,22:[1,408],170:$Vl2,171:$Vm2}),o($Vk2,[2,187]),o($Vk2,[2,188]),o($Vk2,[2,189]),o($Vn2,[2,180]),o($Vn2,[2,181]),{13:412,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{56:297,57:$V9,65:296,66:$Vd,103:$VQ1,175:298,182:413},o($VD1,[2,205]),o($VD1,[2,210]),o($VD1,[2,211]),o($VD1,[2,212]),{10:$VE1,12:229,13:366,15:231,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,104:$VF1,108:48,110:$Vt,115:104,126:226,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,178:$VG1,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,210:227,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($VD1,[2,206]),{56:297,57:$V9,65:296,66:$Vd,103:$VQ1,175:298,182:414},o($V81,[2,6],{14:$V91}),o($Va1,[2,14],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Va1,[2,15]),o($VT1,[2,10]),{6:$V71,9:137,11:[1,415]},o($Vo2,[2,360],{226:111,230:112,219:154,225:155,254:$Vh1,256:$Vj1}),o($Vo2,[2,361],{226:111,230:112,219:154,225:155,254:$Vh1,256:$Vj1}),o($VY1,[2,362],{226:111,230:112,219:154,225:155,256:$Vj1}),o([1,6,10,11,14,23,79,97,104,118,125,136,146,148,158,178,208,209,220,221,222,227,228,237,246,247,255,257],[2,363],{226:111,230:112,219:154,225:155,250:$Vf1,251:$Vg1,254:$Vh1,256:$Vj1}),o([1,6,10,11,14,23,79,97,104,118,125,136,146,148,158,178,208,209,220,221,222,227,228,237,246,247],[2,364],{226:111,230:112,219:154,225:155,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o([1,6,10,11,14,23,79,97,104,118,125,146,148,158,178,208,209,220,221,222,227,228,237,246,247],[2,365],{226:111,230:112,219:154,225:155,136:$Vb1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{13:416,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o([1,6,10,11,14,23,79,97,104,118,125,136,146,148,158,178,208,209,220,221,222,227,228,237,246,247,257],[2,367],{226:111,230:112,219:154,225:155,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1}),o($Vp2,[2,350],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{136:$Vb1,146:[1,417],178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($Vp2,[2,349],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vw1,[2,266]),o($VD1,[2,221]),o($VD1,[2,222]),o($VD1,[2,227]),o($VD1,[2,223]),o($VD1,[2,226]),o($VD1,[2,228]),o($VD1,[2,224]),o($VD1,[2,225]),{118:[1,418]},{118:[2,248],136:$Vb1,178:$Vc1,207:419,208:$VV1,209:$VW1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{118:[2,249]},{13:420,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vq2,[2,276]),o($Vq2,[2,277]),{23:[1,421],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{23:[1,422],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($Va1,[2,128],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($VX1,[2,144],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{13:423,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($VX1,[2,368],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{13:424,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:425,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vr2,[2,347]),{5:426,10:$V1,136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($Vm1,[2,296],{214:427,215:$VZ1}),o($Vm1,[2,297]),{217:[1,428]},{5:429,10:$V1},{239:430,241:349,242:$V_1},{11:[1,431],240:[1,432],241:433,242:$V_1},o($Vs2,[2,340]),{13:435,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,211:434,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vm1,[2,265]),o($V$1,[2,102],{113:436,54:439,10:[1,437],22:[1,438],110:$Vt}),{57:[1,441],66:[1,442],70:[1,440],96:[1,443]},{13:444,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{96:[1,445]},{57:[1,446],96:[1,447]},o($VA1,[2,117]),o($VA1,[2,119]),o($VA1,[2,120],{122:[1,448]}),{97:[1,449],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($Vm1,[2,165]),{96:$Vr,161:450},{97:[1,451],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($Vw1,[2,270]),o([6,10,23],$V52,{173:452,14:$V62}),o($V72,$V32,{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{30:453,33:$VC1},{32:454,34:219,56:221,57:$V9,65:220,66:$Vd},{32:455,34:219,56:221,57:$V9,65:220,66:$Vd},o($Vw1,[2,302]),{6:$V71,9:137,11:[1,456]},{13:457,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{6:$V71,9:459,10:$Vt2,104:[1,458]},o([6,10,11,23,104],$Vu2,{40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,18:31,19:32,26:37,142:40,187:41,38:42,39:43,195:44,172:46,139:47,108:48,197:49,35:50,151:51,152:52,153:53,184:60,243:61,219:63,223:64,225:65,200:67,130:72,159:74,175:78,161:79,71:81,89:94,164:96,65:100,60:101,63:102,67:103,115:104,180:105,56:106,226:111,230:112,69:120,73:121,16:160,12:229,15:231,13:366,210:461,20:$V2,21:$V3,24:$V4,25:$V5,27:$V6,33:$V7,36:$V8,57:$V9,61:$Va,62:$Vb,64:$Vc,66:$Vd,68:$Ve,70:$Vf,72:$Vg,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,90:$Vq,96:$Vr,103:$Vs,110:$Vt,131:$Vv,132:$Vw,133:$Vx,134:$Vy,140:$Vz,141:$VA,147:$VB,149:$VC,150:$VD,154:$VE,155:$VF,162:$VG,163:$VH,165:$VI,177:$VJ,178:$VG1,181:$VK,183:$VL,185:$VM,193:$VN,194:$VO,196:$VP,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,220:$VW,222:$VX,224:$VY,227:$VZ,228:$V_,238:$V$,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61}),o($Vv2,$V52,{173:462,14:$V62}),{13:463,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:464,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{104:[1,465],105:[1,466]},{14:$Vw2,158:[1,467]},o($Vx2,[2,193]),o($Vx2,[2,195]),o($Vx2,[2,196]),o($Vx2,[2,197],{122:[1,469]}),{56:387,57:$V9,176:470},{56:387,57:$V9,176:471},{56:387,57:$V9,176:472},o([14,23,122,158],[2,202]),o($Vr2,[2,344]),{13:473,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:474,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Ve2,[2,323]),{56:260,57:$V9,96:$Vr,103:$VQ1,161:262,175:261,234:475},o([1,6,10,11,14,23,79,97,104,118,125,146,148,158,208,209,220,222,227,228,246],[2,329],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,221:[1,476],237:[1,477],247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vy2,[2,330],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,221:[1,478],247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vm1,[2,261]),{13:479,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vm1,[2,135]),{116:$VH1,135:480,138:$VI1},{6:$V71,9:482,10:$Vz2,97:[1,481]},o([6,10,11,97],$Vu2,{69:120,73:121,145:272,15:273,56:274,65:275,58:276,71:277,60:278,63:279,144:484,33:$V7,57:$V9,59:$VL1,61:$Va,62:$Vb,64:$Vc,66:$Vd,70:$Vf,72:$Vg,74:$Vh,147:$VM1,149:$VC,150:$VD}),{10:[1,486],13:485,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{136:$Vb1,148:[1,487],178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($VS1,[2,71]),{79:[1,488],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{56:291,57:$V9,65:292,66:$Vd,96:$VO1,168:489},o($VA2,[2,178]),o($VA2,[2,179]),o($VB2,$V82,{174:380,161:381,175:382,176:383,56:387,157:490,57:$V9,96:$Vr,103:$VQ1,177:$V92,178:$Va2,179:$Vb2}),o($Vm1,[2,177]),{5:491,10:$V1,152:492,155:$VF},o($Vm1,[2,185]),{97:[1,493],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($VD1,[2,204]),o($VD1,[2,207]),o($VT1,[2,11]),o($VY1,[2,366],{226:111,230:112,219:154,225:155,256:$Vj1}),{13:494,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($VD1,[2,229]),{13:495,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,118:[2,280],130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{118:[2,281],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($Vv1,[2,23]),o($Vv1,[2,25]),{6:$V71,9:497,11:$VC2,136:$Vb1,143:496,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{6:$V71,9:497,11:$VC2,136:$Vb1,143:499,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{5:500,10:$V1,136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($Vr2,[2,346]),o($Vm1,[2,298]),{5:501,10:$V1},o($Vm1,[2,299]),{11:[1,502],240:[1,503],241:433,242:$V_1},o($Vm1,[2,338]),{5:504,10:$V1},o($Vs2,[2,341]),{5:505,10:$V1,14:[1,506]},o($VD2,[2,293],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vm1,[2,103]),{10:$VE1,12:229,13:366,15:231,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,126:507,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,178:$VG1,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,210:227,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{10:$VE1,12:229,13:366,15:231,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,126:508,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,178:$VG1,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,210:227,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vm1,[2,125]),o($VA1,[2,110]),o($VA1,[2,112]),o($VA1,[2,113]),{13:509,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{118:[1,510],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{13:511,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($VA1,[2,116]),{13:512,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{123:513,124:[1,514]},{112:[1,515]},{23:[1,516]},o($V02,[2,171]),{6:$V71,9:459,10:$Vt2,23:[1,517]},o($Vv1,[2,28]),o($V12,[2,33]),o($Vv1,[2,29]),{148:[1,518]},{104:[1,519],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($V42,[2,275]),{12:229,13:366,15:231,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,178:$VG1,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,210:520,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{10:$VE1,12:229,13:366,15:231,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,126:521,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,178:$VG1,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,210:227,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($V72,[2,283]),{6:$V71,9:523,10:$Vt2,11:$VC2,143:522},{97:[1,524],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{97:[1,525],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($VN1,[2,95]),{33:$V7,57:[1,527],69:120,70:$Vf,71:528,72:$Vg,73:121,74:$Vh,96:[1,529],106:526},{5:530,10:$V1},{56:387,57:$V9,96:$Vr,103:$VQ1,161:381,174:531,175:382,176:383,177:$V92,178:$Va2,179:$Vb2},{13:532,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vx2,[2,198]),o($Vx2,[2,199]),o($Vx2,[2,200]),o($Vd2,[2,305],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vd2,[2,307],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Ve2,[2,328]),{13:533,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:534,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:535,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o([1,6,11,14,23,79,97,104,118,125,146,148,158,208,209,221,228,237,246],[2,262],{226:111,230:112,219:154,225:155,5:536,10:$V1,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($V$1,[2,136],{5:537,10:$V1}),o([1,6,10,11,14,22,23,79,95,97,104,117,118,122,125,136,146,148,155,158,178,189,190,192,204,208,209,220,221,222,227,228,235,236,237,246,247,250,251,254,255,256,257],[2,250]),{15:273,33:$V7,56:274,57:$V9,58:276,59:$VL1,60:278,61:$Va,62:$Vb,63:279,64:$Vc,65:275,66:$Vd,69:120,70:$Vf,71:277,72:$Vg,73:121,74:$Vh,144:538,145:272,147:$VM1,149:$VC,150:$VD},o([6,10,11,14],$VK1,{69:120,73:121,144:271,145:272,15:273,56:274,65:275,58:276,71:277,60:278,63:279,199:539,33:$V7,57:$V9,59:$VL1,61:$Va,62:$Vb,64:$Vc,66:$Vd,70:$Vf,72:$Vg,74:$Vh,147:$VM1,149:$VC,150:$VD}),o($Vi2,[2,253]),o($Vi2,[2,147],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{13:540,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vj2,[2,156]),o($VS1,[2,72]),{22:[1,541],169:542,170:$Vl2,171:$Vm2},{14:$Vw2,23:[1,543]},o($Vm1,[2,183]),o($Vm1,[2,184]),o($Vn2,[2,182]),o([1,6,10,11,14,23,79,97,104,118,125,146,148,158,208,209,220,221,222,227,228,237,246,247],[2,351],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),{118:[2,279],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($Vm1,[2,145]),{11:$VE2},o($Vm1,[2,288]),o($Vm1,[2,369]),o($Vr2,[2,345]),o([1,6,10,11,14,23,79,97,104,118,125,136,146,148,158,178,208,209,215,220,221,222,227,228,237,246,247,250,251,254,255,256,257],[2,300]),o($Vm1,[2,336]),{5:545,10:$V1},{11:[1,546]},o($Vs2,[2,342],{6:[1,547]}),{13:548,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($VF2,$V52,{173:550,11:[1,549],14:$V62}),o($VF2,$V52,{173:550,14:$V62,23:[1,551]}),{97:[1,552],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($VA1,[2,111]),{97:[1,553],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{97:[1,554],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($VA1,[2,121]),{13:555,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vm1,[2,104]),o($Vm1,[2,166]),o($Vw1,[2,271]),o($Vw1,[2,303]),o($Vw1,[2,278]),o($V72,[2,284]),o($Vv2,$V52,{173:556,14:$V62}),o($V72,[2,285]),{11:$VE2,12:229,13:366,15:231,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,149:$VC,150:$VD,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,177:$VJ,178:$VG1,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,210:520,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($VN1,[2,89]),o($VN1,[2,90]),{104:[1,557]},{104:[2,99]},{104:[2,100]},{13:558,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},o($Vw1,[2,164]),o($Vx2,[2,194]),o($Vx2,[2,201],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o([1,6,10,11,14,23,79,97,104,118,125,146,148,158,208,209,220,221,222,227,228,246],[2,331],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,237:[1,559],247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vy2,[2,333],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,221:[1,560],247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($VX1,[2,332],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vm1,[2,263]),o($Vm1,[2,137]),o($Vi2,[2,254]),o($Vv2,$V52,{173:561,14:$Vh2}),{6:$V71,9:497,11:$VC2,136:$Vb1,143:562,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},o($VB2,$V82,{174:380,161:381,175:382,176:383,56:387,157:563,57:$V9,96:$Vr,103:$VQ1,177:$V92,178:$Va2,179:$Vb2}),o($Vm1,[2,175]),{169:564,170:$Vl2,171:$Vm2},o($Vm1,[2,287]),{6:$V71,9:497,11:$VC2,143:565},o($Vm1,[2,339]),o($Vs2,[2,343]),o($VD2,[2,294],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,220:$VW,222:$VX,227:$VZ,228:$V_,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vm1,[2,123]),{6:$V71,9:459,10:$Vt2},o($Vm1,[2,124]),o($VA1,[2,114]),o($VA1,[2,115]),o($VA1,[2,118]),{125:[1,566],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{6:$V71,9:523,10:$Vt2,11:$VC2,143:567},o($VN1,[2,96]),{97:[1,568],136:$Vb1,178:$Vc1,219:154,220:$VW,222:$VX,225:155,226:111,227:$VZ,228:$V_,230:112,246:$Vd1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1},{13:569,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{13:570,16:160,18:31,19:32,20:$V2,21:$V3,24:$V4,25:$V5,26:37,27:$V6,33:$V7,35:50,36:$V8,38:42,39:43,40:13,41:14,42:15,43:16,44:17,45:18,46:19,47:20,48:21,49:22,50:23,51:24,52:25,53:26,54:27,55:28,56:106,57:$V9,60:101,61:$Va,62:$Vb,63:102,64:$Vc,65:100,66:$Vd,67:103,68:$Ve,69:120,70:$Vf,71:81,72:$Vg,73:121,74:$Vh,80:$Vi,81:$Vj,82:$Vk,83:$Vl,84:$Vm,85:$Vn,86:$Vo,87:$Vp,89:94,90:$Vq,96:$Vr,103:$Vs,108:48,110:$Vt,115:104,130:72,131:$Vv,132:$Vw,133:$Vx,134:$Vy,139:47,140:$Vz,141:$VA,142:40,147:$VB,151:51,152:52,153:53,154:$VE,155:$VF,159:74,161:79,162:$VG,163:$VH,164:96,165:$VI,172:46,175:78,180:105,181:$VK,183:$VL,184:60,185:$VM,187:41,193:$VN,194:$VO,195:44,196:$VP,197:49,200:67,201:$VQ,202:$VR,205:$VS,206:$VT,212:$VU,218:$VV,219:63,220:$VW,222:$VX,223:64,224:$VY,225:65,226:111,227:$VZ,228:$V_,230:112,238:$V$,243:61,244:$V01,248:$V11,249:$V21,250:$V31,251:$V41,252:$V51,253:$V61},{6:$V71,9:572,10:$Vz2,11:$VC2,143:571},o($Vi2,[2,148]),{14:$Vw2,23:[1,573]},o($Vm1,[2,176]),o($Vm1,[2,337]),o($VA1,[2,122]),o($V72,[2,286]),{104:[2,101]},o($VX1,[2,334],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($VX1,[2,335],{226:111,230:112,219:154,225:155,136:$Vb1,178:$Vc1,247:$Ve1,250:$Vf1,251:$Vg1,254:$Vh1,255:$Vi1,256:$Vj1,257:$Vk1}),o($Vi2,[2,255]),{11:$VE2,15:273,33:$V7,56:274,57:$V9,58:276,59:$VL1,60:278,61:$Va,62:$Vb,63:279,64:$Vc,65:275,66:$Vd,69:120,70:$Vf,71:277,72:$Vg,73:121,74:$Vh,144:538,145:272,147:$VM1,149:$VC,150:$VD},{169:574,170:$Vl2,171:$Vm2},o($Vm1,[2,174])],
-	defaultActions: {139:[2,3],168:[2,269],329:[2,249],527:[2,99],528:[2,100],568:[2,101]},
+	table: [{1:[2,1],3:1,4:2,5:3,7:$V0,8:5,10:$V1,12:7,13:8,15:9,16:10,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{1:[3]},{1:[2,2],6:$V51,9:133},{6:[1,135]},o($V61,[2,4]),o($V61,[2,5],{14:$V71}),{4:138,6:[1,139],7:$V0,8:5,11:[1,137],12:7,13:8,15:9,16:10,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($V81,[2,12]),o($V81,[2,13],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($V81,[2,16]),o($V81,[2,17],{218:107,222:108,211:152,217:153,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vi1}),{13:154,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vj1,[2,34]),o($Vj1,[2,35],{195:156,141:157,179:159,21:$Vk1,88:$Vl1,111:$Vm1,144:$VC,180:$Vn1,181:$Vo1,183:$Vp1,196:$Vq1}),o($Vj1,[2,36]),o($Vj1,[2,37]),o($Vj1,[2,38]),o($Vj1,[2,39]),o($Vj1,[2,40]),o($Vj1,[2,41]),o($Vj1,[2,42]),o($Vj1,[2,43]),o($Vj1,[2,44]),o($Vj1,[2,45]),o($Vj1,[2,46]),o($Vj1,[2,47]),o($Vj1,[2,48]),o($Vj1,[2,49]),o($Vr1,[2,149]),o($Vr1,[2,150]),o($Vs1,[2,18]),o($Vs1,[2,19]),o($Vs1,[2,20]),o($Vs1,[2,21],{21:[1,165]}),o($Vs1,[2,23],{21:[1,166]}),o($Vs1,[2,25]),o($Vs1,[2,26]),{13:167,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vt1,$Vu1,{117:[1,168]}),o($Vt1,[2,232]),o($Vt1,[2,233]),o($Vt1,[2,234]),o($Vt1,[2,235]),o($Vt1,[2,236]),o($Vt1,[2,237]),o($Vt1,[2,238]),o($Vt1,[2,239]),o($Vt1,[2,240]),o($Vj1,[2,151]),o($Vj1,[2,152]),o($Vj1,[2,153]),{13:169,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:170,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:171,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:172,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{32:$V7,35:174,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,109:100,129:45,130:$Vx,131:176,136:$Vy,150:77,154:$VF,157:$Vv1,166:44,168:76,173:101,175:$VK,176:173,178:39,184:$VL,186:41,187:42,188:$VN,189:47,197:$VQ,198:$VR},{32:$V7,35:174,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,109:100,129:45,130:$Vx,131:176,136:$Vy,150:77,154:$VF,157:$Vv1,166:44,168:76,173:101,175:$VK,176:177,178:39,184:$VL,186:41,187:42,188:$VN,189:47,197:$VQ,198:$VR},o($Vw1,$Vx1,{244:[1,178],245:[1,179],249:[1,180]}),o($Vj1,[2,343],{232:[1,181],237:[1,182]}),{5:183,10:$V1},{5:184,10:$V1},o($Vj1,[2,306]),{5:185,10:$V1},{10:[1,187],13:186,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vj1,[2,249]),{121:189,124:$Vw,192:188,193:$VO},{121:191,124:$Vw,192:190,193:$VO},{155:193,158:$VI,192:192,193:$VO},{123:[1,195],154:$VF,155:196,157:$Vv1,158:$VI,173:197,175:$VK,192:194,193:$VO},{32:$V7,35:174,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,109:100,129:45,130:$Vx,131:176,136:$Vy,150:77,154:$VF,157:$Vv1,166:44,168:76,173:101,175:$VK,176:198,178:39,184:$VL,186:41,187:42,188:$VN,189:47,197:$VQ,198:$VR},o($Vj1,[2,124]),o($Vy1,[2,102],{104:199,108:201,109:202,51:[1,203],89:[1,200],110:[1,204],198:$VR}),{50:206,51:$V8,89:[1,207],149:205},o($Vs1,[2,77],{34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,17:30,18:31,25:36,131:38,178:39,72:40,186:41,187:42,166:44,129:45,101:46,189:47,140:48,141:49,142:50,176:57,235:58,211:60,215:61,217:62,192:64,121:70,148:72,168:76,150:77,63:79,82:92,155:93,57:96,52:97,55:98,59:99,109:100,173:101,50:102,218:107,222:108,61:116,65:117,16:155,13:208,81:209,19:$V2,20:$V3,21:$Vz1,23:$V4,24:$V5,26:$V6,32:$V7,51:$V8,53:$V9,54:$Va,56:$Vb,58:$Vc,60:$Vd,62:$Ve,64:$Vf,66:$Vg,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,83:$Vp,89:$Vq,91:$Vr,96:$Vs,103:$Vt,122:$Vu,123:$Vv,124:$Vw,130:$Vx,136:$Vy,143:$VB,144:$VC,151:$VD,152:$VE,154:$VF,156:$VG,157:$VH,158:$VI,175:$VK,184:$VL,185:$VM,188:$VN,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,216:$VW,230:$VZ,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41}),{13:211,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{27:212,29:213,31:214,32:$VA1,33:216,50:218,51:$V8,57:217,58:$Vc},o($Vw1,[2,228]),o($Vw1,[2,229]),o($VB1,[2,226]),o($Vt1,[2,67]),o($Vt1,[2,68]),o($Vt1,[2,69]),o($Vt1,[2,70]),o($Vt1,[2,71]),o($Vt1,[2,72]),o($Vt1,[2,73]),o($Vt1,[2,74]),{4:219,7:$V0,8:5,10:[1,220],12:7,13:8,15:9,16:10,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{10:$VC1,12:226,13:221,15:228,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,97:$VD1,101:46,103:$Vt,109:100,119:223,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,171:$VE1,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,202:224,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o([1,6,10,11,14,21,22,71,88,90,91,97,106,111,112,126,135,137,144,147,171,180,181,183,196,200,201,212,213,214,219,220,229,238,239,242,243,246,247,248],[2,267]),o($Vt1,[2,135]),{50:229,51:$V8},{84:231,85:[1,232],86:[1,233],87:[1,234],88:[1,235],91:[1,236],92:[1,237],93:[1,238],94:[1,239],95:[1,240],96:[1,241],100:[1,242],102:[1,230]},o($Vj1,[2,165]),{5:243,10:$V1,145:[1,244]},{5:245,10:$V1},o($VB1,[2,208]),o($VB1,[2,209]),o($VB1,[2,210]),o($VB1,[2,211]),o($VB1,[2,212]),o($VB1,[2,213]),o($VB1,[2,214]),{13:246,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:247,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:248,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{5:249,10:$V1,13:250,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{50:255,51:$V8,89:$Vq,96:$Vs,150:257,168:256,187:251,224:252,225:[1,253],226:254},{223:258,227:[1,259],228:[1,260]},{32:$V7,35:174,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,109:100,129:45,130:$Vx,131:176,136:$Vy,150:77,154:$VF,157:$Vv1,166:44,168:76,173:101,175:$VK,176:261,178:39,184:$VL,186:41,187:42,188:$VN,189:47,197:$VQ,198:$VR},{110:$VF1,125:262,128:$VG1},o($VH1,[2,160]),o($VH1,[2,161]),o([6,10,14,90],$VI1,{61:116,65:117,191:265,133:266,134:267,15:268,50:269,57:270,63:271,52:272,55:273,32:$V7,51:$V8,53:$V9,54:$Va,56:$Vb,58:$Vc,62:$Ve,64:$Vf,66:$Vg,136:$VJ1,138:$Vz,139:$VA}),o($Vt1,[2,57]),o($Vt1,[2,58]),o($Vt1,[2,59]),o($Vt1,[2,60],{68:276,67:[1,275],69:[1,277],70:[1,278]}),o($VK1,[2,78]),{50:284,51:$V8,55:283,56:$Vb,57:285,58:$Vc,89:$VL1,109:282,159:279,161:280,166:281,197:$VQ,198:$VR},o([1,6,10,11,14,21,22,28,71,88,90,91,97,106,111,112,117,126,135,137,144,147,164,165,171,180,181,183,196,200,201,212,213,214,219,220,229,238,239,242,243,244,245,246,247,248,249],[2,54]),o($VM1,[2,51]),o($VM1,[2,52]),o([1,6,10,11,14,21,22,71,88,90,91,97,106,111,112,117,126,135,137,144,147,171,180,181,183,196,200,201,212,213,214,219,220,229,238,239,242,243,244,245,246,247,248,249],[2,53]),o($VB1,[2,55]),o($VM1,[2,268]),{50:290,51:$V8,57:289,58:$Vc,96:$VN1,168:291,170:[1,287],174:288},{50:290,51:$V8,57:289,58:$Vc,96:$VN1,168:291,170:[1,294],174:293},o([1,6,10,11,14,21,22,28,71,88,89,90,91,97,98,106,111,112,117,126,135,137,144,147,164,165,171,180,181,183,196,200,201,212,213,214,219,220,227,228,229,238,239,242,243,244,245,246,247,248,249],[2,50]),o($VO1,[2,312]),o($VO1,[2,313]),o($VB1,[2,56]),o($VP1,[2,61]),o($V61,[2,7],{12:7,13:8,15:9,16:10,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,17:30,18:31,25:36,131:38,178:39,72:40,186:41,187:42,166:44,129:45,101:46,189:47,140:48,141:49,142:50,176:57,235:58,211:60,215:61,217:62,192:64,121:70,148:72,168:76,150:77,63:79,82:92,155:93,57:96,52:97,55:98,59:99,109:100,173:101,50:102,218:107,222:108,61:116,65:117,8:295,19:$V2,20:$V3,23:$V4,24:$V5,26:$V6,32:$V7,51:$V8,53:$V9,54:$Va,56:$Vb,58:$Vc,60:$Vd,62:$Ve,64:$Vf,66:$Vg,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,83:$Vp,89:$Vq,91:$Vr,96:$Vs,103:$Vt,122:$Vu,123:$Vv,124:$Vw,130:$Vx,136:$Vy,138:$Vz,139:$VA,143:$VB,144:$VC,151:$VD,152:$VE,154:$VF,156:$VG,157:$VH,158:$VI,170:$VJ,175:$VK,184:$VL,185:$VM,188:$VN,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,212:$VU,214:$VV,216:$VW,219:$VX,220:$VY,230:$VZ,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41}),o([1,6,11,19,20,23,24,26,32,51,53,54,56,58,60,62,64,66,73,74,75,76,77,78,79,80,83,89,91,96,103,122,123,124,130,136,137,138,139,143,144,151,152,154,156,157,158,170,171,175,184,185,188,193,194,197,198,204,210,212,214,216,219,220,230,236,240,241,242,243,244,245],[2,8]),{1:[2,3]},{12:297,13:296,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($VQ1,[2,9]),{6:$V51,9:133,11:[1,298]},{4:299,7:$V0,8:5,12:7,13:8,15:9,16:10,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:300,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:301,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:302,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:303,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:304,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:305,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:306,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:307,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:308,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vj1,[2,305]),o($Vj1,[2,310]),{13:309,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vj1,[2,304]),o($Vj1,[2,309]),o([1,6,10,11,14,22,97,137],[2,197],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),{211:152,212:$VU,214:$VV,217:153,218:107,219:$VX,220:$VY,222:108,238:$Vi1},{21:$Vz1,81:310},o($Vt1,[2,262]),o($VR1,[2,224],{178:312,61:313,62:$Ve,177:[1,311],184:$VL}),{50:314,51:$V8,52:315,53:$V9,54:$Va,57:316,58:$Vc},{50:317,51:$V8},{50:318,51:$V8},{13:320,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,182:319,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,190:321,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,199:322,200:$VS1,201:$VT1,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{21:[2,264]},o($VR1,[2,225]),{13:325,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:326,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($VU1,[2,230],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),{10:[1,328],13:327,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vj1,[2,347],{218:107,222:108,211:149,217:150}),o($Vj1,[2,348],{218:107,222:108,211:149,217:150}),o($Vj1,[2,349],{218:107,222:108,211:149,217:150}),o($Vj1,[2,350],{218:107,222:108,211:149,217:150}),o($Vj1,[2,351],{21:$Vx1,88:$Vx1,111:$Vx1,144:$Vx1,180:$Vx1,181:$Vx1,183:$Vx1,196:$Vx1}),{21:$Vk1,88:$Vl1,111:$Vm1,141:157,144:$VC,179:159,180:$Vn1,181:$Vo1,183:$Vp1,195:156,196:$Vq1},{154:$VF,157:$Vv1,173:197,175:$VK},o([21,88,111,144,180,181,183,196],$Vu1),o($Vj1,[2,352],{21:$Vx1,88:$Vx1,111:$Vx1,144:$Vx1,180:$Vx1,181:$Vx1,183:$Vx1,196:$Vx1}),o($Vj1,[2,353]),o($Vj1,[2,354]),{10:[1,330],13:329,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{5:332,10:$V1,236:[1,331]},{13:333,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vj1,[2,290],{205:334,206:335,207:$VV1,208:[1,336]}),o($Vj1,[2,303]),o($Vj1,[2,311]),{10:[1,338],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{231:339,233:340,234:$VW1},o($Vj1,[2,250]),o($Vj1,[2,125]),o($Vj1,[2,251]),o($Vj1,[2,126]),o($Vj1,[2,252]),o($Vj1,[2,166]),o($Vj1,[2,253]),{192:342,193:$VO},o($Vj1,[2,167]),o($VB1,[2,202]),o($VX1,[2,259],{5:343,10:$V1,21:$Vx1,88:$Vx1,111:$Vx1,144:$Vx1,180:$Vx1,181:$Vx1,183:$Vx1,196:$Vx1}),o($VY1,[2,113],{105:344,52:349,114:350,53:$V9,54:$Va,88:[1,345],91:[1,348],111:[1,346],113:[1,347],116:$VZ1}),{13:352,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vy1,[2,103]),o($Vy1,[2,99]),o($Vy1,[2,100]),o($Vy1,[2,101]),o($Vj1,[2,159],{150:353,21:[1,354],89:$Vq}),o($V_1,[2,162]),{13:355,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vs1,[2,75],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vs1,[2,76]),{10:$VC1,12:226,13:358,15:228,16:155,17:30,18:31,19:$V2,20:$V3,22:[1,356],23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,119:357,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,171:$VE1,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,202:224,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vs1,[2,296],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),{14:[1,360],28:[1,359]},o($Vs1,[2,29],{30:[1,361]}),o($V$1,[2,31]),o([1,6,11,14,30,137,212,214,219,220,238],[2,30]),o($V02,[2,33]),o($V02,[2,203]),o($V02,[2,204]),{6:$V51,9:133,137:[1,362]},{4:363,7:$V0,8:5,12:7,13:8,15:9,16:10,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o([6,10,14,97],$V12,{218:107,222:108,211:149,217:150,199:364,126:$V91,171:$Va1,200:$VS1,201:$VT1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($V22,[2,269]),o([6,10,97],$V32,{115:365,14:$V42}),o($V52,[2,277]),{10:$VC1,12:226,13:358,15:228,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,119:367,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,171:$VE1,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,202:224,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($V52,[2,285]),o($V52,[2,286]),o($V52,[2,287]),o($Vt1,[2,136]),o($Vt1,[2,92]),o($VK1,[2,79]),o($VK1,[2,80]),o($VK1,[2,81]),o($VK1,[2,82]),{89:[1,368]},{89:[1,369]},o($VK1,[2,85]),o($VK1,[2,86]),o($VK1,[2,87]),o($VK1,[2,88]),{50:370,51:$V8},o($VK1,[2,91]),o($Vt1,[2,155]),o([14,147],$V62,{146:371,167:372,150:373,168:374,169:375,50:379,51:$V8,89:$Vq,96:$VN1,170:$V72,171:$V82,172:$V92}),o($Vj1,[2,154]),{5:380,10:$V1,126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Va2,[2,299],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,213:[1,381],214:$VV,219:$VX,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Va2,[2,301],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,213:[1,382],214:$VV,219:$VX,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vj1,[2,307]),o($Vb2,[2,308],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vj1,[2,315]),o($Vc2,[2,317]),{50:255,51:$V8,89:$Vq,96:$VN1,150:257,168:256,224:383,226:254},o($Vc2,[2,322],{14:[1,384]}),o($Vd2,[2,319]),o($Vd2,[2,320]),o($Vd2,[2,321]),o($Vj1,[2,316]),{13:385,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:386,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Ve2,[2,255],{5:387,10:$V1,21:$Vx1,88:$Vx1,111:$Vx1,144:$Vx1,180:$Vx1,181:$Vx1,183:$Vx1,196:$Vx1,126:[1,388]}),o($Ve2,[2,127],{5:389,10:$V1,126:[1,390]}),o($Vj1,[2,133]),o($Vj1,[2,134]),o([6,10,90],$V32,{115:391,14:$Vf2}),o($Vg2,[2,245]),o($Vg2,[2,139],{135:[1,393]}),o($Vg2,[2,142]),o($Vh2,[2,143]),o($Vh2,[2,144]),o($Vh2,[2,145]),o($Vh2,[2,146]),o($Vh2,[2,147]),{13:394,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($VP1,[2,62]),o($VP1,[2,63]),o($VP1,[2,64]),{13:396,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,71:[1,395],72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{88:[1,398],91:[1,399],160:397},o($Vi2,[2,180],{162:401,21:[1,400],164:$Vj2,165:$Vk2}),o($Vi2,[2,181]),o($Vi2,[2,182]),o($Vi2,[2,183]),o($Vl2,[2,174]),o($Vl2,[2,175]),{13:404,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{50:290,51:$V8,57:289,58:$Vc,96:$VN1,168:291,174:405},o($VB1,[2,199]),o($VB1,[2,205]),o($VB1,[2,206]),o($VB1,[2,207]),{10:$VC1,12:226,13:358,15:228,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,97:$VD1,101:46,103:$Vt,109:100,119:223,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,171:$VE1,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,202:224,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($VB1,[2,200]),{50:290,51:$V8,57:289,58:$Vc,96:$VN1,168:291,174:406},o($V61,[2,6],{14:$V71}),o($V81,[2,14],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($V81,[2,15]),o($VQ1,[2,10]),{6:$V51,9:133,11:[1,407]},o($Vm2,[2,355],{218:107,222:108,211:149,217:150,246:$Vf1}),o($Vm2,[2,356],{218:107,222:108,211:149,217:150,246:$Vf1}),o($Vj1,[2,357],{218:107,222:108,211:149,217:150}),o([1,6,10,11,14,22,71,90,97,106,112,126,135,137,147,171,200,201,212,213,214,219,220,229,238,239,247,248],[2,358],{218:107,222:108,211:149,217:150,242:$Vd1,243:$Ve1,246:$Vf1}),o([1,6,10,11,14,22,71,90,97,106,112,126,135,137,147,171,200,201,212,213,214,219,220,229,238,239],[2,359],{218:107,222:108,211:149,217:150,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o([1,6,10,11,14,22,71,90,97,106,112,135,137,147,171,200,201,212,213,214,219,220,229,238,239],[2,360],{218:107,222:108,211:149,217:150,126:$V91,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o([1,6,10,11,14,22,71,90,97,106,112,126,135,137,147,171,200,201,212,213,214,219,220,229,238,239,248],[2,361],{218:107,222:108,211:149,217:150,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1}),o($Vn2,[2,345],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),{126:$V91,135:[1,408],171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Vn2,[2,344],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vt1,[2,261]),o($VB1,[2,215]),o($VB1,[2,216]),o($VB1,[2,221]),o($VB1,[2,217]),o($VB1,[2,220]),o($VB1,[2,222]),o($VB1,[2,218]),o($VB1,[2,219]),{112:[1,409]},{112:[2,241],126:$V91,171:$Va1,199:410,200:$VS1,201:$VT1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{112:[2,242]},{13:411,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vo2,[2,271]),o($Vo2,[2,272]),{22:[1,412],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{22:[1,413],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($VU1,[2,137],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),{13:414,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($VU1,[2,362],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),{13:415,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:416,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vp2,[2,342]),{5:417,10:$V1,126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Vj1,[2,291],{206:418,207:$VV1}),o($Vj1,[2,292]),{209:[1,419]},{5:420,10:$V1},{231:421,233:340,234:$VW1},{11:[1,422],232:[1,423],233:424,234:$VW1},o($Vq2,[2,335]),{13:426,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,203:425,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vj1,[2,254]),o($Vj1,[2,260]),{6:$V32,14:[1,428],106:[1,427],115:429},{51:[1,431],58:[1,432],62:[1,430],89:[1,433]},{13:434,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{89:[1,435]},{51:[1,436],89:[1,437]},o($Vy1,[2,111]),o($VY1,[2,114]),o($VY1,[2,117],{117:[1,438]}),{90:[1,439],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Vj1,[2,157]),{89:$Vq,150:440},{90:[1,441],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Vt1,[2,265]),o([6,10,22],$V32,{115:442,14:$V42}),o($V52,$V12,{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),{29:443,32:$VA1},{31:444,33:216,50:218,51:$V8,57:217,58:$Vc},{31:445,33:216,50:218,51:$V8,57:217,58:$Vc},o($Vt1,[2,297]),{6:$V51,9:133,11:[1,446]},{13:447,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{6:$V51,9:449,10:$Vr2,97:[1,448]},o([6,10,11,22,97],$Vs2,{34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,17:30,18:31,25:36,131:38,178:39,72:40,186:41,187:42,166:44,129:45,101:46,189:47,140:48,141:49,142:50,176:57,235:58,211:60,215:61,217:62,192:64,121:70,148:72,168:76,150:77,63:79,82:92,155:93,57:96,52:97,55:98,59:99,109:100,173:101,50:102,218:107,222:108,61:116,65:117,16:155,12:226,15:228,13:358,202:451,19:$V2,20:$V3,23:$V4,24:$V5,26:$V6,32:$V7,51:$V8,53:$V9,54:$Va,56:$Vb,58:$Vc,60:$Vd,62:$Ve,64:$Vf,66:$Vg,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,83:$Vp,89:$Vq,91:$Vr,96:$Vs,103:$Vt,122:$Vu,123:$Vv,124:$Vw,130:$Vx,136:$Vy,138:$Vz,139:$VA,143:$VB,144:$VC,151:$VD,152:$VE,154:$VF,156:$VG,157:$VH,158:$VI,170:$VJ,171:$VE1,175:$VK,184:$VL,185:$VM,188:$VN,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,212:$VU,214:$VV,216:$VW,219:$VX,220:$VY,230:$VZ,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41}),o($Vt2,$V32,{115:452,14:$V42}),{13:453,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:454,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{97:[1,455],98:[1,456]},{14:$Vu2,147:[1,457]},o($Vv2,[2,187]),o($Vv2,[2,189]),o($Vv2,[2,190]),o($Vv2,[2,191],{117:[1,459]}),{50:379,51:$V8,169:460},{50:379,51:$V8,169:461},{50:379,51:$V8,169:462},o([14,22,117,147],[2,196]),o($Vp2,[2,339]),{13:463,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:464,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vc2,[2,318]),{50:255,51:$V8,89:$Vq,96:$VN1,150:257,168:256,226:465},o([1,6,10,11,14,22,71,90,97,106,112,135,137,147,200,201,212,214,219,220,238],[2,324],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,213:[1,466],229:[1,467],239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vw2,[2,325],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,213:[1,468],239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vj1,[2,256]),{13:469,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vj1,[2,128]),{110:$VF1,125:470,128:$VG1},{6:$V51,9:472,10:$Vx2,90:[1,471]},o([6,10,11,90],$Vs2,{61:116,65:117,134:267,15:268,50:269,57:270,63:271,52:272,55:273,133:474,32:$V7,51:$V8,53:$V9,54:$Va,56:$Vb,58:$Vc,62:$Ve,64:$Vf,66:$Vg,136:$VJ1,138:$Vz,139:$VA}),{10:[1,476],13:475,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{126:$V91,137:[1,477],171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($VP1,[2,65]),{71:[1,478],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{50:284,51:$V8,57:285,58:$Vc,89:$VL1,161:479},o($Vy2,[2,172]),o($Vy2,[2,173]),o($Vz2,$V62,{167:372,150:373,168:374,169:375,50:379,146:480,51:$V8,89:$Vq,96:$VN1,170:$V72,171:$V82,172:$V92}),o($Vj1,[2,171]),{5:481,10:$V1,141:482,144:$VC},o($Vj1,[2,179]),{90:[1,483],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($VB1,[2,198]),o($VB1,[2,201]),o($VQ1,[2,11]),{13:484,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($VB1,[2,223]),{13:485,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,112:[2,275],121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{112:[2,276],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Vs1,[2,22]),o($Vs1,[2,24]),{6:$V51,9:487,11:$VA2,126:$V91,132:486,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{6:$V51,9:487,11:$VA2,126:$V91,132:489,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{5:490,10:$V1,126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Vp2,[2,341]),o($Vj1,[2,293]),{5:491,10:$V1},o($Vj1,[2,294]),{11:[1,492],232:[1,493],233:424,234:$VW1},o($Vj1,[2,333]),{5:494,10:$V1},o($Vq2,[2,336]),{5:495,10:$V1,14:[1,496]},o($VB2,[2,288],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($VX1,[2,96],{107:497,10:[1,498],21:[1,499]}),{6:$Vs2,114:500,116:$VZ1},{6:[1,501]},o($Vy1,[2,104]),o($Vy1,[2,106]),o($Vy1,[2,107]),{13:502,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{112:[1,503],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{13:504,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vy1,[2,110]),{13:505,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:507,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,118:506,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{106:[1,508]},{22:[1,509]},o($V_1,[2,163]),{6:$V51,9:449,10:$Vr2,22:[1,510]},o($Vs1,[2,27]),o($V$1,[2,32]),o($Vs1,[2,28]),{137:[1,511]},{97:[1,512],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($V22,[2,270]),{12:226,13:358,15:228,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,171:$VE1,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,202:513,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{10:$VC1,12:226,13:358,15:228,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,119:514,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,171:$VE1,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,202:224,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($V52,[2,278]),{6:$V51,9:516,10:$Vr2,11:$VA2,132:515},{90:[1,517],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{90:[1,518],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($VK1,[2,89]),{32:$V7,51:[1,520],61:116,62:$Ve,63:521,64:$Vf,65:117,66:$Vg,89:[1,522],99:519},{5:523,10:$V1},{50:379,51:$V8,89:$Vq,96:$VN1,150:373,167:524,168:374,169:375,170:$V72,171:$V82,172:$V92},{13:525,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vv2,[2,192]),o($Vv2,[2,193]),o($Vv2,[2,194]),o($Vb2,[2,300],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vb2,[2,302],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vc2,[2,323]),{13:526,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:527,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:528,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o([1,6,11,14,22,71,90,97,106,112,135,137,147,200,201,213,220,229,238],[2,257],{218:107,222:108,211:149,217:150,5:529,10:$V1,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($VX1,[2,129],{5:530,10:$V1}),o([1,6,10,11,14,21,22,71,88,90,97,106,111,112,117,126,135,137,144,147,171,180,181,183,196,200,201,212,213,214,219,220,227,228,229,238,239,242,243,246,247,248],[2,243]),{15:268,32:$V7,50:269,51:$V8,52:272,53:$V9,54:$Va,55:273,56:$Vb,57:270,58:$Vc,61:116,62:$Ve,63:271,64:$Vf,65:117,66:$Vg,133:531,134:267,136:$VJ1,138:$Vz,139:$VA},o([6,10,11,14],$VI1,{61:116,65:117,133:266,134:267,15:268,50:269,57:270,63:271,52:272,55:273,191:532,32:$V7,51:$V8,53:$V9,54:$Va,56:$Vb,58:$Vc,62:$Ve,64:$Vf,66:$Vg,136:$VJ1,138:$Vz,139:$VA}),o($Vg2,[2,246]),o($Vg2,[2,140],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),{13:533,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vh2,[2,148]),o($VP1,[2,66]),{21:[1,534],162:535,164:$Vj2,165:$Vk2},{14:$Vu2,22:[1,536]},o($Vj1,[2,177]),o($Vj1,[2,178]),o($Vl2,[2,176]),o([1,6,10,11,14,22,71,90,97,106,112,135,137,147,200,201,212,213,214,219,220,229,238,239],[2,346],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),{112:[2,274],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Vj1,[2,138]),{11:$VC2},o($Vj1,[2,283]),o($Vj1,[2,363]),o($Vp2,[2,340]),o([1,6,10,11,14,22,71,90,97,106,112,126,135,137,147,171,200,201,207,212,213,214,219,220,229,238,239,242,243,246,247,248],[2,295]),o($Vj1,[2,331]),{5:538,10:$V1},{11:[1,539]},o($Vq2,[2,337],{6:[1,540]}),{13:541,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vj1,[2,97]),{10:$VC1,12:226,13:358,15:228,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,119:542,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,171:$VE1,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,202:224,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{10:$VC1,12:226,13:358,15:228,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,119:543,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,171:$VE1,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,202:224,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($VY1,[2,115]),{114:544,116:$VZ1},{90:[1,545],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Vy1,[2,105]),{90:[1,546],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{90:[1,547],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($VY1,[2,118]),o($VY1,[2,119],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vj1,[2,98]),o($Vj1,[2,158]),o($Vt1,[2,266]),o($Vt1,[2,298]),o($Vt1,[2,273]),o($V52,[2,279]),o($Vt2,$V32,{115:548,14:$V42}),o($V52,[2,280]),{11:$VC2,12:226,13:358,15:228,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,138:$Vz,139:$VA,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,170:$VJ,171:$VE1,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,202:513,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($VK1,[2,83]),o($VK1,[2,84]),{97:[1,549]},{97:[2,93]},{97:[2,94]},{13:550,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},o($Vt1,[2,156]),o($Vv2,[2,188]),o($Vv2,[2,195],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o([1,6,10,11,14,22,71,90,97,106,112,135,137,147,200,201,212,213,214,219,220,238],[2,326],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,229:[1,551],239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vw2,[2,328],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,213:[1,552],239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($VU1,[2,327],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vj1,[2,258]),o($Vj1,[2,130]),o($Vg2,[2,247]),o($Vt2,$V32,{115:553,14:$Vf2}),{6:$V51,9:487,11:$VA2,126:$V91,132:554,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},o($Vz2,$V62,{167:372,150:373,168:374,169:375,50:379,146:555,51:$V8,89:$Vq,96:$VN1,170:$V72,171:$V82,172:$V92}),o($Vj1,[2,169]),{162:556,164:$Vj2,165:$Vk2},o($Vj1,[2,282]),{6:$V51,9:487,11:$VA2,132:557},o($Vj1,[2,334]),o($Vq2,[2,338]),o($VB2,[2,289],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,212:$VU,214:$VV,219:$VX,220:$VY,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($VD2,$V32,{115:559,11:[1,558],14:$V42}),o($VD2,$V32,{115:559,14:$V42,22:[1,560]}),o($VY1,[2,116]),o($Vy1,[2,108]),o($Vy1,[2,109]),o($Vy1,[2,112]),{6:$V51,9:516,10:$Vr2,11:$VA2,132:561},o($VK1,[2,90]),{90:[1,562],126:$V91,171:$Va1,211:149,212:$VU,214:$VV,217:150,218:107,219:$VX,220:$VY,222:108,238:$Vb1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1},{13:563,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{13:564,16:155,17:30,18:31,19:$V2,20:$V3,23:$V4,24:$V5,25:36,26:$V6,32:$V7,34:12,35:13,36:14,37:15,38:16,39:17,40:18,41:19,42:20,43:21,44:22,45:23,46:24,47:25,48:26,49:27,50:102,51:$V8,52:97,53:$V9,54:$Va,55:98,56:$Vb,57:96,58:$Vc,59:99,60:$Vd,61:116,62:$Ve,63:79,64:$Vf,65:117,66:$Vg,72:40,73:$Vh,74:$Vi,75:$Vj,76:$Vk,77:$Vl,78:$Vm,79:$Vn,80:$Vo,82:92,83:$Vp,89:$Vq,91:$Vr,96:$Vs,101:46,103:$Vt,109:100,121:70,122:$Vu,123:$Vv,124:$Vw,129:45,130:$Vx,131:38,136:$Vy,140:48,141:49,142:50,143:$VB,144:$VC,148:72,150:77,151:$VD,152:$VE,154:$VF,155:93,156:$VG,157:$VH,158:$VI,166:44,168:76,173:101,175:$VK,176:57,178:39,184:$VL,185:$VM,186:41,187:42,188:$VN,189:47,192:64,193:$VO,194:$VP,197:$VQ,198:$VR,204:$VS,210:$VT,211:60,212:$VU,214:$VV,215:61,216:$VW,217:62,218:107,219:$VX,220:$VY,222:108,230:$VZ,235:58,236:$V_,240:$V$,241:$V01,242:$V11,243:$V21,244:$V31,245:$V41},{6:$V51,9:566,10:$Vx2,11:$VA2,132:565},o($Vg2,[2,141]),{14:$Vu2,22:[1,567]},o($Vj1,[2,170]),o($Vj1,[2,332]),o($Vj1,[2,120]),{6:$V51,9:449,10:$Vr2},o($Vj1,[2,121]),o($V52,[2,281]),{97:[2,95]},o($VU1,[2,329],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($VU1,[2,330],{218:107,222:108,211:149,217:150,126:$V91,171:$Va1,239:$Vc1,242:$Vd1,243:$Ve1,246:$Vf1,247:$Vg1,248:$Vh1}),o($Vg2,[2,248]),{11:$VC2,15:268,32:$V7,50:269,51:$V8,52:272,53:$V9,54:$Va,55:273,56:$Vb,57:270,58:$Vc,61:116,62:$Ve,63:271,64:$Vf,65:117,66:$Vg,133:531,134:267,136:$VJ1,138:$Vz,139:$VA},{162:568,164:$Vj2,165:$Vk2},o($Vj1,[2,168])],
+	defaultActions: {135:[2,3],163:[2,264],321:[2,242],520:[2,93],521:[2,94],562:[2,95]},
 	parseError: function parseError(str, hash) {
 	    if (hash.recoverable) {
 	        this.trace(str);
@@ -5123,23 +4558,28 @@
 	}
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {// TODO Create Expression - make all expressions inherit from these?
+	// TODO Create Expression - make all expressions inherit from these?
+
+	// externs;
 
 	var helpers = __webpack_require__(4);
-	var constants = __webpack_require__(7);
+	var ERR = __webpack_require__(7);
+	var v8 = null; // require 'v8-natives'
 
-	var ImbaParseError = __webpack_require__(8).ImbaParseError;
-	var Token = __webpack_require__(3).Token;
-	var SourceMap = __webpack_require__(12).SourceMap;
+	var T = __webpack_require__(3);
+	var Token = T.Token;
+
+	var SourceMap = __webpack_require__(10).SourceMap;
 
 	var AST = exports.AST = {};
 
 	// Helpers for operators
 	var OP = exports.OP = function(op,l,r) {
 		var o = String(op);
+		// console.log "operator",o
 		switch (o) {
 			case '.':
 				if ((typeof r=='string'||r instanceof String)) { r = new Identifier(r) };
@@ -5169,15 +4609,14 @@
 			
 			case '?.':
 				if (r instanceof VarOrAccess) {
+					// console.log "is var or access"
 					r = r.value();
 				};
-				
 				// depends on the right side - this is wrong
 				return new PropertyAccess(op,l,r);
 				break;
 			
 			case 'instanceof':
-			case 'isa':
 				return new InstanceOf(op,l,r);
 				break;
 			
@@ -5197,7 +4636,6 @@
 			case '++':
 			case '!':
 			case '√':
-			case 'not': // alias
 				return new UnaryOp(op,l,r);
 				break;
 			
@@ -5287,25 +4725,33 @@
 
 	var SPLAT = exports.SPLAT = function(value) {
 		if (value instanceof Assign) {
+			// p "WARN"
 			value.setLeft(new Splat(value.left()));
 			return value;
 		} else {
 			return new Splat(value);
+			// not sure about this
 		};
 	};
 
+	// OP.ASSIGNMENT = [ "=" , "+=" , "-=" , "*=" , "/=" , "%=", "<<=" , ">>=" , ">>>=", "|=" , "^=" , "&=" ]
+	// OP.LOGICAL = [ "||" , "&&" ]
+	// OP.UNARY = [ "++" , "--" ]
+
 	var SEMICOLON_TEST = /;(\s*\/\/.*)?[\n\s\t]*$/;
-	var RESERVED_TEST = /^(default|char|for)$/;
+	var RESERVED_TEST = /^(default|char)$/;
 
 	// captures error from parser
 	function parseError(str,o){
+		// console.log 'parseError',o:token
+		
 		// find nearest token
 		var err;
 		
 		if (o.lexer) {
 			var token = o.lexer.yytext;
 			// console.log o:lexer:pos,token.@loc
-			err = new ImbaParseError({message: str},{
+			err = new ERR.ImbaParseError({message: str},{
 				pos: o.lexer.pos,
 				tokens: o.lexer.tokens,
 				token: o.lexer.yytext,
@@ -5324,7 +4770,7 @@
 	}; exports.parseError = parseError;
 
 	function c__(obj){
-		return (typeof obj == 'string') ? (obj) : (obj.c());
+		return typeof obj == 'string' ? (obj) : (obj.c());
 	};
 
 	function mark__(tok){
@@ -5345,7 +4791,7 @@
 	};
 
 	function blk__(obj){
-		return (obj instanceof Array) ? (Block.wrap(obj)) : (obj);
+		return obj instanceof Array ? (Block.wrap(obj)) : (obj);
 	};
 
 	function sym__(obj){
@@ -5354,12 +4800,12 @@
 	};
 
 	function cary__(ary){
-		return ary.map(function(v) { return (typeof v == 'string') ? (v) : (v.c()); });
+		return ary.map(function(v) { return typeof v == 'string' ? (v) : (v.c()); });
 	};
 
 	function dump__(obj,key){
 		if (obj instanceof Array) {
-			return obj.map(function(v) { return (v && v.dump) ? (v.dump(key)) : (v); });
+			return obj.map(function(v) { return v && v.dump ? (v.dump(key)) : (v); });
 		} else if (obj && obj.dump) {
 			return obj.dump();
 		};
@@ -5376,7 +4822,7 @@
 	function reduce__(res,ary){
 		for (var i = 0, items = Imba.iterable(ary), len = items.length, v; i < len; i++) {
 			v = items[i];
-			(v instanceof Array) ? (reduce__(res,v)) : (res.push(v));
+			v instanceof Array ? (reduce__(res,v)) : (res.push(v));
 		};
 		return;
 	};
@@ -5386,7 +4832,7 @@
 		var out = [];
 		for (var i = 0, items = Imba.iterable(ary), len = items.length, v; i < len; i++) {
 			v = items[i];
-			(v instanceof Array) ? (reduce__(out,v)) : (out.push(v));
+			v instanceof Array ? (reduce__(out,v)) : (out.push(v));
 		};
 		return out;
 	};
@@ -5418,45 +4864,6 @@
 		return str;
 	};
 
-
-	var shortRefCache = [];
-
-	function counterToShortRef(nr){
-		var base = "A".charCodeAt(0);
-		
-		while (shortRefCache.length <= nr){
-			var num = shortRefCache.length + 1;
-			var str = "";
-			
-			while (true){
-				num -= 1;
-				str = String.fromCharCode(base + (num % 26)) + str;
-				num = Math.floor(num / 26);
-				if (num <= 0) { break; };
-			};
-			
-			shortRefCache.push(str);
-		};
-		return shortRefCache[nr];
-	};
-
-	function truthy__(node){
-		
-		if (node instanceof True) {
-			return true;
-		};
-		
-		if (node instanceof False) {
-			return false;
-		};
-		
-		if (node.isTruthy) {
-			return node.isTruthy();
-		};
-		
-		return undefined;
-	};
-
 	function Indentation(a,b){
 		this._open = a;
 		this._close = b;
@@ -5481,7 +4888,17 @@
 		return this._close && this._close._loc || 0;
 	};
 
+	// should rather parse and extract the comments, no?
 	Indentation.prototype.wrap = function (str){
+		// var pre, post
+		
+		// console.log "INDENT {@open and JSON.stringify(@open.@meta)}"
+		// console.log "OUTDENT {@close}"
+		// var ov = @open and @open.@value
+		// if ov and ov:length > 1
+		// 	console.log "value for indent",ov
+		// 	if ov.indexOf('%|%')
+		// 		pre = ov.substr
 		var om = this._open && this._open._meta;
 		var pre = om && om.pre || '';
 		var post = om && om.post || '';
@@ -5538,7 +4955,7 @@
 	Stack.prototype.reset = function (){
 		this._nodes = [];
 		this._scoping = [];
-		this._scopes = [];
+		this._scopes = []; // for analysis - should rename
 		this._stash = new Stash(this);
 		this._loglevel = 3;
 		this._counter = 0;
@@ -5559,41 +4976,6 @@
 	Stack.prototype.option = function (key){
 		return this._options && this._options[key];
 	};
-
-	Stack.prototype.platform = function (){
-		return this._options.target;
-	};
-
-	Stack.prototype.env = function (key){
-		var e;
-		var val = this._options[("ENV_" + key)];
-		if (val != undefined) { return val };
-		
-		if (this.platform() && Imba.indexOf(key,['WEB','NODE','WEBWORKER']) >= 0) {
-			return this.platform().toUpperCase() == key;
-		};
-		
-		// console.log 'lookup env var',key,@options:env
-		
-		if (e = this._options.env) {
-			if (e.hasOwnProperty(key)) {
-				return e[key];
-			} else if (e.hasOwnProperty(key.toLowerCase())) {
-				return e[key.toLowerCase()];
-			};
-		};
-		
-		if (process.env) {
-			val = process.env[key.toUpperCase()];
-			if (val != undefined) {
-				return val;
-			};
-			return null;
-		};
-		
-		return undefined;
-	};
-
 
 	Stack.prototype.addScope = function (scope){
 		this._scopes.push(scope);
@@ -5643,7 +5025,7 @@
 	Stack.prototype.relative = function (node,offset){
 		if(offset === undefined) offset = 0;
 		var idx = this._nodes.indexOf(node);
-		return (idx >= 0) ? (this._nodes[idx + offset]) : (null);
+		return idx >= 0 ? (this._nodes[idx + offset]) : (null);
 	};
 
 	Stack.prototype.scope = function (lvl){
@@ -5698,10 +5080,6 @@
 		return ("Stack(" + this._nodes.join(" -> ") + ")");
 	};
 
-	Stack.prototype.isAnalyzing = function (){
-		return this._analyzing;
-	};
-
 	Stack.prototype.scoping = function (){
 		return this._nodes.filter(function(n) { return n._scope; }).map(function(n) { return n._scope; });
 	};
@@ -5730,8 +5108,19 @@
 		return false;
 	};
 
+	// def dom
+	// 	var name = "ast_" + self:constructor:name.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase
+	// 	# p "try to get the dom-node for this ast-node",name
+	// 	if Imba.TAGS[name]
+	// 		var node = Imba.tag(name)
+	// 		node.bind(self).build
+	// 		return node
+	// 	else
+	// 		return "[{name}]"
+
 	Node.prototype.p = function (){
-		// allow controlling this from CLI
+		
+		// allow controlling this from commandline
 		if (STACK.loglevel() > 0) {
 			console.log.apply(console,arguments);
 		};
@@ -5756,6 +5145,7 @@
 	};
 
 	Node.prototype.set = function (obj){
+		// console.log "setting options {JSON.stringify(obj)}"
 		this._options || (this._options = {});
 		for (var i = 0, keys = Object.keys(obj), l = keys.length; i < l; i++){
 			this._options[keys[i]] = obj[keys[i]];
@@ -5766,6 +5156,7 @@
 	// get and set
 	Node.prototype.option = function (key,val){
 		if (val != undefined) {
+			// console.log "setting option {key} {val}"
 			this._options || (this._options = {});
 			this._options[key] = val;
 			return this;
@@ -5847,11 +5238,13 @@
 		};
 		
 		if (node instanceof Assign) {
+			// p "consume assignment".cyan
 			// node.right = self
 			return OP(node.op(),node.left(),this);
 		} else if (node instanceof Op) {
 			return OP(node.op(),node.left(),this);
 		} else if (node instanceof Return) {
+			// p "consume return".cyan
 			return new Return(this);
 		};
 		return this;
@@ -5913,6 +5306,7 @@
 
 	Node.prototype.addExpression = function (expr){
 		// might be better to nest this up after parsing is done?
+		// p "addExpression {self} <- {expr}"
 		var node = new ExpressionBlock([this]);
 		return node.addExpression(expr);
 	};
@@ -5932,11 +5326,14 @@
 		};
 		
 		// if indent and indent.match(/\:/)
-		this._indentation || (this._indentation = (a && b) ? (new Indentation(a,b)) : (INDENT));
+		this._indentation || (this._indentation = a && b ? (new Indentation(a,b)) : (INDENT));
 		return this;
 	};
 
 	Node.prototype.prebreak = function (term){
+		// in options instead?
+		// console.log "prebreak!!!!"
+		// @prebreak = @prebreak or term
 		if(term === undefined) term = '\n';
 		return this;
 	};
@@ -5995,6 +5392,8 @@
 		s.push(this);
 		if (o && o.expression) this.forceExpression();
 		
+		v8 && console.log(v8.hasFastObjectElements(this));
+		
 		if (o && o.indent) {
 			this._indentation || (this._indentation = INDENT);
 		};
@@ -6023,7 +5422,7 @@
 		if (ch = this._cache) {
 			if (!ch.manual) { out = ("" + (ch.var.c()) + " = " + out) };
 			var par = s.current();
-			if ((par instanceof Access) || (par instanceof Op)) { out = '(' + out + ')' }; // others? #
+			if ((par instanceof Access) || (par instanceof Op)) { out = '(' + out + ')' }; // others? # 
 			ch.cached = true;
 		};
 		return out;
@@ -6050,7 +5449,7 @@
 	};
 
 	ValueNode.prototype.js = function (o){
-		return (typeof this._value == 'string') ? (this._value) : (this._value.c());
+		return typeof this._value == 'string' ? (this._value) : (this._value.c());
 	};
 
 	ValueNode.prototype.visit = function (){
@@ -6086,6 +5485,8 @@
 	Imba.subclass(Comment,Meta);
 	exports.Comment = Comment; // export class 
 	Comment.prototype.visit = function (){
+		// stack.stash.add(self)
+		
 		var block, next;
 		if (block = this.up()) {
 			var idx = block.indexOf(this) + 1;
@@ -6093,6 +5494,8 @@
 			if (next = block.index(idx)) {
 				next._desc = this;
 			};
+			
+			// console.log "Next item after comment is {block.index(idx)}"
 		};
 		
 		return this;
@@ -6108,6 +5511,7 @@
 
 	Comment.prototype.c = function (o){
 		var v = this._value._value;
+		// p @value.type
 		if (o && o.expression || v.match(/\n/) || this._value.type() == 'HERECOMMENT') { // multiline?
 			return ("/*" + v + "*/");
 		} else {
@@ -6126,12 +5530,14 @@
 		return this;
 	};
 
-	Terminator.prototype.loc = function (){
-		return [this._value._loc,this._value._loc + this._value._value.length];
-	};
-
 	Terminator.prototype.c = function (){
+		// TODO this can contain several newlines
+		// for sourcemaps it would be nice to parse this
+		// and fix it up mark__(@value) + 
 		return this._value.c();
+		// var v = value.replace(/\\n/g,'\n')
+		// v # .split()
+		// v.split("\n").map(|v| v ? " // {v}" : v).join("\n")
 	};
 
 	function Newline(v){
@@ -6182,7 +5588,7 @@
 
 	ListNode.prototype.concat = function (other){
 		// need to store indented content as well?
-		this._nodes = this.nodes().concat((other instanceof Array) ? (other) : (other.nodes()));
+		this._nodes = this.nodes().concat(other instanceof Array ? (other) : (other.nodes()));
 		return this;
 	};
 
@@ -6218,10 +5624,12 @@
 		return new this.constructor(this._nodes.slice(a,b));
 	};
 
+
+
 	ListNode.prototype.break = function (br,pre){
 		if(pre === undefined) pre = false;
 		if (typeof br == 'string') { br = new Terminator(br) };
-		(pre) ? (this.unshift(br)) : (this.push(br));
+		pre ? (this.unshift(br)) : (this.push(br));
 		return this;
 	};
 
@@ -6274,6 +5682,7 @@
 		var idx = this._nodes.indexOf(original);
 		if (idx >= 0) {
 			if (replacement instanceof Array) {
+				// p "replaceing with array of items"
 				this._nodes.splice.apply(this._nodes,[].concat([idx,1], [].slice.call(replacement)));
 			} else {
 				this._nodes[idx] = replacement;
@@ -6335,7 +5744,7 @@
 			node = ary[i];
 			if (node && !node.isExpressable()) { return false };
 		};
-		
+		// return no unless nodes.every(|v| v.isExpressable )
 		return true;
 	};
 
@@ -6360,7 +5769,7 @@
 		
 		for (var j = 0, ary = Imba.iterable(nodes), len = ary.length, arg; j < len; j++) {
 			arg = ary[j];
-			var part = (typeof arg == 'string') ? (arg) : (((arg) ? (arg.c({expression: express})) : ('')));
+			var part = typeof arg == 'string' ? (arg) : ((arg ? (arg.c({expression: express})) : ('')));
 			str += part;
 			if (part && (!express || arg != last) && !(arg instanceof Meta)) { str += delim };
 		};
@@ -6374,7 +5783,7 @@
 			return this;
 		};
 		
-		this._indentation || (this._indentation = (a && b) ? (new Indentation(a,b)) : (INDENT));
+		this._indentation || (this._indentation = a && b ? (new Indentation(a,b)) : (INDENT));
 		return this;
 	};
 
@@ -6383,6 +5792,20 @@
 
 	Imba.subclass(ArgList,ListNode);
 	exports.ArgList = ArgList; // export class 
+
+
+	//	def indented a,b
+	//		if a isa Indentation
+	//			@indentation = a
+	//			return self
+	//
+	//		@indentation ||= a and b ? Indentation.new(a,b) : INDENT
+	//		self
+
+	// def hasSplat
+	// 	@nodes.some do |v| v isa Splat
+	// def delimiter
+	// 	","
 
 
 	function AssignList(){ return ArgList.apply(this,arguments) };
@@ -6403,6 +5826,7 @@
 
 	function Block(list){
 		this.setup();
+		// @nodes = compact__(flatten__(list)) or []
 		this._nodes = list || [];
 		this._head = null;
 		this._indentation = null;
@@ -6417,7 +5841,7 @@
 		if (!((ary instanceof Array))) {
 			throw new SyntaxError("what");
 		};
-		return (ary.length == 1 && (ary[0] instanceof Block)) ? (ary[0]) : (new Block(ary));
+		return ary.length == 1 && (ary[0] instanceof Block) ? (ary[0]) : (new Block(ary));
 	};
 
 	Block.prototype.visit = function (){
@@ -6434,10 +5858,15 @@
 		return this;
 	};
 
+	// def indented a,b
+	// 	@indentation ||= a and b ? Indentation.new(a,b) : INDENT
+	// 	self
+
 	Block.prototype.loc = function (){
 		// rather indents, no?
 		var opt, ind;
 		if (opt = this.option('ends')) {
+			// p "location is",opt
 			var a = opt[0].loc();
 			var b = opt[1].loc();
 			
@@ -6448,10 +5877,7 @@
 		} else if (ind = this._indentation) {
 			return [ind.aloc(),ind.bloc()];
 		} else {
-			// first node
-			var a1 = this._nodes[0];
-			var b1 = this._nodes[this._nodes.length - 1];
-			return [a1 && a1.loc()[0] || 0,b1 && b1.loc()[1] || 0];
+			return [0,0];
 		};
 	};
 
@@ -6461,6 +5887,7 @@
 		for (var i = 0, items = Imba.iterable(this.nodes()), len = items.length, node; i < len; i++) {
 			node = items[i];
 			if (node instanceof Block) {
+				// p "unwrapping inner block"
 				ary.push.apply(ary,node.unwrap());
 			} else {
 				ary.push(node);
@@ -6490,12 +5917,13 @@
 
 	// Not sure if we should create a separate block?
 	Block.prototype.analyze = function (o){
+		// p "analyzing block!!!",o
 		if(o === undefined) o = {};
 		return this;
 	};
 
 	Block.prototype.cpart = function (node){
-		var out = (typeof node == 'string') ? (node) : (((node) ? (node.c()) : ("")));
+		var out = typeof node == 'string' ? (node) : ((node ? (node.c()) : ("")));
 		if (out == null || out == undefined || out == "") { return "" };
 		
 		if (out instanceof Array) {
@@ -6532,8 +5960,8 @@
 		// now add the head items as well
 		if (this._head && this._head.length > 0) {
 			var prefix = "";
-			for (var j = 0, items = Imba.iterable(this._head), len_ = items.length; j < len_; j++) {
-				var hv = this.cpart(items[j]);
+			for (var i = 0, ary = Imba.iterable(this._head), len = ary.length; i < len; i++) {
+				var hv = this.cpart(ary[i]);
 				if (hv) { prefix += hv + '\n' };
 			};
 			str = prefix + str;
@@ -6568,13 +5996,13 @@
 			});
 			
 			var real = this.expressions();
-			// console.log 'Block.consume TagTree',node.@loop
 			// FIXME should not include terminators and comments when counting
 			// should only wrap the content in array (returning all parts)
 			// for if/else blocks -- not loops
 			
 			// we need to compare the real length
 			if (!node._loop && real.length > 1) {
+				// p "lengths",@nodes:length,expressions:length
 				var nr = node.blocks().push(this);
 				var arr = new Arr(new ArgList(this._nodes));
 				arr.indented(this._indentation);
@@ -6590,34 +6018,22 @@
 			
 			
 			return this;
-		} else if (node instanceof TagPushAssign) {
-			// console.log 'TagPushAssign'
-			var real1 = this.expressions();
-			
-			this._nodes = this._nodes.map(function(child) {
-				if (Imba.indexOf(child,real1) >= 0 && !(child instanceof Assign)) {
-					// console.log "{child}"
-					return child.consume(node);
-				} else {
-					return child;
-				};
-			});
-			
-			return this;
 		};
 		
 		// can also return super if it is expressable, but should we really?
 		if (before = this.last()) {
 			var after = before.consume(node);
 			if (after != before) {
+				// p "replace node in block {before} -> {after}"
 				if (after instanceof Block) {
+					// p "replaced with block -- should basically add it instead?"
 					after = after.nodes();
 				};
 				
 				this.replace(before,after);
 			};
 		};
-		
+		// really?
 		return this;
 	};
 
@@ -6646,14 +6062,16 @@
 		} else if (first instanceof VarReference) {
 			this._type = first._type;
 		};
+		// p "here {list[0]} - {@type}"
 		// @type = list[0] and list[0].type
 		return list;
 	};
 
 	// TODO All these inner items should rather be straight up literals
 	// or basic localvars - without any care whatsoever about adding var to the
-	// beginning etc.
+	// beginning etc. 
 	VarBlock.prototype.addExpression = function (expr){
+		// p "VarBlock.addExpression {self} <- {expr}"
 		
 		if (expr instanceof Assign) {
 			// make sure the left-side is a var-reference
@@ -6672,6 +6090,8 @@
 			// this is really a VarReference
 			this.push(new VarReference(expr.value(),this._type));
 		} else if ((expr instanceof Splat) && (expr.node() instanceof VarOrAccess)) {
+			// p "is a splat - only allowed in tuple-assignment"
+			// what?
 			expr.setValue(new VarReference(expr.node().value(),this._type));
 			this.push(expr);
 		} else {
@@ -6689,6 +6109,9 @@
 	};
 
 	VarBlock.prototype.js = function (o){
+		// p "VarBlock"
+		// for n in @nodes
+		// 	p "VarBlock child {n}"
 		var code = compact__(flatten__(cary__(this.nodes())));
 		code = code.filter(function(n) { return n != null && n != undefined && n != EMPTY; });
 		var out = code.join(",");
@@ -6718,7 +6141,7 @@
 	exports.Parens = Parens; // export class 
 	Parens.prototype.load = function (value){
 		this._noparen = false;
-		return ((value instanceof Block) && value.count() == 1) ? (value.first()) : (value);
+		return (value instanceof Block) && value.count() == 1 ? (value.first()) : (value);
 	};
 
 	Parens.prototype.isString = function (){
@@ -6733,13 +6156,14 @@
 		var str = null;
 		
 		if (v instanceof Func) { this._noparen = true };
-		
+		// p "compile parens {v} {v isa Block and v.count}"
+		// p "Parens up {par} {o.isExpression}"
 		if (par instanceof Block) {
 			// is it worth it?
 			if (!o.isExpression()) { this._noparen = true };
-			str = (v instanceof Array) ? (cary__(v)) : (v.c({expression: o.isExpression()}));
+			str = v instanceof Array ? (cary__(v)) : (v.c({expression: o.isExpression()}));
 		} else {
-			str = (v instanceof Array) ? (cary__(v)) : (v.c({expression: true}));
+			str = v instanceof Array ? (cary__(v)) : (v.c({expression: true}));
 		};
 		
 		// check if we really need parens here?
@@ -6783,8 +6207,8 @@
 
 	Imba.subclass(ExpressionBlock,ListNode);
 	exports.ExpressionBlock = ExpressionBlock; // export class 
-	ExpressionBlock.prototype.c = function (o){
-		return this.map(function(item) { return item.c(o); }).join(",");
+	ExpressionBlock.prototype.c = function (){
+		return this.map(function(item) { return item.c(); }).join(",");
 	};
 
 	ExpressionBlock.prototype.consume = function (node){
@@ -6794,6 +6218,7 @@
 	ExpressionBlock.prototype.addExpression = function (expr){
 		// Need to take care of the splat here to.. hazzle
 		if (expr.node() instanceof Assign) {
+			// p "is assignment!"
 			this.push(expr.left());
 			// make this into a tuple instead
 			// possibly fix this as well?!?
@@ -6810,7 +6235,10 @@
 
 	function Return(v){
 		this._traversed = false;
-		this._value = ((v instanceof ArgList) && v.count() == 1) ? (v.last()) : (v);
+		this._value = (v instanceof ArgList) && v.count() == 1 ? (v.last()) : (v);
+		// @prebreak = v and v.@prebreak
+		// console.log "return?!? {v}",@prebreak
+		// if v isa ArgList and v.count == 1
 		return this;
 	};
 
@@ -6837,6 +6265,7 @@
 
 	Return.prototype.c = function (){
 		if (!(this.value()) || this.value().isExpressable()) { return Return.__super__.c.apply(this,arguments) };
+		// p "return must cascade into value".red
 		return this.value().consume(this).c();
 	};
 
@@ -6873,7 +6302,7 @@
 
 	function LoopFlowStatement(lit,expr){
 		this.setLiteral(lit);
-		this.setExpression(expr);
+		this.setExpression(expr); // && ArgList.new(expr) # really?
 	};
 
 	Imba.subclass(LoopFlowStatement,Statement);
@@ -6888,6 +6317,7 @@
 	};
 
 	LoopFlowStatement.prototype.consume = function (node){
+		// p "break/continue should consume?!"
 		return this;
 	};
 
@@ -6895,8 +6325,9 @@
 		if (!(this.expression())) { return LoopFlowStatement.__super__.c.apply(this,arguments) };
 		// get up to the outer loop
 		var _loop = STACK.up(Loop);
+		// p "found loop?",_loop
 		
-		// need to fix the grammar for this. Right now it
+		// need to fix the grammar for this. Right now it 
 		// is like a fake call, but should only care about the first argument
 		var expr = this.expression();
 		
@@ -6942,7 +6373,7 @@
 	function Param(name,defaults,typ){
 		// could have introduced bugs by moving back to identifier here
 		this._traversed = false;
-		this._name = name;
+		this._name = name; // .value # this is an identifier(!)
 		this._defaults = defaults;
 		this._typ = typ;
 		this._variable = null;
@@ -6961,8 +6392,10 @@
 	Param.prototype.variable = function(v){ return this._variable; }
 	Param.prototype.setVariable = function(v){ this._variable = v; return this; };
 
+	// what about object-params?
+
 	Param.prototype.varname = function (){
-		return (this._variable) ? (this._variable.c()) : (this.name());
+		return this._variable ? (this._variable.c()) : (this.name());
 	};
 
 	Param.prototype.js = function (o){
@@ -6984,8 +6417,7 @@
 			// change type here?
 			if (this._name._value) { this._name._value._type = "PARAMVAR" };
 			this._name.references(this._variable);
-			this._variable.addReference(this._name);
-			// console.log @name.c, "got here!! {@name:constructor}"
+			// console.log "got here!! {@name:constructor}"
 			// @name.@token.@variable = @variable if @name.@token
 		};
 		
@@ -6998,6 +6430,7 @@
 
 	Param.prototype.isExpressable = function (){
 		return !(this.defaults()) || this.defaults().isExpressable();
+		// p "visiting param!!!"
 	};
 
 	Param.prototype.dump = function (){
@@ -7071,7 +6504,7 @@
 
 	NamedParams.prototype.load = function (list){
 		var load = function(k) { return new NamedParam(k.key(),k.value()); };
-		return (list instanceof Obj) ? (list.value().map(load)) : (list);
+		return list instanceof Obj ? (list.value().map(load)) : (list);
 	};
 
 	NamedParams.prototype.visit = function (){
@@ -7117,6 +6550,11 @@
 	IndexedParam.prototype.setSubindex = function(v){ this._subindex = v; return this; };
 
 	IndexedParam.prototype.visit = function (){
+		// p "VISIT PARAM {name}!"
+		// ary.[-1] # possible
+		// ary.(-1) # possible
+		// str(/ok/,-1)
+		// scope.register(@name,self)
 		// BUG The defaults should probably be looked up like vars
 		var variable_, v_;
 		(variable_ = this.variable()) || ((this.setVariable(v_ = this.scope__().register(this.name(),this)),v_));
@@ -7151,6 +6589,7 @@
 	ArrayParams.prototype.load = function (list){
 		var self = this;
 		if (!((list instanceof Arr))) { return null };
+		// p "loading arrayparams"
 		// try the basic first
 		if (!list.splat()) {
 			return list.value().map(function(v,i) {
@@ -7158,6 +6597,7 @@
 				// should really not parse any array at all(!)
 				var name = v;
 				if (v instanceof VarOrAccess) {
+					// p "varoraccess {v.value}"
 					// FIX?
 					name = v.value().value();
 					// this is accepted
@@ -7176,6 +6616,7 @@
 	};
 
 	ArrayParams.prototype.head = function (ast){
+		// "arrayparams"
 		return this;
 	};
 
@@ -7355,7 +6796,7 @@
 				ast.push(("var " + (namedvar.c()) + " = " + last + "&&" + isObj(last) + " ? " + pop + " : \{\}"));
 			};
 			
-			for (var i1 = 0, len__ = opt.length, par1; i1 < len__; i1++) {
+			for (var i1 = 0, len_ = opt.length, par1; i1 < len_; i1++) {
 				par1 = opt[i1];
 				ast.push(("if(" + len + " < " + (par1.index() + 1) + ") " + (par1.name().c()) + " = " + (par1.defaults().c())));
 			};
@@ -7385,7 +6826,7 @@
 			// return ast.join(";\n") + ";"
 			// return "if({opt[0].name.c} instanceof Function) {blk.c} = {opt[0].c};"
 		} else if (opt.length > 0) {
-			for (var i2 = 0, length_ = opt.length, par2; i2 < length_; i2++) {
+			for (var i2 = 0, len_ = opt.length, par2; i2 < len_; i2++) {
 				par2 = opt[i2];
 				ast.push(("if(" + (par2.name().c()) + " === undefined) " + (par2.name().c()) + " = " + (par2.defaults().c())));
 			};
@@ -7394,7 +6835,7 @@
 		// now set stuff if named params(!)
 		
 		if (named) {
-			for (var i3 = 0, ary = Imba.iterable(named.nodes()), $1 = ary.length, k; i3 < $1; i3++) {
+			for (var i3 = 0, ary = Imba.iterable(named.nodes()), len_ = ary.length, k; i3 < len_; i3++) {
 				// console.log "named var {k.c}"
 				k = ary[i3];
 				op = OP('.',namedvar,k.c()).c();
@@ -7403,8 +6844,9 @@
 		};
 		
 		if (arys.length) {
-			for (var i4 = 0, $1 = arys.length; i4 < $1; i4++) {
+			for (var i4 = 0, len_ = arys.length; i4 < len_; i4++) {
 				// create tuples
+				// p "adding arrayparams"
 				arys[i4].head(o,ast,this);
 				// ast.push v.c
 			};
@@ -7413,7 +6855,7 @@
 		
 		
 		// if opt:length == 0
-		return (ast.length > 0) ? ((ast.join(";\n") + ";")) : (EMPTY);
+		return ast.length > 0 ? ((ast.join(";\n") + ";")) : (EMPTY);
 	};
 
 
@@ -7430,9 +6872,21 @@
 		if(pos === undefined) pos = -1;
 		var vardec = new VariableDeclarator(name,init);
 		if (name instanceof Variable) { (vardec.setVariable(name),name) };
-		(pos == 0) ? (this.unshift(vardec)) : (this.push(vardec));
+		pos == 0 ? (this.unshift(vardec)) : (this.push(vardec));
 		return vardec;
+		
+		// TODO (target) << (node) rewrites to a caching push which returns node
 	};
+
+	// def remove item
+	// 	if item isa Variable
+	// 		map do |v,i|
+	// 			if v.variable == item
+	// 				p "found variable to remove"
+	// 				super.remove(v)
+	// 	else
+	// 		super.remove(item)
+	// 	self
 
 	VariableDeclaration.prototype.load = function (list){
 		// temporary solution!!!
@@ -7447,6 +6901,7 @@
 		if (this.count() == 0) { return EMPTY };
 		
 		if (this.count() == 1 && !(this.isExpressable())) {
+			// p "SHOULD ALTER VARDEC!!!".cyan
 			this.first().variable().autodeclare();
 			var node = this.first().assignment();
 			return node.c();
@@ -7454,7 +6909,8 @@
 		
 		// FIX PERFORMANCE
 		var out = compact__(cary__(this.nodes())).join(", ");
-		return (out) ? (("var " + out)) : ("");
+		return out ? (("var " + out)) : ("");
+		// "var " + compact__(cary__(nodes)).join(", ") + ""
 	};
 
 	function VariableDeclarator(){ return Param.apply(this,arguments) };
@@ -7510,6 +6966,7 @@
 	VarName.prototype.setSplat = function(v){ this._splat = v; return this; };
 
 	VarName.prototype.visit = function (){
+		// p "visiting varname(!)", value.c
 		// should we not lookup instead?
 		// FIXME p "register value {value.c}"
 		var variable_, v_;
@@ -7561,7 +7018,7 @@
 	};
 
 	VarList.prototype.js = function (o){
-		// for the regular items
+		// for the regular items 
 		var pairs = [];
 		var ll = this.left().length;
 		var rl = this.right().length;
@@ -7590,10 +7047,10 @@
 				pairs.push(OP('=',l,v));
 			};
 		} else {
-			for (var i1 = 0, items = Imba.iterable(this.left()), len_ = items.length, l1; i1 < len_; i1++) {
-				l1 = items[i1];
+			for (var i1 = 0, ary = Imba.iterable(this.left()), len = ary.length, l1; i1 < len; i1++) {
+				l1 = ary[i1];
 				r = this.right()[i1];
-				pairs.push((r) ? (OP('=',l1.variable().accessor(),r)) : (l1));
+				pairs.push(r ? (OP('=',l1.variable().accessor(),r)) : (l1));
 			};
 		};
 		
@@ -7629,6 +7086,7 @@
 
 	// Rename to Program?
 	function Root(body,opts){
+		// p "create root!"
 		this._traversed = false;
 		this._body = blk__(body);
 		this._scope = new RootScope(this,null);
@@ -7637,10 +7095,6 @@
 
 	Imba.subclass(Root,Code);
 	exports.Root = Root; // export class 
-	Root.prototype.loc = function (){
-		return this._body.loc();
-	};
-
 	Root.prototype.visit = function (){
 		ROOT = STACK.ROOT = this._scope;
 		this.scope().visit();
@@ -7683,6 +7137,7 @@
 		// find and replace shebangs
 		var shebangs = [];
 		out = out.replace(/^[ \t]*\/\/(\!.+)$/mg,function(m,shebang) {
+			// p "found shebang {shebang}"
 			shebang = shebang.replace(/\bimba\b/g,'node');
 			shebangs.push(("#" + shebang + "\n"));
 			return "";
@@ -7694,18 +7149,19 @@
 	};
 
 
-	Root.prototype.analyze = function (o){
-		// loglevel: 0, entities: no, scopes: yes
-		if(o === undefined) o = {};
-		STACK.setLoglevel(o.loglevel || 0);
+	Root.prototype.analyze = function (pars){
+		if(!pars||pars.constructor !== Object) pars = {};
+		var loglevel = pars.loglevel !== undefined ? pars.loglevel : 0;
+		var entities = pars.entities !== undefined ? pars.entities : false;
+		var scopes = pars.scopes !== undefined ? pars.scopes : true;
+		STACK.setLoglevel(loglevel);
 		STACK._analyzing = true;
 		ROOT = STACK.ROOT = this._scope;
-		OPTS = STACK._options = {
-			target: o.target,
-			loglevel: o.loglevel || 0,
+		
+		OPTS = {
 			analysis: {
-				entities: (o.entities || false),
-				scopes: ((o.scopes == null) ? (o.scopes = true) : (o.scopes))
+				entities: entities,
+				scopes: scopes
 			}
 		};
 		
@@ -7777,7 +7233,7 @@
 	ClassDeclaration.prototype.js = function (o){
 		this.scope().virtualize(); // is this always needed?
 		this.scope().context().setValue(this.name());
-		this.scope().context().setReference(this.name());
+		
 		// should probably also warn about stuff etc
 		if (this.option('extension')) {
 			return this.body().c();
@@ -7785,7 +7241,7 @@
 		
 		var head = [];
 		var o = this._options || {};
-		var cname = (this.name() instanceof Access) ? (this.name().right()) : (this.name());
+		var cname = this.name() instanceof Access ? (this.name().right()) : (this.name());
 		var namespaced = this.name() != cname;
 		var initor = null;
 		var sup = this.superclass();
@@ -7808,10 +7264,7 @@
 		// compile the cname
 		if (typeof cname != 'string') { cname = cname.c() };
 		
-		var cpath = (typeof this.name() == 'string') ? (this.name()) : (this.name().c());
-		
-		this._cname = cname;
-		this._cpath = cpath;
+		var cpath = typeof this.name() == 'string' ? (this.name()) : (this.name().c());
 		
 		if (!initor) {
 			if (sup) {
@@ -7843,6 +7296,8 @@
 			true;
 		};
 		
+		
+		
 		if (sup) {
 			// console.log "deal with superclass!"
 			// head.push("// extending the superclass\nimba$class({name.c},{sup.c});\n\n")
@@ -7855,7 +7310,7 @@
 		};
 		
 		if (o.export && !namespaced) {
-			head.push(("exports." + ((o.default) ? ('default') : (cname)) + " = " + cpath + "; // export class \n"))
+			head.push(("exports." + cname + " = " + cpath + "; // export class \n"))
 		};
 		
 		// FIXME
@@ -7880,6 +7335,8 @@
 
 
 	function TagDeclaration(name,superclass,body){
+		// what about the namespace?
+		// @name = TagTypeRef.new(name)
 		this._traversed = false;
 		this._name = name;
 		this._superclass = superclass;
@@ -7904,18 +7361,10 @@
 		return {
 			type: 'tag',
 			namepath: this.namepath(),
-			inherits: (this.superclass()) ? (("<" + (this.superclass().name()) + ">")) : (null),
+			inherits: this.superclass() ? (("<" + (this.superclass().name()) + ">")) : (null),
 			loc: this.loc(),
 			desc: this._desc
 		};
-	};
-
-	TagDeclaration.prototype.consume = function (node){
-		if (node instanceof Return) {
-			this.option('return',true);
-			return this;
-		};
-		return TagDeclaration.__super__.consume.apply(this,arguments);
 	};
 
 	TagDeclaration.prototype.visit = function (){
@@ -7928,12 +7377,13 @@
 		for (var i = 0, ary = Imba.iterable(STACK.scopes()), len = ary.length, scope; i < len; i++) {
 			scope = ary[i];
 			if (i > 0 && (scope instanceof TagScope)) {
+				// register inside here?
 				scope.node().option('hasLocalTags',true);
 				this.option('parent',scope.node());
 				break;
+				// console.log "tag is local!!!"
 			};
 		};
-		
 		// replace with some advanced lookup?
 		this.scope().visit();
 		return this.body().traverse();
@@ -7945,7 +7395,7 @@
 
 	TagDeclaration.prototype.tagspace = function (){
 		var ctx = this.scope().closure().tagContextPath();
-		return (this.name().ns()) ? (("" + ctx + ".ns(" + helpers.singlequote(this.name().ns()) + ")")) : (ctx);
+		return this.name().ns() ? (("" + ctx + ".ns(" + helpers.singlequote(this.name().ns()) + ")")) : (ctx);
 	};
 
 	TagDeclaration.prototype.js = function (o){
@@ -7953,19 +7403,14 @@
 		
 		var ns = this.name().ns();
 		var mark = mark__(this.option('keyword'));
-		var params = [];
 		
-		params.push(helpers.singlequote(this.name().name()));
+		var params = [helpers.singlequote(this.name().name())];
 		var cbody = this.body().c();
+		// var outbody = body.count ? ", function({@ctx.c})\{{cbody}\}" : ''
 		
 		if (this.superclass()) {
 			// WARN what if the superclass has a namespace?
-			// what if it is a regular class?
-			var supname = this.superclass().name();
-			if (!supname[0].match(/[A-Z]/)) {
-				supname = helpers.singlequote(supname);
-			};
-			params.push(supname);
+			params.push(helpers.singlequote(this.superclass().name()));
 		};
 		
 		if (this.body().count()) {
@@ -7976,38 +7421,22 @@
 			};
 		};
 		
-		var meth = (this.option('extension')) ? ('extendTag') : ('defineTag');
+		var meth = this.option('extension') ? ('extendTag') : ('defineTag');
+		// return "{mark}{tagspace}.extendTag('{name.name}'{outbody})"
 		
-		var js = ("" + mark + this.tagspace() + "." + meth + "(" + params.join(', ') + ")");
+		// var sup = superclass and "," + helpers.singlequote(superclass.func) or ""
 		
+		// var out = if name.id
+		//	"{mark}{tagspace}.defineSingleton('{name.name}'{sup}{outbody})"
+		// else
 		
-		if (this.option('isClass')) {
-			var cname = this.name().name();
-			// declare variable
-			js = ("var " + cname + " = " + js);
-			// only if it is not namespaced
-			// if o:global and !namespaced # option(:global)
-			//	js.push("global.{cname} = {cpath}; // global class \n")
-			if (this.option('export')) {
-				js = ("" + js + "\nexports." + ((this.option('default')) ? ('default') : (cname)) + " = " + cname + ";");
-			};
-			
-			if (this.option('return')) {
-				js += ("\nreturn " + cname + ";");
-			};
-		} else {
-			if (this.option('return')) {
-				js = "return " + js;
-			};
-		};
-		
-		
-		return js;
+		return ("" + mark + this.tagspace() + "." + meth + "(" + params.join(', ') + ")");
 		
 		// return out
 	};
 
 	function Func(params,body,name,target,o){
+		// p "INIT Function!!",params,body,name
 		this._options = o;
 		var typ = this.scopetype();
 		this._traversed = false;
@@ -8040,10 +7469,6 @@
 		return FunctionScope;
 	};
 
-	Func.prototype.nonlocals = function (){
-		return this._scope._nonlocals;
-	};
-
 	Func.prototype.visit = function (){
 		this.scope().visit();
 		this._context = this.scope().parent();
@@ -8056,6 +7481,7 @@
 		if (!this.option('noreturn')) { this.body().consume(new ImplicitReturn()) };
 		var ind = this.body()._indentation;
 		// var s = ind and ind.@open
+		// p "indent function? {body.@indentation} {s} {s:generated} {body.count}"
 		if (ind && ind.isGenerated()) { this.body()._indentation = null };
 		var code = this.scope().c({indent: (!ind || !ind.isGenerated()),braces: true});
 		
@@ -8065,8 +7491,8 @@
 		// FIXME creating the function-name this way is prone to create naming-collisions
 		// will need to wrap the value in a FunctionName which takes care of looking up scope
 		// and possibly dealing with it
-		var name = (typeof this._name == 'string') ? (this._name) : (this._name.c());
-		name = (name) ? (' ' + name.replace(/\./g,'_')) : ('');
+		var name = typeof this._name == 'string' ? (this._name) : (this._name.c());
+		name = name ? (' ' + name.replace(/\./g,'_')) : ('');
 		var out = ("function" + name + "(" + (this.params().c()) + ") ") + code;
 		if (this.option('eval')) { out = ("(" + out + ")()") };
 		return out;
@@ -8075,9 +7501,8 @@
 	Func.prototype.shouldParenthesize = function (par){
 		if(par === undefined) par = this.up();
 		return (par instanceof Call) && par.callee() == this;
-		// if up as a call? Only if we are
+		// if up as a call? Only if we are 
 	};
-
 
 	function Lambda(){ return Func.apply(this,arguments) };
 
@@ -8085,18 +7510,17 @@
 	exports.Lambda = Lambda; // export class 
 	Lambda.prototype.scopetype = function (){
 		var k = this.option('keyword');
-		return ((k && k._value == 'ƒ')) ? ((MethodScope)) : ((LambdaScope));
+		return (k && k._value == 'ƒ') ? ((MethodScope)) : ((LambdaScope));
 	};
-
 
 	function TagFragmentFunc(){ return Func.apply(this,arguments) };
 
 	Imba.subclass(TagFragmentFunc,Func);
 	exports.TagFragmentFunc = TagFragmentFunc; // export class 
-	TagFragmentFunc.prototype.scopetype = function (){
-		// caching still needs to be local no matter what?
-		return (this.option('closed')) ? ((MethodScope)) : ((LambdaScope));
-	};
+
+
+	// MethodDeclaration
+	// Create a shared body?
 
 	function MethodDeclaration(){ return Func.apply(this,arguments) };
 
@@ -8147,7 +7571,7 @@
 		if (this._namepath) { return this._namepath };
 		
 		var name = String(this.name());
-		var sep = ((this.option('static')) ? ('.') : ('#'));
+		var sep = (this.option('static') ? ('.') : ('#'));
 		if (this.target()) {
 			return this._namepath = this._target.namepath() + sep + name;
 		} else {
@@ -8169,6 +7593,7 @@
 		if (this.option('greedy')) {
 			this.warn("deprecated");
 			// set(greedy: true)
+			// p "BODY EXPRESSIONS!! This is a fragment"
 			var tree = new TagTree();
 			this._body = this.body().consume(tree);
 			// body.nodes = [Arr.new(body.nodes)]
@@ -8213,7 +7638,7 @@
 	};
 
 	MethodDeclaration.prototype.supername = function (){
-		return (this.type() == 'constructor') ? (this.type()) : (this.name());
+		return this.type() == 'constructor' ? (this.type()) : (this.name());
 	};
 
 
@@ -8236,7 +7661,7 @@
 		var code = this.scope().c({indent: true,braces: true});
 		
 		// same for Func -- should generalize
-		var name = (typeof this._name == 'string') ? (this._name) : (this._name.c());
+		var name = typeof this._name == 'string' ? (this._name) : (this._name.c());
 		name = name.replace(/\./g,'_');
 		
 		// var name = self.name.c.replace(/\./g,'_') # WHAT?
@@ -8255,7 +7680,7 @@
 		var ctx = this.context();
 		var out = "";
 		var mark = mark__(this.option('def'));
-		// if ctx
+		// if ctx 
 		
 		var fname = sym__(this.name());
 		// console.log "symbolize {self.name} -- {fname}"
@@ -8286,7 +7711,7 @@
 		};
 		
 		if (this.option('export')) {
-			out = ("" + out + "; exports." + ((this.option('default')) ? ('default') : (fname)) + " = " + fname + ";");
+			out = ("" + out + "; exports." + fname + " = " + fname + ";");
 			if (this.option('return')) { out = ("" + out + "; return " + fname + ";") };
 		} else if (this.option('return')) {
 			out = ("return " + out);
@@ -8312,9 +7737,9 @@
 
 	Imba.subclass(PropertyDeclaration,Node);
 	exports.PropertyDeclaration = PropertyDeclaration; // export class 
-	var propTemplate = '${headers}\n${path}${getterKey} = function(v){ return ${get}; }\n${path}.${setter} = function(v){ ${set}; return this; }\n${init}';
+	var propTemplate = '${headers}\n${path}.${getter} = function(v){ return ${get}; }\n${path}.${setter} = function(v){ ${set}; return this; }\n${init}';
 
-	var propWatchTemplate = '${headers}\n${path}${getterKey} = function(v){ return ${get}; }\n${path}.${setter} = function(v){\n	var a = this.${getter}();\n	if(v != a) { ${set}; }\n	if(v != a) { ${ondirty} }\n	return this;\n}\n${init}';
+	var propWatchTemplate = '${headers}\n${path}.${getter} = function(v){ return ${get}; }\n${path}.${setter} = function(v){\n	var a = this.${getter}();\n	if(v != a) { ${set}; }\n	if(v != a) { ${ondirty} }\n	return this;\n}\n${init}';
 
 	PropertyDeclaration.prototype.name = function(v){ return this._name; }
 	PropertyDeclaration.prototype.setName = function(v){ this._name = v; return this; };
@@ -8343,7 +7768,6 @@
 		var js = {
 			key: key,
 			getter: key,
-			getterKey: (RESERVED_TEST.test(key)) ? (("['" + key + "']")) : (("." + key)),
 			setter: sym__(("set-" + key)),
 			scope: ("" + (scope.context().c())),
 			path: '${scope}.prototype',
@@ -8356,10 +7780,13 @@
 		
 		
 		if (pars.inline) {
-			if ((pars.inline instanceof Bool) && !pars.inline.isTruthy()) {
+			if ((pars.inline instanceof Bool) && !pars.inline.truthy()) {
 				o.remove('inline');
+				// p "dont make attr inline(!)"
 				return ("Imba." + (this._token) + "(" + (js.scope) + ",'" + (this.name().value()) + "'," + (o.c()) + ")").replace(',{})',')');
 			};
+			
+			// p "pars inline?!? {pars:inline}", typeof pars:inline
 		};
 		
 		var tpl = propTemplate;
@@ -8367,7 +7794,8 @@
 		o.add('name',new Symbol(key));
 		
 		if (pars.watch) {
-			if (!((pars.watch instanceof Bool) && !pars.watch.isTruthy())) { tpl = propWatchTemplate };
+			// p "watch is a property {pars:watch}"
+			if (!((pars.watch instanceof Bool) && !pars.watch.truthy())) { tpl = propWatchTemplate };
 			var wfn = ("" + key + "DidSet");
 			
 			if (pars.watch instanceof Symbol) {
@@ -8405,7 +7833,7 @@
 		};
 		
 		if (isAttr) { // (@token and String(@token) == 'attr') or o.key(:dom) or o.key(:attr)
-			var attrKey = (o.key('dom') instanceof Str) ? (o.key('dom')) : (this.name().value());
+			var attrKey = o.key('dom') instanceof Str ? (o.key('dom')) : (this.name().value());
 			// need to make sure o has a key for attr then - so that the delegate can know?
 			js.set = ("this.setAttribute('" + attrKey + "',v)");
 			js.get = ("this.getAttribute('" + attrKey + "')");
@@ -8479,7 +7907,7 @@
 
 	function Bool(v){
 		this._value = v;
-		this._raw = (String(v) == "true") ? (true) : (false);
+		this._raw = String(v) == "true" ? (true) : (false);
 	};
 
 	Imba.subclass(Bool,Literal);
@@ -8493,6 +7921,7 @@
 	};
 
 	Bool.prototype.truthy = function (){
+		// p "bool is truthy? {value}"
 		return String(this.value()) == "true";
 		// yes
 	};
@@ -8512,20 +7941,12 @@
 		return {type: 'Bool',value: this._value};
 	};
 
-	Bool.prototype.loc = function (){
-		return (this._value.region) ? (this._value.region()) : ([0,0]);
-	};
-
 	function Undefined(){ return Literal.apply(this,arguments) };
 
 	Imba.subclass(Undefined,Literal);
 	exports.Undefined = Undefined; // export class 
 	Undefined.prototype.isPrimitive = function (){
 		return true;
-	};
-
-	Undefined.prototype.isTruthy = function (){
-		return false;
 	};
 
 	Undefined.prototype.c = function (){
@@ -8540,10 +7961,6 @@
 		return true;
 	};
 
-	Nil.prototype.isTruthy = function (){
-		return false;
-	};
-
 	Nil.prototype.c = function (){
 		return mark__(this._value) + "null";
 	};
@@ -8556,10 +7973,6 @@
 		return true;
 	};
 
-	True.prototype.isTruthy = function (){
-		return true;
-	};
-
 	True.prototype.c = function (){
 		return mark__(this._value) + "true";
 	};
@@ -8569,10 +7982,6 @@
 	Imba.subclass(False,Bool);
 	exports.False = False; // export class 
 	False.prototype.raw = function (){
-		return false;
-	};
-
-	False.prototype.isTruthy = function (){
 		return false;
 	};
 
@@ -8595,10 +8004,6 @@
 		return true;
 	};
 
-	Num.prototype.isTruthy = function (){
-		return String(this._value) != "0";
-	};
-
 	Num.prototype.shouldParenthesize = function (par){
 		if(par === undefined) par = this.up();
 		return (par instanceof Access) && par.left() == this;
@@ -8617,11 +8022,12 @@
 		var paren = (par instanceof Access) && par.left() == this;
 		// only if this is the right part of teh acces
 		// console.log "should paren?? {shouldParenthesize}"
-		return (paren) ? (("(" + mark__(this._value)) + js + ")") : ((mark__(this._value) + js));
+		return paren ? (("(" + mark__(this._value)) + js + ")") : ((mark__(this._value) + js));
 		// @cache ? super(o) : String(@value)
 	};
 
 	Num.prototype.cache = function (o){
+		// p "cache num",o
 		if (!(o && (o.cache || o.pool))) { return this };
 		return Num.__super__.cache.call(this,o);
 	};
@@ -8658,7 +8064,7 @@
 
 	Str.prototype.raw = function (){
 		// JSON.parse requires double-quoted strings,
-		// while eval also allows single quotes.
+		// while eval also allows single quotes. 
 		// NEXT eval is not accessible like this
 		// WARNING TODO be careful! - should clean up
 		
@@ -8667,7 +8073,7 @@
 
 	Str.prototype.isValidIdentifier = function (){
 		// there are also some values we cannot use
-		return (this.raw().match(/^[a-zA-Z\$\_]+[\d\w\$\_]*$/)) ? (true) : (false);
+		return this.raw().match(/^[a-zA-Z\$\_]+[\d\w\$\_]*$/) ? (true) : (false);
 	};
 
 	Str.prototype.js = function (o){
@@ -8675,7 +8081,7 @@
 	};
 
 	Str.prototype.c = function (o){
-		return (this._cache) ? (Str.__super__.c.call(this,o)) : (String(this._value));
+		return this._cache ? (Str.__super__.c.call(this,o)) : (String(this._value));
 	};
 
 
@@ -8771,7 +8177,7 @@
 	Imba.subclass(Symbol,Literal);
 	exports.Symbol = Symbol; // export class 
 	Symbol.prototype.isValidIdentifier = function (){
-		return (this.raw().match(/^[a-zA-Z\$\_]+[\d\w\$\_]*$/)) ? (true) : (false);
+		return this.raw().match(/^[a-zA-Z\$\_]+[\d\w\$\_]*$/) ? (true) : (false);
 	};
 
 	Symbol.prototype.isPrimitive = function (deep){
@@ -8779,11 +8185,11 @@
 	};
 
 	Symbol.prototype.raw = function (){
-		return this._raw || (this._raw = sym__(this.value().toString().replace(/^\:/,'')));
+		return this._raw || (this._raw = sym__(this.value()));
 	};
 
 	Symbol.prototype.js = function (o){
-		return ("'" + sym__(this.raw()) + "'");
+		return ("'" + sym__(this.value()) + "'");
 	};
 
 	function RegExp(){ return Literal.apply(this,arguments) };
@@ -8794,19 +8200,9 @@
 		return true;
 	};
 
-	RegExp.prototype.js = function (){
-		var m;
-		var v = RegExp.__super__.js.apply(this,arguments);
-		
-		// special casing heregex
-		if (m = constants.HEREGEX.exec(v)) {
-			// console.log 'matxhed heregex',m
-			var re = m[1].replace(constants.HEREGEX_OMIT,'').replace(/\//g,'\\/');
-			return '/' + (re || '(?:)') + '/' + m[2];
-		};
-		
-		return (v == '//') ? ('/(?:)/') : (v);
-	};
+	// def toString
+	// 	"" + value
+	;
 
 	// Should inherit from ListNode - would simplify
 	function Arr(){ return Literal.apply(this,arguments) };
@@ -8814,7 +8210,7 @@
 	Imba.subclass(Arr,Literal);
 	exports.Arr = Arr; // export class 
 	Arr.prototype.load = function (value){
-		return (value instanceof Array) ? (new ArgList(value)) : (value);
+		return value instanceof Array ? (new ArgList(value)) : (value);
 	};
 
 	Arr.prototype.push = function (item){
@@ -8828,7 +8224,7 @@
 
 	Arr.prototype.nodes = function (){
 		var val = this.value();
-		return (val instanceof Array) ? (val) : (val.nodes());
+		return val instanceof Array ? (val) : (val.nodes());
 	};
 
 	Arr.prototype.splat = function (){
@@ -8850,7 +8246,8 @@
 		if (!val) { return "[]" };
 		
 		var splat = this.splat();
-		var nodes = (val instanceof Array) ? (val) : (val.nodes());
+		var nodes = val instanceof Array ? (val) : (val.nodes());
+		// p "value of array isa {@value}"
 		
 		// for v in @value
 		// 	break splat = yes if v isa Splat
@@ -8859,6 +8256,7 @@
 		if (splat) {
 			// "SPLATTED ARRAY!"
 			// if we know for certain that the splats are arrays we can drop the slice?
+			// p "array is splat?!?"
 			var slices = [];
 			var group = null;
 			
@@ -8879,7 +8277,7 @@
 			// should depend on the length of the inner items etc
 			// if @indented or option(:indent) or value.@indented
 			//	"[\n{value.c.join(",\n").indent}\n]"
-			var out = (val instanceof Array) ? (cary__(val)) : (val.c());
+			var out = val instanceof Array ? (cary__(val)) : (val.c());
 			return ("[" + out + "]");
 		};
 	};
@@ -8907,7 +8305,7 @@
 	Imba.subclass(Obj,Literal);
 	exports.Obj = Obj; // export class 
 	Obj.prototype.load = function (value){
-		return (value instanceof Array) ? (new AssignList(value)) : (value);
+		return value instanceof Array ? (new AssignList(value)) : (value);
 	};
 
 	Obj.prototype.visit = function (){
@@ -8922,6 +8320,7 @@
 		
 		if (dyn.length > 0) {
 			var idx = this.value().indexOf(dyn[0]);
+			// p "dynamic keys! {dyn}"
 			// create a temp variable
 			
 			var tmp = this.scope__().temporary(this);
@@ -9030,7 +8429,7 @@
 	};
 
 	ObjAttr.prototype.js = function (o){
-		var k = (this.key().isReserved()) ? (("'" + (this.key().c()) + "'")) : (this.key().c());
+		var k = this.key().isReserved() ? (("'" + (this.key().c()) + "'")) : (this.key().c());
 		return ("" + k + ": " + (this.value().c()));
 	};
 
@@ -9049,12 +8448,15 @@
 	};
 
 	// should be a separate Context or something
-	function Self(value){
-		this._value = value;
+	function Self(scope){
+		this._scope = scope;
 	};
 
 	Imba.subclass(Self,Literal);
 	exports.Self = Self; // export class 
+	Self.prototype.scope = function(v){ return this._scope; }
+	Self.prototype.setScope = function(v){ this._scope = v; return this; };
+
 	Self.prototype.cache = function (){
 		return this;
 	};
@@ -9063,14 +8465,9 @@
 		return this;
 	};
 
-	Self.prototype.visit = function (){
-		this.scope__().context();
-		return this;
-	};
-
 	Self.prototype.c = function (){
 		var s = this.scope__();
-		return (s) ? (s.context().c()) : ("this");
+		return s ? (s.context().c()) : ("this");
 	};
 
 	function ImplicitSelf(){ return Self.apply(this,arguments) };
@@ -9088,10 +8485,7 @@
 	};
 
 	This.prototype.reference = function (){
-		return this;
-	};
-
-	This.prototype.visit = function (){
+		// p "referencing this"
 		return this;
 	};
 
@@ -9113,18 +8507,6 @@
 		this._invert = false;
 		this._opToken = o;
 		this._op = o && o._value || o;
-		
-		if (this._op == 'and') {
-			this._op = '&&';
-		} else if (this._op == 'or') {
-			this._op = '||';
-		} else if (this._op == 'is') {
-			this._op = '==';
-		} else if (this._op == 'isnt') {
-			this._op = '!=';
-		};
-		
-		
 		this._left = l;
 		this._right = r;
 		return this;
@@ -9179,6 +8561,7 @@
 	};
 
 	Op.prototype.consume = function (node){
+		// p 'assignify if?!'
 		// if it is possible, convert into expression
 		if (node instanceof TagTree) {
 			if (this._left) { this._left.consume(node) };
@@ -9187,6 +8570,7 @@
 			// @alt = @alt.consume(node) if @alt
 			return this;
 		};
+		// p "Op.consume {node}".cyan
 		if (this.isExpressable()) { return Op.__super__.consume.apply(this,arguments) };
 		
 		// TODO can rather use global caching?
@@ -9207,7 +8591,10 @@
 		var op = this._op;
 		var pairs = ["==","!=","===","!==",">","<=","<",">="];
 		var idx = pairs.indexOf(op);
-		idx += ((idx % 2) ? (-1) : (1));
+		idx += (idx % 2 ? (-1) : (1));
+		
+		// p "invert {@op}"
+		// p "inverted comparison(!) {idx} {op} -> {pairs[idx]}"
 		this.setOp(pairs[idx]);
 		this._invert = !this._invert;
 		return this;
@@ -9258,35 +8645,30 @@
 		};
 	};
 
-	UnaryOp.prototype.isTruthy = function (){
-		var val = truthy__(this.left());
-		return (val !== undefined) ? ((!val)) : ((undefined));
-	};
-
 	UnaryOp.prototype.js = function (o){
 		var l = this._left;
 		var r = this._right;
-		var op = this.op();
+		// all of this could really be done i a much
+		// cleaner way.
+		// l.set(parens: yes) if l # are we really sure about this?
+		// r.set(parens: yes) if r
 		
-		if (op == 'not') {
-			op = '!';
-		};
-		
-		if (op == '!') {
+		if (this.op() == '!') {
 			// l.@parens = yes
 			var str = l.c();
 			var paren = l.shouldParenthesize(this);
+			// p "check for parens in !: {str} {l} {l.@parens} {l.shouldParenthesize(self)}"
 			// FIXME this is a very hacky workaround. Need to handle all this
 			// in the child instead, problems arise due to automatic caching
 			if (!(str.match(/^\!?([\w\.]+)$/) || (l instanceof Parens) || paren || (l instanceof Access) || (l instanceof Call))) { str = '(' + str + ')' };
 			// l.set(parens: yes) # sure?
-			return ("" + op + str);
-		} else if (op == '√') {
+			return ("" + this.op() + str);
+		} else if (this.op() == '√') {
 			return ("Math.sqrt(" + (l.c()) + ")");
 		} else if (this.left()) {
-			return ("" + (l.c()) + op);
+			return ("" + (l.c()) + this.op());
 		} else {
-			return ("" + op + (r.c()));
+			return ("" + this.op() + (r.c()));
 		};
 	};
 
@@ -9301,19 +8683,19 @@
 		
 		var num = new Num(1);
 		var ast = OP('=',node,OP(this.op()[0],node,num));
-		if (this.left()) { ast = OP((this.op()[0] == '-') ? ('+') : ('-'),ast,num) };
+		if (this.left()) { ast = OP(this.op()[0] == '-' ? ('+') : ('-'),ast,num) };
 		
 		return ast;
 	};
 
 	UnaryOp.prototype.consume = function (node){
 		var norm = this.normalize();
-		return (norm == this) ? (UnaryOp.__super__.consume.apply(this,arguments)) : (norm.consume(node));
+		return norm == this ? (UnaryOp.__super__.consume.apply(this,arguments)) : (norm.consume(node));
 	};
 
 	UnaryOp.prototype.c = function (){
 		var norm = this.normalize();
-		return (norm == this) ? (UnaryOp.__super__.c.apply(this,arguments)) : (norm.c());
+		return norm == this ? (UnaryOp.__super__.c.apply(this,arguments)) : (norm.c());
 	};
 
 	function InstanceOf(){ return Op.apply(this,arguments) };
@@ -9322,6 +8704,7 @@
 	exports.InstanceOf = InstanceOf; // export class 
 	InstanceOf.prototype.js = function (o){
 		// fix checks for String and Number
+		// p right.inspect
 		
 		if (this.right() instanceof Const) {
 			// WARN otherwise - what do we do? does not work with dynamic
@@ -9339,7 +8722,7 @@
 				// convert
 			};
 		};
-		var out = ("" + (this.left().c()) + " instanceof " + (this.right().c()));
+		var out = ("" + (this.left().c()) + " " + this.op() + " " + (this.right().c()));
 		
 		// should this not happen in #c?
 		if (o.parent() instanceof Op) { out = helpers.parenthesize(out) };
@@ -9385,14 +8768,23 @@
 	};
 
 	In.prototype.js = function (o){
-		var cond = (this._invert) ? ("== -1") : (">= 0");
+		var cond = this._invert ? ("== -1") : (">= 0");
 		var idx = Util.indexOf(this.left(),this.right());
 		return ("" + (idx.c()) + " " + cond);
 	};
 
 
 
+
+
+
+
 	// ACCESS
+
+	var K_IVAR = exports.K_IVAR = 1;
+	var K_SYM = exports.K_SYM = 2;
+	var K_STR = exports.K_STR = 3;
+	var K_PROP = exports.K_PROP = 4;
 
 	function Access(o,l,r){
 		// set expression yes, no?
@@ -9453,12 +8845,12 @@
 		
 		// really?
 		// var ctx = (left || scope__.context)
-		var out = (raw) ? (
+		var out = raw ? (
 			// see if it needs quoting
 			// need to check to see if it is legal
-			(ctx) ? (("" + (ctx.c()) + "." + mark + raw)) : (raw)
+			ctx ? (("" + (ctx.c()) + "." + mark + raw)) : (raw)
 		) : (
-			r = (rgt instanceof Node) ? (rgt.c({expression: true})) : (rgt),
+			r = rgt instanceof Node ? (rgt.c({expression: true})) : (rgt),
 			("" + (ctx.c()) + "[" + r + "]")
 		);
 		
@@ -9479,7 +8871,7 @@
 	};
 
 	Access.prototype.alias = function (){
-		return (this.right() instanceof Identifier) ? (this.right().alias()) : (Access.__super__.alias.call(this));
+		return this.right() instanceof Identifier ? (this.right().alias()) : (Access.__super__.alias.call(this));
 	};
 
 	Access.prototype.safechain = function (){
@@ -9488,7 +8880,7 @@
 	};
 
 	Access.prototype.cache = function (o){
-		return (((this.right() instanceof Ivar) && !(this.left()))) ? (this) : (Access.__super__.cache.call(this,o));
+		return ((this.right() instanceof Ivar) && !(this.left())) ? (this) : (Access.__super__.cache.call(this,o));
 	};
 
 
@@ -9567,6 +8959,7 @@
 		
 		var rec;
 		if (rec = this.receiver()) {
+			// p "converting to call"
 			var ast = CALL(OP('.',this.left(),this.right()),[]); // convert to ArgList or null
 			ast.setReceiver(rec);
 			return ast.c();
@@ -9575,6 +8968,7 @@
 		var up = this.up();
 		
 		if (!((up instanceof Call))) {
+			// p "convert to call instead"
 			ast = CALL(new Access(this.op(),this.left(),this.right()),[]);
 			return ast.c();
 		};
@@ -9584,6 +8978,7 @@
 		var js = ("" + PropertyAccess.__super__.js.call(this,o));
 		
 		if (!((up instanceof Call) || (up instanceof Util.IsFunction))) {
+			// p "Called"
 			js += "()";
 		};
 		
@@ -9604,12 +8999,6 @@
 
 	Imba.subclass(IvarAccess,Access);
 	exports.IvarAccess = IvarAccess; // export class 
-	IvarAccess.prototype.visit = function (){
-		if (this._right) { this._right.traverse() };
-		(this._left) ? (this._left.traverse()) : (this.scope__().context());
-		return this;
-	};
-
 	IvarAccess.prototype.cache = function (){
 		// WARN hmm, this is not right... when accessing on another object it will need to be cached
 		return this;
@@ -9678,6 +9067,7 @@
 	VarOrAccess.prototype.visit = function (){
 		// @identifier = value # this is not a real identifier?
 		// console.log "VarOrAccess {@identifier}"
+		// p "visit {self}"
 		
 		
 		var scope = this.scope__();
@@ -9703,6 +9093,9 @@
 				this._token._variable = variable;
 				return this;
 			};
+			
+			// p "var is not yet initialized!"
+			// p "declarator for var {decl.@declared}"
 			// FIX
 			// @value.safechain = safechain
 		};
@@ -9726,7 +9119,7 @@
 	};
 
 	VarOrAccess.prototype.c = function (){
-		return mark__(this._token) + ((this._variable) ? (VarOrAccess.__super__.c.call(this)) : (this.value().c()));
+		return mark__(this._token) + (this._variable ? (VarOrAccess.__super__.c.call(this)) : (this.value().c()));
 	};
 
 	VarOrAccess.prototype.js = function (o){
@@ -9741,7 +9134,7 @@
 	};
 
 	VarOrAccess.prototype.node = function (){
-		return (this._variable) ? (this) : (this.value());
+		return this._variable ? (this) : (this.value());
 	};
 
 	VarOrAccess.prototype.symbol = function (){
@@ -9751,13 +9144,13 @@
 
 	VarOrAccess.prototype.cache = function (o){
 		if(o === undefined) o = {};
-		return (this._variable) ? ((o.force && VarOrAccess.__super__.cache.call(this,o))) : (this.value().cache(o));
+		return this._variable ? ((o.force && VarOrAccess.__super__.cache.call(this,o))) : (this.value().cache(o));
 		// should we really cache this?
 		// value.cache(o)
 	};
 
 	VarOrAccess.prototype.decache = function (){
-		(this._variable) ? (VarOrAccess.__super__.decache.call(this)) : (this.value().decache());
+		this._variable ? (VarOrAccess.__super__.decache.call(this)) : (this.value().decache());
 		return this;
 	};
 
@@ -9830,6 +9223,7 @@
 	VarReference.prototype.setType = function(v){ this._type = v; return this; };
 
 	VarReference.prototype.loc = function (){
+		// p "loc for VarReference {@value:constructor} {@value.@value:constructor} {@value.region}"
 		return this._value.region();
 	};
 
@@ -9846,12 +9240,15 @@
 		var ref = this._variable;
 		var out = ("" + mark__(this._value) + (ref.c()));
 		
+		// p "VarReference {out} - {o.up} {o.up == self}\n{o}"
+		
 		if (ref && !ref._declared) { // .option(:declared)
 			if (o.up(VarBlock)) { // up varblock??
 				ref._declared = true;
 				
 				// ref.set(declared: yes)
 			} else if (o.isExpression() || this._export) { // why?
+				// p "autodeclare"
 				ref.autodeclare();
 			} else {
 				out = ("var " + out);
@@ -9885,7 +9282,9 @@
 		
 		// should be possible to have a VarReference without a name as well? for a system-variable
 		// name should not set this way.
+		// p "varname {value} {value:constructor}"
 		var name = this.value().c();
+		// p "visit vardecl {name} {value}"
 		
 		// what about looking up? - on register we want to mark
 		var v = this._variable || (this._variable = this.scope__().register(name,this,{type: this._type}));
@@ -9908,6 +9307,7 @@
 
 	// convert this into a list of references
 	VarReference.prototype.addExpression = function (expr){
+		
 		return new VarBlock([this]).addExpression(expr);
 	};
 
@@ -9927,6 +9327,7 @@
 				// keep the splats -- clumsy but true
 				var v_;
 				if (v instanceof Splat) {
+					// p "value is a splat!!"
 					if (!((v.value() instanceof VarReference))) { (v.setValue(v_ = new VarReference(v.value(),l.type())),v_) };
 				} else if (v instanceof VarReference) {
 					true;
@@ -9940,13 +9341,14 @@
 				
 				// v isa VarReference ? v : VarReference.new(v)
 			});
-			
 			return new TupleAssign(o,new Tuple(vars),r);
 		};
 		
 		if (l instanceof Arr) {
 			return new TupleAssign(o,new Tuple(l.nodes()),r);
+			// p "left is array in assign - in init"
 		};
+		
 		
 		// set expression yes, no?
 		this._expression = false;
@@ -9989,7 +9391,7 @@
 		
 		// how does this work with constants that are really var references?
 		// should work when things are not described as well - but this is for testing
-		// but if it refers to something else
+		// but if it refers to something else 
 		if (!lvar && this._desc) {
 			// entities should be able to extract the needed info instead
 			ROOT.entities().add(l.namepath(),{namepath: l.namepath(),type: r.typeName(),desc: this._desc});
@@ -10013,6 +9415,7 @@
 
 	Assign.prototype.c = function (o){
 		if (!this.right().isExpressable()) {
+			// p "Assign#c right is not expressable "
 			return this.right().consume(this).c(o);
 		};
 		// testing this
@@ -10026,6 +9429,8 @@
 			// it should already be consumed?
 			return this.right().consume(this).c();
 		};
+		
+		// p "assign left {left:contrstru}"
 		var l = this.left().node();
 		var r = this.right();
 		
@@ -10042,8 +9447,9 @@
 			ast.setReceiver(l.receiver());
 			
 			if (this.isUsed()) {
+				// p "Assign is used {stack}"
 				// dont cache it again if it is already cached(!)
-				if (!this.right().cachevar()) { this.right().cache({pool: 'val',uses: 1}) }; //
+				if (!this.right().cachevar()) { this.right().cache({pool: 'val',uses: 1}) }; // 
 				// this is only when used.. should be more clever about it
 				ast = new Parens(blk__([ast,this.right()]));
 			};
@@ -10057,15 +9463,10 @@
 		// 	l.@variable.assigned(r)
 		
 		// FIXME -- does not always need to be an expression?
-		var lc = l.c();
+		// p "typeof op {@opToken and @opToken:constructor}"
+		var out = ("" + (l.c()) + " " + mark__(this._opToken) + this.op() + " " + this.right().c({expression: true}));
 		
-		if (this.option('export')) {
-			var ename = (l instanceof VarReference) ? (l.variable().c()) : (lc);
-			return ("" + lc + " " + mark__(this._opToken) + this.op() + " exports." + ename + " = " + this.right().c({expression: true}));
-		} else {
-			return ("" + lc + " " + mark__(this._opToken) + this.op() + " " + this.right().c({expression: true}));
-		};
-		// return out
+		return out;
 	};
 
 	// FIXME op is a token? _FIX_
@@ -10089,12 +9490,12 @@
 
 	// more workaround during transition away from a,b,c = 1,2,3 style assign
 	Assign.prototype.addExpression = function (expr){
-		// p "addExpression {expr}"
 		var typ = ExpressionBlock;
 		if (this._left && (this._left instanceof VarReference)) {
 			typ = VarBlock;
 		};
 		// might be better to nest this up after parsing is done?
+		// p "Assign.addExpression {self} <- {expr}"
 		var node = new typ([this]);
 		return node.addExpression(expr);
 	};
@@ -10112,18 +9513,6 @@
 		return this;
 	};
 
-	function TagPushAssign(){ return PushAssign.apply(this,arguments) };
-
-	Imba.subclass(TagPushAssign,PushAssign);
-	exports.TagPushAssign = TagPushAssign; // export class 
-	TagPushAssign.prototype.js = function (o){
-		return ("" + (this.left().c()) + ".push(" + (this.right().c()) + ")");
-	};
-
-	TagPushAssign.prototype.consume = function (node){
-		return this;
-	};
-
 
 	function ConditionalAssign(){ return Assign.apply(this,arguments) };
 
@@ -10138,12 +9527,15 @@
 		var ls = l;
 		
 		if (l instanceof Access) {
+			// p "conditional-assign {l} {l.left} {l.right}"
 			if (l.left()) {
+				// p "cache l.left {l.left:constructor}̋"
 				l.left().cache();
 			};
 			ls = l.clone(l.left(),l.right()); // this should still be cached?
 			if (l instanceof PropertyAccess) { l.cache() }; // correct now, to a certain degree
 			if (l instanceof IndexAccess) {
+				// p "cache the right side of indexAccess!!! {l.right}"
 				l.right().cache();
 			};
 			
@@ -10194,6 +9586,7 @@
 	};
 
 	ConditionalAssign.prototype.js = function (o){
+		// p "ConditionalAssign.js".red
 		var ast = IF(this.condition(),OP('=',this.left(),this.right()),this.left());
 		ast.setScope(null); // not sure about this
 		if (ast.isExpressable()) { ast.toExpression() }; // forced expression already
@@ -10226,6 +9619,7 @@
 			if (ln.left()) { ln.left().cache() };
 		};
 		// TODO FIXME we want to cache the context of the assignment
+		// p "normalize compound assign {left}"
 		var ast = OP('=',this.left(),OP(this.op()[0],this.left(),this.right()));
 		if (ast.isExpressable()) { ast.toExpression() };
 		
@@ -10241,6 +9635,7 @@
 		// etc -- otherwise there WILL be issues.
 		var up = STACK.current();
 		if (up instanceof Block) {
+			// p "parent is block, should replace!"
 			// an alternative would be to just pass
 			up.replace(this,ast);
 		};
@@ -10282,6 +9677,7 @@
 		if (this.right() instanceof Tuple) {
 			this.right().push(expr);
 		} else {
+			// p "making child become a tuple?"
 			this.setRight(new Tuple([this.right(),expr]));
 		};
 		
@@ -10302,6 +9698,7 @@
 			// collect the vars for tuple for easy access
 			
 			// NOTE can improve.. should rather make the whole left be a VarBlock or TupleVarBlock
+			// p "type is var -- skip the rest"
 		};
 		
 		this.right().traverse();
@@ -10313,9 +9710,12 @@
 		// only for actual inner expressions, otherwise cache the whole array, no?
 		var self = this;
 		if (!self.right().isExpressable()) {
+			// p "TupleAssign.consume! {right}".blue
 			
 			return self.right().consume(self).c();
 		};
+		
+		// p "TUPLE {type}"
 		
 		/* a,b,c = arguments */
 		
@@ -10323,7 +9723,7 @@
 		
 		/* a,*b,b = arguments */
 		
-		// Need to convert arguments to an array. IF arguments is not referenced anywhere else in scope,
+		// Need to convert arguments to an array. IF arguments is not referenced anywhere else in scope, 
 		// we can do the assignment directly while rolling through arguments
 		
 		/* a,b = b,a */
@@ -10357,7 +9757,7 @@
 		
 		// if right is an array without any splats (or inner tuples?), normalize it to tuple
 		if ((rgt instanceof Arr) && !rgt.splat()) { rgt = new Tuple(rgt.nodes()) };
-		var rlen = (rgt instanceof Tuple) ? (rgt.count()) : (null);
+		var rlen = rgt instanceof Tuple ? (rgt.count()) : (null);
 		
 		// if any values are statements we need to handle this before continuing
 		
@@ -10374,7 +9774,9 @@
 		if (!lsplat && rgt == ARGUMENTS) {
 			
 			var pars = self.scope__().params();
+			// p "special case with arguments {pars}"
 			// forcing the arguments to be named
+			// p "got here??? {pars}"
 			lft.map(function(l,i) { return ast.push(OP('=',l.node(),pars.at(i,true).visit().variable())); }); // s.params.at(value - 1,yes)
 		} else if (rlen) {
 			// we have several items in the right part. what about splats here?
@@ -10399,7 +9801,7 @@
 			// 		# but the builtin caching should really take care of this for us
 			// 		# we need to really force the caching though -- since we need a copy of it even if it is a local
 			// 		# we need to predeclare the variables at the top of scope if this does not take care of it
-			//
+			// 		
 			// 		# these are the declarations -- we need to add them somewhere smart
 			// 		@temporary.push(v) # need a generalized way to do this type of thing
 			// 		ast.push(v.cache(force: yes, type: 'swap', declared: typ == 'var'))
@@ -10422,6 +9824,7 @@
 				if (l == lsplat) {
 					v = new ArgList([]);
 					var to = (rlen - (ri - i));
+					// p "assing splat at index {i} to slice {li} - {to}".cyan
 					while (li <= to){
 						v.push(rgt.index(li++));
 					};
@@ -10432,7 +9835,7 @@
 				};
 				return [l.node(),v];
 				
-				// if l isa VarReference && l.refnr
+				// if l isa VarReference && l.refnr 
 			});
 			var clean = true;
 			
@@ -10446,18 +9849,21 @@
 						clean = true;
 					} else {
 						clean = false;
+						// p "now cache"
 						pairs.slice(i).map(function(part) {
 							if (part[1].hasSideEffects()) {
 								self._temporary.push(part[1]); // need a generalized way to do this type of thing
 								return ast.push(part[1].cache({force: true,pool: 'swap',declared: typ == 'var'}));
 							};
 						});
+						// p "from {i} - cache all remaining with side-effects"
 					};
 				};
 				
 				// if the previous value in ast is a reference to our value - the caching was not needed
 				if (ast.last() == r) {
 					r.decache();
+					// p "was cached - not needed"
 					// simple assign
 					return ast.replace(r,OP('=',l,r));
 				} else {
@@ -10491,13 +9897,13 @@
 			// ast.push(blk = VarBlock.new)
 			// blk = null
 			
-			var blktype = (typ == 'var') ? (VarBlock) : (Block);
+			var blktype = typ == 'var' ? (VarBlock) : (Block);
 			var blk = new blktype([]);
 			// blk = top if typ == 'var'
 			ast.push(blk);
 			
 			// if the lvals are not variables - we need to preassign
-			// can also use slice here for simplicity, but try with while now
+			// can also use slice here for simplicity, but try with while now			
 			lft.map(function(l,i) {
 				if (l == lsplat) {
 					var lvar = l.node();
@@ -10513,14 +9919,14 @@
 						blk.push(OP('=',lvar,arr));
 					};
 					
-					// if !lvar:variable || !lvar.variable # lvar =
+					// if !lvar:variable || !lvar.variable # lvar = 
 					// 	top.push()
 					//	p "has variable - no need to create a temp"
 					// blk.push(OP('=',lvar,Arr.new([]))) # dont precalculate size now
 					// max = to = (rlen - (llen - i))
 					
 					
-					var test = (rem) ? (OP('-',len,rem)) : (len);
+					var test = rem ? (OP('-',len,rem)) : (len);
 					
 					var set = OP('=',OP('.',lvar,OP('-',idx,num__(i))),
 					OP('.',iter,OP('++',idx)));
@@ -10547,26 +9953,29 @@
 			});
 		};
 		
-		// if we are in an expression we really need to
+		// if we are in an expression we really need to 
 		if (o.isExpression() && self._vars) {
+			// p "tuple is expression" # variables MUST be autodeclared outside of the expression
 			for (var i = 0, ary = Imba.iterable(self._vars), len_ = ary.length; i < len_; i++) {
 				ary[i].variable().autodeclare();
 			};
 		} else if (self._vars) {
-			for (var j = 0, items = Imba.iterable(self._vars), len__ = items.length; j < len__; j++) {
-				items[j].variable().predeclared();
+			for (var i = 0, ary = Imba.iterable(self._vars), len_ = ary.length; i < len_; i++) {
+				// p "predeclare variable before compilation"
+				ary[i].variable().predeclared();
 			};
 		};
 		
 		// is there any reason to make it into an expression?
 		if (ast.isExpressable()) { // NO!
+			// p "express"
 			// if this is an expression
 			var out = ast.c({expression: true});
 			if (typ && !o.isExpression()) { out = ("" + typ + " " + out) }; // not in expression
 			return out;
 		} else {
 			out = ast.c();
-			// if this is a varblock
+			// if this is a varblock 
 			return out;
 		};
 	};
@@ -10616,7 +10025,7 @@
 	};
 
 	Identifier.prototype.load = function (v){
-		return ((v instanceof Identifier) ? (v.value()) : (v));
+		return (v instanceof Identifier ? (v.value()) : (v));
 	};
 
 	Identifier.prototype.traverse = function (){
@@ -10677,7 +10086,7 @@
 	};
 
 	Identifier.prototype.c = function (){
-		return '' + this.symbol(); // mark__(@value) +
+		return '' + this.symbol(); // mark__(@value) + 
 	};
 
 	Identifier.prototype.dump = function (){
@@ -10689,30 +10098,29 @@
 	};
 
 	function TagId(v){
-		this._value = (v instanceof Identifier) ? (v.value()) : (v);
+		this._value = v instanceof Identifier ? (v.value()) : (v);
 		this;
 	};
 
 	Imba.subclass(TagId,Identifier);
 	exports.TagId = TagId; // export class 
 	TagId.prototype.c = function (){
-		return ("id$('" + this.value().c().substr(1) + "')");
+		return ("id$('" + (this.value().c()) + "')");
 	};
-
 
 	// This is not an identifier - it is really a string
 	// Is this not a literal?
 
 	// FIXME Rename to IvarLiteral? or simply Literal with type Ivar
 	function Ivar(v){
-		this._value = (v instanceof Identifier) ? (v.value()) : (v);
+		this._value = v instanceof Identifier ? (v.value()) : (v);
 		this;
 	};
 
 	Imba.subclass(Ivar,Identifier);
 	exports.Ivar = Ivar; // export class 
 	Ivar.prototype.name = function (){
-		return helpers.dashToCamelCase(this._value).replace(/^@/,'');
+		return helpers.camelCase(this._value).replace(/^@/,'');
 		// value.c.camelCase.replace(/^@/,'')
 	};
 
@@ -10726,7 +10134,7 @@
 	};
 
 	Ivar.prototype.c = function (){
-		return '_' + helpers.dashToCamelCase(this._value).slice(1); // .replace(/^@/,'') # mark__(@value) +
+		return '_' + helpers.camelCase(this._value).slice(1); // .replace(/^@/,'') # mark__(@value) + 
 	};
 
 
@@ -10747,13 +10155,8 @@
 	};
 
 	Const.prototype.c = function (){
-		if (this.option('export')) {
-			return ("exports." + (this._value) + " = ") + mark__(this._value) + this.symbol();
-		} else {
-			return mark__(this._value) + this.symbol();
-		};
+		return mark__(this._value) + this.symbol();
 	};
-
 
 	function TagTypeIdentifier(value){
 		this._value = this.load(value);
@@ -10796,15 +10199,15 @@
 
 	TagTypeIdentifier.prototype.spawner = function (){
 		if (this._ns) {
-			return ("_" + (this._ns.toUpperCase()) + "." + (this._name.replace(/-/g,'_').toUpperCase()));
+			return ("" + (this._ns.toUpperCase()) + ".$" + this._name.replace(/-/g,'_'));
 		} else {
-			return ("" + (this._name.replace(/-/g,'_').toUpperCase()));
+			return ("$" + this._name.replace(/-/g,'_'));
 		};
 	};
 
 	TagTypeIdentifier.prototype.id = function (){
 		var m = this._str.match(/\#([\w\-\d\_]+)\b/);
-		return (m) ? (m[1]) : (null);
+		return m ? (m[1]) : (null);
 	};
 
 
@@ -10851,16 +10254,18 @@
 		
 		if (callee instanceof VarOrAccess) {
 			var str = callee.value().symbol();
+			// p "Call callee {callee} - {str}"
 			if (str == 'extern') {
+				// p "returning extern instead!"
 				callee.value().value()._type = 'EXTERN';
 				return new ExternDeclaration(args);
 			};
 			if (str == 'tag') {
 				// console.log "ERROR - access args by some method"
-				return new TagWrapper((args && args.index) ? (args.index(0)) : (args[0]));
+				return new TagWrapper(args && args.index ? (args.index(0)) : (args[0]));
 			};
 			if (str == 'export') {
-				return new Export(args);
+				return new ExportStatement(args);
 			};
 		};
 		
@@ -10869,7 +10274,9 @@
 		
 		if (args instanceof Array) {
 			this._args = new ArgList(args);
+			// console.log "ARGUMENTS IS ARRAY - error {args}"
 		};
+		// p "call opexists {opexists}"
 		this;
 	};
 
@@ -10885,8 +10292,10 @@
 	Call.prototype.setBlock = function(v){ this._block = v; return this; };
 
 	Call.prototype.visit = function (){
+		// console.log "visit args {args}"
 		this.args().traverse();
 		this.callee().traverse();
+		
 		// if the callee is a PropertyAccess - better to immediately change it
 		
 		return this._block && this._block.traverse();
@@ -10894,7 +10303,7 @@
 
 	Call.prototype.addBlock = function (block){
 		var pos = this._args.filter(function(n,i) { return n == '&'; })[0]; // WOULD BE TOKEN - CAREFUL
-		(pos) ? (this.args().replace(pos,block)) : (this.args().push(block));
+		pos ? (this.args().replace(pos,block)) : (this.args().push(block));
 		return this;
 	};
 
@@ -10940,18 +10349,15 @@
 		
 		// never call the property-access directly?
 		if (callee instanceof PropertyAccess) { // && rec = callee.receiver
+			// p "unwrapping property-access in call"
 			this._receiver = callee.receiver();
 			callee = this._callee = new Access(callee.op(),callee.left(),callee.right());
+			// p "got here? {callee}"
 			// console.log "unwrapping the propertyAccess"
 		};
 		
-		if ((rgt instanceof Identifier) && rgt.value() == 'len' && args.count() == 0) {
-			return new Util.Len([lft || callee]).c();
-			
-			// rewrite a.len(..) to len$(a)
-		};
-		
 		if (callee.safechain()) {
+			// p "callee is safechained?!?"
 			// if lft isa Call
 			// if lft isa Call # could be a property access as well - it is the same?
 			// if it is a local var access we simply check if it is a function, then call
@@ -10959,10 +10365,11 @@
 			// lft.cache if lft
 			// the outer safechain should not cache the whole call - only ask to cache
 			// the result? -- chain onto
+			// p "Call safechain {callee} {lft}.{rgt}"
 			var isfn = new Util.IsFunction([callee]);
 			wrap = [("" + (isfn.c()) + "  &&  "),""];
 			callee = OP('.',callee.left(),callee.right());
-			// callee should already be cached now -
+			// callee should already be cached now - 
 		};
 		
 		// should just force expression from the start, no?
@@ -10971,7 +10378,7 @@
 			// this is due to the way we check for an outer Call without checking if
 			// we are the receiver (in PropertyAccess). Should rather wrap in CallArguments
 			var rec1 = this.receiver();
-			var ary = ((args.count() == 1) ? (new ValueNode(args.first().value())) : (new Arr(args.list())));
+			var ary = (args.count() == 1 ? (new ValueNode(args.first().value())) : (new Arr(args.list())));
 			
 			rec1.cache(); // need to cache the context as it will be referenced in apply
 			out = ("" + callee.c({expression: true}) + ".apply(" + (rec1.c()) + "," + ary.c({expression: true}) + ")");
@@ -10987,6 +10394,7 @@
 		
 		if (wrap) {
 			// we set the cachevar inside
+			// p "special caching for call"
 			if (this._cache) {
 				this._cache.manual = true;
 				out = ("(" + (this.cachevar().c()) + "=" + out + ")");
@@ -11050,6 +10458,8 @@
 	Imba.subclass(ExternDeclaration,ListNode);
 	exports.ExternDeclaration = ExternDeclaration; // export class 
 	ExternDeclaration.prototype.visit = function (){
+		
+		// p "visiting externdeclaration"
 		this.setNodes(this.map(function(item) { return item.node(); })); // drop var or access really
 		// only in global scope?
 		var root = this.scope__();
@@ -11072,9 +10482,9 @@
 
 	Imba.subclass(ControlFlow,Node);
 	exports.ControlFlow = ControlFlow; // export class 
-	ControlFlow.prototype.loc = function (){
-		return (this._body) ? (this._body.loc()) : ([0,0]);
-	};
+
+
+
 
 	function ControlFlowStatement(){ return ControlFlow.apply(this,arguments) };
 
@@ -11108,8 +10518,6 @@
 	If.prototype.setAlt = function(v){ this._alt = v; return this; };
 	If.prototype.scope = function(v){ return this._scope; }
 	If.prototype.setScope = function(v){ this._scope = v; return this; };
-	If.prototype.prevIf = function(v){ return this._prevIf; }
-	If.prototype.setPrevIf = function(v){ this._prevIf = v; return this; };
 
 	If.ternary = function (cond,body,alt){
 		// prefer to compile it this way as well
@@ -11119,20 +10527,16 @@
 	};
 
 	If.prototype.addElse = function (add){
+		// p "add else!",add
 		if (this.alt() && (this.alt() instanceof If)) {
+			// p 'add to the inner else(!)',add
 			this.alt().addElse(add);
 		} else {
 			this.setAlt(add);
-			if (add instanceof If) {
-				add.setPrevIf(this);
-			};
 		};
 		return this;
 	};
 
-	If.prototype.loc = function (){
-		return this._loc || (this._loc = [(this._type) ? (this._type._loc) : (0),this.body().loc()[1]]);
-	};
 
 	If.prototype.invert = function (){
 		if (this._test instanceof ComparisonOp) {
@@ -11147,22 +10551,11 @@
 		
 		if (this._scope) { this._scope.visit() };
 		if (this.test()) { this.test().traverse() };
-		
-		if (!this.stack().isAnalyzing()) {
-			this._pretest = truthy__(this.test());
-			
-			if (this._pretest === true) {
-				alt = this._alt = null;
-			} else if (this._pretest === false) {
-				this.loc(); // cache location before removing body
-				this.setBody(null);
-			};
-		};
-		
 		if (this.body()) { this.body().traverse() };
 		
 		// should skip the scope in alt.
 		if (alt) {
+			// p "scoping {STACK.scopes:length}"
 			STACK.pop(this);
 			alt._scope || (alt._scope = new BlockScope(alt));
 			alt.traverse();
@@ -11176,43 +10569,21 @@
 
 
 	If.prototype.js = function (o){
-		var v_;
 		var body = this.body();
-		// would possibly want to look up / out
+		// would possibly want to look up / out 
 		var brace = {braces: true,indent: true};
-		
-		if (this._pretest === true) {
-			// what if it is inside expression?
-			var js = (body) ? (body.c({braces: !(!(this.prevIf()))})) : ('true');
-			
-			if (!(this.prevIf())) {
-				js = helpers.normalizeIndentation(js);
-			};
-			
-			if (o.isExpression()) {
-				js = '(' + js + ')';
-			};
-			
-			return js;
-		} else if (this._pretest === false) {
-			if (this.alt() instanceof If) { (this.alt().setPrevIf(v_ = this.prevIf()),v_) };
-			var js1 = (this.alt()) ? (this.alt().c({braces: !(!(this.prevIf()))})) : ('');
-			
-			if (!(this.prevIf())) {
-				js1 = helpers.normalizeIndentation(js1);
-			};
-			
-			return js1;
-		};
 		
 		var cond = this.test().c({expression: true}); // the condition is always an expression
 		
 		if (o.isExpression()) {
-			var code = (body) ? (body.c()) : ('true'); // (braces: yes)
+			var code = body.c(); // (braces: yes)
 			code = '(' + code + ')'; // if code.indexOf(',') >= 0
-			
+			// is expression!
 			if (this.alt()) {
-				return ("(" + cond + ") ? " + code + " : (" + (this.alt().c()) + ")");
+				// console.log "type of ternary {test}"
+				// be safe - wrap condition as well
+				// ask for parens
+				return ("" + cond + " ? " + code + " : (" + (this.alt().c()) + ")");
 			} else {
 				// again - we need a better way to decide what needs parens
 				// maybe better if we rewrite this to an OP('&&'), and put
@@ -11230,6 +10601,7 @@
 			// if body.count == 1 # dont indent by ourselves?
 			
 			if ((body instanceof Block) && body.count() == 1 && !(body.first() instanceof LoopFlowStatement)) {
+				// p "body to body first {body.first}"
 				body = body.first();
 			};
 			
@@ -11237,11 +10609,11 @@
 			//	p "one item only!"
 			//	body = body.first
 			
-			code = (body) ? (body.c({braces: true})) : ('{}'); // (braces: yes)
+			code = body.c({braces: true}); // (braces: yes)
 			
 			// don't wrap if it is only a single expression?
 			var out = ("" + mark__(this._type) + "if (" + cond + ") ") + code; // ' {' + code + '}' # '{' + code + '}'
-			if (this.alt()) { out += (" else " + this.alt().c((this.alt() instanceof If) ? ({}) : (brace))) };
+			if (this.alt()) { out += (" else " + this.alt().c(this.alt() instanceof If ? ({}) : (brace))) };
 			return out;
 		};
 	};
@@ -11250,27 +10622,18 @@
 		return this;
 	};
 
-	If.prototype.shouldParenthesize = function (){
-		return !!this._parens;
-	};
-
 	If.prototype.consume = function (node){
+		// p 'assignify if?!'
 		// if it is possible, convert into expression
 		if (node instanceof TagTree) {
-			if (this._body) { this._body = this._body.consume(node) };
+			this._body = this._body.consume(node);
 			if (this._alt) { this._alt = this._alt.consume(node) };
 			this._tagtree = node;
 			return this;
 		};
 		
-		if (node instanceof TagPushAssign) {
-			if (this._body) { this._body = this._body.consume(node) };
-			if (this._alt) { this._alt = this._alt.consume(node) };
-			return this;
-		};
-		
 		// special case for If created from conditional assign as well?
-		// @type == '?' and
+		// @type == '?' and 
 		// ideally we dont really want to make any expression like this by default
 		var isRet = (node instanceof Return);
 		
@@ -11280,7 +10643,7 @@
 			this.toExpression(); // mark as expression(!) - is this needed?
 			return If.__super__.consume.call(this,node);
 		} else {
-			if (this._body) { this._body = this._body.consume(node) };
+			this._body = this._body.consume(node);
 			if (this._alt) { this._alt = this._alt.consume(node) };
 		};
 		return this;
@@ -11289,7 +10652,7 @@
 
 	If.prototype.isExpressable = function (){
 		// process:stdout.write 'x'
-		var exp = (!(this.body()) || this.body().isExpressable()) && (!(this.alt()) || this.alt().isExpressable());
+		var exp = this.body().isExpressable() && (!(this.alt()) || this.alt().isExpressable());
 		return exp;
 	};
 
@@ -11303,6 +10666,7 @@
 		this;
 	};
 
+
 	Imba.subclass(Loop,Statement);
 	exports.Loop = Loop; // export class 
 	Loop.prototype.scope = function(v){ return this._scope; }
@@ -11314,19 +10678,9 @@
 	Loop.prototype.catcher = function(v){ return this._catcher; }
 	Loop.prototype.setCatcher = function(v){ this._catcher = v; return this; };
 
-	Loop.prototype.loc = function (){
-		var a = this._options.keyword;
-		var b = this._body;
-		
-		if (a && b) {
-			// FIXME does not support POST_ variants yet
-			return [a._loc,b.loc()[1]];
-		} else {
-			return [0,0];
-		};
-	};
 
 	Loop.prototype.set = function (obj){
+		// p "configure for!"
 		this._options || (this._options = {});
 		var keys = Object.keys(obj);
 		for (var i = 0, ary = Imba.iterable(keys), len = ary.length, k; i < len; i++) {
@@ -11347,21 +10701,24 @@
 		
 		var s = this.stack();
 		var curr = s.current();
+		// p "Loop.c - {isExpressable} {stack} {stack.isExpression}"
+		// p "stack is expression? {o} {isExpression}"
 		
 		
 		
 		if (this.stack().isExpression() || this.isExpression()) {
+			// p "the stack is an expression for loop now(!)"
 			// what the inner one should not be an expression though?
 			// this will resut in an infinite loop, no?!?
-			this.scope().closeScope();
 			var ast = CALL(FN([],[this]),[]);
 			return ast.c(o);
 		} else if ((this.stack().current() instanceof Block) || ((s.up() instanceof Block) && s.current()._consumer == this)) {
+			
+			// p "what is the current stack of loop? {stack.current}"
 			return Loop.__super__.c.call(this,o);
 		} else {
-			this.scope().closeScope();
+			// p "Should never get here?!?"
 			ast = CALL(FN([],[this]),[]);
-			// scope.context.reference
 			return ast.c(o);
 			// need to wrap in function
 		};
@@ -11375,6 +10732,7 @@
 		this._options = opts || {};
 		this._scope = new WhileScope(this);
 		// set(opts) if opts
+		// p "invert test for while? {@test}"
 		if (this.option('invert')) {
 			// "invert test for while {@test}"
 			this._test = test.invert();
@@ -11388,30 +10746,28 @@
 	While.prototype.test = function(v){ return this._test; }
 	While.prototype.setTest = function(v){ this._test = v; return this; };
 
+
 	While.prototype.visit = function (){
 		this.scope().visit();
 		if (this.test()) { this.test().traverse() };
 		if (this.body()) { return this.body().traverse() };
 	};
 
-	While.prototype.loc = function (){
-		var o = this._options;
-		return helpers.unionOfLocations(o.keyword,this._body,o.guard,this._test);
-	};
 
 	// TODO BUG -- when we declare a var like: while var y = ...
 	// the variable will be declared in the WhileScope which never
 	// force-declares the inner variables in the scope
 
 	While.prototype.consume = function (node){
+		// p "While.consume {node}".cyan
 		// This is never expressable, but at some point
 		// we might want to wrap it in a function (like CS)
 		if (this.isExpressable()) { return While.__super__.consume.apply(this,arguments) };
 		
 		if (node instanceof TagTree) {
-			// WARN this is a hack to allow references coming through the wrapping scope
+			// WARN this is a hack to allow references coming through the wrapping scope 
 			// will result in unneeded self-declarations and other oddities
-			this.scope().closeScope();
+			this.scope().context().reference();
 			return CALL(FN([],[this]),[]);
 		};
 		
@@ -11425,6 +10781,7 @@
 		// 	p "consume variable declarator!?".cyan
 		// else
 		// declare the variable we will use to soak up results
+		// p "Creating value to store the result of loop".cyan
 		// TODO Use a special vartype for this?
 		var resvar = this.scope().declare('res',new Arr([]),{system: true});
 		// WHAT -- fix this --
@@ -11434,7 +10791,7 @@
 		// scope vars must not be compiled before this -- this is important
 		var ast = new Block([this,resvar.accessor()]); // should be varaccess instead?
 		return ast.consume(node);
-		// NOTE Here we can find a way to know wheter or not we even need to
+		// NOTE Here we can find a way to know wheter or not we even need to 
 		// return the resvar. Often it will not be needed
 		// FIXME what happens if there is no node?!?
 	};
@@ -11444,6 +10801,7 @@
 		var out = ("while (" + this.test().c({expression: true}) + ")") + this.body().c({braces: true,indent: true}); // .wrap
 		
 		if (this.scope().vars().count() > 0) {
+			// p "while-block has declared variables(!)"
 			return [this.scope().vars().c(),out];
 		};
 		return out;
@@ -11452,7 +10810,7 @@
 
 
 	// This should define an open scope
-	// should rather
+	// should rather 
 	function For(o){
 		if(o === undefined) o = {};
 		this._traversed = false;
@@ -11463,11 +10821,6 @@
 
 	Imba.subclass(For,Loop);
 	exports.For = For; // export class 
-	For.prototype.loc = function (){
-		var o = this._options;
-		return helpers.unionOfLocations(o.keyword,this._body,o.guard,o.step,o.source);
-	};
-
 	For.prototype.visit = function (){
 		this.scope().visit();
 		
@@ -11500,36 +10853,23 @@
 		// what about a range where we also include an index?
 		if (src instanceof Range) {
 			
-			var from = src.left();
-			var to = src.right();
-			var dynamic = !((from instanceof Num)) || !((to instanceof Num));
-			
-			if (to instanceof Num) {
-				vars.len = to;
-			} else {
-				// vars:len = scope.vars.push(vars:index.assignment(src.left))
-				// vars:len = to.cache(force: yes, pool: 'len').predeclare
-				vars.len = scope.declare('len',to,{type: 'let'});
-				// to.cache(force: yes, pool: 'len').predeclare
-			};
-			
-			// scope.vars.push(vars:index.assignment(src.left))
-			vars.value = scope.declare(o.name,from,{type: 'let'});
-			if (o.name) { vars.value.addReference(o.name) };
-			
-			if (o.index) {
-				vars.index = scope.declare(o.index,0,{type: 'let'});
-				vars.index.addReference(o.index);
-			};
-			
-			if (dynamic) {
-				vars.diff = scope.declare('rd',OP('-',vars.len,vars.value),{type: 'let'});
-			};
+			vars.len = scope.declare('len',src.right()); // util.len(o,yes).predeclare
+			// make the scope be the declarator
+			// TODO would like to be able to have counter in range as well
+			vars.index = scope.register(o.name,scope,{type: 'let',declared: true});
+			// p "registered {vars:index:constructor}"
+			// p "index-var is declareod?!?! {vars:index.@declared}"
+			scope.vars().push(vars.index.assignment(src.left()));
+			// scope.declare(options:name,src.left)
+			vars.value = vars.index;
 		} else {
+			// vars:value = scope.declare(options:name,null,let: yes)
 			// we are using automatic caching far too much here
-			var i = vars.index = (oi) ? (scope.declare(oi,0,{type: 'let'})) : (this.util().counter(0,true,scope).predeclare());
 			
-			vars.source = (bare) ? (src) : (this.util().iterable(src,true).predeclare());
+			// we should simply change how declare works
+			var i = vars.index = oi ? (scope.declare(oi,0,{type: 'let'})) : (this.util().counter(0,true,scope).predeclare());
+			
+			vars.source = bare ? (src) : (this.util().iterable(src,true).predeclare());
 			vars.len = this.util().len(vars.source,true).predeclare();
 			
 			vars.value = scope.declare(o.name,null,{type: 'let'});
@@ -11550,33 +10890,36 @@
 		
 		// other cases as well, no?
 		if (node instanceof TagTree) {
-			this.scope().closeScope();
-			
+			this.scope().context().reference();
+			var ref = node.root().reference();
 			node._loop = this;
-			this._tagtree = node;
 			
+			// Should not be consumed the same way
 			this.body().consume(node);
-			
 			node._loop = null;
-			var fn = new Lambda([],[this]);
+			var fn = new Lambda([new Param(ref)],[this]);
 			fn.scope().wrap(this.scope());
 			// TODO Scope of generated lambda should be added into stack for
 			// variable naming / resolution
-			return CALL(fn,[]);
+			return CALL(fn,[ref]);
 		};
 		
 		
 		if (this._resvar) {
+			// p "already have a resvar -- change consume? {node}"
 			var ast = new Block([this,BR,this._resvar.accessor()]);
 			ast.consume(node);
 			return ast;
 		};
+		
+		// if node isa return -- do something else
 		
 		var resvar = null;
 		var reuseable = false; // node isa Assign && node.left.node isa LocalVarAccess
 		var assignee = null;
 		// might only work for locals?
 		if (node instanceof Assign) {
+			// p "node isa assign {node} {node.left}"
 			if (receiver = node.left()) {
 				if (assignee = receiver._variable) {
 					// we can only pull the var reference into the scope
@@ -11592,6 +10935,7 @@
 		if (reuseable && assignee) {
 			// instead of declaring it in the scope - why not declare it outside?
 			// it might already exist in the outer scope no?
+			// p "reuseable {assignee} {scope} {scope.parent.lookup(assignee)}"
 			// assignee.resolve
 			// should probably instead alter the assign-node to set value to a blank array
 			// resvar = scope.parent.declare(assignee,Arr.new([]),proxy: yes,pos: 0)
@@ -11604,30 +10948,31 @@
 			this.scope().vars().unshift(OP('=',assignee,new Arr([])));
 			resvar = this._resvar = assignee;
 			
-			
 			node._consumer = this;
 			node = null;
+			
+			// p "consume variable declarator!?".cyan
 		} else {
 			// declare the variable we will use to soak up results
+			// p "Creating value to store the result of loop".cyan
 			// what about a pool here?
-			resvar = this._resvar || (this._resvar = this.scope().declare('res',new Arr([]),{system: true,type: 'let'}));
+			resvar = this._resvar = this.scope().declare('res',new Arr([]),{system: true});
 		};
 		
-		if (this._tagtree) {
-			this._catcher = new TagPushAssign("push",resvar,null);
-		} else {
-			this._catcher = new PushAssign("push",resvar,null); // the value is not preset
-		};
-		
+		this._catcher = new PushAssign("push",resvar,null); // the value is not preset
 		this.body().consume(this._catcher); // should still return the same body
 		
+		
+		
 		if (node) {
+			// p "returning new ast where Loop is first"
 			ast = new Block([this,BR,resvar.accessor().consume(node)]);
 			return ast;
 		};
 		// var ast = Block.new([self,BR,resvar.accessor])
 		// ast.consume(node) if node
 		// return ast
+		// p "Loop did consume successfully"
 		return this;
 		
 		// this is never an expression (for now -- but still)
@@ -11636,49 +10981,42 @@
 
 
 	For.prototype.js = function (o){
+		var v_;
 		var vars = this.options().vars;
-		var idx = vars.index;
+		var i = vars.index;
 		var val = vars.value;
+		var cond = OP('<',i,vars.len);
 		var src = this.options().source;
 		
-		var cond;
-		var final;
+		// p "references for value",val.references:length
 		
+		var final = this.options().step ? (
+			OP('=',i,OP('+',i,this.options().step))
+		) : (
+			OP('++',i)
+		);
 		
+		// if there are few references to the value - we can drop
+		// the actual variable and instead make it proxy through the index
 		if (src instanceof Range) {
-			var a = src.left();
-			var b = src.right();
-			var inc = src.inclusive();
-			
-			cond = OP((inc) ? ('<=') : ('<'),val,vars.len);
-			final = OP('++',val);
-			
-			if (vars.diff) {
-				cond = If.ternary(OP('>',vars.diff,new Num(0)),cond,OP((inc) ? ('>=') : ('>'),val,vars.len));
-				final = If.ternary(OP('>',vars.diff,new Num(0)),OP('++',val),OP('--',val));
-			};
-			
-			if (idx) {
-				final = new ExpressionBlock([final,OP('++',idx)]);
-			};
+			if (src.inclusive()) { (cond.setOp(v_ = '<='),v_) };
+		} else if (val.refcount() < 3 && val.assignments().length == 0) {
+			// p "proxy the value {val.assignments:length}"
+			// p "should proxy value-variable instead"
+			val.proxy(vars.source,i);
 		} else {
-			cond = OP('<',idx,vars.len);
-			
-			if (val.refcount() < 3 && val.assignments().length == 0) {
-				val.proxy(vars.source,idx);
-			} else {
-				this.body().unshift(OP('=',val,OP('.',vars.source,idx)),BR);
-			};
-			
-			if (this.options().step) {
-				final = OP('=',idx,OP('+',idx,this.options().step));
-			} else {
-				final = OP('++',idx);
-			};
+			this.body().unshift(OP('=',val,OP('.',vars.source,i)),BR);
+			// body.unshift(head)
+			// TODO check lengths - intelligently decide whether to brace and indent
 		};
-		
-		var head = ("" + mark__(this.options().keyword) + "for (" + (this.scope().vars().c()) + "; " + cond.c({expression: true}) + "; " + final.c({expression: true}) + ") ");
-		return head + this.body().c({braces: true,indent: true});
+		var head = ("" + mark__(this.options().keyword) + "for (" + (this.scope().vars().c()) + "; " + (cond.c()) + "; " + (final.c()) + ") ");
+		return head + this.body().c({braces: true,indent: true}); // .wrap
+	};
+
+
+	For.prototype.head = function (){
+		var vars = this.options().vars;
+		return OP('=',vars.value,OP('.',vars.source,vars.index));
 	};
 
 
@@ -11699,8 +11037,18 @@
 		var o = this.options();
 		var vars = o.vars = {};
 		
+		// see if 
+		
+		// p "ForOf source isa {o:source}"
+		
+		// if o:source is a variable -- refer directly # variable? is this the issue?
+		// p scope.@varmap['o'], scope.parent.@varmap['o']
+		
 		var src = vars.source = o.source._variable || this.scope().declare('o',o.source,{system: true,type: 'let'});
-		if (o.index) { var v = vars.value = this.scope().declare(o.index,null,{let: true,type: 'let'}) };
+		if (o.index) { var v = vars.value = this.scope().declare(o.index,null,{let: true}) };
+		
+		// p "ForOf o:index {o:index} o:name {o:name}"
+		// if o:index
 		
 		// possibly proxy the index-variable?
 		
@@ -11736,7 +11084,7 @@
 		if (v) {
 			// set value as proxy of object[key]
 			// possibly make it a ref? what is happening?
-			(v.refcount() < 3) ? (v.proxy(o,k)) : (this.body().unshift(OP('=',v,OP('.',o,k))));
+			v.refcount() < 3 ? (v.proxy(o,k)) : (this.body().unshift(OP('=',v,OP('.',o,k))));
 		};
 		
 		if (this.options().own) {
@@ -12025,12 +11373,14 @@
 
 	// TAGS
 
+
 	TAG_TYPES = {};
 	TAG_ATTRS = {};
 
+
 	TAG_TYPES.HTML = "a abbr address area article aside audio b base bdi bdo big blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hr html i iframe img input ins kbd keygen label legend li link main map mark menu menuitem meta meter nav noscript object ol optgroup option output p param pre progress q rp rt ruby s samp script section select small source span strong style sub summary sup table tbody td textarea tfoot th thead time title tr track u ul var video wbr".split(" ");
 
-	TAG_TYPES.SVG = "circle defs ellipse g line linearGradient mask path pattern polygon polylineradialGradient rect stop svg text tspan".split(" ");
+	TAG_TYPES.SVG = "circle defs ellipse g line linearGradient mask path pattern polygon polyline radialGradient rect stop svg text tspan".split(" ");
 
 	TAG_ATTRS.HTML = "accept accessKey action allowFullScreen allowTransparency alt async autoComplete autoFocus autoPlay cellPadding cellSpacing charSet checked className cols colSpan content contentEditable contextMenu controls coords crossOrigin data dateTime defer dir disabled download draggable encType form formNoValidate frameBorder height hidden href hrefLang htmlFor httpEquiv icon id label lang list loop max maxLength mediaGroup method min multiple muted name noValidate pattern placeholder poster preload radioGroup readOnly rel required role rows rowSpan sandbox scope scrollLeft scrolling scrollTop seamless selected shape size span spellCheck src srcDoc srcSet start step style tabIndex target title type useMap value width wmode";
 
@@ -12106,6 +11456,7 @@
 	};
 
 	Tag.prototype.addSymbol = function (node){
+		// p "addSymbol to the tag",node
 		if (this._parts.length == 0) {
 			this._parts.push(node);
 			this._options.ns = node;
@@ -12115,7 +11466,8 @@
 
 
 	Tag.prototype.addAttribute = function (atr){
-		this._parts.push(atr);
+		// p "add attribute!!!", key, value
+		this._parts.push(atr); // what?
 		this._options.attributes.push(atr);
 		return this;
 	};
@@ -12133,7 +11485,9 @@
 		
 		
 		if (node instanceof TagTree) {
+			// p "tag consume tagtree? {node.reactive}"
 			this.setParent(node.root());
+			// o:treeRef = node.nextCacheKey
 			
 			if (node._loop) {
 				// alwatys make items in loop reactive
@@ -12164,54 +11518,47 @@
 		
 		var typ = this.enclosing();
 		
+		// look for outer tag here?
+		
 		if (typ == '->' || typ == '=>') {
-			this._tree = new TagFragmentTree(this,o.body,{root: this,reactive: true});
-			this._fragment = o.body = new TagFragmentFunc([],Block.wrap([this._tree]),null,null,{closed: typ == '->'});
+			// console.log "tag is template?!? {typ}"
+			this._tree = new TagTree(this,o.body,{root: this,reactive: this.reactive()});
+			o.body = new TagFragmentFunc([],Block.wrap([this._tree]));
+			// console.log "made o body a function?"
 		};
 		
 		if (o.key) { o.key.traverse() };
-		if (o.body) { o.body.traverse() };
+		
+		if (o.body) {
+			o.body.traverse();
+		};
+		
+		// id should also be a regular part
+		
 		if (o.id) { o.id.traverse() };
+		
 		
 		for (var i = 0, ary = Imba.iterable(this._parts), len = ary.length; i < len; i++) {
 			ary[i].traverse();
 		};
 		
-		// remember scope
-		this._tagScope = this.scope__();
-		// if typ == '->' or typ == '=>'
-		// 	@tagScope = o:body.scope
+		// for atr in @options:attributes
+		// 	atr.traverse
 		
 		return this;
 	};
 
 	Tag.prototype.reference = function (){
-		return this._reference || (this._reference = this._tagScope.closure().temporary(this,{pool: 'tag'}).resolve());
+		return this._reference || (this._reference = this.scope__().closure().temporary(this,{pool: 'tag'}).resolve());
 	};
 
-	Tag.prototype.closureCache = function (){
-		return this._closureCache || (this._closureCache = this._tagScope.tagContextCache());
-	};
-
-
-	Tag.prototype.staticCache = function (){
-		if (this._fragment) {
-			return this._staticCache || (this._staticCache = this._fragment.scope().declare("__",OP('.',new This(),'__'))); // .tagContextCache
-		} else if (this.type() instanceof Self) {
-			return this._staticCache || (this._staticCache = this._tagScope.tagContextCache());
-		} else if (this.explicitKey() || this.option('loop')) {
-			return this._staticCache || (this._staticCache = OP('.',this.reference(),'__'));
-		} else if (this._parent) {
-			return this._staticCache || (this._staticCache = this._parent.staticCache());
-		};
-	};
-
-	Tag.prototype.explicitKey = function (){
-		return this.option('ivar') || this.option('key');
-	};
-
-	Tag.prototype.js = function (jso){
-		var body, loop_;
+	// should this not happen in js?
+	// should this not happen in js?
+	Tag.prototype.js = function (o){
+		// p JSON.stringify(@options)
+		// var attrs = TagAttributes.new(o:attributes)
+		// p "got here?"
+		var body;
 		var o = this._options;
 		var a = {};
 		var enc = this.enclosing();
@@ -12225,9 +11572,7 @@
 		var content = o.body;
 		
 		var isSelf = (this.type() instanceof Self);
-		var bodySetter = (isSelf) ? ("setChildren") : ("setContent");
-		
-		// if we are reactive - find the
+		var bodySetter = isSelf ? ("setChildren") : ("setContent");
 		
 		// should not cache statics if the node itself is not cached
 		// that would only mangle the order in which we set the properties
@@ -12235,37 +11580,43 @@
 		
 		for (var i = 0, ary = Imba.iterable(o.attributes), len = ary.length, atr; i < len; i++) {
 			atr = ary[i];
-			a[atr.key()] = atr.value();
+			a[atr.key()] = atr.value(); // .populate(obj)
 		};
 		
 		var quote = function(str) { return helpers.singlequote(str); };
-		var id = (o.id instanceof Node) ? (o.id.c()) : ((o.id && quote(o.id.c())));
+		var id = o.id instanceof Node ? (o.id.c()) : ((o.id && quote(o.id.c())));
 		var tree = this._tree || null;
 		var parent = this.parent();
-		var c_zone = scope.context().c();
+		// var parTree = parent and parent.tree
 		
-		var out = (isSelf) ? (
+		
+		//  "scope is", !!scope
+		// p "type is {type}"
+		var out = isSelf ? (
 			commit = "synced",
+			// p "got here"
+			// setting correct context directly
+			// TODO should call something here as well - marks the start of render - useful for pushing state etc
 			this.setReactive(true),
 			this._reference = scope.context(),
 			scope.context().c()
-		) : ((this.type().isClass()) ? (
-			("" + mark__(o.open) + (this.type().name()) + ".build(" + c_zone + ")")
+		) : (this.type().isClass() ? (
+			("" + mark__(o.open) + (this.type().name()) + ".build()")
 		) : (
-			("" + mark__(o.open) + (scope.tagContextPath()) + "." + (this.type().spawner()) + "(" + c_zone + ")")
+			("" + mark__(o.open) + (scope.tagContextPath()) + "." + (this.type().spawner()) + "()")
 		));
 		
 		if (o.id) {
 			statics.push((".setId(" + quote(o.id) + ")"));
 		};
-		
 		// this is reactive if it has an ivar
 		if (o.ivar) {
 			this.setReactive(true);
-			statics.push((".ref_(" + quote(o.ivar.name()) + "," + c_zone + ")"));
+			statics.push((".setRef(" + quote(o.ivar.name()) + "," + (scope.context().c()) + ")"));
 		};
 		
 		if (o.body instanceof Func) {
+			// console.log "o:body isa function!"
 			bodySetter = "setTemplate";
 		} else if (o.body) {
 			if ((o.body instanceof ArgList) && o.body.count() == 1 && o.body.first().isString()) {
@@ -12284,49 +11635,31 @@
 			tree.resolve();
 		};
 		
-		var dynamicFlagIndex = (isSelf) ? (1) : (0);
+		var dynamicFlagIndex = isSelf ? (1) : (0);
 		
-		for (var j = 0, items = Imba.iterable(this._parts), len_ = items.length, part; j < len_; j++) {
-			part = items[j];
+		for (var i = 0, ary = Imba.iterable(this._parts), len = ary.length, part; i < len; i++) {
+			part = ary[i];
 			var pjs;
 			var pcache = false;
 			
 			if (part instanceof TagAttr) {
 				var akey = String(part.key());
 				var aval = part.value();
+				// p "part value {aval} {aval.isPrimitive(yes)}"
 				
+				// the attr should compile itself instead -- really
 				pcache = aval.isPrimitive();
 				
-				
-				if (akey[0] == '.') {
+				if (akey[0] == '.') { // should check in a better way
 					pcache = false;
 					pjs = (".flag(" + quote(akey.substr(1)) + "," + (aval.c()) + ")");
 				} else if (akey[0] == ':') {
+					// need to analyze whether this is static or not
 					pjs = (".setHandler(" + quote(akey.substr(1)) + "," + (aval.c()) + "," + (scope.context().c()) + ")");
 				} else if (akey.substr(0,5) == 'data-') {
 					pjs = (".dataset('" + akey.slice(5) + "'," + (aval.c()) + ")");
-				} else if (part.isNamespaced()) {
-					var ns = akey.split(":")[0];
-					var k = akey.split(":")[1];
-					
-					if (ns == 'css') {
-						pjs = ("." + mark__(part.key()) + "css('" + k + "'," + (aval.c()) + ")");
-					} else {
-						pjs = ("." + mark__(part.key()) + "setNestedAttr('" + ns + "','" + k + "'," + (aval.c()) + ")");
-					};
 				} else {
 					pjs = ("." + mark__(part.key()) + helpers.setterSym(akey) + "(" + (aval.c()) + ")");
-				};
-				
-				if (aval instanceof Parens) {
-					aval = aval.value();
-				};
-				
-				// if the value is a function which does not refer to any outer
-				// variables (besides self), we can make it static, so as to not
-				// recreate the function on every render
-				if ((aval instanceof Func) && !aval.nonlocals()) {
-					pcache = true;
 				};
 			} else if (part instanceof TagFlag) {
 				if (part.value() instanceof Node) {
@@ -12344,30 +11677,29 @@
 			};
 			
 			if (pjs) {
-				(cacheStatics && pcache) ? (statics.push(pjs)) : (calls.push(pjs));
+				cacheStatics && pcache ? (statics.push(pjs)) : (calls.push(pjs));
 			};
 		};
+		
+		
 		
 		if (this.object()) {
-			calls.push((".setData(" + (this.object().c()) + ")"));
+			calls.push((".setObject(" + (this.object().c()) + ")"));
 		};
+		
+		// p "tagtree is static? {tree.static}"
 		
 		// we need to trigger our own reference before the body does
-		// but we do not need a reference if we have no body
-		if (this.reactive() && tree && (this.explicitKey() || o.loop)) {
+		// but we do not need a reference if we have no body (no nodes will refer it)
+		if (this.reactive() && tree) { // and tree.hasTags
 			this.reference();
-			// self
 		};
 		
-		if (this.reactive() && parent && parent.tree() && !this.option('ivar')) {
-			// not if it has a separate tag?
+		if (this.reactive() && parent && parent.tree()) {
 			o.treeRef = parent.tree().nextCacheKey(this);
-			if (parent.option('treeRef') && !parent.explicitKey() && !parent.option('loop') && !(parent.tree() instanceof TagFragmentTree)) {
-				o.treeRef = parent.option('treeRef') + o.treeRef;
-			};
 		};
 		
-		if (body = content && content.c({expression: true})) {
+		if (body = content && content.c({expression: true})) { // force it to be an expression, no?
 			var typ = 0;
 			
 			if (tree) {
@@ -12385,126 +11717,68 @@
 			
 			if (bodySetter == 'setChildren' || bodySetter == 'setContent') {
 				calls.push(("." + bodySetter + "(" + body + "," + typ + ")"));
-			} else if (bodySetter == 'setText') {
-				statics.push(("." + bodySetter + "(" + body + ")"));
 			} else {
 				calls.push(("." + bodySetter + "(" + body + ")"));
 			};
+			
+			// out += ".body({body})"
 		};
 		
-		
+		// if o:attributes:length # or -- always?
+		// adds lots of extra calls - but okay for now
 		calls.push(("." + commit + "()"));
 		
-		var lineLen = out.length;
-		
 		if (statics.length) {
-			// for item in statics
-			// 	if lineLen > 40
-			// 		out += "\n\t\t\t"
-			// 		lineLen = 0
-			// 	out += item
-			// 	lineLen += item:length
-			
 			out = out + statics.join("");
 		};
+		
 		
 		if ((o.ivar || o.key || this.reactive()) && !(this.type() instanceof Self)) {
 			// if this is an ivar, we should set the reference relative
 			// to the outer reference, or possibly right on context?
+			var ctx,key;
 			var partree = parent && parent.tree();
-			var acc;
+			// ctx = !o:ivar and par and par.reference or scope.context
+			// key = o:ivar or tree and tree.nextCacheKey
 			
-			var nr = STACK.incr('tagCacheKey');
-			var key = o.treeRef || counterToShortRef(nr) + '__';
-			var ctx;
-			
-			if (o.ivar) {
+			if (o.key) {
+				// closest tag
+				// TODO if the dynamic key starts with a static string we should
+				// just prepend _ to the string instead of wrapping in OP
+				ctx = parent && parent.reference();
+				key = OP('+',new Str("'_'"),o.key);
+			} else if (o.ivar) {
 				ctx = scope.context();
 				key = o.ivar;
-			} else if (o.key && !o.treeRef) {
-				// p "has dynamic key but not inside any node",o:key.c
-				var method = STACK.method();
-				var paths = OP('.',OP('.',new Self(),'__'),'_' + method.name());
-				var setter = OP('=',paths,OP('||',paths,LIT('{}')));
-				ctx = scope.closure().declare('__',new Parens(setter));
-				key = o.key;
-			} else if (o.key && !o.loop) {
-				key = OP('+',("'" + key + "$$'"),o.key);
-				key.cache();
-				ctx = (parent) ? (parent.staticCache()) : (this.closureCache());
-			} else if (o.loop || o.key) {
-				if (parent) {
-					ctx = parent.staticCache();
-				} else {
-					ctx = this.closureCache();
-				};
-				
-				// ctx = parent and parent.reference
-				var s = scope.closure();
-				var path = OP('.',ctx,key);
-				var kvar = ("$" + key);
-				var cacheDefault = LIT('{}');
-				
-				if (o.key) {
-					key = o.key;
-				} else {
-					kvar = '_$';
-					if (o.loop) {
-						(loop_ = o.loop)._tagCount || (loop_._tagCount = 0);
-						
-						if (o.loop._tagCount > 0) {
-							kvar += o.loop._tagCount;
-						};
-						o.loop._tagCount++;
-					};
-					
-					var idx1 = o.loop.option('vars').index;
-					cacheDefault = LIT('[]');
-					key = idx1;
-				};
-				
-				var setter1 = OP('=',path,OP('||',path,cacheDefault));
-				// dont redeclare?
-				ctx = s.declare(kvar,new Parens(setter1));
 			} else {
-				// or the tree-cache no?
-				ctx = (parent) ? (parent.staticCache()) : (this.closureCache());
+				ctx = parent && parent.reference();
+				// ctx = partree.cacher
+				key = o.treeRef || partree && partree.nextCacheKey();
+				// key = tree and tree.nextCacheKey
+				if (o.loop) {
+					var idx1 = o.loop.option('vars').index;
+					key = OP('+',"'" + key + "'",idx1);
+				};
 			};
 			
-			// unless ctx
-			// 	if parent
-			// 		var tree = parent.tree
-			// 		console.log 'no context!',tree
-			// 		ctx = parent.tree.staticCache
+			
 			
 			// need the context -- might be better to rewrite it for real?
 			// parse the whole thing into calls etc
-			acc || (acc = OP('.',ctx,key)); // .c
-			
-			if (o.ivar) {
-				out = ("" + (acc.c()) + " || " + out);
-			} else {
-				out = ("" + (acc.c()) + " = " + (acc.c()) + " || " + out);
-			};
+			var acc = OP('.',ctx,key).c();
 			
 			if (this._reference) {
-				out = ("" + (this.reference().c()) + " = " + out);
+				out = ("(" + (this.reference().c()) + " = " + acc + "=" + acc + " || " + out + ")");
+			} else {
+				out = ("(" + acc + " = " + acc + " || " + out + ")");
 			};
-			
-			out = ("(" + out + ")");
-			
-			//
-			// 	out = "({reference.c} = {acc.c}={acc.c} || {out})"
-			// else
-			// 	out = "({acc.c} = {acc.c} || {out})"
 		};
 		
 		return out + calls.join("");
 	};
 
 	// This is a helper-node
-	// Should probably use the same type of listnode everywhere
-	// and simply flag the type as TagTree instead
+	// Should probably use the same type of listnode everywhere - and simply flag the type as TagTree instead
 	function TagTree(owner,list,options){
 		if(options === undefined) options = {};
 		this._owner = owner;
@@ -12531,40 +11805,35 @@
 		return this._parent || (this._parent = this._owner.parent());
 	};
 
-	TagTree.prototype.staticCache = function (){
-		return this._owner.staticCache();
-	};
-
 	TagTree.prototype.nextCacheKey = function (){
-		var num = this._counter++;
-		var ref = counterToShortRef(num);
+		var root = this._owner;
 		
-		if (ref.length > 1) {
-			ref = ref + ref.length;
+		// if we want to cache everything on root
+		var num = ++this._counter;
+		var base = "A".charCodeAt(0);
+		var str = "";
+		
+		while (true){
+			num -= 1;
+			str = String.fromCharCode(base + (num % 26)) + str;
+			num = Math.floor(num / 26);
+			if (num <= 0) { break; };
 		};
 		
-		// if @owner.explicitKey or @owner.option(:loop)
-		ref = this.cachePrefix() + ref;
-		// ref = ref.toLowerCase unless @owner.type isa Self
-		return ref;
-	};
-
-	TagTree.prototype.cachePrefix = function (){
-		if (this._owner.explicitKey() || this._owner.option('loop')) {
-			return '$';
-		} else {
-			return '';
-		};
+		str = (this._owner.type() instanceof Self ? ("$") : ("$$")) + str.toLowerCase();
+		return str;
+		return num;
 	};
 
 	TagTree.prototype.load = function (list){
 		if (list instanceof ListNode) {
+			// p "is a list node!! {list.count}"
 			// we still want the indentation if we are not in a template
 			// or, rather - we want the block to get the indentation - not the tree
 			this._indentation || (this._indentation = list._indentation); // if list.count > 1
 			return list.nodes();
 		} else {
-			return compact__((list instanceof Array) ? (list) : ([list]));
+			return compact__(list instanceof Array ? (list) : ([list]));
 		};
 	};
 
@@ -12584,11 +11853,11 @@
 
 	TagTree.prototype.static = function (){
 		// every real node
-		return (this._static == null) ? (this._static = this.every(function(c) { return (c instanceof Tag) || (c instanceof Str) || (c instanceof Meta); })) : (this._static);
+		return this._static == null ? (this._static = this.every(function(c) { return (c instanceof Tag) || (c instanceof Str) || (c instanceof Meta); })) : (this._static);
 	};
 
 	TagTree.prototype.single = function (){
-		return (this._single == null) ? (this._single = ((this.realCount() == 1) ? (this.last()) : (false))) : (this._single);
+		return this._single == null ? (this._single = (this.realCount() == 1 ? (this.last()) : (false))) : (this._single);
 	};
 
 	TagTree.prototype.hasTags = function (){
@@ -12607,40 +11876,10 @@
 		var out = TagTree.__super__.c.call(this,o);
 		
 		if (!single || (single instanceof If)) {
-			if (this.shouldMarkArray()) {
-				return ("Imba.static([" + out + "],1)");
-			} else {
-				return ("[" + out + "]");
-			};
+			return ("[" + out + "]");
 		} else {
 			return out;
 		};
-	};
-
-	TagTree.prototype.shouldMarkArray = function (){
-		return false;
-	};
-
-	function TagFragmentTree(){ return TagTree.apply(this,arguments) };
-
-	Imba.subclass(TagFragmentTree,TagTree);
-	exports.TagFragmentTree = TagFragmentTree; // export class 
-	TagFragmentTree.prototype.cachePrefix = function (){
-		return '$';
-	};
-
-	TagFragmentTree.prototype.visit = function (){
-		TagFragmentTree.__super__.visit.apply(this,arguments);
-		this._closure = this.scope__();
-		return this;
-	};
-
-	TagFragmentTree.prototype.staticCache = function (){
-		return this._owner.staticCache();
-	};
-
-	TagFragmentTree.prototype.shouldMarkArray = function (){
-		return true;
 	};
 
 	function TagWrapper(){ return ValueNode.apply(this,arguments) };
@@ -12675,6 +11914,7 @@
 
 
 	function TagAttr(k,v){
+		// p "init TagAttribute", $0
 		this._traversed = false;
 		this._key = k;
 		this._value = v;
@@ -12695,10 +11935,6 @@
 	TagAttr.prototype.populate = function (obj){
 		obj.add(this.key(),this.value());
 		return this;
-	};
-
-	TagAttr.prototype.isNamespaced = function (){
-		return String(this.key()).indexOf(':') > 0;
 	};
 
 	TagAttr.prototype.c = function (){
@@ -12747,11 +11983,14 @@
 	Imba.subclass(Selector,ListNode);
 	exports.Selector = Selector; // export class 
 	Selector.prototype.add = function (part,typ){
+		// p "select add!",part,typ
+		// mark if special?
 		this.push(part);
 		return this;
 	};
 
 	Selector.prototype.group = function (){
+		// console.log "grouped!"
 		// for now we simply add a comma
 		// how would this work for dst?
 		this._nodes.push(new SelectorGroup(","));
@@ -12795,6 +12034,7 @@
 	exports.SelectorPart = SelectorPart; // export class 
 	SelectorPart.prototype.c = function (){
 		return c__(this._value);
+		// "{value.c}"
 	};
 
 	function SelectorGroup(){ return SelectorPart.apply(this,arguments) };
@@ -12810,12 +12050,15 @@
 	Imba.subclass(SelectorType,SelectorPart);
 	exports.SelectorType = SelectorType; // export class 
 	SelectorType.prototype.c = function (){
+		// support
+		// p "selectortype {value}"
+		// var out = value.c
 		var name = this.value().name();
 		
 		// at least be very conservative about which tags we
 		// can drop the tag for?
-		// out in TAG_TYPES.HTML ?
-		return (Imba.indexOf(name,TAG_TYPES.HTML) >= 0) ? (name) : (this.value().sel());
+		// out in TAG_TYPES.HTML ? 
+		return Imba.indexOf(name,TAG_TYPES.HTML) >= 0 ? (name) : (this.value().sel());
 	};
 
 
@@ -12920,6 +12163,8 @@
 		var outer = o.relative(block,1);
 		var par = o.relative(self,-1);
 		
+		// p "Block {block} {outer} {par}"
+		
 		self.setFunc(new AsyncFunc([],[]));
 		// now we move this node up to the block
 		self.func().body().setNodes(block.defers(outer,self));
@@ -12928,6 +12173,7 @@
 		if (par instanceof Assign) {
 			par.left().traverse();
 			var lft = par.left().node();
+			// p "Async assignment {par} {lft}"
 			// Can be a tuple as well, no?
 			if (lft instanceof VarReference) {
 				// the param is already registered?
@@ -12939,6 +12185,7 @@
 				// we can just use arguments
 				
 				if (par.type() == 'var' && !lft.hasSplat()) {
+					// p "SIMPLIFY! {lft.nodes[0]}"
 					lft.map(function(el,i) {
 						return self.func().params().at(i,true,el.value());
 					});
@@ -12980,6 +12227,13 @@
 		return LambdaScope;
 	};
 
+	// need to override, since we wont do implicit returns
+	// def js
+	// 	var code = scope.c
+	// 	return "function ({params.c})" + code.wrap
+	;
+
+
 
 	// IMPORTS
 
@@ -13007,7 +12261,7 @@
 		} else {
 			var src = this.source().c();
 			var m = src.match(/(\w+)(\.js|imba)?[\"\']$/);
-			this._alias = (m) ? (m[1] + '$') : ('mod$');
+			this._alias = m ? (m[1] + '$') : ('mod$');
 		};
 		
 		// should also register the imported items, no?
@@ -13016,13 +12270,16 @@
 			
 			if (this._imports.length == 1) {
 				this._alias = this._imports[0];
-				dec.add(this._alias,OP('.',new Require(this.source()),this._alias));
+				dec.add(this._alias,OP('.',CALL(new Identifier("require"),[this.source()]),this._alias));
 				dec.traverse();
 				return this;
+				
+				// dec.add(@alias,CALL(Identifier.new("require"),[source]))
 			};
 			
+			// p "ImportStatement has imports {@imports:length}"
 			// @declarations = VariableDeclaration.new([])
-			this._moduledecl = dec.add(this._alias,new Require(this.source()));
+			this._moduledecl = dec.add(this._alias,CALL(new Identifier("require"),[this.source()]));
 			this._moduledecl.traverse();
 			
 			
@@ -13046,7 +12303,7 @@
 			return this._declarations.c();
 		};
 		
-		var req = new Require(this.source());
+		var req = CALL(new Identifier("require"),[this.source()]);
 		
 		if (this._ns) {
 			// must register ns as a real variable
@@ -13064,6 +12321,7 @@
 			};
 			
 			// var alias = src.match(/(\w+)(\.js|imba)?[\"\']$/)
+			// p "source type {source}"
 			// create a require for the source, with a temporary name?
 			var out = [req.cache({names: alias}).c()];
 			
@@ -13085,7 +12343,7 @@
 	};
 
 
-	// EXPORT
+	// EXPORT 
 
 	function ExportStatement(){ return ValueNode.apply(this,arguments) };
 
@@ -13098,83 +12356,6 @@
 			return '[' + nodes.join(',') + ']';
 		} else {
 			return nodes.join(';\n') + ';';
-		};
-	};
-
-	function Export(){ return ValueNode.apply(this,arguments) };
-
-	Imba.subclass(Export,ValueNode);
-	exports.Export = Export; // export class 
-	Export.prototype.addExpression = function (expr){
-		this.setValue(this.value().addExpression(expr));
-		return this;
-	};
-
-	Export.prototype.consume = function (node){
-		if (node instanceof Return) {
-			this.option('return',true);
-			return this;
-		};
-		return Export.__super__.consume.apply(this,arguments);
-	};
-
-	Export.prototype.js = function (o){
-		// p "Export {value}"
-		var self = this;
-		self.value().set({export: self,return: self.option('return'),'default': self.option('default')});
-		
-		if (self.value() instanceof VarOrAccess) {
-			return ("exports." + (self.value().c()) + " = " + (self.value().c()) + ";");
-		};
-		
-		if (self.value() instanceof ListNode) {
-			self.value().map(function(item) { return item.set({export: self}); });
-		};
-		
-		return self.value().c();
-	};
-
-	function Require(){ return ValueNode.apply(this,arguments) };
-
-	Imba.subclass(Require,ValueNode);
-	exports.Require = Require; // export class 
-	Require.prototype.js = function (o){
-		var out = (this.value() instanceof Parens) ? (this.value().value().c()) : (this.value().c());
-		return (out == 'require') ? ('require') : (("require(" + out + ")"));
-	};
-
-	function EnvFlag(){ return ValueNode.apply(this,arguments) };
-
-	Imba.subclass(EnvFlag,ValueNode);
-	exports.EnvFlag = EnvFlag; // export class 
-	EnvFlag.prototype.raw = function (){
-		return (this._raw == null) ? (this._raw = STACK.env("" + this._value)) : (this._raw);
-	};
-
-	EnvFlag.prototype.isTruthy = function (){
-		var val = this.raw();
-		if (val !== undefined) { return !!val };
-		return undefined;
-	};
-
-	EnvFlag.prototype.loc = function (){
-		return [0,0];
-	};
-
-	EnvFlag.prototype.c = function (){
-		var val = this.raw();
-		if (val !== undefined) {
-			if ((typeof val=='string'||val instanceof String)) {
-				if (val.match(/^\d+(\.\d+)?$/)) {
-					return parseFloat(val);
-				} else {
-					return ("'" + val + "'");
-				};
-			} else {
-				return ("" + val);
-			};
-		} else {
-			return ("ENV_" + (this._value));
 		};
 	};
 
@@ -13220,6 +12401,7 @@
 	};
 
 	Util.len = function (obj,cache){
+		// p "LEN HELPER".green
 		var r = new Identifier("length");
 		var node = OP('.',obj,r);
 		if (cache) { node.cache({force: true,pool: 'len'}) };
@@ -13248,10 +12430,12 @@
 
 	Util.union = function (a,b){
 		return new Util.Union([a,b]);
+		// CALL(UNION,[a,b])
 	};
 
 	Util.intersect = function (a,b){
 		return new Util.Intersect([a,b]);
+		// CALL(INTERSECT,[a,b])
 	};
 
 	Util.counter = function (start,cache){
@@ -13334,23 +12518,6 @@
 			return ("idx$(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
 		} else {
 			return ("Imba.indexOf(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
-		};
-	};
-
-	Util.Len = function Len(){ return Util.apply(this,arguments) };
-
-	Imba.subclass(Util.Len,Util);
-	Util.Len.prototype.helper = function (){
-		return 'function len$(a){\n	return a && (a.len instanceof Function ? a.len() : a.length) || 0;\n};\n';
-	};
-
-	Util.Len.prototype.js = function (o){
-		if (this.isStandalone()) {
-			this.scope__().root().helper(this,this.helper());
-			// When this is triggered, we need to add it to the top of file?
-			return ("len$(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
-		} else {
-			return ("Imba.len(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
 		};
 	};
 
@@ -13535,11 +12702,7 @@
 
 	Scope.prototype.tagContextPath = function (){
 		// bypassing for now
-		return this._tagContextPath || (this._tagContextPath = "_T"); // parent.tagContextPath
-	};
-
-	Scope.prototype.tagContextCache = function (){
-		return this._tagContextCache || (this._tagContextCache = this.closure().declare("__",OP('.',this.context().reference(),'__')));
+		return this._tagContextPath || (this._tagContextPath = "tag$"); // parent.tagContextPath
 	};
 
 	Scope.prototype.context = function (){
@@ -13552,9 +12715,11 @@
 
 	Scope.prototype.visit = function (){
 		if (this._parent) { return this };
+		// p "visited scope!"
 		this._parent = STACK.scope(1); // the parent scope
 		this._level = STACK.scopes().length - 1;
 		
+		// p "parent is",@parent
 		STACK.addScope(this);
 		this.root().scopes().push(this);
 		return this;
@@ -13587,6 +12752,7 @@
 		// Again, here we should not really have to deal with system-generated vars
 		// But again, it is important
 		
+		// p "registering {name}"
 		if(decl === undefined) decl = null;
 		if(o === undefined) o = {};
 		name = helpers.symbolize(name);
@@ -13598,7 +12764,7 @@
 		var item = new Variable(this,name,decl,o);
 		// need to check for duplicates, and handle this gracefully -
 		// going to refactor later
-		if (!o.system) { this._varmap[name] = item };
+		if (!o.system) { this._varmap[name] = item }; // dont even add to the varmap if it is a sysvar
 		return item;
 	};
 
@@ -13607,7 +12773,7 @@
 		return this;
 	};
 
-	// just like register, but we automatically
+	// just like register, but we automatically 
 	Scope.prototype.declare = function (name,init,o){
 		var declarator_;
 		if(init === undefined) init = null;
@@ -13618,13 +12784,43 @@
 		var dec = this._vars.add(variable,init);
 		(declarator_ = variable.declarator()) || ((variable.setDeclarator(dec),dec));
 		return variable;
+		
+		// p "declare variable {name} {o}"
+		// if name isa Variable
+		// p "SCOPE declare var".green
+		name = helpers.symbolize(name);
+		// we will see here
+		this._vars.add(name,init); // .last -- 
+		var decl = this._vars.last(); // bug(!)
+		var item;
+		// item = Variable.new(self,name,decl)
+		
+		// if o:system
+		// 	item = SystemVariable.new(self,name,decl,o)
+		// 	decl.variable = item
+		// else
+		item = new Variable(this,name,decl,o);
+		decl.setVariable(item);
+		item.resolve(); // why on earth should it resolve immediately?
+		
+		// decl.variable = item
+		// item.resolve # why on earth should it resolve immediately?
+		return item;
+		
+		// should be possible to force-declare for this scope, no?
+		// if this is a system-variable 
 	};
+
+	// declares a variable (has no real declaration beforehand)
+
 
 	// what are the differences here? omj
 	// we only need a temporary thing with defaults -- that is all
 	// change these values, no?
 	Scope.prototype.temporary = function (refnode,o,name){
 		
+		// p "registering temporary {refnode} {name}"
+		// reuse variables -- hmm
 		if(o === undefined) o = {};
 		if(name === undefined) name = null;
 		if (o.pool) {
@@ -13636,27 +12832,35 @@
 			};
 		};
 		
+		// should only 'register' as ahidden variable, no?
+		// if there are real nodes inside that tries to refer to vars
+		// defined in outer scopes, we need to make sure they are not named after this
 		var item = new SystemVariable(this,name,refnode,o);
-		
-		this._varpool.push(item); // It should not be in the pool unless explicitly put there?
+		this._varpool.push(item); // WHAT? It should not be in the pool unless explicitly put there?
 		this._vars.push(item); // WARN variables should not go directly into a declaration-list
 		return item;
+		// return register(name || "__",null,system: yes, temporary: yes)
 	};
 
+
+
 	Scope.prototype.lookup = function (name){
-		this._lookups || (this._lookups = {});
 		var ret = null;
 		name = helpers.symbolize(name);
 		if (this._varmap.hasOwnProperty(name)) {
 			ret = this._varmap[name];
 		} else {
+			// look up any parent scope ?? seems okay
+			// !isClosed && 
 			ret = this.parent() && this.parent().lookup(name);
-			
-			if (ret) {
-				this._nonlocals || (this._nonlocals = {});
-				this._nonlocals[name] = ret;
-			};
+			// or -- not all scopes have a parent?
 		};
+		
+		// should this not happen by itself?
+		// if !ret and 
+		//	ret = 
+		// ret ||= (g.lookup(name) if var g = root)
+		// g = root
 		return ret;
 	};
 
@@ -13665,6 +12869,7 @@
 	};
 
 	Scope.prototype.free = function (variable){
+		// p "free variable"
 		variable.free(); // :owner = null
 		// @varpool.push(variable)
 		return this;
@@ -13702,6 +12907,12 @@
 		// need to fix this
 		this.node().body().setHead(this.head());
 		return body = this.node().body().c(o);
+		
+		// var head = [@vars,@params].block.c(expression: no)
+		// p "head from scope is ({head})"
+		// var out = [head or null,body].flatten__.compact.join("\n")
+		// out
+		// out = '{' + out + 
 	};
 
 	Scope.prototype.region = function (){
@@ -13716,10 +12927,7 @@
 		var self = this;
 		var vars = Object.keys(self._varmap).map(function(k) {
 			var v = self._varmap[k];
-			// unless v.@declarator isa Scope
-			// 	console.log v.name, v.@declarator:constructor:name
-			// dump__(v)
-			return (v.references().length) ? (dump__(v)) : (null);
+			return v.references().length ? (dump__(v)) : (null);
 		});
 		
 		var desc = {
@@ -13741,10 +12949,6 @@
 		return ("" + (this.constructor.name));
 	};
 
-	Scope.prototype.closeScope = function (){
-		return this;
-	};
-
 
 	// RootScope is wrong? Rather TopScope or ProgramScope
 	function RootScope(){
@@ -13761,13 +12965,11 @@
 		this.register('parseFloat',this,{type: 'global'});
 		this.register('setTimeout',this,{type: 'global'});
 		this.register('setInterval',this,{type: 'global'});
-		this.register('setImmediate',this,{type: 'global'});
 		this.register('clearTimeout',this,{type: 'global'});
 		this.register('clearInterval',this,{type: 'global'});
-		this.register('clearImmediate',this,{type: 'global'});
 		this.register('__dirname',this,{type: 'global'});
-		this.register('__filename',this,{type: 'global'});
 		this.register('_',this,{type: 'global'});
+		
 		
 		// preregister global special variables here
 		this._warnings = [];
@@ -13791,10 +12993,11 @@
 	};
 
 	RootScope.prototype.tagContextPath = function (){
-		return this._tagContextPath || (this._tagContextPath = "_T");
+		return this._tagContextPath || (this._tagContextPath = "tag$");
 	};
 
 	RootScope.prototype.lookup = function (name){
+		// p "lookup filescope"
 		name = helpers.symbolize(name);
 		if (this._varmap.hasOwnProperty(name)) { return this._varmap[name] };
 	};
@@ -13821,6 +13024,7 @@
 	RootScope.prototype.warn = function (data){
 		// hacky
 		data.node = null;
+		// p "warning",JSON.stringify(data)
 		this._warnings.push(data);
 		return this;
 	};
@@ -13858,6 +13062,7 @@
 		// console.log "virtualizing ClassScope"
 		var up = this.parent();
 		for (var o = this._varmap, i = 0, keys = Object.keys(o), l = keys.length; i < l; i++){
+			true;
 			o[keys[i]].resolve(up,true); // force new resolve
 		};
 		return this;
@@ -13893,23 +13098,16 @@
 		return true;
 	};
 
-	MethodScope.prototype.tagContext = function (){
-		return this._tagContext || (this._tagContext = this.declare("$",OP('.',new This(),'__')));
-	};
-
 	function LambdaScope(){ return Scope.apply(this,arguments) };
 
 	Imba.subclass(LambdaScope,Scope);
 	exports.LambdaScope = LambdaScope; // export class 
 	LambdaScope.prototype.context = function (){
-		// why do we need to make sure it is referenced?
-		if (!this._context) {
-			this._context = this.parent().context();
-			this._context.reference(this);
-		};
-		return this._context;
+		
+		// when accessing the outer context we need to make sure that it is cached
+		// so this is wrong - but temp okay
+		return this._context || (this._context = this.parent().context().reference(this));
 	};
-
 
 	function FlowScope(){ return Scope.apply(this,arguments) };
 
@@ -13925,15 +13123,21 @@
 		if(o === undefined) o = {};
 		if (o.type != 'let' && (this.closure() != this)) {
 			if (found = this.lookup(name)) {
+				// p "already found variable {found.type}"
 				if (found.type() == 'let') {
 					this.p(("" + name + " already exists as a block-variable " + decl));
 					// TODO should throw error instead
 					if (decl) { decl.warn("Variable already exists in block") };
 					// root.warn message: "Holy shit"
 				};
+				// if found.
 			};
+			// p "FlowScope register var -- do it right in the outer scope"
 			return this.closure().register(name,decl,o);
 		} else {
+			// p "Register local variable for FlowScope {name}"
+			// o:closure = parent
+			// p "FlowScope register", arguments
 			return FlowScope.__super__.register.call(this,name,decl,o);
 		};
 	};
@@ -13945,16 +13149,17 @@
 	};
 
 	FlowScope.prototype.closure = function (){
+		// rather all the way?
 		return this._parent.closure(); // this is important?
 	};
 
 	FlowScope.prototype.context = function (){
-		return this._context || (this._context = this.parent().context());
-	};
-
-	FlowScope.prototype.closeScope = function (){
-		if (this._context) { this._context.reference() };
-		return this;
+		// if we are wrapping in an expression - we do need to add a reference
+		// @referenced = yes
+		return this.parent().context();
+		// usually - if the parent scope is a closed scope we dont really need
+		// to force a reference
+		// @context ||= parent.context.reference(self)
 	};
 
 	function CatchScope(){ return FlowScope.apply(this,arguments) };
@@ -13977,7 +13182,12 @@
 	exports.ForScope = ForScope; // export class 
 	ForScope.prototype.autodeclare = function (variable){
 		return this.vars().push(variable);
+		// parent.autodeclare(variable)
 	};
+
+	// def closure
+	// 	self
+	;
 
 	function IfScope(){ return FlowScope.apply(this,arguments) };
 
@@ -14064,6 +13274,7 @@
 	// and show warnings / give advice if variables are ambiguous etc
 	Variable.prototype.assigned = function (val,source){
 		this._assignments.push(val);
+		// p "Variable was assigned {val}"
 		if (val instanceof Arr) {
 			// just for testing really
 			this._isArray = true;
@@ -14083,8 +13294,9 @@
 		var item = scope.lookup(this._name);
 		
 		// if this is a let-definition inside a virtual scope we do need
-		//
+		// 
 		if (this._scope != closure && this._type == 'let') { // or if it is a system-variable
+			// p "scope is not the closure -- need to resolve {@name}"
 			item = closure.lookup(this._name);
 			
 			// we now need to ensure that this variable is unique inside
@@ -14092,18 +13304,24 @@
 			scope = closure;
 		};
 		
+		// p "scope is not the closure -- need to resolve {@name} {@type}"
+		
 		if (item == this) {
 			scope.varmap()[this._name] = this;
 			return this;
 		} else if (item) {
+			// p "variable already exists {@name}"
+			
 			// possibly redefine this inside, use it only in this scope
 			// if the item is defined in an outer scope - we reserve the
 			if (item.scope() != scope && (this.options().let || this._type == 'let')) {
+				// p "override variable inside this scope {@name}"
 				scope.varmap()[this._name] = this;
 			};
 			
 			// different rules for different variables?
 			if (this._options.proxy) {
+				// p "is proxy -- no need to change name!!! {name}".cyan
 				true;
 			} else {
 				var i = 0;
@@ -14115,9 +13333,11 @@
 			};
 		};
 		
+		// inefficient double setting
 		scope.varmap()[this._name] = this;
 		closure.varmap()[this._name] = this;
 		return this;
+		// p "resolve variable".cyan
 	};
 
 	Variable.prototype.reference = function (){
@@ -14129,10 +13349,12 @@
 	};
 
 	Variable.prototype.traverse = function (){
+		// NODES.push(self)
 		return this;
 	};
 
 	Variable.prototype.free = function (ref){
+		// p "free variable!"
 		this._declarator = null;
 		return this;
 	};
@@ -14155,11 +13377,12 @@
 		if (this._c) { return this._c };
 		// options - proxy??
 		if (this._proxy) {
+			// p "var is proxied!",@proxy
 			this._c = this._proxy[0].c() + '[' + this._proxy[1].c() + ']';
 		} else {
 			if (!this._resolved) this.resolve();
 			var v = (this.alias() || this.name());
-			this._c = (typeof v == 'string') ? (v) : (v.c());
+			this._c = typeof v == 'string' ? (v) : (v.c());
 			// allow certain reserved words
 			// should warn on others though (!!!)
 			// if @c == 'new'
@@ -14173,13 +13396,13 @@
 
 	// variables should probably inherit from node(!)
 	Variable.prototype.consume = function (node){
+		// p "variable assignify!!!"
 		return this;
 	};
 
 	// this should only generate the accessors - not dael with references
 	Variable.prototype.accessor = function (ref){
-		var node = new LocalVarAccess(".",null,this);
-		// this is just wrong .. should not be a regular accessor
+		var node = new LocalVarAccess(".",null,this); // this is just wrong .. should not be a regular accessor
 		// @references.push([ref,el]) if ref # weird temp format
 		return node;
 	};
@@ -14197,11 +13420,13 @@
 			this._references.push(ref);
 		};
 		
+		// p "reference is {ref:region and ref.region}"
 		return this;
 	};
 
 	Variable.prototype.autodeclare = function (){
 		if (this._declared) { return this };
+		// p "variable should autodeclare(!) {name}"
 		this._autodeclare = true;
 		this.scope().autodeclare(this);
 		this._declared = true;
@@ -14221,7 +13446,7 @@
 	Variable.prototype.dump = function (typ){
 		var name = this.name();
 		if (name[0].match(/[A-Z]/)) { return null };
-		
+		// console.log "dump variable of type {type} - {name}"
 		return {
 			type: this.type(),
 			name: name,
@@ -14240,6 +13465,7 @@
 
 	// weird name for this
 	SystemVariable.prototype.predeclared = function (){
+		// p "remove var from scope(!)"
 		this.scope().vars().remove(this);
 		return this;
 	};
@@ -14247,6 +13473,7 @@
 	SystemVariable.prototype.resolve = function (){
 		var alias, v_;
 		if (this._resolved || this._name) { return this };
+		// p "RESOLVE SYSTEM VARIABLE".red
 		this._resolved = true;
 		// unless @name
 		// adds a very random initial name
@@ -14297,10 +13524,11 @@
 			if (!scope.lookup(alt)) { this._name = alt };
 		};
 		
+		// p "suggested names {names.join(" , ")} {node}".cyan
+		//  Math.floor(Math.random * 1000)
 		this._name || (this._name = ("$" + (scope.setCounter(v_ = scope.counter() + 1),v_)));
-		
+		// p "name for variable is {@name}"
 		scope.varmap()[this._name] = this;
-		this.closure().varmap()[this._name] = this;
 		return this;
 	};
 
@@ -14323,8 +13551,6 @@
 	ScopeContext.prototype.setScope = function(v){ this._scope = v; return this; };
 	ScopeContext.prototype.value = function(v){ return this._value; }
 	ScopeContext.prototype.setValue = function(v){ this._value = v; return this; };
-	ScopeContext.prototype.reference = function(v){ return this._reference; }
-	ScopeContext.prototype.setReference = function(v){ this._reference = v; return this; };
 
 	ScopeContext.prototype.namepath = function (){
 		return this._scope.namepath();
@@ -14339,12 +13565,14 @@
 	// name of the variable etc?
 
 	ScopeContext.prototype.reference = function (){
+		// p "p reference {STACK.scoping}"
+		// should be a special context-variable!!!
 		return this._reference || (this._reference = this.scope().declare("self",new This()));
 	};
 
 	ScopeContext.prototype.c = function (){
 		var val = this._value || this._reference;
-		return (val) ? (val.c()) : ("this");
+		return val ? (val.c()) : ("this");
 	};
 
 	ScopeContext.prototype.cache = function (){
@@ -14358,7 +13586,7 @@
 	RootScopeContext.prototype.c = function (o){
 		// return "" if o and o:explicit
 		var val = this._value || this._reference;
-		return ((val && val != this)) ? (val.c()) : ("this");
+		return (val && val != this) ? (val.c()) : ("this");
 		// should be the other way around, no?
 		// o and o:explicit ? super : ""
 	};
@@ -14414,7 +13642,7 @@
 	var INTERSECT = exports.INTERSECT = new Const('intersect$');
 	var CLASSDEF = exports.CLASSDEF = new Const('imba$class');
 	var TAGDEF = exports.TAGDEF = new Const('Imba.TAGS.define');
-	var NEWTAG = exports.NEWTAG = new Identifier("_T");
+	var NEWTAG = exports.NEWTAG = new Identifier("tag$");
 
 
 
@@ -14426,14 +13654,13 @@
 
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 12 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var path = __webpack_require__(13);
+	var path = __webpack_require__(11);
 	var util = __webpack_require__(4);
 
 	function SourceMap(source){
@@ -14489,6 +13716,8 @@
 		// return self
 		var locmap = util.locationToLineColMap(self.sourceCode());
 		self._maps = [];
+		
+		// console.log options:js
 		
 		var match;
 		// split the code in lines. go through each line 
@@ -14554,13 +13783,13 @@
 		};
 		
 		
-		var rel = this.targetPath() && path.relative(path.dirname(this.targetPath()),this.sourcePath());
+		var rel = path.relative(path.dirname(this.targetPath()),this.sourcePath());
 		
 		var map = {
 			version: 3,
 			file: this.sourceName().replace(/\.imba/,'.js') || '',
 			sourceRoot: this.options().sourceRoot || '',
-			sources: [rel || this.sourcePath()],
+			sources: [rel],
 			sourcesContent: [this.sourceCode()],
 			names: [],
 			mappings: buffer
@@ -14581,7 +13810,7 @@
 	SourceMap.prototype.encodeVlq = function (value){
 		var answer = '';
 		// Least significant bit represents the sign.
-		var signBit = (value < 0) ? (1) : (0);
+		var signBit = value < 0 ? (1) : (0);
 		var nextChunk;
 		// The next bits are the actual value.
 		var valueToEncode = (Math.abs(value) << 1) + signBit;
@@ -14607,7 +13836,7 @@
 
 
 /***/ },
-/* 13 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -14835,7 +14064,104 @@
 	    }
 	;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+
+	var process = module.exports = {};
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = setTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    clearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        setTimeout(drainQueue, 0);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
 
 /***/ }
 /******/ ]);

@@ -33,7 +33,7 @@ tag md
 	def assemble doc
 		<self.md html=doc:body>
 
-	def build
+	def setup
 		super
 		reload if Imba.isClient and src
 
