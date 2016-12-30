@@ -65,6 +65,7 @@ tag home < page
 
 	def awaken
 		var snippets = document.querySelectorAll('code[data-src]')
+
 		for snippet in snippets
 			var src = snippet.getAttribute('data-src')
 			DEPS[src] = {html: snippet:innerHTML}

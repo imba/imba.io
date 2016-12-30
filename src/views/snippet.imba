@@ -333,11 +333,11 @@ tag snippet
 		<jsview@jsview>
 
 	def reload
-		return unless @initialized
+		unless this.FLAGS & Imba.TAG_SETUP
+			return self
 
 		if DEPS[src]
 			var res = DEPS[src]
-			console.log("LOAD VIEW!!!")
 			view.load(null,html: res:html, filename: src, lang: 'imba')
 			if autorun
 				setTimeout(&,50) do run
@@ -345,7 +345,6 @@ tag snippet
 
 		# get imba document?!?
 		APP.fetchDocument(src) do |res|
-			console.log 'fetching document for snippet'
 			view.load(res:body, filename: src, lang: 'imba')
 			if autorun
 				setTimeout(&,50) do run
