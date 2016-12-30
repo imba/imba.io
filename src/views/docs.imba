@@ -108,9 +108,13 @@ tag api-method < api-item
 
 	def tags
 		<div@tags>
+			<api-return[data:return] name='returns'> if data:return
+
 			if data:deprecated
 				<.deprecated.red> 'Method is deprecated'
-			<api-return[data:return] name='returns'> if data:return
+			if data:private
+				<.private.red> 'Method is private'
+
 
 	def path
 		@path or (iname + '.' + data:name)
@@ -224,10 +228,10 @@ tag docs < page
 						<.header> <doc-link[root].class>
 						<.content>
 							<.static>
-								for meth in root['.'] when meth:desc
+								for meth in root['.'] when meth:desc and !meth:private
 									<.entry> <doc-link[meth]>
 							<.instance>
-								for meth in root['#'] when meth:desc
+								for meth in root['#'] when meth:desc and !meth:private
 									<.entry> <doc-link[meth]>
 
 

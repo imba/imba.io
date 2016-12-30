@@ -5,6 +5,8 @@ var path = '/repos/imba/src'
 var imbac = require 'imba/lib/compiler'
 var mdr = require './../src/markdown'
 
+DEBUG = 0
+
 require '../src/views/snippet'
 
 var entityBased = yes
@@ -134,7 +136,7 @@ def inc path, outpath
 
 def generate
 	console.log 'generating documentation'
-	console.log doc:entities
+	# console.log doc:entities
 
 	var docfile = {
 
@@ -143,11 +145,11 @@ def generate
 	var map = doc:entities
 
 	for own path,item of map
-		console.log "handle path {path}"
+		# console.log "handle path {path}"
 		var [all,up,typ,name] = (path.match(/^(.*)(\#|\.)([\w\=\-]+)$/) or [path,'','',path])
 
 		if map[up]
-			console.log "found up for {up}"
+			# console.log "found up for {up}"
 			map[up][typ] ||= []
 			map[up][typ].push(path)
 

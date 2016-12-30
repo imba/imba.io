@@ -449,6 +449,11 @@
 	function compile(code,o){
 		if(o === undefined) o = {};
 		try {
+			// check if code is completely blank
+			if (!/\S/.test(code)) {
+				return {js: ""};
+			};
+			
 			var tokens = tokenize(code,o);
 			var ast = parse(tokens,o);
 			return ast.compile(o);
