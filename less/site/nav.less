@@ -62,11 +62,17 @@
 		cursor: pointer;
 		position: relative;
 		// &:hover b { color: #28A5EA !important; }
-		i { color: @op; font-style: inherit; }
+		i { font-style: inherit; } // color: @op; 
 		b { color: #437997; font-weight: inherit; }
-		.const { color: #2A607D; }
+		.const { color: #2A607D; }		
+	}
+	.entry a:active {
+		font-weight: bold;
+	}
 
-		
+	.entry .const:first-child {
+		color: #75818e;
+		& + i { color: #75818e; }
 	}
 
 	a:before {

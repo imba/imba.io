@@ -16,11 +16,16 @@ tag api-ref
 tag api-item
 
 tag api-path < span
+	prop short
 
 	def setup
 		var items = []
-		if data isa String
-			html = data.replace(/\b([\w]+|\.|\#)\b/g) do |m,i|
+		var str = data
+		if str isa String
+			if short
+				str = str.replace(/([A-Z]\w*\.)*(?=[A-Z])/g,'')
+
+			html = str.replace(/\b([\w]+|\.|\#)\b/g) do |m,i|
 				if i == '.' or i == '#'
 					"<i>{i}</i>"
 				elif i[0] == i[0].toUpperCase
@@ -134,9 +139,10 @@ tag api-method < api-item
 			tags
 
 tag doc-link < a
+	prop short
 
 	def render
-		<self href="/docs#{pathToAnchor(data:namepath)}"> <api-path[data:namepath]>
+		<self href="/docs#{pathToAnchor(data:namepath)}"> <api-path[data:namepath] short=short>
 		super
 
 	def ontap
@@ -229,9 +235,9 @@ tag docs < page
 						<.content>
 							<.static>
 								for meth in root['.'] when meth:desc and !meth:private
-									<.entry> <doc-link[meth]>
+									<.entry> <doc-link[meth] short=yes>
 							<.instance>
 								for meth in root['#'] when meth:desc and !meth:private
-									<.entry> <doc-link[meth]>
+									<.entry> <doc-link[meth] short=yes>
 
 

@@ -1510,7 +1510,6 @@ hr + p {
   position: relative;
 }
 ._page > .nav a i {
-  color: #AB4D4D;
   font-style: inherit;
 }
 ._page > .nav a b {
@@ -1519,6 +1518,15 @@ hr + p {
 }
 ._page > .nav a .const {
   color: #2A607D;
+}
+._page > .nav .entry a:active {
+  font-weight: bold;
+}
+._page > .nav .entry .const:first-child {
+  color: #75818e;
+}
+._page > .nav .entry .const:first-child + i {
+  color: #75818e;
 }
 ._page > .nav a:before {
   position: absolute;
