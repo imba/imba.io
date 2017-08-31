@@ -50,7 +50,7 @@
 
 	var compiler = __webpack_require__(2);
 
-	var ImbaParseError = __webpack_require__(8).ImbaParseError;
+	var ImbaParseError = __webpack_require__(9).ImbaParseError;
 	var api = {};
 
 	function normalizeError(e,o){
@@ -152,15 +152,23 @@
 /* 1 */
 /***/ function(module, exports) {
 
-	
+	// imba$nolib=1
+
 	/*
 	Imba is the namespace for all runtime related utilities
 	@namespace
 	*/
 
-	Imba = {VERSION: '1.0.0-beta'};
+	Imba = {VERSION: '1.0.0-rc.3'};
 
-
+	if (typeof window !== 'undefined') {
+		window.imba = Imba;
+		window.global || (window.global = window);
+		
+		if (window.define && window.define.amd) {
+			window.define("imba",[],function() { return Imba; });
+		};
+	};
 
 	/*
 	True if running in client environment.
@@ -214,7 +222,7 @@
 	*/
 
 	Imba.iterable = function (o){
-		return (o) ? (((o.toArray) ? (o.toArray()) : (o))) : ([]);
+		return o ? ((o.toArray ? o.toArray() : o)) : [];
 	};
 
 	/*
@@ -246,11 +254,11 @@
 	};
 
 	Imba.indexOf = function (a,b){
-		return ((b && b.indexOf)) ? (b.indexOf(a)) : ([].indexOf.call(a,b));
+		return (b && b.indexOf) ? b.indexOf(a) : [].indexOf.call(a,b);
 	};
 
 	Imba.len = function (a){
-		return a && ((a.len instanceof Function) ? (a.len.call(a)) : (a.length)) || 0;
+		return a && ((a.len instanceof Function) ? a.len.call(a) : a.length) || 0;
 	};
 
 	Imba.prop = function (scope,name,opts){
@@ -298,10 +306,10 @@
 		while ((prev = node) && (node = node.next)){
 			if (cb = node.listener) {
 				if (node.path && cb[node.path]) {
-					ret = (args) ? (cb[node.path].apply(cb,args)) : (cb[node.path]());
+					ret = args ? cb[node.path].apply(cb,args) : cb[node.path]();
 				} else {
 					// check if it is a method?
-					ret = (args) ? (cb.apply(node,args)) : (cb.call(node));
+					ret = args ? cb.apply(node,args) : cb.call(node);
 				};
 			};
 			
@@ -372,7 +380,7 @@
 		return this;
 	};
 
-	Imba;
+	module.exports = Imba;
 
 
 /***/ },
@@ -384,11 +392,11 @@
 	var T = __webpack_require__(3);
 	var util = __webpack_require__(4);
 	var lexer = __webpack_require__(6);
-	var rewriter = __webpack_require__(9);
-	var parser = exports.parser = __webpack_require__(10).parser;
-	var ast = __webpack_require__(11);
+	var rewriter = __webpack_require__(10);
+	var parser = exports.parser = __webpack_require__(11).parser;
+	var ast = __webpack_require__(12);
 
-	var ImbaParseError = __webpack_require__(8).ImbaParseError;
+	var ImbaParseError = __webpack_require__(9).ImbaParseError;
 
 	// Instantiate a Lexer for our use here.
 	var lex = exports.lex = new (lexer.Lexer)();
@@ -433,7 +441,7 @@
 
 	function parse(code,o){
 		if(o === undefined) o = {};
-		var tokens = (code instanceof Array) ? (code) : (tokenize(code,o));
+		var tokens = (code instanceof Array) ? code : tokenize(code,o);
 		try {
 			if (tokens != code) o._source || (o._source = code);
 			o._tokens = tokens;
@@ -505,7 +513,7 @@
 	function Token(type,value,loc,len){
 		this._type = type;
 		this._value = value;
-		this._loc = (loc != null) ? (loc) : (-1);
+		this._loc = (loc != null) ? loc : (-1);
 		this._len = len || 0;
 		this._meta = null;
 		this.generated = false;
@@ -549,7 +557,7 @@
 	};
 
 	Token.prototype.sourceMapMarker = function (){
-		return (this._loc == -1) ? (':') : (("%$" + (this._loc) + "$%"));
+		return (this._loc == -1) ? ':' : (("%$" + (this._loc) + "$%"));
 		// @col == -1 ? '' : "%%{@line}${@col}%%"
 	};
 
@@ -620,7 +628,8 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {
+	/* WEBPACK VAR INJECTION */(function(process) {function iter$(a){ return a ? (a.toArray ? a.toArray() : a) : []; };
+
 	function brace(str){
 		var lines = str.match(/\n/);
 		// what about indentation?
@@ -651,7 +660,7 @@
 
 	function flatten(arr){
 		var out = [];
-		arr.forEach(function(v) { return (v instanceof Array) ? (out.push.apply(out,flatten(v))) : (out.push(v)); });
+		arr.forEach(function(v) { return (v instanceof Array) ? out.push.apply(out,flatten(v)) : out.push(v); });
 		return out;
 	}; exports.flatten = flatten;
 
@@ -729,7 +738,7 @@
 		var a = Infinity;
 		var b = -Infinity;
 		
-		for (var i = 0, ary = Imba.iterable(locs), len = ary.length, loc; i < len; i++) {
+		for (var i = 0, ary = iter$(locs), len = ary.length, loc; i < len; i++) {
 			loc = ary[i];
 			if (loc && loc._loc != undefined) {
 				loc = loc._loc;
@@ -806,7 +815,7 @@
 				curr = null;
 				var chars = m[1].split('');
 				
-				for (var i1 = 0, ary = Imba.iterable(chars), len = ary.length, item; i1 < len; i1++) {
+				for (var i1 = 0, ary = iter$(chars), len = ary.length, item; i1 < len; i1++) {
 					// console.log "parsing {item} at {i}",aliases
 					item = ary[i1];
 					var key = aliases[item] || item;
@@ -826,7 +835,7 @@
 					val = false;
 				};
 				
-				for (var j = 0, items = Imba.iterable(groups), len_ = items.length, g; j < len_; j++) {
+				for (var j = 0, items = iter$(groups), len_ = items.length, g; j < len_; j++) {
 					g = items[j];
 					if (key.substr(0,g.length) == g) {
 						console.log('should be part of group');
@@ -1069,15 +1078,17 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
+	__webpack_require__(7);
+	function iter$(a){ return a ? (a.toArray ? a.toArray() : a) : []; };
+
 	var T = __webpack_require__(3);
 	var Token = T.Token;
 
-	var INVERSES = __webpack_require__(7).INVERSES;
+	var INVERSES = __webpack_require__(8).INVERSES;
 
 	var K = 0;
 
-	var ERR = __webpack_require__(8);
+	var ERR = __webpack_require__(9);
 
 	// Constants
 	// ---------
@@ -1586,7 +1597,7 @@
 	Lexer.prototype.tagToken = function (){
 		var match, ary;
 		if (!(match = TAG.exec(this._chunk))) { return 0 };
-		var ary = Imba.iterable(match);var input = ary[0],type = ary[1],identifier = ary[2];
+		var ary = iter$(match);var input = ary[0],type = ary[1],identifier = ary[2];
 		
 		if (type == '<') {
 			this.token('TAG_START','<',1);
@@ -1696,7 +1707,7 @@
 		
 		if (!(match = SELECTOR.exec(this._chunk))) { return 0 };
 		
-		var ary = Imba.iterable(match);var input = ary[0],id = ary[1],kind = ary[2];
+		var ary = iter$(match);var input = ary[0],id = ary[1],kind = ary[2];
 		
 		// this is a closed selector
 		if (kind == '(') {
@@ -1841,7 +1852,7 @@
 		var len = this._ends.length;
 		if (len > 0) {
 			var ctx0 = this._ends[len - 1];
-			var ctx1 = (len > 1) ? (this._ends[len - 2]) : (ctx0);
+			var ctx1 = (len > 1) ? this._ends[len - 2] : ctx0;
 			return ctx0 == 'TAG_END' || (ctx1 == 'TAG_END' && ctx0 == 'OUTDENT');
 		};
 		return false;
@@ -1871,8 +1882,8 @@
 		var ary;
 		var match;
 		
-		var ctx0 = (this._ends.length > 0) ? (this._ends[this._ends.length - 1]) : (null);
-		var ctx1 = (this._ends.length > 1) ? (this._ends[this._ends.length - 2]) : (null);
+		var ctx0 = (this._ends.length > 0) ? this._ends[this._ends.length - 1] : null;
+		var ctx1 = (this._ends.length > 1) ? this._ends[this._ends.length - 2] : null;
 		var innerctx = ctx0;
 		var typ;
 		var reserved = false;
@@ -1923,7 +1934,7 @@
 			return 0;
 		};
 		
-		var ary = Imba.iterable(match);var input = ary[0],id = ary[1],typ = ary[2],m3 = ary[3],m4 = ary[4],colon = ary[5];
+		var ary = iter$(match);var input = ary[0],id = ary[1],typ = ary[2],m3 = ary[3],m4 = ary[4],colon = ary[5];
 		var idlen = id.length;
 		
 		// What is the logic here?
@@ -2205,7 +2216,7 @@
 	};
 
 	Lexer.prototype.escapeStr = function (str,heredoc,q){
-		str = str.replace(MULTILINER,((heredoc) ? ('\\n') : ('')));
+		str = str.replace(MULTILINER,(heredoc ? '\\n' : ''));
 		if (q) {
 			var r = RegExp(("\\\\[" + q + "]"),"g");
 			str = str.replace(r,q);
@@ -2287,6 +2298,19 @@
 		return heredoc.length;
 	};
 
+	Lexer.prototype.parseMagicalOptions = function (str){
+		var self = this;
+		if (str.indexOf('imba$') >= 0) {
+			str.replace(/imba\$(\w+)\=(.*)\b/g,function(m,name,val) {
+				if ((/^\d+$/).test(val)) {
+					val = parseInt(val);
+				};
+				return self._opts[name] = val;
+			});
+		};
+		return self;
+	};
+
 	// Matches and consumes comments.
 	Lexer.prototype.commentToken = function (){
 		var match,length,comment,indent,prev;
@@ -2302,6 +2326,8 @@
 			prev = last(this._tokens);
 			var pt = prev && tT(prev);
 			var note = '//' + comment.substr(1);
+			
+			this.parseMagicalOptions(note);
 			
 			if (this._last && this._last.spaced) {
 				note = ' ' + note;
@@ -2375,13 +2401,13 @@
 		
 		prev = last(this._tokens);
 		// FIX
-		if (prev && (Imba.indexOf(tT(prev),((prev.spaced) ? (
+		if (prev && (Imba.indexOf(tT(prev),(prev.spaced ? 
 			NOT_REGEX
-		) : (
+		 : 
 			NOT_SPACED_REGEX
-		))) >= 0)) { return 0 };
+		)) >= 0)) { return 0 };
 		if (!(match = REGEX.exec(this._chunk))) { return 0 };
-		var ary = Imba.iterable(match);var m = ary[0],regex = ary[1],flags = ary[2];
+		var ary = iter$(match);var m = ary[0],regex = ary[1],flags = ary[2];
 		
 		this.token('REGEX',("" + regex + flags),m.length);
 		return m.length;
@@ -2391,7 +2417,7 @@
 	// The escaping should rather happen in AST - possibly as an additional flag?
 	Lexer.prototype.heregexToken = function (match){
 		var ary;
-		var ary = Imba.iterable(match);var heregex = ary[0],body = ary[1],flags = ary[2];
+		var ary = iter$(match);var heregex = ary[0],body = ary[1],flags = ary[2];
 		this.token('REGEX',heregex,heregex.length);
 		return heregex.length;
 	};
@@ -3110,12 +3136,12 @@
 
 	Lexer.prototype.lastTokenType = function (){
 		var token = this._tokens[this._tokens.length - 1];
-		return (token) ? (tT(token)) : ('NONE');
+		return token ? tT(token) : 'NONE';
 	};
 
 	Lexer.prototype.lastTokenValue = function (){
 		var token = this._tokens[this._tokens.length - 1];
-		return (token) ? (token._value) : ('');
+		return token ? token._value : '';
 	};
 
 	// Peek at a tokid in the current token stream.
@@ -3149,14 +3175,14 @@
 
 	// Converts newlines for string literals.
 	Lexer.prototype.escapeLines = function (str,heredoc){
-		return str.replace(MULTILINER,((heredoc) ? ('\\n') : ('')));
+		return str.replace(MULTILINER,(heredoc ? '\\n' : ''));
 	};
 
 	// Constructs a string token by escaping quotes and newlines.
 	Lexer.prototype.makeString = function (body,quote,heredoc){
 		if (!body) { return quote + quote };
 		body = body.replace(/\\([\s\S])/g,function(match,contents) {
-			return ((contents == '\n' || contents == quote)) ? (contents) : (match);
+			return (contents == '\n' || contents == quote) ? contents : match;
 		});
 		// Does not work now
 		body = body.replace(RegExp(("" + quote),"g"),'\\$&');
@@ -3190,8 +3216,27 @@
 
 /***/ },
 /* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	if (typeof Imba !== 'undefined') {
+		console.warn(("Imba v" + (Imba.VERSION) + " is already loaded."));
+		module.exports = Imba;
+	} else {
+		var Imba = __webpack_require__(1);
+		module.exports = Imba;
+		
+		
+		
+		
+	};
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports) {
 
+	function iter$(a){ return a ? (a.toArray ? a.toArray() : a) : []; };
 	// List of the token pairs that must be balanced.
 	var BALANCED_PAIRS = exports.BALANCED_PAIRS = [
 		['(',')'],
@@ -3214,7 +3259,7 @@
 	// var EXPRESSION_START = []
 	// var EXPRESSION_END   = []
 
-	for (var i = 0, ary = Imba.iterable(BALANCED_PAIRS), len = ary.length, pair; i < len; i++) {
+	for (var i = 0, ary = iter$(BALANCED_PAIRS), len = ary.length, pair; i < len; i++) {
 		pair = ary[i];
 		var left = pair[0];
 		var rite = pair[1];
@@ -3256,9 +3301,10 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(7);
 	// create separate error-types with all the logic
 
 	var util = __webpack_require__(4);
@@ -3374,10 +3420,11 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {
+	/* WEBPACK VAR INJECTION */(function(process) {function iter$(a){ return a ? (a.toArray ? a.toArray() : a) : []; };
+
 	// The Imba language has a good deal of optional syntax, implicit syntax,
 	// and shorthand syntax. This can greatly complicate a grammar and bloat
 	// the resulting parse table. Instead of making the parser handle it all, we take
@@ -3392,7 +3439,7 @@
 	var v8;
 
 
-	var constants$ = __webpack_require__(7), INVERSES = constants$.INVERSES, BALANCED_PAIRS = constants$.BALANCED_PAIRS, TOK = constants$.TOK;
+	var constants$ = __webpack_require__(8), INVERSES = constants$.INVERSES, BALANCED_PAIRS = constants$.BALANCED_PAIRS, TOK = constants$.TOK;
 
 	// var TERMINATOR = TERMINATOR
 
@@ -3405,7 +3452,7 @@
 
 	var arrayToHash = function(ary) {
 		var hash = {};
-		for (var i = 0, items = Imba.iterable(ary), len = items.length; i < len; i++) {
+		for (var i = 0, items = iter$(ary), len = items.length; i < len; i++) {
 			hash[items[i]] = 1;
 		};
 		return hash;
@@ -3779,7 +3826,7 @@
 	Rewriter.prototype.removeMidExpressionNewlines = function (){
 		
 		return this.scanTokens(function(token,i,tokens) { // do |token,i,tokens|
-			var next = (tokens.length > (i + 1)) ? (tokens[i + 1]) : (null);
+			var next = (tokens.length > (i + 1)) ? tokens[i + 1] : null;
 			if (!(token._type === TERMINATOR && next && EXPRESSION_CLOSE_HASH[next._type])) { return 1 }; // .indexOf(next) >= 0
 			if (next && next._type == OUTDENT) { return 1 };
 			// return 1
@@ -3908,7 +3955,7 @@
 			var type = token._type;
 			var v = token._value;
 			
-			var ctx = (stack.length) ? (stack[stack.length - 1]) : (baseCtx);
+			var ctx = stack.length ? stack[stack.length - 1] : baseCtx;
 			var idx;
 			
 			if (noBraceContext.indexOf(type) >= 0) {
@@ -4098,7 +4145,7 @@
 				return false;
 			};
 			
-			var post = (tokens.length > (i + 1)) ? (tokens[i + 1]) : (null);
+			var post = (tokens.length > (i + 1)) ? tokens[i + 1] : null;
 			var postTyp = post && post._type;
 			
 			if (token.generated || prev === ',') {
@@ -4128,7 +4175,7 @@
 			var token = tokens[i];
 			var type = token._type;
 			
-			var prev = (i > 0) ? (tokens[i - 1]) : (null);
+			var prev = (i > 0) ? tokens[i - 1] : null;
 			var next = tokens[i + 1];
 			
 			var pt = prev && prev._type;
@@ -4211,7 +4258,7 @@
 	};
 
 	Rewriter.prototype.indentAction = function (token,i,tokens){
-		var idx = (this.tokenType(i - 1) === ',') ? ((i - 1)) : (i);
+		var idx = (this.tokenType(i - 1) === ',') ? ((i - 1)) : i;
 		tokens.splice(idx,0,T.OUTDENT);
 		return;
 	};
@@ -4311,7 +4358,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* parser generated by jison-fork */
@@ -5212,17 +5259,19 @@
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {// TODO Create Expression - make all expressions inherit from these?
+	/* WEBPACK VAR INJECTION */(function(process) {__webpack_require__(7);
+	function iter$(a){ return a ? (a.toArray ? a.toArray() : a) : []; };
+	// TODO Create Expression - make all expressions inherit from these?
 
 	var helpers = __webpack_require__(4);
-	var constants = __webpack_require__(7);
+	var constants = __webpack_require__(8);
 
-	var ImbaParseError = __webpack_require__(8).ImbaParseError;
+	var ImbaParseError = __webpack_require__(9).ImbaParseError;
 	var Token = __webpack_require__(3).Token;
-	var SourceMap = __webpack_require__(12).SourceMap;
+	var SourceMap = __webpack_require__(13).SourceMap;
 
 	var AST = exports.AST = {};
 
@@ -5413,7 +5462,7 @@
 	}; exports.parseError = parseError;
 
 	function c__(obj){
-		return (typeof obj == 'string') ? (obj) : (obj.c());
+		return (typeof obj == 'string') ? obj : obj.c();
 	};
 
 	function mark__(tok){
@@ -5434,7 +5483,7 @@
 	};
 
 	function blk__(obj){
-		return (obj instanceof Array) ? (Block.wrap(obj)) : (obj);
+		return (obj instanceof Array) ? Block.wrap(obj) : obj;
 	};
 
 	function sym__(obj){
@@ -5443,12 +5492,12 @@
 	};
 
 	function cary__(ary){
-		return ary.map(function(v) { return (typeof v == 'string') ? (v) : (v.c()); });
+		return ary.map(function(v) { return (typeof v == 'string') ? v : v.c(); });
 	};
 
 	function dump__(obj,key){
 		if (obj instanceof Array) {
-			return obj.map(function(v) { return (v && v.dump) ? (v.dump(key)) : (v); });
+			return obj.map(function(v) { return (v && v.dump) ? v.dump(key) : v; });
 		} else if (obj && obj.dump) {
 			return obj.dump();
 		};
@@ -5463,9 +5512,9 @@
 	};
 
 	function reduce__(res,ary){
-		for (var i = 0, items = Imba.iterable(ary), len = items.length, v; i < len; i++) {
+		for (var i = 0, items = iter$(ary), len = items.length, v; i < len; i++) {
 			v = items[i];
-			(v instanceof Array) ? (reduce__(res,v)) : (res.push(v));
+			(v instanceof Array) ? reduce__(res,v) : res.push(v);
 		};
 		return;
 	};
@@ -5473,9 +5522,9 @@
 	function flatten__(ary,compact){
 		if(compact === undefined) compact = false;
 		var out = [];
-		for (var i = 0, items = Imba.iterable(ary), len = items.length, v; i < len; i++) {
+		for (var i = 0, items = iter$(ary), len = items.length, v; i < len; i++) {
 			v = items[i];
-			(v instanceof Array) ? (reduce__(out,v)) : (out.push(v));
+			(v instanceof Array) ? reduce__(out,v) : out.push(v);
 		};
 		return out;
 	};
@@ -5600,7 +5649,7 @@
 
 	Stash.prototype.pluck = function (item){
 		var match = null;
-		for (var i = 0, ary = Imba.iterable(this._entities), len = ary.length, entity; i < len; i++) {
+		for (var i = 0, ary = iter$(this._entities), len = ary.length, entity; i < len; i++) {
 			entity = ary[i];
 			if (entity == item || (entity instanceof item)) {
 				match = entity;
@@ -5732,7 +5781,7 @@
 	Stack.prototype.relative = function (node,offset){
 		if(offset === undefined) offset = 0;
 		var idx = this._nodes.indexOf(node);
-		return (idx >= 0) ? (this._nodes[idx + offset]) : (null);
+		return (idx >= 0) ? this._nodes[idx + offset] : null;
 	};
 
 	Stack.prototype.scope = function (lvl){
@@ -5976,6 +6025,10 @@
 		return false;
 	};
 
+	Node.prototype.shouldParenthesizeInTernary = function (){
+		return true;
+	};
+
 	Node.prototype.block = function (){
 		return Block.wrap([this]);
 	};
@@ -6021,7 +6074,7 @@
 		};
 		
 		// if indent and indent.match(/\:/)
-		this._indentation || (this._indentation = (a && b) ? (new Indentation(a,b)) : (INDENT));
+		this._indentation || (this._indentation = (a && b) ? new Indentation(a,b) : INDENT);
 		return this;
 	};
 
@@ -6139,7 +6192,7 @@
 	};
 
 	ValueNode.prototype.js = function (o){
-		return (typeof this._value == 'string') ? (this._value) : (this._value.c());
+		return (typeof this._value == 'string') ? this._value : this._value.c();
 	};
 
 	ValueNode.prototype.visit = function (){
@@ -6271,7 +6324,7 @@
 
 	ListNode.prototype.concat = function (other){
 		// need to store indented content as well?
-		this._nodes = this.nodes().concat((other instanceof Array) ? (other) : (other.nodes()));
+		this._nodes = this.nodes().concat((other instanceof Array) ? other : other.nodes());
 		return this;
 	};
 
@@ -6310,19 +6363,19 @@
 	ListNode.prototype.break = function (br,pre){
 		if(pre === undefined) pre = false;
 		if (typeof br == 'string') { br = new Terminator(br) };
-		(pre) ? (this.unshift(br)) : (this.push(br));
+		pre ? this.unshift(br) : this.push(br);
 		return this;
 	};
 
 	ListNode.prototype.some = function (cb){
-		for (var i = 0, ary = Imba.iterable(this._nodes), len = ary.length; i < len; i++) {
+		for (var i = 0, ary = iter$(this._nodes), len = ary.length; i < len; i++) {
 			if (cb(ary[i])) { return true };
 		};
 		return false;
 	};
 
 	ListNode.prototype.every = function (cb){
-		for (var i = 0, ary = Imba.iterable(this._nodes), len = ary.length; i < len; i++) {
+		for (var i = 0, ary = iter$(this._nodes), len = ary.length; i < len; i++) {
 			if (!cb(ary[i])) { return false };
 		};
 		return true;
@@ -6404,7 +6457,7 @@
 
 	ListNode.prototype.realCount = function (){
 		var k = 0;
-		for (var i = 0, ary = Imba.iterable(this._nodes), len = ary.length, node; i < len; i++) {
+		for (var i = 0, ary = iter$(this._nodes), len = ary.length, node; i < len; i++) {
 			node = ary[i];
 			if (node && !(node instanceof Meta)) { k++ };
 		};
@@ -6412,7 +6465,7 @@
 	};
 
 	ListNode.prototype.visit = function (){
-		for (var i = 0, ary = Imba.iterable(this._nodes), len = ary.length, node; i < len; i++) {
+		for (var i = 0, ary = iter$(this._nodes), len = ary.length, node; i < len; i++) {
 			node = ary[i];
 			node && node.traverse();
 		};
@@ -6420,7 +6473,7 @@
 	};
 
 	ListNode.prototype.isExpressable = function (){
-		for (var i = 0, ary = Imba.iterable(this.nodes()), len = ary.length, node; i < len; i++) {
+		for (var i = 0, ary = iter$(this.nodes()), len = ary.length, node; i < len; i++) {
 			node = ary[i];
 			if (node && !node.isExpressable()) { return false };
 		};
@@ -6447,9 +6500,9 @@
 		var l = nodes.length;
 		var str = "";
 		
-		for (var j = 0, ary = Imba.iterable(nodes), len = ary.length, arg; j < len; j++) {
+		for (var j = 0, ary = iter$(nodes), len = ary.length, arg; j < len; j++) {
 			arg = ary[j];
-			var part = (typeof arg == 'string') ? (arg) : (((arg) ? (arg.c({expression: express})) : ('')));
+			var part = (typeof arg == 'string') ? arg : ((arg ? arg.c({expression: express}) : ''));
 			str += part;
 			if (part && (!express || arg != last) && !(arg instanceof Meta)) { str += delim };
 		};
@@ -6463,7 +6516,7 @@
 			return this;
 		};
 		
-		this._indentation || (this._indentation = (a && b) ? (new Indentation(a,b)) : (INDENT));
+		this._indentation || (this._indentation = (a && b) ? new Indentation(a,b) : INDENT);
 		return this;
 	};
 
@@ -6506,13 +6559,13 @@
 		if (!((ary instanceof Array))) {
 			throw new SyntaxError("what");
 		};
-		return (ary.length == 1 && (ary[0] instanceof Block)) ? (ary[0]) : (new Block(ary));
+		return (ary.length == 1 && (ary[0] instanceof Block)) ? ary[0] : new Block(ary);
 	};
 
 	Block.prototype.visit = function (){
 		if (this._scope) { this._scope.visit() };
 		
-		for (var i = 0, ary = Imba.iterable(this._nodes), len = ary.length, node; i < len; i++) {
+		for (var i = 0, ary = iter$(this._nodes), len = ary.length, node; i < len; i++) {
 			node = ary[i];
 			node && node.traverse();
 		};
@@ -6547,7 +6600,7 @@
 	// go through children and unwrap inner nodes
 	Block.prototype.unwrap = function (){
 		var ary = [];
-		for (var i = 0, items = Imba.iterable(this.nodes()), len = items.length, node; i < len; i++) {
+		for (var i = 0, items = iter$(this.nodes()), len = items.length, node; i < len; i++) {
 			node = items[i];
 			if (node instanceof Block) {
 				ary.push.apply(ary,node.unwrap());
@@ -6584,7 +6637,7 @@
 	};
 
 	Block.prototype.cpart = function (node){
-		var out = (typeof node == 'string') ? (node) : (((node) ? (node.c()) : ("")));
+		var out = (typeof node == 'string') ? node : ((node ? node.c() : ""));
 		if (out == null || out == undefined || out == "") { return "" };
 		
 		if (out instanceof Array) {
@@ -6614,14 +6667,14 @@
 		};
 		
 		var str = "";
-		for (var i = 0, ary = Imba.iterable(ast), len = ary.length; i < len; i++) {
+		for (var i = 0, ary = iter$(ast), len = ary.length; i < len; i++) {
 			str += this.cpart(ary[i]);
 		};
 		
 		// now add the head items as well
 		if (this._head && this._head.length > 0) {
 			var prefix = "";
-			for (var j = 0, items = Imba.iterable(this._head), len_ = items.length; j < len_; j++) {
+			for (var j = 0, items = iter$(this._head), len_ = items.length; j < len_; j++) {
 				var hv = this.cpart(items[j]);
 				if (hv) { prefix += hv + '\n' };
 			};
@@ -6641,7 +6694,7 @@
 
 	Block.prototype.expressions = function (){
 		var expressions = [];
-		for (var i = 0, ary = Imba.iterable(this.nodes()), len = ary.length, node; i < len; i++) {
+		for (var i = 0, ary = iter$(this.nodes()), len = ary.length, node; i < len; i++) {
 			node = ary[i];
 			if (!((node instanceof Terminator))) { expressions.push(node) };
 		};
@@ -6719,6 +6772,14 @@
 	Block.prototype.isExpression = function (){
 		
 		return this.option('express') || this._expression;
+	};
+
+	Block.prototype.shouldParenthesizeInTernary = function (){
+		if (this.count() == 1) {
+			return this.first().shouldParenthesizeInTernary();
+		};
+		
+		return true;
 	};
 
 
@@ -6807,7 +6868,7 @@
 	exports.Parens = Parens; // export class 
 	Parens.prototype.load = function (value){
 		this._noparen = false;
-		return ((value instanceof Block) && value.count() == 1) ? (value.first()) : (value);
+		return ((value instanceof Block) && value.count() == 1) ? value.first() : value;
 	};
 
 	Parens.prototype.isString = function (){
@@ -6826,9 +6887,9 @@
 		if (par instanceof Block) {
 			// is it worth it?
 			if (!o.isExpression()) { this._noparen = true };
-			str = (v instanceof Array) ? (cary__(v)) : (v.c({expression: o.isExpression()}));
+			str = (v instanceof Array) ? cary__(v) : v.c({expression: o.isExpression()});
 		} else {
-			str = (v instanceof Array) ? (cary__(v)) : (v.c({expression: true}));
+			str = (v instanceof Array) ? cary__(v) : v.c({expression: true});
 		};
 		
 		// check if we really need parens here?
@@ -6899,7 +6960,7 @@
 
 	function Return(v){
 		this._traversed = false;
-		this._value = ((v instanceof ArgList) && v.count() == 1) ? (v.last()) : (v);
+		this._value = ((v instanceof ArgList) && v.count() == 1) ? v.last() : v;
 		return this;
 	};
 
@@ -7051,7 +7112,7 @@
 	Param.prototype.setVariable = function(v){ this._variable = v; return this; };
 
 	Param.prototype.varname = function (){
-		return (this._variable) ? (this._variable.c()) : (this.name());
+		return this._variable ? this._variable.c() : this.name();
 	};
 
 	Param.prototype.js = function (o){
@@ -7160,7 +7221,7 @@
 
 	NamedParams.prototype.load = function (list){
 		var load = function(k) { return new NamedParam(k.key(),k.value()); };
-		return (list instanceof Obj) ? (list.value().map(load)) : (list);
+		return (list instanceof Obj) ? list.value().map(load) : list;
 	};
 
 	NamedParams.prototype.visit = function (){
@@ -7483,7 +7544,7 @@
 		// now set stuff if named params(!)
 		
 		if (named) {
-			for (var i3 = 0, ary = Imba.iterable(named.nodes()), $1 = ary.length, k; i3 < $1; i3++) {
+			for (var i3 = 0, ary = iter$(named.nodes()), $1 = ary.length, k; i3 < $1; i3++) {
 				// console.log "named var {k.c}"
 				k = ary[i3];
 				op = OP('.',namedvar,k.c()).c();
@@ -7502,7 +7563,7 @@
 		
 		
 		// if opt:length == 0
-		return (ast.length > 0) ? ((ast.join(";\n") + ";")) : (EMPTY);
+		return (ast.length > 0) ? ((ast.join(";\n") + ";")) : EMPTY;
 	};
 
 
@@ -7519,7 +7580,7 @@
 		if(pos === undefined) pos = -1;
 		var vardec = new VariableDeclarator(name,init);
 		if (name instanceof Variable) { (vardec.setVariable(name),name) };
-		(pos == 0) ? (this.unshift(vardec)) : (this.push(vardec));
+		(pos == 0) ? this.unshift(vardec) : this.push(vardec);
 		return vardec;
 	};
 
@@ -7543,7 +7604,7 @@
 		
 		// FIX PERFORMANCE
 		var out = compact__(cary__(this.nodes())).join(", ");
-		return (out) ? (("var " + out)) : ("");
+		return out ? (("var " + out)) : "";
 	};
 
 	function VariableDeclarator(){ return Param.apply(this,arguments) };
@@ -7642,7 +7703,7 @@
 		// we need to carefully traverse children in the right order
 		// since we should be able to reference
 		var r;
-		for (var i = 0, ary = Imba.iterable(this.left()), len = ary.length; i < len; i++) {
+		for (var i = 0, ary = iter$(this.left()), len = ary.length; i < len; i++) {
 			ary[i].traverse(); // this should really be a var-declaration
 			if (r = this.right()[i]) { r.traverse() };
 		};
@@ -7661,7 +7722,7 @@
 			this.p("multiassign!");
 			var r = this.right()[0];
 			r.cache();
-			for (var i = 0, ary = Imba.iterable(this.left()), len = ary.length, l; i < len; i++) {
+			for (var i = 0, ary = iter$(this.left()), len = ary.length, l; i < len; i++) {
 				l = ary[i];
 				if (l.splat()) {
 					throw "not supported?";
@@ -7679,10 +7740,10 @@
 				pairs.push(OP('=',l,v));
 			};
 		} else {
-			for (var i1 = 0, items = Imba.iterable(this.left()), len_ = items.length, l1; i1 < len_; i1++) {
+			for (var i1 = 0, items = iter$(this.left()), len_ = items.length, l1; i1 < len_; i1++) {
 				l1 = items[i1];
 				r = this.right()[i1];
-				pairs.push((r) ? (OP('=',l1.variable().accessor(),r)) : (l1));
+				pairs.push(r ? OP('=',l1.variable().accessor(),r) : l1);
 			};
 		};
 		
@@ -7759,7 +7820,7 @@
 
 	Root.prototype.js = function (o){
 		var out;
-		if (this._options.bare) {
+		if (!this._options.wrap) {
 			out = this.scope().c();
 		} else {
 			this.body().consume(new ImplicitReturn());
@@ -7794,7 +7855,7 @@
 			loglevel: o.loglevel || 0,
 			analysis: {
 				entities: (o.entities || false),
-				scopes: ((o.scopes == null) ? (o.scopes = true) : (o.scopes))
+				scopes: ((o.scopes == null) ? (o.scopes = true) : o.scopes)
 			}
 		};
 		
@@ -7874,7 +7935,7 @@
 		
 		var head = [];
 		var o = this._options || {};
-		var cname = (this.name() instanceof Access) ? (this.name().right()) : (this.name());
+		var cname = (this.name() instanceof Access) ? this.name().right() : this.name();
 		var namespaced = this.name() != cname;
 		var initor = null;
 		var sup = this.superclass();
@@ -7897,7 +7958,7 @@
 		// compile the cname
 		if (typeof cname != 'string') { cname = cname.c() };
 		
-		var cpath = (typeof this.name() == 'string') ? (this.name()) : (this.name().c());
+		var cpath = (typeof this.name() == 'string') ? this.name() : this.name().c();
 		
 		this._cname = cname;
 		this._cpath = cpath;
@@ -7944,7 +8005,7 @@
 		};
 		
 		if (o.export && !namespaced) {
-			head.push(("exports." + ((o.default) ? ('default') : (cname)) + " = " + cpath + "; // export class \n"))
+			head.push(("exports." + (o.default ? 'default' : cname) + " = " + cpath + "; // export class \n"))
 		};
 		
 		// FIXME
@@ -7955,7 +8016,7 @@
 			this.body().push(("return " + cpath + ";"));
 		};
 		
-		for (var i = 0, ary = Imba.iterable(head.reverse()), len = ary.length; i < len; i++) {
+		for (var i = 0, ary = iter$(head.reverse()), len = ary.length; i < len; i++) {
 			this.body().unshift(ary[i]);
 		};
 		this.body()._indentation = null;
@@ -7993,7 +8054,7 @@
 		return {
 			type: 'tag',
 			namepath: this.namepath(),
-			inherits: (this.superclass()) ? (("<" + (this.superclass().name()) + ">")) : (null),
+			inherits: this.superclass() ? (("<" + (this.superclass().name()) + ">")) : null,
 			loc: this.loc(),
 			desc: this._desc
 		};
@@ -8008,13 +8069,15 @@
 	};
 
 	TagDeclaration.prototype.visit = function (){
+		this.scope().requires('imba');
+		
 		if (String(this.name()).match(/^[A-Z]/)) {
 			this.set({isClass: true});
 		};
 		
 		ROOT.entities().register(this); // what if this is not local?
 		
-		for (var i = 0, ary = Imba.iterable(STACK.scopes()), len = ary.length, scope; i < len; i++) {
+		for (var i = 0, ary = iter$(STACK.scopes()), len = ary.length, scope; i < len; i++) {
 			scope = ary[i];
 			if (i > 0 && (scope instanceof TagScope)) {
 				scope.node().option('hasLocalTags',true);
@@ -8034,7 +8097,7 @@
 
 	TagDeclaration.prototype.tagspace = function (){
 		var ctx = this.scope().closure().tagContextPath();
-		return (this.name().ns()) ? (("" + ctx + ".ns(" + helpers.singlequote(this.name().ns()) + ")")) : (ctx);
+		return this.name().ns() ? (("" + ctx + ".ns(" + helpers.singlequote(this.name().ns()) + ")")) : ctx;
 	};
 
 	TagDeclaration.prototype.js = function (o){
@@ -8065,7 +8128,7 @@
 			};
 		};
 		
-		var meth = (this.option('extension')) ? ('extendTag') : ('defineTag');
+		var meth = this.option('extension') ? 'extendTag' : 'defineTag';
 		
 		var js = ("" + mark + this.tagspace() + "." + meth + "(" + params.join(', ') + ")");
 		
@@ -8078,7 +8141,7 @@
 			// if o:global and !namespaced # option(:global)
 			//	js.push("global.{cname} = {cpath}; // global class \n")
 			if (this.option('export')) {
-				js = ("" + js + "\nexports." + ((this.option('default')) ? ('default') : (cname)) + " = " + cname + ";");
+				js = ("" + js + "\nexports." + (this.option('default') ? 'default' : cname) + " = " + cname + ";");
 			};
 			
 			if (this.option('return')) {
@@ -8154,8 +8217,8 @@
 		// FIXME creating the function-name this way is prone to create naming-collisions
 		// will need to wrap the value in a FunctionName which takes care of looking up scope
 		// and possibly dealing with it
-		var name = (typeof this._name == 'string') ? (this._name) : (this._name.c());
-		name = (name) ? (' ' + name.replace(/\./g,'_')) : ('');
+		var name = (typeof this._name == 'string') ? this._name : this._name.c();
+		name = name ? (' ' + name.replace(/\./g,'_')) : '';
 		var out = ("function" + name + "(" + (this.params().c()) + ") ") + code;
 		if (this.option('eval')) { out = ("(" + out + ")()") };
 		return out;
@@ -8174,7 +8237,7 @@
 	exports.Lambda = Lambda; // export class 
 	Lambda.prototype.scopetype = function (){
 		var k = this.option('keyword');
-		return ((k && k._value == 'ƒ')) ? ((MethodScope)) : ((LambdaScope));
+		return (k && k._value == 'ƒ') ? ((MethodScope)) : ((LambdaScope));
 	};
 
 
@@ -8184,7 +8247,7 @@
 	exports.TagFragmentFunc = TagFragmentFunc; // export class 
 	TagFragmentFunc.prototype.scopetype = function (){
 		// caching still needs to be local no matter what?
-		return (this.option('closed')) ? ((MethodScope)) : ((LambdaScope));
+		return this.option('closed') ? ((MethodScope)) : ((LambdaScope));
 	};
 
 	function MethodDeclaration(){ return Func.apply(this,arguments) };
@@ -8236,7 +8299,7 @@
 		if (this._namepath) { return this._namepath };
 		
 		var name = String(this.name());
-		var sep = ((this.option('static')) ? ('.') : ('#'));
+		var sep = (this.option('static') ? '.' : '#');
 		if (this.target()) {
 			return this._namepath = this._target.namepath() + sep + name;
 		} else {
@@ -8302,7 +8365,7 @@
 	};
 
 	MethodDeclaration.prototype.supername = function (){
-		return (this.type() == 'constructor') ? (this.type()) : (this.name());
+		return (this.type() == 'constructor') ? this.type() : this.name();
 	};
 
 
@@ -8325,7 +8388,7 @@
 		var code = this.scope().c({indent: true,braces: true});
 		
 		// same for Func -- should generalize
-		var name = (typeof this._name == 'string') ? (this._name) : (this._name.c());
+		var name = (typeof this._name == 'string') ? this._name : this._name.c();
 		name = name.replace(/\./g,'_');
 		
 		// var name = self.name.c.replace(/\./g,'_') # WHAT?
@@ -8375,7 +8438,7 @@
 		};
 		
 		if (this.option('export')) {
-			out = ("" + out + "; exports." + ((this.option('default')) ? ('default') : (fname)) + " = " + fname + ";");
+			out = ("" + out + "; exports." + (this.option('default') ? 'default' : fname) + " = " + fname + ";");
 			if (this.option('return')) { out = ("" + out + "; return " + fname + ";") };
 		} else if (this.option('return')) {
 			out = ("return " + out);
@@ -8432,7 +8495,7 @@
 		var js = {
 			key: key,
 			getter: key,
-			getterKey: (RESERVED_TEST.test(key)) ? (("['" + key + "']")) : (("." + key)),
+			getterKey: RESERVED_TEST.test(key) ? (("['" + key + "']")) : (("." + key)),
 			setter: sym__(("set-" + key)),
 			scope: ("" + (scope.context().c())),
 			path: '${scope}.prototype',
@@ -8494,7 +8557,7 @@
 		};
 		
 		if (isAttr) { // (@token and String(@token) == 'attr') or o.key(:dom) or o.key(:attr)
-			var attrKey = (o.key('dom') instanceof Str) ? (o.key('dom')) : (this.name().value());
+			var attrKey = (o.key('dom') instanceof Str) ? o.key('dom') : this.name().value();
 			// need to make sure o has a key for attr then - so that the delegate can know?
 			js.set = ("this.setAttribute('" + attrKey + "',v)");
 			js.get = ("this.getAttribute('" + attrKey + "')");
@@ -8565,10 +8628,14 @@
 		return false;
 	};
 
+	Literal.prototype.shouldParenthesizeInTernary = function (){
+		return false;
+	};
+
 
 	function Bool(v){
 		this._value = v;
-		this._raw = (String(v) == "true") ? (true) : (false);
+		this._raw = (String(v) == "true") ? true : false;
 	};
 
 	Imba.subclass(Bool,Literal);
@@ -8602,7 +8669,7 @@
 	};
 
 	Bool.prototype.loc = function (){
-		return (this._value.region) ? (this._value.region()) : ([0,0]);
+		return this._value.region ? this._value.region() : [0,0];
 	};
 
 	function Undefined(){ return Literal.apply(this,arguments) };
@@ -8706,7 +8773,7 @@
 		var paren = (par instanceof Access) && par.left() == this;
 		// only if this is the right part of teh acces
 		// console.log "should paren?? {shouldParenthesize}"
-		return (paren) ? (("(" + mark__(this._value)) + js + ")") : ((mark__(this._value) + js));
+		return paren ? (("(" + mark__(this._value)) + js + ")") : ((mark__(this._value) + js));
 		// @cache ? super(o) : String(@value)
 	};
 
@@ -8756,7 +8823,7 @@
 
 	Str.prototype.isValidIdentifier = function (){
 		// there are also some values we cannot use
-		return (this.raw().match(/^[a-zA-Z\$\_]+[\d\w\$\_]*$/)) ? (true) : (false);
+		return this.raw().match(/^[a-zA-Z\$\_]+[\d\w\$\_]*$/) ? true : false;
 	};
 
 	Str.prototype.js = function (o){
@@ -8764,7 +8831,7 @@
 	};
 
 	Str.prototype.c = function (o){
-		return (this._cache) ? (Str.__super__.c.call(this,o)) : (String(this._value));
+		return this._cache ? Str.__super__.c.call(this,o) : String(this._value);
 	};
 
 
@@ -8792,7 +8859,7 @@
 	};
 
 	InterpolatedString.prototype.visit = function (){
-		for (var i = 0, ary = Imba.iterable(this._nodes), len = ary.length; i < len; i++) {
+		for (var i = 0, ary = iter$(this._nodes), len = ary.length; i < len; i++) {
 			ary[i].traverse();
 		};
 		return this;
@@ -8860,7 +8927,7 @@
 	Imba.subclass(Symbol,Literal);
 	exports.Symbol = Symbol; // export class 
 	Symbol.prototype.isValidIdentifier = function (){
-		return (this.raw().match(/^[a-zA-Z\$\_]+[\d\w\$\_]*$/)) ? (true) : (false);
+		return this.raw().match(/^[a-zA-Z\$\_]+[\d\w\$\_]*$/) ? true : false;
 	};
 
 	Symbol.prototype.isPrimitive = function (deep){
@@ -8894,7 +8961,7 @@
 			return '/' + (re || '(?:)') + '/' + m[2];
 		};
 		
-		return (v == '//') ? ('/(?:)/') : (v);
+		return (v == '//') ? '/(?:)/' : v;
 	};
 
 	// Should inherit from ListNode - would simplify
@@ -8903,7 +8970,7 @@
 	Imba.subclass(Arr,Literal);
 	exports.Arr = Arr; // export class 
 	Arr.prototype.load = function (value){
-		return (value instanceof Array) ? (new ArgList(value)) : (value);
+		return (value instanceof Array) ? new ArgList(value) : value;
 	};
 
 	Arr.prototype.push = function (item){
@@ -8917,7 +8984,7 @@
 
 	Arr.prototype.nodes = function (){
 		var val = this.value();
-		return (val instanceof Array) ? (val) : (val.nodes());
+		return (val instanceof Array) ? val : val.nodes();
 	};
 
 	Arr.prototype.splat = function (){
@@ -8939,7 +9006,7 @@
 		if (!val) { return "[]" };
 		
 		var splat = this.splat();
-		var nodes = (val instanceof Array) ? (val) : (val.nodes());
+		var nodes = (val instanceof Array) ? val : val.nodes();
 		
 		// for v in @value
 		// 	break splat = yes if v isa Splat
@@ -8951,7 +9018,7 @@
 			var slices = [];
 			var group = null;
 			
-			for (var i = 0, ary = Imba.iterable(nodes), len = ary.length, v; i < len; i++) {
+			for (var i = 0, ary = iter$(nodes), len = ary.length, v; i < len; i++) {
 				v = ary[i];
 				if (v instanceof Splat) {
 					slices.push(v);
@@ -8968,7 +9035,7 @@
 			// should depend on the length of the inner items etc
 			// if @indented or option(:indent) or value.@indented
 			//	"[\n{value.c.join(",\n").indent}\n]"
-			var out = (val instanceof Array) ? (cary__(val)) : (val.c());
+			var out = (val instanceof Array) ? cary__(val) : val.c();
 			return ("[" + out + "]");
 		};
 	};
@@ -8996,7 +9063,7 @@
 	Imba.subclass(Obj,Literal);
 	exports.Obj = Obj; // export class 
 	Obj.prototype.load = function (value){
-		return (value instanceof Array) ? (new AssignList(value)) : (value);
+		return (value instanceof Array) ? new AssignList(value) : value;
 	};
 
 	Obj.prototype.visit = function (){
@@ -9038,7 +9105,7 @@
 	};
 
 	Obj.prototype.remove = function (key){
-		for (var i = 0, ary = Imba.iterable(this.value()), len = ary.length, k; i < len; i++) {
+		for (var i = 0, ary = iter$(this.value()), len = ary.length, k; i < len; i++) {
 			k = ary[i];
 			if (k.key().symbol() == key) { this.value().remove(k) };
 		};
@@ -9051,7 +9118,7 @@
 
 	Obj.prototype.hash = function (){
 		var hash = {};
-		for (var i = 0, ary = Imba.iterable(this.value()), len = ary.length, k; i < len; i++) {
+		for (var i = 0, ary = iter$(this.value()), len = ary.length, k; i < len; i++) {
 			k = ary[i];
 			if (k instanceof ObjAttr) { hash[k.key().symbol()] = k.value() };
 		};
@@ -9061,7 +9128,7 @@
 
 	// add method for finding properties etc?
 	Obj.prototype.key = function (key){
-		for (var i = 0, ary = Imba.iterable(this.value()), len = ary.length, k; i < len; i++) {
+		for (var i = 0, ary = iter$(this.value()), len = ary.length, k; i < len; i++) {
 			k = ary[i];
 			if ((k instanceof ObjAttr) && k.key().symbol() == key) { return k };
 		};
@@ -9119,7 +9186,7 @@
 	};
 
 	ObjAttr.prototype.js = function (o){
-		var k = (this.key().isReserved()) ? (("'" + (this.key().c()) + "'")) : (this.key().c());
+		var k = this.key().isReserved() ? (("'" + (this.key().c()) + "'")) : this.key().c();
 		return ("" + k + ": " + (this.value().c()));
 	};
 
@@ -9159,7 +9226,7 @@
 
 	Self.prototype.c = function (){
 		var s = this.scope__();
-		return (s) ? (s.context().c()) : ("this");
+		return s ? s.context().c() : "this";
 	};
 
 	function ImplicitSelf(){ return Self.apply(this,arguments) };
@@ -9296,7 +9363,7 @@
 		var op = this._op;
 		var pairs = ["==","!=","===","!==",">","<=","<",">="];
 		var idx = pairs.indexOf(op);
-		idx += ((idx % 2) ? (-1) : (1));
+		idx += ((idx % 2) ? (-1) : 1);
 		this.setOp(pairs[idx]);
 		this._invert = !this._invert;
 		return this;
@@ -9390,19 +9457,19 @@
 		
 		var num = new Num(1);
 		var ast = OP('=',node,OP(this.op()[0],node,num));
-		if (this.left()) { ast = OP((this.op()[0] == '-') ? ('+') : ('-'),ast,num) };
+		if (this.left()) { ast = OP((this.op()[0] == '-') ? '+' : '-',ast,num) };
 		
 		return ast;
 	};
 
 	UnaryOp.prototype.consume = function (node){
 		var norm = this.normalize();
-		return (norm == this) ? (UnaryOp.__super__.consume.apply(this,arguments)) : (norm.consume(node));
+		return (norm == this) ? (UnaryOp.__super__.consume.apply(this,arguments)) : norm.consume(node);
 	};
 
 	UnaryOp.prototype.c = function (){
 		var norm = this.normalize();
-		return (norm == this) ? (UnaryOp.__super__.c.apply(this,arguments)) : (norm.c());
+		return (norm == this) ? (UnaryOp.__super__.c.apply(this,arguments)) : norm.c();
 	};
 
 	function InstanceOf(){ return Op.apply(this,arguments) };
@@ -9474,7 +9541,7 @@
 	};
 
 	In.prototype.js = function (o){
-		var cond = (this._invert) ? ("== -1") : (">= 0");
+		var cond = this._invert ? "== -1" : ">= 0";
 		var idx = Util.indexOf(this.left(),this.right());
 		return ("" + (idx.c()) + " " + cond);
 	};
@@ -9542,12 +9609,12 @@
 		
 		// really?
 		// var ctx = (left || scope__.context)
-		var out = (raw) ? (
+		var out = raw ? (
 			// see if it needs quoting
 			// need to check to see if it is legal
-			(ctx) ? (("" + (ctx.c()) + "." + mark + raw)) : (raw)
+			ctx ? (("" + (ctx.c()) + "." + mark + raw)) : raw
 		) : (
-			r = (rgt instanceof Node) ? (rgt.c({expression: true})) : (rgt),
+			r = (rgt instanceof Node) ? rgt.c({expression: true}) : rgt,
 			("" + (ctx.c()) + "[" + r + "]")
 		);
 		
@@ -9568,7 +9635,7 @@
 	};
 
 	Access.prototype.alias = function (){
-		return (this.right() instanceof Identifier) ? (this.right().alias()) : (Access.__super__.alias.call(this));
+		return (this.right() instanceof Identifier) ? this.right().alias() : Access.__super__.alias.call(this);
 	};
 
 	Access.prototype.safechain = function (){
@@ -9577,9 +9644,12 @@
 	};
 
 	Access.prototype.cache = function (o){
-		return (((this.right() instanceof Ivar) && !(this.left()))) ? (this) : (Access.__super__.cache.call(this,o));
+		return ((this.right() instanceof Ivar) && !(this.left())) ? this : Access.__super__.cache.call(this,o);
 	};
 
+	Access.prototype.shouldParenthesizeInTernary = function (){
+		return this._parens || this._cache;
+	};
 
 
 	// Should change this to just refer directly to the variable? Or VarReference
@@ -9695,7 +9765,7 @@
 	exports.IvarAccess = IvarAccess; // export class 
 	IvarAccess.prototype.visit = function (){
 		if (this._right) { this._right.traverse() };
-		(this._left) ? (this._left.traverse()) : (this.scope__().context());
+		this._left ? this._left.traverse() : this.scope__().context();
 		return this;
 	};
 
@@ -9815,7 +9885,7 @@
 	};
 
 	VarOrAccess.prototype.c = function (){
-		return mark__(this._token) + ((this._variable) ? (VarOrAccess.__super__.c.call(this)) : (this.value().c()));
+		return mark__(this._token) + (this._variable ? VarOrAccess.__super__.c.call(this) : this.value().c());
 	};
 
 	VarOrAccess.prototype.js = function (o){
@@ -9830,7 +9900,7 @@
 	};
 
 	VarOrAccess.prototype.node = function (){
-		return (this._variable) ? (this) : (this.value());
+		return this._variable ? this : this.value();
 	};
 
 	VarOrAccess.prototype.symbol = function (){
@@ -9840,13 +9910,13 @@
 
 	VarOrAccess.prototype.cache = function (o){
 		if(o === undefined) o = {};
-		return (this._variable) ? ((o.force && VarOrAccess.__super__.cache.call(this,o))) : (this.value().cache(o));
+		return this._variable ? ((o.force && VarOrAccess.__super__.cache.call(this,o))) : this.value().cache(o);
 		// should we really cache this?
 		// value.cache(o)
 	};
 
 	VarOrAccess.prototype.decache = function (){
-		(this._variable) ? (VarOrAccess.__super__.decache.call(this)) : (this.value().decache());
+		this._variable ? VarOrAccess.__super__.decache.call(this) : this.value().decache();
 		return this;
 	};
 
@@ -9869,6 +9939,10 @@
 
 	VarOrAccess.prototype.region = function (){
 		return this._identifier.region();
+	};
+
+	VarOrAccess.prototype.shouldParenthesizeInTernary = function (){
+		return this._cache || (this._value && this._value._cache) || this._parens;
 	};
 
 	VarOrAccess.prototype.toString = function (){
@@ -10149,7 +10223,7 @@
 		var lc = l.c();
 		
 		if (this.option('export')) {
-			var ename = (l instanceof VarReference) ? (l.variable().c()) : (lc);
+			var ename = (l instanceof VarReference) ? l.variable().c() : lc;
 			return ("" + lc + " " + mark__(this._opToken) + this.op() + " exports." + ename + " = " + this.right().c({expression: true}));
 		} else {
 			return ("" + lc + " " + mark__(this._opToken) + this.op() + " " + this.right().c({expression: true}));
@@ -10446,7 +10520,7 @@
 		
 		// if right is an array without any splats (or inner tuples?), normalize it to tuple
 		if ((rgt instanceof Arr) && !rgt.splat()) { rgt = new Tuple(rgt.nodes()) };
-		var rlen = (rgt instanceof Tuple) ? (rgt.count()) : (null);
+		var rlen = (rgt instanceof Tuple) ? rgt.count() : null;
 		
 		// if any values are statements we need to handle this before continuing
 		
@@ -10580,7 +10654,7 @@
 			// ast.push(blk = VarBlock.new)
 			// blk = null
 			
-			var blktype = (typ == 'var') ? (VarBlock) : (Block);
+			var blktype = (typ == 'var') ? VarBlock : Block;
 			var blk = new blktype([]);
 			// blk = top if typ == 'var'
 			ast.push(blk);
@@ -10609,7 +10683,7 @@
 					// max = to = (rlen - (llen - i))
 					
 					
-					var test = (rem) ? (OP('-',len,rem)) : (len);
+					var test = rem ? OP('-',len,rem) : len;
 					
 					var set = OP('=',OP('.',lvar,OP('-',idx,num__(i))),
 					OP('.',iter,OP('++',idx)));
@@ -10638,11 +10712,11 @@
 		
 		// if we are in an expression we really need to
 		if (o.isExpression() && self._vars) {
-			for (var i = 0, ary = Imba.iterable(self._vars), len_ = ary.length; i < len_; i++) {
+			for (var i = 0, ary = iter$(self._vars), len_ = ary.length; i < len_; i++) {
 				ary[i].variable().autodeclare();
 			};
 		} else if (self._vars) {
-			for (var j = 0, items = Imba.iterable(self._vars), len__ = items.length; j < len__; j++) {
+			for (var j = 0, items = iter$(self._vars), len__ = items.length; j < len__; j++) {
 				items[j].variable().predeclared();
 			};
 		};
@@ -10705,7 +10779,7 @@
 	};
 
 	Identifier.prototype.load = function (v){
-		return ((v instanceof Identifier) ? (v.value()) : (v));
+		return ((v instanceof Identifier) ? v.value() : v);
 	};
 
 	Identifier.prototype.traverse = function (){
@@ -10777,8 +10851,12 @@
 		return this.toString();
 	};
 
+	Identifier.prototype.shouldParenthesizeInTernary = function (){
+		return this._parens || this._cache;
+	};
+
 	function TagId(v){
-		this._value = (v instanceof Identifier) ? (v.value()) : (v);
+		this._value = (v instanceof Identifier) ? v.value() : v;
 		this;
 	};
 
@@ -10794,7 +10872,7 @@
 
 	// FIXME Rename to IvarLiteral? or simply Literal with type Ivar
 	function Ivar(v){
-		this._value = (v instanceof Identifier) ? (v.value()) : (v);
+		this._value = (v instanceof Identifier) ? v.value() : v;
 		this;
 	};
 
@@ -10893,7 +10971,7 @@
 
 	TagTypeIdentifier.prototype.id = function (){
 		var m = this._str.match(/\#([\w\-\d\_]+)\b/);
-		return (m) ? (m[1]) : (null);
+		return m ? m[1] : null;
 	};
 
 
@@ -10946,7 +11024,7 @@
 			};
 			if (str == 'tag') {
 				// console.log "ERROR - access args by some method"
-				return new TagWrapper((args && args.index) ? (args.index(0)) : (args[0]));
+				return new TagWrapper((args && args.index) ? args.index(0) : args[0]);
 			};
 			if (str == 'export') {
 				return new Export(args);
@@ -10983,7 +11061,7 @@
 
 	Call.prototype.addBlock = function (block){
 		var pos = this._args.filter(function(n,i) { return n == '&'; })[0]; // WOULD BE TOKEN - CAREFUL
-		(pos) ? (this.args().replace(pos,block)) : (this.args().push(block));
+		pos ? this.args().replace(pos,block) : this.args().push(block);
 		return this;
 	};
 
@@ -10995,6 +11073,10 @@
 
 	Call.prototype.safechain = function (){
 		return this.callee().safechain(); // really?
+	};
+
+	Call.prototype.shouldParenthesizeInTernary = function (){
+		return this._parens || this.safechain() || this._cache;
 	};
 
 	Call.prototype.js = function (o){
@@ -11041,6 +11123,7 @@
 		};
 		
 		if (callee.safechain()) {
+			// Does this affect shouldParenthesizeInTernary?
 			// if lft isa Call
 			// if lft isa Call # could be a property access as well - it is the same?
 			// if it is a local var access we simply check if it is a function, then call
@@ -11060,7 +11143,7 @@
 			// this is due to the way we check for an outer Call without checking if
 			// we are the receiver (in PropertyAccess). Should rather wrap in CallArguments
 			var rec1 = this.receiver();
-			var ary = ((args.count() == 1) ? (new ValueNode(args.first().value())) : (new Arr(args.list())));
+			var ary = ((args.count() == 1) ? new ValueNode(args.first().value()) : new Arr(args.list()));
 			
 			rec1.cache(); // need to cache the context as it will be referenced in apply
 			out = ("" + callee.c({expression: true}) + ".apply(" + (rec1.c()) + "," + ary.c({expression: true}) + ")");
@@ -11142,7 +11225,7 @@
 		this.setNodes(this.map(function(item) { return item.node(); })); // drop var or access really
 		// only in global scope?
 		var root = this.scope__();
-		for (var i = 0, ary = Imba.iterable(this.nodes()), len = ary.length, item; i < len; i++) {
+		for (var i = 0, ary = iter$(this.nodes()), len = ary.length, item; i < len; i++) {
 			item = ary[i];
 			var variable = root.register(item.symbol(),item,{type: 'global'});
 			variable.addReference(item);
@@ -11162,7 +11245,7 @@
 	Imba.subclass(ControlFlow,Node);
 	exports.ControlFlow = ControlFlow; // export class 
 	ControlFlow.prototype.loc = function (){
-		return (this._body) ? (this._body.loc()) : ([0,0]);
+		return this._body ? this._body.loc() : [0,0];
 	};
 
 	function ControlFlowStatement(){ return ControlFlow.apply(this,arguments) };
@@ -11220,7 +11303,7 @@
 	};
 
 	If.prototype.loc = function (){
-		return this._loc || (this._loc = [(this._type) ? (this._type._loc) : (0),this.body().loc()[1]]);
+		return this._loc || (this._loc = [this._type ? this._type._loc : 0,this.body().loc()[1]]);
 	};
 
 	If.prototype.invert = function (){
@@ -11265,14 +11348,14 @@
 
 
 	If.prototype.js = function (o){
-		var v_;
+		var v_, test_;
 		var body = this.body();
 		// would possibly want to look up / out
 		var brace = {braces: true,indent: true};
 		
 		if (this._pretest === true) {
 			// what if it is inside expression?
-			var js = (body) ? (body.c({braces: !(!(this.prevIf()))})) : ('true');
+			var js = body ? body.c({braces: !(!(this.prevIf()))}) : 'true';
 			
 			if (!(this.prevIf())) {
 				js = helpers.normalizeIndentation(js);
@@ -11285,7 +11368,7 @@
 			return js;
 		} else if (this._pretest === false) {
 			if (this.alt() instanceof If) { (this.alt().setPrevIf(v_ = this.prevIf()),v_) };
-			var js1 = (this.alt()) ? (this.alt().c({braces: !(!(this.prevIf()))})) : ('');
+			var js1 = this.alt() ? this.alt().c({braces: !(!(this.prevIf()))}) : '';
 			
 			if (!(this.prevIf())) {
 				js1 = helpers.normalizeIndentation(js1);
@@ -11294,28 +11377,44 @@
 			return js1;
 		};
 		
-		var cond = this.test().c({expression: true}); // the condition is always an expression
 		
 		if (o.isExpression()) {
-			var code = (body) ? (body.c()) : ('true'); // (braces: yes)
-			code = '(' + code + ')'; // if code.indexOf(',') >= 0
+			
+			if ((test_ = this.test()) && test_.shouldParenthesizeInTernary  &&  test_.shouldParenthesizeInTernary()) {
+				this.test()._parens = true;
+			};
+			
+			var cond = this.test().c({expression: true}); // the condition is always an expression
+			
+			var code = body ? body.c() : 'true'; // (braces: yes)
+			
+			if (body && body.shouldParenthesizeInTernary()) {
+				code = '(' + code + ')'; // if code.indexOf(',') >= 0
+			};
 			
 			if (this.alt()) {
-				return ("(" + cond + ") ? " + code + " : (" + (this.alt().c()) + ")");
+				var altbody = this.alt().c();
+				if (this.alt().shouldParenthesizeInTernary()) {
+					altbody = '(' + altbody + ')';
+				};
+				
+				return ("" + cond + " ? " + code + " : " + altbody);
 			} else {
 				// again - we need a better way to decide what needs parens
 				// maybe better if we rewrite this to an OP('&&'), and put
 				// the parens logic there
 				// cond should possibly have parens - but where do we decide?
 				if (this._tagtree) {
-					return ("(" + cond + ") ? " + code + " : void(0)");
+					return ("" + cond + " ? " + code + " : void(0)");
 				} else {
-					return ("(" + cond + ") && " + code);
+					return ("" + cond + " && " + code);
 				};
 			};
 		} else {
 			// if there is only a single item - and it is an expression?
 			code = null;
+			cond = this.test().c({expression: true}); // the condition is always an expression
+			
 			// if body.count == 1 # dont indent by ourselves?
 			
 			if ((body instanceof Block) && body.count() == 1 && !(body.first() instanceof LoopFlowStatement)) {
@@ -11326,11 +11425,11 @@
 			//	p "one item only!"
 			//	body = body.first
 			
-			code = (body) ? (body.c({braces: true})) : ('{}'); // (braces: yes)
+			code = body ? body.c({braces: true}) : '{}'; // (braces: yes)
 			
 			// don't wrap if it is only a single expression?
 			var out = ("" + mark__(this._type) + "if (" + cond + ") ") + code; // ' {' + code + '}' # '{' + code + '}'
-			if (this.alt()) { out += (" else " + this.alt().c((this.alt() instanceof If) ? ({}) : (brace))) };
+			if (this.alt()) { out += (" else " + this.alt().c((this.alt() instanceof If) ? {} : brace)) };
 			return out;
 		};
 	};
@@ -11418,7 +11517,7 @@
 	Loop.prototype.set = function (obj){
 		this._options || (this._options = {});
 		var keys = Object.keys(obj);
-		for (var i = 0, ary = Imba.iterable(keys), len = ary.length, k; i < len; i++) {
+		for (var i = 0, ary = iter$(keys), len = ary.length, k; i < len; i++) {
 			k = ary[i];
 			this._options[k] = obj[k];
 		};
@@ -11616,9 +11715,9 @@
 			};
 		} else {
 			// we are using automatic caching far too much here
-			var i = vars.index = (oi) ? (scope.declare(oi,0,{type: 'let'})) : (this.util().counter(0,true,scope).predeclare());
+			var i = vars.index = oi ? scope.declare(oi,0,{type: 'let'}) : this.util().counter(0,true,scope).predeclare();
 			
-			vars.source = (bare) ? (src) : (this.util().iterable(src,true).predeclare());
+			vars.source = bare ? src : this.util().iterable(src,true).predeclare();
 			vars.len = this.util().len(vars.source,true).predeclare();
 			
 			vars.value = scope.declare(o.name,null,{type: 'let'});
@@ -11739,11 +11838,11 @@
 			var b = src.right();
 			var inc = src.inclusive();
 			
-			cond = OP((inc) ? ('<=') : ('<'),val,vars.len);
+			cond = OP(inc ? '<=' : '<',val,vars.len);
 			final = OP('++',val);
 			
 			if (vars.diff) {
-				cond = If.ternary(OP('>',vars.diff,new Num(0)),cond,OP((inc) ? ('>=') : ('>'),val,vars.len));
+				cond = If.ternary(OP('>',vars.diff,new Num(0)),cond,OP(inc ? '>=' : '>',val,vars.len));
 				final = If.ternary(OP('>',vars.diff,new Num(0)),OP('++',val),OP('--',val));
 			};
 			
@@ -11825,7 +11924,7 @@
 		if (v) {
 			// set value as proxy of object[key]
 			// possibly make it a ref? what is happening?
-			(v.refcount() < 3) ? (v.proxy(o,k)) : (this.body().unshift(OP('=',v,OP('.',o,k))));
+			(v.refcount() < 3) ? v.proxy(o,k) : this.body().unshift(OP('=',v,OP('.',o,k)));
 		};
 		
 		if (this.options().own) {
@@ -11850,7 +11949,7 @@
 		
 		return [
 			OP('=',v.key,OP('.',v.keys,v.index)),
-			(v.value) && (OP('=',v.value,OP('.',v.source,v.key)))
+			v.value && OP('=',v.value,OP('.',v.source,v.key))
 		];
 	};
 
@@ -11887,7 +11986,7 @@
 
 
 	Switch.prototype.visit = function (){
-		for (var i = 0, ary = Imba.iterable(this.cases()), len = ary.length; i < len; i++) {
+		for (var i = 0, ary = iter$(this.cases()), len = ary.length; i < len; i++) {
 			ary[i].traverse();
 		};
 		if (this.fallback()) { this.fallback().visit() };
@@ -11916,7 +12015,7 @@
 	Switch.prototype.js = function (o){
 		var body = [];
 		
-		for (var i = 0, ary = Imba.iterable(this.cases()), len = ary.length, part; i < len; i++) {
+		for (var i = 0, ary = iter$(this.cases()), len = ary.length, part; i < len; i++) {
 			part = ary[i];
 			part.autobreak();
 			body.push(part);
@@ -12168,7 +12267,7 @@
 	Tag.prototype.set = function (obj){
 		for (var v, i = 0, keys = Object.keys(obj), l = keys.length; i < l; i++){
 			k = keys[i];v = obj[k];if (k == 'attributes') {
-				for (var j = 0, ary = Imba.iterable(v), len = ary.length; j < len; j++) {
+				for (var j = 0, ary = iter$(v), len = ary.length; j < len; j++) {
 					this.addAttribute(ary[j]);
 				};
 				continue;
@@ -12244,6 +12343,7 @@
 
 
 	Tag.prototype.visit = function (){
+		this.scope__().requires('imba');
 		
 		var o = this._options;
 		
@@ -12262,7 +12362,7 @@
 		if (o.body) { o.body.traverse() };
 		if (o.id) { o.id.traverse() };
 		
-		for (var i = 0, ary = Imba.iterable(this._parts), len = ary.length; i < len; i++) {
+		for (var i = 0, ary = iter$(this._parts), len = ary.length; i < len; i++) {
 			ary[i].traverse();
 		};
 		
@@ -12314,7 +12414,7 @@
 		var content = o.body;
 		
 		var isSelf = (this.type() instanceof Self);
-		var bodySetter = (isSelf) ? ("setChildren") : ("setContent");
+		var bodySetter = isSelf ? "setChildren" : "setContent";
 		
 		// if we are reactive - find the
 		
@@ -12322,23 +12422,23 @@
 		// that would only mangle the order in which we set the properties
 		var cacheStatics = true;
 		
-		for (var i = 0, ary = Imba.iterable(o.attributes), len = ary.length, atr; i < len; i++) {
+		for (var i = 0, ary = iter$(o.attributes), len = ary.length, atr; i < len; i++) {
 			atr = ary[i];
 			a[atr.key()] = atr.value();
 		};
 		
 		var quote = function(str) { return helpers.singlequote(str); };
-		var id = (o.id instanceof Node) ? (o.id.c()) : ((o.id && quote(o.id.c())));
+		var id = (o.id instanceof Node) ? o.id.c() : ((o.id && quote(o.id.c())));
 		var tree = this._tree || null;
 		var parent = this.parent();
 		var c_zone = scope.context().c();
 		
-		var out = (isSelf) ? (
+		var out = isSelf ? (
 			commit = "synced",
 			this.setReactive(true),
 			this._reference = scope.context(),
 			scope.context().c()
-		) : ((this.type().isClass()) ? (
+		) : (this.type().isClass() ? (
 			("" + mark__(o.open) + (this.type().name()) + ".build(" + c_zone + ")")
 		) : (
 			("" + mark__(o.open) + (scope.tagContextPath()) + "." + (this.type().spawner()) + "(" + c_zone + ")")
@@ -12373,9 +12473,9 @@
 			tree.resolve();
 		};
 		
-		var dynamicFlagIndex = (isSelf) ? (1) : (0);
+		var dynamicFlagIndex = isSelf ? 1 : 0;
 		
-		for (var j = 0, items = Imba.iterable(this._parts), len_ = items.length, part; j < len_; j++) {
+		for (var j = 0, items = iter$(this._parts), len_ = items.length, part; j < len_; j++) {
 			part = items[j];
 			var pjs;
 			var pcache = false;
@@ -12433,7 +12533,7 @@
 			};
 			
 			if (pjs) {
-				(cacheStatics && pcache) ? (statics.push(pjs)) : (calls.push(pjs));
+				(cacheStatics && pcache) ? statics.push(pjs) : calls.push(pjs);
 			};
 		};
 		
@@ -12520,7 +12620,7 @@
 			} else if (o.key && !o.loop) {
 				key = OP('+',("'" + key + "$$'"),o.key);
 				key.cache();
-				ctx = (parent) ? (parent.staticCache()) : (this.closureCache());
+				ctx = parent ? parent.staticCache() : this.closureCache();
 			} else if (o.loop || o.key) {
 				if (parent) {
 					ctx = parent.staticCache();
@@ -12557,7 +12657,7 @@
 				ctx = s.declare(kvar,new Parens(setter1));
 			} else {
 				// or the tree-cache no?
-				ctx = (parent) ? (parent.staticCache()) : (this.closureCache());
+				ctx = parent ? parent.staticCache() : this.closureCache();
 			};
 			
 			// unless ctx
@@ -12653,7 +12753,7 @@
 			this._indentation || (this._indentation = list._indentation); // if list.count > 1
 			return list.nodes();
 		} else {
-			return compact__((list instanceof Array) ? (list) : ([list]));
+			return compact__((list instanceof Array) ? list : [list]);
 		};
 	};
 
@@ -12673,11 +12773,11 @@
 
 	TagTree.prototype.static = function (){
 		// every real node
-		return (this._static == null) ? (this._static = this.every(function(c) { return (c instanceof Tag) || (c instanceof Str) || (c instanceof Meta); })) : (this._static);
+		return (this._static == null) ? (this._static = this.every(function(c) { return (c instanceof Tag) || (c instanceof Str) || (c instanceof Meta); })) : this._static;
 	};
 
 	TagTree.prototype.single = function (){
-		return (this._single == null) ? (this._single = ((this.realCount() == 1) ? (this.last()) : (false))) : (this._single);
+		return (this._single == null) ? (this._single = ((this.realCount() == 1) ? this.last() : false)) : this._single;
 	};
 
 	TagTree.prototype.hasTags = function (){
@@ -12755,7 +12855,7 @@
 	Imba.subclass(TagAttributes,ListNode);
 	exports.TagAttributes = TagAttributes; // export class 
 	TagAttributes.prototype.get = function (name){
-		for (var i = 0, ary = Imba.iterable(this.nodes()), len = ary.length, node, res = []; i < len; i++) {
+		for (var i = 0, ary = iter$(this.nodes()), len = ary.length, node, res = []; i < len; i++) {
 			node = ary[i];
 			if (node.key() == name) { return node };
 		};
@@ -12851,7 +12951,7 @@
 		var str = "";
 		var ary = [];
 		
-		for (var i = 0, items = Imba.iterable(this.nodes()), len = items.length; i < len; i++) {
+		for (var i = 0, items = iter$(this.nodes()), len = items.length; i < len; i++) {
 			var val = items[i].c();
 			if ((typeof val=='string'||val instanceof String)) {
 				str = ("" + str + val);
@@ -12904,7 +13004,7 @@
 		// at least be very conservative about which tags we
 		// can drop the tag for?
 		// out in TAG_TYPES.HTML ?
-		return (Imba.indexOf(name,TAG_TYPES.HTML) >= 0) ? (name) : (this.value().sel());
+		return (Imba.indexOf(name,TAG_TYPES.HTML) >= 0) ? name : this.value().sel();
 	};
 
 
@@ -13012,6 +13112,7 @@
 		self.setFunc(new AsyncFunc([],[]));
 		// now we move this node up to the block
 		self.func().body().setNodes(block.defers(outer,self));
+		self.func().scope().visit();
 		
 		// if the outer is a var-assignment, we can simply set the params
 		if (par instanceof Assign) {
@@ -13036,15 +13137,15 @@
 					// make sure it is a var assignment?
 					par.setRight(ARGUMENTS);
 					self.func().body().unshift(par);
+					self.func().scope().context();
 				};
 			} else {
 				// regular setters
 				par.setRight(self.func().params().at(0,true));
 				self.func().body().unshift(par);
+				self.func().scope().context();
 			};
 		};
-		
-		
 		
 		// If it is an advance tuple or something, it should be possible to
 		// feed in the paramlist, and let the tuple handle it as if it was any
@@ -13096,7 +13197,7 @@
 		} else {
 			var src = this.source().c();
 			var m = src.match(/(\w+)(\.js|imba)?[\"\']$/);
-			this._alias = (m) ? (m[1] + '$') : ('mod$');
+			this._alias = m ? (m[1] + '$') : 'mod$';
 		};
 		
 		// should also register the imported items, no?
@@ -13116,7 +13217,7 @@
 			
 			
 			if (this._imports.length > 1) {
-				for (var i = 0, ary = Imba.iterable(this._imports), len = ary.length, imp; i < len; i++) {
+				for (var i = 0, ary = iter$(this._imports), len = ary.length, imp; i < len; i++) {
 					imp = ary[i];
 					this._declarations.add(imp,OP('.',this._moduledecl.variable(),imp));
 				};
@@ -13156,7 +13257,7 @@
 			// create a require for the source, with a temporary name?
 			var out = [req.cache({names: alias}).c()];
 			
-			for (var i = 0, ary = Imba.iterable(this._imports), len = ary.length, imp; i < len; i++) {
+			for (var i = 0, ary = iter$(this._imports), len = ary.length, imp; i < len; i++) {
 				// we also need to register these imports as variables, no?
 				imp = ary[i];
 				var o = OP('=',imp,OP('.',req,imp));
@@ -13228,8 +13329,8 @@
 	Imba.subclass(Require,ValueNode);
 	exports.Require = Require; // export class 
 	Require.prototype.js = function (o){
-		var out = (this.value() instanceof Parens) ? (this.value().value().c()) : (this.value().c());
-		return (out == 'require') ? ('require') : (("require(" + out + ")"));
+		var out = (this.value() instanceof Parens) ? this.value().value().c() : this.value().c();
+		return (out == 'require') ? 'require' : (("require(" + out + ")"));
 	};
 
 	function EnvFlag(){ return ValueNode.apply(this,arguments) };
@@ -13237,7 +13338,7 @@
 	Imba.subclass(EnvFlag,ValueNode);
 	exports.EnvFlag = EnvFlag; // export class 
 	EnvFlag.prototype.raw = function (){
-		return (this._raw == null) ? (this._raw = STACK.env("" + this._value)) : (this._raw);
+		return (this._raw == null) ? (this._raw = STACK.env("" + this._value)) : this._raw;
 	};
 
 	EnvFlag.prototype.isTruthy = function (){
@@ -13366,7 +13467,7 @@
 	};
 
 	Util.prototype.isStandalone = function (){
-		return OPTS.standalone !== false;
+		return !!OPTS.nolib; // !== no
 	};
 
 	Util.prototype.js = function (o){
@@ -13413,7 +13514,7 @@
 
 	Imba.subclass(Util.IndexOf,Util);
 	Util.IndexOf.prototype.helper = function (){
-		return 'function idx$(a,b){\n	return (b && b.indexOf) ? b.indexOf(a) : [].indexOf.call(a,b);\n};\n';
+		return 'function idx$(a,b){\n	return (b && b.indexOf) ? b.indexOf(a) : [].indexOf.call(a,b);\n};';
 	};
 
 	Util.IndexOf.prototype.js = function (o){
@@ -13422,6 +13523,7 @@
 			// When this is triggered, we need to add it to the top of file?
 			return ("idx$(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
 		} else {
+			this.scope__().requires('imba');
 			return ("Imba.indexOf(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
 		};
 	};
@@ -13430,17 +13532,16 @@
 
 	Imba.subclass(Util.Len,Util);
 	Util.Len.prototype.helper = function (){
-		return 'function len$(a){\n	return a && (a.len instanceof Function ? a.len() : a.length) || 0;\n};\n';
+		return 'function len$(a){\n	return a && (a.len instanceof Function ? a.len() : a.length) || 0;\n};';
 	};
 
 	Util.Len.prototype.js = function (o){
-		if (this.isStandalone()) {
-			this.scope__().root().helper(this,this.helper());
-			// When this is triggered, we need to add it to the top of file?
-			return ("len$(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
-		} else {
-			return ("Imba.len(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
-		};
+		// 
+		 // isStandalone
+		this.scope__().root().helper(this,this.helper());
+		// When this is triggered, we need to add it to the top of file?
+		return ("len$(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
+		
 	};
 
 
@@ -13458,6 +13559,7 @@
 			this.scope__().root().helper(this,this.helper());
 			return ("subclass$(" + this.args().map(function(v) { return v.c(); }).join(',') + ");\n");
 		} else {
+			this.scope__().requires('imba');
 			return ("Imba.subclass(" + this.args().map(function(v) { return v.c(); }).join(',') + ");\n");
 		};
 	};
@@ -13476,6 +13578,7 @@
 			this.scope__().root().helper(this,this.helper());
 			return ("promise$(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
 		} else {
+			this.scope__().requires('imba');
 			return ("Imba.await(" + this.args().map(function(v) { return v.c(); }).join(',') + ")");
 		};
 	};
@@ -13501,12 +13604,10 @@
 	Util.Iterable.prototype.js = function (o){
 		if (this.args()[0] instanceof Arr) { return this.args()[0].c() }; // or if we know for sure that it is an array
 		
-		if (this.isStandalone()) {
-			this.scope__().root().helper(this,this.helper());
-			return ("iter$(" + (this.args()[0].c()) + ")");
-		} else {
-			return ("Imba.iterable(" + (this.args()[0].c()) + ")");
-		};
+		 // isStandalone
+		this.scope__().root().helper(this,this.helper());
+		return ("iter$(" + (this.args()[0].c()) + ")");
+		
 	};
 
 	Util.IsFunction = function IsFunction(){ return Util.apply(this,arguments) };
@@ -13624,7 +13725,7 @@
 
 	Scope.prototype.tagContextPath = function (){
 		// bypassing for now
-		return this._tagContextPath || (this._tagContextPath = "_T"); // parent.tagContextPath
+		return this._tagContextPath || (this._tagContextPath = "_T"); // "_T" # parent.tagContextPath
 	};
 
 	Scope.prototype.tagContextCache = function (){
@@ -13663,6 +13764,8 @@
 	};
 
 	Scope.prototype.root = function (){
+		return STACK.ROOT;
+		
 		var scope = this;
 		while (scope){
 			if (scope instanceof RootScope) { return scope };
@@ -13717,7 +13820,7 @@
 		if(o === undefined) o = {};
 		if(name === undefined) name = null;
 		if (o.pool) {
-			for (var i = 0, ary = Imba.iterable(this._varpool), len = ary.length, v; i < len; i++) {
+			for (var i = 0, ary = iter$(this._varpool), len = ary.length, v; i < len; i++) {
 				v = ary[i];
 				if (v.pool() == o.pool && v.declarator() == null) {
 					return v.reuse(refnode);
@@ -13747,6 +13850,11 @@
 			};
 		};
 		return ret;
+	};
+
+	Scope.prototype.requires = function (path,name){
+		if(name === undefined) name = '';
+		return this.root().requires(path,name);
 	};
 
 	Scope.prototype.autodeclare = function (variable){
@@ -13808,7 +13916,7 @@
 			// unless v.@declarator isa Scope
 			// 	console.log v.name, v.@declarator:constructor:name
 			// dump__(v)
-			return (v.references().length) ? (dump__(v)) : (null);
+			return v.references().length ? dump__(v) : null;
 		});
 		
 		var desc = {
@@ -13859,6 +13967,7 @@
 		this.register('_',this,{type: 'global'});
 		
 		// preregister global special variables here
+		this._requires = {};
 		this._warnings = [];
 		this._scopes = [];
 		this._helpers = [];
@@ -13879,9 +13988,8 @@
 		return this._context || (this._context = new RootScopeContext(this));
 	};
 
-	RootScope.prototype.tagContextPath = function (){
-		return this._tagContextPath || (this._tagContextPath = "_T");
-	};
+	// def tagContextPath
+	// 	@tagContextPath ||= "_T"
 
 	RootScope.prototype.lookup = function (name){
 		name = helpers.symbolize(name);
@@ -13929,6 +14037,44 @@
 		
 		return obj;
 	};
+
+	// not yet used
+	RootScope.prototype.requires = function (path,name){
+		if(name === undefined) name = '';
+		if (this._requires[path]) {
+			return this._requires[path];
+		};
+		
+		var req = new Require(new Str("'" + path + "'"));
+		
+		if (name) {
+			var val = this._requires[path] = this.declare(name,req);
+			return val;
+		} else {
+			this._requires[path] = req; // what if there is a conflict?
+			// @head.push(@requires[path] = req)
+			return req;
+		};
+	};
+
+	RootScope.prototype.c = function (o){
+		if(o === undefined) o = {};
+		o.expression = false;
+		// need to fix this
+		this.node().body().setHead(this.head());
+		var body = this.node().body().c(o);
+		
+		for (var reqs = [], o1 = this._requires, i = 0, keys = Object.keys(o1), l = keys.length; i < l; i++){
+			reqs.push(o1[keys[i]].c(o) + ';');
+		};
+		
+		if (reqs.length && !OPTS.nolib) {
+			body = reqs.join("\n") + '\n' + body;
+		};
+		
+		return body;
+	};
+
 
 
 	function ClassScope(){ return Scope.apply(this,arguments) };
@@ -14248,7 +14394,7 @@
 		} else {
 			if (!this._resolved) this.resolve();
 			var v = (this.alias() || this.name());
-			this._c = (typeof v == 'string') ? (v) : (v.c());
+			this._c = (typeof v == 'string') ? v : v.c();
 			// allow certain reserved words
 			// should warn on others though (!!!)
 			// if @c == 'new'
@@ -14433,7 +14579,7 @@
 
 	ScopeContext.prototype.c = function (){
 		var val = this._value || this._reference;
-		return (val) ? (val.c()) : ("this");
+		return val ? val.c() : "this";
 	};
 
 	ScopeContext.prototype.cache = function (){
@@ -14447,7 +14593,7 @@
 	RootScopeContext.prototype.c = function (o){
 		// return "" if o and o:explicit
 		var val = this._value || this._reference;
-		return ((val && val != this)) ? (val.c()) : ("this");
+		return (val && val != this) ? val.c() : "this";
 		// should be the other way around, no?
 		// o and o:explicit ? super : ""
 	};
@@ -14518,11 +14664,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	var path = __webpack_require__(13);
+	function iter$(a){ return a ? (a.toArray ? a.toArray() : a) : []; };
+
+	var path = __webpack_require__(14);
 	var util = __webpack_require__(4);
 
 	function SourceMap(source){
@@ -14585,7 +14732,7 @@
 		// remove markers along the way and keep track of
 		// console.log source:js
 		
-		for (var i = 0, ary = Imba.iterable(lines), len = ary.length, line; i < len; i++) {
+		for (var i = 0, ary = iter$(lines), len = ary.length, line; i < len; i++) {
 			// could split on these?
 			line = ary[i];
 			var col = 0;
@@ -14617,10 +14764,10 @@
 		var lastSourceColumn = 0;
 		var buffer = "";
 		
-		for (var lineNumber = 0, ary = Imba.iterable(this._maps), len = ary.length; lineNumber < len; lineNumber++) {
+		for (var lineNumber = 0, ary = iter$(this._maps), len = ary.length; lineNumber < len; lineNumber++) {
 			lastColumn = 0;
 			
-			for (var nr = 0, items = Imba.iterable(ary[lineNumber]), len_ = items.length, map1; nr < len_; nr++) {
+			for (var nr = 0, items = iter$(ary[lineNumber]), len_ = items.length, map1; nr < len_; nr++) {
 				map1 = items[nr];
 				if (nr != 0) { buffer += ',' };
 				var src = map1[0];
@@ -14670,7 +14817,7 @@
 	SourceMap.prototype.encodeVlq = function (value){
 		var answer = '';
 		// Least significant bit represents the sign.
-		var signBit = (value < 0) ? (1) : (0);
+		var signBit = (value < 0) ? 1 : 0;
 		var nextChunk;
 		// The next bits are the actual value.
 		var valueToEncode = (Math.abs(value) << 1) + signBit;
@@ -14696,7 +14843,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.

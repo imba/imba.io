@@ -232,6 +232,7 @@ tag snippet
 		@copts ||= {
 			bare: no
 			standalone: no
+			nolib: yes
 			sourceMapInline: yes
 			filename: "{id}.imba"
 			targetPath: "{id}.js"

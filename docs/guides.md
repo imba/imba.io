@@ -5,9 +5,10 @@ title: Introduction
 # What is Imba?
 
 Imba is a new programming language for the web that compiles
-to performant JavaScript. It is heavily inspired by ruby and python, but developed explicitly for web programming (both server and client). It has language level 
-support for defining, extending, subclassing, instantiating 
-and rendering dom nodes. For a semi-complex application like 
+to performant JavaScript. It is heavily inspired by ruby and python,
+but developed explicitly for web programming (both server and client).
+It has language level support for defining, extending, subclassing,
+instantiating and rendering dom nodes. For a semi-complex application like 
 [TodoMVC](http://todomvc.com), it is more than [10 times faster than React](http://somebee.github.io/todomvc-render-benchmark/index.html)
 with less code, and a much smaller library.
 
@@ -58,29 +59,31 @@ This will install imba as a dependency, and add it to your package.json if
 you have one set up. Then, make sure to `require 'imba'`, usually
 the entry point of your application.
 
-## Usage
+# Usage
 
-### CLI
+Once you have installed Imba (globally), you should have access to three command-line utilties.
 
-Once you have installed Imba (globally), you should have access to the imba executable in your terminal. You can use this to run, compile, and analyze your imba-files. 
+### imba
+
+Utility for running imba scripts. Acts as a wrapper around node which can run .imba files (including requires).
 
 `> imba sample.imba` will run the file sample.imba
 
-`> imba compile src/` will compile all imba files inside src (recursively). By default, Imba will look for a matching lib/ directory, and save the resulting files there. If no such directory exists, it will save the resulting js files in the same directories as their corresponding imba files.
+### imbapack
 
-`> imba watch src/` will compile like above, but watch for changes as well, and recompile when needed. It takes all the same options as imba compile.
+This is a thin wrapper around webpack, and is the recommended way to build your imba projects. It takes all the same options as webpack, but injects the imba-loader and related extensions and module configuration. This means that you could create a plain webpack.config.js and just run `imbapack` instead of `webpack`. The config can include other loaders and plugins, imbapack should be able to inject the additional config correctly.
 
-> Tip! When compiling files and folders without specifying an output location Imba will follow a specific convention. If the path includes a src/ directory, and there is a sibling lib/ directory, Imba will automatically choose this path. If you have the directories `/myapp/src` and `/myapp/lib`, running `> imba compile /myapp/src/app.imba` will by default write the compiled code to `/myapp/lib/app.js`.
+### imbac
 
-### Webpack
+`> imbac src/` will compile all imba files inside src (recursively). By default, Imba will look for a matching lib/ directory, and save the resulting files there. If no such directory exists, it will save the resulting js files in the same directories as their corresponding imba files.
 
-For real projects, you might not want to keep the compiled code in the repository. The recommended way to use Imba in the browser is to compile your project with webpack. With webpack it is trivial to continually build your project, with source-mapping++ in development, and minification++ in production. Check out [imba-loader](https://github.com/judofyr/imba-loader) for more information.
+`> imbac -o out.js input.imba` will compile the file input.imba to out.js
 
-### Browserify
+`> imbac -w -o lib/ src/` compiles all files in src to lib, and recopmiles when they are modified
 
-Since Imba compiles to plain old javascript, you can use browserify as well. Until there is a plugin for browserify you will need to compile/watch the imba files/directories using the CLI and use browserify on the compiled code.
+All the other options can bee found by calling `> imbac --help`
 
-## Plugins
+# Plugins
 
 Support for Atom and other editors is on the roadmap, but currently Sublime Text 3 is the only official editor/ide for Imba.
 
@@ -106,13 +109,21 @@ There is an [unofficial Atom plugin](https://atom.io/packages/language-imba) tha
 
 Unofficial plugin or vim, Vimba, can be found at [simeng/vim-imba](https://github.com/simeng/vim-imba). It is very much under development.
 
+### VSCode
+
+A plugin for vscode is underway.
+
 # Examples
 
 Since Imba is a new language, there aren't that many open-source examples out in the wild. It is being used in several 100kloc+ commercial projects, so it should definitely be production-ready.
 
+### [Hello World](https://github.com/somebee/hello-world-imba)
+
+Tiny application with webpack/imbapack setup.
+
 ### [TodoMVC](https://github.com/somebee/todomvc-imba)
 
-The basic Imba implementation of TodoMVC is a good place to start playing around. 
+The basic Imba implementation of TodoMVC is a good place to start playing around.
 
 ### [Imba.io](https://github.com/somebee/imba.io)
 
@@ -123,3 +134,8 @@ This whole website is written in Imba. It uses the same code for server and clie
 The inline editor used throughout this site is written in Imba, and available at [github](https://github.com/somebee/scrimbla). It is a decent example of a project.
 
 Next up, read about [the language](/guides/language) itself!
+
+
+# Tutorials
+
+You can find quite a few tutorials and videos at [scrimba.com](https://scrimba.com/topic/imba)!

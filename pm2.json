@@ -1,0 +1,7 @@
+{
+	"apps": [{
+		"name": "imba.io",
+		"script": "./index.js",
+		"watch": ["src"]
+	}]
+}

@@ -30,7 +30,7 @@ tag site < html
 			<blog route='/blog'>
 			<footer> 
 				<hr>
-				<.lft> "Imba © 2015-2016"
+				<.lft> "Imba © 2015-2017"
 				<.rgt>
 					<a href='http://twitter.com/imbajs'> 'Twitter'
 					<a href='http://github.com/somebee/imba'> 'GitHub'
