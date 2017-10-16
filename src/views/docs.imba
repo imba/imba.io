@@ -1,5 +1,5 @@
 def pathToAnchor path
-	'api-' + path.replace(/\./g,'_').replace(/\#/g,'__')
+	'api-' + path.replace(/\./g,'_').replace(/\#/g,'__').replace(/\=/g,'_set')
 
 tag api-desc
 
