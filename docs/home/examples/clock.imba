@@ -10,9 +10,9 @@ tag clock
 	
 	def render
 		<self>
-			<div.h transform=turns(720)>
-			<div.m transform=turns(60)>
-			<div.s transform=turns(1)>
+			<div.h css:transform=turns(720)>
+			<div.m css:transform=turns(60)>
+			<div.s css:transform=turns(1)>
 
 <div.clocks> # spawn 4 clocks
 	<clock title='New York' utc=-5>

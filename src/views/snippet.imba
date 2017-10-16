@@ -381,6 +381,7 @@ tag snippet
 			view.hints.rem do |hint| hint.group == 'runtime'
 
 			if res:js and res:js:body
+				res:js:body = res:js:body.replace("require('imba')","window.Imba")
 				@runData = res:js
 				# @jsview.load(res:data:code) if res:data
 				try @sandbox.run(res:js) catch e

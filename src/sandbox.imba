@@ -1,7 +1,7 @@
 # included in iframe to evaluate and present code snippets / examples
 
 extern eval
-require 'imba'
+# require 'imba'
 
 var Sandbox = {}
 

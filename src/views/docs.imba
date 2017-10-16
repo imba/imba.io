@@ -191,16 +191,15 @@ tag docs < page
 
 	def loaded
 		render
-		# really?
 		if document:location:hash
-			if var el = first(document:location:hash)
+			if var el = dom.querySelector(document:location:hash)
 				# console.log 'should scroll here?!?!?!',el
-				el.dom.scrollIntoView
+				el.scrollIntoView
 		self
 
 	def refocus
-		if var el = first(document:location:hash)
-			el.dom.scrollIntoView
+		if var el = dom.querySelector(document:location:hash)
+			el.scrollIntoView
 		self
 
 	def lookup path

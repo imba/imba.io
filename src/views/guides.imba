@@ -63,15 +63,15 @@ tag guides < page
 		e.halt
 		# log 'guides routed'
 		var scroll = do
-			if let el = first('#' + router.hash)
-				el.dom.scrollIntoView(true)
+			if let el = dom.querySelector('#' + router.hash)
+				el.scrollIntoView(true)
 				@scrollFreeze = window:pageYOffset
 				return el
 			return no
 
 		if router.hash
 			render
-			scroll() or setTimeout(scroll,20) do
+			scroll() or setTimeout(scroll,20)
 
 		self
 

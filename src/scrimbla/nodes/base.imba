@@ -9,6 +9,9 @@ extend tag htmlelement
 		var ev = Imba.Events.trigger(name,self,data: data, bubble: yes)
 		return ev
 
+	def up q
+		parent?.closest(q)
+
 	def delay name, time, blk
 		@timeouts ||= {}
 		clearTimeout(@timeouts[name])
@@ -56,6 +59,14 @@ extend tag htmlelement
 
 	def prevNode
 		dom:prevSibling
+
+	def next
+		var el = dom:nextElementSibling
+		el ? el.@tag : null
+
+	def prev
+		var el = dom:previousElementSibling
+		el ? el.@tag : null
 
 IM.Types = {}
 

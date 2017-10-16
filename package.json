@@ -18,8 +18,8 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "build": "webpack -p --define DEBUG=0 --colors --display-modules",
-    "watch": "webpack --define DEBUG=1 --devtool inline-source-map --watch --progress --colors --display-modules"
+    "build": "imbapack -p --define DEBUG=0 --colors --display-modules",
+    "watch": "imbapack --define DEBUG=1 --devtool inline-source-map --watch --progress --colors --display-modules"
   },
   "files": [],
   "directories": {},
@@ -43,6 +43,6 @@
     "marked": "^0.3.5",
     "octonode": "^0.7.4",
     "source-map": "^0.5.3",
-    "webpack": "^1.12.9"
+    "webpack": "^3.7.1"
   }
 }

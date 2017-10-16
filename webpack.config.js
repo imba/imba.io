@@ -5,7 +5,7 @@ module.exports = [{
 	entry: "./src/client.imba",
 	output: { filename: "./www/client.js" },
 },{
-	entry: "./scrimbla/src/webworker",
+	entry: "./src/scrimbla/webworker",
 	output: { filename: "./www/js/scrimbla.worker.js" },
 	target: "webworker"
 }]

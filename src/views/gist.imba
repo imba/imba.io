@@ -61,8 +61,10 @@ tag gist < snippet
 
 		def maximize
 			show
-			for pane in siblings
-				pane.hide if pane.matches(%pane)
+			for pane in parent.children when pane.matches('._pane')
+				pane.hide if pane != self
+			# for pane in siblings
+			#	pane.hide if pane.matches(%pane)
 			self
 
 		def shown
@@ -73,14 +75,15 @@ tag gist < snippet
 			self
 
 		def refit
-			last?.refit
+			Imba.getTagForDom(dom:lastElementChild)?.refit
+			# last?.refit
 			self
 
 	tag tab
 		attr name
 
 		def pane
-			@pane ||= up(%snippet)?.pane(name)
+			@pane ||= closest('._snippet')?.pane(name)
 
 		def ontap e
 			console.log 'tap?',pane,e
@@ -130,6 +133,7 @@ tag gist < snippet
 	def oncompiled res, o
 		if res:js and res:js:body
 			# compile again
+			console.log "compiled!!!",res
 			o:bare ? js.load(res:js:body) : compile(code,bare: yes, standalone: no)
 		self
 

@@ -31,11 +31,12 @@ tag gh-user < span
 tag issue
 
 	def doc
-		object.object
+		data.object
 
 	def commit
-		if object and object.ready
+		if data and data.ready
 			unflag('loading')
+			console.log "render markdown",doc
 			render
 		else
 			flag('loading')
