@@ -1,0 +1,72 @@
+.RangeView {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	color: inherit;
+	opacity: 1;
+	color: transparent;
+	// will-change: opacity;
+
+	.part {
+		position: absolute;
+		height: 100%;
+	}
+
+	.loc {
+		position: absolute;
+		height: 100%;
+	}
+}
+
+._imcaret {
+	display: none;
+}
+
+._caretview {
+	display: none;
+	&.active {
+		display: block;
+	}
+
+	.part {
+		position: absolute;
+		height: 100%;
+		background: rgb(44, 60, 70);
+		border-radius: 2px;
+	}
+
+	.loc {
+		.mark {
+			@size: 3px;
+			width: (@size * 2 + 1);
+			height: 100%;
+			border: @size solid transparent;
+			border-top: @size solid #FFFB60;
+			background: transparent !important;
+			box-sizing: border-box;
+			margin-left: -(@size + 1);
+			position: absolute;
+		}
+
+		.vbar {
+			position: absolute;
+			top: 5px;
+			bottom: 1px;
+			background: rgba(255, 251, 96, 0.5);
+			width: 1px;
+			left: -1px;
+		}
+
+		&.a {
+			display: none;
+		}
+	}
+
+	&.blink .loc {
+		opacity: 0.1;
+	}
+
+	&.collapsed .loc.a { display: none; }
+}

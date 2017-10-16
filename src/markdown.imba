@@ -1,4 +1,4 @@
-require 'imba'
+# require 'imba'
 
 var marked = require 'marked'
 var hljs = require 'highlight.js'
@@ -6,7 +6,7 @@ var hljs = require 'highlight.js'
 import Router from './router'
 
 Imbac = require 'imba/compiler'
-var hl = require '../scrimbla/src/core/highlighter'
+var hl = require './scrimbla/core/highlighter'
 
 hljs.configure
 	classPrefix: ''

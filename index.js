@@ -1,3 +1,2 @@
-require('imba')
-// require('imba/compiler')
+require('imba/register.js')
 require('./src/server.imba')
