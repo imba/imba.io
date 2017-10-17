@@ -18,4 +18,4 @@ tag sketchpad < canvas
 			context('2d').stroke(path)
 
 	def render
-		<self width=(parent?.width) height=300>
+		<self width=270 height=270>

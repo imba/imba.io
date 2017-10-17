@@ -92,15 +92,6 @@ Support for Atom and other editors is on the roadmap, but currently Sublime Text
 The plugin can be installed through [Package Control](https://packagecontrol.io) (it's called Imba). Or you can install it manually by cloning the
 [sublime-imba](https://github.com/somebee/sublime-imba) repository into your Sublime Text Packages/ folder.
 
-> We recommend using the very [latest version](http://www.sublimetext.com/3dev) of Sublime Text (dev channel) to get the best syntax highlighting and annotations.
- 
-### [Scrimbla](https://github.com/somebee/scrimbla)
-
-Scrimbla is an experimental web based editor for Imba, written in Imba. It is still *very* rough around the edges, but it is used for all examples on imba.io, and a local version for editing files/projects is underway. The code for this editor can be found at [somebee/scrimbla](http://github.com/somebee/scrimbla).
-
-> While Scrimbla is currently only usable for simple snippets, the long term goal is to make it the preferred environment for coding imba. We're looking for contributors!
-
-
 ### [Atom](https://atom.io/packages/language-imba)
 
 There is an [unofficial Atom plugin](https://atom.io/packages/language-imba) that is based on the sublime text plugin. This does not have integrated highlighting of scoped variables etc, but it should work for basic highlighting.
@@ -128,12 +119,6 @@ The basic Imba implementation of TodoMVC is a good place to start playing around
 ### [Imba.io](https://github.com/somebee/imba.io)
 
 This whole website is written in Imba. It uses the same code for server and client. After the initial load, all navigation in the browser is happening with history push/popState, and rendered directly on the client, yet any hard refresh should land you at the same spot when rendered from the server, thanks to using the same logic for routing as well. Grab it over at [github](https://github.com/somebee/imba.io)
-
-### [Scrimbla](https://github.com/somebee/scrimbla)
-
-The inline editor used throughout this site is written in Imba, and available at [github](https://github.com/somebee/scrimbla). It is a decent example of a project.
-
-Next up, read about [the language](/guides/language) itself!
 
 
 # Tutorials

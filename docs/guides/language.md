@@ -449,9 +449,6 @@ var list = <ul.todos>
     <todo title='Buy milk' completed=yes>
     <todo title='Finish documentation'>
     <todo.urgent title='Launch new website'>
-
-# finish the second todo with custom method
-list.child(1).complete
 ```
 
 But will my custom tags be valid HTML? In short, yes. The native DOM node will always be the real tag in the inheritance chain. In the above example, todo tags spawn as li tags: `<li class='_todo'></li>`. As you can see, custom tags will automatically add a prefixed className to identify its type. This also works for deeper inheritance:
