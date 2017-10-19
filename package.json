@@ -18,8 +18,8 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "build": "imbapack -p --define DEBUG=0 --colors --display-modules",
-    "watch": "imbapack --define DEBUG=1 --devtool inline-source-map --watch --progress --colors --display-modules"
+    "build": "imbapack -p --colors --display-modules",
+    "watch": "imbapack --devtool inline-source-map --watch --progress --colors --display-modules"
   },
   "files": [],
   "directories": {},
