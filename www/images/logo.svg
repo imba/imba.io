@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <linearGradient id="linearGradient-1" x1="40%" x2="0%" y1="15%" y2="100%">
+      <stop stop-color="#7C9CDC" offset="0%"/>
+      <stop stop-color="#3F57C4" offset="100%"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-2" x1="85%" x2="0%" y1="40%" y2="0%">
+      <stop stop-color="#837CDC" offset="0%"/>
+      <stop stop-color="#3F64C4" offset="100%"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-3" x1="60%" y1="85%" y2="0%">
+      <stop stop-color="#7CA0DC" offset="0%"/>
+      <stop stop-color="#3F71C4" offset="100%"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-4" x1="35%" x2="80%" y1="40%" y2="50%">
+      <stop stop-color="#7CA0DC" offset="0%"/>
+      <stop stop-color="#3F71C4" offset="100%"/>
+    </linearGradient>
+  </defs>
+  <g id="Page-1" fill="none" fill-rule="evenodd">
+    <g id="icon">
+      <polygon id="Path" fill="url(#linearGradient-1)" points="6 0 6 2 10 6 6 10 10 14 16 8 16 6 10 0"/>
+      <polygon id="Path" fill="url(#linearGradient-2)" points="16 6 10 12 5 7 2 10 8 16 10 16 16 10"/>
+      <polygon id="Path" fill="url(#linearGradient-3)" points="10 16 4 10 9 5 6 2 0 8 0 10 6 16"/>
+      <polygon id="Path" fill="url(#linearGradient-4)" points="0 10 6 4 10 8 12 6 6 0 0 6"/>
+      <polygon id="rect" fill="#231F5E" points="6 8 8 6 10 8 8 10"/>
+    </g>
+  </g>
+</svg>
