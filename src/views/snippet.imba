@@ -206,7 +206,7 @@ tag snippet
 							<tool.js title='show js' :tap='toggleJS'> 'show js'
 							<tool.run title='run' :tap='run'> 'run'
 							<tool.fullscreen title='+' :tap='openInFullscreen'> '+'
-					<div@view> <code.imbacode data-src=(src)> imba
+					<div@view> <code.imbacode data-src=(src) html=imba>
 				<@inspector>
 			return self
 

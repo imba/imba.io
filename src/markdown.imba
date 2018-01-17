@@ -63,15 +63,15 @@ def renderer.heading text, level
 	stack.push(meta)
 
 	var node = if level == 1
-		<h1> <span> text
+		<h1> <span html=text>
 	elif level == 2
-		<h2> <span> text
+		<h2> <span html=text>
 	elif level == 3
-		<h3> <span> text
+		<h3> <span html=text>
 	elif level == 4
-		<h4> <span> text
+		<h4> <span html=text>
 	elif level == 5
-		<h5> <span> text
+		<h5> <span html=text>
 
 	node.dom:className = flags.join(' ')
 	node
@@ -128,9 +128,9 @@ def renderer.code code, lang, opts = {}
 			imba = imba.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 
 		if opts:inline
-			return (<code.code.md.imba.inline> imba).toString
+			return (<code.code.md.imba.inline html=imba>).toString
 		elif tok:plain
-			return (<code.plain.imba> imba).toString
+			return (<code.plain.imba html=imba>).toString
 
 		# what about autorun etc?
 		return (<snippet imba=imba heading=conf:heading config=conf>).toString
@@ -141,7 +141,7 @@ def renderer.code code, lang, opts = {}
 		code = code.replace(/\</g,'&lt;')
 		code = code.replace(/\>/g,'&gt;')
 
-	return (<code.code.md .{lang} .inline=(opts:inline) > code).toString
+	return (<code.code.md .{lang} .inline=(opts:inline)  html=code> code).toString
 
 marked.setOptions
 	gfm: true
