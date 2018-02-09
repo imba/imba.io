@@ -1,21 +1,56 @@
-import Doc from './data/doc'
-import Router from './router'
+import Router from './util/router'
+
+export class Doc
+
+	prop path
+	prop src
+	prop data
+
+	def ready
+		@ready
+
+	def initialize src, app
+		@src = src
+		@path = src.replace(/\.md$/,'')
+		@app = app
+		@ready = no
+		fetch
+		self
+
+	def fetch
+		@promise ||= @app.fetch(src).then do |res|
+			load(res)
+
+	def load doc
+		@data = doc
+		@meta = doc:meta or {}
+		@ready = yes
+		Imba.commit
+		self
+
+	def title
+		@data:title or 'path'
+
+	def toc
+		@data and @data:toc[0]
+
+	def body
+		@data and @data:body
+		
+var gcache = {}
+var requests = {}
 
 export class App
-
 	prop req
-	prop res
-	prop deps
-	prop site
 	prop cache
 	prop issues
+	
+	def self.deserialize data = '{}'
+		self.new JSON.parse(data.replace(/§§SCRIPT§§/g,"script"))
 
-	def initialize
-		cache = {}
-		deps = {}
-		reset
-		tick
-
+	def initialize cache = {}
+		@cache = cache
+		@docs = {}
 		if $web$
 			@loc = document:location
 		self
@@ -33,68 +68,89 @@ export class App
 	def hash
 		$web$ ? @loc:hash.substr(1) : ''
 
-	def tick
-		Imba.ticker.add(self) if @scheduled
-		self
+	def doc src
+		@docs[src] ||= Doc.new(src,self)
+		
+	def serialize
+		return JSON.stringify(cache).replace(/\bscript/g,"§§SCRIPT§§")
 
-	def schedule
-		Imba.ticker.add(self)
-		@scheduled = yes
-		if $web$
-			@blinker = Imba.setInterval(1000) do
-				for caret in $(._caretview.active)
-					caret.blink
+	if $node$
+		def fetch src
+			let res = cache[src] = gcache[src]
+			let promise = {then: (|cb| cb(gcache[src])) }
+			
+			return promise if res
+			
+			console.log "try to fetch {src}"
+			
+			var fs = require 'fs'
+			var path = require 'path'
+			var md = require './util/markdown'
+			var hl = require './scrimbla/core/highlighter'
+			var filepath = "{__dirname}/../docs/{src}".replace(/\/\//g,'/')
 
-				setTimeout(&,500) do
-					for caret in $(._caretview.active)
-						caret.unblink
-		self
+			let body = fs.readFileSync(filepath,'utf-8')
 
-	def unschedule
-		@scheduled = no
-		Imba.clearInterval(@blinker)
-		self
+			if src.match(/\.md$/)
+				res = md.render(body)
 
+			elif src.match(/\.json$/)
+				# should also include md?
+				res = JSON.parse(body)
+
+			elif src.match(/\.imba$/)
+				let html = hl.Highlighter.highlight(body,{mode: 'full'})
+				res = {body: body, html: html}
+
+			cache[src] = gcache[src] = res
+			return promise
+	
+	if $web$
+		def fetch src
+			if cache[src]
+				return Promise.resolve(cache[src])
+			
+			requests[src] ||= Promise.new do |resolve|
+				var req = await window.fetch(src)
+				var resp = await req.json
+				resolve(cache[src] = resp)
+			
 	def fetchDocument src, &cb
+		var res = deps[src]
 
 		if $node$
 			var fs = require 'fs'
 			var path = require 'path'
-
+			var md = require './util/markdown'
+			var hl = require './scrimbla/core/highlighter'
 			var filepath = "{__dirname}/../docs/{src}".replace(/\/\//g,'/')
-
-			var res = deps[src]
 
 			if !res
 				let body = fs.readFileSync(filepath,'utf-8')
 
 				if src.match(/\.md$/)
-					res = self.Markdown.render(body)
+					res = md.render(body)
 
 				elif src.match(/\.json$/)
+					# should also include md?
 					res = JSON.parse(body)
 
 				elif src.match(/\.imba$/)
-					let html = self.Highlighter.highlight(body,{mode: 'full'})
+					let html = hl.Highlighter.highlight(body,{mode: 'full'})
 					res = {body: body, html: html}
 			
 			deps[src] ||= res
-
-			if site
-				site.deps[src] ||= res
 			cb and cb(res)
-
 		else
-			if DEPS[src]
-				cb and cb(DEPS[src])
+			# should guard against multiple loads
+			if res
+				cb and cb(res)
 				return {then: (do |v| v(res))} # fake promise hack
 
 			var xhr = XMLHttpRequest.new
 			xhr.addEventListener 'load' do |res|
-				DEPS[src] = JSON.parse(xhr:responseText)
-				cb and cb(DEPS[src])
-				# XHR = xhr
-				# console.log 'response here',xhr:responseText
+				res = deps[src] = JSON.parse(xhr:responseText)
+				cb and cb(res)
 			xhr.open("GET", src)
 			xhr.send
 

@@ -1,12 +1,10 @@
-# require 'imba'
-
 var marked = require 'marked'
 var hljs = require 'highlight.js'
 
 import Router from './router'
 
 Imbac = require 'imba/compiler'
-var hl = require './scrimbla/core/highlighter'
+var hl = require '../scrimbla/core/highlighter'
 
 hljs.configure
 	classPrefix: ''
@@ -124,6 +122,7 @@ def renderer.code code, lang, opts = {}
 		try
 			imba = hl.Highlighter.highlight(code, mode: mode)
 		catch e
+			# console.log "failed?!",e,code
 			imba = code
 			imba = imba.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 
@@ -132,8 +131,7 @@ def renderer.code code, lang, opts = {}
 		elif tok:plain
 			return (<code.plain.imba html=imba>).toString
 
-		# what about autorun etc?
-		return (<snippet imba=imba heading=conf:heading config=conf>).toString
+		return (<div.snippet data-title=conf:title> <code.plain.imba html=imba>).toString
 
 	if lang == 'js'
 		code = hljs.highlightAuto(code,['javascript'])[:value]

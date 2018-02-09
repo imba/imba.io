@@ -7,7 +7,7 @@
 	max-width: 760px;
 }
 
-._page {
+.Page {
 	color: #75818E;
 	// drop toggleable theme for now
 	code.cli:not(.inline) {
@@ -17,15 +17,6 @@
 		background: @codebg;
 		color: @color;
 		font-family: @monofont;
-	}
-
-	// code.cli {
-	// 	padding: 2ex 3ch;
-	// 	display: block;
-	// }
-
-	&:not(.scoped) {
-		display: none;
 	}
 
 	& > .body {
@@ -60,7 +51,7 @@ body > footer {
 	opacity: 0.3;
 }
 
-._api-item {
+.Item {
 	.light-colors;
 
 	position: relative;
@@ -74,7 +65,7 @@ body > footer {
 		display: block;
 	}
 
-	._api-link {
+	.Link {
 		font-size: 14px;
 		.desc {
 			font-weight: normal;
@@ -96,13 +87,13 @@ body > footer {
 		}
 	}
 
-	._api-ref {
+	.Ref {
 		display: inline-block;
 		color: #E06D65;
 		font-weight: 600;
 	}
 
-	._api-desc {
+	.Desc {
 		color: inherit;
 	}
 
@@ -148,14 +139,14 @@ body > footer {
 		}
 	}
 
-	._api-link[name]:before {
+	.Link[name]:before {
 		content: attr(name) + ' ';
 		font-weight: 600;
 		color: @keyword;
 	}
 }
 
-._api-class {
+.Class {
 	& > .header {
 		padding: 18px 0px 18px;
 		margin: 0px 0px 6px;
@@ -169,7 +160,7 @@ body > footer {
 	}
 }
 
-._api-method {
+.Method {
 	margin: 0rem -2rem;
 	padding: 1.7rem 2rem 1.5rem;
 }
@@ -178,7 +169,7 @@ body > footer {
 .doc {
 	.light-colors;
 
-	._api-link {
+	.Link {
 		font-size: 14px;
 		.desc {
 			font-weight: normal;
@@ -190,13 +181,20 @@ body > footer {
 		}
 	}
 
-	._api-ref {
+	.Link[name]:before {
+		content: attr(name) + ' ';
+		font-weight: 600;
+		color: @keyword;
+	}
+
+
+	.Ref {
 		display: inline-block;
 		color: #E06D65;
 		font-weight: 600;
 	}
 
-	._api-desc {
+	.Desc {
 		color: inherit;
 	}
 
@@ -226,11 +224,7 @@ body > footer {
 		}
 	}
 
-	._api-link[name]:before {
-		content: attr(name) + ' ';
-		font-weight: 600;
-		color: @keyword;
-	}
+	
 
 	code.inline.inline.inline.disabled {
 		font-family: inherit;

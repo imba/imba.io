@@ -12,9 +12,10 @@ export class Doc
 	def ready
 		@ready
 
-	def initialize path, type
+	def initialize path, type, app
 		@type = type
 		@path = path
+		@app = app
 		@ready = no
 		fetch
 		self
@@ -25,11 +26,11 @@ export class Doc
 	def fetch
 		if $node$
 			# console.log 'fetch Guide on server',path,src
-			return APP.fetchDocument(src) do |res|
+			return @app.fetchDocument(src) do |res|
 				# console.log 'fetch Guide on server done',path
 				load(res)
 
-		@promise ||= APP.fetchDocument(src) do |res|
+		@promise ||= @app.fetchDocument(src) do |res|
 			load(res)
 
 	def load doc

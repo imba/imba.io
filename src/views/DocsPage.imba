@@ -1,21 +1,23 @@
+import Page from './Page'
+
 def pathToAnchor path
 	'api-' + path.replace(/\./g,'_').replace(/\#/g,'__').replace(/\=/g,'_set')
 
-tag api-desc
+tag Desc
 
 	def html= html
 		if html != @html
 			dom:innerHTML = @html = html
 		self
 
-tag api-ref
+tag Ref
 
 	def render
 		<self>
 
-tag api-item
+tag Item
 
-tag api-path < span
+tag Path < span
 	prop short
 
 	def setup
@@ -35,17 +37,15 @@ tag api-path < span
 		self
 
 
-tag api-link
+tag Return
 	attr name
 
 	def render
 		<self>
-			<api-path[data:value].value>
+			<Path[data:value].value>
 			<span.desc> data:desc
 
-tag api-return < api-link
-
-tag api-class < api-item
+tag Class < Item
 
 	prop data watch: :parse
 
@@ -58,26 +58,26 @@ tag api-class < api-item
 	def render
 		<self>
 			<span.toc-anchor id=pathToAnchor(data:namepath)>
-			<.header> <.title> <api-path[data:namepath]>
-			<api-desc html=data:html>
+			<.header> <.title> <Path[data:namepath]>
+			<Desc html=data:html>
 			if data:ctor
 				<.content.ctor>
-					<api-method[data:ctor] path=(data:namepath + '.new')>
+					<Method[data:ctor] path=(data:namepath + '.new')>
 
 			<.content>
 				if @statics:length > 0
 					<.section>
 						<h2.header> 'Static Methods'
 						<.content.list> for item in @statics
-							<api-method[item].doc iname=data:namepath>
+							<Method[item].doc iname=data:namepath>
 
 				if @methods:length > 0
 					<.section>
 						<h2.header> 'Instance Methods'
 						<.content.list> for item in @methods
-							<api-method[item].doc iname=data:iname>
+							<Method[item].doc iname=data:iname>
 
-tag api-value
+tag Value
 
 	def render
 		if data:type
@@ -90,7 +90,7 @@ tag api-value
 		self
 		
 
-tag api-param
+tag Param
 
 	def type
 		data:type
@@ -99,21 +99,21 @@ tag api-param
 		<self .{type}>
 			if type == 'NamedParams'
 				for param in data:nodes
-					<api-param[param]>
+					<Param[param]>
 			else
 				<.name> data:name
 				if data:defaults
 					<i> type == 'NamedParam' ? ': ' : ' = '
-					<api-value[data:defaults]>
+					<Value[data:defaults]>
 
-tag api-method < api-item
+tag Method < Item
 
 	prop iname
 	prop path
 
 	def tags
 		<div@tags>
-			<api-return[data:return] name='returns'> if data:return
+			<Return[data:return] name='returns'> if data:return
 
 			if data:deprecated
 				<.deprecated.red> 'Method is deprecated'
@@ -131,31 +131,31 @@ tag api-method < api-item
 		<self .deprecated=(data:deprecated) >
 			<span.toc-anchor id=slug>
 			<.header>
-				<api-path[path]>
+				<Path[path]>
 				<.params> for param in data:params
-					<api-param[param]>
+					<Param[param]>
 				<.grow>
-			<api-desc.md html=data:html>
+			<Desc.md html=data:html>
 			tags
 
-tag doc-link < a
+tag Link < a
 	prop short
 
 	def render
-		<self href="/docs#{pathToAnchor(data:namepath)}"> <api-path[data:namepath] short=short>
+		<self href="/docs#{pathToAnchor(data:namepath)}"> <Path[data:namepath] short=short>
 		super
 
 	def ontap
 		super
-		up(%docs).refocus
+		trigger('refocus')
 
-tag doc-group < toc
+tag Group
 
 	def ontap
 		toggleFlag('collapsed')
 
 
-tag docs < page
+export tag DocsPage < Page
 
 	prop version default: 'current'
 	prop roots
@@ -166,36 +166,27 @@ tag docs < page
 	def docs
 		@docs
 
-	def awaken
-		load
-		schedule
-		self
-
 	def setup
 		load
 		super
 
 	def load
-		if $node$
-			# return self
-			APP.fetchDocument(src) do |res|
-				@docs = JSON.parse(JSON.stringify(res))
-				generate
-			return self
-
-		@request ||= APP.fetchDocument(src) do |res|
-			DOCS = @docs = res
-			DOCMAP = @docs:entities
-			generate
+		var docs = await app.fetch(src)
+		DOCS = @docs = JSON.parse(JSON.stringify(docs))
+		DOCMAP = @docs:entities
+		generate
+		if $web$
 			loaded
 
 	def loaded
 		render
 		if document:location:hash
 			if var el = dom.querySelector(document:location:hash)
-				# console.log 'should scroll here?!?!?!',el
 				el.scrollIntoView
 		self
+		
+	def onrefocus e
+		refocus
 
 	def refocus
 		if var el = dom.querySelector(document:location:hash)
@@ -219,24 +210,19 @@ tag docs < page
 
 	def render
 		return self unless docs
-		super
-
-	def body
-		<@body.light>
-			for root in roots
-				<api-class[root].doc.l>
-	def nav
-		<navmenu@nav>
-			<.content>
+		
+		<self>
+			<nav@nav> <.content>
 				for root in roots
-					<doc-group.class.section.compact>
-						<.header> <doc-link[root].class>
+					<Group.toc.class.section.compact>
+						<.header> <Link[root].class>
 						<.content>
 							<.static>
 								for meth in root['.'] when meth:desc and !meth:private
-									<.entry> <doc-link[meth] short=yes>
+									<.entry> <Link[meth] short=yes>
 							<.instance>
 								for meth in root['#'] when meth:desc and !meth:private
-									<.entry> <doc-link[meth] short=yes>
-
-
+									<.entry> <Link[meth] short=yes>
+			<.body>
+				for root in roots
+					<Class[root].doc.l>

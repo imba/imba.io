@@ -21,15 +21,13 @@ export class Router
 		if $web$
 			window:onpopstate = do |e|
 				refresh
-				Imba.setTimeout(0) do yes
+
 		self
 
 	def refresh
 		if $web$
 			document:body.setAttribute('data-route',segment(0))
-			# @app.tick
-			Imba.emit(Imba,'event',['route'])
-
+			Imba.commit
 		self
 
 	def path
@@ -57,7 +55,7 @@ export class Router
 		else
 			history.pushState(state,null,href)
 			refresh
-			ga('send', 'pageview', href)
+			# ga('send', 'pageview', href)
 
 		if !href.match(/\#/)
 			window.scrollTo(0,0)
@@ -85,4 +83,54 @@ export class Router
 			part && m ? m[part] : m
 		else
 			no
-		
+
+extend tag element
+	attr route
+
+	def router
+		app.router
+
+	def reroute
+		var scoped = router.scoped(route,self)
+		flag('scoped',scoped)
+		flag('selected',router.match(route,self))
+		if scoped != @scoped
+			@scoped = scoped
+			scoped ? didscope : didunscope
+		return self
+
+	def didscope
+		self
+
+	def didunscope
+		self
+
+# extend links
+extend tag a
+	
+	def route
+		@route or href
+
+	def ontap e
+		var href = href.replace(/^http\:\/\/imba\.io/,'')
+
+		if e.event:metaKey or e.event:altKey
+			e.@responder = null
+			return e.stop
+
+		if let m = href.match(/gist\.github\.com\/([^\/]+)\/([A-Za-z\d]+)/)
+			console.log 'gist!!',m[1],m[2]
+			#gist.open(m[2])
+			return e.prevent.stop
+
+		if href[0] == '#' or href[0] == '/'
+			e.prevent.stop
+			router.go(href,{})
+			Imba.Events.trigger('route',self)
+		else
+			e.@responder = null
+			return e.stop		
+		self
+
+	def render
+		reroute

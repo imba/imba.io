@@ -42,7 +42,7 @@
 	h3 + h2 { margin-top: 0.6em; }
 
 	& > .content {
-		& > ._toc + ._toc {
+		& > ._toc + ._toc, & > .toc + .toc {
 			border-top: 1px solid #F3F5F7;
 			padding-top: 10px;
 			margin-top: 10px;
@@ -113,7 +113,7 @@
 		& > :first-child { margin-top: 0px; }
 	}
 
-	& > .content > ._toc,.section {
+	& > .content > ._toc,.section,& > .content > .toc {
 		// margin: 12px 0px;
 		position: relative;
 
@@ -281,6 +281,6 @@
 	}
 }
 
-._page > .nav {
+.Page > .nav {
 	.page-nav;
 }
