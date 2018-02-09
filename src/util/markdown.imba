@@ -2,9 +2,7 @@ var marked = require 'marked'
 var hljs = require 'highlight.js'
 
 import Router from './router'
-
-Imbac = require 'imba/compiler'
-var hl = require '../scrimbla/core/highlighter'
+var highlighter = require './highlighter'
 
 hljs.configure
 	classPrefix: ''
@@ -18,7 +16,6 @@ def unescape code
 	return code
 
 var renderer = marked.Renderer.new
-
 
 def renderer.heading text, level
 	var next = this:parser.peek || {}
@@ -71,6 +68,7 @@ def renderer.heading text, level
 	elif level == 5
 		<h5> <span html=text>
 
+
 	node.dom:className = flags.join(' ')
 	node
 
@@ -120,9 +118,8 @@ def renderer.code code, lang, opts = {}
 		var imba
 
 		try
-			imba = hl.Highlighter.highlight(code, mode: mode)
+			imba = highlighter.highlight('imba',code)
 		catch e
-			# console.log "failed?!",e,code
 			imba = code
 			imba = imba.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 

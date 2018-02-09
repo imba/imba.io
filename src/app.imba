@@ -36,7 +36,8 @@ export class Doc
 
 	def body
 		@data and @data:body
-		
+
+
 var gcache = {}
 var requests = {}
 
