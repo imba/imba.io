@@ -10,7 +10,7 @@ srv.disable('etag')
 srv.use(express.static('./www'))
 
 srv.get '/' do |req,res| res.redirect('/home')
-srv.get '/install' do |req,res| res.redirect('/guides#toc-installation')
+srv.get '/install' do |req,res| res.redirect('/guide#toc-installation')
 
 # creating the local app
 APP = App.new

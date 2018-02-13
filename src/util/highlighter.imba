@@ -79,7 +79,7 @@ var imbaLang = {
 			[/(@ivar)(\:)(?=\w)/, [names:ivar,names:access]]
 			[/(@constant)(\:)(?=\w)/, [names:constant,names:access]]
 
-			[/(class|tag|module)(?=\s)/, { token: 'keyword.$1', next: '@declstart.$1', log: "ENTER CLASS"}],
+			[/(class|tag|module)(?=\s)/, { token: 'keyword.$1', next: '@declstart.$1'}],
 			[/(def)(?=\s)/, { token: 'keyword.$1', next: '@defstart.$1'}],
 			[/(prop|attr)(?=\s)/, { token: 'keyword.$1', next: '@propstart.$1'}],
 			
@@ -305,7 +305,7 @@ var imbaLang = {
 		],
 
 		declstart: [
-			[/^./, token: '@rematch', next: '@pop', log: "REMATCH"],
+			[/^./, token: '@rematch', next: '@pop'],
 			[/[A-Z][A-Za-z\d\-\_]*/, token: 'identifier.decl.$S2'],
 			[/\./, token: 'delimiter.dot'],
 			[/[a-z_][A-Za-z\d\-\_]*/, token: 'identifier.decl.$S2'],

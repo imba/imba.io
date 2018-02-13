@@ -17,9 +17,10 @@ tag GuideTOC
 		return self unless data.ready
 
 		let toc = toc
-
+		reroute
+	
 		<self.toc.entry level=(toc:level)>
-			if toc:children:length and toc:level < 2
+			if toc:children:length and toc:level < 3
 				<.header>
 					<a href=route> toc:title
 				<.content>
@@ -109,7 +110,7 @@ export tag GuidesPage < Page
 		<self._page>
 			<nav@nav>
 				<.content>
-					<GuideTOC[app.doc('/guides.md')]>
-					<GuideTOC[app.doc('/guides/language.md')]>
+					<GuideTOC[app.doc('/guide.md')]>
+					# <GuideTOC[app.doc('/guides/language.md')]>
 			<.body.light>
 				<Guide[guide]>

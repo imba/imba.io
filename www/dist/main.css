@@ -442,7 +442,7 @@ a:hover {
 }
 h1 {
   font-size: 3em;
-  font-weight: 600;
+  font-weight: 500;
   margin: 1em 0em 0.5em;
   line-height: 1.2em;
 }
@@ -451,7 +451,7 @@ h1.code {
 }
 h2 {
   font-size: 2em;
-  font-weight: 600;
+  font-weight: 500;
   margin: 1.5em 0em 0.5em;
   line-height: 1.2em;
 }
@@ -460,7 +460,7 @@ h2.code {
 }
 h3 {
   font-size: 1.6em;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.2em;
   margin: 1.5em 0em 0.5em;
 }
@@ -1578,54 +1578,45 @@ hr + p {
 .Page > .nav > .content > :first-child {
   margin-top: 0px;
 }
-.Page > .nav > .content > ._toc,
-.Page > .nav .section,
-.Page > .nav > .content > .toc {
+.Page > .nav > .content > .toc,
+.Page > .nav .section {
   position: relative;
 }
-.Page > .nav > .content > ._toc > .header,
-.Page > .nav .section > .header,
-.Page > .nav > .content > .toc > .header {
+.Page > .nav > .content > .toc > .header,
+.Page > .nav .section > .header {
   position: relative;
   font-size: 18px;
   line-height: 1.1em;
 }
-.Page > .nav > .content > ._toc > .header a,
-.Page > .nav .section > .header a,
-.Page > .nav > .content > .toc > .header a {
+.Page > .nav > .content > .toc > .header a,
+.Page > .nav .section > .header a {
   padding: 6px 0px;
   display: inline-block;
   color: #8F4242;
 }
-.Page > .nav > .content > ._toc > .header a ._api-path b,
-.Page > .nav .section > .header a ._api-path b,
-.Page > .nav > .content > .toc > .header a ._api-path b {
+.Page > .nav > .content > .toc > .header a .Path b,
+.Page > .nav .section > .header a .Path b {
   color: #8F4242;
 }
-.Page > .nav > .content > ._toc > .content,
-.Page > .nav .section > .content,
-.Page > .nav > .content > .toc > .content {
+.Page > .nav > .content > .toc > .content,
+.Page > .nav .section > .content {
   padding-left: 12px;
 }
-.Page > .nav > .content > ._toc.large > .header,
-.Page > .nav .section.large > .header,
-.Page > .nav > .content > .toc.large > .header {
+.Page > .nav > .content > .toc.large > .header,
+.Page > .nav .section.large > .header {
   font-size: 22px;
 }
-.Page > .nav > .content > ._toc.large .entry,
-.Page > .nav .section.large .entry,
-.Page > .nav > .content > .toc.large .entry {
+.Page > .nav > .content > .toc.large .entry,
+.Page > .nav .section.large .entry {
   font-size: 15px;
 }
-.Page > .nav > .content > ._toc.compact .entry,
-.Page > .nav .section.compact .entry,
-.Page > .nav > .content > .toc.compact .entry {
+.Page > .nav > .content > .toc.compact .entry,
+.Page > .nav .section.compact .entry {
   font-size: 14px;
   line-height: 1.2em;
 }
-.Page > .nav > .content > ._toc.compact .legend,
-.Page > .nav .section.compact .legend,
-.Page > .nav > .content > .toc.compact .legend {
+.Page > .nav > .content > .toc.compact .legend,
+.Page > .nav .section.compact .legend {
   display: none;
 }
 .Page > .nav a.scoped:before {
@@ -1657,6 +1648,19 @@ hr + p {
 .Page > .nav .entry[level="0"] > .header > a:before {
   display: none !important;
 }
+.Page > .nav .entry[level="0"] > .header {
+  position: relative;
+  font-size: 18px;
+  line-height: 1.1em;
+}
+.Page > .nav .entry[level="0"] > .header a {
+  padding: 6px 0px;
+  display: inline-block;
+  color: #8F4242;
+}
+.Page > .nav .entry[level="0"] > .header a .Path b {
+  color: #8F4242;
+}
 .Page > .nav .entry[level="1"] {
   font-size: 16px;
   line-height: 1.3em;
@@ -1668,12 +1672,15 @@ hr + p {
   font-size: 15px;
   line-height: 1.3em;
 }
+.Page > .nav .entry[level="2"] > .scontent {
+  display: none;
+}
+.Page > .nav .entry[level="2"].scoped > .content {
+  display: block;
+}
 .Page > .nav .entry[level="3"] {
   font-size: 14px;
   line-height: 1.2em;
-}
-.Page > .nav .entry[level="1"] > .content > [level="3"] {
-  display: none;
 }
 .Page > .nav .entry {
   font-size: 16px;
@@ -1706,14 +1713,6 @@ hr + p {
 }
 .Page > .nav .entry > .content {
   padding-left: 16px;
-}
-.Page > .nav .entry:not(.scoped) > .contentDISABLED > .entry {
-  transition: line-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  line-height: 0px;
-  opacity: 0;
-}
-.Page > .nav .entry:not(.scoped) > .contentDISABLED > .entry a {
-  padding: 0px;
 }
 .Page > .nav .entry[data-level="1"] {
   font-size: 16px;
@@ -1793,11 +1792,11 @@ body > footer {
 .Item > .header {
   padding-bottom: 2px;
 }
-.Item > .header ._api-path {
+.Item > .header .Param {
   font-size: 18px;
   color: #437997;
 }
-.Item > .header ._api-path b:first-child {
+.Item > .header .Param b:first-child {
   color: #437997;
 }
 .Item > .header .params {
@@ -1810,10 +1809,10 @@ body > footer {
 .Item > .header .params * {
   display: inline-block;
 }
-.Item > .header .params ._api-param {
+.Item > .header .params .Param {
   white-space: pre;
 }
-.Item > .header .params ._api-param + ._api-param:before {
+.Item > .header .params .Param + .Param:before {
   content: ", ";
   color: #AB4D4D;
 }
@@ -1836,10 +1835,10 @@ body > footer {
   color: #297198;
   border-bottom: 2px solid;
 }
-.Class > .header ._api-path {
+.Class > .header .Path {
   font-size: 24px;
 }
-.Class > .header ._api-path .const {
+.Class > .header .Path .const {
   color: #297198;
 }
 .Method {

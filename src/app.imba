@@ -38,7 +38,7 @@ export class Doc
 		@data and @data:body
 
 
-var gcache = {}
+export var Cache = {}
 var requests = {}
 
 export class App
@@ -77,8 +77,8 @@ export class App
 
 	if $node$
 		def fetch src
-			let res = cache[src] = gcache[src]
-			let promise = {then: (|cb| cb(gcache[src])) }
+			let res = cache[src] = Cache[src]
+			let promise = {then: (|cb| cb(Cache[src])) }
 			
 			return promise if res
 			
@@ -103,7 +103,7 @@ export class App
 				let html = hl.Highlighter.highlight(body,{mode: 'full'})
 				res = {body: body, html: html}
 
-			cache[src] = gcache[src] = res
+			cache[src] = Cache[src] = res
 			return promise
 	
 	if $web$

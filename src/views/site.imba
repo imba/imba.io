@@ -35,7 +35,7 @@ export tag Site
 				<nav.content>
 					<a.tab.logo href='/home'> <i> 'imba'
 					<a.tab.home href='/home'> <i> 'home'
-					<a.tab.guides href='/guides'> <i> 'guides'
+					<a.tab.guides href='/guide'> <i> 'guides'
 					<a.tab.docs href='/docs'> <i> 'api'
 					<a.tab.blog href='/blog'> <i> 'blog'
 					if app.router.segment(0) == 'gists'
@@ -50,7 +50,7 @@ export tag Site
 			<main>
 				if router.scoped('/home')
 					<HomePage>
-				elif router.scoped('/guides')
+				elif router.scoped('/guide')
 					<GuidesPage>
 				elif router.scoped('/docs')
 					<DocsPage>

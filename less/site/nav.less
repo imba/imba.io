@@ -113,7 +113,7 @@
 		& > :first-child { margin-top: 0px; }
 	}
 
-	& > .content > ._toc,.section,& > .content > .toc {
+	& > .content > .toc,.section {
 		// margin: 12px 0px;
 		position: relative;
 
@@ -126,7 +126,7 @@
 				padding: 6px 0px;
 				display: inline-block;
 				color: #8F4242;
-				._api-path b {
+				.Path b {
 					color: #8F4242;
 				}
 			}
@@ -183,6 +183,21 @@
 		font-size: 16px;
 		line-height: 1.3em;
 		& > .header > a:before { display: none !important; }
+
+		& > .header {
+			position: relative;
+			font-size: 18px;
+			line-height: 1.1em;
+
+			a {
+				padding: 6px 0px;
+				display: inline-block;
+				color: #8F4242;
+				.Path b {
+					color: #8F4242;
+				}
+			}
+		}
 	}
 
 	.entry[level="1"] {
@@ -195,16 +210,13 @@
 	.entry[level="2"] {
 		font-size: 15px;
 		line-height: 1.3em;
-		// display: none;
+		& > .scontent { display: none; }
+		&.scoped > .content { display: block; }
 	}
 
 	.entry[level="3"] {
 		font-size: 14px;
 		line-height: 1.2em;
-	}
-
-	.entry[level="1"] {
-		& > .content > [level="3"] { display: none; }
 	}
 
 	.entry {
@@ -243,16 +255,6 @@
 
 		& > .content {
 			padding-left: 16px;
-		}
-
-		&:not(.scoped) > .contentDISABLED {
-			& > .entry {
-				transition: line-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-				line-height: 0px;
-				opacity: 0;
-				a { padding: 0px; }
-			}
-			// display: none;
 		}
 	}
 

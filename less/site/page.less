@@ -98,7 +98,7 @@ body > footer {
 	}
 
 	& > .header {
-		._api-path {
+		.Param {
 			font-size: 18px;
 			color: #437997;
 			b:first-child { color: @identifier; }
@@ -113,11 +113,11 @@ body > footer {
 			white-space: nowrap;
 			color: #509DB5;
 
-			._api-param {
+			.Param {
 				white-space: pre;
 			}
 
-			._api-param + ._api-param:before {
+			.Param + .Param:before {
 				content: ", ";
 				color: @op;
 			}
@@ -152,7 +152,7 @@ body > footer {
 		margin: 0px 0px 6px;
 		color: #297198;
 
-		._api-path {
+		.Path {
 			font-size: 24px;
 			.const { color: #297198; }
 		}
