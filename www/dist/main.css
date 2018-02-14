@@ -424,10 +424,11 @@ p,
 table,
 ul,
 ol {
-  line-height: 1.6em;
+  line-height: 1.7em;
   font-size: 15px;
   display: block;
   clear: both;
+  -webkit-font-smoothing: antialiased;
 }
 table {
   display: table;
@@ -463,6 +464,9 @@ h3 {
   font-weight: 500;
   line-height: 1.2em;
   margin: 1.5em 0em 0.5em;
+}
+p {
+  font-weight: 400;
 }
 p + p {
   margin-top: 1em;
@@ -508,7 +512,7 @@ hr + p {
   margin-bottom: 1em;
 }
 .md {
-  color: #75818E;
+  color: #4b5561;
 }
 .md > :first-child {
   margin-top: 0;
@@ -579,7 +583,7 @@ hr + p {
 }
 .md h4 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 .md hr {
   margin: 3rem 0;
@@ -607,7 +611,7 @@ hr + p {
   font-weight: inherit;
   display: inline-block;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   background: #f3f5f7;
   padding: 0px 4px;
   line-height: 1.5em;
@@ -618,7 +622,7 @@ hr + p {
   background: #F7F2E3;
   margin: 12px 0px;
   padding: 10px 12px;
-  color: #988F73;
+  color: #6f6850;
 }
 .md blockquote > :first-child {
   margin-top: 0px;
@@ -640,10 +644,10 @@ hr + p {
 }
 .md .snippet {
   font-size: 13px;
-  line-height: 17px;
+  line-height: 20px;
   position: relative;
   background: #f3f5f7;
-  font-weight: 500;
+  font-weight: 400;
   padding: 16px 22px;
 }
 .md .snippet code {
@@ -774,7 +778,7 @@ hr + p {
 }
 .light .hl[eref] {
   text-shadow: 2px 0px 1px rgba(255, 255, 255, 0.5), -2px 0px 1px rgba(255, 255, 255, 0.5), 0px 2px 1px rgba(255, 255, 255, 0.5), 0px -2px 1px rgba(255, 255, 255, 0.5);
-  font-weight: 500;
+  font-weight: 400;
   color: #424296 !important;
   border-bottom: 1px solid rgba(66, 66, 150, 0.5);
   border-radius: 2px;
@@ -1098,7 +1102,7 @@ hr + p {
 }
 .dark .hl[eref] {
   text-shadow: 2px 0px 1px rgba(0, 0, 0, 0.5), -2px 0px 1px rgba(0, 0, 0, 0.5), 0px 2px 1px rgba(0, 0, 0, 0.5), 0px -2px 1px rgba(0, 0, 0, 0.5);
-  font-weight: 500;
+  font-weight: 400;
   color: #FFE38D !important;
   border-bottom: 1px solid rgba(255, 227, 141, 0.5);
   border-radius: 2px;

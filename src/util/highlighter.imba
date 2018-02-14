@@ -439,7 +439,8 @@ export def htmlify code, lineCount = 30
 		while k < desc:length
 			let code = desc.charCodeAt(k++) - 64			
 			if k % 2 == 0 # move
-				s += line.slice(start,start = start + code)
+				let content = line.slice(start,start = start + code)
+				s += content.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 				s += '</span>'
 			else
 				s += '<span class="'+types[code]+'">'

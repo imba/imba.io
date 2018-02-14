@@ -1,11 +1,5 @@
----
-title: Guide
----
-
 # Essentials
-
 ## Introduction
-
 ### What is Imba?
 
 Imba is a new programming language for the web that compiles
@@ -35,53 +29,343 @@ var info =
     ]
 ```
 
-All snippets of code in the documentation are editable inline,
-with highlighting and annotations. It is implemented in [scrimbla](http://github.com/somebee/scrimbla) - an experimental web based editor for imba, written in imba. Don't expect it to work perfectly just yet, but have fun.
+> Even though Imba has been used privately, in production, for more than a year (powering scrimba.com), the community is  in the early stages, and documentation is still sparse. If you are a person who takes joy in learning new technologies and are not afraid to learn by doing, please keep reading.
 
-The Imba compiler is itself written in Imba, using a custom version of the
-Jison parser generator. The command-line version of imba is available as a
-node.js utility. The compiler itself does not depend on Node, and can be
-run in any JavaScript environment, or in the browser.
 
-> Some people might be confused by the comparison to React. React is a framework, Imba is a language - are these two comparable? [see discussion](https://news.ycombinator.com/item?id=10094371)
+### Getting started
 
-## Getting started
+> This guide assumes knowledge of HTML, CSS and JavaScript (or another programming language). It will be especially helpful to know React to grasp how tags and custom tags work.
 
 The easiest way to get started with Imba is to play around in the [scrimba.com Hello World example](https://scrimba.com/c/cE4nGcg). If you rather want to try Imba in your own environment you can clone [hello-world-imba](https://github.com/somebee/hello-world-imba) and follow the instructions in the readme. There are plugins available for [Sublime Text](https://packagecontrol.io/packages/Imba), [VSCode](https://github.com/somebee/vscode-imba) and [Atom](https://atom.io/packages/language-imba).
 
+In this guide we will create a very simple application that highlights some of features of Imba. Even though Imba is a full-fledged language capable for replacing JavaScript on the server, it *really* shines when working with tags. Our goal is initially to understand everything that is going on in this incredibly original todo list:
 
-## Tags & Rendering
+```imba
+const store =
+    title: ""
+    items: []
+    def addItem
+        self:items.push(title: self:title)
+        self:title = ""
 
-Even though Imba is a full-fledged language capable for replacing JavaScript on the server, it *really* shines when working with tags.
+Imba.mount <div[store].vbox ->
+    <div.header>
+        <input model='title' :keyup.enter.addItem>
+        <button :tap.addItem> 'add'
+    <ul> for item in data:items
+        <li> item:title
+```
 
-### Attributes
 
-### Templates
 
-Explain '->' and '=>'
+## Tag Syntax
 
-### Conditional Rendering
+### Instantiating Tags
 
-### List Rendering
+```
+let element = <div.main> "Hello"
+```
+
+The above declaration might look strange at first. DOM elements are first-class citizens in Imba. We are creating a *real* dom element, with the className "main" and textContent "Hello".
+
+Let's break down the basic syntax before we move on to more advanced examples. Since setting classes of elements is very common, so imba has a special shorthand syntax for this. You declare classes by adding a bunch of `.classname` after the tag type. You can add multiple classes like `<div.large.header.primary>`. Can you guess how to set the id of a tag? It uses a similar syntax: `<div#app.large.ready>`.
+
 
 ### Conditional Classes
 
-### Data Binding
+One very common need when developing web apps is to set a className only when some condition is true. Imba has a shorthand syntax for this too:
+
+```imba
+# only add 'ready' class if expression is truthy
+<div.header .ready=expression>
+```
+
+
+### Dynamic classes
+
+What about setting fully dynamic classes? E.g. if state is a variable containing a string, you can set it like this;
+
+```imba
+let state = "busy"
+let element = <div.header .{state}>
+```
+
+
+### Setting inline styles
+
+```
+<div css:display='block' css:color='red'>
+```
+
+
+### Setting custom data
+
+When we move on to custom tags, you will find that tags very often represent some data.
+
+```
+# these two are equivalent. The latter is preferred convention
+# for passing data to a tag. 
+<AppView data=myData title="Application"> 
+<AppView[myData] title="Application">
+```
+
+
+### Rendering Lists
+
+You might notice that we never close our tags. Rather than being delimited by curly braces or “begin/end” keywords, blocks are delimited by indentation, and so are tags. This might seem weird in the beginning, but it makes for very readable and concise code. So, if we want to create a list with some children, we simply go:
+
+```imba
+let list = <ul>
+    <li> "Understand indentation"
+    <li> "Get used to it"
+    <li> "Cherish it"
+```
+
+If we have a dynamic list we can simply use a `for in` loop:
+
+```imba
+let activities = ["Eat", "Sleep", "Code"]
+let list = <ul>
+    for activity in activities
+        <li> <span.name> activity
+```
+
+### Conditional Rendering
+
+```imba
+let app = <div>
+    if isLoggedIn
+        <a href="/logout"> "Log out"
+    else
+        <a href="/register"> "Register"
+```
+
+
+
+## Custom Tags
+
+### Declaring Tags
+
+You can easily define your own tags / components, as easily as creating classes. They are similar to components in react. Tags are defined with the `tag`keyword:
+
+```imba
+tag App
+    # custom instance methods, properties etc
+
+# create an instance of app - just like any other tag
+let app = <App.main> <h1> "Hello"
+```
+
+Your custom tags will by default inherit from ‘div’, but they can inherit from any tag. You can also define instance methods on them.
+
+```imba
+# define a custom tag, inheriting from form
+tag RegisterForm < form
+    def onsubmit event
+        # declare handlers as methods
+        console.log "submitted"
+
+    def someMethod
+        console.log "hello"
+        self
+
+# create an instance of app - just like any other tag
+let form = <RegisterForm>
+form.someMethod # => "hello"
+```
+
+> When you declare `tag SomeComponent`you are declaring a new tag *type*, not an instance. It is exactly the same as declaring a new `class SomeClass` . `<SomeComponent>`creates a new *instance* of this tag, just like `SomeClass.new` creates a new instance of said class.
+
+
+### Custom Rendering
+
+Just like components in react, you can declare how custom tags should render, by declaring a render method:
+
+```imba
+# define a custom tag, inheriting from form
+tag App
+    def render
+        <self> <h1> "Hello world"
+
+let app = <App.main>
+# The DOM tree of app is now:
+# <div class='App main'><h1>Hello world</h1></div>
+```
+
+> `<self>` inside render deserves some explanation. In Imba, instances of tags are directly linked to their real DOM element. `<self>` refers to the component itself, and is a way of saying "now I want the content inside self to look exactly like the following. This is important to understand.
+
+```imba
+tag Wrong
+    def render
+        <h1> "Hello {Math.random}"
+
+let wrong = <Wrong>
+# wrong.render would now simply create a new h1 element
+# every time it is called. The DOM element of wrong will
+# still have no children.
+
+tag Right
+    def render
+        <self> <h1> "Hello {Math.random}"
+let right = <Right>
+# right.render will now update its own DOM tree every time
+# it is called, ensuring that the DOM is in fact reflecting
+# the view declared inside <self> 
+```
+
+
+### Inheritance
+
+Custom tags can inherit from other custom tags, or from native tags. E.g. if you want to create a custom form component, you can simply inherit from form:
+
+```
+tag RegisterForm < Form
+
+let view = <RegisterForm>
+# the DOM element of view is now of type form.
+# html: <form class='RegisterForm'></form>
+```
+
+
+### Custom properties
+
+```imba
+# define a custom tag, inheriting from form
+tag App
+    # declaring custom properties
+    prop user
+    prop route
+
+    def render
+        <self>
+            <h1> "Route is: {route}"
+            if route == '/home'
+                <div> "You are home"
+
+let app = <App user=someUser route='/home'>
+```
+
+
 
 ## Event Handling
 
-### Resolving functions
+### Listening to Events
 
-### Modifiers
+We can use `<tag :eventname=handler>` to listen to DOM events and run code when they’re triggered.
 
-### Declaring on tags
+```imba
+tag App
+    prop counter
+    def render
+        <self>
+            <div> "count is {counter}"
+            # handler will be called when clicking button
+            <button :click=(do counter++)> "Increment"
+
+Imba.mount <App counter=0>
+```
+
+In the example above we declared the handler inline. Usually it is better to define the handlers outside of the view, and decouple them from the event itself. This can be done in several ways.
+
+### Resolving Handlers 
+
+You can also supply a string as the handler (`<div :click="doSomething">`). In this case, Imba will look for the handler by traversing up the DOM tree and call getHandler on each node, until a handler is returned. The method looks like this:
+
+```imba
+def getHandler handlerName
+    if self[handlerName + "Modifier"] isa Function
+        return self[handlerName + "Modifier"]
+    if self[handlerName] isa Function
+        return self
+    elif @data and @data[handlerName] isa Function
+        return @data
+```
+
+This means that if you have defined methods on your custom tags, you can refer to these methods:
+
+```imba
+tag App
+    prop counter
+    def increment
+        counter++
+
+    def render
+        <self>
+            <div> "count is {counter}"
+            <button :click='increment'> "Increment"
+
+Imba.mount <App counter=0>
+```
+
+Taking this one step further, since binding events is such an integral part of developing web applications, Imba has a special syntax for this. You can chain event handlers (and modifiers -- see below) directly:
+
+```
+# increment handler will be called upon click
+<button :click.increment>
+# these can also take arguments
+<button :click.increment(2)>
+```
+
+
+```imba
+tag App
+    prop counter
+
+    def increment
+        counter++
+        
+    def change amount = 0
+        counter += amount
+
+    def render
+        <self>
+            <div> "count is {counter}"
+            <button :click.increment> "Increment"
+            <button :click.change(2)> "Increment by 2"
+
+Imba.mount <App counter=0>
+```
+
+
+### Event Modifiers
+
+Inspired by Vue, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers never need to know about the event in the first place.
+
+```
+# call preventDefault on the submit-event, then call doSomething
+<form :submit.prevent.doSomething>
+
+```
+
+> What is the difference between a modifier and a handler in this case? There isn't really a difference. In fact, the modifiers are implemented as methods.
+
+### Key Modifiers
+```
+# these can also take arguments
+<input type='text' :keydown.enter.submit>
+```
+
+### Reactivity
+Let's move on to the next core part of Imba. Let's say we have a counter `hits`, and we want to render its value:
+```imba
+let hits = 1
+let view = <div>
+    <span.counter> "Count is {hits}"
+```
+The view variable now refers to a div containing a span with the text "Count is 1". In web applications data change all the time, and if the value of `hits`changes, the view will *still* read "Count is 1".  Pretty pointless.
+
+Enter reactive tags. There are two ways to create views that can update when your data changes. Custom tags will be introduced later in this guide. For now we can make the div reactive by ending the root tag with `->` or `=>`instead of `>`. If this seems confusing now, don't panic.
+```javascript
+let hits = 1
+let view = <div ->
+    <span.counter> "Count is {hits}"
+```
+
+Now, `view` is a reactive element, meaning that everything inside of it can be updated. Imba has ways to automate all of this for you, but for now you could manually call `view.render`to update the content. Imba is using a unique kind of reconciler to sync the view, which an order of magnitude faster than virtual doms.
+
+## Data Binding
 
 ## Form Input Bindings
-
-## Custom Components
-
-How to create custom components
-Inheriting from other components
 
 ### Self
 
