@@ -88,6 +88,9 @@ export var Theme =
 		{ token: 'identifier.key', foreground: '@key' },
 		{ token: 'identifier.special', foreground: '@special' },
 		{ token: 'identifier.import', foreground: '@limport' },
+		{ token: 'identifier.lvar', foreground: '@lvar' },
+		{ token: 'identifier.llet', foreground: '@lvar' },
+		{ token: 'identifier.lconst', foreground: '@lvar' },
 		{ token: 'entity.name.type', foreground: '@decl'},
 		{ token: 'entity.name.function', foreground: '@decl'},
 		{ token: 'entity.name.tag', foreground: '@xml'}

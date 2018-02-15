@@ -145,21 +145,6 @@ var imbaLang = {
 
 			# regular expressions
 			[/\/(?!\ )(?=([^\\\/]|\\.)+\/)/, { token: 'regexp.slash', bracket: '@open', next: '@regexp'}],
-
-			# ['///', { token: 'regexp', next: '@hereregexp' }],
-			# [/^(\s*)(@regEx)/, ['', 'regexp']],
-			# [/(\()(\s*)(@regEx)/, ['@brackets', '', 'regexp']],
-			# [/(\,)(\s*)(@regEx)/, ['delimiter', '', 'regexp']],
-			# [/(\=)(\s*)(@regEx)/, ['delimiter', '', 'regexp']],
-			# [/(\:)(\s*)(@regEx)/, ['delimiter', '', 'regexp']],
-			# [/(\[)(\s*)(@regEx)/, ['@brackets', '', 'regexp']],
-			# [/(\!)(\s*)(@regEx)/, ['delimiter', '', 'regexp']],
-			# [/(\&)(\s*)(@regEx)/, ['delimiter', '', 'regexp']],
-			# [/(\|)(\s*)(@regEx)/, ['delimiter', '', 'regexp']],
-			# [/(\?)(\s*)(@regEx)/, ['delimiter', '', 'regexp']],
-			# [/(\{)(\s*)(@regEx)/, ['@brackets', '', 'regexp']],
-			# [/(\;)(\s*)(@regEx)/, ['', '', 'regexp']],
-			# 
 			[/}/, { cases: {
 						'$S2==interpolatedstring': { token: 'string', next: '@pop' },
 						'@default': '@brackets' } }],
@@ -391,13 +376,39 @@ var imbaLang = {
 }
 monarch.register('imba',imbaLang)
 
-export def tokenize lang, code, theme
+export def tokenize lang, code, options = {}
+	if $node$ and options:decorate and lang == 'imba'
+		var compiler = require 'imba/compiler'
+		var helpers = require 'imba/lib/compiler/helpers'
+		let analysis = compiler.analyze(code,{target: 'web'})
+		var locmap = helpers.locationToLineColMap(code)
+		var vars = []
+		for scope in analysis:scopes
+			for item in scope:vars
+				for ref in item:refs
+					let loc = locmap[ref:loc[0]].concat('identifier.l' + item:type)
+					vars.push(loc)
+		
+		vars = vars.sort do |a,b|
+			if a[0] == b[0]
+				a[1] - b[1]
+			else
+				a[0] - b[0]
+		
+		# console.log "decorations",vars
+
+		options:decorations = vars
+
+	var theme = options:theme
+	var decorations = (options:decorations or []).slice
 	var lexer = monarch.getLexer(lang)
 	var types = theme ? null : []
 	var map = {}
 	var state = lexer.getInitialState
 	var lines = []
-
+	var dec = decorations.shift
+	
+	
 	for line,ln in code.split('\n')
 		var result = lexer.tokenize(line,state,0)
 		let tokens = result:tokens.filter do |tok| tok:type.indexOf("white") == -1
@@ -407,6 +418,12 @@ export def tokenize lang, code, theme
 		for token,i in tokens
 			# skip whitespace
 			let tref
+			
+			# console.log ln,token:offset,token:type
+			if dec and dec[0] == ln and dec[1] == token:offset
+				# console.log "found decoration!!!",dec
+				token:type = dec[2]
+				dec = decorations.shift
 	
 			let next = tokens[i + 1]
 			if theme
@@ -460,7 +477,8 @@ export def htmlify code, lineCount = 30
 		
 	return out.join('\n')
 	
-export def highlight lang, code, theme
-	var tokens = tokenize(lang,code,theme)
+export def highlight lang, code, options = {}
+	options:theme ?= theme
+	var tokens = tokenize(lang,code,options)
 	return htmlify(tokens)
 

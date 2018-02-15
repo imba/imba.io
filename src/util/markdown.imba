@@ -55,12 +55,11 @@ def renderer.heading text, level
 	
 	stack[slug] = meta:slug = slug
 
-	if par
-		# meta:slug = par:slug + '-' + slug
-		par:children.push(meta)
-	else
-		# meta:slug = 'toc-' + slug
-		this:toc.push(meta)
+	if level < 3
+		if par
+			par:children.push(meta)
+		else
+			this:toc.push(meta)
 
 	stack.push(meta)
 
@@ -79,7 +78,7 @@ def renderer.heading text, level
 	node.dom:className = flags.join(' ')
 	node
 
-	if level < 4
+	if level < 3
 		var anchor = <div.toc-anchor .{"l{level}"} id=(meta:slug)>
 		anchor.toString + node.toString
 	else
@@ -123,9 +122,21 @@ def renderer.code code, lang, opts = {}
 		let mode = lines:length > 1 ? 'full' : 'inline'
 
 		var imba
+		var js
+		var analysis
+		
+		try
+			js = compiler.compile(code,{target: 'web'})
+			analysis = compiler.analyze(code,{target: 'web'})
+
+		catch e
+			console.log "error?!",e
 
 		try
-			imba = highlighter.highlight('imba',code,opts:inline ? null : highlighter:theme)
+			if opts:inline
+				imba = highlighter.highlight('imba',code,{theme: null})
+			else
+				imba = highlighter.highlight('imba',code,decorate: yes)
 			# also compile code to js
 		catch e
 			imba = code
@@ -135,11 +146,6 @@ def renderer.code code, lang, opts = {}
 			return (<code.code.md.imba.inline html=imba>).toString
 		elif tok:plain
 			return (<code.plain.imba html=imba>).toString
-			
-		let js = try
-			compiler.compile(code,{target: 'web'})
-		catch e
-			console.log "error?!",e
 			
 		let dom = <div.snippet data-title=conf:title>
 			<code.imba data-lang='imba' html=imba>
