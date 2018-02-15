@@ -40,6 +40,20 @@ Imba.mount <div[data] ->
         "Your skills: {data:skills.join(", ")}"
 ```
 
+
+### Radio
+
+### Select
+
+### Range
+
+```imba
+var data = {counter: 50}
+Imba.mount <div[data] ->
+    <input type='range' min=0 max=100 step=1 model='counter'>
+    <div> "Count is {data:counter}"
+```
+
 ### Example
 
 ```imba
@@ -60,7 +74,7 @@ tag Form < form
         window.alert("Submitted!")
 
     def render
-        <self >
+        <self>
             <input type='text' placeholder="Your name..." model.trim='name'>
             <input placeholder="Add skill..." :keyup.enter.addSkill>
             <.bar> for skill in data:skills
