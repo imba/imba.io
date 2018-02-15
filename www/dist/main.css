@@ -124,6 +124,7 @@
   -ms-flex: 0 0 auto;
       flex: 0 0 auto;
   height: 30px;
+  margin: 4px;
 }
 .styled-example button:hover {
   background: #3a8eef;

@@ -29,8 +29,6 @@ You can also supply a string as the handler (`<div :click="doSomething">`). In t
 
 ```imba
 def getHandler handlerName
-    if self[handlerName + "Modifier"] isa Function
-        return self[handlerName + "Modifier"]
     if self[handlerName] isa Function
         return self
     elif @data and @data[handlerName] isa Function
@@ -55,16 +53,10 @@ Imba.mount <App counter=0>
 
 Taking this one step further, since binding events is such an integral part of developing web applications, Imba has a special syntax for this. You can chain event handlers (and modifiers -- see below) directly:
 
-```
-# increment handler will be called upon click
-<button :click.increment>
-# these can also take arguments
-<button :click.increment(2)>
-```
-
 
 ```imba
 tag App
+
     prop counter
 
     def increment
@@ -74,7 +66,7 @@ tag App
         counter += amount
 
     def render
-        <self>
+        <self.bar>
             <div> "count is {counter}"
             <button :click.increment> "Increment"
             <button :click.change(2)> "Increment by 2"

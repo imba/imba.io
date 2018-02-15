@@ -94,15 +94,15 @@ let view = <RegisterForm>
 # define a custom tag, inheriting from form
 tag App
     # declaring custom properties
-    prop user
-    prop route
+
+    prop slug
 
     def render
         <self>
-            <h1> "Route is: {route}"
-            if route == '/home'
+            <h1> "Slug is: {slug}"
+            if slug == '/home'
                 <div> "You are home"
 
-Imba.mount <App user=someUser route='/home'>
+Imba.mount <App slug='/home'>
 ```
 

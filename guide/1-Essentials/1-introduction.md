@@ -43,7 +43,7 @@ var info =
 
 The easiest way to get started with Imba is to play around in the [scrimba.com Hello World example](https://scrimba.com/c/cE4nGcg). If you rather want to try Imba in your own environment you can clone [hello-world-imba](https://github.com/somebee/hello-world-imba) and follow the instructions in the readme. There are plugins available for [Sublime Text](https://packagecontrol.io/packages/Imba), [VSCode](https://github.com/somebee/vscode-imba) and [Atom](https://atom.io/packages/language-imba).
 
-In this guide we will create a very simple application that highlights some of features of Imba. Even though Imba is a full-fledged language capable for replacing JavaScript on the server, it *really* shines when working with tags. Our goal is initially to understand everything that is going on in this incredibly original todo list:
+In this guide we will create a very simple application that highlights some features of Imba. Even though Imba is a full-fledged language capable for replacing JavaScript on the server, it *really* shines when working with tags. Our goal is initially to understand everything that is going on in this incredibly original todo list:
 
 ```imba
 const app =
