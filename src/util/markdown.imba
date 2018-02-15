@@ -4,6 +4,8 @@ var hljs = require 'highlight.js'
 import Router from './router'
 var highlighter = require './highlighter'
 
+var compiler = require 'imba/compiler'
+
 hljs.configure
 	classPrefix: ''
 
@@ -47,12 +49,17 @@ def renderer.heading text, level
 		var prev = stack.pop
 
 	var par = stack[stack:length - 1]
+	
+	while stack[slug]
+		slug = slug + '-'
+	
+	stack[slug] = meta:slug = slug
 
 	if par
-		meta:slug = par:slug + '-' + slug
+		# meta:slug = par:slug + '-' + slug
 		par:children.push(meta)
 	else
-		meta:slug = 'toc-' + slug
+		# meta:slug = 'toc-' + slug
 		this:toc.push(meta)
 
 	stack.push(meta)
@@ -73,7 +80,7 @@ def renderer.heading text, level
 	node
 
 	if level < 4
-		var anchor = <.toc-anchor id=(meta:slug)>
+		var anchor = <div.toc-anchor .{"l{level}"} id=(meta:slug)>
 		anchor.toString + node.toString
 	else
 		node.toString
@@ -119,6 +126,7 @@ def renderer.code code, lang, opts = {}
 
 		try
 			imba = highlighter.highlight('imba',code)
+			# also compile code to js
 		catch e
 			imba = code
 			imba = imba.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
@@ -127,8 +135,14 @@ def renderer.code code, lang, opts = {}
 			return (<code.code.md.imba.inline html=imba>).toString
 		elif tok:plain
 			return (<code.plain.imba html=imba>).toString
+			
+		let js = try compiler.compile(code,{target: 'web'})
+			
+		let dom = <div.snippet data-title=conf:title>
+			<code.imba data-lang='imba' html=imba>
+			<code.js data-lang='js' html=js.toString.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')>
 
-		return (<div.snippet data-title=conf:title> <code.plain.imba html=imba>).toString
+		return dom.toString
 
 	if lang == 'js'
 		code = hljs.highlightAuto(code,['javascript'])[:value]
@@ -154,7 +168,7 @@ export def render content
 	content = content.replace(/^---\n([^]+)\n---/m) do |m,inside|
 		inside.split('\n').map do |line|
 			var [k,v] = line.split(/\s*\:\s*/)
-			object[k] = v
+			object[k] = (/^\d+$/).test(v) ? parseFloat(v) : v
 		return ''
 
 	var opts = {
@@ -172,8 +186,8 @@ export def render content
 
 	# if object:title
 	var toc = {level: 0, title: (object:title or "Doc"), children: [], slug: 'toc'}
-	object:toc.push(toc)
-	object:toc:stack.push(toc)
+	# object:toc.push(toc)
+	# object:toc:stack.push(toc)
 
 	var tokens = marked.lexer(content)
 	var parser = marked.Parser.new(opts, renderer)

@@ -36,7 +36,7 @@ export tag HomePage < Page
 
 					"""
 
-				<Example.dark heading="Simple reminders" src='/home/examples/reminders.imba'>
+				# <Example.dark heading="Simple reminders" src='/home/examples/reminders.imba'>
 
 				<Marked.section.md> """
 					## Reusable components
@@ -47,7 +47,7 @@ export tag HomePage < Page
 					rerender your whole application on **every single** data/state change.
 					"""
 
-				<Example.dark heading="World clock" src='/home/examples/clock.imba'>
+				# <Example.dark heading="World clock" src='/home/examples/clock.imba'>
 
 				<Marked.section.md> """
 					## Extend native tags
@@ -57,4 +57,4 @@ export tag HomePage < Page
 					efficiently delegated and handled by Imba. Let's define a simple sketchpad...
 					"""
 
-				<Example.dark heading="Custom canvas" src='/home/examples/canvas.imba'>
+				# <Example.dark heading="Custom canvas" src='/home/examples/canvas.imba'>

@@ -54,6 +54,13 @@ export class App
 		@docs = {}
 		if $web$
 			@loc = document:location
+			
+		if @cache:guide
+			@guide = JSON.parse(JSON.stringify(@cache:guide))
+			# for item,i in @guide
+			# 	@guide[item:id] = item
+			# 	item:next = @guide[i + 1]
+			# 	item:prev = @guide[i - 1]
 		self
 
 	def reset
@@ -71,6 +78,9 @@ export class App
 
 	def doc src
 		@docs[src] ||= Doc.new(src,self)
+		
+	def guide
+		@guide ||= @cache:guide # .map do ||
 		
 	def serialize
 		return JSON.stringify(cache).replace(/\bscript/g,"§§SCRIPT§§")
@@ -118,6 +128,7 @@ export class App
 			
 	def fetchDocument src, &cb
 		var res = deps[src]
+		console.log "no longer?"
 
 		if $node$
 			var fs = require 'fs'

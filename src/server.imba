@@ -1,6 +1,7 @@
 
 import App from './app'
 import Site from './views/Site'
+import Guide from './data/guide'
 
 # Setting up the express server
 var express = require 'express'
@@ -23,7 +24,8 @@ srv.get(/^([^\.]+\.(md|json|imba))$/) do |req,res|
 # catch-all rendering for the whole site
 # routing etc is handled by the <site> tag itself
 srv.get(/^([^\.]*)$/) do |req,res|
-	let app = req:app = App.new
+	let guide = Guide.get
+	let app = req:app = App.new(guide: guide.docs)
 	req:app.req = req
 
 	var site = <Site data=req:app>

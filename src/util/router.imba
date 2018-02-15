@@ -133,4 +133,5 @@ extend tag a
 		self
 
 	def render
-		reroute
+		reroute if $web$
+		self

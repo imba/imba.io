@@ -2,7 +2,7 @@
 @chratio: 0.6;
 
 @import 'util.less';
-
+@import 'examples.less';
 // Resets
 html,body {
 	padding: 0;
@@ -103,8 +103,10 @@ footer {
 
 .toc-anchor {
 	position: relative;
-	top: -70px;
+	top: -100px;
 	opacity: 0;
+	display: block;
+	visibility: hidden;
 }
 
 
@@ -118,6 +120,7 @@ footer {
 @import "site/issues.less";
 @import "site/playground.less";
 @import "site/gist.less";
+@import "guide.less";
 @import "site/mobile.less";
 
 body > footer {

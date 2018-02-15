@@ -1,4 +1,5 @@
 import Page from './Page'
+import Snippet from './Snippet'
 
 tag GuideTOC
 	prop toc
@@ -24,37 +25,65 @@ tag GuideTOC
 				<.header>
 					<a href=route> toc:title
 				<.content>
-					for child in toc:children
-						# <div> "Item"
+					for child in toc:children when child:level < 3
 						<GuideTOC[data] toc=child>
 			else
 				<a href=route> toc:title
 
 tag Guide
-	def render
-		return self unless data?.ready
-		# really render without imba?
-		<self.md body=data.body>
-
-	def body= body
-		if body != @body
-			@body = body
-			dom:innerHTML = body
+	
+	def setup
+		render
+		@body.dom:innerHTML = data:body
+		if $web$
+			awakenSnippets
 		self
+		
+	def render
+		<self.md>
+			<div@body>
+			<footer>
+				if let ref = app.guide[data:prev]
+					<a.prev href="/guide/{ref:id}"> "← " + ref:title
+				if let ref = app.guide[data:next]
+					<a.next href="/guide/{ref:id}"> ref:title + " →"
+
+	def awakenSnippets
+		for item in dom.querySelectorAll('.snippet')
+			let code = item:textContent
+			if code.indexOf('Imba.mount') >= 0
+				Snippet.replace(item)
+		self
+
+tag TOC < li
+	prop toc
+	prop expanded default: true
+	attr level
+	
+	def route
+		"/guide/{data:route}#{toc:slug}"
+		
+	def toc
+		@toc or data:toc[0]
+		
+	def render
+		<self.toc.entry level=(toc:level)>
+			<a href=route> toc:title
+			if toc:children:length and toc:level < 2 and expanded
+				<ul> for child in toc:children when child:level < 3
+					<TOC[data] toc=child>
 
 export tag GuidesPage < Page
 	
 	def mount
-		console.log "GuidesPage mounted"
 		@onscroll ||= do scrolled
 		window.addEventListener('scroll',@onscroll,passive: true)
-		# Doc.get(router.path,'md')
-		
+
 	def unmount
 		window.removeEventListener('scroll',@onscroll,passive: true)
 		
 	def guide
-		app.doc(router.path + '.md')
+		data[router.path.replace('/guide/','')] or data:introduction
 		
 	def scrolled
 		var items = dom.querySelectorAll('[id]')
@@ -73,7 +102,6 @@ export tag GuidesPage < Page
 
 		if scrollBottom == 0
 			match = items[items.len - 1]
-
 		else
 			for item in items
 				var t = (item:offsetTop + 30 + 60) # hack
@@ -101,16 +129,25 @@ export tag GuidesPage < Page
 			return no
 
 		if router.hash
-			render
+			# render
 			scroll() or setTimeout(scroll,20)
 
 		self
+	# prop guide
 
 	def render
+		let curr = guide
+
 		<self._page>
 			<nav@nav>
 				<.content>
-					<GuideTOC[app.doc('/guide.md')]>
-					# <GuideTOC[app.doc('/guides/language.md')]>
+					for item in data:toc
+						<h1> item:title or item:id
+						<ul>
+							for section in item:sections
+								<TOC[data[section]] expanded=(data[section] == curr)>
+					# for guide in data
+					#	<TOC[guide] toc=guide:toc[0] expanded=(guide == curr)>
 			<.body.light>
-				<Guide[guide]>
+				if guide
+					<Guide@{guide:id}[guide]>

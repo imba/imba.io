@@ -23,11 +23,29 @@ code {
 	}
 }
 
-._snippet {
+.snippet {
 	font-size: 13px;
-	line-height: 17px;
+	line-height: 20px;
 
 	position: relative;
+
+	code {
+		display: block;
+		background: #f3f5f7;
+		font-weight: 400;
+		padding: 16px 22px;
+		font-family: @monofont;
+	}
+
+	code.imba + code.js {
+		display: none;
+	}
+
+	& > .result {
+		margin-top: 2em;
+		border: 1px solid #e9ebec;
+		padding: 16px 22px;
+	}
 
 	._overlays {
 		position: absolute;
@@ -149,10 +167,7 @@ code {
 		color: white;
 		max-height: 100px;
 	}
-	// basic colors
 
-	.snippet-bg(rgb(243, 245, 247));
-	
 	.main > .header {
 		position: absolute;
 		width: 100%;

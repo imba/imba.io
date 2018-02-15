@@ -51,7 +51,7 @@ export tag Site
 				if router.scoped('/home')
 					<HomePage>
 				elif router.scoped('/guide')
-					<GuidesPage>
+					<GuidesPage[app.guide]>
 				elif router.scoped('/docs')
 					<DocsPage>
 
