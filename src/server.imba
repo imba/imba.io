@@ -7,6 +7,8 @@ import Guide from './data/guide'
 var express = require 'express'
 var srv = express()
 
+var highlighter = require './util/highlighter'
+
 srv.disable('etag')
 srv.use(express.static('./www'))
 
@@ -40,6 +42,7 @@ srv.get(/^([^\.]*)$/) do |req,res|
 			<meta name="keywords" content="imba">
 			<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'>
 			<link rel="stylesheet" href="/dist/main.css" media="screen">
+			<style> highlighter:theme.CSS
 		<body>
 			site
 			<script> "APPCACHE = $$APPCACHE$$"

@@ -101,17 +101,18 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 	li {
 		font-size: 15px;
 		line-height: 1.6em;
-		padding-left: 34px;
+		padding-left: 30px;
 		position: relative;
 
 		&:before {
-			content: "✔";
+			content: "•";
 			width: 20px;
 			text-align: center;
 			position: absolute;
 			left: 6px;
 			font-size: inherit;
 			line-height: inherit;
+			font-style: normal;
 			top: 1px;
 			color: #52AF78;
 		}
@@ -142,7 +143,7 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 	}
 
 	p > code {
-		background: darken(#F7F2E3,5%);
+		// background: darken(#F7F2E3,5%);
 	}
 }
 
@@ -159,7 +160,10 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 		padding-top: 0px;
 	}
 	
-	ul { .md-ul; }
+	ul {
+		.md-ul;
+		margin: 2rem 0rem;
+	}
 
 	h1,h2,h3,h4 {
 		color: #3A4652;
@@ -241,19 +245,26 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 		code { background: transparent; }
 
 		& > code {
+			font-family: inherit;
+			font-size: inherit;
+			font-weight: 500;
+		}
+
+		& > codse {
 			display: inline-block;
 			font-size: inherit;
 			line-height: inherit;
 			font-weight: inherit;
 
 			display: inline-block;
-			font-size: 12px;
-			font-weight: 400;
+			font-size: 13px;
+			font-weight: 500;
 			background: rgb(243, 245, 247);
 			padding: 0px 4px;
 			line-height: 1.5em;
 			font-family: @monofont;
 			border-radius: 2px;
+			font-family: inherit;
 		}
 	}
 

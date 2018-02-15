@@ -17,14 +17,16 @@
 	    flex: 1 1 auto;
 	}
 
+	// shared margin
+
 	input {
 	    display: block;
-	    padding: 0px 12px;
-	    background: transparent;
-	    border: none;
+	    padding: 0px 6px;
+	    // background: transparent;
+	    // border: none;
 	    font-size: inherit;
 	    width: 50px;
-	    height: 24px;
+	    height: 30px;
 	    margin: 4px;
 	}
 
@@ -41,37 +43,44 @@
 	    color: white;
 	    margin: 4px;
 	    flex: 0 0 auto;
-	    height: 24px;
+	    height: 30px;
 	}
 
 	button:hover {
 	    background: #3a8eef;
 	}
 
-	header,.header,
-	.footer,footer {
+	header,footer {
 	    flex: 0 0 auto;
 	    display: flex;
 	    flex-direction: row;
 	    justify-content: flex-start;
 	    align-items: center;
-	    padding: 10px 6px;
-	    background: whitesmoke;
+	    // padding: 6px 6px;
+	    // background: whitesmoke;
+	}
+
+	ul {
+		margin: 4px;
 	}
 
 	ul,.list {
 	    list-style: none inside none;
 	    margin: 0;
 	    padding: 0;
-	    padding: 10px;
 	}
 
 	li,.list > * {
-	    padding: 8px 12px;
+	    // padding: 8px 12px;
 	    display: flex;
 	    flex-direction: row;
 	    justify-content: flex-start;
 	    align-items: center;
 	    border-bottom: 1px solid whitesmoke;
+	}
+
+	li.done {
+		text-decoration: line-through;
+		font-style: italic;
 	}
 }

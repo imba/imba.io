@@ -125,7 +125,7 @@ def renderer.code code, lang, opts = {}
 		var imba
 
 		try
-			imba = highlighter.highlight('imba',code)
+			imba = highlighter.highlight('imba',code,opts:inline ? null : highlighter:theme)
 			# also compile code to js
 		catch e
 			imba = code
@@ -136,7 +136,10 @@ def renderer.code code, lang, opts = {}
 		elif tok:plain
 			return (<code.plain.imba html=imba>).toString
 			
-		let js = try compiler.compile(code,{target: 'web'})
+		let js = try
+			compiler.compile(code,{target: 'web'})
+		catch e
+			console.log "error?!",e
 			
 		let dom = <div.snippet data-title=conf:title>
 			<code.imba data-lang='imba' html=imba>

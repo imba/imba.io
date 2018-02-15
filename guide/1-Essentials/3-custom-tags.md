@@ -7,7 +7,7 @@ order: 3
 
 ## Declaring Tags
 
-You can easily define your own tags / components, as easily as creating classes. They are similar to components in react. Tags are defined with the `tag`keyword:
+You can easily define your own tags / components, as easily as creating classes. They are similar to components in react. Tags are defined with the `tag` keyword:
 
 ```imba
 tag App
@@ -35,7 +35,7 @@ let form = <RegisterForm>
 form.someMethod # => "hello"
 ```
 
-> When you declare `tag SomeComponent`you are declaring a new tag *type*, not an instance. It is exactly the same as declaring a new `class SomeClass` . `<SomeComponent>`creates a new *instance* of this tag, just like `SomeClass.new` creates a new instance of said class.
+> When you declare `tag SomeComponent` you are declaring a new tag *type*, not an instance. It is exactly the same as declaring a new `class SomeClass` . `<SomeComponent>` creates a new *instance* of this tag, just like `SomeClass.new` creates a new instance of said class.
 
 
 ## Custom Rendering

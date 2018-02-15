@@ -1,6 +1,19 @@
 # ivar namespace.instance.identifier
 var monarch = require('./monarch')
+import Theme from './theme'
+# import TokenTheme from './monarch.js'
+# register theme
+var raw = Theme.toMonaco
+export var theme = monarch.TokenTheme.createFromRawTokenTheme(raw:rules)
 
+var css = []
+for color,i in theme.getColorMap when i > 0
+	css[i] = ".mtk{i} \{ color: {color}; \}"
+
+theme.CSS = css.join("\n")
+	
+export def styles
+	css
 
 var names = 
 	access: 'delimiter.access'
@@ -378,15 +391,9 @@ var imbaLang = {
 }
 monarch.register('imba',imbaLang)
 
-# export def tokenize lang, code
-# 	var tokens = monarch.tokenize(lang,code)
-# 	console.log "tokenized!",tokens
-# 	return tokens
-
-export def tokenize lang, code
-	
+export def tokenize lang, code, theme
 	var lexer = monarch.getLexer(lang)
-	var types = []
+	var types = theme ? null : []
 	var map = {}
 	var state = lexer.getInitialState
 	var lines = []
@@ -399,12 +406,17 @@ export def tokenize lang, code
 
 		for token,i in tokens
 			# skip whitespace
+			let tref
+	
 			let next = tokens[i + 1]
-			let type = token:type.replace(/\./g,' ').replace(lang,'').trim
-			let tref = map[type]
-			
-			if tref == undefined
-				tref = map[type] = (types.push(type) - 1)
+			if theme
+				tref = theme._match(token:type)
+				tref = tref:_foreground
+			else
+				let type = token:type.replace(/\./g,' ').replace(lang,'').trim
+				tref = map[type]
+				if tref == undefined
+					tref = map[type] = (types.push(type) - 1)
 
 			let end = next ? next:offset : line:length
 			lstr += String.fromCharCode(64 + tref)
@@ -415,14 +427,14 @@ export def tokenize lang, code
 		state = result:endState
 		lines.push(lstr)
 	
-	return [code,types,lines.join('\n')]
+	return [code,lines.join('\n'),types]
 
 export def htmlify code, lineCount = 30
 	var out = ""
 	
 	var raw = code[0]
-	var types = code[1]
-	var tokens = code[2].split('\n')
+	var tokens = code[1].split('\n')
+	var types = code[2]
 	
 	var i = 0
 	var start = 0
@@ -443,11 +455,12 @@ export def htmlify code, lineCount = 30
 				s += content.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 				s += '</span>'
 			else
-				s += '<span class="'+types[code]+'">'
+				s += '<span class="'+(types ? types[code] : ('mtk'+code)) +'">'
 		out.push(s)
 		
 	return out.join('\n')
 	
-export def highlight lang, code
-	var tokens = tokenize(lang,code)
+export def highlight lang, code, theme
+	var tokens = tokenize(lang,code,theme)
 	return htmlify(tokens)
+

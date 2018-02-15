@@ -46,19 +46,24 @@ The easiest way to get started with Imba is to play around in the [scrimba.com H
 In this guide we will create a very simple application that highlights some of features of Imba. Even though Imba is a full-fledged language capable for replacing JavaScript on the server, it *really* shines when working with tags. Our goal is initially to understand everything that is going on in this incredibly original todo list:
 
 ```imba
-const store =
+const app =
     title: ""
     items: []
-    def addItem
-        self:items.push(title: self:title)
-        self:title = ""
 
-Imba.mount <div[store].vbox ->
-    <div.header>
-        <input model='title' :keyup.enter.addItem>
-        <button :tap.addItem> 'add'
+    def addItem
+        if self:title
+            self:items.push(title: self:title)
+            self:title = ""
+
+    def toggleItem item
+        item:completed = !item:completed
+
+Imba.mount <div[app].vbox ->
+    <header>
+        <input model.trim='title' :keyup.enter.addItem>
+        <button :tap.addItem> 'add item'
     <ul> for item in data:items
-        <li> item:title
+        <li .done=item:completed :tap.toggleItem(item)> item:title
 ```
 
 

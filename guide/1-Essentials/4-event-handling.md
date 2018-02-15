@@ -100,13 +100,7 @@ Inspired by vue.js, Imba also supports modifiers. More often than not, event han
 * .self
 * .silence
 
-### Guards
-* .left
-* .right
-* .middle
-
-
-## Key Modifiers
+### Key Modifiers
 
 For keyboard events (keydown, keyup, keypress) there are also some very handy modifiers available.
 ```
@@ -128,12 +122,13 @@ For keyboard events (keydown, keyup, keypress) there are also some very handy mo
 * .space
 * .del
 
-## System Modifier Keys
+### System Modifier Keys
 
 * .ctrl
 * .alt
 * .shift
 * .meta
+
 
 ```
 # only trigger when ctrl is pressed
@@ -147,7 +142,7 @@ For keyboard events (keydown, keyup, keypress) there are also some very handy mo
 <button :click.prevent.alt.myHandler>
 ```
 
-## Mouse Button Modifiers
+### Mouse Button Modifiers
 
 * .left
 * .right

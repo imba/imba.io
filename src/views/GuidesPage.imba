@@ -83,9 +83,11 @@ export tag GuidesPage < Page
 		window.removeEventListener('scroll',@onscroll,passive: true)
 		
 	def guide
-		data[router.path.replace('/guide/','')] or data:introduction
+		data[router.path.replace('/guide/','')] or data['essentials/introduction']
 		
 	def scrolled
+		return self
+
 		var items = dom.querySelectorAll('[id]')
 		var match
 
