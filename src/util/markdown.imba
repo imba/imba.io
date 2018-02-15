@@ -134,7 +134,7 @@ def renderer.code code, lang, opts = {}
 
 		try
 			if opts:inline
-				imba = highlighter.highlight('imba',code,{theme: null})
+				imba = highlighter.highlight('imba',code,theme: false)
 			else
 				imba = highlighter.highlight('imba',code,decorate: yes)
 			# also compile code to js

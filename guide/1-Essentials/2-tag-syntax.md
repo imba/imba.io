@@ -85,6 +85,11 @@ let app = <div>
         <a href="/register"> "Register"
 ```
 
+## Reactive Tags
+
+Explain here
+
+
 ## Rendering into document
 
 To add tags to the actual document, you should use `Imba.mount(element, into)`. If you do not supply a second argument, the element will be added to document.body by default.

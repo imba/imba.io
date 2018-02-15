@@ -1,5 +1,6 @@
 
 .styled-example {
+	@control-height: 30px;
 	.vbox {
 	    display: flex;
 	    flex-direction: column;
@@ -7,10 +8,78 @@
 	    align-items: stretch;
 	}
 
-	:focus { outline: none !important; }
+	.grid {
+		display: grid;
+		grid-row-gap: 4px;
+		grid-column-gap: 4px;
+	}
+
+	& > *,section {
+		display: grid;
+		grid-row-gap: 4px;
+		grid-column-gap: 4px;
+	}
+
+	header,footer {
+		display: grid;
+		grid-row-gap: 4px;
+		grid-column-gap: 4px;
+		margin: 0;
+		padding: 0;
+
+		flex: 0 0 auto;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		// stuff
+	}
+
+	.bar {
+		flex: 0 0 auto;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+	}
+
+	input {
+	    display: block;
+	    padding: 0px 6px;
+	    // background: transparent;
+	    // border: none;
+	    font-size: inherit;
+	    width: auto;
+	    height: @control-height;
+	}
+
+
+	input[type=checkbox],
+	input[type=radio] {
+		width: initial;
+		flex: 0 0 auto;
+		margin: 4px;
+		height: auto;
+	}
+
+	.pill {
+		height: @control-height;
+		display: inline-flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+		padding: 0px 0px;
+		white-space: nowrap;
+
+		input,span,div,select {
+			display: inline-block;
+		}
+	}
+
+	// :focus { outline: initial; }
 
 	div,form,header,footer,section,input,button,nav,aside,article {
 	    box-sizing: border-box;
+	    margin: 0;
 	}
 
 	div,section,input,ul,main,article,.grow {
@@ -19,16 +88,7 @@
 
 	// shared margin
 
-	input {
-	    display: block;
-	    padding: 0px 6px;
-	    // background: transparent;
-	    // border: none;
-	    font-size: inherit;
-	    width: 50px;
-	    height: 30px;
-	    margin: 4px;
-	}
+	
 
 	button {
 	    -webkit-appearance: none;
@@ -41,27 +101,19 @@
 	    padding: 2px 10px;
 	    border-radius: 2px;
 	    color: white;
-	    margin: 4px;
 	    flex: 0 0 auto;
-	    height: 30px;
+	    height: @control-height;
 	}
 
 	button:hover {
 	    background: #3a8eef;
 	}
-
-	header,footer {
-	    flex: 0 0 auto;
-	    display: flex;
-	    flex-direction: row;
-	    justify-content: flex-start;
-	    align-items: center;
-	    // padding: 6px 6px;
-	    // background: whitesmoke;
+	button[disabled] {
+		opacity: 0.5;
 	}
 
 	ul {
-		margin: 4px;
+		// margin: 4px;
 	}
 
 	ul,.list {
