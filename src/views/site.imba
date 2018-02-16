@@ -34,14 +34,10 @@ export tag Site
 			<header#header>
 				<nav.content>
 					<a.tab.logo href='/home'> <i> 'imba'
-					<a.tab.home href='/home'> <i> 'home'
-					<a.tab.guides href='/guide'> <i> 'guides'
-					<a.tab.docs href='/docs'> <i> 'api'
-					<a.tab.blog href='/blog'> <i> 'blog'
-					if app.router.segment(0) == 'gists'
-						<a.tab.blog href='/gists'> <i> 'gists'
-
 					<span.greedy>
+					<a.tab.home href='/home'> <i> 'home'
+					<a.tab.guides href='/guide'> <i> 'learn'
+					<a.tab.docs href='/docs'> <i> 'api'
 					<a.twitter href='http://twitter.com/imbajs'> <i> 'twitter'
 					<a.github href='https://github.com/somebee/imba'> <i> 'github'
 					<a.issues href='https://github.com/somebee/imba/issues'> <i> 'issues'

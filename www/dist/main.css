@@ -50,6 +50,9 @@
   -ms-flex-align: center;
       align-items: center;
 }
+.styled-example .bar > * {
+  margin: 4px;
+}
 .styled-example input {
   display: block;
   padding: 0px 6px;

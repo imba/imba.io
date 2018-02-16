@@ -1,4 +1,0 @@
-
-# Functions
-
-Hello there

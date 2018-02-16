@@ -16,6 +16,17 @@ Imba.mount <section[data] ->
     <div> "Message is {data:message}"
 ```
 
+
+### Range
+
+```imba
+var data = {counter: 50}
+Imba.mount <div[data] ->
+    <input type='range' min=0 max=100 step=1 model='counter'>
+    <div> "Count is {data:counter}"
+```
+
+
 ### Checkbox
 
 ```imba
@@ -41,17 +52,48 @@ Imba.mount <div[data] ->
 ```
 
 
-### Radio
-
-### Select
-
-### Range
+### Select & Radio
 
 ```imba
-var data = {counter: 50}
+const options = ['React','Vue','Imba','Angular','Ember']
+const data = {choice: null}
+
 Imba.mount <div[data] ->
-    <input type='range' min=0 max=100 step=1 model='counter'>
-    <div> "Count is {data:counter}"
+    # binding select to choice
+    <select model='choice'> for item in options
+        <option> item
+
+    # render an input radio for every option
+    <header.bar> for item in options
+        <label.pill>
+            <input type='radio' model='choice' value=item>
+            <span> item
+```
+
+### Rich values
+
+```imba
+
+const options = [
+    { name: 'React', url: "reactjs.org" }
+    { name: 'Vue', url: "vuejs.org" }
+    { name: 'Imba', url: "imba.io" }
+    { name: 'Angular', url: "angular.io" }
+]
+
+const data = {choice: ""}
+
+Imba.mount <div[data] ->
+    # binding select to rich objects
+    <select model='choice'>
+        <option disabled value=""> "Please select one"
+        for item in options
+            <option value=item> item:name
+
+    if let framework = data:choice
+        <div>
+            <h2> "Framework of choice:"
+            <div> "{framework:name} ({framework:url})"
 ```
 
 ### Example
@@ -89,3 +131,7 @@ tag Form < form
 
 Imba.mount <Form[person]>
 ```
+
+## Modifiers
+
+Coming

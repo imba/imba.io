@@ -13,10 +13,10 @@ We can use `<tag :eventname=handler>` to listen to DOM events and run code when 
 tag App
     prop counter
     def render
-        <self>
-            <div> "count is {counter}"
+        <self.bar>
             # handler will be called when clicking button
             <button :click=(do counter++)> "Increment"
+            <div> "count is {counter}"
 
 Imba.mount <App counter=0>
 ```
