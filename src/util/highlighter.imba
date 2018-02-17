@@ -257,7 +257,7 @@ var imbaLang = {
 			
 			[/(\:[a-zA-Z][\w\-]*)/, { token: 'tag.attribute.listener'}],
 			# [/(\.[a-zA-Z\-][\w\-]*)/, { token: 'tag.class.conditional'}],
-			[/([a-zA-Z\-][\w\-]*)/, { token: 'tag.attribute.name'}],
+			[/([a-zA-Z\-][\w\-]*(\:[a-zA-Z][\w\-]*)?)/, { token: 'tag.attribute.name'}],
 			# [/([\:][a-zA-Z][\w\-]*([\:\.][a-zA-Z][\w\-]*)*)\s*(\=)\s*/, { token: 'tag.attribute.listener', next: '@tag_attr_value' }],
 			# [/([@\.]?[a-zA-Z][\w\-]*([\:\.][a-zA-Z][\w\-]*)*)\s*(\=)\s*/, { token: 'tag.attribute', next: '@tag_attr_value' }],
 			
