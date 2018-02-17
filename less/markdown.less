@@ -224,6 +224,9 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 		font-weight: 500;
 	}
 
+	p {
+		font-size: 15px;
+	}
 
 	hr {
 		margin: 3rem 0;
@@ -240,33 +243,14 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 		font-weight: 600;
 	}
 
-	p {
-		font-size: 15px;
-		code { background: transparent; }
-
-		& > code {
-			font-family: inherit;
-			font-size: inherit;
-			font-weight: 500;
-		}
-
-		& > codse {
-			display: inline-block;
-			font-size: inherit;
-			line-height: inherit;
-			font-weight: inherit;
-
-			display: inline-block;
-			font-size: 13px;
-			font-weight: 500;
-			background: rgb(243, 245, 247);
-			padding: 0px 4px;
-			line-height: 1.5em;
-			font-family: @monofont;
-			border-radius: 2px;
-			font-family: inherit;
-		}
+	p > code, li > code {
+		font-family: inherit;
+		font-size: inherit;
+		background: transparent;
+		font-weight: 500;
 	}
+
+	
 
 	blockquote { .md-note; }
 

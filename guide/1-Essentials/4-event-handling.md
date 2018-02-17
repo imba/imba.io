@@ -86,11 +86,10 @@ Inspired by vue.js, Imba also supports modifiers. More often than not, event han
 
 > What is the difference between a modifier and a handler in this case? There isn't really a difference. In fact, the modifiers are implemented as methods on element, and you can define custom modifiers as well.
 
-* .bubble
-* .prevent
-* .stop
-* .self
-* .silence
+* `.stop` - stops event from propagating
+* `.prevent` - calls preventDefault on event
+* `.silence` - explicitly tell Imba not to broadcast event to schedulers
+* `.self` - only trigger subsequent handlers if event.target is the element itself
 
 ### Key Modifiers
 
@@ -140,8 +139,4 @@ For keyboard events (keydown, keyup, keypress) there are also some very handy mo
 * .right
 * .middle
 
-## Chaining Modifiers
-
-
-> Because it is by far the most common case, event propagation is stopped when an event is actually handled. So, you must add the .bubble modifier if you want them to travel further.
 

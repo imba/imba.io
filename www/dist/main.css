@@ -590,6 +590,9 @@ hr + p {
   font-size: 1.5rem;
   font-weight: 500;
 }
+.md p {
+  font-size: 15px;
+}
 .md hr {
   margin: 3rem 0;
   display: block;
@@ -604,30 +607,12 @@ hr + p {
 .md strong {
   font-weight: 600;
 }
-.md p {
-  font-size: 15px;
-}
-.md p code {
+.md p > code,
+.md li > code {
+  font-family: inherit;
+  font-size: inherit;
   background: transparent;
-}
-.md p > code {
-  font-family: inherit;
-  font-size: inherit;
   font-weight: 500;
-}
-.md p > codse {
-  font-size: inherit;
-  line-height: inherit;
-  font-weight: inherit;
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 500;
-  background: #f3f5f7;
-  padding: 0px 4px;
-  line-height: 1.5em;
-  font-family: 'Source Code Pro', monospace, sans-serif;
-  border-radius: 2px;
-  font-family: inherit;
 }
 .md blockquote {
   background: #F7F2E3;
