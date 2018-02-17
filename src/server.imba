@@ -42,7 +42,7 @@ srv.get(/^([^\.]*)$/) do |req,res|
 			<meta name="keywords" content="imba">
 			<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'>
 			<link rel="stylesheet" href="/dist/main.css" media="screen">
-			<style> highlighter:theme.CSS
+			<style html=highlighter:theme.CSS>
 		<body>
 			site
 			<script> "APPCACHE = $$APPCACHE$$"

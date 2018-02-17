@@ -10,6 +10,14 @@ var css = []
 for color,i in theme.getColorMap when i > 0
 	css[i] = ".mtk{i} \{ color: {color}; \}"
 
+let mkt = theme._match("delimiter.access.imba")
+if let i = mkt:_foreground
+	css[i] += "\n.mtk{i}:before" + '{
+	position: absolute;
+	content: ".";
+	color: #ea9b80;
+}'
+
 theme.CSS = css.join("\n")
 	
 export def styles

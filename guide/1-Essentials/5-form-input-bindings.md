@@ -10,10 +10,10 @@ order: 5
 ### Text
 
 ```imba
-var data = {message: ""}
-Imba.mount <section[data] ->
-    <input model='message'>
-    <div> "Message is {data:message}"
+var store = {message: ""}
+Imba.mount <section ->
+    <input[store:message]>
+    <div> "Message is {store:message}"
 ```
 
 
@@ -22,7 +22,7 @@ Imba.mount <section[data] ->
 ```imba
 var data = {counter: 50}
 Imba.mount <div[data] ->
-    <input type='range' min=0 max=100 step=1 model='counter'>
+    <input[data:counter] type='range' min=0 max=100 step=1>
     <div> "Count is {data:counter}"
 ```
 
@@ -30,13 +30,13 @@ Imba.mount <div[data] ->
 ### Checkbox
 
 ```imba
-var data = {
+var store = {
     message: ""
     enabled: false
 }
-Imba.mount <div[data].grid ->
-    <input type='checkbox' model='enabled'>
-    <span> "enabled: {data:enabled}"
+Imba.mount <div.grid ->
+    <input[store:enabled] type='checkbox'>
+    <span> "enabled: {store:enabled}"
 ```
 
 ### Multiple checkboxes
@@ -45,7 +45,7 @@ const data = {skills: ["Literacy"]}
 Imba.mount <div[data] ->
     <header.bar> for option in ['React','Vue','Imba','Angular','Ember']
         <label.pill>
-            <input type='checkbox' model='skills' value=option>
+            <input[data:skills] type='checkbox' value=option>
             <span> option
     <div>
         "Your skills: {data:skills.join(", ")}"
@@ -60,13 +60,13 @@ const data = {choice: null}
 
 Imba.mount <div[data] ->
     # binding select to choice
-    <select model='choice'> for item in options
+    <select[data:choice]> for item in options
         <option> item
 
     # render an input radio for every option
     <header.bar> for item in options
         <label.pill>
-            <input type='radio' model='choice' value=item>
+            <input[data:choice] type='radio' value=item>
             <span> item
 ```
 
@@ -85,7 +85,7 @@ const data = {choice: ""}
 
 Imba.mount <div[data] ->
     # binding select to rich objects
-    <select model='choice'>
+    <select[data:choice]>
         <option disabled value=""> "Please select one"
         for item in options
             <option value=item> item:name
@@ -100,15 +100,19 @@ Imba.mount <div[data] ->
 
 ```imba
 
-var person =
-    name: ""
-    skills: ["Curiosity","Literacy"]
-    confirmed: false
+var store =
+    people: [{
+        name: ""
+        skills: ["Curiosity","Literacy"]
+        confirmed: false
+    }]
 
-tag Form < form
-    
+tag Form < form    
+    prop confirmed
+    prop person
+
     def addSkill e
-        data:skills.push(e.target.value)
+        person:skills.push(e.target.value)
         e.target.value = ''
 
     def onsubmit e
@@ -117,21 +121,18 @@ tag Form < form
 
     def render
         <self>
-            <input type='text' placeholder="Your name..." model.trim='name'>
+            <input[person:name] type='text' placeholder="Your name...">
             <input placeholder="Add skill..." :keyup.enter.addSkill>
-            <.bar> for skill in data:skills
+            <div.bar> for skill in person:skills
                 <label.pill>
-                    <input type='checkbox' model='skills' value=skill>
+                    <input[person:skills] type='checkbox' value=skill>
                     <span> skill
             <footer>
                 <label.pill>
-                    <input type='checkbox' model='confirmed'>
-                    <span> "I, {data:name or "Unnamed"}, confirm this"
-                <button disabled=!data:confirmed> "Submit Form"
+                    <input[confirmed] type='checkbox'>
+                    <span> "I, {person:name or "Unnamed"}, confirm this"
+                <button disabled=!confirmed> "Submit Form"
 
-Imba.mount <Form[person]>
+Imba.mount <Form person=store:people[0]>
 ```
 
-## Modifiers
-
-Coming
