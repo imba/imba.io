@@ -122,7 +122,7 @@ tag Form < form
     def render
         <self>
             <input[person:name] type='text' placeholder="Your name...">
-            <input placeholder="Add skill..." :keyup.enter.addSkill>
+            <input placeholder="Add skill..." :keyup.enter.prevent.addSkill>
             <div.bar> for skill in person:skills
                 <label.pill>
                     <input[person:skills] type='checkbox' value=skill>
