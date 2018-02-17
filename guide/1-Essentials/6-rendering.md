@@ -5,12 +5,11 @@
 Most frameworks for developing web applications try to solve one thing; update views automatically when the underlying data changes. Imba solves this too, but not in the regular way. Imba uses a different approach. As you've learned, to allow your views to be dynamic, you either need to create custom tags, or make the content of your toplevel tags dynamic.
 
 ```imba
-# the content of this can never change
-var dead = <div> <h1> "Random: {Math.random}"
+# the content of div will never change
+Imba.mount <div> <h1> "Random: {Math.random}"
 
-# the content of this will change on live.render
-var live = <div -> <h1> "Random: {Math.random}"
-
+# the content of div will update automatically
+Imba.mount <div -> <h1> "Random: {Math.random}"
 ```
 
 ## The Imba Way
