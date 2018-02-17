@@ -2,6 +2,12 @@
 .styled-example {
 	@control-height: 30px;
 
+	div,form,header,footer,section,input,button,textarea,nav,aside,article {
+	    box-sizing: border-box;
+	    position: relative;
+	    margin: 0;
+	}
+
 	ul,ol {
 		margin: 0px;
 	}
@@ -11,6 +17,21 @@
 	    flex-direction: column;
 	    justify-content: center;
 	    align-items: stretch;
+	}
+
+	.hbox {
+	    display: flex;
+	    flex-direction: row;
+	    justify-content: flex-start;
+	    align-items: stretch;
+	}
+
+	.full {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		width: 100%;
+		height: 100%;
 	}
 
 	.grid {
@@ -36,7 +57,25 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-		// stuff
+
+		& > * { margin: 4px; }
+	}
+
+	aside {
+		width: 200px;
+		align-self: stretch;
+		border-right: 1px solid #e9ebec;
+		padding-right: 10px;
+		margin-right: 10px;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: stretch;
+
+		& > ul, & > ol {
+			flex: 1 1 auto;
+			overflow: auto;
+		}
 	}
 
 	.bar {
@@ -57,8 +96,17 @@
 	    // background: transparent;
 	    // border: none;
 	    font-size: inherit;
+	    font-family: inherit;
 	    width: auto;
 	    height: @control-height;
+	}
+
+	textarea {
+		font-size: inherit;
+		padding: 6px 10px;
+		font-family: inherit;
+		border: 1px solid #e9ebec;
+		resize: none;
 	}
 
 
@@ -86,10 +134,7 @@
 
 	// :focus { outline: initial; }
 
-	div,form,header,footer,section,input,button,nav,aside,article {
-	    box-sizing: border-box;
-	    margin: 0;
-	}
+	
 
 	div,section,input,ul,main,article,.grow {
 	    flex: 1 1 auto;
@@ -144,5 +189,9 @@
 	li.done {
 		text-decoration: line-through;
 		font-style: italic;
+	}
+
+	li.selected {
+		background: whitesmoke;
 	}
 }

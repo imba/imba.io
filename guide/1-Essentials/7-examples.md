@@ -21,3 +21,31 @@ tag App
 
 Imba.mount <App[items]>
 ```
+
+
+## Master - Details
+
+```imba
+# get name of all properties on Element
+var notes = [
+    {body: "First note"}
+]
+
+tag App
+    prop note
+
+    def addItem
+        notes.unshift(body: "New Note")
+
+    def render
+        <self.hbox css:height=200>
+            <aside>
+                <ul> for item in notes
+                    <li .selected=(note == item) :tap.setNote(item)>
+                        <span> item:body
+                <footer> <button :tap.addItem> "New note"
+            if note
+                <section> <textarea[note:body].full>
+
+Imba.mount <App>
+```

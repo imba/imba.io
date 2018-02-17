@@ -60,7 +60,7 @@ const app =
 
 Imba.mount <div[app].vbox ->
     <header>
-        <input model.trim='title' :keyup.enter.addItem>
+        <input[data:title] :keyup.enter.addItem>
         <button :tap.addItem> 'add item'
     <ul> for item in data:items
         <li .done=item:completed :tap.toggleItem(item)> item:title

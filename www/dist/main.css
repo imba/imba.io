@@ -530,7 +530,9 @@ hr + p {
 }
 .md ul li {
   font-size: 15px;
-  line-height: 1.6em;
+  line-height: 1.3em;
+  padding-top: 0.15em;
+  padding-bottom: 0.15em;
   padding-left: 30px;
   position: relative;
 }
@@ -543,7 +545,6 @@ hr + p {
   font-size: inherit;
   line-height: inherit;
   font-style: normal;
-  top: 1px;
   color: #52AF78;
 }
 .md ul li > p > code {
@@ -3287,6 +3288,21 @@ body[data-route='gists'] #gist {
     font-weight: 500;
   }
 }
+.styled-example div,
+.styled-example form,
+.styled-example header,
+.styled-example footer,
+.styled-example section,
+.styled-example input,
+.styled-example button,
+.styled-example textarea,
+.styled-example nav,
+.styled-example aside,
+.styled-example article {
+  box-sizing: border-box;
+  position: relative;
+  margin: 0;
+}
 .styled-example ul,
 .styled-example ol {
   margin: 0px;
@@ -3300,6 +3316,23 @@ body[data-route='gists'] #gist {
       justify-content: center;
   -ms-flex-align: stretch;
       align-items: stretch;
+}
+.styled-example .hbox {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+  -ms-flex-align: stretch;
+      align-items: stretch;
+}
+.styled-example .full {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
 }
 .styled-example .grid {
   display: -ms-grid;
@@ -3331,6 +3364,32 @@ body[data-route='gists'] #gist {
   -ms-flex-pack: justify;
       justify-content: space-between;
 }
+.styled-example header > *,
+.styled-example footer > * {
+  margin: 4px;
+}
+.styled-example aside {
+  width: 200px;
+  -ms-flex-item-align: stretch;
+      align-self: stretch;
+  border-right: 1px solid #e9ebec;
+  padding-right: 10px;
+  margin-right: 10px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+  -ms-flex-align: stretch;
+      align-items: stretch;
+}
+.styled-example aside > ul,
+.styled-example aside > ol {
+  -ms-flex: 1 1 auto;
+      flex: 1 1 auto;
+  overflow: auto;
+}
 .styled-example .bar {
   -ms-flex: 0 0 auto;
       flex: 0 0 auto;
@@ -3350,8 +3409,16 @@ body[data-route='gists'] #gist {
   display: block;
   padding: 0px 6px;
   font-size: inherit;
+  font-family: inherit;
   width: auto;
   height: 30px;
+}
+.styled-example textarea {
+  font-size: inherit;
+  padding: 6px 10px;
+  font-family: inherit;
+  border: 1px solid #e9ebec;
+  resize: none;
 }
 .styled-example input[type=checkbox],
 .styled-example input[type=radio] {
@@ -3379,19 +3446,6 @@ body[data-route='gists'] #gist {
 .styled-example .pill div,
 .styled-example .pill select {
   display: inline-block;
-}
-.styled-example div,
-.styled-example form,
-.styled-example header,
-.styled-example footer,
-.styled-example section,
-.styled-example input,
-.styled-example button,
-.styled-example nav,
-.styled-example aside,
-.styled-example article {
-  box-sizing: border-box;
-  margin: 0;
 }
 .styled-example div,
 .styled-example section,
@@ -3449,6 +3503,9 @@ body[data-route='gists'] #gist {
 .styled-example li.done {
   text-decoration: line-through;
   font-style: italic;
+}
+.styled-example li.selected {
+  background: whitesmoke;
 }
 body > footer {
   font-size: 14px;
