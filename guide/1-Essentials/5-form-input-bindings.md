@@ -21,7 +21,7 @@ Imba.mount <section ->
 
 ```imba
 var data = {counter: 50}
-Imba.mount <div[data] ->
+Imba.mount <div ->
     <input[data:counter] type='range' min=0 max=100 step=1>
     <div> "Count is {data:counter}"
 ```
@@ -42,7 +42,7 @@ Imba.mount <div.grid ->
 ### Multiple checkboxes
 ```imba
 const data = {skills: ["Literacy"]}
-Imba.mount <div[data] ->
+Imba.mount <div ->
     <header.bar> for option in ['React','Vue','Imba','Angular','Ember']
         <label.pill>
             <input[data:skills] type='checkbox' value=option>
@@ -58,7 +58,7 @@ Imba.mount <div[data] ->
 const options = ['React','Vue','Imba','Angular','Ember']
 const data = {choice: null}
 
-Imba.mount <div[data] ->
+Imba.mount <div ->
     # binding select to choice
     <select[data:choice]> for item in options
         <option> item
@@ -83,7 +83,7 @@ const options = [
 
 const data = {choice: ""}
 
-Imba.mount <div[data] ->
+Imba.mount <div ->
     # binding select to rich objects
     <select[data:choice]>
         <option disabled value=""> "Please select one"

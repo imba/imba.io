@@ -25,21 +25,12 @@ In the example above we declared the handler inline. Usually it is better to def
 
 ## Resolving Handlers 
 
-You can also supply a string as the handler (`<div :click="doSomething">`). In this case, Imba will look for the handler by traversing up the DOM tree and call getHandler on each node, until a handler is returned. The method looks like this:
-
-```imba
-def getHandler handlerName
-    if self[handlerName] isa Function
-        return self
-    elif @data and @data[handlerName] isa Function
-        return @data
-```
-
-This means that if you have defined methods on your custom tags, you can refer to these methods:
+You can also supply a string as the handler (`<div :click="doSomething">`). In this case, Imba will look for a method of that name on the current context (self). This means that if you have defined methods on your custom tags, you can refer to these methods.
 
 ```imba
 tag App
     prop counter
+
     def increment
         counter++
 
@@ -52,7 +43,6 @@ Imba.mount <App counter=0>
 ```
 
 Taking this one step further, since binding events is such an integral part of developing web applications, Imba has a special syntax for this. You can chain event handlers (and modifiers -- see below) directly:
-
 
 ```imba
 tag App
@@ -68,12 +58,13 @@ tag App
     def render
         <self.bar>
             <div> "count is {counter}"
-            <button :click.increment> "Increment"
-            <button :click.change(2)> "Increment by 2"
+            <button :tap.increment> "Increment"
+            <button :tap.change(2)> "Increment by 2"
 
 Imba.mount <App counter=0>
 ```
 
+> `tap` is an alias for `click` that works across mobile, tablets, and desktops.
 
 ## Event Modifiers
 
@@ -139,4 +130,21 @@ For keyboard events (keydown, keyup, keypress) there are also some very handy mo
 * .right
 * .middle
 
+## Declaring default handlers
 
+When an event is processed by Imba, it will also look for an `on(eventname)` method on the tags as it traverses up from the original target.
+
+```
+tag App
+    def onsubmit e
+        e.prevent
+        alert('Tried to submit!')
+
+    def render
+        <self>
+            <form>
+                <input type='text'>
+                <button type='submit'> "Submit"
+
+Imba.mount <App>
+```
