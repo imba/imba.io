@@ -49,3 +49,25 @@ tag App
 
 Imba.mount <App>
 ```
+
+
+## Simple todo list
+```imba
+tag App
+    prop items
+
+    def addItem
+        if @input.value
+            items.push(title: @input.value)
+            @input.value = ""
+
+    def toggleItem item
+        item:completed = !item:completed
+
+Imba.mount <App.vbox items=[] ->
+    <form.bar :submit.prevent.addItem>
+        <input@input>
+        <button> 'add'
+    <ul> for item in items
+        <li .done=item:completed :tap.toggleItem(item)> item:title
+```

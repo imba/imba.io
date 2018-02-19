@@ -3197,6 +3197,9 @@ body[data-route='gists'] #gist {
   padding: 2rem 0px;
   font-size: 14px;
 }
+.Guide > footer .next {
+  margin-left: auto;
+}
 @media (max-width: 700px) {
   ._home .welcome h1 + p {
     font-size: 1.8em;
