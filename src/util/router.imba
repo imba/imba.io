@@ -112,6 +112,8 @@ extend tag a
 		@route or href
 
 	def ontap e
+		return unless href
+
 		var href = href.replace(/^http\:\/\/imba\.io/,'')
 
 		if e.event:metaKey or e.event:altKey

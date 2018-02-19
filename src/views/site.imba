@@ -28,6 +28,9 @@ export tag Site
 		Promise.new do |resolve|
 			console.log "Site#load"
 			setTimeout(resolve,200)
+			
+	def toggleMenu
+		document:body:classList.toggle('menu')
 		
 	def render
 		console.log "render site",app.path
@@ -39,9 +42,7 @@ export tag Site
 					<span.greedy>
 					<a.tab.home href='/home'> <i> 'home'
 					<a.tab.guides href='/guide'> <i> 'learn'
-					# <a.tab.docs href='/docs'> <i> 'api'
-					<a.tab.docs href='/examples'> <i> 'examples'
-					# <a.twitter href='http://twitter.com/imbajs'> <i> 'twitter'
+					<a.tab.gitter href='https://gitter.im/somebee/imba'> <i> 'community'
 					<a.github href='https://github.com/somebee/imba'> <i> 'github'
 					# <a.issues href='https://github.com/somebee/imba/issues'> <i> 'issues'
 					<a.menu :tap='toggleMenu'> <b>

@@ -34,7 +34,7 @@ var info =
     ]
 ```
 
-> Even though Imba has been used privately, in production, for more than a year (powering scrimba.com), the community is  in the early stages, and documentation is still sparse. If you are a person who takes joy in learning new technologies and are not afraid to learn by doing, please keep reading.
+> Even though Imba has been used privately, in production, for more than a year (powering scrimba.com), the community is  in the early stages, and documentation is still sparse. We're incredibly grateful for any feedback, suggestions, and help with the documentation!
 
 ## Syntax & Semantics
 

@@ -3208,10 +3208,10 @@ body[data-route='gists'] #gist {
   }
 }
 @media (max-width: 500px) {
-  ._home > .body > .content ._example {
+  .HomePage > .body > .content ._example {
     display: block;
   }
-  ._home > .body > .content ._example .main {
+  .HomePage > .body > .content ._example .main {
     font-size: 11px;
     line-height: 13px;
     font-weight: 400;
@@ -3222,24 +3222,24 @@ body[data-route='gists'] #gist {
   html {
     font-size: 9px;
   }
-  ._home #hero ._snippet > .main {
+  .HomePage #hero ._snippet > .main {
     font-size: 12px;
     line-height: 14px;
   }
   .md.huge h1 + p {
     font-size: 2rem;
   }
-  ._home > .body > .content ._example {
+  .HomePage > .body > .content ._example {
     display: block;
   }
-  ._home > .body > .content ._example .main {
+  .HomePage > .body > .content ._example .main {
     font-size: 12px;
     line-height: 14px;
     font-weight: 400;
     margin: 0 -3rem;
     width: auto;
   }
-  ._home > .body > .content ._example .inspector {
+  .HomePage > .body > .content ._example .inspector {
     margin-top: 3rem;
     width: auto;
     min-height: 50px;
@@ -3322,6 +3322,7 @@ body[data-route='gists'] #gist {
     top: 0px;
     width: 85%;
     z-index: 15000;
+    max-width: 270px;
     left: 0px;
     background: rgba(255, 255, 255, 0.96);
     backface-visibility: hidden;
@@ -3337,7 +3338,7 @@ body[data-route='gists'] #gist {
   body.menu #header a.menu {
     opacity: 0.99;
   }
-  body.menu ._page.scoped > .nav {
+  body.menu .Page > .nav {
     transform: translate3d(0%, 0%, 0px);
     transition: transform 0.3s ease-in-out;
   }

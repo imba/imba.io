@@ -1,4 +1,4 @@
-# Rendering
+# Reactive Rendering
 
 Most frameworks for developing web applications try to solve one thing; update views automatically when the underlying data changes. Imba takes the approach of updating the view whenever *something* *might* have changed. The performance of bringing the dom in sync with your declared view is so ridiculously fast in Imba, that introducing complex data-stores with observers tracking which parts depends on what data etc is not needed.
 

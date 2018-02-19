@@ -24,7 +24,7 @@
 }
 
 @media (max-width: 500px) {
-	._home > .body > .content ._example {
+	.HomePage > .body > .content ._example {
 		display: block;
 
 		.main {
@@ -38,7 +38,7 @@
 
 @media (max-width: 600px) {
 	html { font-size: 9px; }
-	._home #hero ._snippet > .main {
+	.HomePage #hero ._snippet > .main {
 		font-size: 12px;
 		line-height: 14px;
 	}
@@ -47,7 +47,7 @@
 		font-size: 2rem;
 	}
 
-	._home > .body > .content ._example {
+	.HomePage > .body > .content ._example {
 		display: block;
 
 		.main {
@@ -154,6 +154,7 @@
 			top: 0px;
 			width: 85%;
 			z-index: 15000;
+			max-width: 270px;
 			// left: -120%;
 			left: 0px;
 			background: fade(white,96%);
@@ -174,8 +175,7 @@
 		#header a.menu {
 			opacity: 0.99;
 		}
-		._page.scoped > .nav {
-			
+		.Page > .nav {
 			transform: translate3d(0%,0%,0px);
 			transition: transform 0.3s ease-in-out;
 			// transition: left 0.6s ease-in-out;

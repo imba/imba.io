@@ -30,14 +30,11 @@ export tag Snippet
 		
 	def run
 		var orig = Imba:mount
-		
-		# var js = 'var require = function(){ return Imba };\n' + data:js:code
 		var js = data:js:code
-		console.log Imba
 		js = js.replace("require('imba')",'window.Imba')
+		# add console?
 		try
 			Imba:mount = do |item| orig.call(Imba,item,@result.dom)
-			console.log "run code", js
 			eval(js)
 		
 		Imba:mount = orig
