@@ -139,3 +139,46 @@ tag App
 
 Imba.mount <App>
 ```
+
+
+## Custom events
+
+#### `tag.trigger(name, data = null)`
+
+Custom events will bubble like native events, but are dispatched and processed directly inside the Imba.Event system, without generating a real browser Event. Optionally supply data for the event in the second argument. Here is a rather complex example illustrating several ways of dealing with custom events
+
+```imba
+tag Todo < li
+    def clickRename
+        trigger('itemrename',data)
+
+    def clickTitle
+        trigger('itemtoggle',data)
+
+    def render
+        <self .done=data:done> 
+            <span :tap.clickTitle> data:title
+            <button :tap.clickRename> 'rename'
+
+tag Todos < ul
+    def setup
+        @items = [
+            {title: "Remember milk", done: false}
+            {title: "Test custom events", done: false}
+        ]
+
+    # the inner todo triggers a custom itemtoggle event when tapped
+    # which will bubble up and eventually trigger onitemtoggle here
+    def onitemtoggle e
+        e.data:done = !e.data:done
+
+    def onitemrename e
+        var todo = e.data
+        todo:title = window.prompt("New title",todo:title)
+
+    def render
+        <self> for item in @items
+            <Todo[item]>
+
+Imba.mount <Todos>
+```

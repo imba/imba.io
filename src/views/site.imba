@@ -39,7 +39,7 @@ export tag Site
 					<span.greedy>
 					<a.tab.home href='/home'> <i> 'home'
 					<a.tab.guides href='/guide'> <i> 'learn'
-					<a.tab.docs href='/docs'> <i> 'api'
+					# <a.tab.docs href='/docs'> <i> 'api'
 					<a.tab.docs href='/examples'> <i> 'examples'
 					# <a.twitter href='http://twitter.com/imbajs'> <i> 'twitter'
 					<a.github href='https://github.com/somebee/imba'> <i> 'github'

@@ -1,23 +1,96 @@
 # Rendering
 
-## The Wholy Grail
+Most frameworks for developing web applications try to solve one thing; update views automatically when the underlying data changes. Imba takes the approach of updating the view whenever *something* *might* have changed. The performance of bringing the dom in sync with your declared view is so ridiculously fast in Imba, that introducing complex data-stores with observers tracking which parts depends on what data etc is not needed.
 
-Most frameworks for developing web applications try to solve one thing; update views automatically when the underlying data changes. Imba solves this too, but not in the regular way. Imba uses a different approach. As you've learned, to allow your views to be dynamic, you either need to create custom tags, or make the content of your toplevel tags dynamic.
+If you are a beginner, the only thing you really need to know for now is that you should always mount your root tag with `Imba.mount`, and let Imba take care of the rest.
 
 ```imba
-# the content of div will never change
-Imba.mount <div> <h1> "Random: {Math.random}"
+tag App
+    def render
+        <self>
+            <header> "Application"
+            # nested components etc
 
-# the content of div will update automatically
-Imba.mount <div -> <h1> "Random: {Math.random}"
+Imba.mount <App> # don't you worry 'bout a thing
 ```
 
-## The Imba Way
+When you mount a tag in Imba, using `Imba.mount`, the node is scheduled to render after every captured dom event. This might sound slow, but the truth is that Imba is *much* faster than other frameworks. At [scrimba.com](https://scrimba.com), which is a complex site, we still use this approach. How can we render *our whole app* after a user has tapped a single button? The way Imba brings the views in sync is in most cases much faster than tracking what has changed and what to render.
 
-You can choose to render manually or integrate with mobx (or another data-layer). But the default in Imba is more than good enough for most cases. When you mount a tag in Imba, using `Imba.mount`, the node is scheduled to render after every captured dom event. This might sound slow, but the truth is that Imba is *much* faster than other frameworks. At [scrimba.com](https://scrimba.com), which is a complex site, we still use this approach. How can we render OUR WHOLE APP after a user has tapped a single button? The way Imba brings the views in sync is in most cases much faster than tracking what has changed and what to render.
+### Calling Imba.commit
 
-* No need for complex frameworks to track changes and dependencies
-* No need to drink immutability cool-aid (to help the vdom perform)
-* Very fast, very memory efficient
+Even though most changes to the state of your application will happen as a result of user interactions, there are still a few places you need to notify Imba that things have changed. E.g. if you receive data from a socket/server, you want to call `Imba.commit` at the appropriate places. Don't be afraid to call it too often though, so for websockets it should be as easy as setting up `socket.addEventListener('message',Imba:commit)` when initializing the socket.
 
-Even though practically all changes to the state of your application will happen as a result of user interactions, there are still a few places you need to notify Imba that things have changed. E.g. if you receive data from a socket/server, you want to call `Imba.commit` at the appropriate places. Don't be afraid to call it too often though, so for websockets it should be as easy as setting up `socket.addEventListener('message',Imba:commit)` when initializing the socket.
+```imba
+var counter = 0
+var status = "Hello"
+
+tag App
+    def doSomething
+        self
+
+    def loadAsync
+        status = "loading"
+        setTimeout(&,500) do
+            status = "loaded"
+            # Call Imba.commit to let Imba
+            # render scheduled nodes
+            Imba.commit
+
+    def render
+        <self.bar>
+            <button> "noop"
+            <button :tap.doSomething> "handle" 
+            <button :tap.loadAsync> "async"
+            <div> "Rendered: {++counter}"
+            <div> "Status: {status}"
+
+Imba.mount <App>
+```
+
+
+### Manual scheduling
+
+You can also schedule nodes to render on every frame, or render at a specific interval. Here we are doing both in different elements:
+
+```imba
+tag Clock
+    def mount
+        # render every 1000ms
+        schedule(interval: 1000)
+
+    def render
+        <self> Date.new.toLocaleString
+
+tag Counter
+    def setup
+        @ticks = 0
+
+    def render
+        <self.bar>
+            <button :tap.schedule(raf: true)> "Start"
+            <button :tap.unschedule> "Stop"
+            <span> @ticks++
+
+tag App
+    def setup
+        @renderCount = 0
+
+    def mount
+        schedule(events: true)
+
+    def render
+        <self>
+            <div> "Rendered {++@renderCount} times"
+            <Clock>
+            <Counter>
+
+Imba.mount <App>
+```
+
+
+### Integrating with MobX
+
+Example coming
+
+
+

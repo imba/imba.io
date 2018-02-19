@@ -36,6 +36,53 @@ var info =
 
 > Even though Imba has been used privately, in production, for more than a year (powering scrimba.com), the community is  in the early stages, and documentation is still sparse. If you are a person who takes joy in learning new technologies and are not afraid to learn by doing, please keep reading.
 
+## Syntax & Semantics
+
+Even though the syntax and semantics of Imba is much more related to Ruby than JavaScript, it does compile down to plain performant JavaScript, and is fully compatible with any existing JavaScript library. Imba does not extend any native types from JavaScript. Arrays are arrays, strings are strings, numbers are numbers, classes are constructors with prototypes and so forth. If you simply like Imba better, there is no reason not to write your npm package in Imba, even if it is supposed to be used in the general JavaScript ecosystem. In fact, Imba produces *very* readable JavaScript, by keeping your indentation, comments, and coding style.
+
+```imba
+# Strings
+var single = 'single quotes'
+var double = "double quotes"
+var interpolation = "string has {double}"
+
+# Numbers
+var integer = 42
+var float = 42.10
+
+# Objects
+var object = {name: 'Imba', type: 'Language'}
+
+# Arrays
+var array = [1,2,3,4,5]
+
+# Regular expressions
+var regex = /number is (\d+)/
+
+# Functions
+def hello
+    console.log 'got here'
+    return 'world'
+
+# Classes
+class Todo
+    # automatic getter/setter declaration
+    prop title
+
+    def initialize title
+        # instance variables
+        @title = title
+        @completed = no
+
+    def complete
+        @completed = yes
+
+# Tags
+var item = <div.header> "This is a div"
+var list = <ul.list> for item in ["one","two","three"]
+    <li> <span.name> item
+```
+
 
 ## Getting started
 

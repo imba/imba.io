@@ -48,9 +48,6 @@ let element = <div.header .{state}>
 When we move on to custom tags, you will find that tags very often represent some data.
 
 ```imba
-# these two are equivalent. The latter is preferred convention
-# for passing data to a tag. 
-<AppView data=myData title="Application"> 
 <AppView[myData] title="Application">
 ```
 
@@ -85,16 +82,32 @@ let app = <div>
         <a href="/register"> "Register"
 ```
 
-## Reactive Tags
+## Reactive Rendering
 
-Explain here
+As we explain custom tags, you will learn that everything inside `<self>` is reactive by default. Ending a tag with  `->` or `=>` instead of `>` marks it as reactive, and allows you to call `render` on the tag to re-render the content.
 
+```imba
+var number = 0
+
+var dead = Imba.mount <div>
+    <span> "Dead time is {Date.new.toLocaleString}"
+    <span> "Number is {number}"
+
+var live = Imba.mount <div ->
+    <span> "Live time is {Date.new.toLocaleString}"
+    <span> "Number is {number}"
+
+setInterval(&,1000) do
+    number++
+    dead.render # nothing changes
+    live.render # content is updated
+```
 
 ## Rendering into document
 
 To add tags to the actual document, you should use `Imba.mount(element, into)`. If you do not supply a second argument, the element will be added to document.body by default.
 
 ```
-Imba.mount <div> "Hello there"
+Imba.mount <div -> <span> "Let's get started!"
 ```
 
