@@ -88,7 +88,7 @@ let view = <RegisterForm>
 ```
 
 
-## Custom properties
+## Properties
 
 ```imba
 # define a custom tag, inheriting from form

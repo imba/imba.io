@@ -182,3 +182,27 @@ tag Todos < ul
 
 Imba.mount <Todos>
 ```
+
+## Event Interface
+
+Imba handles all events in the dom through a single manager, listening at the root of your document. Each native event is wrapped in an Imba.Event-instance, which has a few methods worth knowing:
+
+```imba
+tag CustomElement
+    def onclick event
+        event.target # returns the Imba.Tag target for event
+        event.native # returns the native DOMEvent
+        event.type # returns the type of event, in this case 'click'
+        event.prevent # calls preventDefault on the native event
+        event.stop # calls stopPropagation on the native event
+
+        # a bunch of methods accessing native event
+        event.x # Event:x
+        event.y # event.native:y
+        event.button # event.native:button
+        event.which # event.native:which
+        event.alt # event.native:altKey
+        event.shift # shiftKey
+        event.ctrl # event.native:ctrlKey
+        event.meta # event.native:metaKey
+```
