@@ -2,6 +2,23 @@
 @chratio: 0.6;
 
 @import 'util.less';
+
+:root {
+	--logo-color: #69b8e0;
+}
+
+.Logo {
+	display: inline-block;
+	vertical-align: top;
+	svg { vertical-align: top; }
+}
+
+.Logo svg g {
+	fill: var(--logo-color);
+}
+
+
+
 // Resets
 html,body {
 	padding: 0;
@@ -103,7 +120,7 @@ footer {
 
 .toc-anchor {
 	position: relative;
-	top: -100px;
+	top: -110px;
 	opacity: 0;
 	display: block;
 	visibility: hidden;

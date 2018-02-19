@@ -14,7 +14,7 @@ export class Guide
 		var root = path.resolve(__dirname,"../../guide")
 		var docs = []
 		var guides = []
-		var guide = {sections: []}
+		var guide = null # {sections: []}
 		var toc = []
 		var data = {toc: toc}
 		var lastDoc = null
@@ -24,7 +24,7 @@ export class Guide
 				
 				let id = filename.replace(/^\d+\-/,'').replace(/\.md$/,'')
 				let src = path.resolve(dir,filename)
-				console.log "found directory"
+				# console.log "found directory"
 				if fs.lstatSync(src).isDirectory
 					let prev = guide
 					toc.push(guide = {id: id.toLowerCase, title: id, sections: []})
@@ -34,32 +34,21 @@ export class Guide
 					continue unless src.indexOf('.md') >= 0
 					let file = fs.readFileSync(src,'utf-8')
 					let doc = md.render(file)
-					let route = guide:id + '/' + id
+					let route = guide ? (guide:id + '/' + id) : id
 					# doc:guide = guide:id
 					doc:id = doc:route = route
 					if !doc:title and doc:toc[0]
 						doc:title = doc:toc[0]:title
-
+					
 					data[route] = doc
-					if lastDoc
-						lastDoc:next = route
-						doc:prev = lastDoc:id
-						console.log "found last Doc",lastDoc:id
-
-					guide:sections.push(route)
-					lastDoc = doc
-		
-		if false		
-			for filename in fs.readdirSync(root)
-				fs.lstatSync(path_string).isDirectory			
-				let file = fs.readFileSync(path.resolve(root,filename),'utf-8')
-				let doc = md.render(file)
-				doc:id = filename.replace('.md','')
-				console.log "found doc",doc:id,doc:order
-				if doc:order
-					docs[doc:order] = doc
-		
-		
+					
+					if doc:type != 'snippet'
+						if lastDoc
+							lastDoc:next = route
+							doc:prev = lastDoc:id
+							console.log "found last Doc",lastDoc:id
+						guide:sections.push(route) if guide
+						lastDoc = doc
 		add(root)
 		@docs = data
 		return self

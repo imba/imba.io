@@ -1,6 +1,7 @@
 import HomePage from './HomePage'
 import GuidesPage from './GuidesPage'
 import DocsPage from './DocsPage'
+import Logo from './Logo'
 
 extend tag element
 
@@ -33,14 +34,16 @@ export tag Site
 		<self>
 			<header#header>
 				<nav.content>
+					<Logo>
 					<a.tab.logo href='/home'> <i> 'imba'
 					<span.greedy>
 					<a.tab.home href='/home'> <i> 'home'
 					<a.tab.guides href='/guide'> <i> 'learn'
 					<a.tab.docs href='/docs'> <i> 'api'
-					<a.twitter href='http://twitter.com/imbajs'> <i> 'twitter'
+					<a.tab.docs href='/examples'> <i> 'examples'
+					# <a.twitter href='http://twitter.com/imbajs'> <i> 'twitter'
 					<a.github href='https://github.com/somebee/imba'> <i> 'github'
-					<a.issues href='https://github.com/somebee/imba/issues'> <i> 'issues'
+					# <a.issues href='https://github.com/somebee/imba/issues'> <i> 'issues'
 					<a.menu :tap='toggleMenu'> <b>
 			
 			<main>

@@ -4,6 +4,8 @@ var mdr = marked.Renderer.new
 
 def mdr.heading text, lvl
 	"<h{lvl}>{text}</h{lvl}>"
+	
+import Snippet from './Snippet'
 		
 export tag Marked
 	def renderer
@@ -18,4 +20,17 @@ export tag Marked
 	def setContent val,typ
 		setText(val,0)
 		return self
-
+		
+	def setData data
+		if data and data != @data
+			@data = data
+			dom:innerHTML = data:body
+			awakenSnippets if $web$
+		self
+			
+	def awakenSnippets
+		for item in dom.querySelectorAll('.snippet')
+			let code = item:textContent
+			if code.indexOf('Imba.mount') >= 0
+				Snippet.replace(item)
+		self

@@ -3,6 +3,7 @@ import Page from './Page'
 import Example from './Snippet'
 import Marked from './Marked'
 import Pattern from './Pattern'
+import Logo from './Logo'
 
 
 export tag HomePage < Page
@@ -11,6 +12,14 @@ export tag HomePage < Page
 		<self> <.body>
 			<div#hero.dark>
 				<Pattern@pattern>
+				<.content>
+					<Marked[app.guide['hero']]>
+					<nav.buttons>
+						# <a.button.try href='#'> "Try online"
+						<a.button.start href='/guide'> "Get started"
+						<a.button.start href='/examples'> "Examples"
+						<a.button.github href='https://github.com/somebee/imba'> "Github"
+
 				# <herosnippet.hero.dark src='/home/examples/hero.imba'>
 			<.content>
 				<Marked.section.md.welcome.huge.light> """

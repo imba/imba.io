@@ -25,7 +25,7 @@ In the example above we declared the handler inline. Usually it is better to def
 
 ## Resolving Handlers 
 
-You can also supply a string as the handler (`<div :click="doSomething">`). In this case, Imba will look for a method of that name on the current context (self). This means that if you have defined methods on your custom tags, you can refer to these methods.
+You can also supply a string as the handler (`<div :click="doSomething">`). In this case, Imba will look for a method of that name on the current context (self). This means that if you have defined methods on your custom tags, you can refer to these methods. Since binding events is such an integral part of developing web applications, Imba also has a special syntax for this.
 
 ```imba
 tag App
@@ -34,32 +34,23 @@ tag App
     def increment
         counter++
 
-    def render
-        <self>
-            <div> "count is {counter}"
-            <button :click='increment'> "Increment"
-
-Imba.mount <App counter=0>
-```
-
-Taking this one step further, since binding events is such an integral part of developing web applications, Imba has a special syntax for this. You can chain event handlers (and modifiers -- see below) directly:
-
-```imba
-tag App
-
-    prop counter
-
-    def increment
-        counter++
-        
-    def change amount = 0
+    def step amount
         counter += amount
 
     def render
         <self.bar>
+            # inline handler
+            <button :click=(do counter++)> "+1"
+            # reference to a method on self
+            <button :click='increment'> "+1"
+            # reference with arguments
+            <button :click=['step',2]> "+2"
+            # shorthand reference
+            <button :click.increment> "+1"
+            # shorthand reference with arguments
+            <button :click.step(3)> "+3"
+
             <div> "count is {counter}"
-            <button :tap.increment> "Increment"
-            <button :tap.change(2)> "Increment by 2"
 
 Imba.mount <App counter=0>
 ```
@@ -138,7 +129,7 @@ When an event is processed by Imba, it will also look for an `on(eventname)` met
 tag App
     def onsubmit e
         e.prevent
-        alert('Tried to submit!')
+        window.alert('Tried to submit!')
 
     def render
         <self>

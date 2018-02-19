@@ -1,3 +1,16 @@
+:root {
+  --logo-color: #69b8e0;
+}
+.Logo {
+  display: inline-block;
+  vertical-align: top;
+}
+.Logo svg {
+  vertical-align: top;
+}
+.Logo svg g {
+  fill: var(--logo-color);
+}
 html,
 body {
   padding: 0;
@@ -1310,7 +1323,7 @@ hr + p {
 }
 .toc-anchor {
   position: relative;
-  top: -100px;
+  top: -110px;
   opacity: 0;
   display: block;
   visibility: hidden;
@@ -1332,6 +1345,10 @@ hr + p {
   color: white;
   color: #709CB2;
   background-color: #202B31;
+}
+#header .Logo svg {
+  width: 34px;
+  height: auto;
 }
 #header .greedy {
   -ms-flex: 100 1 auto;
@@ -1413,6 +1430,8 @@ hr + p {
   font-size: 20px;
   color: #ff906a;
   color: #709CB2;
+  padding: 6px 4px;
+  color: white;
 }
 #header a.logo i {
   border-bottom: none;
@@ -2288,6 +2307,30 @@ blockquote ._snippet {
   -ms-flex-align: center;
       align-items: center;
 }
+#hero .content {
+  position: relative;
+  text-align: center;
+}
+#hero .content code {
+  text-align: left;
+  background: transparent;
+  font-size: 17px;
+  line-height: 24px;
+  text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.53);
+}
+#hero .content .result {
+  display: none;
+}
+#hero .content .Logo {
+  margin: 2rem;
+}
+#hero .content .Logo svg {
+  width: 140px;
+  height: auto;
+}
+#hero .content .buttons {
+  margin: 1rem;
+}
 #hero > .gradient {
   position: absolute;
   top: 0px;
@@ -2406,6 +2449,7 @@ blockquote ._snippet {
   width: 100%;
   left: 0px;
   top: 0px;
+  pointer-events: none;
 }
 .HomePage .pattern > div {
   transform-origin: 50% 0%;
@@ -2446,17 +2490,33 @@ blockquote ._snippet {
 }
 .HomePage a.button {
   display: inline-block;
-  background: #75aaff;
-  padding: 1rem 2rem;
+  padding: 1.2rem 2rem;
   text-transform: uppercase;
   color: #232933;
-  font-weight: bold;
-  font-size: 1.4em;
+  font-weight: 500;
+  font-size: 1.5em;
   margin: 0.5rem;
   border-radius: 3rem;
   border: 2px solid #709CB2;
   background: transparent;
   color: #709CB2;
+  letter-spacing: 0.5px;
+  background: #7ca3b6;
+  color: white;
+  border: none;
+  text-decoration: none;
+}
+.HomePage a.button:hover {
+  background: #59b8e8;
+}
+.HomePage a.button.github {
+  background-image: linear-gradient(to bottom, #fcfcfc 0, #eee 100%);
+  border: 1px solid #fff;
+  color: #333;
+  text-shadow: 0 1px 0 #fff;
+}
+.HomePage a.button.github:hover {
+  background-image: linear-gradient(to bottom, #eee 0, #ddd 100%);
 }
 .HomePage a.button.main {
   background: #709CB2;
