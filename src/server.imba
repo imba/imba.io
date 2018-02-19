@@ -1,6 +1,6 @@
 
 import App from './app'
-import Site from './views/site'
+import Site from './views/Site'
 import Guide from './data/guide'
 
 # Setting up the express server
