@@ -17,7 +17,7 @@ export tag HomePage < Page
 					<nav.buttons>
 						# <a.button.try href='#'> "Try online"
 						<a.button.start href='/guide'> "Get started"
-						<a.button.start href='/examples'> "Examples"
+						# <a.button.start href='/examples'> "Examples"
 						<a.button.github href='https://github.com/somebee/imba'> "Github"
 
 				# <herosnippet.hero.dark src='/home/examples/hero.imba'>

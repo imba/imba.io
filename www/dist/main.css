@@ -1,4 +1,5 @@
 :root {
+  --link-color: #69b8e0;
   --logo-color: #69b8e0;
 }
 .Logo {
@@ -1364,6 +1365,9 @@ hr + p {
   font-size: 1.5em;
   padding: 1em;
 }
+#header a {
+  color: var(--link-color);
+}
 #header .path {
   white-space: nowrap;
   -ms-flex-item-align: stretch;
@@ -1412,7 +1416,7 @@ hr + p {
   display: inline-block;
   text-transform: uppercase;
   text-decoration: none;
-  padding: 6px 12px;
+  padding: 6px 10px;
   line-height: 1em;
   font-weight: 500;
 }
@@ -2293,6 +2297,59 @@ code {
 blockquote ._snippet {
   background: #FFFAE9;
 }
+.Pattern {
+  font-family: 'Source Code Pro', monospace, sans-serif;
+  position: absolute;
+  border: none;
+  opacity: 1;
+  transform-style: preserve-3d;
+  perspective: 800px;
+  font-size: 14px;
+  line-height: 24px;
+  top: 62px;
+  overflow: hidden;
+  width: 100%;
+  left: 0px;
+  top: 0px;
+  pointer-events: none;
+}
+.Pattern > div {
+  transform-origin: 50% 0%;
+  transform: rotateX(30deg);
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  opacity: 0.4;
+}
+.Pattern b,
+.Pattern em,
+.Pattern i,
+.Pattern u {
+  display: inline;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: none;
+}
+.Pattern u {
+  color: #c7b484;
+}
+.Pattern em {
+  color: #ffffff;
+}
+.Pattern i {
+  color: #f09475;
+}
+.Pattern .line {
+  position: relative;
+  display: block;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+  width: 1400px;
+  left: 50%;
+  transform: translate(-50%, 0px);
+  background: #202b31;
+}
 #hero {
   position: relative;
   background-color: #202B31;
@@ -2318,7 +2375,6 @@ blockquote ._snippet {
   background: transparent;
   font-size: 17px;
   line-height: 24px;
-  text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
 }
 #hero .content .result {
   display: none;
@@ -2437,66 +2493,13 @@ blockquote ._snippet {
 #hero .playground div {
   text-align: center;
 }
-.HomePage .pattern {
-  font-family: 'Source Code Pro', monospace, sans-serif;
-  position: absolute;
-  border: none;
-  opacity: 1;
-  transform-style: preserve-3d;
-  perspective: 800px;
-  font-size: 14px;
-  line-height: 24px;
-  top: 62px;
-  overflow: hidden;
-  width: 100%;
-  left: 0px;
-  top: 0px;
-  pointer-events: none;
-}
-.HomePage .pattern > div {
-  transform-origin: 50% 0%;
-  transform: rotateX(30deg);
-  transform-style: preserve-3d;
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
-  opacity: 0.6;
-}
-.HomePage .pattern b,
-.HomePage .pattern em,
-.HomePage .pattern i,
-.HomePage .pattern u {
-  display: inline;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: none;
-}
-.HomePage .pattern u {
-  color: #c7b484;
-}
-.HomePage .pattern em {
-  color: #ffffff;
-}
-.HomePage .pattern i {
-  color: #f09475;
-}
-.HomePage .pattern .line {
-  position: relative;
-  display: block;
-  text-align: center;
-  white-space: nowrap;
-  width: 100%;
-  width: 1400px;
-  left: 50%;
-  transform: translate(-50%, 0px);
-  background: #202b31;
-}
 .HomePage a.button {
   display: inline-block;
   padding: 1.2rem 2rem;
   text-transform: uppercase;
   color: #232933;
   font-weight: 500;
-  font-size: 1.5em;
+  font-size: 1.4em;
   margin: 0.5rem;
   border-radius: 3rem;
   border: 2px solid #709CB2;
@@ -2504,6 +2507,7 @@ blockquote ._snippet {
   color: #709CB2;
   letter-spacing: 0.5px;
   background: #7ca3b6;
+  background: var(--logo-color);
   color: white;
   border: none;
   text-decoration: none;
@@ -2535,9 +2539,6 @@ blockquote ._snippet {
   max-width: 100%;
   padding: 2rem;
   margin: 0 auto;
-}
-.HomePage #footer {
-  min-height: 80px;
 }
 .HomePage .content > ._snippet {
   margin-left: 2rem;
@@ -2640,7 +2641,7 @@ blockquote ._snippet {
 .HomePage .Example > .main {
   width: 60%;
 }
-.HomePage.scoped ~ footer {
+.HomePage ~ #footer {
   width: 960px;
   max-width: 100%;
   padding: 2rem;
@@ -3576,11 +3577,15 @@ body[data-route='gists'] #gist {
 .styled-example li.selected {
   background: whitesmoke;
 }
-body > footer {
+#footer {
+  min-height: 80px;
+  margin-left: 250px;
+  padding: 20px 40px;
+  max-width: 760px;
   font-size: 14px;
   color: #9FA7A3;
 }
-body > footer hr {
+#footer hr {
   display: block;
   height: 1px;
   border: 0px;
@@ -3588,13 +3593,13 @@ body > footer hr {
   background: #F3F5F7;
   margin-bottom: 10px;
 }
-body > footer .lft {
+#footer .lft {
   float: left;
 }
-body > footer .rgt {
+#footer .rgt {
   text-align: right;
 }
-body > footer .rgt a + a {
+#footer .rgt a + a {
   margin-left: 1ex;
 }
 

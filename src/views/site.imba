@@ -24,16 +24,12 @@ export tag Site
 		app.router
 		
 	def load
-		console.log "loading app.router"
-		Promise.new do |resolve|
-			console.log "Site#load"
-			setTimeout(resolve,200)
+		self
 			
 	def toggleMenu
 		document:body:classList.toggle('menu')
 		
 	def render
-		console.log "render site",app.path
 		<self>
 			<header#header>
 				<nav.content>
@@ -46,14 +42,13 @@ export tag Site
 					<a.github href='https://github.com/somebee/imba'> <i> 'github'
 					# <a.issues href='https://github.com/somebee/imba/issues'> <i> 'issues'
 					<a.menu :tap='toggleMenu'> <b>
-			
-			<main>
-				if router.scoped('/home')
-					<HomePage>
-				elif router.scoped('/guide')
-					<GuidesPage[app.guide]>
-				elif router.scoped('/docs')
-					<DocsPage>
+
+			if router.scoped('/home')
+				<HomePage>
+			elif router.scoped('/guide')
+				<GuidesPage[app.guide]>
+			elif router.scoped('/docs')
+				<DocsPage>
 
 			<footer#footer> 
 				<hr>

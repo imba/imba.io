@@ -4,6 +4,7 @@
 @import 'util.less';
 
 :root {
+	--link-color: #69b8e0;
 	--logo-color: #69b8e0;
 }
 
@@ -140,28 +141,5 @@ footer {
 @import "guide.less";
 @import "site/mobile.less";
 @import 'examples.less';
+@import 'footer.less';
 
-body > footer {
-	font-size: 14px;
-	color: #9FA7A3;
-
-	hr {
-		display: block;
-		height: 1px;
-		border: 0px;
-		margin: 0px;
-		background: #F3F5F7;
-		margin-bottom: 10px;
-	}
-	
-	.lft {
-		float: left;
-	}
-	.rgt {
-		// float: right;
-		text-align: right;
-	}
-	.rgt a + a {
-		margin-left: 1ex;
-	}
-}
