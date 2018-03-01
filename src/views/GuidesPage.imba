@@ -1,35 +1,6 @@
 import Page from './Page'
 import Snippet from './Snippet'
 
-tag GuideTOC
-	prop toc
-	attr level
-
-	def toggle
-		toggleFlag('collapsed')
-		
-	def toc
-		@toc or data.toc
-		
-	def route
-		"{data.path}#{toc:slug}"		
-		
-	def render
-		return self unless data.ready
-
-		let toc = toc
-		reroute
-	
-		<self.toc.entry level=(toc:level)>
-			if toc:children:length and toc:level < 3
-				<.header>
-					<a href=route> toc:title
-				<.content>
-					for child in toc:children when child:level < 3
-						<GuideTOC[data] toc=child>
-			else
-				<a href=route> toc:title
-
 tag Guide
 	
 	def setup
@@ -44,9 +15,9 @@ tag Guide
 			<div@body>
 			<footer>
 				if let ref = app.guide[data:prev]
-					<a.prev href="/guide/{ref:id}"> "← " + ref:title
+					<a.prev href="/guides/{ref:id}"> "← " + ref:title
 				if let ref = app.guide[data:next]
-					<a.next href="/guide/{ref:id}"> ref:title + " →"
+					<a.next href="/guides/{ref:id}"> ref:title + " →"
 
 	def awakenSnippets
 		for item in dom.querySelectorAll('.snippet')
@@ -61,20 +32,34 @@ tag TOC < li
 	attr level
 	
 	def route
-		"/guide/{data:route}#{toc:slug}"
+		"/guides/{data:route}{@toc ? '#' + toc:slug : ''}"
 		
 	def toc
 		@toc or data:toc[0]
 		
 	def render
 		<self.toc.entry level=(toc:level)>
-			<a href=route> toc:title
-			if toc:children:length and toc:level < 2 and expanded
+			<a route-to=route> toc:title
+			if toc:children:length and toc:level < 2 and router.match(route)
 				<ul> for child in toc:children when child:level < 3
 					<TOC[data] toc=child>
 
-export tag GuidesPage < Page
+tag GuidePage
 	
+	def load params
+		data = app.guide["{params:guide}/{params:section}"]
+		window.scrollTo(0,0) if $web$
+		return 200
+		
+	def render
+		<self>
+			if data
+				<Guide@{data:id}[data]>
+			
+
+export tag GuidesPage < Page
+	prop guide
+
 	def mount
 		@onscroll ||= do scrolled
 		window.addEventListener('scroll',@onscroll,passive: true)
@@ -82,12 +67,16 @@ export tag GuidesPage < Page
 	def unmount
 		window.removeEventListener('scroll',@onscroll,passive: true)
 		
+	# def load params
+	# 	guide = data["{params:guide}/{params:section}"]
+	# 	return 200
+		
 	def guide
-		data[router.path.replace('/guide/','')] or data['essentials/introduction']
+		let url = params:url or '/guides/essentials/introduction'
+		data[url.replace('/guides/','')]
 		
 	def scrolled
-		return self
-
+		# return self
 		var items = dom.querySelectorAll('[id]')
 		var match
 
@@ -115,27 +104,9 @@ export tag GuidesPage < Page
 		if match
 			if @hash != match:id
 				@hash = match:id
-				router.go('#' + @hash,{},yes)
+				router.replace('#' + @hash)
 				render
-
 		self
-		
-	def onroute e
-		e.stop
-		log 'guides routed'
-		var scroll = do
-			if let el = dom.querySelector('#' + router.hash)
-				el.scrollIntoView(true)
-				@scrollFreeze = window:pageYOffset
-				return el
-			return no
-
-		if router.hash
-			# render
-			scroll() or setTimeout(scroll,20)
-
-		self
-	# prop guide
 
 	def render
 		let curr = guide
@@ -145,11 +116,7 @@ export tag GuidesPage < Page
 				<.content>
 					for item in data:toc
 						<h1> item:title or item:id
-						<ul>
-							for section in item:sections
-								<TOC[data[section]] expanded=(data[section] == curr)>
-					# for guide in data
-					#	<TOC[guide] toc=guide:toc[0] expanded=(guide == curr)>
-			<.body.light>
-				if guide
-					<Guide@{guide:id}[guide]>
+						<ul> for section in item:sections
+							<TOC[data[section]]>
+		
+			<GuidePage.body.light route=':guide/:section'>

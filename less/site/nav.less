@@ -99,7 +99,7 @@
 		display: none;
 	}
 
-	a.scoped {
+	a.active {
 		color: darken(#447A98,10%);
 	}
 
@@ -208,18 +208,25 @@
 		}
 	}
 
+	a.active {
+
+	}
+	a.active + ul {
+		display: block;
+	}
+
 	.entry[level="1"] {
 		font-size: 16px;
 		line-height: 1.3em;
 
-		&.scoped .entry[level="2"] { display: block; }
+		// &.active .entry[level="2"] { display: block; }
 	}
 
 	.entry[level="2"] {
 		font-size: 15px;
 		line-height: 1.3em;
-		& > .scontent { display: none; }
-		&.scoped > .content { display: block; }
+		// & > .scontent { display: none; }
+		// &.scoped > .content { display: block; }
 	}
 
 	.entry[level="3"] {

@@ -1,4 +1,4 @@
-import Router from './util/router'
+# import Router from './util/router'
 
 export class Doc
 
@@ -67,14 +67,14 @@ export class App
 		cache = {}
 		self
 
-	def router
-		@router ||= Router.new(self)
+	# def router
+	# 	@router ||= Router.new(self)
 
-	def path
-		$web$ ? @loc:pathname : req:path
+	# def path
+	# 	$web$ ? @loc:pathname : req:path
 
-	def hash
-		$web$ ? @loc:hash.substr(1) : ''
+	# def hash
+	# 	$web$ ? @loc:hash.substr(1) : ''
 
 	def doc src
 		@docs[src] ||= Doc.new(src,self)

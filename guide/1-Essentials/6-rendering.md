@@ -88,9 +88,5 @@ Imba.mount <App>
 ```
 
 
-### Integrating with MobX
-
-Example coming
-
 
 

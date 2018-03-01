@@ -1,13 +1,24 @@
 var marked = require 'marked'
 var hljs = require 'highlight.js'
 
-import Router from './router'
+# import Router from './router'
 var highlighter = require './highlighter'
 
 var compiler = require 'imba/compiler'
 
 hljs.configure
 	classPrefix: ''
+	
+def slugify str
+	str = str.replace(/^\s+|\s+$/g, '').toLowerCase # trim
+
+	var from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
+	var to   = "aaaaaeeeeiiiioooouuuunc------"
+	str = str.replace(/[^a-z0-9 -]/g, '') # remove invalid chars
+	str = str.replace(/\s+/g, '-') # collapse whitespace and replace by -
+	str = str.replace(/-+/g, '-') # collapse dashes
+
+	return str
 
 def unescape code
 	code = code.replace(/\&#39;/g,"'")
@@ -30,7 +41,7 @@ def renderer.heading text, level
 		text = text.slice(m[0][:length])
 
 	var plain = text.replace(/\<[^\>]+\>/g,'')
-	var slug = Router.slug(plain)
+	var slug = slugify(plain)
 	meta:title = unescape(text)
 
 	if next:type == 'code' and level == 4

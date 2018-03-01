@@ -1442,12 +1442,10 @@ hr + p {
 #header a.logo i {
   border-bottom: none;
 }
-#header a.selected,
-#header a.scoped {
+#header a.active {
   color: white;
 }
-#header a.selected i,
-#header a.scoped i {
+#header a.active i {
   border-bottom-color: white;
 }
 .Page > .nav {
@@ -1574,7 +1572,7 @@ hr + p {
   opacity: 0.4;
   display: none;
 }
-.Page > .nav a.scoped {
+.Page > .nav a.active {
   color: #345e75;
 }
 .Page > .nav a.selected {
@@ -1680,22 +1678,16 @@ hr + p {
 .Page > .nav .entry[level="0"] > .header a .Path b {
   color: #8F4242;
 }
+.Page > .nav a.active + ul {
+  display: block;
+}
 .Page > .nav .entry[level="1"] {
   font-size: 16px;
   line-height: 1.3em;
 }
-.Page > .nav .entry[level="1"].scoped .entry[level="2"] {
-  display: block;
-}
 .Page > .nav .entry[level="2"] {
   font-size: 15px;
   line-height: 1.3em;
-}
-.Page > .nav .entry[level="2"] > .scontent {
-  display: none;
-}
-.Page > .nav .entry[level="2"].scoped > .content {
-  display: block;
 }
 .Page > .nav .entry[level="3"] {
   font-size: 14px;

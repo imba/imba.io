@@ -17,7 +17,7 @@ export tag HomePage < Page
 					<Marked[app.guide['hero']]>
 					<nav.buttons>
 						# <a.button.try href='#'> "Try online"
-						<a.button.start href='/guide'> "Get started"
+						<a.button.start href='/guides'> "Get started"
 						# <a.button.start href='/examples'> "Examples"
 						<a.button.github href='https://github.com/somebee/imba'> "Github"
 

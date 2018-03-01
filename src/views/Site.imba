@@ -1,3 +1,6 @@
+# use imba-router
+require 'imba-router'
+
 import HomePage from './HomePage'
 import GuidesPage from './GuidesPage'
 import DocsPage from './DocsPage'
@@ -14,14 +17,24 @@ extend tag element
 
 export tag Site
 	
+	def setup
+		router.@redirects['/guides'] = '/guides/essentials/introduction'
+		
+		if $web$
+			router.on 'hashchange' do |hash|
+				return unless router.hash
+				let el = dom.querySelector(router.hash)
+				el.scrollIntoView(true) if el
+		self
+		
 	def app
 		data
 		
 	def root
 		self
-		
-	def router
-		app.router
+
+	# def router
+	# 	app.router
 		
 	def load
 		self
@@ -34,21 +47,16 @@ export tag Site
 			<header#header>
 				<nav.content>
 					<Logo>
-					<a.tab.logo href='/home'> <i> 'imba'
+					<a.tab.logo route-to.exact='/'> <i> 'imba'
 					<span.greedy>
-					<a.tab.home href='/home'> <i> 'home'
-					<a.tab.guides href='/guide'> <i> 'learn'
+					<a.tab.home route-to.exact='/'> <i> 'home'
+					<a.tab.guides route-to='/guides'> <i> 'learn'
 					<a.tab.gitter href='https://gitter.im/somebee/imba'> <i> 'community'
 					<a.github href='https://github.com/somebee/imba'> <i> 'github'
-					# <a.issues href='https://github.com/somebee/imba/issues'> <i> 'issues'
 					<a.menu :tap='toggleMenu'> <b>
-
-			if router.scoped('/home')
-				<HomePage>
-			elif router.scoped('/guide')
-				<GuidesPage[app.guide]>
-			elif router.scoped('/docs')
-				<DocsPage>
+			
+			<HomePage route.exact='/'>
+			<GuidesPage[app.guide] route='/guides'>
 
 			<footer#footer> 
 				<hr>

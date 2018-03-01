@@ -12,8 +12,8 @@ var highlighter = require './util/highlighter'
 srv.disable('etag')
 srv.use(express.static('./www'))
 
-srv.get '/' do |req,res| res.redirect('/home')
-srv.get '/install' do |req,res| res.redirect('/guide#toc-installation')
+# srv.get '/' do |req,res| res.redirect('/home')
+# srv.get '/install' do |req,res| res.redirect('/guide#toc-installation')
 
 # creating the local app
 APP = App.new
@@ -30,11 +30,10 @@ srv.get(/^([^\.]*)$/) do |req,res|
 	let app = req:app = App.new(guide: guide.docs)
 	req:app.req = req
 
-	var site = <Site data=req:app>
-	
-	await site.load
+	# var site = <Site data=req:app>
+	# await site.load
 
-	var html = <html>
+	var html = <html router-url=req:path>
 		<head>
 			<title> "imba.io"
 			<meta charset="utf-8">
@@ -44,11 +43,12 @@ srv.get(/^([^\.]*)$/) do |req,res|
 			<link rel="stylesheet" href="/dist/main.css" media="screen">
 			<style html=highlighter:theme.CSS>
 		<body>
-			site
+			<Site[req:app]>
 			<script> "APPCACHE = $$APPCACHE$$"
 			<script src="/dist/main.js">
-		
-	return res.send html.toString.replace("$$APPCACHE$$",JSON.stringify(req:app.serialize))
+	
+	html.router.onReady do
+		res.send html.toString.replace("$$APPCACHE$$",JSON.stringify(req:app.serialize))
 
 var port = process:env.PORT or 3011
 
