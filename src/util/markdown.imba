@@ -139,7 +139,6 @@ def renderer.code code, lang, opts = {}
 		try
 			js = compiler.compile(code,{target: 'web'})
 			analysis = compiler.analyze(code,{target: 'web'})
-
 		catch e
 			console.log "error?!",e
 
@@ -164,11 +163,23 @@ def renderer.code code, lang, opts = {}
 
 		return dom.toString
 
-	if lang == 'js'
-		code = hljs.highlightAuto(code,['javascript'])[:value]
+	if lang == 'js' or lang == 'javascript'
+		try
+			if opts:inline
+				code = highlighter.highlight('js',code,theme: false)
+			else
+				code = highlighter.highlight('js',code,decorate: yes)
+		catch e
+			console.log "error",e
+		# code = hljs.highlightAuto(code,['javascript'])[:value]
+		
+		return <div.snippet data-title=conf:title>
+			<code.js data-lang='js' html=code>
 	else
 		code = code.replace(/\</g,'&lt;')
 		code = code.replace(/\>/g,'&gt;')
+		
+	
 
 	return (<code.code.md .{lang} .inline=(opts:inline)  html=code> code).toString
 

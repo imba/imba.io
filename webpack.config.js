@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 // var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 var WebpackAssetsManifest = require('webpack-assets-manifest');
 // var CompressionPlugin = require("compression-webpack-plugin");
 var LessPluginAutoPrefix = require('less-plugin-autoprefix');
@@ -8,6 +9,19 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 var isProduction = (process.env.NODE_ENV == 'production');
 var filename = (isProduction ? 'cached-[name]-[chunkhash]' : '[name]');
+
+var minify = new UglifyJsPlugin({
+	uglifyOptions: {
+		ecma: 6,
+		minimize: true,
+		compress: { warnings: false },
+		output: {
+			semicolons: false,
+			indent_level: 0
+		}
+	}
+	
+});
 
 var lessLoader = {
 	loader: 'less-loader',
@@ -33,6 +47,7 @@ module.exports = [{
 	plugins: [
 		new ExtractTextPlugin({filename: filename.replace('chunkhash','contenthash') + '.css'}),
 	    manifestPlugin,
+	    minify
 	],
 
 	module: {

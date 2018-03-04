@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "imba ./src/server.imba",
-    "build": "imbapack -p --colors --display-modules",
+    "build": "imbapack --colors --display-modules",
     "watch": "imbapack --devtool inline-source-map --watch --progress --colors --display-modules --debug"
   },
   "files": [],
@@ -46,6 +46,7 @@
     "octonode": "^0.7.4",
     "source-map": "^0.5.3",
     "style-loader": "^0.20.1",
+    "uglifyjs-webpack-plugin": "^1.2.2",
     "webpack": "^3.10.0",
     "webpack-assets-manifest": "^1.0.0"
   }

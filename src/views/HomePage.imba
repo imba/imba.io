@@ -25,13 +25,15 @@ export tag HomePage < Page
 			<.content>
 				<Marked.section.md.welcome.huge.light> """
 					# Create complex web apps with ease!
-
-					Imba is a programming language for the web that compiles to highly 
-					performant and readable JavaScript. It has language level support for defining, 
-					extending, subclassing, instantiating and rendering dom nodes. For a simple 
-					application like TodoMVC, it is more than 
-					[10 times faster than React](http://somebee.github.io/todomvc-render-benchmark/index.html) 
-					with less code, and a much smaller library.
+					
+					Imba was born to make developing web applications fun again.
+					It features a clean and readable syntax inspired by ruby,
+					compiles to readable and performant JavaScript, and works inside the existing ecosystem.
+					
+					Imba treats DOM elements as a first-class citizens. It allows you to write views declaratively.
+					Views compile into something we call a procedural dom, which is an 
+					[order of magnitude faster](https://somebee.github.io/todos-vdom-bench/index.html) than todays virtual 
+					dom implementations. We truly believe that it opens up for a new way of developing web applications.
 				"""
 				<ScrimbaEmbed cid="cJV2aT9">
 				<p.center> "The interactive screencasting platform Scrimba.com is written in Imba, both frontend and backend"
