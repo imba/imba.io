@@ -41,7 +41,7 @@ export class Guide
 						doc:title = doc:toc[0]:title
 					
 					data[route] = doc
-					
+
 					if doc:type != 'snippet'
 						if lastDoc
 							lastDoc:next = route

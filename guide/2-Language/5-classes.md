@@ -1,3 +1,8 @@
+---
+title: Classes
+order: 5
+---
+
 # Classes
 
 ## Declaration

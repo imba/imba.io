@@ -1,22 +1,24 @@
-# Procedural DOM
+# Performance
 
 The virtual dom was a fantastic innovation. Because the process of updating / patching the dom to reflect state-changes became much faster, we could start writing our views in a declarative manner.
 
 Sadly, virtual doms are still quite slow. Imba has chosen a very different approach that turns out to be *a lot* faster.
+
+## The Imperative DOM
 
 ```imba
 var tip = "Item"
 var div = <div.large title=tip> "Hello"
 ```
 
-Even though tags look declarative in Imba, they compile to a bunch of procedures (hence the name) building and altering the state of a the tag.
+Even though tags look declarative in Imba, they compile to a bunch of operations building and altering the state of a the tag.
 
 ```javascript
 var tip = "Item";
 var div = createElement('div').flag('large').setTitle(tip).setText("Hello");
 ```
 
-So, what if we had split up the creation of the div and the rest of the procedures?
+So, what if we had split up the creation of the div and the rest of the operations?
 
 ```javascript
 var tip = "Item";

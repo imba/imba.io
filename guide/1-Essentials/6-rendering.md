@@ -1,24 +1,20 @@
+---
+title: Rendering
+order: 7
+---
+
 # Reactive Rendering
 
-Most frameworks for developing web applications try to solve one thing; update views automatically when the underlying data changes. Imba takes the approach of updating the view whenever *something* *might* have changed. The performance of bringing the dom in sync with your declared view is so ridiculously fast in Imba, that introducing complex data-stores with observers tracking which parts depends on what data etc is not needed.
+Most frameworks for developing web applications try to solve one thing well; update views automatically when the underlying data changes. 
 
-If you are a beginner, the only thing you really need to know for now is that you should always mount your root tag with `Imba.mount`, and let Imba take care of the rest.
+Imba takes the default approach of updating the view whenever *something* *might* have changed. The performance of bringing the dom in sync with your declared view is so ridiculously fast in Imba, that introducing complex data-stores with observers tracking which parts depends on what data etc is not needed.
 
-```imba
-tag App
-    def render
-        <self>
-            <header> "Application"
-            # nested components etc
 
-Imba.mount <App> # don't you worry 'bout a thing
-```
+## Scheduling
 
-When you mount a tag in Imba, using `Imba.mount`, the node is scheduled to render after every captured dom event. This might sound slow, but the truth is that Imba is *much* faster than other frameworks. At [scrimba.com](https://scrimba.com), which is a complex site, we still use this approach. How can we render *our whole app* after a user has tapped a single button? The way Imba brings the views in sync is in most cases much faster than tracking what has changed and what to render.
+When you mount a tag in Imba, using `Imba.mount`, the node is scheduled to render after every captured dom event. This might sound slow, but the truth is that Imba is *much* faster than other frameworks.
 
-### Calling Imba.commit
-
-Even though most changes to the state of your application will happen as a result of user interactions, there are still a few places you need to notify Imba that things have changed. E.g. if you receive data from a socket/server, you want to call `Imba.commit` at the appropriate places. Don't be afraid to call it too often though, so for websockets it should be as easy as setting up `socket.addEventListener('message',Imba:commit)` when initializing the socket.
+#### Default scheduling
 
 ```imba
 var counter = 0
@@ -44,49 +40,42 @@ tag App
             <div> "Rendered: {++counter}"
             <div> "Status: {status}"
 
+# when mounting a node with Imba.mount it will automatically
+# be scheduled to render after dom events and Imba.commit
 Imba.mount <App>
 ```
 
+Even though most changes to the state of your application will happen as a result of user interactions, there are still a few places you need to notify Imba that things have changed. E.g. if you receive data from a socket you want to call `Imba.commit` after receiving messages `socket.addEventListener('message',Imba:commit)`, and if you are fetching data from a server outside of event handlers, you want to call Imba.commit at the end of the fetch.
 
-### Manual scheduling
 
-You can also schedule nodes to render on every frame, or render at a specific interval. Here we are doing both in different elements:
+#### Rendering at intervals
 
 ```imba
 tag Clock
     def mount
-        # render every 1000ms
         schedule(interval: 1000)
 
     def render
         <self> Date.new.toLocaleString
 
-tag Counter
-    def setup
-        @ticks = 0
+Imba.mount <Clock>
+```
+
+#### Rendering every frame
+
+```imba
+tag App
+    def mount
+        schedule(raf: true)
+
+    def onmousemove e
+        @x = e.x
+        @y = e.y
 
     def render
         <self.bar>
-            <button :tap.schedule(raf: true)> "Start"
-            <button :tap.unschedule> "Stop"
-            <span> @ticks++
+            <div> "Mouse is at {@x or 0} {@y or 0}"
 
-tag App
-    def setup
-        @renderCount = 0
-
-    def mount
-        schedule(events: true)
-
-    def render
-        <self>
-            <div> "Rendered {++@renderCount} times"
-            <Clock>
-            <Counter>
 
 Imba.mount <App>
 ```
-
-
-
-

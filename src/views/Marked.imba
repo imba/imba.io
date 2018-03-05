@@ -31,6 +31,5 @@ export tag Marked
 	def awakenSnippets
 		for item in dom.querySelectorAll('.snippet')
 			let code = item:textContent
-			if code.indexOf('Imba.mount') >= 0
-				Snippet.replace(item)
+			Snippet.replace(item)
 		self
