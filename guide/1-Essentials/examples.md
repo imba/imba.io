@@ -1,3 +1,8 @@
+---
+title: Examples
+order: 7
+---
+
 # Examples
 
 ## Filtering list

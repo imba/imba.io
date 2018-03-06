@@ -1,3 +1,8 @@
+---
+title: Tags
+order: 6
+---
+
 # Tags
 
 Even though tags are just very thin wrappers around native DOM elements, they do have some functionality that is worth knowing. If you want to deal with the DOM element directly, you can always access that through `tag.dom`. The DOM element also has a reference to its Imba.Tag wrapper, through `domElement:_tag`
@@ -63,3 +68,76 @@ tag Example
 Imba.mount <Example[{name: "Lifecycle"}]>
 ```
 
+## Interface
+
+```imba
+tag Example
+    def interface
+        dom # access to the native dom element
+```
+
+## Scheduling
+
+When you mount a tag using `Imba.mount`, you shouldn't usually need to think about scheduling.
+
+#### Default scheduling
+
+```imba
+var counter = 0
+var status = "Hello"
+
+tag App
+    def doSomething
+        self
+
+    def loadAsync
+        status = "loading"
+        Promise.new do |resolve|
+            setTimeout(&,500) do
+                resolve(status = "loaded")
+
+    def render
+        <self.bar>
+            <button> "noop"
+            <button :tap.doSomething> "handle" 
+            <button :tap.loadAsync> "async"
+            <div> "Rendered: {++counter}"
+            <div> "Status: {status}"
+
+# when mounting a node with Imba.mount it will automatically
+# be scheduled to render after dom events and Imba.commit
+Imba.mount <App>
+```
+
+Even though most changes to the state of your application will happen as a result of user interactions, there are still a few places you need to notify Imba that things have changed. E.g. if you receive data from a socket you want to call `Imba.commit` after receiving messages `socket.addEventListener('message',Imba:commit)`, and if you are fetching data from a server outside of event handlers, you want to call Imba.commit at the end of the fetch.
+
+#### Rendering every frame
+
+```imba
+tag App
+    def mount
+        schedule(raf: true)
+
+    def onmousemove e
+        @x = e.x
+        @y = e.y
+
+    def render
+        <self.bar>
+            <div> "Mouse is at {@x or 0} {@y or 0}"
+
+Imba.mount <App>
+```
+
+#### Rendering at intervals
+
+```imba
+tag Clock
+    def mount
+        schedule(interval: 1000)
+
+    def render
+        <self> Date.new.toLocaleString
+
+Imba.mount <Clock>
+```

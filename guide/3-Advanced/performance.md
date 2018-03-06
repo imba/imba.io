@@ -1,3 +1,8 @@
+---
+title: Performance
+order: 2
+---
+
 # Performance
 
 The virtual dom was a fantastic innovation. Because the process of updating / patching the dom to reflect state-changes became much faster, we could start writing our views in a declarative manner.

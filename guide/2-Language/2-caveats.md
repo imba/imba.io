@@ -9,7 +9,7 @@ If you are coming from JavaScript, there are a few things you really need to kno
 
 If you are not familiar with ruby, many parts of Imba will probably seem slightly confusing until you understand the concepts of implicit self and implicit calling. Any lowercase identifier that is not explicitly declared as a variable is treated as an implicit call on the `self` of the current scope. The analyzer / highlighter will help by highlighting variables differently.
 
-### Implicit self
+## Implicit self
 
 ```imba
 hello # compiles to this.hello()
@@ -28,6 +28,13 @@ hello # compiles to hello
 > Imba has some predeclared global variables: `window`, `document`, `console`, `process`, `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `parseInt`, `parseFloat`, `__dirname`
 > 
 > This means that these will always resolve to variables. If you have defined a `console` method on an object, it must be called with explicit self: `self.console('something')`  
+
+### extern
+
+```imba
+extern something
+something
+```
 
 ### self vs this
 
@@ -51,7 +58,7 @@ class Item
 
 > `this` *always* refers to the this you know and love (or hate) from JavaScript. So if you really need to access the this inside a callback or block, you should use this explicitly.
 
-### Implicit invocation
+## Implicit invocation
 
 In Imba you are invoking methods with the regular dot-operator. In JavaScript `car.start` will access the `start` property of car. In Imba it will actually *invoke* the `start` method of car. Parenthesis are optional. You can read more about the reasons for this [here]. If you're thinking in JavaScript, this might seem impractical and confusing. The same behaviour can be seen in languages like Ruby.
 
@@ -60,3 +67,7 @@ So, how do we access properties then? You can do it with `car['start']`, just li
 > If you end up using `object:access` repeatedly in your Imba code, it is very likely because you are thinking in JavaScript. In Imba, a class should only expose information and behaviour through methods.
 
 Unlike Ruby, Imba has implicit setters as well. Since all variables are explicitly declared in Imba, assigning to something that is not declared is just seen as any other method. `name = 1` resolves to a setter, and compiles 
+
+
+
+

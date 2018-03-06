@@ -20,8 +20,9 @@ export class Guide
 		var lastDoc = null
 		
 		var add = do |dir|
+			let parts = []
+
 			for filename in fs.readdirSync(dir).sort
-				
 				let id = filename.replace(/^\d+\-/,'').replace(/\.md$/,'')
 				let src = path.resolve(dir,filename)
 				# console.log "found directory"
@@ -32,8 +33,10 @@ export class Guide
 					guide = prev
 				else
 					continue unless src.indexOf('.md') >= 0
+					
 					let file = fs.readFileSync(src,'utf-8')
 					let doc = md.render(file)
+					
 					let route = guide ? (guide:id + '/' + id) : id
 					# doc:guide = guide:id
 					doc:id = doc:route = route
@@ -41,14 +44,17 @@ export class Guide
 						doc:title = doc:toc[0]:title
 					
 					data[route] = doc
-
-					if doc:type != 'snippet'
-						if lastDoc
-							lastDoc:next = route
-							doc:prev = lastDoc:id
-							console.log "found last Doc",lastDoc:id
-						guide:sections.push(route) if guide
-						lastDoc = doc
+					parts.push(doc) unless doc:type == 'snippet'
+			
+			parts = parts.sort do |a,b|
+				a:order - b:order
+				
+			for part,i in parts
+				if let next = parts[i + 1]
+					part:next = next:id
+					next:prev = part:id
+				guide:sections.push(part:id) if guide
+						
 		add(root)
 		@docs = data
 		return self

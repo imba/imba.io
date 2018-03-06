@@ -1,3 +1,8 @@
+---
+title: Await
+order: 7
+---
+
 # Await
 
 Imba supports the `await` keyword, which compiles directly to async/await in JavaScript. The only difference is that you do not need to mark your functions as async. Any function that contains an await will automatically be compiled to an async function.
