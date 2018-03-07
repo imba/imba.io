@@ -612,6 +612,27 @@ hr + p {
 .md p {
   font-size: 15px;
 }
+.md blockquote a.scrimba:first-child {
+  display: -ms-flexbox;
+  display: flex;
+  /* color: white; */
+  font-weight: 500;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  text-decoration: none;
+}
+.md blockquote a.scrimba:first-child span {
+  margin-right: auto;
+  padding: 0px 6px;
+}
+.md blockquote a.scrimba:first-child:after {
+  content: "watch on scrimba.com";
+  font-weight: normal;
+  color: #9e9e9e;
+}
+.md blockquote a.scrimba:first-child:hover span {
+  text-decoration: underline;
+}
 .md hr {
   margin: 3rem 0;
   display: block;
@@ -1334,6 +1355,7 @@ hr + p {
   visibility: hidden;
 }
 #header {
+  --link-color: #73acfe;
   position: fixed;
   top: 0px;
   left: 0px;

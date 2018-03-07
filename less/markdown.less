@@ -226,6 +226,34 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 		font-size: 15px;
 	}
 
+	blockquote a.scrimba:first-child {
+		// background: whitesmoke;
+		display: flex;
+		// padding: 6px 10px;
+		// border-radius: 2px;
+		/* color: white; */
+		// border: 1px solid #efefef;
+		font-weight: 500;
+		flex-direction: row;
+		text-decoration: none;
+
+		span {
+			margin-right: auto;
+			padding: 0px 6px;
+		}
+
+		&:after {
+			content: "watch on scrimba.com";
+			// font-style: italic;
+			font-weight: normal;
+			color: #9e9e9e;
+		}
+
+		&:hover span {
+			text-decoration: underline;
+		}
+	}
+
 	hr {
 		margin: 3rem 0;
 		display: block;

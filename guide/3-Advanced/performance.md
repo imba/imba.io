@@ -9,7 +9,9 @@ The virtual dom was a fantastic innovation. Because the process of updating / pa
 
 Sadly, virtual doms are still quite slow. Imba has chosen a very different approach that turns out to be *a lot* faster.
 
-## The Imperative DOM
+> [Screencast about Imba performance](https://scrimba.com/p/c6B9rAM)
+
+### The Inline DOM
 
 ```imba
 var tip = "Item"

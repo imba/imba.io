@@ -30,6 +30,12 @@ def unescape code
 
 var renderer = marked.Renderer.new
 
+def renderer.link href, title, text
+	if href.match(/scrimba\.com.*\/c/)
+		return (<a.scrimba href=href title=title target='_blank'> <span> text).toString
+	else
+		return (<a href=href title=title> <span> text).toString
+
 def renderer.heading text, level
 	var next = this:parser.peek || {}
 	var flags = []
@@ -108,6 +114,8 @@ def renderer.codespan code
 		lang = 'html'
 
 	self.code(code,lang, inline: yes)
+	
+
 
 def renderer.code code, lang, opts = {}
 	# console.log 'renderer',lang,opts

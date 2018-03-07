@@ -7,11 +7,11 @@ order: 6
 
 Most frameworks for developing web applications try to solve one thing well; update views automatically when the underlying data changes. Imba is unoppinionated about state management.
 
-The dom reconciler more than [20 times faster](https://somebee.github.io/todos-vdom-bench/index.html) than other approaches, so we really don't need to think about state management. There is no need for observable objects, immutable data-structures etc.
+Imba does dom reconciliation in a completely new way, which is more than [20 times faster](https://somebee.github.io/dom-reconciler-bench/index.html) than other approaches. Because of this we really don't need to think about state management. There is no need for observable objects, immutable data-structures etc.
 
 This probably sounds naive, but it is true. Even in a complex platform like [scrimba.com](https://scrimba.com) we don't use any state-management framework at all. Our data is not observable. We simply re-render the whole application all the time. It just works.
 
-> The virtual DOM has been optimized by Vue, React, and others for years. How could this possibly be 20 times faster? Imba uses a very different approach, where we essentially compile your **declarative views** down to a very optimized inline **imperative dom**.
+> The virtual DOM has been optimized by Vue, React, and others for years. How could this possibly be 20 times faster? Imba uses a very different approach, where we essentially compile your **declarative views** down to a very optimized **inline cached dom**.
 
 ### Using MobX, Redux, Apollo, Relay, ...
 
