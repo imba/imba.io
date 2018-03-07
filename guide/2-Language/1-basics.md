@@ -7,6 +7,10 @@ order: 1
 
 Even though the syntax and semantics of Imba is much more related to Ruby than JavaScript, it does compile down to plain performant JavaScript, and is fully compatible with any existing JavaScript library. Imba does not extend any native types from JavaScript. Arrays are arrays, strings are strings, numbers are numbers, classes are constructors with prototypes and so forth. If you simply like Imba better, there is no reason not to write your npm package in Imba, even if it is supposed to be used in the general JavaScript ecosystem. In fact, Imba produces *very* readable JavaScript, by keeping your indentation, comments, and coding style.
 
+### Interoperability
+
+Imba compiles to very straight-forward JavaScript. All the fundamental types are the same as in JavaScript, so for documentation about available methods see MDN [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function), [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp), [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), [Math](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
+
 #### Strings
 
 ```imba
@@ -54,10 +58,9 @@ for own key, value of object
 
 ```imba
 def hello
-    log 'got here'
     return 'world'
 
-log hello
+console.log hello
 ```
 
 #### Classes
@@ -76,11 +79,18 @@ class Todo
 #### Operators
 
 ```imba
+var item
+item = 100 # set value of item
+item ?= 100 # set if value is null or undefined
+item &= 100 # set if value is not null or undefined
 
-# ?= set if value is null/undefined.
-item ?= 100
-
-# &= set if value is null/undefined.
-item &= 100
-
+# comparators
+item == 10 # check
+item === 10 # strictly equal
+item != 10 # not equal
+item !== item # strictly not equal
+item > 10 # greater than
+item < 10 # less than
+item >= 10 # greater than or equal
+item <= 10 # less than or equal
 ```
