@@ -34,5 +34,6 @@ export tag HomePage < Page
 					which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than todays virtual 
 					dom implementations. We truly believe that it opens up for a new way of developing web applications.
 				"""
-				<ScrimbaEmbed cid="cJV2aT9">
+				<ScrimbaEmbed cid="cGZB2f7">
 				<p.center> "The interactive screencasting platform Scrimba.com is written in Imba, both frontend and backend"
+				# <ScrimbaEmbed cid="cwQBZH9">

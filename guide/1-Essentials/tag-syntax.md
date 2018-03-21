@@ -32,7 +32,7 @@ What about setting fully dynamic classes? E.g. if state is a variable containing
 
 ```imba
 let state = "busy"
-let element = <div.header .{state}>
+<div.header .{state}>
 ```
 
 
@@ -57,7 +57,7 @@ When we move on to custom tags, you will find that tags very often represent som
 You might notice that we never close our tags. Rather than being delimited by curly braces or “begin/end” keywords, blocks are delimited by indentation, and so are tags. This might seem weird in the beginning, but it makes for very readable and concise code. So, if we want to create a list with some children, we simply go:
 
 ```imba
-let list = <ul>
+<ul>
     <li> "Understand indentation"
     <li> "Get used to it"
     <li> "Cherish it"
@@ -66,16 +66,14 @@ let list = <ul>
 If we have a dynamic list we can simply use a `for in` loop:
 
 ```imba
-let activities = ["Eat", "Sleep", "Code"]
-let list = <ul>
-    for activity in activities
-        <li> <span.name> activity
+<ul> for activity in ["Eat", "Sleep", "Code"]
+    <li> <span.name> activity
 ```
 
 ## Conditional Rendering
 
 ```imba
-let app = <div>
+<div>
     if isLoggedIn
         <a href="/logout"> "Log out"
     else

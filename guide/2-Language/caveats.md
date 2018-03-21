@@ -68,6 +68,18 @@ So, how do we access properties then? You can do it with `car['start']`, just li
 
 Unlike Ruby, Imba has implicit setters as well. Since all variables are explicitly declared in Imba, assigning to something that is not declared is just seen as any other method. `name = 1` resolves to a setter, and compiles 
 
+## Arguments
 
+The arguments of a method can be accessed through the special `$0`. Each individual argument can be accessed through `$n`, where n is the argument number, starting from 1.
+
+```imba
+def method
+    $0 # -> arguments
+    $1 # -> arguments[0]
+    $2 # -> arguments[1]
+
+# sometimes practical for inline methods
+var doubles = [1,2,3].map do $1 * 2
+```
 
 
