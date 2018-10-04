@@ -11,7 +11,7 @@ Sadly, virtual doms are still quite slow. Imba has chosen a very different appro
 
 > [Screencast about Imba performance](https://scrimba.com/p/c6B9rAM)
 
-### The Inline DOM
+### The Memoized DOM
 
 ```imba
 var tip = "Item"
