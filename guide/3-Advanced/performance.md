@@ -45,7 +45,7 @@ tag Component
             <p.desc> "I am a component"
 ```
 
-The custom component above compiles to the follow js:
+The custom component above compiles to the following js:
 
 ```javascript
 var Component = Imba.defineTag('Component', function(tag){
