@@ -30,9 +30,6 @@ srv.get(/^([^\.]*)$/) do |req,res|
 	let app = req:app = App.new(guide: guide.docs)
 	req:app.req = req
 
-	# var site = <Site data=req:app>
-	# await site.load
-
 	var html = <html router-url=req:path>
 		<head>
 			<title> "imba.io"

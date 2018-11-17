@@ -9,7 +9,7 @@ var compiler = require 'imba/compiler'
 hljs.configure
 	classPrefix: ''
 	
-def slugify str
+var slugify = do |str|
 	str = str.replace(/^\s+|\s+$/g, '').toLowerCase # trim
 
 	var from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
@@ -20,7 +20,7 @@ def slugify str
 
 	return str
 
-def unescape code
+var unescape = do |code|
 	code = code.replace(/\&#39;/g,"'")
 	code = code.replace(/\&quot;/g,'"')
 	code = code.replace(/\&lt;/g,"<")
@@ -148,7 +148,7 @@ def renderer.code code, lang, opts = {}
 			js = compiler.compile(code,{target: 'web'})
 			analysis = compiler.analyze(code,{target: 'web'})
 		catch e
-			console.log "error?!",e
+			console.log "error?!",e,code
 
 		try
 			if opts:inline

@@ -1,4 +1,4 @@
-def shuffle array
+var def shuffle array
 	var counter = array:length, temp, index
 
 	# While there are elements in the array

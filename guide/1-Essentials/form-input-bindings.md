@@ -41,22 +41,21 @@ Imba.mount <div.grid ->
 
 ### Multiple checkboxes
 ```imba
-const data = {skills: ["Literacy"]}
+var data = {skills: ["Literacy"]}
 Imba.mount <div ->
     <header.bar> for option in ['React','Vue','Imba','Angular','Ember']
         <label.pill>
             <input[data:skills] type='checkbox' value=option>
             <span> option
-    <div>
-        "Your skills: {data:skills.join(", ")}"
+    <div> "Your skills: {data:skills.join(", ")}"
 ```
 
 
 ### Select & Radio
 
 ```imba
-const options = ['React','Vue','Imba','Angular','Ember']
-const data = {choice: null}
+var options = ['React','Vue','Imba','Angular','Ember']
+var data = {choice: null}
 
 Imba.mount <div ->
     # binding select to choice
@@ -74,14 +73,14 @@ Imba.mount <div ->
 
 ```imba
 
-const options = [
+var options = [
     { name: 'React', url: "reactjs.org" }
     { name: 'Vue', url: "vuejs.org" }
     { name: 'Imba', url: "imba.io" }
     { name: 'Angular', url: "angular.io" }
 ]
 
-const data = {choice: ""}
+var data = {choice: ""}
 
 Imba.mount <div ->
     # binding select to rich objects
