@@ -19,8 +19,8 @@
   },
   "scripts": {
     "start": "imba ./src/server.imba",
-    "build": "imbapack --colors --display-modules",
-    "watch": "imbapack --devtool inline-source-map --watch --progress --colors --display-modules --debug"
+    "build": "webpack --colors --display-modules",
+    "watch": "webpack --devtool inline-source-map --watch --progress --colors --display-modules --debug"
   },
   "files": [],
   "directories": {},

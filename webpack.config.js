@@ -50,8 +50,16 @@ module.exports = [{
 	    minify
 	],
 
+	resolve: {
+		extensions: [".imba",".js", ".json"]
+	},
+
 	module: {
 		rules: [
+			{
+				test: /\.imba$/,
+				loader: 'imba/loader'
+			},
 			{ test: /\.(css)/, use: "raw-loader" },
 			{
 				test: /\.less/,
