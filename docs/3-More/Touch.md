@@ -26,7 +26,7 @@ tag DraggableItem
 
 > ontouchmove, ontouchend, and ontouchcancel do not bubble like regular events. The element on which ontouchstart was called will capture the touch, and all future events (move,end,cancel) will be called on that element.
 
-- Explain what seperate touch from regular events
+- Explain what separate touch from regular events
 
 > Even though touch-handlers are declared the same way as regular event handlers, 
 
