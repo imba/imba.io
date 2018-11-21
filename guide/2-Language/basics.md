@@ -95,3 +95,15 @@ item < 10 # less than
 item >= 10 # greater than or equal
 item <= 10 # less than or equal
 ```
+
+#### Bitwise operators
+
+```imba
+a & b   # Bitwise AND
+a | b   # Bitwise OR
+a ^ b   # Bitwise XOR
+~ a     # Bitwise NOT
+a << b  # Left shift
+a >> b  # Sign-propagating right shift
+a >>> b	# Zero-fill right shift
+```
