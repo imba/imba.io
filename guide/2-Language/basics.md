@@ -81,8 +81,9 @@ class Todo
 ```imba
 var item
 item = 100 # set value of item
+item ||= 100 # set if value is falsy
+item &&= 100 # set if value is already truthy
 item ?= 100 # set if value is null or undefined
-item &= 100 # set if value is not null or undefined
 
 # comparators
 item == 10 # check
