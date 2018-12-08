@@ -43,7 +43,6 @@ form.someMethod # => "hello"
 Just like components in react, you can declare how custom tags should render, by declaring a render method:
 
 ```imba
-# define a custom tag, inheriting from form
 tag App
     def render
         <self> <h1> "Hello world"
