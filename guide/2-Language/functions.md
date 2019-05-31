@@ -10,6 +10,7 @@ There are two types of functions in Imba, *methods* and *blocks*.
 ## Methods
 
 ```imba
+# Imba automatically returns the last expression of the function
 def randomize
     Math.random
 ```
