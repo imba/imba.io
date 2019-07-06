@@ -123,4 +123,4 @@ This whole website is written in Imba. It uses the same code for server and clie
 
 # Tutorials
 
-You can find quite a few tutorials and videos at [scrimba.com](https://scrimba.com/topic/imba)!
+You can find quite a few tutorials and videos at [scrimba.com](https://scrimba.com/search?q=imba)!
