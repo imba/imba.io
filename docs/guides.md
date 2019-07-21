@@ -21,7 +21,7 @@ var regex = /answer is (\d+)/
 var info =
     name: 'Imba'
     version: Imba.VERSION
-    repository: 'https://github.com/somebee/imba'
+    repository: 'https://github.com/imba/imba'
     inspiration: ['ruby','python','react','coffeescript']
     creator: 'Sindre Aarsaether'
     contributors: [
@@ -108,7 +108,7 @@ A plugin for vscode is underway.
 
 Since Imba is a new language, there aren't that many open-source examples out in the wild. It is being used in several 100kloc+ commercial projects, so it should definitely be production-ready.
 
-### [Hello World](https://github.com/somebee/hello-world-imba)
+### [Hello World](https://github.com/imba/hello-world-imba)
 
 Tiny application with webpack/imbapack setup.
 

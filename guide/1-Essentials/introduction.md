@@ -21,7 +21,7 @@ var regex = /answer is (\d+)/
 var info =
     name: 'Imba'
     version: Imba.VERSION
-    repository: 'https://github.com/somebee/imba'
+    repository: 'https://github.com/imba/imba'
     inspiration: ['ruby','python','react','coffeescript']
     creator: 'Sindre Aarsaether'
     contributors: [
