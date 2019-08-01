@@ -137,7 +137,6 @@ def renderer.code code, lang, opts = {}
 			conf[opt] = val
 
 	if lang == 'imba'
-		code = code.replace(/[ ]{4}/gm,'\t')
 		let mode = lines:length > 1 ? 'full' : 'inline'
 
 		var imba
