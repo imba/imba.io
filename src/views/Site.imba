@@ -60,7 +60,7 @@ export tag Site
 
 			<footer#footer> 
 				<hr>
-				<.lft> "Imba © 2015-2018"
+				<.lft> "Imba © 2015-2019"
 				<.rgt>
 					<a href='http://twitter.com/imbajs'> 'Twitter'
 					<a href='http://github.com/somebee/imba'> 'GitHub'
