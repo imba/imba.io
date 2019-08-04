@@ -51,12 +51,14 @@ export tag Site
 					<span.greedy>
 					<a.tab.home route-to.exact='/'> <i> 'home'
 					<a.tab.guides route-to='/guides'> <i> 'learn'
+					<a.tab.guides route-to='/docs'> <i> 'docs'
 					<a.tab.gitter href='https://gitter.im/somebee/imba'> <i> 'community'
 					<a.github href='https://github.com/somebee/imba'> <i> 'github'
 					<a.menu :tap='toggleMenu'> <b>
 			
 			<HomePage route.exact='/'>
 			<GuidesPage[app.guide] route='/guides'>
+			<DocsPage route='/docs'>
 
 			<footer#footer> 
 				<hr>
