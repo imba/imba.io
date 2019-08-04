@@ -1,8 +1,5 @@
 import Page from './Page'
 
-def pathToAnchor path
-	'api-' + path.replace(/\./g,'_').replace(/\#/g,'__').replace(/\=/g,'_set')
-
 tag Desc
 
 	def html= html
@@ -15,7 +12,9 @@ tag Ref
 	def render
 		<self>
 
-tag Item
+tag Item	
+	def pathToAnchor path
+		'api-' + path.replace(/\./g,'_').replace(/\#/g,'__').replace(/\=/g,'_set')
 
 tag Path < span
 	prop short
@@ -124,6 +123,7 @@ tag Method < Item
 	def path
 		@path or (iname + '.' + data:name)
 
+
 	def slug
 		pathToAnchor(data:namepath)
 
@@ -140,6 +140,9 @@ tag Method < Item
 
 tag Link < a
 	prop short
+
+	def pathToAnchor path
+		'api-' + path.replace(/\./g,'_').replace(/\#/g,'__').replace(/\=/g,'_set')
 
 	def render
 		<self href="/docs#{pathToAnchor(data:namepath)}"> <Path[data:namepath] short=short>
