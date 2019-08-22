@@ -79,8 +79,8 @@ let right = <Right>
 Custom tags can inherit from other custom tags, or from native tags. E.g. if you want to create a custom form component, you can simply inherit from form:
 
 ```imba
-# define a custom tag, inheriting from Form
-tag RegisterForm < Form
+# define a custom tag, inheriting from form
+tag RegisterForm < form
 
 let view = <RegisterForm>
 # the DOM element of view is now of type form.
