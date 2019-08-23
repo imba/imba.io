@@ -79,7 +79,8 @@ let right = <Right>
 Custom tags can inherit from other custom tags, or from native tags. E.g. if you want to create a custom form component, you can simply inherit from form:
 
 ```imba
-tag RegisterForm < Form
+# define a custom tag, inheriting from form
+tag RegisterForm < form
 
 let view = <RegisterForm>
 # the DOM element of view is now of type form.
@@ -90,17 +91,19 @@ let view = <RegisterForm>
 ## Properties
 
 ```imba
-# define a custom tag, inheriting from form
 tag App
-    # declaring custom properties
 
+    # declaring custom properties
     prop slug
+    
+    # properties with a default value
+    prop greeting default: 'Hello human!'
 
     def render
         <self>
             <h1> "Slug is: {slug}"
             if slug == '/home'
-                <div> "You are home"
+                <div> "{greeting} You are home"
 
 Imba.mount <App slug='/home'>
 ```
