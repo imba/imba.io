@@ -149,7 +149,6 @@ tag Link < a
 		super
 
 	def ontap
-		super
 		trigger('refocus')
 
 tag Group
