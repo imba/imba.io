@@ -38,6 +38,14 @@ export tag Site
 		
 	def load
 		self
+
+	###
+        If you have some CSS skills, try updating the hamburger menu item to
+        change into an X so it's clear that pressing the hamburger menu item
+        closes the sidebar.
+	###
+	def onselectedtoc
+		toggleMenu()
 			
 	def toggleMenu
 		document:body:classList.toggle('menu')

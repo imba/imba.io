@@ -34,10 +34,17 @@ tag TOC < li
 		
 	def toc
 		@toc or data:toc[0]
-		
+
+	###
+        Trigger toggle menu so mobile users don't get the sidebar on top of the
+        content.
+	###
+	def toggleMenu
+		trigger('selectedtoc')
+
 	def render
 		<self.toc.entry level=(toc:level)>
-			<a route-to=route> toc:title
+			<a :tap="toggleMenu" route-to=route> toc:title
 			if toc:children:length and toc:level < 2 and router.match(route)
 				<ul> for child in toc:children when child:level < 3
 					<TOC[data] toc=child>

@@ -149,6 +149,8 @@ tag Link < a
 		super
 
 	def ontap
+		# hide menu on small screens
+		trigger('selectedtoc')
 		trigger('refocus')
 
 tag Group
