@@ -5,6 +5,14 @@ order: 1
 
 # Development
 
+Make sure you have the following dependencies covered.
+
+- [Node.js](https://nodejs.org/en/)
+- [yarn][y] or [npm][n].
+
+[y]: https://yarnpkg.com/lang/en/
+[n]: https://www.npmjs.com
+
 All the code for the language is available on [GitHub](https://github.com/imba/imba)
 
 ```bash
@@ -12,6 +20,8 @@ All the code for the language is available on [GitHub](https://github.com/imba/i
 git clone https://github.com/imba/imba.io
 # or ssh
 git@github.com:imba/imba.io.git
+cd imba
+yarn # npm install
 ```
 
 ## Making Changes
@@ -32,18 +42,18 @@ all up before opening a pull request.
 ## Test Imba
 
 ```bash
-yarn run test
+yarn run test # npm run test
 ```
 
 ## Imbapack and Webpack Tests
 
 ```bash
-yarn run test-webpack
+yarn run test-webpack # npm run test-webpack
 ```
 
 ## Google Chrome Tests via Puppeteer
 
 ```bash
-yarn run test-chrome
+yarn run test-chrome # npm run test-chrome
 ```
 
