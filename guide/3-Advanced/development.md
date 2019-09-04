@@ -5,7 +5,13 @@ order: 1
 
 # Development
 
-Make sure you have the following dependencies covered.
+The Imba compiler is itself written in Imba, using a custom version of the
+[Jison parser generator](https://github.com/zaach/jison). The command-line
+version of imba is available as a node.js utility. The compiler itself does not
+depend on Node, and can be run in any JavaScript environment, or in the
+browser.
+
+Make sure you have the following tools installed 
 
 - [Node.js](https://nodejs.org/en/)
 - [yarn][y] or [npm][n].
