@@ -1,6 +1,6 @@
 ---
 title: Development
-order: 2
+order: 1
 ---
 
 # Development
@@ -62,4 +62,3 @@ yarn run test-webpack # npm run test-webpack
 ```bash
 yarn run test-chrome # npm run test-chrome
 ```
-
