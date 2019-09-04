@@ -1,5 +1,6 @@
 ---
 title: CLI
+order: 7
 ---
 
 # CLI
