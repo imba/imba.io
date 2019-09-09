@@ -1,4 +1,9 @@
-# Imba.Touch
+---
+title: Mouse and Touch Events
+order: 8
+---
+
+# Mouse and Touch Events
 
 Consolidates mouse and touch events. Touch objects persist across a touch, from touchstart until end/cancel. When a touch starts, it will traverse down from the innermost target, until it finds a node that responds to ontouchstart. Unless the touch is explicitly redirected, the touch will call ontouchmove and ontouchend / ontouchcancel on the responder when appropriate.
 

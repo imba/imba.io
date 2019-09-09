@@ -1,6 +1,6 @@
 ---
 title: Examples
-order: 7
+order: 8
 ---
 
 # Examples
@@ -76,3 +76,17 @@ Imba.mount <App.vbox items=[] ->
     <ul> for item in items
         <li .done=item:completed :tap.toggleItem(item)> item:title
 ```
+
+## More examples
+
+### [Imba.io](https://github.com/somebee/imba.io)
+
+This whole website is written in Imba. It uses the same code for server and client. After the initial load, all navigation in the browser is happening with history push/popState, and rendered directly on the client, yet any hard refresh should land you at the same spot when rendered from the server, thanks to using the same logic for routing as well. Grab it over at [GitHub](https://github.com/somebee/imba.io).
+
+### [TodoMVC](https://github.com/somebee/todomvc-imba)
+
+The basic Imba implementation of TodoMVC is a good place to start playing around.
+
+### [Hello World](https://github.com/imba/hello-world-imba)
+
+Tiny application with webpack/imbapack setup.

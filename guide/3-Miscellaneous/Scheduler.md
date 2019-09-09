@@ -1,4 +1,9 @@
-# Imba.Scheduler
+---
+title: The Scheduler in Imba
+order: 5
+---
+
+# The Scheduler in Imba
 
 #### `scheduler.mark`
 

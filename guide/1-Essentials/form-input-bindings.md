@@ -1,6 +1,6 @@
 ---
 title: Form Input Bindings
-order: 5
+order: 6
 ---
 
 # Form Input Bindings

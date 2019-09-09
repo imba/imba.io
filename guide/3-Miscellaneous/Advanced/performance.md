@@ -18,7 +18,7 @@ var tip = "Item"
 var div = <div.large title=tip> "Hello"
 ```
 
-Even though tags look declarative in Imba, they compile to a bunch of operations building and altering the state of a the tag.
+Even though tags look declarative in Imba, they compile to a bunch of operations building and altering the state of a tag.
 
 ```javascript
 var tip = "Item";
