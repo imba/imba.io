@@ -43,7 +43,7 @@
     "less-loader": "^4.0.5",
     "less-plugin-autoprefix": "^1.5.1",
     "less-plugin-clean-css": "^1.5.1",
-    "marked": "^0.3.5",
+    "marked": "^0.3.18",
     "octonode": "^0.7.4",
     "source-map": "^0.5.3",
     "style-loader": "^0.20.1",

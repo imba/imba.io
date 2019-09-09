@@ -1900,9 +1900,9 @@ make-dir@^1.0.0:
   dependencies:
     pify "^3.0.0"
 
-marked@^0.3.5:
-  version "0.3.12"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.12.tgz#7cf25ff2252632f3fe2406bde258e94eee927519"
+marked@^0.3.18:
+  version "0.3.18"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.18.tgz#3ef058cd926101849b92a7a7c15db18c7fc76b2f"
 
 math-expression-evaluator@^1.2.14:
   version "1.2.17"
