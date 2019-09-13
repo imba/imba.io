@@ -9,13 +9,17 @@ Imba comes with three binaries imba, imbapack and imbac.
 
 ## imba
 
-Utility for running imba scripts. Acts as a wrapper around node which can run .imba files (including requires).
+Imba ships with a basic node wrapper for running imba-scripts. Use `imba` the same way you would use `node`. Call `imba` without arguments to see available options.
 
-`> imba sample.imba` will run the file sample.imba
+> `imba app.imba` will compile and execute app.imba
 
 ## imbapack
 
-This is a thin wrapper around webpack, and is the recommended way to build your imba projects. It takes all the same options as webpack, but injects the imba-loader and related extensions and module configuration. This means that you could create a plain webpack.config.js and just run `imbapack` instead of `webpack`. The config can include other loaders and plugins, imbapack should be able to inject the additional config correctly.
+The `imbapack` utility is a convenient wrapper around `webpack`, which preprocesses your config to include the necessary configurations for loading .imba files. It supports all the same options as `webpack` and will work with `webpack.config.js` files directly. When you use `imbapack` you do not need to declare an imba-loader and resolveExtensions in your configs.
+
+> `imbapack app.imba bundle.js` compiles the file app.imba, **and all required files** into a webpack bundle named bundle.js. This file can be included in a html page like any other js-file. See [webpack](https://webpack.github.io) for more details.
+
+> `imbapack --watch app.imba bundle.js` same as above, but recompiles whenever app.imba or any related files change.
 
 ## imbac
 
@@ -26,3 +30,16 @@ This is a thin wrapper around webpack, and is the recommended way to build your 
 `> imbac -w -o lib/ src/` compiles all files in src to lib, and recopmiles when they are modified
 
 All the other options can bee found by calling `> imbac --help`
+
+### Webpack Config
+
+The `imbac` utility is for compiling your scripts to js. When working on
+client-side projects you should rather use `imbapack` but the the following
+configuration should be sufficient in most cases:
+
+```js
+{
+  test: /\.imba$/,
+  loader: 'imba/loader'
+}
+```
