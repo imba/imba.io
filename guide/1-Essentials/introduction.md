@@ -12,6 +12,12 @@ to performant JavaScript. It is heavily inspired by ruby and python,
 but developed explicitly for web programming (both server and client).
 Imba treats DOM elements as a first-class citizens. These elements are compiled to an [inline dom](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than todays virtual dom implementations. We truly believe that it opens up for a new way of developing web applications.
 
+## Installation
+
+```
+yarn global add imba # npm install -g imba
+```
+
 # Optimized for
 
 ## Developers
