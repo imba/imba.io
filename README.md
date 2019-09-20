@@ -22,7 +22,6 @@ npm start
 
 ## Looking for projects using Imba?
 
-
 The [Awesome Imba][0] list has several projects and resources listed surrounding
 Imba.  Other noteworthy projects are 
 
