@@ -1,0 +1,10 @@
+# example netlify.toml
+[build]
+  command = "yarn run build-netlify"
+  publish = "www"
+
+  ## Uncomment to use this redirect for Single Page Applications like create-react-app. 
+  [[redirects]]
+    from = "/*"
+    to = "/index.html"
+    status = 200
