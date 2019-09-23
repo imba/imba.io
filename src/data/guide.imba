@@ -32,7 +32,7 @@ export class Guide
 					add(src)
 					guide = prev
 				else
-					continue unless src.indexOf('.md') >= 0
+					continue unless filename.toLowerCase().endsWith(".md")
 					
 					let file = fs.readFileSync(src,'utf-8')
 					let doc = md.render(file)
