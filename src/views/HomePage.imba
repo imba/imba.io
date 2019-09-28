@@ -16,14 +16,10 @@ export tag HomePage < Page
 				<.content>
 					<Marked[app.guide['hero']]>
 					<nav.buttons>
-						# <a.button.try href='#'> "Try online"
 						<a.button.start href='/guides'> "Get started"
 						# <a.button.start href='/examples'> "Examples"
 						<a.button.github href='https://github.com/somebee/imba'> "Github"
-
-				# <herosnippet.hero.dark src='/home/examples/hero.imba'>
 			<.content>
 				<Marked.section.md.welcome.huge.light[app.guide['welcome']]>
 				<ScrimbaEmbed cid="cGZB2f7">
 				<p.center> "The interactive screencasting platform Scrimba.com is written in Imba, both frontend and backend"
-				# <ScrimbaEmbed cid="cwQBZH9">
