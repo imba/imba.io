@@ -22,4 +22,4 @@ export tag HomePage < Page
 			<.content>
 				<Marked.section.md.welcome.huge.light[app.guide['welcome']]>
 				<ScrimbaEmbed cid="cGZB2f7">
-				<p.center> "The interactive screencasting platform Scrimba.com is written in Imba, both frontend and backend"
+				<p.center> <Marked[app.guide['scrimba']]>
