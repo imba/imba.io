@@ -61,16 +61,15 @@
 		transform: translate(-50%,0px);
 		background: rgb(32, 43, 49);
 	}
-	
 }
 
 #hero {
 	position: relative;
-	background-color: #202B31;
+	background-color: var(--black);
 	width: 100%;
 	padding-top: @header-height;
 	overflow: hidden;
-	min-height: 360px;
+	min-height: 400px;
 	.util-vbox(center, center);
 	// transform: translate3d(0,0,0);
 
@@ -90,7 +89,7 @@
 
 		.Logo {
 			margin: 2rem;
-			svg { width: 140px; height: auto; }
+			svg { width: 40px; height: auto; }
 		}
 		.buttons {
 			margin: 1rem;
@@ -226,13 +225,13 @@
 		letter-spacing: 0.5px;
 
 		background: #7ca3b6;
-		background: var(--logo-color);
-		color: white;
+		background: var(--primary-color); // .button.start
+		color: var(--black);
 		border: none;
 		text-decoration: none;
 
 		&:hover {
-			background: #59b8e8;
+			background: var(--primary-shadow);
 		}
 	}
 
@@ -277,7 +276,7 @@
 		& > .main {
 			& > .view, & > .jsview {
 				padding: 1.5rem 2rem 2rem;
-				background: #EFF2F5;
+				background: #F7F7F5;
 				background: @codebg;
 			}
 		}
@@ -301,7 +300,7 @@
 	.welcome {
 		h1 {
 			.light-colors;
-			color: @keyword;
+			color: var(--secondary-color);
 			text-align: center;
 			font-size: 4em;
 			max-width: 800px;

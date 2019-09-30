@@ -8,7 +8,7 @@
 }
 
 .Page {
-	color: #75818E;
+	color: var(--offblack);
 	// drop toggleable theme for now
 	code.cli:not(.inline) {
 		padding: 1ex 1ch;
@@ -81,7 +81,7 @@ body > footer {
 		& > .header {
 			border-bottom: 2px solid;
 			font-size: 16px;
-			color: @keyword;
+			color: var(--secondary-shadow);
 			margin-top: 2rem;
 			text-transform: uppercase;
 		}
@@ -150,11 +150,11 @@ body > footer {
 	& > .header {
 		padding: 18px 0px 18px;
 		margin: 0px 0px 6px;
-		color: #297198;
+		color: var(--fourth--secondary-shadow);
 
 		.Path {
 			font-size: 24px;
-			.const { color: #297198; }
+			.const { color: var(--fourth--secondary-shadow); }
 		}
 		border-bottom: 2px solid;
 	}
@@ -271,12 +271,12 @@ body > footer {
 		& > .header {
 			padding: 18px 0px 18px;
 			margin: 0px 0px 6px;
-			color: #297198;
+			color: var(--fourth--secondary-shadow);
 
 			.title {
 				font-size: 24px;
 				font-weight: bold;
-				.const { color: #297198; }
+				.const { color: var(--fourth--secondary-shadow); }
 			}
 
 			border-bottom: 2px solid;

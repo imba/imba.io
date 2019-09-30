@@ -1,6 +1,17 @@
 :root {
-  --link-color: #73acfe;
-  --logo-color: #73acfe;
+  --black: #191a25;
+  --offblack: #292A3C;
+  --offwhite: #F7F7F5;
+  --fifth--secondary-shadow: #d2d219;
+  --fifth-color: #f0f00a;
+  --fourth--secondary-shadow: #6114a3;
+  --fourth-color: #7a21c5;
+  --third--secondary-shadow: #01b6ae;
+  --third-color: #62d6d2;
+  --secondary-shadow: #E9513F;
+  --secondary-color: #ff5945;
+  --primary-shadow: #F0C106;
+  --primary-color: #ffdc00;
 }
 .Logo {
   display: inline-block;
@@ -10,7 +21,7 @@
   vertical-align: top;
 }
 .Logo svg g {
-  fill: var(--logo-color);
+  fill: var(--primary-color);
 }
 html,
 body {
@@ -449,7 +460,7 @@ table {
 }
 a {
   color: #72b5d4;
-  color: #1A739C;
+  color: var(--fourth-color);
   text-decoration: none;
 }
 a:hover {
@@ -526,7 +537,7 @@ hr + p {
   margin-bottom: 1em;
 }
 .md {
-  color: #4b5561;
+  color: var(--offblack);
 }
 .md > :first-child {
   margin-top: 0;
@@ -551,7 +562,7 @@ hr + p {
   position: relative;
 }
 .md ul li:before {
-  content: "\2022";
+  content: "•";
   width: 20px;
   text-align: center;
   position: absolute;
@@ -574,15 +585,15 @@ hr + p {
 }
 .md h1 {
   color: #AB4D4D;
-  color: #297198;
+  color: var(--fourth--secondary-shadow);
   margin: 4rem 0px 12px;
   font-size: 2.8rem;
   line-height: 1.4em;
-  color: #3a4652;
+  color: var(--primary--secondary-shadow);
   margin-top: 2rem;
 }
 .md h1 b {
-  color: #3a4652;
+  color: var(--offblack);
 }
 .md h1 a.contribute {
   font-size: 14px;
@@ -671,6 +682,9 @@ hr + p {
 }
 .md blockquote hr + p {
   font-size: 12px;
+}
+.md blockquote p > code {
+  background: #f1e9cf;
 }
 .md ._snippet {
   margin-bottom: 1.5rem;
@@ -1355,11 +1369,10 @@ hr + p {
   visibility: hidden;
 }
 #header {
-  --link-color: #73acfe;
   position: fixed;
   top: 0px;
   left: 0px;
-  height: 60px;
+  height: 80px;
   width: 100%;
   background: white;
   -ms-user-select: none;
@@ -1370,12 +1383,11 @@ hr + p {
   z-index: 30000;
   padding: 0px 0px 0px 0px;
   color: white;
-  color: #709CB2;
-  background-color: #202B31;
+  background-color: var(--black);
 }
 #header .Logo svg {
-  width: 34px;
-  height: auto;
+  width: auto;
+  height: 50px;
 }
 #header .greedy {
   -ms-flex: 100 1 auto;
@@ -1390,7 +1402,7 @@ hr + p {
   padding: 1em;
 }
 #header a {
-  color: var(--link-color);
+  color: var(--primary-color);
 }
 #header .path {
   white-space: nowrap;
@@ -1424,7 +1436,7 @@ hr + p {
   position: relative;
   font-size: 14px;
   font-weight: 600;
-  height: 60px;
+  height: 80px;
   color: inherit;
   padding: 0px;
   display: -ms-flexbox;
@@ -1478,7 +1490,7 @@ hr + p {
   left: 0px;
   height: 100%;
   width: 250px;
-  padding-top: 60px;
+  padding-top: 80px;
   -ms-flex-item-align: stretch;
       -ms-grid-row-align: stretch;
       align-self: stretch;
@@ -1560,7 +1572,7 @@ hr + p {
 .Page > .nav a {
   color: inherit;
   font-weight: inherit;
-  color: #447A98;
+  color: var(--offblack);
   text-decoration: none;
   cursor: pointer;
   position: relative;
@@ -1573,7 +1585,7 @@ hr + p {
   font-weight: inherit;
 }
 .Page > .nav a .const {
-  color: #2A607D;
+  color: #191a25;
 }
 .Page > .nav .entry .const:first-child {
   color: #75818e;
@@ -1597,16 +1609,16 @@ hr + p {
   display: none;
 }
 .Page > .nav a.active {
-  color: #345e75;
+  font-weight: bold;
 }
 .Page > .nav a.selected {
   color: #244152;
 }
 .Page > .nav h1 {
-  color: #8F4242;
+  color: var(--fourth--secondary-shadow);
 }
 .Page > .nav h2 {
-  color: #8F4242;
+  color: #7a21c5;
 }
 .Page > .nav hr {
   margin: 0.5rem 0;
@@ -1633,11 +1645,12 @@ hr + p {
 .Page > .nav .section > .header a {
   padding: 6px 0px;
   display: inline-block;
-  color: #8F4242;
+  color: var(--fourth-color);
+  font-weight: bold;
 }
 .Page > .nav > .content > .toc > .header a .Path b,
 .Page > .nav .section > .header a .Path b {
-  color: #8F4242;
+  color: var(--fourth-color);
 }
 .Page > .nav > .content > .toc > .content,
 .Page > .nav .section > .content {
@@ -1675,7 +1688,7 @@ hr + p {
   right: 100%;
   margin-right: 6px;
   background: #C6D5DF;
-  background: #8F4242;
+  background: var(--fourth-color);
   border-radius: 2px;
   opacity: 1;
 }
@@ -1697,10 +1710,10 @@ hr + p {
 .Page > .nav .entry[level="0"] > .header a {
   padding: 6px 0px;
   display: inline-block;
-  color: #8F4242;
+  color: var(--fourth-color);
 }
 .Page > .nav .entry[level="0"] > .header a .Path b {
-  color: #8F4242;
+  color: var(--fourth-color);
 }
 .Page > .nav a.active + ul {
   display: block;
@@ -1762,19 +1775,19 @@ hr + p {
   display: none;
 }
 .Page {
-  color: #75818E;
+  color: var(--offblack);
 }
 .Page code.cli:not(.inline) {
   padding: 1ex 1ch;
   display: block;
-  background: #202B31;
+  background: #292A3C;
   color: white;
   font-family: 'Source Code Pro', monospace, sans-serif;
 }
 .Page > .body {
   margin-left: 250px;
   padding: 20px 40px;
-  padding-top: 90px;
+  padding-top: 110px;
   max-width: 760px;
 }
 body > footer {
@@ -1806,7 +1819,7 @@ body > footer {
 .Item .section > .header {
   border-bottom: 2px solid;
   font-size: 16px;
-  color: #AB4D4D;
+  color: var(--secondary-shadow);
   margin-top: 2rem;
   text-transform: uppercase;
 }
@@ -1861,14 +1874,14 @@ body > footer {
 .Class > .header {
   padding: 18px 0px 18px;
   margin: 0px 0px 6px;
-  color: #297198;
+  color: var(--fourth--secondary-shadow);
   border-bottom: 2px solid;
 }
 .Class > .header .Path {
   font-size: 24px;
 }
 .Class > .header .Path .const {
-  color: #297198;
+  color: var(--fourth--secondary-shadow);
 }
 .Method {
   margin: 0rem -2rem;
@@ -1970,7 +1983,7 @@ body > footer {
 .doc.l > .header {
   padding: 18px 0px 18px;
   margin: 0px 0px 6px;
-  color: #297198;
+  color: var(--fourth--secondary-shadow);
   border-bottom: 2px solid;
 }
 .doc.l > .header .title {
@@ -1978,7 +1991,7 @@ body > footer {
   font-weight: bold;
 }
 .doc.l > .header .title .const {
-  color: #297198;
+  color: var(--fourth--secondary-shadow);
 }
 code {
   font-family: 'Source Code Pro', monospace, sans-serif;
@@ -2214,7 +2227,7 @@ code {
   display: block;
 }
 ._snippet.dark {
-  background: #202B31;
+  background: #292A3C;
 }
 ._snippet.dark ._tool {
   background: #6D777B;
@@ -2233,7 +2246,7 @@ code {
   opacity: 0.99;
 }
 ._snippet.hero {
-  background: #EFF2F5;
+  background: #F7F7F5;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-direction: column;
@@ -2252,7 +2265,7 @@ code {
   background-color: #709CB2;
 }
 ._example {
-  background: #EFF2F5;
+  background: #F7F7F5;
   min-height: 150px;
   -ms-flex-item-align: stretch;
       align-self: stretch;
@@ -2269,7 +2282,7 @@ code {
   outline: none !important;
 }
 ._example.dark {
-  background: #202B31;
+  background: #292A3C;
 }
 ._example ._console {
   display: none !important;
@@ -2392,11 +2405,11 @@ blockquote ._snippet {
 }
 #hero {
   position: relative;
-  background-color: #202B31;
+  background-color: var(--black);
   width: 100%;
-  padding-top: 60px;
+  padding-top: 80px;
   overflow: hidden;
-  min-height: 360px;
+  min-height: 400px;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-direction: column;
@@ -2423,7 +2436,7 @@ blockquote ._snippet {
   margin: 2rem;
 }
 #hero .content .Logo svg {
-  width: 140px;
+  width: 40px;
   height: auto;
 }
 #hero .content .buttons {
@@ -2553,13 +2566,13 @@ blockquote ._snippet {
   color: #709CB2;
   letter-spacing: 0.5px;
   background: #7ca3b6;
-  background: var(--logo-color);
-  color: white;
+  background: var(--primary-color);
+  color: var(--black);
   border: none;
   text-decoration: none;
 }
 .HomePage a.button:hover {
-  background: #59b8e8;
+  background: var(--primary-shadow);
 }
 .HomePage a.button.github {
   background-image: linear-gradient(to bottom, #fcfcfc 0, #eee 100%);
@@ -2597,8 +2610,8 @@ blockquote ._snippet {
 .HomePage .content > ._snippet > .main > .view,
 .HomePage .content > ._snippet > .main > .jsview {
   padding: 1.5rem 2rem 2rem;
-  background: #EFF2F5;
-  background: #202B31;
+  background: #F7F7F5;
+  background: #292A3C;
 }
 .HomePage .section {
   position: relative;
@@ -2617,7 +2630,7 @@ blockquote ._snippet {
   font-size: 1.6em;
 }
 .HomePage .welcome h1 {
-  color: #AB4D4D;
+  color: var(--secondary-color);
   text-align: center;
   font-size: 4em;
   max-width: 800px;
@@ -2765,10 +2778,10 @@ blockquote ._snippet {
 }
 .playground > canvas {
   vertical-align: top;
-  background: #F5F2EC;
+  background: #F7F7F5;
 }
 .playground > form {
-  background: #F5F2EC;
+  background: #F7F7F5;
 }
 .playground input {
   display: block;
@@ -2801,7 +2814,7 @@ blockquote ._snippet {
 .playground .item:before,
 .playground ._todo:before {
   position: absolute;
-  content: "\2605";
+  content: "★";
   left: 6px;
   top: 8px;
   color: rgba(0, 0, 0, 0.3);
@@ -2832,7 +2845,7 @@ blockquote ._snippet {
 }
 .playground .todo:before,
 .playground ._todo:before {
-  content: "\2714";
+  content: "✔";
 }
 .playground .todo.done,
 .playground ._todo.done {
@@ -2869,7 +2882,7 @@ blockquote ._snippet {
   left: 0px;
   bottom: 0px;
   right: 0px;
-  background-color: #F5F2EC;
+  background-color: #F7F7F5;
 }
 .playground ._clock[title]:after {
   content: attr(title);
@@ -2972,7 +2985,7 @@ blockquote ._snippet {
   bottom: 0px;
 }
 .playground ._clock.night {
-  background: #202B31;
+  background: #292A3C;
 }
 .playground ._clock.night ._dial {
   background: white;
@@ -3025,7 +3038,7 @@ blockquote ._snippet {
   background: transparent;
 }
 #gist {
-  background: rgba(32, 43, 49, 0.98);
+  background: rgba(41, 42, 60, 0.98);
   position: fixed;
   top: 50%;
   left: 10px;
@@ -3072,7 +3085,7 @@ blockquote ._snippet {
   right: 0px;
   padding: 0px 0px;
   display: block;
-  background: #202B31;
+  background: #292A3C;
   overflow: auto;
   text-align: center;
   display: -ms-flexbox;
@@ -3095,7 +3108,7 @@ blockquote ._snippet {
   display: inline-block;
 }
 #gist .sandbox {
-  background: #202B31;
+  background: #292A3C;
 }
 #gist .xray {
   display: -ms-flexbox;
@@ -3178,7 +3191,7 @@ blockquote ._snippet {
 }
 #gist > .header ._tab.active {
   opacity: 1;
-  background: #202B31;
+  background: #292A3C;
 }
 #gist > .header ._tab.ico {
   width: 40px;
@@ -3212,7 +3225,7 @@ blockquote ._snippet {
 }
 #gist.chromeless {
   top: 0px !important;
-  background: #202B31;
+  background: #292A3C;
   z-index: 1000000;
 }
 #gist.chromeless > .header {
@@ -3673,3 +3686,5 @@ body[data-route='gists'] #gist {
   width: 100%;
   height: 100%;
 }
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJtYWluLmNzcyIsInNvdXJjZVJvb3QiOiIifQ==*/

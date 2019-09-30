@@ -68,14 +68,14 @@
 	a {
 		color: inherit;
 		font-weight: inherit;
-		color: #447A98;
+		color: var(--offblack);
 		text-decoration: none;
 		cursor: pointer;
 		position: relative;
 		// &:hover b { color: #28A5EA !important; }
 		i { font-style: inherit; } // color: @op; 
 		b { color: #437997; font-weight: inherit; }
-		.const { color: #2A607D; }		
+		.const { color: #191a25; }		
 	}
 	
 	.entry .const:first-child {
@@ -100,15 +100,15 @@
 	}
 
 	a.active {
-		color: darken(#447A98,10%);
+		font-weight: bold;
 	}
 
 	a.selected {
 		color: darken(#447A98,20%);
 	}
 
-	h1 { color: #8F4242; } // #AB4D4D
-	h2 { color: #8F4242; } // #75818E;
+	h1 { color: var(--fourth--secondary-shadow); } // #AB4D4D
+	h2 { color: #7a21c5; } // #75818E;
 
 	hr {
 		margin: 0.5rem 0;
@@ -133,9 +133,10 @@
 			a {
 				padding: 6px 0px;
 				display: inline-block;
-				color: #8F4242;
+				color: var(--fourth-color);
+				font-weight: bold;
 				.Path b {
-					color: #8F4242;
+					color: var(--fourth-color);
 				}
 			}
 		}
@@ -179,7 +180,7 @@
 				right: 100%;
 				margin-right: 6px;
 				background: #C6D5DF;
-				background: #8F4242;
+				background: var(--fourth-color);
 				border-radius: 2px;
 				opacity: 1;
 			}
@@ -200,9 +201,9 @@
 			a {
 				padding: 6px 0px;
 				display: inline-block;
-				color: #8F4242;
+				color: var(--fourth-color);
 				.Path b {
-					color: #8F4242;
+					color: var(--fourth-color);
 				}
 			}
 		}

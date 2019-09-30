@@ -433,8 +433,8 @@ table {
   display: table;
 }
 a {
-  color: #72b5d4;
-  color: #1A739C;
+  color: #ffdc00;
+  color: #ffb100;
   text-decoration: none;
 }
 a:hover {

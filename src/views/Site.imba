@@ -54,14 +54,13 @@ export tag Site
 		<self>
 			<header#header>
 				<nav.content>
-					<Logo>
-					<a.tab.logo route-to.exact='/'> <i> 'imba'
+					<a.tab.logo route-to.exact='/'><Logo>
 					<span.greedy>
 					<a.tab.home route-to.exact='/'> <i> 'home'
 					<a.tab.guides route-to='/guides'> <i> 'learn'
 					<a.tab.guides route-to='/docs'> <i> 'docs'
-					<a.tab.gitter href='https://gitter.im/somebee/imba'> <i> 'community'
-					<a.github href='https://github.com/somebee/imba'> <i> 'github'
+					<a.tab.gitter href='http://spectrum.chat/imba' target="_blank"> <i> 'community'
+					<a.github href='https://github.com/imba/imba' target="_blank"> <i> 'github'
 					<a.menu :tap='toggleMenu'> <b>
 			
 			<HomePage route.exact='/'>
@@ -72,7 +71,7 @@ export tag Site
 				<hr>
 				<.lft> "Imba © 2015-2019"
 				<.rgt>
-					<a href='http://twitter.com/imbajs'> 'Twitter'
-					<a href='http://github.com/somebee/imba'> 'GitHub'
-					<a href='http://github.com/somebee/imba/issues'> 'Issues'
-					<a href='http://gitter.im/somebee/imba'> 'Chat'
+					<a href='http://twitter.com/imbajs' target="_blank"> 'Twitter'
+					<a href='http://github.com/imba/imba' target="_blank"> 'GitHub'
+					<a href='http://github.com/imba/imba/issues' target="_blank"> 'Issues'
+					<a href='http://spectrum.chat/imba' target="_blank"> 'Chat'

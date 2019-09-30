@@ -2,9 +2,6 @@
 
 #header {
 	.dark-colors;
-
-	--link-color: #73acfe;
-
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -18,16 +15,15 @@
 	display: block;	
 	z-index: 30000;
 	padding: 0px 0px 0px 0px;
-
 	color: white;
-	color: #709CB2;
+	// color: #709CB2;
 
-	background-color: #202B31;
+	background-color: var(--black);
 
 	// &.active { background-color: fade(white,90%); }
 
 	.Logo {
-		svg { width: 34px; height: auto; }
+		svg { width: auto; height:50px; } // Header is 100px
 	}
 
 	.greedy { flex: 100 1 auto; }
@@ -43,7 +39,7 @@
 	}
 
 	a {
-		color: var(--link-color);
+		color: var(--primary-color);
 	}
 
 	.path {
@@ -74,7 +70,7 @@
 		position: relative;
 		font-size: 14px;
 		font-weight: 600;
-		height: 60px;
+		height: @header-height;
 		// color: @number;
 		color: inherit;
 		padding: 0px;
