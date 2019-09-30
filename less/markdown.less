@@ -16,7 +16,7 @@ table {
 
 a {
 	color: rgb(114, 181, 212);
-	color: #1A739C;
+	color: var(--fourth-color);
 	text-decoration: none;
 }
 
@@ -145,14 +145,14 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 	}
 
 	p > code {
-		// background: darken(#F7F2E3,5%);
+		background: darken(#F7F2E3,5%);
 	}
 }
 
 .md {
 	.light-colors;
 
-	color: #4b5561;
+	color: var(--offblack);
 
 	& > :first-child { margin-top: 0; }
 	& > :last-child { margin-bottom: 0; }
@@ -173,14 +173,14 @@ hr + p { font-size: 15px; margin-bottom: 1em; }
 
 	h1 {
 		color: @keyword;
-		color: #297198;
+		color: var(--fourth--secondary-shadow);
 		margin: 4rem 0px 12px;
 		font-size: 2.8rem;
 		line-height: 1.4em;
-		color: #3a4652;
+		color: var(--primary--secondary-shadow);
 
 		b {
-			color: #3a4652;
+			color: var(--offblack);
 		}
 
 		a.contribute {

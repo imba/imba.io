@@ -4,8 +4,19 @@
 @import 'util.less';
 
 :root {
-	--link-color: #73acfe;
-	--logo-color: #73acfe;
+	--black: #191a25;
+	--offblack: #292A3C;
+	--offwhite: #F7F7F5;
+	--fifth--secondary-shadow: #d2d219;
+	--fifth-color: #f0f00a;
+	--fourth--secondary-shadow: #6114a3;
+	--fourth-color: #7a21c5;
+	--third--secondary-shadow: #01b6ae;
+	--third-color: #62d6d2;
+	--secondary-shadow: #E9513F;
+	--secondary-color: #ff5945;
+	--primary-shadow: #F0C106;
+	--primary-color: #ffdc00;
 }
 
 .Logo {
@@ -15,10 +26,8 @@
 }
 
 .Logo svg g {
-	fill: var(--logo-color);
+	fill: var(--primary-color);
 }
-
-
 
 // Resets
 html,body {
@@ -55,7 +64,6 @@ iframe {
 a:focus {
 	outline: none;
 }
-
 
 nav,aside,section,article,header,footer,div,ul,li,ol,pre,button,main,input,button,textarea {
 	box-sizing: border-box;
@@ -104,7 +112,6 @@ footer {
 
 @import 'markdown.less';
 
-
 .light {
 	.light-syntax;
 	code {
@@ -127,9 +134,6 @@ footer {
 	visibility: hidden;
 }
 
-
-
-
 @import "site/header.less";
 @import "site/nav.less";
 @import "site/page.less";
@@ -143,4 +147,3 @@ footer {
 @import 'examples.less';
 @import 'footer.less';
 @import 'embed.less';
-
