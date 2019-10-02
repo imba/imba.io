@@ -3,7 +3,7 @@ Official site for Imba. Work in progress.
 ## Run
 ```
 # clone the repository
-git clone https://github.com/somebee/imba.io.git
+git clone https://github.com/somebee/imba.io
 
 # enter the folder
 cd imba.io
