@@ -1,4 +1,3 @@
-
 files:
   - source: /guide/**/*.md
     ignore:
@@ -8,5 +7,6 @@ files:
       - /pt-PT/
       - /es-ES/
       - /tr-TR/
+      - /fr-FR/
     translation: /%locale%/%original_path%/%file_name%.md
     content_segmentation: 0
