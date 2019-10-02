@@ -1,9 +1,9 @@
 ---
-type: snippet
+type: kod parçacığı
 ---
 
 ```imba
 Imba.mount <nav#hero ->
-    <a href='/guides'> "Get started"
+    <a href='/guides'> "Başlayalım"
     <a.github href=linkToGitHub> "GitHub"
 ```
