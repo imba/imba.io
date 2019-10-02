@@ -1,0 +1,12 @@
+
+files:
+  - source: /guide/**/*.md
+    ignore:
+      - /zh-CN/
+      - /ja-JP/
+      - /nb-NO/
+      - /pt-PT/
+      - /es-ES/
+      - /tr-TR/
+    translation: /%locale%/%original_path%/%file_name%.md
+    content_segmentation: 0
