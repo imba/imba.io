@@ -6,6 +6,8 @@ import GuidesPage from './GuidesPage'
 import DocsPage from './DocsPage'
 import Logo from './Logo'
 
+import Languages from '../util/languages.imba'
+
 extend tag element
 
 	def root
@@ -17,16 +19,16 @@ extend tag element
 
 export tag Site
 
+	# The language for the site, defaults to English
 	prop language default: "en", watch: yes
 
-	def didSetLanguage prev, cur, ops
-		console.log "didSetLanguage", cur
+	# Reload the guides contents based on the selected language
+	def languageDidSet
+		await app.refetchGuide(language)
+		# Make sure we get a redraw of the screen
+		Imba.commit
 	
 	def setup
-		@languages = [
-			{ value: "en", name: "English" },
-			{ value: "tr", name: "Turkish" }
-		]
 		router.@redirects['/guides'] = '/guides/essentials/introduction'
 		
 		if $web$
@@ -91,6 +93,6 @@ export tag Site
 					<a href='http://gitter.im/somebee/imba'> 'Chat'
 				<span>
 					"Languages: "
-					<select[language]> for lang in @languages
+					<select[language]> for lang in Languages
 						<option value=lang:value> lang:name
 					" ?lang={language}"
