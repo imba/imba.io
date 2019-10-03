@@ -29,6 +29,12 @@ Imba.  Other noteworthy projects are
 - [Reiknistofa fiskmarkaða][3] - The Iceland fish market auction
 - [GitSpeak][2] - Fast GitHub client
 
+## License
+
+[MIT](./LICENSE)
+
+Copyright (c) 2015-present, Imba
+
 [0]: https://github.com/koolamusic/awesome-imba
 [1]: https://scrimba.com/
 [2]: https://gitspeak.com/
