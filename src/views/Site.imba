@@ -16,8 +16,17 @@ extend tag element
 
 
 export tag Site
+
+	prop language default: "en", watch: yes
+
+	def didSetLanguage prev, cur, ops
+		console.log "didSetLanguage", cur
 	
 	def setup
+		@languages = [
+			{ value: "en", name: "English" },
+			{ value: "tr", name: "Turkish" }
+		]
 		router.@redirects['/guides'] = '/guides/essentials/introduction'
 		
 		if $web$
@@ -80,3 +89,8 @@ export tag Site
 					<a href='http://github.com/somebee/imba'> 'GitHub'
 					<a href='http://github.com/somebee/imba/issues'> 'Issues'
 					<a href='http://gitter.im/somebee/imba'> 'Chat'
+				<span>
+					"Languages: "
+					<select[language]> for lang in @languages
+						<option value=lang:value> lang:name
+					" ?lang={language}"
