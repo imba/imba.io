@@ -7,11 +7,20 @@ export class Guide
 		instance ||= Guide.new
 		
 	prop docs
+
+	def locateRoot req
+		const lang = req:query:lang
+		var location = "guide" # Default is English
+		switch lang
+			when "tr"
+				location = "tr-TR/guide/"
+		path.resolve(__dirname,"../../{location}")
+
 	
-	def initialize
+	def initialize req
 		# var path = require 'path'
 		var md = require '../util/markdown'
-		var root = path.resolve(__dirname,"../../guide")
+		var root = locateRoot(req)
 		var docs = []
 		var guides = []
 		var guide = null # {sections: []}

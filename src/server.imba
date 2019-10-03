@@ -26,7 +26,7 @@ srv.get(/^([^\.]+\.(md|json|imba))$/) do |req,res|
 # catch-all rendering for the whole site
 # routing etc is handled by the <site> tag itself
 srv.get(/^([^\.]*)$/) do |req,res|
-	let guide = Guide.get
+	let guide = Guide.new(req)
 	let app = req:app = App.new(guide: guide.docs)
 	req:app.req = req
 
