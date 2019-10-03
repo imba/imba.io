@@ -62,6 +62,7 @@ export tag Site
 					<a.tab.guides route-to='/docs'> <i> 'docs'
 					<a.tab.gitter href='https://gitter.im/somebee/imba'> <i> 'community'
 					<a.github href='https://github.com/somebee/imba'> <i> 'github'
+					<a.twitter href='https://twitter.com/imbajs'> <i> 'twitter'
 					<a.menu :tap='toggleMenu'> <b>
 			
 			<HomePage route.exact='/'>
