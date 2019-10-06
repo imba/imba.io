@@ -14,6 +14,15 @@ for num in [1,2,3]
 ```
 
 ```imba
+# range loops using for in
+for item in [0...10] # exclusive
+	item * 2
+	
+for item in [0..10] # inclusive (0 - 10)
+	item * 2
+```
+
+```imba
 # iterate through keys of object
 for key,value of {a: 1, b: 2}
     value * 2
