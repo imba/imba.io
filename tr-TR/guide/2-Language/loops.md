@@ -1,9 +1,9 @@
 ---
-title: Loops
+title: Döngüler
 order: 4
 ---
 
-# Loops
+# Döngüler
 
 Loops in Imba behaves similar to array comprehensions in CoffeeScript and Python. They are expressions, and can be returned and assigned. When used as expressions they will always return an array (like Array#map, but with a few additional powerful features, like break / continue).
 
