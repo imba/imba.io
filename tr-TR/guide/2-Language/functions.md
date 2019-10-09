@@ -1,13 +1,13 @@
 ---
-title: Functions
+title: Fonksiyonlar
 order: 3
 ---
 
-# Functions
+# Fonksiyonlar
 
 There are two types of functions in Imba, *methods* and *blocks*. Imba automatically returns the last expression of the function.
 
-## Methods
+## Yöntemler
 
 ```imba
 def randomize
@@ -46,7 +46,7 @@ def animate values, ease: 'linear', duration: 1
 
 
 
-## Blocks
+## Bloklar
 
 ```imba
 var square = do |v| v * v
