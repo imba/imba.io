@@ -1,17 +1,17 @@
 ---
-title: CLI
+title: Komut Satırı Arayüzü
 order: 7
 ---
 
-# CLI
+# Komut Satırı Arayüzü
 
-Imba comes with three binaries imba, imbapack and imbac.
+Imba, imba, imbapack ve imbac binaryleri ile birlikte gelir.
 
 ## imba
 
-Imba ships with a basic node wrapper for running imba-scripts. Use `imba` the same way you would use `node`. Call `imba` without arguments to see available options.
+Imba, imba-scripts dosyalarını çalıştırmak için temel bir node sarmalayıcısıyla birlikte gelir. `imba`'yı, `node`'u kullandığınız gibi kullanın. Mevcut seçenekleri görebilmek için `imba` komutunu yanına argüman eklemeden çağırın.
 
-> `imba app.imba` will compile and execute app.imba
+> `imba app.imba` komutu kodu derleyip app.imba uygulamasını çalıştırır
 
 ## imbapack
 
