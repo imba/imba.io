@@ -1,5 +1,5 @@
 ---
-type: kod parçacığı
+type: snippet
 ---
 
 ```imba
