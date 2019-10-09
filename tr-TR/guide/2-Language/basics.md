@@ -3,49 +3,49 @@ title: Basics
 order: 1
 ---
 
-# Basics
+# Temeller
 
-Even though the syntax and semantics of Imba is much more related to Ruby than JavaScript, it does compile down to plain performant JavaScript, and is fully compatible with any existing JavaScript library. Imba does not extend any native types from JavaScript. Arrays are arrays, strings are strings, numbers are numbers, classes are constructors with prototypes and so forth. If you simply like Imba better, there is no reason not to write your npm package in Imba, even if it is supposed to be used in the general JavaScript ecosystem. In fact, Imba produces *very* readable JavaScript, by keeping your indentation, comments, and coding style.
+Imba, her ne kadar anlamsal ve sözdizimi bakımından JavaScript'ten çok Ruby'ye benzese de, yalın JavaScript'i derler ve var olan JavaScript kütüphanesiyle mükemmel bir şekilde uyumluluk sağlar. Imba, JavaScript'i tam olarak değiştirmez. Diziler dizi, yazılar yazı, sayılar sayı, sınıflar prototipli yapıcılar vb. Basitçe anlatmak gerekirse; Imba'yı seviyorsanız ve npm paketinizin genel JavaScript ekosisteminde çalışması gerekiyorsa bile paketi Imba ile yazmamanız için hiçbir sebep yok. Doğruyu söylemek gerekirse Imba, *tam* okunabilir JavaScript'i yorumlarınızı ve kodlama stilinizi koruyarak size sunar.
 
-### Interoperability
+### Birlikte Çalışabilirlik
 
-Imba compiles to very straight-forward JavaScript. All the fundamental types are the same as in JavaScript, so for documentation about available methods see MDN [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function), [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp), [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), [Math](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
+Imba yalın olan JavaScript'i derler. Tüm temel şeyler, JavaScript'teki ile aynıdır. Mevcut yöntemlerle ilgili belgeler için bkz. [Nesne](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), [Fonksiyon](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function), [Yazı](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [Sayı](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp), [Dizi](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), [Tarih](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), [Matematik](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
 
-#### Strings
-
-```imba
-var single = 'single quotes'
-var double = "double quotes"
-var interpolation = "string has {double}"
-```
-
-#### Numbers
+#### Yazılar
 
 ```imba
-var integer = 42
-var float = 42.10
+var tek = 'tek tırnak'
+var cift = "çift tırnak"
+var yaziyaDegiskenEkleme = "yazı {cift}'a sahip"
 ```
 
-#### Objects
+#### Sayılar
 
 ```imba
-var object = {name: 'Imba', type: 'Language'}
+var tamSayi = 42
+var kusuratliSayi = 42.10
 ```
 
-
-#### Arrays
+#### Nesneler
 
 ```imba
-var array = [1,2,3,4,5]
+var nesne = {name: 'Imba', type: 'Language'}
 ```
 
-#### Regexes
+
+#### Diziler
 
 ```imba
-var regex = /number is (\d+)/
+var dizi = [1,2,3,4,5]
 ```
 
-#### Loops
+#### Kurallı İfadeler
+
+```imba
+var kuralliIfade = /sayı (\d+)/
+```
+
+#### Döngüler
 ```imba
 for num in [1,2,3]
     num
@@ -54,19 +54,19 @@ for own key, value of object
     value
 ```
 
-#### Functions
+#### Fonksiyonlar
 
 ```imba
-def hello
-    return 'world'
+def merhaba
+    return 'dünya'
 
-console.log hello
+console.log merhaba
 ```
 
-#### Classes
+#### Sınıflar
 
 ```imba
-class Todo
+class Yapilacaklar
 
     def initialize title
         @title = title
@@ -76,34 +76,34 @@ class Todo
         @completed = yes
 ```
 
-#### Operators
+#### Operatörler
 
 ```imba
-var item
-item = 100 # set value of item
-item ||= 100 # set if value is falsy
-item &&= 100 # set if value is already truthy
-item ?= 100 # set if value is null or undefined
+var esya
+esya = 100 # Eşya değişkeninin değerini belirler
+esya ||= 100 # değerin yanlış olup olmadığını kontrol eder
+esya &&= 100 # değerin zaten doğru olup olmadığını kontrol eder
+esya ?= 100 # değerin tanımlanıp tanımlanmadığını veya boş olup olmadığını kontrol eder
 
-# comparators
-item == 10 # check
-item === 10 # strictly equal
-item != 10 # not equal
-item !== item # strictly not equal
-item > 10 # greater than
-item < 10 # less than
-item >= 10 # greater than or equal
-item <= 10 # less than or equal
+# karşılaştırıcılar
+esya == 10 # kontrol
+esya === 10 # tamamen eşit
+esya != 10 # eşit değil
+esya !== item # tamamen eşit değil
+esya > 10 # büyüktür
+esya < 10 # küçüktür
+esya >= 10 # büyük eşit
+esya <= 10 # küçük eşit
 ```
 
-#### Bitwise operators
+#### Bitsel İşleçler
 
 ```imba
-a & b   # Bitwise AND
-a | b   # Bitwise OR
-a ^ b   # Bitwise XOR
-~ a     # Bitwise NOT
-a << b  # Left shift
-a >> b  # Sign-propagating right shift
-a >>> b # Zero-fill right shift
+a & b   # Bitsel VE
+a | b   # Bitsel YA DA
+a ^ b   # Bitsel X YA DA
+~ a     # Bitsel DEĞİL
+a << b  # SOLA YAYMA
+a >> b  # İŞARETİ SAĞA YAYMA
+a >>> b # SIFIRA YAYMA
 ```
