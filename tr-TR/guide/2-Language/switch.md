@@ -5,7 +5,7 @@ order: 9
 
 # Switch
 
-You can use switch statements in two ways in Imba:
+Imba'da "Switch" kodunu iki farklı şekilde kullanabilirsiniz:
 
 ```
 var number = 1
@@ -17,13 +17,13 @@ var numberString = switch number
   else
     "not 1 nor 0"
 
-# compact 
+# sıkışık şekilde
 var numberString2 = switch number
   when 0 then "zero"
   when 1 then "one"
   else "not 1 nor 0"
 
-# you can also mix them
+# Aynı zamanda ikisini aynı anda kullanabilirsiniz
 var numberString3 = switch number
   when 0 then "zero"
   when 1
@@ -32,4 +32,4 @@ var numberString3 = switch number
 
 ```
 
-As you see, `else` stands for `default`. Isn't it clearer?
+Gördüğünüz gibi, `else` ifadesi `default` olarak kullanılmış. Daha anlaşılabilir değil mi?
