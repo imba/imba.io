@@ -3,36 +3,36 @@ title: Classes
 order: 5
 ---
 
-# Classes
+# Sınıflar
 
-## Declaration
+## Tanım
 
 ```imba
-class Point
+class Puan
     def initialize x,y
         @x = x
         @y = y
 ```
 
-## Instances
+## Örnekler
 
-To create instances of classes in Imba you use the `new` method like `Array.new`, as opposed to the special `new Array()` syntax in JavaScript. This is not special for classes created in Imba, but is used for creating any object, be it built in constructors in JavaScript like `Array`, `Object`, `RegEx` and any other class/constructor from other languages.
+Imba'da sınıf örnekleri oluşturmak için, JavaScript'e özel `new Array()` sözdiziminin aksine, `Array.new` örneğinde olduğu gibi `new` metodunu kullanırsınız. Bu, Imba'da oluşturulan sınıflara özel değildir, herhangi bir nesneyi oluşturmak için kullanılır. JavaScript'in içinde var olan `Dizi`, `Nesne`, `RegEx` ve diğer dillerde olan herhangi bir sınıf veya yapıcılarda da aynı şey geçerlidir.
 
-## Properties
+## Özellikler
 
-You can define properties on classes, which are automatically generated getters and setters. As mentioned earlier, Imba embraces the philosophy that classes should expose everything through methods. If you want to get/set the title of a `Todo` in JavaScript, it's not uncommon to just get/set it as a property directly. In Imba, you would want to instead define *methods* to set and get the title.
+Otomatik olarak oluşturulan alıcılar ve ayarlayıcılar olan sınıfların özelliklerini tanımlayabilirsiniz. Daha önce de bahsedildiği gibi, Imba, sınıfların her şeyi metodlarla ortaya çıkarması gerektiği felsefesini benimser. JavaScript'te `Todo` unvanını almak veya ayarlamak istiyorsanız, doğrudan bir özellik olarak almak veya ayarlamak o kadar da imkansız değildir. Ancak Imba'da öyle yapmak yerine unvanı belirlemek için *metodlar* tanıımlayabilirsiniz.
 
 ```imba
-class Todo
+class Yapilacaklar
 
     prop title
 
 ```
 
-The above is basically a quick way to define both a getter and a setter for the instance variable title.
+Yukarıdakiler temel olarak bir örneğin başlığını tanımlamak için bir alıcı ve bir ayarlayıcı oluşturmanın hızlı yoludur.
 
 ```imba
-class Todo
+class Yapilacaklar
 
     def title
         @title
@@ -42,14 +42,14 @@ class Todo
 
 ```
 
-> **TODO** Explain advanced features of `prop` and `attr`.
+> **TODO**, `prop` ve `attr`'ın gelişmiş özelliklerini açıklar.
 
-## Inheritance
+## Kalıtsallık
 
-Classes can inherit from other classes. The implementation relies on JavaScript prototypal inheritance, with some added conveniences.
+Sınıflar, diğer sınıflardan kalıtsallık alabilir. Bu uygulama, bazı ek kolaylıklar içeren JavaScript'in 	prototipik kalıtımına dayanır.
 
 ```imba
-# Example borrowed from coffeescript.org
+# Örnek coffeescript.org'dan alınmıştır
 class Animal
 
     def initialize name
@@ -75,4 +75,4 @@ sam.move
 tom.move
 ```
 
-> **TODO** Explain advanced use of super
+> **TODO** Örnek, "super" kullanımını ileri düzeyde açıklar
