@@ -3,11 +3,11 @@ title: Plugins
 order: 1
 ---
 
-# Plugins
+# Eklentiler
 
-Please note that these plugins might have varying degrees of quality and are not maintained by the Imba project.
+Lütfen bu eklentilerin farklı derecelerde kaliteye sahip olabileceğini ve Imba projesi tarafından korunmadığını unutmayın.
 
-|                    |                                                   External Link |
+|                    |                                                    Dış Bağlantı |
 |:------------------ | ---------------------------------------------------------------:|
 | Visual Studio Code |     [sombee/vscode-imba](http://github.com/somebee/vscode-imba) |
 | Sublime Text       | [somebee/sublime-imba](https://github.com/somebee/sublime-imba) |
