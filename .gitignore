@@ -6,3 +6,7 @@ npm-debug.log
 www/client.js
 www/sandbox.js
 docs/gists/
+# Local Netlify folder
+.netlify
+
+www/index.html
