@@ -171,3 +171,6 @@ export class App
 	def issues
 		@issues ||= Doc.get('/issues/all','json')
 
+	def refetchGuide lang
+		const guide = await fetch("/guide-source?lang={lang}")
+		@guide = guide:_docs

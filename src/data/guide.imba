@@ -2,17 +2,23 @@ var fs = require 'fs'
 var path = require 'path'
 var writeGood = require 'write-good'
 
+import LanguageGuide from '../util/languages'
+
 export class Guide
-	var instance = null
-	def self.get
-		instance ||= Guide.new
+	var instance = []
+	def self.get lang
+		instance[lang] ||= Guide.new(lang)
 		
 	prop docs
-	
-	def initialize lint = false
+
+	def locateRoot lang
+		const location = LanguageGuide(lang)
+		path.resolve(__dirname,"../../{location}")
+
+	def initialize lang, lint = false
 		# var path = require 'path'
 		var md = require '../util/markdown'
-		var root = path.resolve(__dirname,"../../guide")
+		var root = locateRoot(lang)
 		var docs = []
 		var guides = []
 		var guide = null # {sections: []}
