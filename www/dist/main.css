@@ -551,7 +551,7 @@ hr + p {
   position: relative;
 }
 .md ul li:before {
-  content: "\2022";
+  content: "•";
   width: 20px;
   text-align: center;
   position: absolute;
@@ -1374,8 +1374,8 @@ hr + p {
   background-color: #202B31;
 }
 #header .Logo svg {
-  width: 34px;
-  height: auto;
+  width: auto;
+  height: 50px;
 }
 #header .greedy {
   -ms-flex: 100 1 auto;
@@ -1446,6 +1446,10 @@ hr + p {
 }
 #header a i {
   padding-bottom: 2px;
+}
+#header a i img {
+  width: 25px;
+  filter: invert(100%) sepia(99%) saturate(0%) hue-rotate(108deg) brightness(106%) contrast(100%);
 }
 #header a:hover i {
   border-bottom: 2px solid;
@@ -2801,7 +2805,7 @@ blockquote ._snippet {
 .playground .item:before,
 .playground ._todo:before {
   position: absolute;
-  content: "\2605";
+  content: "★";
   left: 6px;
   top: 8px;
   color: rgba(0, 0, 0, 0.3);
@@ -2832,7 +2836,7 @@ blockquote ._snippet {
 }
 .playground .todo:before,
 .playground ._todo:before {
-  content: "\2714";
+  content: "✔";
 }
 .playground .todo.done,
 .playground ._todo.done {
@@ -3673,3 +3677,5 @@ body[data-route='gists'] #gist {
   width: 100%;
   height: 100%;
 }
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJtYWluLmNzcyIsInNvdXJjZVJvb3QiOiIifQ==*/
