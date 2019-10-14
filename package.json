@@ -24,7 +24,8 @@
     "dev": "imba ./src/server.imba",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",
     "docker-deploy": "docker push imba.io:`git log --pretty=format:'%h' HEAD -n1`",
-    "docker-run": "docker run -p3011:3011 -t -i imba.io:`git log --pretty=format:'%h' HEAD -n1`"
+    "docker-run": "docker run -p3011:3011 -t -i imba.io:`git log --pretty=format:'%h' HEAD -n1`",
+    "lint": "imba src/data/guide.imba"
   },
   "files": [],
   "directories": {},
@@ -52,6 +53,7 @@
     "style-loader": "^0.20.1",
     "uglifyjs-webpack-plugin": "^1.2.2",
     "webpack": "^3.10.0",
-    "webpack-assets-manifest": "^1.0.0"
+    "webpack-assets-manifest": "^1.0.0",
+    "write-good": "^1.0.2"
   }
 }

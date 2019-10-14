@@ -1,5 +1,6 @@
 var fs = require 'fs'
 var path = require 'path'
+var writeGood = require 'write-good'
 
 export class Guide
 	var instance = null
@@ -8,7 +9,7 @@ export class Guide
 		
 	prop docs
 	
-	def initialize
+	def initialize lint = false
 		# var path = require 'path'
 		var md = require '../util/markdown'
 		var root = path.resolve(__dirname,"../../guide")
@@ -35,14 +36,21 @@ export class Guide
 					continue unless filename.toLowerCase().endsWith(".md")
 					
 					let file = fs.readFileSync(src,'utf-8')
+					if lint
+						console.log "linting {src}"
+						const suggestions = writeGood(file)
+						if suggestions:length > 0
+							suggestions.map do |x|
+								const relative = path.relative('.', src)
+								console.log "{relative}:{x:index}", x:reason
 					let doc = md.render(file)
-					
+
 					let route = guide ? (guide:id + '/' + id) : id
 					# doc:guide = guide:id
 					doc:id = doc:route = route
 					if !doc:title and doc:toc[0]
 						doc:title = doc:toc[0]:title
-					
+
 					data[route] = doc
 					parts.push(doc) unless doc:type == 'snippet'
 			
@@ -58,4 +66,6 @@ export class Guide
 		add(root)
 		@docs = data
 		return self
-		
+
+if require:main == module
+	Guide.new(lint: true)
