@@ -2,6 +2,7 @@
 import App from './app'
 import Site from './views/Site'
 import Guide from './data/guide'
+import LanguageCode from './util/languages'
 
 # Setting up the express server
 var express = require 'express'
@@ -23,10 +24,18 @@ srv.get(/^([^\.]+\.(md|json|imba))$/) do |req,res|
 	var result = await APP.fetch(req:path)
 	res.send JSON.stringify(result)
 
+# Load language specific guide
+srv.get ('/guide-source') do |req,res|
+	const lang = LanguageCode(req:query:lang)
+	let guide = Guide.get lang
+	res.send JSON.stringify(guide)
+
+
 # catch-all rendering for the whole site
 # routing etc is handled by the <site> tag itself
 srv.get(/^([^\.]*)$/) do |req,res|
-	let guide = Guide.get
+	const lang = LanguageCode(req:query:lang)
+	let guide = Guide.get lang
 	let app = req:app = App.new(guide: guide.docs)
 	req:app.req = req
 
