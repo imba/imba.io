@@ -45,7 +45,7 @@ srv.get(/^([^\.]*)$/) do |req,res|
 			<meta charset="utf-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,minimum-scale=1">
 			<meta name="keywords" content="imba">
-			<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'>
+			<link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'>
 			<link rel="stylesheet" href="/dist/main.css" media="screen">
 			<style html=highlighter:theme.CSS>
 		<body>
