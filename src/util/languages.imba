@@ -16,7 +16,7 @@ export var def LanguageCode val
 
 # Locate the language guide base path from the value or default to English
 export def LanguageGuide val
-	if !val
+	if Boolean(val)
 		return "guide"
 	const v = val.toLowerCase()
 	const code = Languages.find do |lang|
