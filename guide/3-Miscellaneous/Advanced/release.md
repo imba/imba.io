@@ -13,6 +13,7 @@ The rest of this page serves as a checklist for the release manager.
 
 ## Checklist
 
+- [ ] Make sure you have run `npm build`.
 - [ ] Verify your current version before bumping `npm version`.
 
 If the version looks correct you can proceed by bumping the patch version
