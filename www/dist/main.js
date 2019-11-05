@@ -134,7 +134,9 @@ let o=this[t]
 if(!o)if("svg:"==t.substr(0,4))o=this.defineTag(t,"svg:element")
 else if(i.HTML_TAGS.indexOf(t)>=0){if(o=this.defineTag(t,"element"),e=i.HTML_ATTRS[t])for(let t=0,n=r(e.split(" ")),s=n.length;t<s;t++)i.attr(o,n[t])
 if(n=i.HTML_PROPS[t])for(let t=0,e=r(n.split(" ")),s=e.length;t<s;t++)i.attr(o,e[t],{dom:!0})}return o},i.createElement=function(t,e,n,r){var o,a=t
-a=t instanceof Function?t:i.TAGS.findTagType(t),o=e instanceof s?e.par$:r instanceof i.Tag?r:e&&void 0!=r?e[r]:e&&e._tag||e
+if(t instanceof Function)a=t
+else{if(!i.TAGS.findTagType(t))throw"cannot find tag-type "+t
+a=i.TAGS.findTagType(t)}o=e instanceof s?e.par$:r instanceof i.Tag?r:e&&void 0!=r?e[r]:e&&e._tag||e
 var u=a.build(o)
 return e instanceof s&&(e.i$++,u.$key=n),e&&void 0!=n&&(e[n]=u),u},i.createTagCache=function(t){var e=[]
 return e._tag=t,e},i.createTagMap=function(t,e,n){var r=new s(t,e,void 0!=n?n:t._tag)
@@ -531,6 +533,6 @@ return t}(t[3]||o(t,3,t[2])),4),!0)):e}})
 e.DocsPage=v},function(t,e){var n=e.Languages=[{value:"en",name:"English",location:"guide"},{value:"tr",name:"Turkish",location:"tr-TR/guide"}]
 e.LanguageCode=function(t){if(!t)return"en"
 const e=t.toLowerCase()
-return n.find(function(t){return e==t.value}).value||"en"},e.LanguageGuide={}.LanguageGuide=function(t){if(!t)return"guide"
+return n.find(function(t){return e==t.value}).value||"en"},e.LanguageGuide={}.LanguageGuide=function(t){if(Boolean(t))return"guide"
 const e=t.toLowerCase(),r=n.find(function(t){return e==t.value})
 return r?r.location:"guide"}},function(t,e){}])
