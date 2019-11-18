@@ -41,7 +41,24 @@ srv.get(/^([^\.]*)$/) do |req,res|
 
 	var html = <html router-url=req:path>
 		<head>
-			<title> "imba.io"
+			# HTML Meta Tags
+			<title> "Imba 👐 Intuitive and powerful language for building web apps that fly"
+			<meta name="description" content="Imba is a new programming language for the web that compiles to performant and readable JavaScript. Imba was born to make developing web applications fun again.">
+			# Google / Search Engine Tags
+			<meta itemprop="name" content="Imba 👐 Intuitive and powerful language for building web apps that fly">
+			<meta itemprop="description" content="Imba is a new programming language for the web that compiles to performant and readable JavaScript. Imba was born to make developing web applications fun again.">
+			<meta itemprop="image" content="https://www.imba.io/static/Logo.png">
+			# Facebook Meta Tags
+			<meta property="og:url" content="https://www.imba.io">
+			<meta property="og:type" content="website">
+			<meta property="og:title" content="Imba 👐 Intuitive and powerful language for building web apps that fly">
+			<meta property="og:description" content="Imba is a new programming language for the web that compiles to performant and readable JavaScript. Imba was born to make developing web applications fun again.">
+			<meta property="og:image" content="https://www.imba.io/static/Logo.png">
+			# Twitter Meta Tags
+			<meta name="twitter:card" content="summary_large_image">
+			<meta name="twitter:title" content="Imba 👐 Intuitive and powerful language for building web apps that fly">
+			<meta name="twitter:description" content="Imba is a new programming language for the web that compiles to performant and readable JavaScript. Imba was born to make developing web applications fun again.">
+			<meta name="twitter:image" content="https://www.imba.io/static/Logo.png">
 			<meta charset="utf-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,minimum-scale=1">
 			<meta name="keywords" content="imba">
