@@ -52,3 +52,4 @@ Happy Coding!
 [9]: https://github.com/imba/imba/issues
 [10]: https://github.com/imba/imba.io/issues
 [yt]: youtube.com/channel/UCPOqjieI7GOx-gAKBLMktVg
+[s]: https://scrimba.com
