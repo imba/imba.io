@@ -10,3 +10,4 @@ docs/gists/
 .netlify
 
 www/index.html
+www/dist
