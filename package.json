@@ -18,7 +18,7 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "start": "imba ./src/server.imba",
+    "start": "nodemon -x 'yarn build && ./node_modules/.bin/imba src/server.imba' -e imba -e md",
     "build": "webpack --colors --display-modules",
     "build-netlify": "yarn run build && imba src/netlify.imba",
     "watch": "webpack --devtool inline-source-map --watch --progress --colors --display-modules --debug",
@@ -36,7 +36,9 @@
     "type": "git",
     "url": "git://github.com/somebee/imba.io.git"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.0"
+  },
   "dependencies": {
     "css-loader": "^3.2.0",
     "express": "^4.13.2",
