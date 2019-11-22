@@ -1,8 +1,11 @@
 # This is the list of supported languages
 # This structure is used in <select>
 export var Languages = [
-	{ value: "en", name: "English", location: "guide" },
-	{ value: "tr", name: "Turkish", location: "tr-TR/guide" }
+	{ value: "en", name: "English", location: "guide", 
+	items: { HOME: 'home', LEARN: 'learn', DOCS: 'docs', COMMUNITY: 'community' } },
+
+	{ value: "tr", name: "Turkish", location: "tr-TR/guide",
+	items: { HOME: 'home', LEARN: 'learn', DOCS: 'docs', COMMUNITY: 'community' } }
 ]
 
 # Use one the supported languages or default to English

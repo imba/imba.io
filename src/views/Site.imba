@@ -62,6 +62,11 @@ export tag Site
 			
 	def toggleMenu
 		document:body:classList.toggle('menu')
+
+	def navItemTitle key
+		const currentLanguage = Languages.find do |l|
+			l:value == language
+		currentLanguage:items[key.toUpperCase()]
 		
 	def render
 		<self>
@@ -69,10 +74,10 @@ export tag Site
 				<nav.content>
 					<a.tab.logo route-to.exact='/'><Logo>
 					<span.greedy>
-					<a.tab.home route-to.exact='/'> <i> 'home'
-					<a.tab.guides route-to='/guides'> <i> 'learn'
-					<a.tab.guides route-to='/docs'> <i> 'docs'
-					<a.tab route-to='/community'> <i> 'community'
+					<a.tab.home route-to.exact='/'> <i> navItemTitle('home')
+					<a.tab.guides route-to='/guides'> <i> navItemTitle('learn')
+					<a.tab.guides route-to='/docs'> <i> navItemTitle('docs')
+					<a.tab route-to='/community'> <i> navItemTitle('community')
 					# GitHub and Twitter icons are from https://simpleicons.org
 					<a.github href='https://github.com/somebee/imba' target="_blank"> <i>
 						<img src="/images/github.svg">
