@@ -5,7 +5,7 @@ order: 7
 
 # State Management
 
-Most frameworks for developing web applications try to solve one thing well; update views automatically when the underlying data changes. Imba is unoppinionated about state management.
+Most frameworks for developing web applications try to solve one thing well; update views automatically when the underlying data changes.
 
 Imba does dom reconciliation in a completely new way, which is more than [20 times faster](https://somebee.github.io/dom-reconciler-bench/index.html) than other approaches. Because of this we really don't need to think about state management. There is no need for observable objects, immutable data-structures etc.
 
