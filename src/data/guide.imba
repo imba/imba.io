@@ -15,7 +15,7 @@ export class Guide
 		const location = LanguageGuide(lang)
 		path.resolve(__dirname,"../../{location}")
 
-	def initialize lang, lint = false
+	def initialize lang, lint
 		# var path = require 'path'
 		var md = require '../util/markdown'
 		var root = locateRoot(lang)
@@ -74,4 +74,4 @@ export class Guide
 		return self
 
 if require:main == module
-	Guide.new(lint: true)
+	Guide.new("en", true)
