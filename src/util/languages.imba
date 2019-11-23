@@ -3,6 +3,7 @@
 export var Languages = [
 	{ value: "en", name: "English", location: "guide" },
 	{ value: "tr", name: "Turkish", location: "tr-TR/guide" }
+	{ value: "jp", name: "Japanese", location: "ja-JP/guide" }
 ]
 
 # Use one the supported languages or default to English
