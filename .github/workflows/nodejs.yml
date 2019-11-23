@@ -29,15 +29,15 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master'
     steps:
-      - name: Update imba.io
-	uses: appleboy/ssh-action@master
-	with:
-	  host: ${{ secrets.HOST }}
-	  username: ${{ secrets.USERNAME }}
-	  key: ${{ secrets.KEY }}
-	  port: ${{ secrets.PORT }}
-	  script: |
-	    git -C /home/imba/imba.io stash
-	    git -C /home/imba/imba.io pull origin master
-	    /usr/bin/yarn --cwd /home/imba/imba.io install
-	    sudo systemctl restart imba.io
+    - name: Update imba.io
+    uses: appleboy/ssh-action@master
+    with:
+      host: ${{ secrets.HOST }}
+      username: ${{ secrets.USERNAME }}
+      key: ${{ secrets.KEY }}
+      port: ${{ secrets.PORT }}
+      script: |
+        git -C /home/imba/imba.io stash
+        git -C /home/imba/imba.io pull origin master
+        /usr/bin/yarn --cwd /home/imba/imba.io install
+        sudo systemctl restart imba.io
