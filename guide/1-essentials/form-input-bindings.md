@@ -9,25 +9,27 @@ order: 6
 
 ### Text
 
-```text
+```imba
 var store = {message: ""}
 Imba.mount <section ->
     <input[store:message]>
     <div> "Message is {store:message}"
 ```
 
+
 ### Range
 
-```text
+```imba
 var data = {counter: 50}
 Imba.mount <div ->
     <input[data:counter] type='range' min=0 max=100 step=1>
     <div> "Count is {data:counter}"
 ```
 
+
 ### Checkbox
 
-```text
+```imba
 var store = {
     message: ""
     enabled: false
@@ -37,9 +39,8 @@ Imba.mount <div.grid ->
     <span> "enabled: {store:enabled}"
 ```
 
-### Multiple Checkboxes
-
-```text
+### Multiple checkboxes
+```imba
 var data = {skills: ["Literacy"]}
 Imba.mount <div ->
     <header.bar> for option in ['React','Vue','Imba','Angular','Ember']
@@ -49,9 +50,10 @@ Imba.mount <div ->
     <div> "Your skills: {data:skills.join(", ")}"
 ```
 
+
 ### Select & Radio
 
-```text
+```imba
 var options = ['React','Vue','Imba','Angular','Ember']
 var data = {choice: null}
 
@@ -69,7 +71,8 @@ Imba.mount <div ->
 
 ### Rich values
 
-```text
+```imba
+
 var options = [
     { name: 'React', url: "reactjs.org" }
     { name: 'Vue', url: "vuejs.org" }
@@ -94,7 +97,8 @@ Imba.mount <div ->
 
 ### Example
 
-```text
+```imba
+
 var store =
     people: [{
         name: ""

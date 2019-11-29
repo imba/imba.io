@@ -13,11 +13,11 @@ This probably sounds naive, but it is true. Even in a complex platform like [scr
 
 > The virtual DOM has been optimized by Vue, React, and others for years. How could this possibly be 20 times faster? Imba uses a very different approach, where we essentially compile your **declarative views** down to a very optimized **inline cached dom**.
 
-## Using MobX, Redux, Apollo, Relay, ...
+### Using MobX, Redux, Apollo, Relay, ...
 
 You are free to use whatever state management framework you want, just know that if your only reason for using them is to make sure your view is automatically updated alongside your data, **you don't need them**. The only requirement is that you mount your root view using `Imba.mount`.
 
-```text
+```imba
 # a plain object containing state?!
 var state = {x: 0, y: 0, title: "Something"}
 
@@ -35,29 +35,31 @@ tag App
 Imba.mount <App>
 ```
 
-## But, my view isn't updating?!
 
-The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous \(using async/await or returning a promise\), Imba will also re-render after this promise is finished. Practically all state changes in applications happen as a result of some user interaction. For the few other cases, we can call `Imba.commit` manually.
+### But, my view isn't updating?!
 
-### Receiving data through a WebSocket
+The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using async/await or returning a promise), Imba will also re-render after this promise is finished. Practically all state changes in applications happen as a result of some user interaction. For the few other cases, we can call `Imba.commit` manually.
+
+#### Receiving data through a WebSocket
 
 If you update state based on data received through a socket you will need to notify Imba that something might have changed. The easiest way to do this is to simply:
 
-```text
+```imba
 # Call Imba.commit after every message from socket
 mySocket.addEventListener('message') do Imba.commit
 ```
 
-### Receiving data through fetch
+#### Receiving data through fetch
 
 If you are receiving data through xmlhttprequest/window.fetch, you should call Imba.commit after the request is finished. If you do this a lot you should probably just create a fetch-wrapper that automatically calls Imba.commit.
 
-```text
+```imba
 def load
     var res = await window.fetch("/items")
     var data = await res.json
     MyState:items = data
     # just notify Imba that it should reschedule items
     Imba.commit
+
 ```
 

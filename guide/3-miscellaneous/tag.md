@@ -7,17 +7,18 @@ order: 6
 
 Even though tags are just very thin wrappers around native DOM elements, they do have some functionality that is worth knowing. If you want to deal with the DOM element directly, you can always access that through `tag.dom`
 
-```text
+```
 var element = <div.one.two> "Hello"
 element # => Imba.Tag - thin wrapper
 element.dom # => HTMLDivElement - real dom element
 ```
 
-## Lifecycle
+
+### Lifecycle
 
 There are a few methods you can override on custom tags to hook into the lifecycle of a tag. Here we override all these methods in our custom `Example` tag
 
-```text
+```imba
 tag Example
     def build
         # called once, before properties are set
@@ -52,37 +53,37 @@ tag Example
 Imba.mount <Example[{name: "Lifecycle"}]>
 ```
 
-## Methods
+### Methods
 
 Access the raw DOM Element for this tag.
 
-### `tag.flags`
+#### `tag.flags`
 
 Returns the dom.classList
 
-### `tag.data`
+#### `tag.data`
 
 Returns the data bound to this tag.
 
-### `tag.render`
+#### `tag.render`
 
 Does nothing by default. Override to do custom rendering.
 
-### `tag.trigger(name, data = null)`
+#### `tag.trigger(name, data = null)`
 
 Trigger custom event on this tag. Events will bubble like native events, but are dispatched and processed directly inside the Imba.Event system, without generating a real browser Event. Optionally supply data for the event in the second argument.
 
-```text
+```
 tag CustomList < ul
     def select item
         trigger('listselect',item)
 ```
 
-### `tag.schedule(options)`
+#### `tag.schedule(options)`
 
 Call to activate the scheduler for this tag. The default options are `events: true`. See Imba.Scheduler for other options.
 
-```text
+```imba
 tag Clock
     def mount
         # when element is inserted in document
@@ -94,25 +95,25 @@ tag App
         # when element is inserted in document
         # schedule to re-render after every handled event
         schedule(events: true)
+
 ```
 
-### `tag.unschedule`
+#### `tag.unschedule`
 
 Deactivate the scheduler for this tag.
 
-## Flagging
+### Flagging
 
-## Styling
+### Styling
 
-### `tag.css(name)`
+#### `tag.css(name)`
 
 Returns value of inline style named `name`
 
-### `tag.css(name, value)`
+#### `tag.css(name, value)`
 
 Setting styles
-
-```text
+```imba
 var node = <div>
 # with key and value
 node.css('display','block')
@@ -123,4 +124,3 @@ node.css(display: 'block', position: 'absolute')
 # inline styles are actually using the css-method
 # Imba.createElement('div').css('display','block').end()
 ```
-

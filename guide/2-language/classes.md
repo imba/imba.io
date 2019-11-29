@@ -7,7 +7,7 @@ order: 5
 
 ## Declaration
 
-```text
+```imba
 class Point
     def initialize x,y
         @x = x
@@ -20,17 +20,18 @@ To create instances of classes in Imba you use the `new` method like `Array.new`
 
 ## Properties
 
-You can define properties on classes, which are automatically generated getters and setters. As mentioned earlier, Imba embraces the philosophy that classes should expose everything through methods. If you want to get/set the title of a `Todo` in JavaScript, it's not uncommon to just get/set it as a property directly. In Imba, you would want to instead define _methods_ to set and get the title.
+You can define properties on classes, which are automatically generated getters and setters. As mentioned earlier, Imba embraces the philosophy that classes should expose everything through methods. If you want to get/set the title of a `Todo` in JavaScript, it's not uncommon to just get/set it as a property directly. In Imba, you would want to instead define *methods* to set and get the title.
 
-```text
+```imba
 class Todo
 
     prop title
+
 ```
 
 The above is basically a quick way to define both a getter and a setter for the instance variable title.
 
-```text
+```imba
 class Todo
 
     def title
@@ -38,6 +39,7 @@ class Todo
 
     def title= value
         @title = value
+
 ```
 
 > **TODO** Explain advanced features of `prop` and `attr`.
@@ -46,7 +48,7 @@ class Todo
 
 Classes can inherit from other classes. The implementation relies on JavaScript prototypal inheritance, with some added conveniences.
 
-```text
+```imba
 # Example borrowed from coffeescript.org
 class Animal
 
@@ -74,4 +76,3 @@ tom.move
 ```
 
 > **TODO** Explain advanced use of super
-

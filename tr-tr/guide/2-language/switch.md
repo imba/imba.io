@@ -7,7 +7,7 @@ order: 9
 
 Imba'da "Switch" kodunu iki farklı şekilde kullanabilirsiniz:
 
-```text
+```
 var number = 1
 var numberString = switch number
   when 0
@@ -29,7 +29,7 @@ var numberString3 = switch number
   when 1
     "one"
   else "not 1 nor 0"
+
 ```
 
 Gördüğünüz gibi, `else` ifadesi `default` olarak kullanılmış. Daha anlaşılabilir değil mi?
-

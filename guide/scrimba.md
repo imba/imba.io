@@ -1,4 +1,5 @@
-# Scrimba
+## Scrimba
 
-The interactive screencasting platform [Scrimba.com](https://scrimba.com) is written in Imba, both frontend and backend.
+The interactive screencasting platform [Scrimba.com][0] is written in Imba, both frontend and backend.
 
+[0]: https://scrimba.com

@@ -2,13 +2,12 @@
 title: Tips
 ---
 
-# Implicit self
+## Implicit self
 
 Just like Ruby, Imba has implicit self and implicit calling. This means that something like `hello` will compile to `self.hello()` in Imba. Calls are also implicit, so `hello.world` is equivalent to `self.hello().world()`.
 
-## Implicit self
-
-```text
+### Implicit self
+```imba
 # as long as hello is not declared in the scope
 # it will evaluate to self.hello(), which throws an error 
 hello
@@ -19,13 +18,14 @@ var hi = 'Hi!'
 hi # exists in scope
 ```
 
-## Implicit call / parenthesis
+### Implicit call / parenthesis
 
-To access keys instead of calling we can use `object['key']` just like in js. But since we are so used to using direct accessors a lot when dealing with other js libraries etc, imba also has a shorthand syntax for access.
+To access keys instead of calling we can use `object['key']` just like in js.
+But since we are so used to using direct accessors a lot when dealing with other
+js libraries etc, imba also has a shorthand syntax for access.
 
-## Call vs access
-
-```text
+### Call vs access
+```imba
 # we define an item
 var item = {name: 'Hello'}
 
@@ -44,9 +44,8 @@ item['name']
 item:name
 ```
 
-## What about global variables?
-
-```text
+### What about global variables?
+```imba
 # if hello throws an error in the example above,
 # what happens when we try to access window?
 window # phew - no error
@@ -58,11 +57,11 @@ window # phew - no error
 # clearTimeout, clearInterval, parseInt, parseFloat, __dirname
 ```
 
-Variables must be predeclared \(unlike Ruby and Python\). This gives you very finegrained control over variable access.
+Variables must be predeclared (unlike Ruby and Python). This gives you very finegrained control over variable access.
 
-## Levels of scoping
 
-```text
+### Levels of scoping
+```imba
 # top level
 var top = 1
 
@@ -94,7 +93,7 @@ class Todo
         return context
 ```
 
-```text
+```imba
 var outer = 1
 var completed = 0
 
@@ -110,23 +109,22 @@ class Todo
 
     def complete
         # completed is
-        completed++
+        completed++ 
 ```
 
-## Implicit calling
-
-```text
+### Implicit calling
+```imba
 # methods are declared scopes
 def action
     # local variables acts just like in JavaScript
     var inner = 1
     outer += inner
     inner = 2
-
+    
     # value is _not_ a variable in scope
     value # -> this.value()
     value = 1
-
+    
     # you can also explicitly use self
     self.value
     self.value = 10 # -> this.setValue(10)
@@ -151,13 +149,12 @@ class Human
 
 To make it even easier to see whether things are variables or implicit calls, Imba will highlight local variables differently in the web-based editor the offical plugins for IDEs.
 
-## block scoping
+### block scoping
 
-Variables can also be declared with the `let` keyword. Such variables will \(like in ES6\) be scoped to their block rather than their function/closure.
+Variables can also be declared with the `let` keyword. Such variables will (like in ES6) be scoped to their block rather than their function/closure.
 
-## let vs var
-
-```text
+### let vs var
+```imba
 var a = 5
 var b = 10
 
@@ -172,11 +169,11 @@ console.log(a) # 5
 console.log(b) # 1
 ```
 
-## Using self explicitly
+### Using self explicitly
 
-Remember that a lone identifier will resolve to a variable _if it exists in the scope_. Fear not though, the highlighter will make it clear whether an identifier resolves to a variable. In these cases, you need to use `self` explicitly.
+Remember that a lone identifier will resolve to a variable *if it exists in the scope*. Fear not though, the highlighter will make it clear whether an identifier resolves to a variable. In these cases, you need to use `self` explicitly.
 
-```text
+```imba
 var engine = 1
 
 class Car
@@ -196,4 +193,3 @@ class Car
         window # resolves to global variable window
         self.window # call window (and return @window)
 ```
-

@@ -7,7 +7,7 @@ order: 8
 
 ## Filtering list
 
-```text
+```imba
 # get name of all properties on Element
 var items = Object.keys(Element:prototype).sort
 
@@ -27,9 +27,10 @@ tag App
 Imba.mount <App[items]>
 ```
 
+
 ## Master - Details
 
-```text
+```imba
 # get name of all properties on Element
 var notes = [
     {body: "First note"}
@@ -54,9 +55,9 @@ tag App
 Imba.mount <App>
 ```
 
-## Simple todo list
 
-```text
+## Simple todo list
+```imba
 tag App
     prop items
 
@@ -89,4 +90,3 @@ The basic Imba implementation of TodoMVC is a good place to start playing around
 ### [Hello World](https://github.com/imba/hello-world-imba)
 
 Tiny application with webpack/imbapack setup.
-

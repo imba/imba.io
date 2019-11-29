@@ -5,48 +5,48 @@ order: 1
 
 # Basics
 
-Even though the syntax and semantics of Imba is much more related to Ruby than JavaScript, it does compile down to plain performant JavaScript, and is fully compatible with any existing JavaScript library. Imba does not extend any native types from JavaScript. Arrays are arrays, strings are strings, numbers are numbers, classes are constructors with prototypes and so forth. If you simply like Imba better, there is no reason not to write your npm package in Imba, even if it is supposed to be used in the general JavaScript ecosystem. In fact, Imba produces _very_ readable JavaScript, by keeping your indentation, comments, and coding style.
+Even though the syntax and semantics of Imba is much more related to Ruby than JavaScript, it does compile down to plain performant JavaScript, and is fully compatible with any existing JavaScript library. Imba does not extend any native types from JavaScript. Arrays are arrays, strings are strings, numbers are numbers, classes are constructors with prototypes and so forth. If you simply like Imba better, there is no reason not to write your npm package in Imba, even if it is supposed to be used in the general JavaScript ecosystem. In fact, Imba produces *very* readable JavaScript, by keeping your indentation, comments, and coding style.
 
-## Interoperability
+### Interoperability
 
 Imba compiles to very straight-forward JavaScript. All the fundamental types are the same as in JavaScript, so for documentation about available methods see MDN [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function), [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp), [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), [Math](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
 
-### Strings
+#### Strings
 
-```text
+```imba
 var single = 'single quotes'
 var double = "double quotes"
 var interpolation = "string has {double}"
 ```
 
-### Numbers
+#### Numbers
 
-```text
+```imba
 var integer = 42
 var float = 42.10
 ```
 
-### Objects
+#### Objects
 
-```text
+```imba
 var object = {name: 'Imba', type: 'Language'}
 ```
 
-### Arrays
 
-```text
+#### Arrays
+
+```imba
 var array = [1,2,3,4,5]
 ```
 
-### Regexes
+#### Regexes
 
-```text
+```imba
 var regex = /number is (\d+)/
 ```
 
-### Loops
-
-```text
+#### Loops
+```imba
 for num in [1,2,3]
     num
 
@@ -54,18 +54,18 @@ for own key, value of object
     value
 ```
 
-### Functions
+#### Functions
 
-```text
+```imba
 def hello
     return 'world'
 
 console.log hello
 ```
 
-### Classes
+#### Classes
 
-```text
+```imba
 class Todo
 
     def initialize title
@@ -76,9 +76,9 @@ class Todo
         @completed = yes
 ```
 
-### Operators
+#### Operators
 
-```text
+```imba
 var item
 item = 100 # set value of item
 item ||= 100 # set if value is falsy
@@ -96,15 +96,14 @@ item >= 10 # greater than or equal
 item <= 10 # less than or equal
 ```
 
-### Bitwise operators
+#### Bitwise operators
 
-```text
+```imba
 a & b   # Bitwise AND
 a | b   # Bitwise OR
 a ^ b   # Bitwise XOR
 ~ a     # Bitwise NOT
 a << b  # Left shift
 a >> b  # Sign-propagating right shift
-a >>> b    # Zero-fill right shift
+a >>> b	# Zero-fill right shift
 ```
-

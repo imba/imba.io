@@ -7,7 +7,7 @@ order: 5
 
 ## Tanım
 
-```text
+```imba
 class Puan
     def initialize x,y
         @x = x
@@ -20,17 +20,18 @@ Imba'da sınıf örnekleri oluşturmak için, JavaScript'e özel `new Array()` s
 
 ## Özellikler
 
-Otomatik olarak oluşturulan alıcılar ve ayarlayıcılar olan sınıfların özelliklerini tanımlayabilirsiniz. Daha önce de bahsedildiği gibi, Imba, sınıfların her şeyi metodlarla ortaya çıkarması gerektiği felsefesini benimser. JavaScript'te `Todo` unvanını almak veya ayarlamak istiyorsanız, doğrudan bir özellik olarak almak veya ayarlamak o kadar da imkansız değildir. Ancak Imba'da öyle yapmak yerine unvanı belirlemek için _metodlar_ tanıımlayabilirsiniz.
+Otomatik olarak oluşturulan alıcılar ve ayarlayıcılar olan sınıfların özelliklerini tanımlayabilirsiniz. Daha önce de bahsedildiği gibi, Imba, sınıfların her şeyi metodlarla ortaya çıkarması gerektiği felsefesini benimser. JavaScript'te `Todo` unvanını almak veya ayarlamak istiyorsanız, doğrudan bir özellik olarak almak veya ayarlamak o kadar da imkansız değildir. Ancak Imba'da öyle yapmak yerine unvanı belirlemek için *metodlar* tanıımlayabilirsiniz.
 
-```text
+```imba
 class Yapilacaklar
 
     prop title
+
 ```
 
 Yukarıdakiler temel olarak bir örneğin başlığını tanımlamak için bir alıcı ve bir ayarlayıcı oluşturmanın hızlı yoludur.
 
-```text
+```imba
 class Yapilacaklar
 
     def title
@@ -38,15 +39,16 @@ class Yapilacaklar
 
     def title= value
         @title = value
+
 ```
 
 > **TODO**, `prop` ve `attr`'ın gelişmiş özelliklerini açıklar.
 
 ## Kalıtsallık
 
-Sınıflar, diğer sınıflardan kalıtsallık alabilir. Bu uygulama, bazı ek kolaylıklar içeren JavaScript'in prototipik kalıtımına dayanır.
+Sınıflar, diğer sınıflardan kalıtsallık alabilir. Bu uygulama, bazı ek kolaylıklar içeren JavaScript'in 	prototipik kalıtımına dayanır.
 
-```text
+```imba
 # Örnek coffeescript.org'dan alınmıştır
 class Animal
 
@@ -74,4 +76,3 @@ tom.move
 ```
 
 > **TODO** Örnek, "super" kullanımını ileri düzeyde açıklar
-

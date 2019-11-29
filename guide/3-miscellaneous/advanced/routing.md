@@ -3,11 +3,12 @@ title: Imba Router
 order: 4
 ---
 
+
 # Imba Router
 
 For most Single Page Applications, it’s recommended to use the [imba-router](https://github.com/somebee/imba-router) library. Check out this [6-part interactive screencast](https://scrimba.com/playlist/pMvYcg).
 
-```text
+```imba
 require 'imba-router'
 
 tag Home
@@ -26,5 +27,8 @@ tag App
                 <a route-to='/about'> "About"
             <Home route='/home'> 
             <About route='/about'>
+
 ```
+
+
 

@@ -14,4 +14,3 @@ Please note that these plugins might have varying degrees of quality and are not
 | Atom | [language-imba](https://atom.io/packages/language-imba) |
 | Emacs | [qwars/imba-mode.el](https://github.com/qwars/imba-mode.el) |
 | vim | [simeng/vim-imba](https://gitspeak.com/simeng/vim-imba.) |
-

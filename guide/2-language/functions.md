@@ -5,60 +5,61 @@ order: 3
 
 # Functions
 
-There are two types of functions in Imba, _methods_ and _blocks_. Imba automatically returns the last expression of the function.
+There are two types of functions in Imba, *methods* and *blocks*. Imba automatically returns the last expression of the function.
 
 ## Methods
 
-```text
+```imba
 def randomize
     Math.random
 ```
 
-```text
+```imba
 # A single argument
 def square num
     num * num
 ```
 
-```text
+```imba
 # optional arguments
 def call url, method = 'GET'
     # do something here
 ```
 
-```text
+```imba
 # Variadic arguments
 def race winner, *rest
     "{winner} beat {rest.join(', ')}"
 ```
 
-```text
+```imba
 # Optional arguments, with callback
 def save data, options = {}, &callback
     # do something here
 ```
 
-```text
+```imba
 # Named parameters
 def animate values, ease: 'linear', duration: 1
     # do something here
 ```
 
+
+
 ## Blocks
 
-```text
+```imba
 var square = do |v| v * v
 ```
 
-Blocks are like anonymous function expressions in JavaScript. They can be assigned and passed around. They have their own lexical scope / closure, but no dynamic scope. This means that self \(implicit _and_ explicit\) inside the block still refers to the self of the outer scope.
+Blocks are like anonymous function expressions in JavaScript. They can be assigned and passed around. They have their own lexical scope / closure, but no dynamic scope. This means that self (implicit *and* explicit) inside the block still refers to the self of the outer scope.
 
 Blocks can be passed in directly when calling functions, as the last argument.
 
-```text
+```imba
 [1,2,3,4].map do |num| num * 2
 
 item.save do
     # callback trigger when item is saved?
     console.log 'item was saved'
 ```
-

@@ -9,7 +9,7 @@ order: 5
 
 We can use `<tag :eventname=handler>` to listen to DOM events and run code when they’re triggered.
 
-```text
+```imba
 tag App
     prop counter
     def render
@@ -23,11 +23,11 @@ Imba.mount <App counter=0>
 
 In the example above we declared the handler inline. Usually it is better to define the handlers outside of the view, and decouple them from the event itself. This can be done in several ways.
 
-## Resolving Handlers
+## Resolving Handlers 
 
-You can also supply a string as the handler \(`<div :click="doSomething">`\). In this case, Imba will look for a method of that name on the current context \(self\). This means that if you have defined methods on your custom tags, you can refer to these methods. Since binding events is such an integral part of developing web applications, Imba also has a special syntax for this.
+You can also supply a string as the handler (`<div :click="doSomething">`). In this case, Imba will look for a method of that name on the current context (self). This means that if you have defined methods on your custom tags, you can refer to these methods. Since binding events is such an integral part of developing web applications, Imba also has a special syntax for this.
 
-```text
+```imba
 tag App
     prop counter
 
@@ -59,9 +59,9 @@ Imba.mount <App counter=0>
 
 ## Event Modifiers
 
-Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event \(stopPropagation, preventDefault etc\), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers never need to know about the event in the first place.
+Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers never need to know about the event in the first place.
 
-```text
+```
 # call preventDefault on the submit-event, then call doSomething
 <form :submit.prevent.doSomething>
 ```
@@ -75,9 +75,8 @@ Inspired by vue.js, Imba also supports modifiers. More often than not, event han
 
 ### Key Modifiers
 
-For keyboard events \(keydown, keyup, keypress\) there are also some very handy modifiers available.
-
-```text
+For keyboard events (keydown, keyup, keypress) there are also some very handy modifiers available.
+```
 # trigger addItem when enter is pressed
 <input type='text' :keydown.enter.addItem>
 
@@ -85,7 +84,7 @@ For keyboard events \(keydown, keyup, keypress\) there are also some very handy 
 # trigger gotoPrev/gotoNext when pressing up/down keys
 <div :keydown.up.gotoPrev :keydown.down.gotoNext>
 ```
-
+ 
 * .left
 * .right
 * .up
@@ -103,7 +102,8 @@ For keyboard events \(keydown, keyup, keypress\) there are also some very handy 
 * .shift
 * .meta
 
-```text
+
+```
 # only trigger when ctrl is pressed
 <button :click.ctrl.myHandler>
 
@@ -125,7 +125,7 @@ For keyboard events \(keydown, keyup, keypress\) there are also some very handy 
 
 When an event is processed by Imba, it will also look for an `on(eventname)` method on the tags as it traverses up from the original target.
 
-```text
+```
 tag App
     def onsubmit e
         e.prevent
@@ -140,13 +140,14 @@ tag App
 Imba.mount <App>
 ```
 
+
 ## Custom events
 
 #### `tag.trigger(name, data = null)`
 
 Custom events will bubble like native events, but are dispatched and processed directly inside the Imba.Event system, without generating a real browser Event. Optionally supply data for the event in the second argument. Here is a rather complex example illustrating several ways of dealing with custom events
 
-```text
+```imba
 tag Todo < li
     def clickRename
         trigger('itemrename',data)
@@ -186,7 +187,7 @@ Imba.mount <Todos>
 
 Imba handles all events in the dom through a single manager, listening at the root of your document. Each native event is wrapped in an Imba.Event-instance, which has a few methods worth knowing:
 
-```text
+```imba
 tag CustomElement
     def onclick event
         event.target # returns the Imba.Tag target for event
@@ -205,4 +206,3 @@ tag CustomElement
         event.ctrl # event.native:ctrlKey
         event.meta # event.native:metaKey
 ```
-

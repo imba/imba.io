@@ -1,4 +1,1 @@
-# blog
-
 Hello!
-

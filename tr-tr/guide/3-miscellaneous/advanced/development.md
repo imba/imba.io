@@ -9,8 +9,8 @@ The Imba compiler is itself written in Imba, using a custom version of the [Jiso
 
 Make sure you have the following tools installed
 
-* [Node.js](https://nodejs.org/en/)
-* [yarn](https://yarnpkg.com/lang/en/) or [npm](https://www.npmjs.com).
+- [Node.js](https://nodejs.org/en/)
+- [yarn](https://yarnpkg.com/lang/en/) or [npm](https://www.npmjs.com).
 
 All the code for the language is available on [GitHub](https://github.com/imba/imba)
 
@@ -48,4 +48,3 @@ yarn run test-webpack # npm run test-webpack
 ```bash
 yarn run test-chrome # npm run test-chrome
 ```
-

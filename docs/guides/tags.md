@@ -2,13 +2,11 @@
 title: Tags
 ---
 
-# tags
-
-## Basics
+# Basics
 
 This one of the main differentiators of Imba. The language has native support for tags. Tags are in fact native DOM elements, with a very lightweight wrapper that provides additional functionality and extensibility.
 
-```text
+```imba
 var title = <h1> 'This is a title'
 
 # id and classes can be set using a css/haml-like syntax
@@ -26,9 +24,8 @@ var app = <div#app>
     <section> list
 ```
 
-### Setting classes
-
-```text
+## Setting classes
+```imba
 <div.one.two.three>
 
 # you can also toggle a flag dynamically.
@@ -36,25 +33,23 @@ var app = <div#app>
 <div.one.two .red=isUrgent>
 ```
 
-### Setting attributes
-
-```text
+## Setting attributes
+```imba
 <div title='Example' tabindex=0 data-name='ok'>
 ```
 
-### Setting event handlers
-
-```text
+## Setting event handlers
+```imba
 <div :tap='save'> 'Tap me to save'
 ```
 
-## Defining
+
+# Defining
 
 Tags are basically a separate Class hierarchy with syntactic sugar for instantiating nodes. All html elements are predefined, but you can also extend these tags, or inherit from them with your own tags. The syntax for creating new tags is very similar to our class syntax.
 
-#### Inheriting from canvas
-
-```text
+### Inheriting from canvas
+```imba
 tag sketchpad < canvas
 
     def ontouchstart touch
@@ -65,24 +60,23 @@ var pad = <sketchpad width=500 height=300>
 #app.append pad
 ```
 
-#### Inherit from li
-
-```text
+### Inherit from li
+```imba
 tag entry < li
 tag group < entry
 tag project < entry
 tag task < entry
 ```
 
-### Cascading inheritance
+## Cascading inheritance
 
-Custom tags still use native supported node types in the DOM tree. Our `<sketchpad>` will render as a `<canvas class='_sketchpad'>` in the DOM, while `<task>` will render as `<li class='_entry _task'>`. This means that css/styling can also be inherited, and we can use query selectors to select all entries \(including inherited tags project and task\).
+Custom tags still use native supported node types in the DOM tree. Our `<sketchpad>` will render as a `<canvas class='_sketchpad'>` in the DOM, while
+`<task>` will render as `<li class='_entry _task'>`. This means that css/styling can also be inherited, and we can use query selectors to select all entries (including inherited tags project and task).
 
-### Selectors
+## Selectors
 
 Selectors are also a native part of Imba. There are 4 shorthands.
-
-```text
+```imba
 $(query)  # document.querySelectorAll(query)
 $$(query) # document.querySelector(query)
 %(query)  # (self|scope).querySelectorAll(query)
@@ -101,4 +95,3 @@ tag post
     def comments
         %(comment).size # count comment tags inside this
 ```
-

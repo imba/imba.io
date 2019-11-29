@@ -5,9 +5,9 @@ order: 9
 
 # Switch
 
-You can use switch statements in two ways in Imba:
+You can use switch statements in two ways in Imba: 
 
-```text
+```
 var number = 1
 var numberString = switch number
   when 0
@@ -29,7 +29,7 @@ var numberString3 = switch number
   when 1
     "one"
   else "not 1 nor 0"
+
 ```
 
 As you see, `else` stands for `default`. Isn't it clearer?
-

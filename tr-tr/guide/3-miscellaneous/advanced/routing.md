@@ -3,11 +3,12 @@ title: Imba Router
 order: 4
 ---
 
+
 # Imba Router
 
 Tek Sayfa Uygulamaların çoğunda,[imba-router](https://github.com/somebee/imba-router) kütüphanesinin kullanılması önerilir. Bu [6 bölümlük etkileşimli ekran görüntüsünü](https://scrimba.com/playlist/pMvYcg) inceleyin.
 
-```text
+```imba
 require 'imba-router'
 
 tag Home
@@ -26,5 +27,8 @@ tag App
                 <a route-to='/about'> "About"
             <Home route='/home'> 
             <About route='/about'>
+
 ```
+
+
 

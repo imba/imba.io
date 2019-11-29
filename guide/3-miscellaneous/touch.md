@@ -7,7 +7,7 @@ order: 8
 
 Consolidates mouse and touch events. Touch objects persist across a touch, from touchstart until end/cancel. When a touch starts, it will traverse down from the innermost target, until it finds a node that responds to ontouchstart. Unless the touch is explicitly redirected, the touch will call ontouchmove and ontouchend / ontouchcancel on the responder when appropriate.
 
-```text
+```imba
 tag DraggableItem
     # called when a touch starts
     def ontouchstart touch
@@ -26,43 +26,43 @@ tag DraggableItem
     # called if touch is cancelled
     def ontouchcancel touch
         unflag 'dragging'
+
 ```
 
-> ontouchmove, ontouchend, and ontouchcancel do not bubble like regular events. The element on which ontouchstart was called will capture the touch, and all future events \(move,end,cancel\) will be called on that element.
+> ontouchmove, ontouchend, and ontouchcancel do not bubble like regular events. The element on which ontouchstart was called will capture the touch, and all future events (move,end,cancel) will be called on that element.
 
-* Explain what separate touch from regular events
+- Explain what separate touch from regular events
 
-> Even though touch-handlers are declared the same way as regular event handlers,
+> Even though touch-handlers are declared the same way as regular event handlers, 
 
-## Methods
+### Methods
 
-### `touch.extend(plugin)`
+#### `touch.extend(plugin)`
 
-Extend the touch with a plugin / gesture. All events \(touchstart,move etc\) for the touch will be triggered on the plugins in the order they are added.
+Extend the touch with a plugin / gesture. All events (touchstart,move etc) for the touch will be triggered on the plugins in the order they are added.
 
 Example
 
-### `touch.x`
+#### `touch.x`
 
 Horizontal position of touch
 
-### `touch.y`
+#### `touch.y`
 
 Vertical position of touch
 
-### `touch.dx`
+#### `touch.dx`
 
 The distance the touch has moved horizontally
 
-### `touch.dy`
+#### `touch.dy`
 
 The distance the touch has moved vertically
 
-### `touch.dr`
+#### `touch.dr`
 
 The absolute distance the touch has moved from starting position
 
-### `touch.button`
+#### `touch.button`
 
 Button pressed in this touch. Native touches defaults to left-click
-

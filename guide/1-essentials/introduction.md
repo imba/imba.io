@@ -3,35 +3,33 @@ title: Introduction
 order: 1
 ---
 
-# introduction
+# Introduction
 
-## Introduction
+## What is Imba?
 
-### What is Imba?
+Imba is a new programming language for the web that compiles
+to performant JavaScript. It is heavily inspired by ruby and python,
+but developed explicitly for web programming (both server and client).
+Imba treats DOM elements as a first-class citizens. These elements are compiled to an [inline dom](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than todays virtual dom implementations. We truly believe that it opens up for a new way of developing web applications.
 
-Imba is a new programming language for the web that compiles to performant JavaScript. It is heavily inspired by ruby and python, but developed explicitly for web programming \(both server and client\). Imba treats DOM elements as a first-class citizens. These elements are compiled to an [inline dom](https://github.com/imba/imba.io/tree/153e12a617d58a9538f0cd7794a79ece8c4223b1/guides/advanced/performance/README.md), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than todays virtual dom implementations. We truly believe that it opens up for a new way of developing web applications.
+## Installation
 
-### Installation
-
-```text
+```
 yarn global add imba # npm install -g imba
 ```
 
-## Optimized for
+# Optimized for
 
-### Developers
+## Developers
+Rather than being an academic exercise, Imba has been developed over several years, alongside actual applications. Imba has been fine-tuned to ease the challenges we face when developing rich, dynamic apps (and sites).
 
-Rather than being an academic exercise, Imba has been developed over several years, alongside actual applications. Imba has been fine-tuned to ease the challenges we face when developing rich, dynamic apps \(and sites\).
-
-### Interoperability
-
+## Interoperability
 Imba compiles down to clean and readable JavaScript. Your formatting, indentaiton, and comments are included. You can use any existing JavaScript library seamlessly from Imba, and vica-versa.
 
-### Speed
+## Speed
+You can use all the syntactic sugar in Imba without needing to worry about the performance and readability of the compiled code, and building your views using Imba's native support for tags results in unprecedented performance. 
 
-You can use all the syntactic sugar in Imba without needing to worry about the performance and readability of the compiled code, and building your views using Imba's native support for tags results in unprecedented performance.
-
-```text
+```imba
 var number = 42
 var opposite = true
 var string = "the answer is {number}"
@@ -50,13 +48,14 @@ var info =
     ]
 ```
 
-> Even though Imba has been used privately, in production, for more than a year \(powering scrimba.com\), the community is in the early stages, and documentation is still sparse. We're incredibly grateful for any feedback, suggestions, and help with the documentation!
+> Even though Imba has been used privately, in production, for more than a year (powering scrimba.com), the community is  in the early stages, and documentation is still sparse. We're incredibly grateful for any feedback, suggestions, and help with the documentation!
 
-### Syntax & Semantics
 
-Even though the syntax and semantics of Imba is much more related to Ruby than JavaScript, it does compile down to plain performant JavaScript, and is fully compatible with any existing JavaScript library. Imba does not extend any native types from JavaScript. Arrays are arrays, strings are strings, numbers are numbers, classes are constructors with prototypes and so forth. If you simply like Imba better, there is no reason not to write your npm package in Imba, even if it is supposed to be used in the general JavaScript ecosystem. In fact, Imba produces _very_ readable JavaScript, by keeping your indentation, comments, and coding style.
+## Syntax & Semantics
 
-```text
+Even though the syntax and semantics of Imba is much more related to Ruby than JavaScript, it does compile down to plain performant JavaScript, and is fully compatible with any existing JavaScript library. Imba does not extend any native types from JavaScript. Arrays are arrays, strings are strings, numbers are numbers, classes are constructors with prototypes and so forth. If you simply like Imba better, there is no reason not to write your npm package in Imba, even if it is supposed to be used in the general JavaScript ecosystem. In fact, Imba produces *very* readable JavaScript, by keeping your indentation, comments, and coding style.
+
+```imba
 # Strings
 var single = 'single quotes'
 var double = "double quotes"
@@ -99,9 +98,11 @@ var list = <ul.list> for item in ["one","two","three"]
     <li> <span.name> item
 ```
 
-### Getting started
 
-> This guide assumes knowledge of HTML, CSS and JavaScript \(or another programming language\). It will be especially helpful to know React to grasp how tags and custom tags work.
+## Getting started
+
+> This guide assumes knowledge of HTML, CSS and JavaScript (or another programming language). It will be especially helpful to know React to grasp how tags and custom tags work.
 
 The easiest way to get started with Imba is to play around in the [scrimba.com Hello World example](https://scrimba.com/c/cE4nGcg). If you rather want to try Imba in your own environment you can clone [hello-world-imba](https://github.com/somebee/hello-world-imba) and follow the instructions in the readme. There are plugins available for [Sublime Text](https://packagecontrol.io/packages/Imba), [VSCode](https://github.com/somebee/vscode-imba) and [Atom](https://atom.io/packages/language-imba).
+
 
