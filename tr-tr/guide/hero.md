@@ -6,7 +6,7 @@ type: snippet
 
 ```text
 Imba.mount <nav#hero ->
-    <a href='/guides'> "Get started"
+    <a href='/guides'> "Başlayalım"
     <a.github href=linkToGitHub> "GitHub"
 ```
 

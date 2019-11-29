@@ -1,7 +1,10 @@
+# README
+
 Official site for Imba. Work in progress.
 
 ## Run
-```
+
+```text
 # clone the repository
 git clone https://github.com/imba/imba.io
 
@@ -22,20 +25,15 @@ npm start
 
 ## Looking for projects using Imba?
 
-The [Awesome Imba][0] list has several projects and resources listed surrounding
-Imba.  Other noteworthy projects are 
+The [Awesome Imba](https://github.com/koolamusic/awesome-imba) list has several projects and resources listed surrounding Imba. Other noteworthy projects are
 
-- [Scrimba][1] - Learning platform to code with interactive tutorials
-- [Reiknistofa fiskmarkaða][3] - The Iceland fish market auction
-- [GitSpeak][2] - Fast GitHub client
+* [Scrimba](https://scrimba.com/) - Learning platform to code with interactive tutorials
+* [Reiknistofa fiskmarkaða](https://rsf.is/) - The Iceland fish market auction
+* [GitSpeak](https://gitspeak.com/) - Fast GitHub client
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](https://github.com/imba/imba.io/tree/153e12a617d58a9538f0cd7794a79ece8c4223b1/LICENSE/README.md)
 
-Copyright (c) 2015-present, Imba
+Copyright \(c\) 2015-present, Imba
 
-[0]: https://github.com/koolamusic/awesome-imba
-[1]: https://scrimba.com/
-[2]: https://gitspeak.com/
-[3]: https://rsf.is/
