@@ -27,7 +27,7 @@ The `imbapack` utility is a convenient wrapper around `webpack`, which preproces
 
 `> imbac -o out.js input.imba` will compile the file input.imba to out.js
 
-`> imbac -w -o lib/ src/` compiles all files in src to lib, and recopmiles when they are modified
+`> imbac -w -o lib/ src/` compiles all files in src to lib, and recompiles when they are modified
 
 All the other options can bee found by calling `> imbac --help`
 
