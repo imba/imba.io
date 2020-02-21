@@ -22,6 +22,7 @@ APP = App.new
 # Redirects to new docs, append below. The format is (old -> new)
 const redirects =
 	'/guides/advanced/release': 'https://docs.imba.io/for-imba-developers/release'
+	'/guides/tooling/plugins': 'https://docs.imba.io/misc/syntax-highlighting'
 for r in Object.keys(redirects)
 	console.log(r)
 	srv.get(r) do |req, res|
