@@ -30,6 +30,7 @@ const redirects =
 	'/guides/advanced/routing': 'https://docs.imba.io/routing/router'
 	'/guides/miscellaneous/scheduler': 'https://docs.imba.io/the-syntax/tags-components/the-scheduler-in-imba'
 	'/guides/miscellaneous/tag': 'https://docs.imba.io/the-syntax/tags-components/closer-look-at-tags'
+	'/guides/language/switch': 'https://docs.imba.io/the-syntax/syntax/switch'
 for r in Object.keys(redirects)
 	console.log(r)
 	srv.get(r) do |req, res|
