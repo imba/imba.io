@@ -23,6 +23,7 @@ APP = App.new
 const redirects =
 	'/guides/advanced/release': 'https://docs.imba.io/for-imba-developers/release'
 	'/guides/tooling/plugins': 'https://docs.imba.io/misc/syntax-highlighting'
+	'/tooling/tools': 'https://docs.imba.io/meta/the-cli'
 for r in Object.keys(redirects)
 	console.log(r)
 	srv.get(r) do |req, res|
