@@ -19,6 +19,13 @@ srv.use(express.static('./www'))
 # creating the local app
 APP = App.new
 
+# Redirects to new docs, append below. The format is (old -> new)
+const redirects =
+	'/guides/advanced/release': 'https://docs.imba.io/for-imba-developers/release'
+for r in Object.keys(redirects)
+	console.log(r)
+	srv.get(r) do |req, res|
+		res.redirect(redirects[r])
 # rendering markdown
 srv.get(/^([^\.]+\.(md|json|imba))$/) do |req,res|
 	var result = await APP.fetch(req:path)
