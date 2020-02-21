@@ -26,6 +26,7 @@ const redirects =
 	'/tooling/tools': 'https://docs.imba.io/meta/the-cli'
 	'/advanced/development': 'https://docs.imba.io/for-imba-developers/development'
 	'/advanced/performance': 'https://docs.imba.io/for-imba-developers/performance'
+	'/miscellaneous/touch': 'https://docs.imba.io/mouse-and-touch-events'
 for r in Object.keys(redirects)
 	console.log(r)
 	srv.get(r) do |req, res|
