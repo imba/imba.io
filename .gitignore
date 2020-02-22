@@ -11,3 +11,5 @@ docs/gists/
 
 www/index.html
 www/dist
+
+yarn.lock
