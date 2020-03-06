@@ -48,6 +48,12 @@ srv.get ('/guide-source') do |req,res|
 	let guide = Guide.get lang
 	res.send JSON.stringify(guide)
 
+srv.use do |req, res, next|
+	const p = """
+	<script src='https://unpkg.com/imba-404-page/public/404-page.imba.js'></script>
+	<page-404 home='https://www.imba.io'></page-404>
+	"""
+	res.status(404).send(p)
 
 # catch-all rendering for the whole site
 # routing etc is handled by the <site> tag itself
