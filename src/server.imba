@@ -91,6 +91,13 @@ srv.get(/^([^\.]*)$/) do |req,res|
 	html.router.onReady do
 		res.send html.toString.replace("$$APPCACHE$$",JSON.stringify(req:app.serialize))
 
+srv.get ('*') do |req, res, next|
+	const p = """
+	<script src='https://unpkg.com/imba-404-page/public/404-page.imba.js'></script>
+	<page-404 home='https://www.imba.io'></page-404>
+	"""
+	res.status(404).send(p)
+
 var port = process:env.PORT or 3011
 
 var server = srv.listen(port) do
