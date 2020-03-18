@@ -32,7 +32,8 @@ const redirects =
 	'/guides/miscellaneous/tag': 'https://docs.imba.io/the-syntax/tags-components/closer-look-at-tags'
 	'/guides/language/switch': 'https://docs.imba.io/the-syntax/syntax/switch'
 	'/community': 'https://docs.imba.io/meta/join-the-imba-community',
-	'/docs': 'https://docs.imba.io/'
+	'/docs': 'https://docs.imba.io/',
+	'/guides/language/basics': 'https://docs.imba.io/the-syntax/basics'
 for r in Object.keys(redirects)
 	console.log(r)
 	srv.get(r) do |req, res|
