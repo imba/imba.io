@@ -34,6 +34,7 @@ const redirects =
 	'/community': 'https://docs.imba.io/meta/join-the-imba-community',
 	'/docs': 'https://docs.imba.io/',
 	'/guides/language/basics': 'https://docs.imba.io/the-syntax/basics'
+	'/guides/language/functions': 'https://docs.imba.io/the-syntax/functions'
 for r in Object.keys(redirects)
 	console.log(r)
 	srv.get(r) do |req, res|
