@@ -36,6 +36,7 @@ const redirects =
 	'/guides/language/basics': 'https://docs.imba.io/the-syntax/basics'
 	'/guides/language/functions': 'https://docs.imba.io/the-syntax/functions'
 	'/guides/language/more': 'https://docs.imba.io/the-syntax/basics/async-in-imba'
+	'/guides/language/modules': 'https://docs.imba.io/the-syntax/basics/modules'
 for r in Object.keys(redirects)
 	console.log(r)
 	srv.get(r) do |req, res|
