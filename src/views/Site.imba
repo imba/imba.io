@@ -3,6 +3,7 @@ require 'imba-router'
 
 import CommunityPage from './CommunityPage'
 import GuidesPage from './GuidesPage'
+import DocsPage from './DocsPage'
 import HomePage from './HomePage'
 
 import Logo from './Logo'
@@ -70,6 +71,7 @@ export tag Site
 					<span.greedy>
 					<a.tab.home route-to.exact='/'> <i> 'home'
 					<a.tab.guides route-to='/guides'> <i> 'learn'
+					<a.tab.guides route-to='/docs'> <i> 'docs'
 					<a.tab route-to='/community'> <i> 'community'
 					# GitHub and Twitter icons are from https://simpleicons.org
 					<a.github href='https://github.com/somebee/imba' target="_blank"> <i>
@@ -80,6 +82,7 @@ export tag Site
 			
 			<HomePage route.exact='/'>
 			<GuidesPage[app.guide] route='/guides'>
+			<DocsPage route='/docs'>
 			<CommunityPage route='/community'>
 
 			<footer#footer> 

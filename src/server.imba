@@ -19,30 +19,6 @@ srv.use(express.static('./www'))
 # creating the local app
 APP = App.new
 
-# Redirects to new docs, append below. The format is (old -> new)
-const redirects =
-	'/guides/advanced/release': 'https://docs.imba.io/for-imba-developers/release'
-	'/guides/tooling/plugins': 'https://docs.imba.io/misc/syntax-highlighting'
-	'/guides/tooling/tools': 'https://docs.imba.io/meta/the-cli'
-	'/guides/advanced/development': 'https://docs.imba.io/for-imba-developers/development'
-	'/guides/advanced/performance': 'https://docs.imba.io/for-imba-developers/performance'
-	'/guides/miscellaneous/touch': 'https://docs.imba.io/mouse-and-touch-events'
-	'/guides/advanced/routing': 'https://docs.imba.io/routing/router'
-	'/guides/miscellaneous/scheduler': 'https://docs.imba.io/the-syntax/tags-components/the-scheduler-in-imba'
-	'/guides/miscellaneous/tag': 'https://docs.imba.io/the-syntax/tags-components/closer-look-at-tags'
-	'/guides/language/switch': 'https://docs.imba.io/the-syntax/syntax/switch'
-	'/community': 'https://docs.imba.io/meta/join-the-imba-community',
-	'/docs': 'https://docs.imba.io/',
-	'/guides/language/basics': 'https://docs.imba.io/the-syntax/basics'
-	'/guides/language/functions': 'https://docs.imba.io/the-syntax/functions'
-	'/guides/language/more': 'https://docs.imba.io/the-syntax/basics/async-in-imba'
-	'/guides/language/modules': 'https://docs.imba.io/the-syntax/basics/modules'
-	'/guides/language/classes': 'https://docs.imba.io/the-syntax/basics/classes'
-	'/guides/language/loops': 'https://docs.imba.io/the-syntax/basics/loops-and-iteration'
-for r in Object.keys(redirects)
-	console.log(r)
-	srv.get(r) do |req, res|
-		res.redirect(redirects[r])
 # rendering markdown
 srv.get(/^([^\.]+\.(md|json|imba))$/) do |req,res|
 	var result = await APP.fetch(req:path)
@@ -96,13 +72,6 @@ srv.get(/^([^\.]*)$/) do |req,res|
 	
 	html.router.onReady do
 		res.send html.toString.replace("$$APPCACHE$$",JSON.stringify(req:app.serialize))
-
-srv.get ('*') do |req, res, next|
-	const p = """
-	<script src='https://unpkg.com/imba-404-page/public/404-page.imba.js'></script>
-	<page-404 home='https://www.imba.io'></page-404>
-	"""
-	res.status(404).send(p)
 
 var port = process:env.PORT or 3011
 
