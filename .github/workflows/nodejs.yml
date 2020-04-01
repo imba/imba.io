@@ -3,7 +3,7 @@ on: [push]
 jobs:
 
   deploy:
-    name: Deploy
+    name: Deploy to imba.io
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
