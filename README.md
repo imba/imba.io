@@ -39,3 +39,6 @@ Copyright (c) 2015-present, Imba
 [1]: https://scrimba.com/
 [2]: https://gitspeak.com/
 [3]: https://rsf.is/
+
+open -a Google\ Chrome --args --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost

@@ -1,0 +1,9 @@
+{
+	"entries": {
+		"./src/index.imba": {
+			"file": "./public/index.js",
+			"format": "esm"
+		}
+	},
+	"serve": {"port": 10004}
+}

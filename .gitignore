@@ -11,3 +11,7 @@ docs/gists/
 
 www/index.html
 www/dist
+
+public/index.js
+public/sw.js
+public/content.json.js
