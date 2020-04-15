@@ -1,4 +1,5 @@
 import './monaco'
+import { @watch } from '../decorators'
 
 const extToLanguage =
 	js: 'javascript'
@@ -48,6 +49,12 @@ tag repl-editor
 		if global.monaco and !monaco
 			self.render = do yes
 			init!
+		
+		<self :resize.resized>
+	
+	def resized e
+		if monaco
+			monaco.layout(height: offsetHeight, width: offsetWidth)
 
 	set model model
 		_model = model
@@ -58,7 +65,8 @@ tag repl-editor
 tag repl-output
 
 tag repl-root
-	prop project
+	@watch prop project
+
 	prop files
 	prop currentFile
 	
@@ -69,6 +77,11 @@ tag repl-root
 		console.log 'run',project
 		iframe.src = `/playground{project.path}/index.html`
 		self
+
+	def project-did-set project
+		if project
+			run!
+			currentFile = project.files[0]
 
 	def render
 		<self.repl>
@@ -104,6 +117,7 @@ tag repl-root
 
 .editor.pane {
 	flex-basis: 80%;
+	position: relative;
 }
 
 .output {
@@ -120,6 +134,11 @@ tag repl-root
 repl-editor {
 	display: block;
 	flex: 1;
+	position: absolute;
+	top: 20px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
 }
 
 ###
