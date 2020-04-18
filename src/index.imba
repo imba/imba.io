@@ -31,7 +31,6 @@ tag app-root
 	def reroute
 		let url = document.location.pathname
 		let target = ls(url)
-		console.log 'found route?',url,target
 	
 	get page
 		ls(document.location.pathname)

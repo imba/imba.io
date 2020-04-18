@@ -566,6 +566,30 @@
     margin-top: 30px;
     padding: 10px 0px;
     border-bottom: 1px solid #F3F5F7;
+    font-weight: 500;
+    margin: 1.5em 0em 0.5em;
+    line-height: 1.2em;
+    color: #3A4652;
+}
+
+.markdown h3 {
+    font-size: 18px;
+    padding: 10px 0px;
+    border-bottom: 1px solid #F3F5F7;
+    font-weight: 500;
+    line-height: 1.2em;
+    margin: 1.5em 0em 0.5em;
+    color: #3A4652;
+}
+
+.markdown h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    border-bottom: 1px solid #edeff1;
+    margin: 1.33em 0 1em;
+    color: #3A4652;
+    line-height: 1.7em;
+    padding: 6px 0px;
 }
 
 .markdown p {
@@ -608,6 +632,10 @@
     margin: 12px 0px;
     padding: 10px 12px;
     color: #6f6850;
+    font-size: 15px;
+}
+.markdown blockquote p {
+    font-size: 15px;
 }
 
 .markdown blockquote > :first-child { margin-top: 0px; }
