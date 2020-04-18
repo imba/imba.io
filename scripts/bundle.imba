@@ -1,27 +1,29 @@
+
+
 const chokidar = require 'chokidar'
-var path = require 'path'
-var fs = require 'fs'
+const path = require 'path'
+const fs = require 'fs'
+const marked = require '../src/util/markdown'
 
-var bundle = 'content'
-
+const bundle = 'content'
 const root = path.resolve(__dirname,'..','content')
 const dest = path.resolve(__dirname,'..','public')
-
-console.log 'got here',root
 
 const data = {
 	path: '/'
 	children: []
 }
 
-const models = {
-
-}
-
+const models = { }
 const map = {'.': data}
-
-
 const watcher = chokidar.watch(root)
+
+def save
+	let json = JSON.stringify(data,null,2)
+	let js = "globalThis['{bundle}.json'] = {json}"
+	fs.writeFileSync(path.resolve(dest,"{bundle}.json"),json)
+	fs.writeFileSync(path.resolve(dest,"{bundle}.json.js"),js)
+
 watcher.on('all') do
 	let abs = $2
 	let is-dir = $1.indexOf('Dir') >= 0
@@ -30,6 +32,8 @@ watcher.on('all') do
 	let dirname = path.dirname(src)
 
 	return if name == '.DS_Store' or src == ''
+	console.log 'watcher',$1,src
+
 	let up = map[dirname]
 	let id = "/{src}"
 	let item
@@ -40,27 +44,36 @@ watcher.on('all') do
 			children: []
 		}
 
-	elif $1 == 'add'
+	elif $1 == 'add' or $1 == 'change'
 		item = {
 			type: 'file'
 			name: name
 			body: fs.readFileSync(abs,'utf8')
+			ext: name.split('.').pop()
 		}
+
 		if name == 'meta.json'
 			let meta = JSON.parse(item.body)
 			for own k,v of meta
 				up[k] = v
-			item = null
+			return
+
+		if item.ext == 'md'
+			console.log 'test json!'
+			let md = marked.render(item.body)
+			item.html = md.body
+			item.toc = md.toc
+			Object.assign(item,md.meta)
 	
 	if item
 		item.path = '/' + src
-		map[src] = item
-		models[id] = item
-		up.children.push(item)
+		if models[id]
+			Object.assign(models[id],item)
+			save!
+		else
+			map[src] = item
+			models[id] = item
+			up.children.push(item)
 
-watcher.on 'ready' do
-	console.log 'structure',data
-	let json = JSON.stringify(data)
-	let js = "globalThis['{bundle}.json'] = {json}"
-	fs.writeFileSync(path.resolve(dest,"{bundle}.json"),json)
-	fs.writeFileSync(path.resolve(dest,"{bundle}.json.js"),js)
+watcher.on 'ready' do save!
+

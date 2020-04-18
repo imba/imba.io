@@ -1,0 +1,85 @@
+:root {
+	--code-color: #e3e3e3;
+	--code-variable: #f0f0f0;
+	--code-identifier: #9dcbeb;
+	--code-background: #282c34;
+	--code-bg-lighter: #374153;
+	--code-comment: #718096;
+	--code-keyword: #e88376;
+	--code-operator: #e88376;
+	--code-numeric: #63b3ed;
+	--code-boolean: #4299e1;
+	--code-null: #4299e1;
+	--code-entity: #8ab9ff;
+	--code-variable: #e8e6cb;
+	--code-string: #c6f6d5;
+	--code-entity: #8ab9ff;
+	--code-regexp: #e9e19b;
+	--code-this: #63b3ed;
+	--code-tag: #e9e19b;
+	--code-tag-angle: #9d9755;
+	--code-type: #718096;
+	--code-property: #F7FAFC;
+	--code-root-variable: #c5badc;
+	--code-font: "Source Code Pro", Consolas, Menlo, Monaco, Courier, monospace;
+}
+
+.light {
+	--code-color: #556166;
+	--code-variable: #f0f0f0;
+	--code-identifier: #9dcbeb;
+	--code-background: #282c34;
+	--code-bg-lighter: #374153;
+	--code-comment: #718096;
+	--code-keyword: #e88376;
+	--code-operator: #e88376;
+	--code-numeric: #63b3ed;
+	--code-boolean: #4299e1;
+	--code-null: #4299e1;
+	--code-entity: #8ab9ff;
+	--code-variable: #e8e6cb;
+	--code-string: #c6f6d5;
+	--code-entity: #8ab9ff;
+	--code-regexp: #e9e19b;
+	--code-this: #63b3ed;
+	--code-tag: #e9e19b;
+	--code-tag-angle: #9d9755;
+	--code-type: #718096;
+	--code-property: #F7FAFC;
+	--code-root-variable: #c5badc;
+}
+
+.code {
+	font-family: var(--code-font);
+	color: var(--code-color);
+}
+
+.code-inline {
+	display: inline-block;
+	font-size: 0.75em;
+	border-radius: 3px;
+	background: var(--gray-200);
+	-webkit-box-decoration-break: clone;
+	padding: 0.1em 5px;
+	margin: -0.1em 0px;
+}
+
+
+.code .invalid { color: red; }
+.code .comment { color: var(--code-comment); }
+.code .regexp { color: var(--code-regexp); }
+.code .tag { color: var(--code-tag); }
+.code .type { color: var(--code-type); }
+.code .keyword,.code .argparam { color: var(--code-keyword); }
+.code .operator { color: var(--code-operator); }
+.code .property { color: var(--code-property); }
+.code .numeric,.code .number { color: var(--code-numeric); }
+.code .boolean { color: var(--code-boolean); }
+.code .null { color: var(--code-null); }
+.code .identifier { color: var(--code-identifier); }
+.code .variable { color: var(--code-variable); }
+.code .string { color: var(--code-string); }
+.code .propname { color: var(--code-entity); }
+.code .this,.code .self { color: var(--code-this); }
+.code .tag.open,.code .tag.close { color: var(--code-tag-angle); }
+.code .variable.scope_root { color: var(--code-root-variable); }

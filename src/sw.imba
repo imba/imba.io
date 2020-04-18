@@ -37,7 +37,8 @@ class Worker
 		self
 
 	def log ...params
-		console.log(...params)
+		# console.log(...params)
+		self
 
 	def onmessage e
 		log 'sw inbound message',e

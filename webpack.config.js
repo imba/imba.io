@@ -8,7 +8,10 @@ module.exports = [{
 	plugins: [
 	],
 	resolve: {
-		extensions: [".imba",".js",".json"]
+		extensions: [".imba",".js",".json"],
+		alias: {
+			imba: path.resolve(__dirname,'node_modules','imba')
+		}
 	},
 
 	module: {
@@ -20,6 +23,9 @@ module.exports = [{
 
 	devServer: {
 		contentBase: path.resolve(__dirname, 'public'),
+		historyApiFallback: {
+			index: '/index.html'
+		},
 		compress: true,
 		port: 9000,
 		https: true

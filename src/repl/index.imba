@@ -1,17 +1,21 @@
 import './monaco'
 import { @watch } from '../decorators'
 
-const extToLanguage =
-	js: 'javascript'
-	html: 'html'
-
 const editorOptions = {
 	scrollBeyondLastLine: false
 	readOnly: false
-	theme: "vs-dark"
+	theme: 'scrimba-dark'
+	wordWrapColumn: 100
+	wordWrap: 'wordWrapColumn'
+	wrappingIndent: "same"
+	fontIsMonospace: true
+	fontSize: 13
 	minimap: {enabled: false}
 	renderLineHighlight: 'none'
 	renderIndentGuides: false
+	cursorBlinking: 'smooth'
+	codeLens: false
+	detectIndentation: true
 	scrollbar: {
 		useShadows: false
 		verticalScrollbarSize: 8
@@ -19,63 +23,22 @@ const editorOptions = {
 	}
 }
 
-class File
-
-	def constructor data
-		data = data
-		name = data.name
-		body = data.body
-
-	get uri
-		"file://{data.path}"
-
-	get ext
-		_ext ||= name.split('.').pop!
-	
-	get model
-		global.monaco and (_model ||= global.monaco.editor.createModel(data.body,extToLanguage[ext] or ext,uri) )
-
-tag repl-editor
-
-	def init
-		console.log 'initing monaco!'
-		let model = {value: '[1,2,3]', language: 'javascript'}
-		monaco = global.monaco.editor.create(self,editorOptions)
-		monaco.updateOptions(editorOptions)
-		monaco.setModel(_model) if _model
-	
-	def render
-		# how is this called twice?!
-		if global.monaco and !monaco
-			self.render = do yes
-			init!
-		
-		<self :resize.resized>
-	
-	def resized e
-		if monaco
-			monaco.layout(height: offsetHeight, width: offsetWidth)
-
-	set model model
-		_model = model
-		if monaco and model
-			monaco.setModel(model)
-
-
-tag repl-output
-
-tag repl-root
+tag app-repl
 	@watch prop project
+	@watch prop currentFile
 
-	prop files
-	prop currentFile
+	get monaco
+		return $monaco if !global.monaco or $monaco or !$editor
+		$monaco = global.monaco.editor.create($editor,editorOptions)
+		$monaco.updateOptions(editorOptions)
+		$monaco.setModel(currentFile.model) if currentFile
+		$monaco
 	
-	def setup
-		iframe = <iframe>
+	def build
+		$iframe = <iframe>
 
 	def run
-		console.log 'run',project
-		iframe.src = `/playground{project.path}/index.html`
+		$iframe.src = `/playground{project.path}/index.html`
 		self
 
 	def project-did-set project
@@ -83,16 +46,23 @@ tag repl-root
 			run!
 			currentFile = project.files[0]
 
+	def current-file-did-set file
+		if monaco and file
+			monaco.setModel(file.model)
+
+	def relayout
+		if $monaco
+			$monaco.layout(height: $editor.offsetHeight, width: $editor.offsetWidth)
+
 	def render
 		<self.repl>
-			<div.editor.pane>
-				<div.tabs> for file in project..children
-					<a.tab :click.{currentFile = file}> file.name
-				<repl-editor model=(currentFile and currentFile.model)>
+			<div.editor-pane.pane :resize.relayout>
+				<div.tabs.flex.flex-row> for file in project..children
+					<div.tab.p-2 :click.{currentFile = file}> file.name
+				$editor = <div.editor>
 			<div.result.pane>
-				<div.output> iframe
-				<div.console>
-					<button :click.{run!}> "Run"
+				<div.output.m-2> $iframe
+		monaco
 
 ### css scoped
 
@@ -101,27 +71,28 @@ tag repl-root
 	flex-direction: row;
 	min-width: 500px;
 	min-height: 500px;
-	border: 1px solid red;
+	background-color: #2d363b;
 }
 
 .tabs {
 	flex: 0;
+	color: white;
 }
 
 .pane {
 	flex: 1 1 50%;
-	border: 1px solid red;
 	display: flex;
 	flex-direction: column;
 }
 
-.editor.pane {
+.editor-pane {
 	flex-basis: 80%;
 	position: relative;
 }
 
 .output {
 	flex: 1 1 80%;
+	background-color: white;
 }
 
 .output iframe {
@@ -131,11 +102,19 @@ tag repl-root
 	border: none;
 }
 
-repl-editor {
+.floating {
+	border-radius: 3px;
+}
+
+.editor {
 	display: block;
 	flex: 1;
+	position: relative;
+}
+
+.editor >>> .monaco-editor {
 	position: absolute;
-	top: 20px;
+	top: 0px;
 	left: 0px;
 	bottom: 0px;
 	right: 0px;
