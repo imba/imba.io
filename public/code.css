@@ -58,8 +58,9 @@
 	display: inline-block;
 	font-size: 0.75em;
 	border-radius: 3px;
-	background: var(--gray-200);
+	background: hsla(210, 7%, 31%, 0.06);
 	-webkit-box-decoration-break: clone;
+	vertical-align: middle;
 	padding: 0.1em 5px;
 	margin: -0.1em 0px;
 }
