@@ -1,7 +1,20 @@
-# https://github.com/eugenkiss/7guis/wiki#counter
+var count = 0
+
+imba.mount do
+	<div>
+		<input[count] type='number'>
+		<button :click.{count++}> 'count'
+
+
+### as a reusable component
+
 tag app-counter
 	prop count = 0
 
 	<self>
 		<input[count] type='number'>
 		<button :click.{count++}> count
+
+###
+
+# https://github.com/eugenkiss/7guis/wiki#counter

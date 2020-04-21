@@ -47,6 +47,7 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "highlight.js": "^8.8.0",
     "imba": "^2.0.0-alpha.41",
+    "imba-document": "^0.1.2",
     "imba-router": "^0.1.1",
     "less": "^2.5.1",
     "less-loader": "^4.0.5",

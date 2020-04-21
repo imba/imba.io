@@ -10,7 +10,7 @@ const root = path.resolve(__dirname,'..','content')
 const dest = path.resolve(__dirname,'..','public')
 
 const data = {
-	path: '/'
+	path: ''
 	children: []
 }
 
@@ -42,6 +42,7 @@ watcher.on('all') do
 			type: 'dir'
 			name: name
 			children: []
+			# path: '/' + src
 		}
 
 	elif $1 == 'add' or $1 == 'change'
@@ -50,6 +51,7 @@ watcher.on('all') do
 			name: name
 			body: fs.readFileSync(abs,'utf8')
 			ext: name.split('.').pop()
+			# path: '/' + src
 		}
 
 		if name == 'meta.json'
@@ -64,9 +66,12 @@ watcher.on('all') do
 			item.html = md.body
 			item.toc = md.toc
 			Object.assign(item,md.meta)
+			if md.sections
+				item.children = md.sections
+				item.name = item.name.slice(0,-3) # remove markdown
 	
 	if item
-		item.path = '/' + src
+		# item.path = '/' + src
 		if models[id]
 			Object.assign(models[id],item)
 			save!

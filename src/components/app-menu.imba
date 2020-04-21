@@ -3,7 +3,7 @@ tag app-menu
 	def render
 		<self.text-sm>
 			for child in data.root.children
-				<h5.group.item.text-gray-500> child.name.toUpperCase!
+				<h5.group.item.text-gray-500> child.title.toUpperCase!
 				<.sections> for item in child.children
 					<a.item.rounded route-to=item.href> item.title
 					#  .selected=(item==data)

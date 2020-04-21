@@ -17,6 +17,8 @@ tag app-temperature
 		<input type='number' value=f :input.{fahrenheit = e.target.value}>
 		"°f"
 
+imba.mount <app-temperature>
+
 ### css
 input { width: 5em; }
 ###

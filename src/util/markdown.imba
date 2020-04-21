@@ -84,6 +84,9 @@ def renderer.heading text, level
 
 	let typ = "h{level}"
 	let node = <{typ} .{flags}> <span> text
+	let pre = "<!--:{typ}:-->"
+	
+	return pre + node.toString()
 
 	if level < 3
 		var anchor = <div.toc-anchor .l{level} id=(meta.slug)>
@@ -144,4 +147,16 @@ export def render content
 	opts.parser = parser
 	object.body = parser.parse(tokens)
 	renderer.toc = null
+
+	if object.meta.multipage
+		let parts = object.body.split(/<!--:h1:-->/g)
+
+		object.sections = object.toc.map do(item,i)
+			{
+				name: item.slug
+				type: 'file'
+				html: parts[i + 1]
+				title: item.title
+			}
+		console.log 'returning toc',toc,parts,object.sections
 	return object

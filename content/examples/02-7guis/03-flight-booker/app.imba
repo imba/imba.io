@@ -18,6 +18,8 @@ tag flight-booker
 		<input[end] type='date' disabled=!isReturn>
 		<button :click.bookFlight disabled=(isReturn && start >= end)> 'book'
 
+imba.mount <flight-booker>
+
 ### css
 select, input, button {
 	display: block;

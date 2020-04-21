@@ -1,5 +1,6 @@
 import 'imba/src/imba/router/router.imba'
 
+import './components/app-logo'
 import './components/app-document'
 import './components/app-header'
 import './components/app-menu'
@@ -44,7 +45,7 @@ tag app-root
 				<.content-wrapper>
 					if page and page.childByName('index.html')
 						<app-repl.fixed.inset-0.shadow-lg.floating project=page>
-					elif page and page.ext == 'md'
+					elif page and page.html
 						<app-document[page]>	
 
 # Should add the colors etc to the root css here
@@ -54,7 +55,13 @@ tag app-root
 	--light-bg: #ffffff;
 	--dark-bg: #282f33;
 	--link-color: #447A98;
+	--header-bg: #374153;
+	--page-max-width: 2400px;
+	--logo-color: #a39e7d;
 	font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+
+	--header-bg: rgba(255,255,255,0.95);
+	--logo-color: #5997ff;
 }
 
 a {
@@ -67,7 +74,7 @@ a {
 
 .page-wrapper {
 	margin: 0 auto;
-	max-width: 1400px;
+	max-width: var(--page-max-width);
 }
 
 html,body {
@@ -80,7 +87,11 @@ body {
 }
 
 app-header {
-	background-color: whitesmoke;
+	background-color: var(--header-bg);
+}
+
+app-header a.active {
+	color: white;
 }
 
 app-repl {

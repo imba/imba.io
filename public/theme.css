@@ -1,5 +1,5 @@
 :root {
-    --transparent: transparent;
+--transparent: transparent;
 --black: #000;
 --white: #fff;
 
@@ -177,11 +177,85 @@
 .items-center {	align-items: center; }
 .items-end { align-items: flex-end; }
 .items-baseline { align-items: baseline; }
+
+.self-auto {
+    align-self: auto!important
+}
+
+.self-start {
+    align-self: flex-start!important
+}
+
+.self-end {
+    align-self: flex-end!important
+}
+
+.self-center {
+    align-self: center!important
+}
+
+.self-stretch {
+    align-self: stretch!important
+}
+
+
 .justify-start { justify-content: flex-start; }
 .justify-center { justify-content: center; }
 .justify-end { justify-content: flex-end; }
 .justify-between { justify-content: space-between; }
 .justify-around { justify-content: space-around; }
+
+.content-center {
+    align-content: center!important
+}
+
+.content-start {
+    align-content: flex-start!important
+}
+
+.content-end {
+    align-content: flex-end!important
+}
+
+.content-between {
+    align-content: space-between!important
+}
+
+.content-around {
+    align-content: space-around!important
+}
+
+.flex-1 {
+    flex: 1 1 0%!important
+}
+
+.flex-auto {
+    flex: 1 1 auto!important
+}
+
+.flex-initial {
+    flex: 0 1 auto!important
+}
+
+.flex-none {
+    flex: none!important
+}
+
+.flex-grow-0 {
+    flex-grow: 0!important
+}
+
+.flex-grow {
+    flex-grow: 1!important
+}
+
+.flex-shrink-0 {
+    flex-shrink: 0!important
+}
+
+.flex-shrink {
+    flex-shrink: 1!important
+}
 
 .static	    { position: static; }
 .fixed	    { position: fixed; }

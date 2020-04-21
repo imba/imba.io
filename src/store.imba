@@ -2,42 +2,66 @@ export const root = global['content.json']
 export const files = []
 export const paths = {}
 
+window.paths = paths
+
+export const fs = {}
+
 const extToLanguage =
 	js: 'javascript'
 	html: 'html'
 
 class Entry
-	def constructor data
+	def constructor data, parent
+		parent = parent		
 		data = data
 		name = data.name
-		path = data.path
+		path = data.path or (parent ? parent.path + '/' + data.name : '/' + data.name)
 		children = []
 		paths[path] = self
 		paths[path.replace(/\.(\w+)$/,'')] = self
 		href = path
 
+		if data.children
+			self.children = data.children.map do
+				let typ = $1.type == 'file' ? File : Folder
+				let item = typ.new($1,self)
+				if typ == Folder
+					self[item.name] = item
+				return item
+
 	get title
 		data.title or data.name
 
-	get parent
-		_parent ||= paths[path.split('/').slice(0,-1).join('/')]
+	get folders
+		self.children.filter(do $1 isa Folder)
+	
+	get files
+		self.children.filter(do $1 isa File)
+
+	# get parent
+	#	_parent ||= paths[path.split('/').slice(0,-1).join('/')]
 
 	get root
+		# parent ? parent.root : self
 		_root ||= paths[path.split('/').slice(0,2).join('/')]
 
-	def childByName filename
-		self.children.find(do $1.name == filename)		
+	def childByName name
+		self.children.find(do $1.name == name)
 
 export class File < Entry
-	def constructor data
+	def constructor data, parent
 		super
 		body = data.body
 		ext = data.ext or name.split('.').pop!
 		uri = "file://{path}"
-		href = path.replace(/\.(\w+)$/,'')		
+		href = path.replace(/\.(\w+)$/,'')
+		files.push(self)
 	
 	get html
 		data.html
+	
+	get sections
+		data.sections 
 
 	get model
 		if global.monaco and !_model
@@ -55,27 +79,31 @@ export class File < Entry
 export class Folder < Entry
 	prop examples
 
-	def constructor data
+	def constructor data, parent
 		super
-		self.files = []
-		self.folders = []		
-		self.children = data.children.map do
-			let typ = $1.type == 'file' ? File : Folder
-			let item = typ.new($1)
 
-			if typ == File
-				files.push(item)
-				self.files.push(item)
-			elif typ == Folder
-				self[item.name] = item
-				self.folders.push(item)
-
-			item
+	get sections
+		files
 
 	def ls path
 		self
 
-export const fs = Folder.new(root)
+for item in root.children
+	fs[item.name] = Folder.new(item)
 
+const hits = {}
 export def ls path
+	unless hits[path]
+		let parts = path.replace(/(^\/|\/$)/,'').split('/')
+		let item = fs[parts.shift()]
+		
+		for part,i in parts
+			let child = item.childByName(part)
+			if child
+				item = child
+			else
+				break
+		console.log parts
+		hits[path] = item
+
 	return paths[path.replace(/\/$/,'')]
