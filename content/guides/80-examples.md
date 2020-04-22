@@ -7,11 +7,25 @@ multipage: true
 # Todos
 
 ```imba
-import '../shared/multi-input.imba'
+var input = ''
+var items = []
 
-imba.mount do
-	<div>
-		<multi-input>
+def add
+	items.push(title: input)
+	input = ''
+
+def archive
+	items = items.filter do !$1.done
+
+imba.mount do <>
+		<form :submit.prevent.{add!}>
+			<input[input] placeholder='What to do?'>
+		<ul> for item in items
+			<li.todo .line-through=item.done>
+				<input[item.done] type='checkbox'>
+				<span> item.title
+		<footer>
+			<button :click.{archive!}> "Archive"
 ```
 
 
