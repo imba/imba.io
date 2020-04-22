@@ -38,11 +38,7 @@ class Entry
 	get files
 		self.children.filter(do $1 isa File)
 
-	# get parent
-	#	_parent ||= paths[path.split('/').slice(0,-1).join('/')]
-
 	get root
-		# parent ? parent.root : self
 		_root ||= paths[path.split('/').slice(0,2).join('/')]
 
 	def childByName name
@@ -68,11 +64,9 @@ export class File < Entry
 			_model = global.monaco.editor.createModel(body,extToLanguage[ext] or ext,uri)
 			_model.updateOptions(insertSpaces: false, tabSize: 4)
 			_model.onDidChangeContent do
-				console.log 'file changed content!!',$1
 				body = _model.getValue!
 				sendToWorker!
 		_model
-		# global.monaco and (_model ||= global.monaco.editor.createModel(body,extToLanguage[ext] or ext,uri) )
 	
 	def overwrite body
 		if body != self.body
@@ -111,7 +105,6 @@ export def ls path
 				item = child
 			else
 				break
-		console.log parts
 		hits[path] = item
 
 	return paths[path.replace(/\/$/,'')]

@@ -17,6 +17,5 @@ multipage: true
 
 # Ecosystem
 
-# Examples
 
 Works with anything that works with javascript.

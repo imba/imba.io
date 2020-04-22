@@ -3,17 +3,15 @@ title: Advanced guides
 multipage: true
 ---
 
-# Scheduling
-
 # Routing
 
-# Custom Events
-
-# Custom Event Modifiers
+# Scheduling
 
 # Using Slots
 
 # Server-Side Rendering
+
+# Testing your app
 
 # Custom Decorators
 
@@ -22,9 +20,3 @@ multipage: true
 # Context API
 
 > Include example that shows editing toggler
-
-# Coming from React
-
-# Coming from Vue
-
-# Packaging Apps

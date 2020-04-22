@@ -21,7 +21,7 @@ const watcher = chokidar.watch(root)
 def save
 	let json = JSON.stringify(data,null,2)
 	let js = "globalThis['{bundle}.json'] = {json}"
-	fs.writeFileSync(path.resolve(dest,"{bundle}.json"),json)
+	# fs.writeFileSync(path.resolve(dest,"{bundle}.json"),json)
 	fs.writeFileSync(path.resolve(dest,"{bundle}.json.js"),js)
 
 watcher.on('all') do

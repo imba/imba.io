@@ -5,10 +5,10 @@ tag app-header
 			<.header-wrapper.flex.flex-row.items-center.flex-1>
 				<app-logo.logo>
 				# <a.tab route-to='/'> "Home"
-				<a.tab route-to='/guides'> "Learn"
-				<a.tab route-to='/examples'> "Examples"
-				<a.tab href='https://discord.gg/mkcbkRw' target='_blank'> "Chat"
-				<a.tab href='https://github.com/imba/imba' target='_blank'> "Repo"
+				# <a.tab route-to='/guides'> "Learn"
+				# <a.tab route-to='/examples'> "Examples"
+				# <a.tab href='https://discord.gg/mkcbkRw' target='_blank'> "Chat"
+				# <a.tab href='https://github.com/imba/imba' target='_blank'> "Repo"
 
 ### css scoped
 app-header {
@@ -17,7 +17,8 @@ app-header {
 	font-weight: 500;
 	border-bottom: 1px solid rgba(0,0,0,0.1);
 	backdrop-filter: blur(10px);
-	background: rgba(255,255,255,0.9);
+	background: rgba(255,255,255,0.8);
+	z-index: 200;
 }
 
 .header-wrapper {

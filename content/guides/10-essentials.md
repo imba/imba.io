@@ -69,13 +69,30 @@ Let's break down the basic syntax before we move on to more advanced examples. S
 
 > Imba does not use a virtual DOM. The example above creates an actual native div element.
 
-## Setting properties
+> Elements are not explicitly closed. Follows indentation
 
-## Setting classes
+## Setting properties & classes
 
-## Setting dynamic classes
+```imba
+var highlight = true
+var color = 'blue'
+var name = 'Example'
+var state = 'ready'
 
-## Setting conditional classes
+imba.mount do <section title=name>
+    # Setting plain properties
+    <input type='text' placeholder='Your name...'>
+    # Setting classes
+    <div.font-bold> "Bold text"
+    # multiple classes
+    <div.font-bold.font-serif.p-2> "Bold, serif & padded"
+    # Conditional classes
+    <div .font-bold=highlight> "Bold if highlight == true"
+    <div .font-bold=!highlight> "Bold if highlight == false"
+    # Dynamic classes
+    <div .state-{state}> "Box with {color} text - in state {state}"
+    <div .text-{color}-500 .{state}> "Box with {color} text - in state {state}"
+```
 
 ### Adding children
 

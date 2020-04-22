@@ -21,8 +21,7 @@
     "start": "webpack-dev-server",
     "build": "webpack --colors --display-modules",
     "build-netlify": "yarn run build && imba src/netlify.imba",
-    "watch": "webpack --devtool inline-source-map --watch --progress --colors --display-modules --debug",
-    "dev": "imba ./src/server.imba",
+    "watch-content": "imba scripts/bundle-content.imba",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",
     "docker-deploy": "docker push imba.io:`git log --pretty=format:'%h' HEAD -n1`",
     "docker-run": "docker run -p3011:3011 -t -i imba.io:`git log --pretty=format:'%h' HEAD -n1`",
@@ -43,22 +42,12 @@
     "@types/node": "^13.11.1",
     "chokidar": "^3.3.1",
     "css-loader": "^3.2.0",
-    "express": "^4.13.2",
     "extract-text-webpack-plugin": "^3.0.2",
-    "highlight.js": "^8.8.0",
     "imba": "^2.0.0-alpha.41",
     "imba-document": "^0.1.2",
-    "imba-router": "^0.1.1",
-    "less": "^2.5.1",
-    "less-loader": "^4.0.5",
-    "less-plugin-autoprefix": "^1.5.1",
-    "less-plugin-clean-css": "^1.5.1",
     "marked": "^0.7.0",
-    "octonode": "^0.9.5",
-    "source-map": "^0.5.3",
     "style-loader": "^0.20.1",
     "uglifyjs-webpack-plugin": "^1.2.2",
-    "webpack-assets-manifest": "^1.0.0",
-    "write-good": "^1.0.2"
+    "webpack-assets-manifest": "^1.0.0"
   }
 }

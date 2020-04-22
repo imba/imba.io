@@ -1,5 +1,4 @@
 var marked = require 'marked'
-# var compiler = require 'imba/compiler'
 
 marked.setOptions({
 	gfm: true

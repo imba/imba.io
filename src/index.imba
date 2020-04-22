@@ -10,37 +10,25 @@ import './repl/index'
 
 import {fs,files,ls} from './store'
 
-const sw = window.navigator.serviceWorker
 
 def main
-	if sw
-		sw.addEventListener('message') do(e)
-			console.log 'message from sw',e
-
-		await sw.register('/sw.js')
-		global.fetch('/style.css')
-		for file in files
-			file.sw = sw.controller
-			file.sendToWorker!
+	const sw = window.navigator.serviceWorker
+	await sw.register('/sw.js')
+	global.fetch('/style.css') # just to register this client with the worker
+	for file in files
+		file.sw = sw.controller
+		file.sendToWorker!
 
 tag app-root
-	prop example
-
 	def mount
 		main!
-
-	def reroute
-		let url = document.location.pathname
-		let target = ls(url)
 	
 	get page
-		ls(document.location.pathname)
+		ls(document.location.pathname) or ls('/guides')
 
 	def runCodeBlock data
-		
 		let playground = ls('/examples/playground')
 		let file = playground.childByName('app.imba')
-		console.log 'run code block',data,playground
 		file.overwrite data.code
 		$repl.project = playground
 		$repl.show!
@@ -53,10 +41,7 @@ tag app-root
 				<.sidebar-wrapper>
 					<app-menu[page].sidebar>
 				<.content-wrapper>
-					if page and page.childByName('index.html')
-						<app-repl.fixed.inset-0.shadow-lg.floating project=page>
-					elif page and page.html
-						<app-document[page]>	
+					<app-document[page]>
 
 # Should add the colors etc to the root css here
 
@@ -65,9 +50,8 @@ tag app-root
 	--light-bg: #ffffff;
 	--dark-bg: #282f33;
 	--link-color: #447A98;
-	--header-bg: #374153;
 	--page-max-width: 2400px;
-	--logo-color: #a39e7d;
+
 	font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
 	font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
 

@@ -164,6 +164,15 @@
 
 }
 
+.text-blue-200 { color: var(--blue-200); }
+.text-blue-300 { color: var(--blue-300); }
+.text-blue-400 { color: var(--blue-400); }
+.text-blue-500 { color: var(--blue-500); }
+.text-blue-600 { color: var(--blue-600); }
+.text-blue-700 { color: var(--blue-700); }
+.text-blue-800 { color: var(--blue-800); }
+.text-blue-900 { color: var(--blue-900); }
+
 .antialiased {
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
@@ -720,6 +729,54 @@
 
 .pb-48 {
     padding-bottom: 12rem!important
+}
+
+.font-sans {
+    font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji!important
+}
+
+.font-serif {
+    font-family: Georgia,Cambria,Times New Roman,Times,serif!important
+}
+
+.font-mono {
+    font-family: Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace!important
+}
+
+.font-hairline {
+    font-weight: 100!important
+}
+
+.font-thin {
+    font-weight: 200!important
+}
+
+.font-light {
+    font-weight: 300!important
+}
+
+.font-normal {
+    font-weight: 400!important
+}
+
+.font-medium {
+    font-weight: 500!important
+}
+
+.font-semibold {
+    font-weight: 600!important
+}
+
+.font-bold {
+    font-weight: 700!important
+}
+
+.font-extrabold {
+    font-weight: 800!important
+}
+
+.font-black {
+    font-weight: 900!important
 }
 
 
