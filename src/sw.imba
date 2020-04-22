@@ -13,6 +13,17 @@ const mimeTypeMap = {
 	'svg': 'image/svg+xml'
 }
 
+const indexTemplate = "
+<html>
+    <head>
+        <meta charset='UTF-8'>
+        <link rel='stylesheet' href='/examples.css'>
+    </head>
+    <body class='p-6'>
+        <script type='module' src='index.imba'></script>
+    </body>
+</html>"
+
 const clientLoadMap = {
 
 }
@@ -22,10 +33,12 @@ const accessedPaths = {
 }
 
 def compileImba file
-	let result = imbac.compile(file.body,{target: 'web', sourcePath: file.path, imbaPath: null})
-	file.js = result.toString!
+	try
+		let result = imbac.compile(file.body,{target: 'web', sourcePath: file.path, imbaPath: null})
+		file.js = result.toString!
+	catch e
+		return
 	return file.js
-
 
 class Worker
 
@@ -43,10 +56,14 @@ class Worker
 	def onmessage e
 		log 'sw inbound message',e
 		if e.data.event == 'file'
-			let path = '/repl' + e.data.path
+			let path = e.data.path
 			files[path] = e.data
 			if accessedPaths[path]
 				log 'accessed this already...',path
+				# see if it compiles first
+				if path.match(/\.imba/) and !compileImba(e.data)
+					return
+
 				let clients = await global.clients.matchAll({})
 				for client in clients
 					let map = clientLoadMap[client.id]
@@ -67,31 +84,37 @@ class Worker
 	def onfetch e
 		
 		let url = URL.new(e.request.url)
-		let ext = url.pathname.split('.').pop()
-		let file = files[url.pathname]
 		let clientId = e.resultingClientId or e.clientId
-		log 'fetch',e,url.pathname,file
-
-		if url.pathname.indexOf('/repl') == -1
+	
+		if url.pathname.indexOf('/repl/') == -1
 			return
+
+		let path = url.pathname.replace(/^\/repl/,'') 
+		let ext = path.split('.').pop()
+		let name = path.split('/').pop()
+		let basename = name.replace(/\.\w+$/,'')
+
+		let file = files[path]
 
 		let responder = Promise.new do(resolve)
 			let loadMap = clientLoadMap[clientId] ||= {}
 
-			loadMap[url.pathname] = yes
-			accessedPaths[url.pathname] = yes
+			loadMap[path] = yes
+			accessedPaths[path] = yes
+
+			if !file and ext == 'html'
+				file = {body: indexTemplate.replace(/index\.imba/g,"{basename}.imba")}
 
 			if file
-				ext = file.path.split('.').pop()
 				let status = 200
 				let mime = mimeTypeMap[ext] or mimeTypeMap.html
 				let body = file.body
 
 				if ext == 'html'
-					# add the imba 
+					body = '<script>try { window.frameElement.replify(this) } catch(e){ } </script>' + body
 					yes
 				elif ext == 'imba'
-					body = compileImba(file)
+					body = file.js or compileImba(file)
 					body = 'import "/imba.js";\n' + body
 
 				let resp = Response.new(body,status: status,headers: {'Content-Type': mime})

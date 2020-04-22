@@ -30,8 +30,10 @@ const editorOptions = {
 }
 
 tag app-repl
+	prop fs
 	@watch prop project
 	@watch prop currentFile
+	@watch prop url
 
 	get monaco
 		return $monaco if !global.monaco or $monaco or !$editor
@@ -42,10 +44,18 @@ tag app-repl
 	
 	def build
 		showing = no
-		$iframe = <iframe>
+		logs = []
+		$iframe = <iframe.inset-0.absolute>
+		$iframe.replify = do(win)
+			logs = []
+			let orig = win.console.log
+			win.console.log = do(...params)
+				logs.push(params)
+				render!
 
 	def run
-		$iframe.src = `/repl{project.path}/index.html`
+		let index = project.childByName('index.html')
+		url = `{project.path}/{index ? index.name : currentFile.basename + '.html'}`
 		self
 
 	def project-did-set project
@@ -56,6 +66,10 @@ tag app-repl
 	def current-file-did-set file
 		if monaco and file
 			monaco.setModel(file.model)
+		project = file.parent
+
+	def url-did-set url
+		$iframe.src = `/repl{url}`
 
 	def relayout
 		if $monaco
@@ -70,15 +84,114 @@ tag app-repl
 	def render
 		<self.repl .hidden=!showing>
 			<div.underlay.inset-0 :click.hide>
-			<div.editor-pane.pane :resize.relayout>
-				<div.tabs.flex.flex-row.px-2.pb-1> for file in project..children
-					<div.tab.px-2.py-1 :click.{currentFile = file} .active=(currentFile == file)> <span> file.name
+			<div.dark.editor-pane.pane :resize.relayout>
+				<header>
+					<.select.inline-flex.relative>
+						<select[project]> for item in fs.examples.folders
+							<option value=item> item.name
+						
+						<div.tab.folder> project and "{project.name} :" or "Browse..."
+					<div.tabs.contents> for file in project..children
+						<div.tab :click.{currentFile = file} .active=(currentFile == file)> <span> file.name
 				$editor = <div.editor>
-			<div.result.pane>
-				<div.output.m-2> $iframe
+			<div.result.pane.light>
+				<div.pane.output.m-2>
+					<header> <.tab> "Preview"
+					<div.flex-1.relative> $iframe
+				<app-divider>
+				<div.pane.console>
+					<header> <.tab> "Console"
+					<.content> for item in logs
+						<div.log-item> item.join(", ")
 		monaco
 
 ### css scoped
+
+select {
+	-webkit-appearance: none;
+	font-family: inherit;
+	font-weight: inherit;
+	font-size: inherit;
+	color: inherit;
+	background: transparent;
+	position: absolute;	
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+}
+
+.dark {
+	--bg: var(--code-bg-lighter);
+	--tab-color: var(--gray-600);
+	--tab-hover-color: var(--gray-400);
+	--tab-active-color: var(--blue-300);
+	--header-bg: transparent;
+}
+
+.light {
+	--bg: white;
+	--tab-color: var(--gray-600);
+	--header-bg: rgba(14, 14, 14, 0.05);
+	--header-bg: transparent;
+}
+
+.log-item {
+	padding-left: 1rem;
+}
+
+app-divider {
+	display: block;
+	height: 1px;
+	background: rgba(0,0,0,0.2);
+	margin: 0px 0px;
+}
+
+header {
+	padding: 0px 0.5rem;
+	flex: 0 0 36px;
+	color: var(--tab-color);
+	font-size: 14px;
+	align-items: center;
+	background-color: var(--header-bg);
+	display: flex;
+	flex-direction: row;
+	font-weight: 500;
+}
+
+iframe {
+	width: 100%;
+	height: 100%;
+}
+
+.tab {
+	border-color: transparent;
+	cursor: default;
+	color: var(--tab-color);
+	font-weight: 500;
+	transition: all 0.1s ease-in-out;
+	padding: 0.25rem 0.5rem;
+}
+.tab:hover {
+	color: var(--tab-hover-color);
+}
+
+.tab.active {
+	color: var(--tab-active-color);
+	border-color: currentColor;
+}
+
+.tab span {
+	border-bottom: 1px solid;
+	border-bottom-color: inherit;
+}
+
+.folder {
+	color: white;
+}
+
+
 
 .underlay {
 	position: fixed;
@@ -103,9 +216,11 @@ tag app-repl
 	height: 80vh;
 	max-height: 600px;
 	box-shadow: 0px 0px 200px 0px #1d1d1d;
-	padding: 6px;
+	padding: 0px;
 	background: var(--code-bg-lighter);
 	border-radius: 3px;
+	padding-left: 3px;
+	overflow: hidden;
 }
 
 .hidden {
@@ -116,35 +231,11 @@ tag app-repl
 	display: none;
 }
 
-.tabs {
-	flex: 0;
-	color: white;
-	font-size: 14px;
-}
-.tab {
-	border-color: transparent;
-	cursor: default;
-	color: var(--gray-600);
-	font-weight: 500;
-	transition: all 0.1s ease-in-out;
-}
-.tab:hover {
-	color: var(--gray-400);
-}
-
-.tab.active {
-	color: var(--blue-300);
-	border-color: var(--blue-300);
-}
-.tab span {
-	border-bottom: 1px solid;
-	border-bottom-color: inherit;
-}
-
 .pane {
 	flex: 1 1 50%;
 	display: flex;
 	flex-direction: column;
+	background: var(--bg);
 }
 
 .editor-pane {
@@ -158,9 +249,6 @@ tag app-repl
 }
 
 .output iframe {
-	position: relative;
-	width: 100%;
-	height: 100%;
 	border: none;
 }
 
@@ -176,6 +264,10 @@ tag app-repl
 	left: 0px;
 	bottom: 0px;
 	right: 0px;
+}
+
+.console {
+
 }
 
 ###

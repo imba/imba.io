@@ -218,6 +218,10 @@
     display: block!important
 }
 
+.contents {
+    display: contents!important
+}
+
 .inline-block {
     display: inline-block!important
 }

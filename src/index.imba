@@ -27,15 +27,14 @@ tag app-root
 		ls(document.location.pathname) or ls('/guides')
 
 	def runCodeBlock data
-		let playground = ls('/examples/playground')
-		let file = playground.childByName('app.imba')
+		let file = ls('/examples/playground/app.imba')
 		file.overwrite data.code
-		$repl.project = playground
+		$repl.currentFile = file
 		$repl.show!
 
 	def render
 		<self.antialiased :run.{runCodeBlock(e.detail)}>
-			$repl = <app-repl.floating>
+			$repl = <app-repl.floating fs=fs>
 			<app-header.sticky.top-0>
 			<.page-wrapper.flex.flex-row>
 				<.sidebar-wrapper>

@@ -32,6 +32,9 @@ class Entry
 	get title
 		data.title or data.name
 
+	get basename
+		data.name.replace(/\.\w+$/,'')
+
 	get folders
 		self.children.filter(do $1 isa Folder)
 	
@@ -65,7 +68,8 @@ export class File < Entry
 			_model.updateOptions(insertSpaces: false, tabSize: 4)
 			_model.onDidChangeContent do
 				body = _model.getValue!
-				sendToWorker!
+				clearTimeout($send)
+				$send = setTimeout(&,300) do sendToWorker!
 		_model
 	
 	def overwrite body

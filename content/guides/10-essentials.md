@@ -61,6 +61,7 @@ Conditionals and loops are also expressions
 
 ```imba
 let element = <div.main> "Hello"
+console.log 'Hello there'
 ```
 
 The above declaration might look strange at first. DOM elements are first-class citizens in Imba. We are creating a *real* dom element, with the className "main" and textContent "Hello".
@@ -105,10 +106,11 @@ You might notice that we never close our tags. Rather than being delimited by cu
     <li> "Cherish it"
 ```
 
-# Rendering
+# Careless Rendering
 
 - Mention how elements update / re-render
 - Mounting an element vs mounting with a function
+- Explain `imba.commit!`
 
 
 ## Rendering an Element into the DOM
@@ -304,11 +306,47 @@ imba.mount do
 
 # Binding Data
 
+- Show that we can bind to both variables and properties
+- Basic syntax for binding `<element[value-to-bind]>`
+- How to expose binding
+
 ## Text inputs
+
+```imba
+let message = "Hello"
+
+imba.mount do <>
+    <input[message].field type='text'>
+    <div> "Message is {message}"
+```
 
 ## Numeric inputs
 
+```imba
+let number = 1
+let object = {number: 2}
+
+imba.mount do <>
+	<label.flex.flex-row>
+		<input[number].field type='number' min=0 max=10>
+		<input[number].field type='range' min=0 max=10>
+	<label.flex.flex-row>
+		<input[object.number].field type='number' min=0 max=10>
+		<input[object.number].field type='range' min=0 max=10>
+	<div.field> "{number} + {object.number} = {number + object.number}"
+```
+
 ## Checkbox inputs
+```imba
+const state =
+    message: ""
+    enabled: false
+
+imba.mount do
+    <label>
+        <input[state.enabled] type='checkbox'>
+        <span> "enabled: {state.enabled}"
+```
 
 ## Radio inputs
 

@@ -6,6 +6,15 @@ multipage: true
 
 # Todos
 
+```imba
+import '../shared/multi-input.imba'
+
+imba.mount do
+	<div>
+		<multi-input>
+```
+
+
 # Shortcuts
 
 # Infinite List

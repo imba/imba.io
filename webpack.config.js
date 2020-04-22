@@ -2,8 +2,7 @@ var path = require('path');
 
 module.exports = [{
 	entry: {
-		index: "./src/index.imba",
-		sw2: "./src/sw.imba",
+		index: "./src/index.imba"
 	},
 	plugins: [
 	],

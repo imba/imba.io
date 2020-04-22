@@ -1,2 +1,29 @@
 @import 'preflight.css';
 @import 'theme.css';
+
+
+
+.field {
+    border: 1px solid;
+    padding: 0.25rem 0.5rem;
+}
+.field:focus {
+    border-color: var(--blue-600);
+    outline: none !important; 
+}
+
+button {
+	border: 1px solid;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: #e5e5e5;
+}
+
+*:focus {
+    outline: none;
+}
+
+button:focus {
+    border-color: var(--blue-600);
+    outline: none !important;
+}
