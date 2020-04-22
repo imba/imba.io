@@ -9,16 +9,25 @@ git clone https://github.com/imba/imba.io
 cd imba.io
 
 # install dependencies
-yarn
+npm install
 
-# compile (continously)
-npm run watch
+# package content from content/ (continously)
+npm run watch-content
 
 # run server
 npm start
-
-# visit localhost:3011 in your browser
 ```
+
+Because the site uses service workers it requires https: with a trusted certificate.
+To test things in development you need to do it via Chrome launched with specific args:
+
+```bash
+open -na Google\ Chrome --args --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost
+# if this does not work - try
+# /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost
+```
+
+Now visit https://localhost:9000/ in that browser
 
 ## Looking for projects using Imba?
 
@@ -39,6 +48,3 @@ Copyright (c) 2015-present, Imba
 [1]: https://scrimba.com/
 [2]: https://gitspeak.com/
 [3]: https://rsf.is/
-
-open -a Google\ Chrome --args --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost
