@@ -11,6 +11,9 @@ cd imba.io
 # install dependencies
 npm install
 
+# install webpack-dev-server globally
+npm install -g webpack-dev-server
+
 # package content from content/ (continously)
 npm run watch-content
 
