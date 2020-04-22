@@ -17,7 +17,7 @@ def highlight str
 	if cache[str]
 		return cache[str]
 
-	let tokens = ImbaDocument.tmp(str).getTokens()
+	let tokens = ImbaDocument.tmp(str.replace(/[ ]{4}/g,'\t')).getTokens()
 	let parts = []
 
 	for token in tokens
@@ -47,16 +47,49 @@ tag app-code
 
 tag app-code-block < app-code
 
+	def awaken
+		console.log 'awakening',is-awakened,__f
+
 	def mount
+		console.log 'mount code block',is-mounted,__f
 		unless highlighted
-			plain = innerText
-			innerHTML = highlighted = highlight(plain)
+			plain = innerText.replace(/[ ]{4}/g,'\t')
+			highlighted = highlight(plain)
+			innerHTML = '' # empty 
+			render!
+
+	def run
+		emit('run',{code: plain})
+	
+	def render
+		console.log 'render code block',is-mounted,is-awakened,__f
+		return unless highlighted
+
+		<self>
+			<div.tools.absolute> <button.px-2 :click.run> 'run'
+			<code innerHTML=highlighted>
+		
+
 
 tag app-code-inline < app-code
 
 ### css
 
+.tools {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	color: var(--blue-400);
+}
+button {
+	font-weight: 600;
+}
+button:hover {
+	text-decoration: underline;
+}
+
 app-code-block {
+	position: relative;
 	white-space: pre;
 	padding: 24px 24px 24px 24px;
 	border-radius: 3px;

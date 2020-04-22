@@ -66,12 +66,20 @@ export class File < Entry
 	get model
 		if global.monaco and !_model
 			_model = global.monaco.editor.createModel(body,extToLanguage[ext] or ext,uri)
+			_model.updateOptions(insertSpaces: false, tabSize: 4)
 			_model.onDidChangeContent do
 				console.log 'file changed content!!',$1
 				body = _model.getValue!
 				sendToWorker!
 		_model
 		# global.monaco and (_model ||= global.monaco.editor.createModel(body,extToLanguage[ext] or ext,uri) )
+	
+	def overwrite body
+		if body != self.body
+			self.body = body
+			if _model
+				_model.setValue(body)
+			sendToWorker!
 
 	def sendToWorker
 		sw.postMessage({event: 'file', path: path, body: body})

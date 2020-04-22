@@ -43,7 +43,7 @@ class Worker
 	def onmessage e
 		log 'sw inbound message',e
 		if e.data.event == 'file'
-			let path = '/playground' + e.data.path
+			let path = '/repl' + e.data.path
 			files[path] = e.data
 			if accessedPaths[path]
 				log 'accessed this already...',path
@@ -58,21 +58,21 @@ class Worker
 
 	def oninstall e
 		log e
-		e.waitUntil(global.skipWaiting!)
+		e.waitUntil global.skipWaiting!
 	
 	def onactivate e
 		log e
-		e.waitUntil(global.clients.claim!)
+		e.waitUntil global.clients.claim!
 
 	def onfetch e
 		
 		let url = URL.new(e.request.url)
-		let ext = url.pathname.split('.').pop!
+		let ext = url.pathname.split('.').pop()
 		let file = files[url.pathname]
 		let clientId = e.resultingClientId or e.clientId
 		log 'fetch',e,url.pathname,file
 
-		if url.pathname.indexOf('/playground') == -1
+		if url.pathname.indexOf('/repl') == -1
 			return
 
 		let responder = Promise.new do(resolve)
@@ -82,7 +82,7 @@ class Worker
 			accessedPaths[url.pathname] = yes
 
 			if file
-				ext = file.path.split('.').pop!
+				ext = file.path.split('.').pop()
 				let status = 200
 				let mime = mimeTypeMap[ext] or mimeTypeMap.html
 				let body = file.body

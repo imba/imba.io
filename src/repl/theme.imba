@@ -3,7 +3,7 @@ export const theme =
 	inherit: false, # can also be false to completely replace the builtin rules
 
 	named:
-		background: '282f33'
+		background: '29313f'
 		foreground: 'D4D4D4'
 		keyword: 'ea9b80'
 		operator: 'ea9b80'
@@ -159,14 +159,14 @@ export const theme =
 	]
 	colors:
 		'foreground': '#@foreground'
-		'editor.background': '#282f33'
-		'editorGutter.background': '#282f33'
+		'editor.background': '#@background'
+		'editorGutter.background': '#@background'
 		'editor.selectionBackground': '#30455f' # #33393f
 		'editorLineNumber.foreground': '#5D6E7A'
 		'editorWidget.background': '#20262a'
 		'editorWidget.border': '#20262a'
 		'list.focusBackground': '#33393f'
-		'list.hoverBackground': '#282f33'
+		'list.hoverBackground': '#@background'
 		'list.highlightForeground': '#ffffff'
 		'input.foreground': '#ffffff'
 		'editorSuggestWidget.foreground': '#@foreground'

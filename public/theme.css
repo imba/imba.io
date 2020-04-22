@@ -169,7 +169,110 @@
     -moz-osx-font-smoothing: grayscale !important;
 }
 
-.flex { display: flex; }
+.box-border {
+    box-sizing: border-box!important
+}
+
+.box-content {
+    box-sizing: content-box!important
+}
+
+.cursor-auto {
+    cursor: auto!important
+}
+
+.cursor-default {
+    cursor: default!important
+}
+
+.cursor-pointer {
+    cursor: pointer!important
+}
+
+.cursor-wait {
+    cursor: wait!important
+}
+
+.cursor-text {
+    cursor: text!important
+}
+
+.cursor-move {
+    cursor: move!important
+}
+
+.cursor-not-allowed {
+    cursor: not-allowed!important
+}
+
+.block {
+    display: block!important
+}
+
+.inline-block {
+    display: inline-block!important
+}
+
+.inline {
+    display: inline!important
+}
+
+.flow-root {
+    display: flow-root!important
+}
+
+.flex {
+    display: flex!important
+}
+
+.inline-flex {
+    display: inline-flex!important
+}
+
+.grid {
+    display: grid!important
+}
+
+.inline-grid {
+    display: inline-grid!important
+}
+
+.table {
+    display: table!important
+}
+
+.table-caption {
+    display: table-caption!important
+}
+
+.table-cell {
+    display: table-cell!important
+}
+
+.table-column {
+    display: table-column!important
+}
+
+.table-column-group {
+    display: table-column-group!important
+}
+
+.table-footer-group {
+    display: table-footer-group!important
+}
+
+.table-header-group {
+    display: table-header-group!important
+}
+
+.table-row-group {
+    display: table-row-group!important
+}
+
+.table-row {
+    display: table-row!important
+}
+
 .flex-row { flex-direction: row; }
 .flex-col { flex-direction: column; }
 .items-stretch { align-items: stretch; }
@@ -632,7 +735,7 @@
     font-size: 28px;
     line-height: 1.4em;
     color: #3a4652;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .markdown h2 {
@@ -640,7 +743,7 @@
     margin-top: 30px;
     padding: 10px 0px;
     border-bottom: 1px solid #F3F5F7;
-    font-weight: 500;
+    font-weight: 600;
     margin: 1.5em 0em 0.5em;
     line-height: 1.2em;
     color: #3A4652;

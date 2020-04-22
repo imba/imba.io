@@ -1,9 +1,9 @@
 :root {
 	--code-color: #e3e3e3;
-	--code-variable: #f0f0f0;
+	
 	--code-identifier: #9dcbeb;
 	--code-background: #282c34;
-	--code-bg-lighter: #374153;
+	--code-bg-lighter: #29313f;
 	--code-comment: #718096;
 	--code-keyword: #e88376;
 	--code-operator: #e88376;
@@ -11,8 +11,7 @@
 	--code-boolean: #4299e1;
 	--code-null: #4299e1;
 	--code-entity: #8ab9ff;
-	--code-variable: #e8e6cb;
-	--code-string: #c6f6d5;
+	--code-string: #77b3d1; /* #c6f6d5; */
 	--code-entity: #8ab9ff;
 	--code-regexp: #e9e19b;
 	--code-this: #63b3ed;
@@ -20,7 +19,10 @@
 	--code-tag-angle: #9d9755;
 	--code-type: #718096;
 	--code-property: #F7FAFC;
+
+	--code-variable: #e8e6cb;
 	--code-root-variable: #c5badc;
+	--code-root-variable: #e8e6cb;
 	--code-font: "Source Code Pro", Consolas, Menlo, Monaco, Courier, monospace;
 }
 
@@ -52,6 +54,7 @@
 .code {
 	font-family: var(--code-font);
 	color: var(--code-color);
+	tab-size: 4;
 }
 
 .code-inline {

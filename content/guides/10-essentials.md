@@ -3,9 +3,59 @@ title: Essentials
 multipage: true
 ---
 
-# Syntax
+# Language
 
 Basic syntax stuff about the language
+
+## Basics
+
+### Indentation
+
+### Implicit self
+
+## Strings
+
+## Numbers
+
+## Regular Expressions
+
+## Functions
+
+## Classes
+
+## Control Flow
+
+### if
+
+### elif
+
+### switch
+
+### try/catch
+
+## Loops and Iteration
+
+### for in
+
+### for of
+
+### for own of
+
+### while
+
+### until
+
+## Import and Export
+
+## Async and Await
+
+## Decorators
+
+## Elements
+
+## Expressions
+
+Conditionals and loops are also expressions
 
 # Elements
 
@@ -41,6 +91,7 @@ You might notice that we never close our tags. Rather than being delimited by cu
 # Rendering
 
 - Mention how elements update / re-render
+- Mounting an element vs mounting with a function
 
 
 ## Rendering an Element into the DOM
@@ -59,21 +110,45 @@ imba.mount <div.main> "Hello World"
 You might notice that we never close our tags. Rather than being delimited by curly braces or “begin/end” keywords, blocks are delimited by indentation, and so are tags. This might seem weird in the beginning, but it makes for very readable and concise code. So, if we want to create a list with some children, we simply go:
 
 ```imba
-<ul>
-    <li> "Understand indentation"
-    <li> "Get used to it"
-    <li> "Cherish it"
+imba.mount do
+    <ul>
+        <li> "Understand indentation"
+        <li> "Get used to it"
+        <li> "Cherish it"
 ```
 
 If we have a dynamic list we can simply use a `for in` loop:
 
 ```imba
-<ul> for activity in ["Eat", "Sleep", "Code"]
-    <li> <span.name> activity
+const activities = ["Eat","Sleep","Code"]
+
+imba.mount do
+    <ul> for activity in activities
+        <li> <span.name> activity
 ```
 
+## Dynamic element types
 
-Hello there
+```imba
+let items = [
+    type: 'todo'
+    title: 'My task'
+    ---
+    type: 'note'
+    title: 'My note'
+]
+
+tag todo-item
+    <self> "Todo: {data.title}"
+
+tag note-item
+    <self> "Note: {data.title}"
+
+imba.mount do
+    <ul> for item in items
+        <li> <{item.type}-item data=item>
+
+```
 
 # Handling Events
 
@@ -89,31 +164,39 @@ imba.mount do
         <div> "count is {counter}"
 ```
 
-In the example above we declared the handler inline. Usually it is better to define the handlers outside of the view, and decouple them from the event itself. This can be done in several ways.
-
-
 ## Event Modifiers
 
 Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers never need to know about the event in the first place.
 
 ```
-# call preventDefault on the submit-event, then call doSomething
+# call preventDefault on the submit-event
 <form :submit.prevent.doSomething>
 ```
 
-> What is the difference between a modifier and a handler in this case? There isn't really a difference. In fact, the modifiers are implemented as methods on element, and you can define custom modifiers as well.
+#### prevent
+```imba
+# calls preventDefault on event
+<button :click.prevent.{'doSomething'}>
+```
 
-* `.stop` - stops event from propagating
-* `.prevent` - calls preventDefault on event
-* `.silence` - explicitly tell Imba not to broadcast event to schedulers
-* `.self` - only trigger subsequent handlers if event.target is the element itself
+### stop
 
-### Key Modifiers
+stops event from propagating
+
+### self
+
+only trigger subsequent handlers if event.target is the element itself
+
+### silence
+
+explicitly tell Imba not to broadcast event to schedulers
+
+### keys
 
 For keyboard events (keydown, keyup, keypress) there are also some very handy modifiers available.
 ```
 # trigger addItem when enter is pressed
-<input type='text' :keydown.enter.addItem>
+<input type='text' :keydown.enter.{addItem}>
 
 # multiple handlers for the same event is allowed
 # trigger gotoPrev/gotoNext when pressing up/down keys
@@ -156,29 +239,19 @@ For keyboard events (keydown, keyup, keypress) there are also some very handy mo
 * .right
 * .middle
 
-## Declaring default handlers
+## Unresolved Modifiers
 
-When an event is processed by Imba, it will also look for an `on(eventname)` method on the tags as it traverses up from the original target.
+## Special Events
 
-```
-tag App
-    def onsubmit e
-        e.prevent
-        window.alert('Tried to submit!')
+### resize
 
-    def render
-        <self>
-            <form>
-                <input type='text'>
-                <button type='submit'> "Submit"
+### selection
 
-Imba.mount <App>
-```
+### mutate
 
+### intersect
 
 ## Custom events
-
-#### `tag.emit(name, data = null)`
 
 Custom events will bubble like native events, but are dispatched and processed directly inside the Imba.Event system, without generating a real browser Event. Optionally supply data for the event in the second argument. Here is a rather complex example illustrating several ways of dealing with custom events
 
@@ -201,11 +274,36 @@ imba.mount do
             <button :click.{renameTodo(item)}> 'rename'
 ```
 
+## Examples
+
+```imba
+let x = 0
+let y = 0
+
+imba.mount do
+	<div.absolute.inset-0 :mousemove.{{x,y} = e}>
+		<div> "mouse is at {x},{y}"
+```
+
 # Binding Data
 
-Hello there bindings
+## Text inputs
+
+## Numeric inputs
+
+## Checkbox inputs
+
+## Radio inputs
+
+## Select
+
+## Select multiple
+
+## Custom binding
 
 # Managing State
+
+> Not like most frameworks. You dont really manage it.
 
 # Web Components
 
@@ -213,7 +311,13 @@ Sometimes you will want to define custom reusable components. Custom imba tags c
 
 ## What is `<self>`?
 
+## Referencing elements
+
+## Sheduling components
+
 
 # Styling
 
 Info about styling here
+
+## Scoped styles

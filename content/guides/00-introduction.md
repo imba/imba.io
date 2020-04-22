@@ -11,12 +11,12 @@ multipage: true
 
 # Installation
 
+## Tooling
+
 # Release Notes
 
-# Core Language
-
-# Tooling
-
 # Ecosystem
+
+# Examples
 
 Works with anything that works with javascript.

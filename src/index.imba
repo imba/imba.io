@@ -36,8 +36,18 @@ tag app-root
 	get page
 		ls(document.location.pathname)
 
+	def runCodeBlock data
+		
+		let playground = ls('/examples/playground')
+		let file = playground.childByName('app.imba')
+		console.log 'run code block',data,playground
+		file.overwrite data.code
+		$repl.project = playground
+		$repl.show!
+
 	def render
-		<self.antialiased>
+		<self.antialiased :run.{runCodeBlock(e.detail)}>
+			$repl = <app-repl.floating>
 			<app-header.sticky.top-0>
 			<.page-wrapper.flex.flex-row>
 				<.sidebar-wrapper>
@@ -59,6 +69,7 @@ tag app-root
 	--page-max-width: 2400px;
 	--logo-color: #a39e7d;
 	font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+	font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
 
 	--header-bg: rgba(255,255,255,0.95);
 	--logo-color: #5997ff;

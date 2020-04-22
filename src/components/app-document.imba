@@ -4,6 +4,5 @@ tag app-document
 		self
 		
 	def render
-		console.log 'render app document',data.html
-		<self.markdown>
+		<self.markdown.block.pb-24>
 			<div.content.px-6 innerHTML=data.html>
