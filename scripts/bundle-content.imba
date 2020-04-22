@@ -61,7 +61,6 @@ watcher.on('all') do
 			return
 
 		if item.ext == 'md'
-			console.log 'test json!'
 			let md = marked.render(item.body)
 			item.html = md.body
 			item.toc = md.toc

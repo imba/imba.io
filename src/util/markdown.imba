@@ -157,5 +157,4 @@ export def render content
 				html: parts[i + 1]
 				title: item.title
 			}
-		console.log 'returning toc',toc,parts,object.sections
 	return object

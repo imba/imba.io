@@ -405,7 +405,7 @@ var proxyHandler = {
 		let val = undefined;
 		while (ctx && val == undefined){
 			
-			if (ctx = ctx.parentContext) {
+			if (ctx = ctx.$parent) {
 				
 				val = ctx[name];
 			};
@@ -419,13 +419,12 @@ var proxyHandler = {
 extend$(Node,{
 	
 	
-	get __context(){
-		var $context$;
+	get $context(){
 		
-		return ($context$ = this.context$) || (this.context$ = new Proxy(this,proxyHandler));
+		return this.$context_ || (this.$context_ = new Proxy(this,proxyHandler));
 	},
 	
-	get parentContext(){
+	get $parent(){
 		
 		return this.up$ || this.parentNode;
 	},
@@ -760,7 +759,6 @@ class ImbaElement extends HTMLElement {
 		return this;
 	}
 	
-	
 	connectedCallback(){
 		
 		let flags = this.__f;
@@ -787,8 +785,8 @@ class ImbaElement extends HTMLElement {
 		
 		if (!(flags & 8)) {
 			
-			this.__f |= 8;
 			if (this.awaken) { this.awaken() };
+			this.__f |= 8;
 		};
 		
 		if (!flags) {
@@ -802,8 +800,6 @@ class ImbaElement extends HTMLElement {
 	
 	mount$(){
 		
-		this.__f |= 16;
-		
 		if (this.__schedule) { this.schedule() };
 		
 		if (this.mount instanceof Function) {
@@ -814,6 +810,7 @@ class ImbaElement extends HTMLElement {
 				res.then(imba.commit);
 			};
 		};
+		this.__f |= 16;
 		return this;
 	}
 	
@@ -838,6 +835,21 @@ class ImbaElement extends HTMLElement {
 	awaken(){
 		
 		return this.__schedule = true;
+	}
+	
+	get isMounted(){
+		
+		return (this.__f & 16) != 0;
+	}
+	
+	get isAwakened(){
+		
+		return (this.__f & 8) != 0;
+	}
+	
+	get isScheduled(){
+		
+		return (this.__f & 64) != 0;
 		
 	}
 }; ImbaElement.init$();
@@ -1391,7 +1403,7 @@ function extend$(target,ext){
 extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["DocumentFragment"],{
 	
 	
-	get parentContext(){
+	get $parent(){
 		
 		return this.up$ || this.__parent;
 	},
@@ -1494,7 +1506,7 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["DocumentFragment"],{
 
 extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["ShadowRoot"],{
 	
-	get parentContext(){
+	get $parent(){
 		
 		return this.host;
 	},
@@ -1522,7 +1534,7 @@ class TagCollection {
 		this.setup();
 	}
 	
-	get parentContext(){
+	get $parent(){
 		
 		return this.__parent;
 	}
