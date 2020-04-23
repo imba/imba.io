@@ -11,6 +11,7 @@ const editorOptions = {
 	fontIsMonospace: true
 	hideCursorInOverviewRuler: true,
 	lineNumbersMinChars: 3,
+	lineNumbers: false
 	fontSize: 13
 	minimap: {enabled: false}
 	renderLineHighlight: 'none'

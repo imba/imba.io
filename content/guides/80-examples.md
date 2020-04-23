@@ -27,13 +27,37 @@ imba.mount do <div.app>
 	<footer>
 		<button :click.{archive!}> "Archive"
 ```
-
-
 # Shortcuts
 
 # Infinite List
 
 # Multi Input Field
+```imba
+tag multi-input
+	prop multiple = yes
+	prop uniques = yes
+	prop placeholder
+	prop values = []
+	prop readonly = no
+	prop strict = no
+	prop options
+
+	get prefixes do CHR.repeat(values.length)
+	get inputValue do $input ? $input.value.split(CHR).join('') : ''
+	get expectedValue do prefixes + inputValue
+	get selStart do $input ? $input.selectionStart : 0
+	get selEnd do $input ? $input.selectionEnd : 0
+
+```
+
+```imba
+import '../shared/multi-input.imba'
+
+imba.mount do <div.app>
+	<h1> "Hello"
+	<multi-input>
+```
+
 
 # Shortcuts
 

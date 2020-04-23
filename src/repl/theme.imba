@@ -31,6 +31,7 @@ export const theme =
 		property: 'F7FAFC'
 		tagbase: 'e9e19b' # c3b17e
 		tagname: 'e9e19b'
+		tagref: 'ffae86'
 		tagstr: 'a0c6ca'
 		tagop: 'd17e53'
 		tagbracket: '9d9755'
@@ -126,6 +127,7 @@ export const theme =
 		{ token: 'tag.open', foreground: '@tagbracket' },
 		{ token: 'tag.close', foreground: '@tagbracket' },
 		{ token: 'tag.attribute', foreground: '@tagattr' },
+		{ token: 'tag.reference', foreground: '@tagref' },
 		{ token: 'tag.attribute.listener', foreground: '@taglistener' },
 		{ token: 'tag.attribute.modifier', foreground: '@tagmodifier' },
 		{ token: 'tag.operator', foreground: '@operator' },

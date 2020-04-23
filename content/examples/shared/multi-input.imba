@@ -20,7 +20,6 @@ tag multi-input
 		$input.blur!
 		
 	def focus
-		
 		unless document.activeElement == $input
 			$input.focus!
 			select(prefixes.length,$input.value.length)
@@ -65,7 +64,7 @@ tag multi-input
 			<div.views> for item,i in values
 				<div.item .sel=(end > i >= start) .before=(start == end == i)> item
 
-			$input = <input
+			<input$input
 				type="text"
 				:beforeinput.{handle-input(e)}
 				:selection.commit

@@ -378,9 +378,25 @@ tag my-component
 
 ## What is `<self>`?
 
-## Referencing elements
+## Element References
+```imba
+tag app-example
+
+    def submit
+        $title
+        console.log $title.value
+
+    def render
+        <self>
+            <input$title type='text'>
+            <button :click.submit> 'submit'
+
+imba.mount <app-example>
+```
 
 ## Sheduling components
+
+
 
 
 # Styling
