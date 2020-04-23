@@ -54,6 +54,9 @@ tag app-code-block < app-code
 		console.log 'mount code block',is-mounted,__f
 		unless highlighted
 			plain = innerText.replace(/[ ]{4}/g,'\t')
+			if plain.indexOf('# light') >= 0
+				flags.add('light')
+
 			highlighted = highlight(plain)
 			innerHTML = '' # empty 
 			render!

@@ -17,15 +17,15 @@ def add
 def archive
 	items = items.filter do !$1.done
 
-imba.mount do <>
-		<form :submit.prevent.{add!}>
-			<input[input] placeholder='What to do?'>
-		<ul> for item in items
-			<li.todo .line-through=item.done>
-				<input[item.done] type='checkbox'>
-				<span> item.title
-		<footer>
-			<button :click.{archive!}> "Archive"
+imba.mount do <div.app>
+	<form :submit.prevent.{add!}>
+		<input[input] placeholder='What to do?'>
+	<ul> for item in items
+		<li.todo .line-through=item.done>
+			<input[item.done] type='checkbox'>
+			<span> item.title
+	<footer>
+		<button :click.{archive!}> "Archive"
 ```
 
 

@@ -364,6 +364,18 @@ imba.mount do
 
 Sometimes you will want to define custom reusable components. Custom imba tags compiles to web components.
 
+## Declaring
+
+> Naming rules for custom components
+> Render method is optional
+
+```imba
+tag my-component
+    def render
+        <self>
+            <div.one.two title='hello'> "Hello there"
+```
+
 ## What is `<self>`?
 
 ## Referencing elements

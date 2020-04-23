@@ -2,6 +2,8 @@
 	--code-color: #e3e3e3;
 	
 	--code-identifier: #9dcbeb;
+	--code-constant: #c1a5d6;
+
 	--code-background: #282c34;
 	--code-bg-lighter: #29313f;
 	--code-comment: #718096;
@@ -28,27 +30,28 @@
 
 .light {
 	--code-color: #556166;
-	--code-variable: #f0f0f0;
-	--code-identifier: #9dcbeb;
+	--code-base: hsl(45, 11%, 34%);
+	--code-constant: #6c438a;
+	--code-identifier: hsl(34, 28%, 31%);
+
 	--code-background: #282c34;
-	--code-bg-lighter: #374153;
+	--code-bg-lighter: #f6f6f6;
 	--code-comment: #718096;
-	--code-keyword: #e88376;
-	--code-operator: #e88376;
+	--code-keyword: hsl(204, 90%, 37%);
+	--code-operator: var(--code-base);
 	--code-numeric: #63b3ed;
 	--code-boolean: #4299e1;
 	--code-null: #4299e1;
-	--code-entity: #8ab9ff;
-	--code-variable: #e8e6cb;
-	--code-string: #c6f6d5;
-	--code-entity: #8ab9ff;
+	--code-variable: #2f6863;
+	--code-string: hsl(41, 37%, 45%);
+	--code-entity: #002968;
 	--code-regexp: #e9e19b;
-	--code-this: #63b3ed;
-	--code-tag: #e9e19b;
-	--code-tag-angle: #9d9755;
+	--code-this: #0067b2;
+	--code-tag: hsl(19, 67%, 45%);
+	--code-tag-angle: hsla(19, 67%, 45%,70%);
 	--code-type: #718096;
-	--code-property: #F7FAFC;
-	--code-root-variable: #c5badc;
+	--code-property: var(--code-base);
+	--code-root-variable: #453c58;
 }
 
 .code {
@@ -74,16 +77,18 @@
 .code .regexp { color: var(--code-regexp); }
 .code .tag { color: var(--code-tag); }
 .code .type { color: var(--code-type); }
-.code .keyword,.code .argparam { color: var(--code-keyword); }
+.code .entity.name.type { color: var(--code-entity); }
+.code .keyword,.code .argparam {color: var(--code-keyword);font-weight: 600;}
 .code .operator { color: var(--code-operator); }
 .code .property { color: var(--code-property); }
 .code .numeric,.code .number { color: var(--code-numeric); }
 .code .boolean { color: var(--code-boolean); }
 .code .null { color: var(--code-null); }
 .code .identifier { color: var(--code-identifier); }
-.code .variable { color: var(--code-variable); }
+.code .variable, .view-lines .variable { color: var(--code-variable); }
 .code .string { color: var(--code-string); }
 .code .propname { color: var(--code-entity); }
 .code .this,.code .self { color: var(--code-this); }
+.code .constant { color: var(--code-constant); }
 .code .tag.open,.code .tag.close { color: var(--code-tag-angle); }
 .code .variable.scope_root { color: var(--code-root-variable); }

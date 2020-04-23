@@ -51,4 +51,21 @@ module.exports = [{
 		path: path.resolve(__dirname, 'public'),
 		filename: 'sw.js'
 	}
+},{
+	entry: "./src/repl/workers/imba/worker.imba",
+	target: 'webworker',
+	module: {
+		rules: [{
+			test: /\.imba$/,
+			loader: 'imba/loader'
+		}]
+	},
+	resolve: {
+		extensions: [".imba",".js",".json"]
+	},
+	output: {
+		path: path.resolve(__dirname, 'public'),
+		filename: 'worker.imba.js',
+		libraryTarget: "amd"
+	}
 }]

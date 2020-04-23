@@ -7,16 +7,16 @@ export const theme =
 		foreground: 'D4D4D4'
 		keyword: 'ea9b80'
 		operator: 'ea9b80'
-		string: 'B7DE95'
+		# string: 'B7DE95'
 		number: '598DA6'
 		bool: '598DA6'
 		symbol: 'B7DE95'
 		regex: 'FD9231'
 		regexgroup: 'FFB26D'
 		comment: '5D6E7A'
-		constant: 'BD9AC2'
-		identifier: 'd4d4d4'
-		xml: 'D9BB72'
+		constant: 'c1a5d6'
+		identifier: '9dcbeb' # 'd4d4d4'
+		xml: 'e9e19b'
 		xmlref: 'd2845f'
 		decl: '75AAFF'
 		key: 'a7c9de'
@@ -25,16 +25,18 @@ export const theme =
 		localCursor: 'ffe796'
 		lvar: 'dcdbc7'
 		limport: '91b7ea'
-		
+		variable: 'e8e6cb'
+		context: '63b3ed' 
 		string: '7da4b7' # a0c6ca
-		tagbase: 'D9BB73' # c3b17e
-		tagname: 'D9BB73'
+		property: 'F7FAFC'
+		tagbase: 'e9e19b' # c3b17e
+		tagname: 'e9e19b'
 		tagstr: 'a0c6ca'
 		tagop: 'd17e53'
-		tagbracket: '8e7f54'
-		tagattr: 'D9BB73'
-		tagmodifier: 'f6d18d'
-		taglistener: 'f6d18d'
+		tagbracket: '9d9755'
+		tagattr: 'e9e19b'
+		tagmodifier: 'e9e19b'
+		taglistener: 'e9e19b'
 		special: 'ffdb59'
 
 	toMonaco: do
@@ -69,24 +71,32 @@ export const theme =
 		{ token: 'emphasis', fontStyle: 'italic' },
 		{ token: 'strong', fontStyle: 'bold' },
 
-		{ token: 'variable', foreground: '74B0DF' },
+		{ token: 'property', foreground: '@property' },
+		{ token: 'variable', foreground: '@variable' },
 		{ token: 'variable.predefined', foreground: '@keyword' },
 		{ token: 'variable.parameter', foreground: '9CDCFE' },
 		{ token: 'identifier', foreground: '@identifier' },
 		{ token: 'identifier.const', foreground: '@constant' },
+		{ token: 'identifier.constant', foreground: '@constant' },
 		{ token: 'identifier.const.class', foreground: '@decl' },
 		{ token: 'identifier.class', foreground: '@decl' },
+		{ token: 'identifier.classname', foreground: '@decl' },
 		{ token: 'identifier.const.tag', foreground: '@decl' },
 		{ token: 'identifier.decl', foreground: '@decl' },
 		{ token: 'identifier.tag', foreground: '@decl' },
+		{ token: 'identifier.tagname', foreground: '@decl' },
 		{ token: 'identifier.def', foreground: '@decl' },
 		{ token: 'identifier.key', foreground: '@key' },
 		{ token: 'identifier.env', foreground: '@keyword' },
 		{ token: 'identifier.special', foreground: '@special' },
 		{ token: 'identifier.import', foreground: '@limport' },
+		
 		{ token: 'entity.name.type', foreground: '@decl'},
 		{ token: 'entity.name.function', foreground: '@decl'},
 		{ token: 'entity.name.tag', foreground: '@xml'}
+
+		{ token: 'self', foreground: '@context'}
+		{ token: 'this', foreground: '@context'}
 
 		{ token: 'storage.type.function', foreground: '@keyword'},
 		{ token: 'storage.type.class', foreground: '@keyword'},
@@ -118,6 +128,7 @@ export const theme =
 		{ token: 'tag.attribute', foreground: '@tagattr' },
 		{ token: 'tag.attribute.listener', foreground: '@taglistener' },
 		{ token: 'tag.attribute.modifier', foreground: '@tagmodifier' },
+		{ token: 'tag.operator', foreground: '@operator' },
 		{ token: 'paren.open.tag', foreground: '@taglistener' },
 		{ token: 'paren.close.tag', foreground: '@taglistener' },
 		
