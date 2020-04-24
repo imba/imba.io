@@ -91,16 +91,13 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _internal_bind__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8);
+/* harmony import */ var _internal_bind__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _internal_bind__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_internal_bind__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _internal_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
+/* harmony import */ var _internal_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
 /* harmony import */ var _internal_svg__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_internal_svg__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _events_intersect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
-/* harmony import */ var _events_intersect__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_events_intersect__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _events_selection__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(11);
-/* harmony import */ var _events_selection__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_events_selection__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _events_resize__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(12);
-/* harmony import */ var _events_resize__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_events_resize__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _events_intersect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(11);
+/* harmony import */ var _events_selection__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
+/* harmony import */ var _events_resize__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
 /* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createLiveFragment", function() { return _internal_fragment__WEBPACK_IMPORTED_MODULE_6__["createLiveFragment"]; });
 
@@ -129,8 +126,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _internal_scheduler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _events__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
 /* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
-/* harmony import */ var _svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
-function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
+/* harmony import */ var _internal_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
+/* harmony import */ var _svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
 function extend$(target,ext){
 	// @ts-ignore
 	var descriptors = Object.getOwnPropertyDescriptors(ext);
@@ -331,72 +328,12 @@ imba.mount = function (mountable,into){
 	} else {
 		
 		
-		element.__schedule = true;
+		
+		element.__F = element.__F | 64;
 	};
 	
 	return parent.appendChild(element);
 };
-
-
-const CustomTagConstructors = {};
-
-class ImbaElementRegistry {
-	
-	
-	constructor(){
-		
-		this.__types = {};
-	}
-	
-	lookup(name){
-		
-		return this.__types[name];
-	}
-	
-	get(name,klass){
-		
-		if (!name || name == 'component') { return ImbaElement };
-		if (this.__types[name]) { return this.__types[name] };
-		if (false) {};
-		if (klass && root[klass]) { return root[klass] };
-		return root.customElements.get(name) || ImbaElement;
-	}
-	
-	create(name){
-		
-		if (this.__types[name]) {
-			
-			
-			return this.__types[name].create$();
-		} else {
-			
-			return document.createElement(name);
-		};
-	}
-	
-	define(name,klass,options){
-		
-		this.__types[name] = klass;
-		
-		
-		let proto = klass.prototype;
-		if (proto.render && proto.end$ == Element.prototype.end$) {
-			
-			proto.end$ = proto.render;
-		};
-		
-		if (options && options.extends) {
-			
-			CustomTagConstructors[name] = klass;
-		} else {
-			
-			root.customElements.define(name,klass);
-		};
-		return klass;
-	}
-};
-
-imba.tags = new ImbaElementRegistry();
 
 var proxyHandler = {
 	get(target,name){
@@ -692,169 +629,67 @@ imba.createKeyedFragment = _internal_fragment__WEBPACK_IMPORTED_MODULE_3__["crea
 
 
 
-var mountedQueue;
-var mountedFlush = function() {
+
+
+const CustomTagConstructors = {};
+
+class ImbaElementRegistry {
 	
-	let items = mountedQueue;
-	mountedQueue = null;
-	if (items) {
-		
-		for (let $i = 0, $items = iter$(items), $len = $items.length; $i < $len; $i++) {
-			let item = $items[$i];
-			
-			item.mounted$();
-		};
-	};
-	return;
-};
-
-
-class ImbaElement extends HTMLElement {
-	static init$(){
-		return super.inherited instanceof Function && super.inherited(this);
-	}
 	
 	constructor(){
 		
-		super();
-		this.setup$();
-		if (this.build) { this.build() };
+		this.types = {};
 	}
 	
-	setup$(){
+	lookup(name){
 		
-		this.__slots = {};
-		return this.__f = 0;
+		return this.types[name];
 	}
 	
-	init$(){
+	get(name,klass){
 		
-		this.__f |= 1;
-		return this;
+		if (!name || name == 'component') { return _internal_component__WEBPACK_IMPORTED_MODULE_4__["ImbaElement"] };
+		if (this.types[name]) { return this.types[name] };
+		if (false) {};
+		if (klass && root[klass]) { return root[klass] };
+		return root.customElements.get(name) || _internal_component__WEBPACK_IMPORTED_MODULE_4__["ImbaElement"];
 	}
 	
-	
-	slot$(name,ctx){
-		var $slots;
+	create(name){
 		
-		if (name == '__' && !(this.render)) {
+		if (this.types[name]) {
 			
-			return this;
-		};
-		
-		return ($slots = this.__slots)[name] || ($slots[name] = imba.createLiveFragment(0,null,this));
-	}
-	
-	schedule(){
-		
-		imba.scheduler.listen('render',this);
-		this.__f |= 64;
-		return this;
-	}
-	
-	unschedule(){
-		
-		imba.scheduler.unlisten('render',this);
-		this.__f &= ~64;
-		return this;
-	}
-	
-	connectedCallback(){
-		
-		let flags = this.__f;
-		
-		if (flags & 16) {
 			
-			return;
-		};
-		
-		if (this.mounted instanceof Function) {
+			return this.types[name].create$();
+		} else {
 			
-			if (!mountedQueue) {
-				
-				mountedQueue = [];
-				Promise.resolve().then(mountedFlush);
-			};
-			mountedQueue.unshift(this);
+			return document.createElement(name);
 		};
+	}
+	
+	define(name,klass,options){
 		
-		if (!(flags & 1)) {
+		this.types[name] = klass;
+		
+		let proto = klass.prototype;
+		
+		
+		
+		
+		if (options && options.extends) {
 			
-			this.init$();
-		};
-		
-		if (!(flags & 8)) {
+			CustomTagConstructors[name] = klass;
+		} else {
 			
-			if (this.awaken) { this.awaken() };
-			this.__f |= 8;
+			root.customElements.define(name,klass);
 		};
-		
-		if (!flags) {
-			
-			if (this.render) { this.render() };
-		};
-		
-		this.mount$();
-		return this;
+		return klass;
 	}
-	
-	mount$(){
-		
-		if (this.__schedule) { this.schedule() };
-		
-		if (this.mount instanceof Function) {
-			
-			let res = this.mount();
-			if (res && (res.then instanceof Function)) {
-				
-				res.then(imba.commit);
-			};
-		};
-		this.__f |= 16;
-		return this;
-	}
-	
-	mounted$(){
-		
-		if (this.mounted instanceof Function) { this.mounted() };
-		return this;
-	}
-	
-	disconnectedCallback(){
-		
-		this.__f &= ~16;
-		if (this.__f & 64) { this.unschedule() };
-		if (this.unmount instanceof Function) { return this.unmount() };
-	}
-	
-	tick(){
-		
-		return this.render && this.render();
-	}
-	
-	awaken(){
-		
-		return this.__schedule = true;
-	}
-	
-	get isMounted(){
-		
-		return (this.__f & 16) != 0;
-	}
-	
-	get isAwakened(){
-		
-		return (this.__f & 8) != 0;
-	}
-	
-	get isScheduled(){
-		
-		return (this.__f & 64) != 0;
-		
-	}
-}; ImbaElement.init$();
+};
 
-root.customElements.define('imba-element',ImbaElement);
+imba.tags = new ImbaElementRegistry();
+
+
 
 
 imba.createElement = function (name,bitflags,parent,flags,text,sfc){
@@ -886,24 +721,19 @@ imba.createComponent = function (name,bitflags,parent,flags,text,sfc){
 	
 	var el;
 	
-	if (CustomTagConstructors[name]) {
-		
-		el = CustomTagConstructors[name].create$(el);
-		el.slot$ = ImbaElement.prototype.slot$;
-		el.__slots = {};
-	} else {
+	if (false) {} else {
 		
 		el = document.createElement(name);
 	};
 	
 	el.up$ = parent;
-	el.__f = bitflags;
 	el.init$();
 	
 	if (text !== null) {
 		
 		el.slot$('__').text$(text);
 	};
+	
 	
 	if (flags) { el.className = flags };
 	
@@ -1855,6 +1685,246 @@ var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImbaElement", function() { return ImbaElement; });
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+
+
+class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
+	static init$(){
+		return super.inherited instanceof Function && super.inherited(this);
+	}
+	
+	constructor(){
+		
+		super();
+		this.setup$();
+		this.build();
+	}
+	
+	setup$(){
+		
+		this.__slots = {};
+		return this.__F = 0;
+	}
+	
+	init$(){
+		
+		this.__F |= (1 | 2);
+		return this;
+	}
+	
+	
+	slot$(name,ctx){
+		var $__slots;
+		
+		if (name == '__' && !this.render) {
+			
+			return this;
+		};
+		
+		return ($__slots = this.__slots)[name] || ($__slots[name] = imba.createLiveFragment(0,null,this));
+	}
+	
+	
+	build(){
+		
+		return this;
+	}
+	
+	
+	awaken(){
+		
+		return this;
+	}
+	
+	
+	mount(){
+		
+		return this;
+	}
+	
+	unmount(){
+		
+		return this;
+	}
+	
+	
+	rendered(){
+		
+		return this;
+	}
+	
+	
+	dehydrate(){
+		
+		return this;
+	}
+	
+	
+	hydrate(){
+		
+		
+		this.autoschedule = true;
+		return this;
+	}
+	
+	tick(){
+		
+		return this.commit();
+	}
+	
+	
+	visit(){
+		
+		return this.commit();
+	}
+	
+	
+	commit(){
+		
+		if (!(this.isRender())) { return this };
+		this.__F |= 256;
+		this.render && this.render();
+		this.rendered();
+		return this.__F = (this.__F | 512) & ~256;
+	}
+	
+	
+	
+	get autoschedule(){
+		
+		return (this.__F & 64) != 0;
+	}
+	
+	set autoschedule(value){
+		
+		value ? ((this.__F |= 64)) : ((this.__F &= ~64));
+	}
+	
+	isRender(){
+		
+		return true;
+	}
+	
+	isMounting(){
+		
+		return (this.__F & 16) != 0;
+	}
+	
+	isMounted(){
+		
+		return (this.__F & 32) != 0;
+	}
+	
+	isAwakened(){
+		
+		return (this.__F & 8) != 0;
+	}
+	
+	isRendered(){
+		
+		return (this.__F & 512) != 0;
+	}
+	
+	isRendering(){
+		
+		return (this.__F & 256) != 0;
+	}
+	
+	isScheduled(){
+		
+		return (this.__F & 128) != 0;
+	}
+	
+	isHydrated(){
+		
+		return (this.__F & 2) != 0;
+	}
+	
+	schedule(){
+		
+		imba.scheduler.listen('render',this);
+		this.__F |= 128;
+		return this;
+	}
+	
+	unschedule(){
+		
+		imba.scheduler.unlisten('render',this);
+		this.__F &= ~128;
+		return this;
+	}
+	
+	end$(){
+		
+		return this.visit();
+	}
+	
+	connectedCallback(){
+		
+		let flags = this.__F;
+		let inited = flags & 1;
+		let awakened = flags & 8;
+		
+		
+		if (flags & (16 | 32)) {
+			
+			return;
+		};
+		
+		this.__F |= 16;
+		
+		if (!inited) {
+			
+			this.init$();
+		};
+		
+		if (!(flags & 2)) {
+			
+			this.hydrate();
+			this.__F |= 2;
+			this.commit();
+		};
+		
+		if (!awakened) {
+			
+			this.awaken();
+			this.__F |= 8;
+		};
+		
+		let res = this.mount();
+		if (res && (res.then instanceof Function)) {
+			
+			res.then(imba.commit);
+		};
+		
+		
+		
+		flags = this.__F = (this.__F | 32) & ~16;
+		
+		if (flags & 64) {
+			
+			this.schedule();
+		};
+		
+		return this;
+	}
+	
+	disconnectedCallback(){
+		
+		this.__F = this.__F & (~32 & ~16);
+		if (this.__F & 128) { this.unschedule() };
+		return this.unmount();
+	}
+}; ImbaElement.init$();
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
 function extend$(target,ext){
 	// @ts-ignore
@@ -1896,7 +1966,7 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["SVGElement"],{
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
@@ -2248,7 +2318,7 @@ extend$(HTMLInputElement,{
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 function extend$(target,ext){
@@ -2287,13 +2357,18 @@ extend$(SVGElement,{
 
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports) {
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
+
+
 const observers = {};
 
-class IntersectEvent extends CustomEvent {
+class IntersectEvent extends _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"] {
 	static init$(){
 		return super.inherited instanceof Function && super.inherited(this);
 	}
@@ -2342,7 +2417,7 @@ function getIntersectionObserver(){
 	));
 };
 
-Element.prototype.on$intersect = function(mods,context) {
+_dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.on$intersect = function(mods,context) {
 	var $root, $v_;
 	
 	let obs;
@@ -2364,8 +2439,12 @@ Element.prototype.on$intersect = function(mods,context) {
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports) {
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
 
 
 var selHandler;
@@ -2382,7 +2461,7 @@ function activateSelectionHandler(){
 			let target = document.activeElement;
 			if (target && target.matches('input,textarea')) {
 				
-				let custom = new CustomEvent('selection',{
+				let custom = new _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"]('selection',{
 					detail: {
 						start: target.selectionStart,
 						end: target.selectionEnd
@@ -2395,16 +2474,19 @@ function activateSelectionHandler(){
 	};
 };
 
-Element.prototype.on$selection = function(mods,context) {
+_dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.on$selection = function(mods,context) {
 	
 	return activateSelectionHandler();
 };
 
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports) {
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
 function extend$(target,ext){
 	// @ts-ignore
 	var descriptors = Object.getOwnPropertyDescriptors(ext);
@@ -2414,7 +2496,9 @@ function extend$(target,ext){
 };
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 
-class ResizeEvent extends CustomEvent {static init$(){
+
+
+class ResizeEvent extends _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"] {static init$(){
 	return super.inherited instanceof Function && super.inherited(this);
 }
 }; ResizeEvent.init$();
@@ -2423,6 +2507,14 @@ var resizeObserver = null;
 
 function getResizeObserver(){
 	
+	if (!globalThis.ResizeObserver) {
+		
+		if (!resizeObserver) {
+			
+			console.warn(':resize not supported in this browser');
+			resizeObserver = {observe: function() { return true; }};
+		};
+	};
 	return resizeObserver || (resizeObserver = new ResizeObserver(function(entries) {
 		
 		for (let $i = 0, $items = iter$(entries), $len = $items.length; $i < $len; $i++) {
@@ -2435,7 +2527,7 @@ function getResizeObserver(){
 	}));
 };
 
-extend$(Element,{
+extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["Element"],{
 	
 	
 	on$resize(chain,context){

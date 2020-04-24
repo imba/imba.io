@@ -27,9 +27,12 @@ tag app-root
 		ls(document.location.pathname) or ls('/guides')
 
 	def runCodeBlock data
-		let file = ls('/examples/playground/app.imba')
-		file.overwrite data.code
-		$repl.currentFile = file
+		if data.example
+			$repl.project = data.example
+		elif data.code	
+			let file = ls('/examples/playground/app.imba')
+			file.overwrite data.code
+			$repl.currentFile = file
 		$repl.show!
 
 	def render

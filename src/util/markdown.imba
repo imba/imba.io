@@ -32,6 +32,8 @@ var renderer = marked.Renderer.new
 def renderer.link href, title, text
 	if href.match(/^\/.*\.md/)
 		return (<embedded-app-document data-path=href>)
+	elif href.match(/^\/examples\//) and text and (/Example/).test(text)
+		return (<embedded-app-example data-path=href>)
 	if href.match(/scrimba\.com.*\/c/)
 		return (<a.scrimba href=href title=title target='_blank'> <span> text)
 	else

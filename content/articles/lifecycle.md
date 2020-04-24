@@ -6,6 +6,12 @@ Called before any properties etc are set from outside.
 
 > Q: Is this called for dehydrated elements as well?
 
+### hydrate
+
+Will be called when a component is awakened from the raw document
+
+[Example](/examples/lifecycle-hydrate)
+
 ### awaken
 
 Called the first time the component is mounted. 
@@ -13,10 +19,6 @@ Called the first time the component is mounted.
 ### mount
 
 Called when component is attached to the document.
-
-### mounted
-
-Called after a component is attached to the dom, and all its children are mounted.
 
 ### unmount
 
@@ -66,10 +68,10 @@ def tick
 ```
 
 
-### visited
+### visit
 
 ```imba
-def visited
+def visit
     commit!
 ```
 
@@ -77,14 +79,11 @@ Called when component is visited from the context in which it is rendered. Will 
 
 ```imba
 tag app-clock
-    def visited
+    def visit
         commit! unless scheduled?
 ```
 
-
-### dehydrate
-
-### rehydrate
+### hydrate
 
 Called before awaken/mount mounting a component that was not created by the client inside imba. Ie. if your html has a 
 
@@ -113,7 +112,7 @@ Is this component currently in the process of mounting? Set to true before calli
 
 ### rendered?
 
-Returns true after the first full rendering cycle `before-render -> render -> after-render` is completed.
+Returns true after the first full rendering cycle `render? -> render -> rendered` is completed.
 
 ## General
 
@@ -121,3 +120,4 @@ Returns true after the first full rendering cycle `before-render -> render -> af
 - Do something after the first render only?
 - Clarify the order of things happening. When is render first called?
 - Want one hook that is only called when 
+- When are components _not_ scheduled?

@@ -42,6 +42,10 @@ Sometimes you want to access
 
 ```imba
 class Hello
+
+    def test?
+        yes
+
     def render param
         param
         other

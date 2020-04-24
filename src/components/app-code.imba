@@ -47,25 +47,22 @@ tag app-code
 
 tag app-code-block < app-code
 
-	def awaken
-		console.log 'awakening',is-awakened,__f
+	def hydrate
+		console.log 'hydrating code block'
+		plain = innerText.replace(/[ ]{4}/g,'\t')
+		if plain.indexOf('# light') >= 0
+			flags.add('light')
+		highlighted = highlight(plain)
+		innerHTML = '' # empty 
 
 	def mount
-		console.log 'mount code block',is-mounted,__f
-		unless highlighted
-			plain = innerText.replace(/[ ]{4}/g,'\t')
-			if plain.indexOf('# light') >= 0
-				flags.add('light')
-
-			highlighted = highlight(plain)
-			innerHTML = '' # empty 
-			render!
+		render!
 
 	def run
 		emit('run',{code: plain})
 	
 	def render
-		console.log 'render code block',is-mounted,is-awakened,__f
+		# console.log 'render code block',is-mounted,is-awakened,__f
 		return unless highlighted
 
 		<self>

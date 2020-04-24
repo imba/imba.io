@@ -43,8 +43,8 @@
   "dependencies": {
     "@types/node": "^13.11.1",
     "chokidar": "^3.3.1",
-    "imba": "^2.0.0-alpha.42",
-    "imba-document": "^0.1.2",
+    "imba": "^2.0.0-alpha.44",
+    "imba-document": "^0.1.4",
     "marked": "^0.7.0"
   }
 }
