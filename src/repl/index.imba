@@ -99,7 +99,7 @@ tag app-repl
 				<div.pane.output.m-2>
 					<header> <.tab> "Preview"
 					<div.flex-1.relative> $iframe
-				<app-divider>
+				<div.divider>
 				<div.pane.console>
 					<header> <.tab> "Console"
 					<.content> for item in logs
@@ -107,6 +107,24 @@ tag app-repl
 		monaco
 
 ### css scoped
+
+.repl {
+	display: flex;
+	flex-direction: row;
+	z-index: 300;
+	position: fixed;
+	bottom: 0px;
+	left: 40px;
+	right: 40px;
+	top: auto;
+	height: 80vh;
+	box-shadow: 0px 0px 100px 10px rgba(29, 29, 29, 0.29);
+	padding: 0px;
+	background: var(--code-bg-lighter);
+	border-radius: 3px;
+	padding-left: 3px;
+	overflow: hidden;
+}
 
 select {
 	-webkit-appearance: none;
@@ -142,7 +160,7 @@ select {
 	padding-left: 1rem;
 }
 
-app-divider {
+.divider {
 	display: block;
 	height: 1px;
 	background: rgba(0,0,0,0.2);
@@ -192,8 +210,6 @@ iframe {
 	color: white;
 }
 
-
-
 .underlay {
 	position: fixed;
 	z-index: -1;
@@ -203,25 +219,6 @@ iframe {
 
 .editor-pane {
 	background: var(--code-bg-lighter);
-}
-
-.repl {
-	display: flex;
-	flex-direction: row;
-	z-index: 100;
-	position: fixed;
-	bottom: 0px;
-	left: 40px;
-	right: 40px;
-	top: auto;
-	height: 80vh;
-	max-height: 600px;
-	box-shadow: 0px 0px 200px 0px #1d1d1d;
-	padding: 0px;
-	background: var(--code-bg-lighter);
-	border-radius: 3px;
-	padding-left: 3px;
-	overflow: hidden;
 }
 
 .hidden {

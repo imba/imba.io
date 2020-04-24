@@ -3,6 +3,10 @@ title: Advanced guides
 multipage: true
 ---
 
+# Lifecycle
+
+[Article](/articles/lifecycle.md)
+
 # Routing
 
 # Scheduling
@@ -20,6 +24,19 @@ multipage: true
 # Context API
 
 > Include example that shows editing toggler
+
+> Go through usecases -- like declaring `api/store/something` getter for all tags, that uses the context api.
+
+> Why it is crucial in SSR
+
+```imba
+tag app-avatar
+
+tag app-root
+
+```
+
+Sometimes you want to access 
 
 # Highlighting
 

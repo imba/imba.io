@@ -3,6 +3,25 @@ title: Examples
 multipage: true
 ---
 
+# Scratchpad
+
+```imba
+tag app-root
+	def render
+		console.log 'render'
+		<self> <button :click.stop> 'click'
+
+imba.mount do <app-root>
+```
+
+```imba
+tag app-root
+	def render
+		console.log 'render'
+		<self> <button :click.stop> 'click'
+
+imba.mount <app-root>
+```
 
 # Todos
 

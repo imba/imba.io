@@ -360,6 +360,8 @@ imba.mount do
 
 > Not like most frameworks. You dont really manage it.
 
+> Components can have local state since they are not virtual
+
 # Web Components
 
 Sometimes you will want to define custom reusable components. Custom imba tags compiles to web components.
@@ -368,6 +370,8 @@ Sometimes you will want to define custom reusable components. Custom imba tags c
 
 > Naming rules for custom components
 > Render method is optional
+> Declaring properties
+> Declaring attributes
 
 ```imba
 tag my-component
