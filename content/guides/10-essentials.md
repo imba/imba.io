@@ -68,69 +68,107 @@ The above declaration might look strange at first. DOM elements are first-class 
 
 Let's break down the basic syntax before we move on to more advanced examples. Since setting classes of elements is very common, imba has a special shorthand syntax for this. You declare classes by adding a bunch of `.classname` after the tag type. You can add multiple classes like `<div.large.header.primary>`. Can you guess how to set the id of a tag? It uses a similar syntax: `<div#app.large.ready>`.
 
+> In all the examples we include a minimal stylesheet inspired by [tailwind.js](https://tailwindcss.com/)
+
 > Imba does not use a virtual DOM. The example above creates an actual native div element.
 
 > The props are compiled directly to setters. Explain tabIndex and tabindex difference.
 
 > Defining attributes - when it is needed?
 
-## Setting properties & classes
+### Properties
 
 ```imba
-var highlight = true
+<input type="text" value="hello">
+```
+
+```imba
+var data = {name: "jane"}
+<input type="text" value=data.name>
+```
+
+### Classes
+Classes are set with a syntax inspired by css selectors:
+```imba
+<div.font-bold> "Bold text"
+```
+Multiple classes are chained together:
+```imba
+<div.font-bold.font-serif> "Bold & serif text"
+```
+If you want to set classes only when some expression is true you can use conditional classes:
+```imba
+var featured = yes
+var archived = no
+<div .font-bold=featured .hidden=archived> "Bold but not hidden"
+```
+
+To set dynamic classes you can use `{}` interpolation:
+```imba
+var state = 'done'
+var marks = 'font-bold'
 var color = 'blue'
-var name = 'Example'
-var state = 'ready'
 
-imba.mount do <section title=name>
-    # Setting plain properties
-    <input type='text' placeholder='Your name...'>
-    # Setting classes
-    <div.font-bold> "Bold text"
-    # multiple classes
-    <div.font-bold.font-serif.p-2> "Bold, serif & padded"
-    # Conditional classes
-    <div .font-bold=highlight> "Bold if highlight == true"
-    <div .font-bold=!highlight> "Bold if highlight == false"
-    # Dynamic classes
-    <div .state-{state}> "Box with {color} text - in state {state}"
-    <div .text-{color}-500 .{state}> "Box with {color} text - in state {state}"
+<div.p-2 .{marks} .{state} .bg-{color}-200> "Bolded with bg-blue-200"
 ```
 
-## Nested elements
+### Children
 
-You might notice that we never close our tags. Rather than being delimited by curly braces or “begin/end” keywords, blocks are delimited by indentation, and so are tags. This might seem weird in the beginning, but it makes for very readable and concise code. So, if we want to create a list with some children, we simply go:
+Indentation is significant in Imba, and elements follow the same principles. We never explicitly close our tags. Instead, tags are closed implicitly by indentation. So, to add children to an element you simply indent them below:
 
 ```imba
-<section>
-    <header> <h1> "List"
-    <ul>
-        <li> "Understand indentation"
-        <li> "Get used to it"
-        <li> "Cherish it"
+<div>
+	<ul>
+		<li> 'one'
+		<li> 'two'
+		<li> 'three'
 ```
-
-## Conditional rendering
-
+When an element only has one child it can also be nested directly inside:
 ```imba
-<section>
-    <header> <h1> "List"
-    <ul>
-        <li> "Understand indentation"
-        <li> "Get used to it"
-        <li> "Cherish it"
+<div> <ul>
+	<li.one> <span> 'one'
+	<li.two> <span> 'two'
+	<li.three> <span> 'three'
 ```
 
+## Conditionals and Loops
 
-## List rendering
+Since tags are first-class citizens in the language, logic works here as in any other code:
+```imba
+var seen = true
+<div>
+	if seen
+		<span> "Now you see me"
+	else
+		<span> "Nothing to see here"
+```
 
 If we have a dynamic list we can simply use a `for in` loop:
 
 ```imba
-const activities = ["Eat","Sleep","Code"]
+const todos = [{title: "Eat"},{title: "Sleep"},{title: "Code"}]
 
-<ul> for activity in activities
-    <li> <span.name> activity
+<ul> for todo in todos
+	<li.todo> <span.name> todo.title
+```
+
+Here's an example with more advanced logic:
+
+```imba
+const todos = [
+	{title: "Eat", done: no}
+	{title: "Sleep", done: no}
+	{title: "Code", done: yes}
+]
+
+<div>
+	for todo,i in todos
+		# add a separator before every todo but the first one
+		<hr> if i > 0 
+		<div.todo .line-through=todo.done>
+			<span.name> todo.title
+			if !todo.done
+				<button> 'finish'
 ```
 
 > `for of` and `for own of` loops also supported for iteration
@@ -161,9 +199,9 @@ We can use `<tag :eventname.{expression}>` to listen to DOM events and run `expr
 ```imba
 var counter = 0
 imba.mount do
-    <div.app>
-        <button :click.{counter++}> "Increment"
-        <div> "count is {counter}"
+	<div.app>
+		<button :click.{counter++}> "Increment"
+		<div> "count is {counter}"
 ```
 
 ## Event Modifiers
@@ -259,21 +297,21 @@ Custom events will bubble like native events, but are dispatched and processed d
 
 ```imba
 const todos = [
-    {title: "Remember milk", done: false}
-    {title: "Test custom events", done: false}
+	{title: "Remember milk", done: false}
+	{title: "Test custom events", done: false}
 ]
 
 def toggleTodo todo
-    todo.done = !todo.done
+	todo.done = !todo.done
 
 def renameTodo todo
-    todo.title = window.prompt("New title",todo.title)
+	todo.title = window.prompt("New title",todo.title)
 
 imba.mount do
-    <ul.todos> for item in todos
-        <li.todo .done=item.done>
-            <span :click.{toggleTodo(item)}> item.title
-            <button :click.{renameTodo(item)}> 'rename'
+	<ul.todos> for item in todos
+		<li.todo .done=item.done>
+			<span :click.{toggleTodo(item)}> item.title
+			<button :click.{renameTodo(item)}> 'rename'
 ```
 
 ## Examples
@@ -299,8 +337,8 @@ imba.mount do
 let message = "Hello"
 
 imba.mount do <>
-    <input[message].field type='text'>
-    <div> "Message is {message}"
+	<input[message].field type='text'>
+	<div> "Message is {message}"
 ```
 
 ## Numeric inputs
@@ -322,13 +360,13 @@ imba.mount do <>
 ## Checkbox inputs
 ```imba
 const state =
-    message: ""
-    enabled: false
+	message: ""
+	enabled: false
 
 imba.mount do
-    <label>
-        <input[state.enabled] type='checkbox'>
-        <span> "enabled: {state.enabled}"
+	<label>
+		<input[state.enabled] type='checkbox'>
+		<span> "enabled: {state.enabled}"
 ```
 
 ## Radio inputs
@@ -358,9 +396,9 @@ Sometimes you will want to define custom reusable components. Custom imba tags c
 
 ```imba
 tag my-component
-    def render
-        <self>
-            <div.one.two title='hello'> "Hello there"
+	def render
+		<self>
+			<div.one.two title='hello'> "Hello there"
 ```
 
 ## What is `<self>`?
@@ -369,14 +407,14 @@ tag my-component
 ```imba
 tag app-example
 
-    def submit
-        $title
-        console.log $title.value
+	def submit
+		$title
+		console.log $title.value
 
-    def render
-        <self>
-            <input$title type='text'>
-            <button :click.submit> 'submit'
+	def render
+		<self>
+			<input$title type='text'>
+			<button :click.submit> 'submit'
 
 imba.mount <app-example>
 ```
@@ -385,22 +423,22 @@ imba.mount <app-example>
 
 ```imba
 let items = [
-    type: 'todo'
-    title: 'My task'
-    ---
-    type: 'note'
-    title: 'My note'
+	type: 'todo'
+	title: 'My task'
+	---
+	type: 'note'
+	title: 'My note'
 ]
 
 tag todo-item
-    <self> "Todo: {data.title}"
+	<self> "Todo: {data.title}"
 
 tag note-item
-    <self> "Note: {data.title}"
+	<self> "Note: {data.title}"
 
 imba.mount do
-    <ul> for item in items
-        <li> <{item.type}-item data=item>
+	<ul> for item in items
+		<li> <{item.type}-item data=item>
 
 ```
 

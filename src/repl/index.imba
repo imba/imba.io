@@ -1,5 +1,6 @@
 import './monaco'
 import { @watch } from '../decorators'
+import {ls} from '../store'
 
 const editorOptions = {
 	scrollBeyondLastLine: false
@@ -59,15 +60,25 @@ tag app-repl
 		url = `{project.path}/{index ? index.name : currentFile.basename + '.html'}`
 		self
 
+	def serialize
+		global.sessionStorage.setItem('repl',currentFile and currentFile.path)
+
+	def restore
+		let path = global.sessionStorage.getItem('repl')
+		if let file = (path && ls(path))
+			currentFile = file
+			show!
+
 	def project-did-set project
 		if project
 			currentFile = project.files[0]
 			run!
 
-	def current-file-did-set file
+	def currentFile-did-set file
 		if monaco and file
 			monaco.setModel(file.model)
 		project = file.parent
+		serialize!
 
 	def url-did-set url
 		$iframe.src = `/repl{url}`
@@ -76,8 +87,13 @@ tag app-repl
 		if $monaco
 			$monaco.layout(height: $editor.offsetHeight, width: $editor.offsetWidth)
 
+	def awaken
+		await yes
+		restore!
+
 	def hide
 		showing = no
+		global.sessionStorage.removeItem('repl')
 
 	def show
 		showing = yes

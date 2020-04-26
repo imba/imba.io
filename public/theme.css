@@ -161,8 +161,16 @@
 
     --code-bg: #282c34;
     --code-bg-lowered: #21252b;
-
 }
+
+.bg-blue-200 { background-color: var(--blue-200); }
+.bg-blue-300 { background-color: var(--blue-300); }
+.bg-blue-400 { background-color: var(--blue-400); }
+.bg-blue-500 { background-color: var(--blue-500); }
+.bg-blue-600 { background-color: var(--blue-600); }
+.bg-blue-700 { background-color: var(--blue-700); }
+.bg-blue-800 { background-color: var(--blue-800); }
+.bg-blue-900 { background-color: var(--blue-900); }
 
 .text-blue-200 { color: var(--blue-200); }
 .text-blue-300 { color: var(--blue-300); }
@@ -176,6 +184,11 @@
 .antialiased {
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
+}
+
+.subpixel-antialiased {
+    -webkit-font-smoothing: auto!important;
+    -moz-osx-font-smoothing: auto!important
 }
 
 .box-border {
@@ -787,6 +800,122 @@
     text-decoration: line-through;
 }
 
+
+
+.tracking-tighter {
+    letter-spacing: -.05em!important
+}
+
+.tracking-tight {
+    letter-spacing: -.025em!important
+}
+
+.tracking-normal {
+    letter-spacing: 0!important
+}
+
+.tracking-wide {
+    letter-spacing: .025em!important
+}
+
+.tracking-wider {
+    letter-spacing: .05em!important
+}
+
+.tracking-widest {
+    letter-spacing: .1em!important
+}
+
+.select-none {
+    -webkit-user-select: none!important;
+    -moz-user-select: none!important;
+    -ms-user-select: none!important;
+    user-select: none!important
+}
+
+.select-text {
+    -webkit-user-select: text!important;
+    -moz-user-select: text!important;
+    -ms-user-select: text!important;
+    user-select: text!important
+}
+
+.select-all {
+    -webkit-user-select: all!important;
+    -moz-user-select: all!important;
+    -ms-user-select: all!important;
+    user-select: all!important
+}
+
+.select-auto {
+    -webkit-user-select: auto!important;
+    -moz-user-select: auto!important;
+    -ms-user-select: auto!important;
+    user-select: auto!important
+}
+
+/* Overflow */
+
+.overflow-auto {
+    overflow: auto!important
+}
+
+.overflow-hidden {
+    overflow: hidden!important
+}
+
+.overflow-visible {
+    overflow: visible!important
+}
+
+.overflow-scroll {
+    overflow: scroll!important
+}
+
+.overflow-x-auto {
+    overflow-x: auto!important
+}
+
+.overflow-y-auto {
+    overflow-y: auto!important
+}
+
+.overflow-x-hidden {
+    overflow-x: hidden!important
+}
+
+.overflow-y-hidden {
+    overflow-y: hidden!important
+}
+
+.overflow-x-visible {
+    overflow-x: visible!important
+}
+
+.overflow-y-visible {
+    overflow-y: visible!important
+}
+
+.overflow-x-scroll {
+    overflow-x: scroll!important
+}
+
+.overflow-y-scroll {
+    overflow-y: scroll!important
+}
+
+.scrolling-touch {
+    -webkit-overflow-scrolling: touch!important
+}
+
+.scrolling-auto {
+    -webkit-overflow-scrolling: auto!important
+}
+
+
+
+
+
 .markdown {
     color: #4a5568;
     line-height: 1.625;
@@ -881,3 +1010,7 @@
 
 .markdown blockquote > :first-child { margin-top: 0px; }
 .markdown blockquote > :last-child { margin-bottom: 0px; }
+
+.markdown app-code-block + app-code-block {
+    margin-top: 1rem;
+}

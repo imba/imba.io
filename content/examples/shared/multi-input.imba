@@ -36,7 +36,7 @@ tag multi-input
 	def select start, end
 		$input.setSelectionRange(start,end or start)
 
-	def handle-input e
+	def handleInput e
 		let start = selStart, end = selEnd
 
 		if start != end
@@ -65,7 +65,7 @@ tag multi-input
 
 			<input$input
 				type="text"
-				:beforeinput.{handle-input(e)}
+				:beforeinput.{handleInput(e)}
 				:selection.commit
 				:keydown.enter.prevent.submit()
 				:keydown.esc.blur
@@ -74,7 +74,8 @@ tag multi-input
 				readOnly=readonly
 				placeholder=placeholder
 			>
-
+	
+	def rendered
 		if $input.value != expectedValue
 			let charsBefore = $input.value.slice(0,start).split(CHR).join("")
 			$input.value = expectedValue

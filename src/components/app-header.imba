@@ -3,8 +3,7 @@ tag app-header
 	def render
 		<self.flex.flex-row.justify-center>
 			<.header-wrapper.flex.flex-row.items-center.flex-1>
-				<app-logo.logo>
-				<a.tab route-to='/'> "Home"
+				<app-logo.logo route-to='/'>
 				<a.tab route-to='/guides'> "Learn"
 				<a.tab route-to='/examples'> "Examples"
 				# <a.tab href='https://discord.gg/mkcbkRw' target='_blank'> "Chat"
