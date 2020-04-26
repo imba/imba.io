@@ -31,13 +31,14 @@ tag app-root
 			$repl.project = data.example
 		elif data.code	
 			let file = ls('/examples/playground/app.imba')
-			file.overwrite data.code
+			let code = data.code.replace(/^(?=\<\w)/gm,'imba.mount do ')
+			file.overwrite code
 			$repl.currentFile = file
 		$repl.show!
 
 	def render
 		<self.antialiased :run.{runCodeBlock(e.detail)}>
-			$repl = <app-repl.floating fs=fs>
+			<app-repl$repl.floating fs=fs>
 			<app-header.sticky.top-0>
 			<.page-wrapper.flex.flex-row>
 				<.sidebar-wrapper>

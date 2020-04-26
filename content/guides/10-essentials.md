@@ -70,7 +70,9 @@ Let's break down the basic syntax before we move on to more advanced examples. S
 
 > Imba does not use a virtual DOM. The example above creates an actual native div element.
 
-> Elements are not explicitly closed. Follows indentation
+> The props are compiled directly to setters. Explain tabIndex and tabindex difference.
+
+> Defining attributes - when it is needed?
 
 ## Setting properties & classes
 
@@ -95,22 +97,51 @@ imba.mount do <section title=name>
     <div .text-{color}-500 .{state}> "Box with {color} text - in state {state}"
 ```
 
-### Adding children
+## Nested elements
 
 You might notice that we never close our tags. Rather than being delimited by curly braces or “begin/end” keywords, blocks are delimited by indentation, and so are tags. This might seem weird in the beginning, but it makes for very readable and concise code. So, if we want to create a list with some children, we simply go:
 
 ```imba
-<ul>
-    <li> "Understand indentation"
-    <li> "Get used to it"
-    <li> "Cherish it"
+<section>
+    <header> <h1> "List"
+    <ul>
+        <li> "Understand indentation"
+        <li> "Get used to it"
+        <li> "Cherish it"
 ```
+
+## Conditional rendering
+
+```imba
+<section>
+    <header> <h1> "List"
+    <ul>
+        <li> "Understand indentation"
+        <li> "Get used to it"
+        <li> "Cherish it"
+```
+
+
+## List rendering
+
+If we have a dynamic list we can simply use a `for in` loop:
+
+```imba
+const activities = ["Eat","Sleep","Code"]
+
+<ul> for activity in activities
+    <li> <span.name> activity
+```
+
+> `for of` and `for own of` loops also supported for iteration
 
 # Careless Rendering
 
 - Mention how elements update / re-render
 - Mounting an element vs mounting with a function
 - Explain `imba.commit!`
+
+Very important concept to grasp. 
 
 
 ## Rendering an Element into the DOM
@@ -119,57 +150,9 @@ You might notice that we never close our tags. Rather than being delimited by cu
 imba.mount <div.main> "Hello World"
 ```
 
-
-## Nested trees
-
-## Conditional rendering
-
-## List rendering
-
-You might notice that we never close our tags. Rather than being delimited by curly braces or “begin/end” keywords, blocks are delimited by indentation, and so are tags. This might seem weird in the beginning, but it makes for very readable and concise code. So, if we want to create a list with some children, we simply go:
-
-```imba
-imba.mount do
-    <ul>
-        <li> "Understand indentation"
-        <li> "Get used to it"
-        <li> "Cherish it"
-```
-
-If we have a dynamic list we can simply use a `for in` loop:
-
-```imba
-const activities = ["Eat","Sleep","Code"]
-
-imba.mount do
-    <ul> for activity in activities
-        <li> <span.name> activity
-```
-
-## Dynamic element types
-
-```imba
-let items = [
-    type: 'todo'
-    title: 'My task'
-    ---
-    type: 'note'
-    title: 'My note'
-]
-
-tag todo-item
-    <self> "Todo: {data.title}"
-
-tag note-item
-    <self> "Note: {data.title}"
-
-imba.mount do
-    <ul> for item in items
-        <li> <{item.type}-item data=item>
-
-```
-
 # Handling Events
+
+> Explain why event syntax uses chaining like `click.{callback}` instead of `click=callback`
 
 ## Listening to Events
 
@@ -396,6 +379,29 @@ tag app-example
             <button :click.submit> 'submit'
 
 imba.mount <app-example>
+```
+
+## Dynamic element types
+
+```imba
+let items = [
+    type: 'todo'
+    title: 'My task'
+    ---
+    type: 'note'
+    title: 'My note'
+]
+
+tag todo-item
+    <self> "Todo: {data.title}"
+
+tag note-item
+    <self> "Note: {data.title}"
+
+imba.mount do
+    <ul> for item in items
+        <li> <{item.type}-item data=item>
+
 ```
 
 ## Sheduling components

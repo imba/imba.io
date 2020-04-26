@@ -8,7 +8,6 @@ tag multi-input
 	prop readonly = no
 	prop strict = no
 	prop options
-	prop $input\HTMLInputElement
 
 	get prefixes do CHR.repeat(values.length)
 	get inputValue do $input ? $input.value.split(CHR).join('') : ''

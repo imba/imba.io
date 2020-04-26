@@ -4,9 +4,9 @@ tag app-header
 		<self.flex.flex-row.justify-center>
 			<.header-wrapper.flex.flex-row.items-center.flex-1>
 				<app-logo.logo>
-				# <a.tab route-to='/'> "Home"
-				# <a.tab route-to='/guides'> "Learn"
-				# <a.tab route-to='/examples'> "Examples"
+				<a.tab route-to='/'> "Home"
+				<a.tab route-to='/guides'> "Learn"
+				<a.tab route-to='/examples'> "Examples"
 				# <a.tab href='https://discord.gg/mkcbkRw' target='_blank'> "Chat"
 				# <a.tab href='https://github.com/imba/imba' target='_blank'> "Repo"
 

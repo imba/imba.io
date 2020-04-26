@@ -17,8 +17,6 @@ multipage: true
 
 # Testing your app
 
-# Custom Decorators
-
 > Show flag decorator that adds/removes flag
 
 # Context API
@@ -36,7 +34,13 @@ tag app-root
 
 ```
 
-Sometimes you want to access 
+# Custom Decorators
+
+# Custom Prop Modifiers
+
+If you set `<element myname.prop1.prop2=value >` how do you actually access the modifiers? As we've learned, properties in tags are essentially compiled to plain setters, so `<div title='hi'>` is like `let div = document.createElement('div'); div.title = 'hi';`
+
+> If you set `<element myname.prop1.prop2=value >` how do you actually access the modifiers?
 
 # Highlighting
 
