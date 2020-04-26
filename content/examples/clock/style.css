@@ -1,0 +1,109 @@
+.clock {
+    font-size: 12px;
+    position: relative;
+    color: black;
+    vertical-align: top;
+    border: none;
+    margin: 0px;
+    display: inline-block;
+    width: 50%;
+    padding-top: 25%;
+    padding-bottom: 25%;
+    border-radius: 50%;
+
+}
+.clock:before {
+    content: " ";
+    position: absolute;
+    display: block;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background-color: #F5F2EC;
+    border-radius: 50%;
+}
+
+.clock[title]:after {
+    content: attr(title);
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    color: #B7AFAA;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.clock.large {
+    width: 242px;
+    height: 242px;
+    font-size: 24px;
+}
+
+.label {
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    color: #A2A2A2;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.dial {
+    pointer-events: none;
+    transform-origin: 50% 100%;
+    background: black;
+    height: 50%;
+    width: 0px;
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+	margin-left: 0px; 
+    will-change: transform;
+    backface-visibility: hidden;
+    background: linear-gradient(black,#525252);
+    color: black;
+}
+.dial:before {
+    content: " ";
+    position: absolute;
+    bottom: 0px;
+    width: 4px;
+    height: 100%;
+    background: inherit;
+    transform: translate3d(-50%,14px,0px);
+    box-sizing: border-box;
+}
+
+
+.s:before {
+	width: 2px;
+	height: 80%;
+	background: red;
+}
+
+.m:before {
+	width: 3px;
+	height: 90%;
+}
+
+.h:before {
+	height: 60%;
+}
+
+.s:after {
+    box-sizing: border-box;
+    content: " ";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: red;
+    border-radius: 50%;
+    transform: translate3d(-50%,-50%,0px);
+	top: 100%;
+	left: 0px;
+}

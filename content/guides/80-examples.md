@@ -160,3 +160,7 @@ select, input, button {
 }
 ###
 ```
+
+# Clock
+
+[Example](/examples/clock)
