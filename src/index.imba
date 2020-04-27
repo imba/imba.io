@@ -42,9 +42,9 @@ tag app-root
 			<app-header.sticky.top-0>
 			<.page-wrapper.flex.flex-row>
 				<.sidebar-wrapper>
-					<app-menu[page].sidebar>
+					<app-menu.sidebar data=page>
 				<.content-wrapper>
-					<app-document[page]>
+					<app-document data=page>
 
 # Should add the colors etc to the root css here
 

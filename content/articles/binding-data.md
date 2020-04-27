@@ -47,3 +47,18 @@ imba.mount do
 ## Select multiple
 
 ## Custom binding
+
+```imba
+tag x-checkbox
+	def render
+		<self> <label.block>
+			<input[data] type='checkbox'>
+			<span.pl-2> <slot>
+
+const state = { enabled: no }
+
+imba.mount do <main>
+	<x-checkbox[state.enabled]> 'Enable'
+	if state.enabled
+		<span> 'State is enabled!'
+```

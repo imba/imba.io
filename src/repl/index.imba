@@ -110,7 +110,7 @@ tag app-repl
 						<div.tab.folder> project and "{project.name} :" or "Browse..."
 					<div.tabs.contents> for file in project..children
 						<div.tab :click.{currentFile = file} .active=(currentFile == file)> <span> file.name
-				$editor = <div.editor>
+				<div$editor.editor>
 			<div.result.pane.light>
 				<div.pane.output.m-2>
 					<header> <.tab> "Preview"
@@ -122,7 +122,10 @@ tag app-repl
 						<button @click=(logs = [])> 'Clear'
 					<.content> for item in logs
 						<div.log-item> item.join(", ")
+	
+	def rendered
 		monaco
+
 
 ### css scoped
 

@@ -198,11 +198,9 @@ imba.mount <div.main> "Hello World"
 
 # Managing State
 
-> Not like most frameworks. You dont really manage it.
+[Article](/articles/managing-state.md)
 
-> Components can have local state since they are not virtual
-
-# Web Components
+# Reusable Components
 
 Sometimes you will want to define custom reusable components. Custom imba tags compiles to web components.
 

@@ -1991,6 +1991,12 @@ function extend$(target,ext){
 	Object.defineProperties(target.prototype,descriptors);
 	return target;
 };
+const toBind = {
+	INPUT: true,
+	SELECT: true,
+	TEXTAREA: true
+};
+
 var isGroup = function(obj) {
 	
 	return (obj instanceof Array) || (obj && (obj.has instanceof Function));
@@ -2075,14 +2081,19 @@ extend$(Element,{
 		
 		let o = value || [];
 		
-		if (key == 'data') {
+		if (key == 'data' && !(this.$$bound) && toBind[this.nodeName]) {
 			
-			if (!(this.__f & 16384)) {
+			this.$$bound = true;
+			if (this.change$) {
 				
-				this.__f |= 16384;
-				if (this.change$) { this.on$('change',{_change$: true},this) };
-				if (this.input$) { this.on$('input',{capture: true,_input$: true},this) };
+				this.addEventListener('change',this.change$ = this.change$.bind(this));
 			};
+			if (this.input$) {
+				
+				this.addEventListener('input',this.input$ = this.input$.bind(this),{capture: true});
+			};
+			
+			
 		};
 		
 		Object.defineProperty(this,key,(o instanceof Array) ? createProxyProperty(o) : o);
@@ -2105,8 +2116,6 @@ extend$(HTMLSelectElement,{
 	
 	
 	change$(e){
-		
-		if (!(this.__f & 16384)) { return };
 		
 		let model = this.data;
 		let prev = this.__richValue;
@@ -2137,6 +2146,7 @@ extend$(HTMLSelectElement,{
 			
 			this.data = values[0];
 		};
+		imba.commit();
 		return this;
 	},
 	
@@ -2232,7 +2242,8 @@ extend$(HTMLTextAreaElement,{
 	
 	input$(e){
 		
-		return this.data = this.value;
+		this.data = this.value;
+		return imba.commit();
 	},
 	
 	end$(){
@@ -2246,7 +2257,6 @@ extend$(HTMLInputElement,{
 	
 	input$(e){
 		
-		if (!(this.__f & 16384)) { return };
 		let typ = this.type;
 		
 		if (typ == 'checkbox' || typ == 'radio') {
@@ -2255,12 +2265,11 @@ extend$(HTMLInputElement,{
 		};
 		
 		this.__richValue = undefined;
-		return this.data = this.richValue;
+		this.data = this.richValue;
+		return imba.commit();
 	},
 	
 	change$(e){
-		
-		if (!(this.__f & 16384)) { return };
 		
 		let model = this.data;
 		let val = this.richValue;
@@ -2270,12 +2279,13 @@ extend$(HTMLInputElement,{
 			let checked = this.checked;
 			if (isGroup(model)) {
 				
-				return checked ? bindAdd(model,val) : bindRemove(model,val);
+				checked ? bindAdd(model,val) : bindRemove(model,val);
 			} else {
 				
-				return this.data = checked ? val : false;
+				this.data = checked ? val : false;
 			};
 		};
+		return imba.commit();
 	},
 	
 	setRichValue(value){
@@ -2308,7 +2318,7 @@ extend$(HTMLInputElement,{
 	
 	end$(){
 		
-		if (this.__f & 16384) {
+		if (this.$$bound) {
 			
 			let typ = this.type;
 			if (typ == 'checkbox' || typ == 'radio') {
@@ -2398,6 +2408,11 @@ class IntersectEvent extends _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"] {
 	get delta(){
 		
 		return this.detail.delta;
+	}
+	
+	get entry(){
+		
+		return this.detail.entry;
 		
 	}
 	handle$mod(state,args){
@@ -2538,11 +2553,22 @@ function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 
 
 
-class ResizeEvent extends _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"] {static init$(){
-	return super.inherited instanceof Function && super.inherited(this);
-}
+class ResizeEvent extends _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"] {
+	static init$(){
+		return super.inherited instanceof Function && super.inherited(this);
+	}
+	
+	
+	get rect(){
+		
+		return this.detail.contentRect;
+	}
+	
+	get entry(){
+		
+		return this.detail;
+	}
 }; ResizeEvent.init$();
-
 
 var resizeObserver = null;
 
@@ -2561,7 +2587,7 @@ function getResizeObserver(){
 		for (let $i = 0, $items = iter$(entries), $len = $items.length; $i < $len; $i++) {
 			let entry = $items[$i];
 			
-			let e = new ResizeEvent('resize',{bubbles: false,detail: entry.contentRect});
+			let e = new ResizeEvent('resize',{bubbles: false,detail: entry});
 			entry.target.dispatchEvent(e);
 		};
 		return;
