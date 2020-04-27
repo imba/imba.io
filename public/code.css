@@ -70,7 +70,7 @@
 	-webkit-box-decoration-break: clone;
 	vertical-align: middle;
 	padding: 0.1em 5px;
-	margin: -0.1em 0px;
+	/* margin: -0.1em 0px; */
 }
 
 

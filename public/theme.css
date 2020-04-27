@@ -1031,3 +1031,42 @@
     left: 8px;
     z-index: 30;
 }
+
+.markdown table {
+    width: 100%;
+    border-bottom: 1px solid var(--gray-200);
+    color: #4a5568;
+    font-size: 16px;
+    line-height: inherit;
+    
+}
+.markdown thead {
+    -display: none;
+}
+.markdown table th {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    font-weight: 600;
+    -font-size: 0.875rem;
+    padding: 0.5rem 0rem;
+    text-align: left;
+    -border-top: 1px solid var(--gray-200);
+    background: transparent;
+    font-weight: 500;
+}
+.markdown table td {
+    padding: 0.5rem;
+    -font-size: 0.75rem;
+    border-top: 1px solid var(--gray-200);
+    vertical-align: top;
+}
+
+.markdown table th:first-child {
+    white-space: nowrap;
+}
+
+.markdown table .code-inline:only-child {
+    font-size: 0.85em;
+    padding: 0.125em 5px;
+    margin: 0px;
+}

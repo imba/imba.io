@@ -156,31 +156,6 @@ You can use the following modifiers to trigger mouse or keyboard event listeners
 
 System modifier keys are different from regular keys and when used with `@keyup` events, they have to be pressed when the event is emitted. In other words, `@keyup.ctrl` will only trigger if you release a key while holding down `ctrl`. It won’t trigger if you release the `ctrl` key alone.
 
-
-## Non-standard Events
-
-To ease development Imba adds a few non-standard events to get rid of boilerplate when you want to set up IntersectionObservers, MutationObservers, ResizeObservers, and selections inside input elements.
-
-### Intersection Event
-
-[IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) is a [well-supported](https://caniuse.com/#feat=intersectionobserver) API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document's viewport. In Imba it is extremely easy to set up an intersection observer.
-
-[Example](/examples/intersect-event)
-
-#### Modifiers
-
-### Resize Event
-
-The [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) interface reports changes to the dimensions of an Element's content or border box. It has [decent browser support](https://caniuse.com/#feat=resizeobserver) and is an incredib
-
-> Example use sticky scroll-to-bottom
-
-[Example](/examples/resize-event)
-
-### Selection Event
-
-### Mutation Event
-
 ## Examples
 
 ### Chaining modifiers

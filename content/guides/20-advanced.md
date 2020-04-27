@@ -9,6 +9,11 @@ multipage: true
 
 # Routing
 
+# Special Events
+
+[Article](/articles/special-events.md)
+
+
 # Scheduling
 
 # Using Slots
