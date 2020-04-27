@@ -18,6 +18,7 @@
 	--code-regexp: #e9e19b;
 	--code-this: #63b3ed;
 	--code-tag: #e9e19b;
+	--code-tag-event: #ffbf86;
 	--code-tag-reference: #ffae86;
 	--code-tag-angle: #9d9755;
 	--code-type: #718096;
@@ -93,4 +94,5 @@
 .code .constant { color: var(--code-constant); }
 .code .tag.reference {color: var(--code-tag-reference);}
 .code .tag.open,.code .tag.close { color: var(--code-tag-angle); }
+.code .tag.event,.code .tag.event-modifier { color: var(--code-tag-event); }
 .code .variable.scope_root { color: var(--code-root-variable); }

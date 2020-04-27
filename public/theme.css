@@ -1014,3 +1014,20 @@
 .markdown app-code-block + app-code-block {
     margin-top: 1rem;
 }
+
+.markdown h5 {
+    position: relative;
+    background: var(--teal-400);
+    color: white;
+    color: var(--teal-900);
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 3px;
+    padding: 2px 8px;
+    margin-top: 1rem;
+    letter-spacing: 0.02em;
+    display: inline-block;
+    top: 8px;
+    left: 8px;
+    z-index: 30;
+}

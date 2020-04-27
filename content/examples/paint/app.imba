@@ -10,24 +10,21 @@ tag app-paint
 				height=2000
 				css:width=(2000 / DPR)
 				css:height=(2000 / DPR)
-				:pointerdown.start
-				:pointermove.move
-				:pointerup.end				
+				@pointerdown=start
+				@pointermove=move
+				@pointerup=end
 			>
 
 	def start e
 		console.info('pointer!',e)
 		# pointerdrag
 		$canvas.setPointerCapture(e.pointerId)
-		paths = [Path2D.new, Path2D.new]
+		path = Path2D.new
 
 	def move e
-		if e.pressure
+		if e.pressure and path
+			path.lineTo(e.offsetX * DPR,e.offsetY * DPR)
 			for path,i in paths
-				let dpr = window.devicePixelRatio
-				let x = e.offsetX + i + i * Math.random! * 3
-				let y = e.offsetY + i + i * Math.random! * 3
-				path.lineTo(x * dpr,y * dpr)
 				$canvas.getContext('2d').stroke(path)
 
 	def end e

@@ -1,11 +1,11 @@
-# Play around
-tag page-section
+tag app-root
+	prop box = {}
 
 	def render
-		<self.block> <slot>
+		<self.block>
+			<div> "Resize the textarea"
+			<div.bg-blue-200.p-4.inline-block @resize=(box = e.detail)>
+				<textarea.resize>
+			<div> "Size of div is {box.width} - {box.height}"
 
-imba.mount do
-	<div.app>
-		<page-section css:height=200> "One section"
-		<page-section> "Another section"
-		<page-section> "Third section"
+imba.mount <app-root>

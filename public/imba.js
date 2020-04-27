@@ -968,6 +968,8 @@ const keyCodes = {
 	space: [32],
 	up: [38],
 	down: [40],
+	left: [37],
+	right: [39],
 	del: [8,46]
 };
 
@@ -1051,10 +1053,6 @@ class EventHandler {
 		let awaited = false;
 		let prevRes = undefined;
 		
-		
-		($currentEvents = this.currentEvents) || (this.currentEvents = new Set());
-		this.currentEvents.add(event);
-		
 		let state = {
 			element: element,
 			event: event,
@@ -1062,8 +1060,24 @@ class EventHandler {
 			handler: this
 		};
 		
+		if (event.handle$mod) {
+			
+			if (event.handle$mod(state,mods.options) == false) {
+				
+				return;
+			};
+		};
+		
+		($currentEvents = this.currentEvents) || (this.currentEvents = new Set());
+		this.currentEvents.add(event);
+		
 		for (let $i = 0, $keys = Object.keys(mods), $l = $keys.length, handler, val; $i < $l; $i++){
 			handler = $keys[$i];val = mods[handler];
+			
+			if (handler[0] == '_') {
+				
+				continue;
+			};
 			
 			if (handler.indexOf('~') > 0) {
 				
@@ -1113,15 +1127,15 @@ class EventHandler {
 			} else if (handler == 'prevent') {
 				
 				event.preventDefault();
-			} else if (handler == 'ctrl') {
-				
-				if (!event.ctrlKey) { break; };
 			} else if (handler == 'commit') {
 				
 				commit = true;
 			} else if (handler == 'silence') {
 				
 				commit = false;
+			} else if (handler == 'ctrl') {
+				
+				if (!event.ctrlKey) { break; };
 			} else if (handler == 'alt') {
 				
 				if (!event.altKey) { break; };
@@ -2366,74 +2380,100 @@ __webpack_require__.r(__webpack_exports__);
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 
 
-const observers = {};
+const observers = globalThis.WeakMap ? new (globalThis.WeakMap)() : new (globalThis.Map)();
+const defaults = {threshold: [0]};
+const rootTarget = {};
 
 class IntersectEvent extends _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"] {
 	static init$(){
 		return super.inherited instanceof Function && super.inherited(this);
 	}
 	
-	in$mod(state){
+	
+	get ratio(){
 		
-		let detail = state.event.detail;
-		let ratio = detail.intersectionRatio;
-		let last = state.handler.lastRatio;
-		state.handler.lastRatio = ratio;
-		return !last || last < ratio;
+		return this.detail.ratio;
 	}
 	
-	out$mod(state){
+	get delta(){
 		
-		let detail = state.event.detail;
-		let ratio = detail.intersectionRatio;
-		let last = state.handler.lastRatio;
-		state.handler.lastRatio = ratio;
-		return !ratio || last > ratio;
+		return this.detail.delta;
+		
+	}
+	handle$mod(state,args){
+		
+		let obs = state.event.detail.observer;
+		return state.modifiers._observer == obs;
+	}
+	
+	in$mod(state,args){
+		
+		return state.event.delta > 0;
+	}
+	
+	out$mod(state,args){
+		
+		return state.event.delta < 0;
 	}
 }; IntersectEvent.init$();
 
-function callback(name){
+function callback(name,key){
 	
-	return function(entries) {
-		var $res;
+	return function(entries,observer) {
+		var $prevRatios;
 		
-		$res = [];
+		let map = ($prevRatios = observer.prevRatios) || (observer.prevRatios = new WeakMap());
+		
 		for (let $i = 0, $items = iter$(entries), $len = $items.length; $i < $len; $i++) {
 			let entry = $items[$i];
 			
-			let e = new IntersectEvent(name,{bubbles: false,detail: entry});
-			$res.push(entry.target.dispatchEvent(e));
+			let prev = map.get(entry.target) || 0;
+			let ratio = entry.intersectionRatio;
+			let detail = {entry: entry,ratio: ratio,from: prev,delta: (ratio - prev),observer: observer};
+			let e = new IntersectEvent(name,{bubbles: false,detail: detail});
+			map.set(entry.target,ratio);
+			entry.target.dispatchEvent(e);
 		};
-		return $res;
+		return;
 	};
 };
 
-function getIntersectionObserver(){
-	var $intersect;
+function getIntersectionObserver(opts = defaults){
 	
-	return ($intersect = observers.intersect) || (observers.intersect = new IntersectionObserver(
-		callback('intersect'),
-		{threshold: [0,1]}
-	));
+	let key = opts.threshold.join('-') + opts.rootMargin;
+	let target = opts.root || rootTarget;
+	let map = observers.get(target);
+	map || observers.set(target,map = {});
+	return map[key] || (map[key] = new IntersectionObserver(callback('intersect',key),opts));
 };
 
 _dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.on$intersect = function(mods,context) {
-	var $root, $v_;
 	
 	let obs;
 	if (mods.options) {
 		
-		let opts = Object.assign({event: 'intersect'},mods.options[0]);
-		if ((typeof ($root = opts.root)=='string'||$root instanceof String)) {
+		let opts = {threshold: []};
+		
+		for (let $i = 0, $items = iter$(mods.options), $len = $items.length; $i < $len; $i++) {
+			let arg = $items[$i];
 			
-			opts.root = document.querySelector(opts.root);
+			if (arg instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]) {
+				
+				opts.root = arg;
+			} else if (typeof arg == 'number') {
+				
+				opts.threshold.push(arg);
+			};
 		};
-		let ev = ((($v_ = opts.event),delete opts.event, $v_));
-		obs = mods.options.obs = new IntersectionObserver(callback(ev),opts);
+		
+		if (opts.threshold.length == 0) { opts.threshold.push(0) };
+		obs = getIntersectionObserver(opts);
 	} else {
 		
-		obs = getIntersectionObserver(mods);
+		obs = getIntersectionObserver();
 	};
+	
+	mods._observer = obs;
 	return obs.observe(this);
 };
 
@@ -2503,6 +2543,7 @@ class ResizeEvent extends _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"] {stat
 }
 }; ResizeEvent.init$();
 
+
 var resizeObserver = null;
 
 function getResizeObserver(){
@@ -2520,7 +2561,7 @@ function getResizeObserver(){
 		for (let $i = 0, $items = iter$(entries), $len = $items.length; $i < $len; $i++) {
 			let entry = $items[$i];
 			
-			let e = new ResizeEvent('resize',{bubbles: false,detail: entry});
+			let e = new ResizeEvent('resize',{bubbles: false,detail: entry.contentRect});
 			entry.target.dispatchEvent(e);
 		};
 		return;

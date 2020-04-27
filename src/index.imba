@@ -38,7 +38,7 @@ tag app-root
 
 	def render
 		<self.antialiased :run.{runCodeBlock(e.detail)}>
-			<app-repl$repl.floating fs=fs>
+			<app-repl$repl.floating id='repl' fs=fs>
 			<app-header.sticky.top-0>
 			<.page-wrapper.flex.flex-row>
 				<.sidebar-wrapper>

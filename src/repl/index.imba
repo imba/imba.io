@@ -116,8 +116,10 @@ tag app-repl
 					<header> <.tab> "Preview"
 					<div.flex-1.relative> $iframe
 				<div.divider>
-				<div.pane.console>
-					<header> <.tab> "Console"
+				<div$console.pane.console>
+					<header>
+						<.tab> "Console"
+						<button @click=(logs = [])> 'Clear'
 					<.content> for item in logs
 						<div.log-item> item.join(", ")
 		monaco
@@ -281,7 +283,11 @@ iframe {
 }
 
 .console {
+	flex: 0 0 30%;
+}
 
+.output {
+	flex: 0 0 70%;
 }
 
 ###
