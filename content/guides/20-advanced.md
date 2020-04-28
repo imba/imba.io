@@ -9,18 +9,17 @@ multipage: true
 
 # Routing
 
-# Special Events
+# Custom Events
 
 [Article](/articles/special-events.md)
 
-
 # Scheduling
+
+# Using Decorators
 
 # Using Slots
 
 # Server-Side Rendering
-
-# Testing your app
 
 > Show flag decorator that adds/removes flag
 

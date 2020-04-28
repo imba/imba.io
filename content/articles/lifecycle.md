@@ -1,123 +1,81 @@
-## Lifecycle Methods
+## Lifecycle Hooks
 
-### build
+These methods are meant to be defined in your components. In most cases you will only define a `render` method, and possibly `awaken` if you want to do some additional initialization when the element is first attached to the document.
 
-Called before any properties etc are set from outside.
+| table  |  | |
+| --- | --- | --- |
+| `build` | Called before any properties etc are set |
+| `hydrate` | Called before awaken if element is not hydrated | [Example](/examples/lifecycle-hydrate) |
+| `dehydrate` | Called before serializing when rendering on server | |
+| `awaken` | Called the first time the component is mounted | [Example](/examples/lifecycle-hydrate) |
+| `mount` | Called when the component is attached to the document | |
+| `unmount` | Called when the component is detached from the document | |
+| `render` | Called by both visit and tick | |
+| `rendered` | Called after every `render` | |
 
-> Q: Is this called for dehydrated elements as well?
+## Lifecycle States
 
-### hydrate
+Components also has a bunch of methods that you can call to inspect where in the lifecycle a component is:
 
-Will be called when a component is awakened from the raw document
+| table  |  |
+| --- | --- |
+| `hydrated?` | Is this element created on the client (by imba) or has it been rehydrated? |
+| `awakened?` | Called the first time the tag is mounted |
+| `mounting?` | Is component in the process of being mounted? |
+| `mounted?` | Is component attached to the document? |
+| `render?` | Should component render? |
+| `rendered?` | Has component been rendered? |
+| `scheduled?` | Is component scheduled? |
 
-[Example](/examples/lifecycle-hydrate)
+## Advanced Hooks
 
-### awaken
+In some special cases you might want to go further and override the default behaviour of Imba.
 
-Called the first time the component is mounted. 
+| table  |  |
+| --- | --- |
+| `tick` | Called on every imba.commit when component is scheduled |
+| `visit` | Called when parent element is rendered |
+| `commit` | Called by both visit and tick |
 
-### mount
+## Hydration
 
-Called when component is attached to the document.
+- When will hydrate be called?
+- When will dehydrate be called?
 
-### unmount
+## Examples
 
-Called when the component is being detached from the document.
-
+##### Setup timer
 ```imba
-def unmount # default behaviour
-    unschedule! if scheduled?
+tag app-clock
+    def mount
+        # call render every second
+        $timer = setInterval(render.bind(self),1000)
+    
+    def unmount
+        # remember to clear interval when tag unmounts
+        clearInterval($timer)
+
+    # if you _only_ want the clock to render via timer
+    # and not when the parent element renders - we also
+    # need to override visit
+    def visit
+        return
 ```
+- Setting up a timer in mount and clearing it in unmount
 
-> If you override unmount - remember to unschedule the node if it is scheduled.
-
-### render?
-
-Returns whether we should render or not
-
-### render
-
-Called whenever element is scheduled to be rendered
-
-### rendered
-
-Called after every successful `render`.
-
-### commit
-
-Wrapper for rendering. Default implementation
-
-```imba
-def commit
-    return self unless render?
-    $rendering = true
-    render!
-    $rendering = false
-    rendered!
-    $rendered = true
-    return self
-```
-
-### tick
-
-Called by the scheduler when component is scheduled
-
-```imba
-def tick
-    commit!
-```
-
-
-### visit
-
-```imba
-def visit
-    commit!
-```
-
-Called when component is visited from the context in which it is rendered. Will simply call commit by default. If you have scheduled an element to update independently of when the parent is rendered it makes sense to override.
-
+##### Override visit
 ```imba
 tag app-clock
     def visit
         commit! unless scheduled?
 ```
 
-### hydrate
-
-Called before awaken/mount mounting a component that was not created by the client inside imba. Ie. if your html has a 
-
-> Add example showing rehydration
-> Notice that components created through native `document.createElement` will also trigger rehydration
-
-## Lifecycle States
-
-### hydrated?
-
-Is this element created via imba and on the client or has it been `rehydrated`?
-
-### awakened?
-
-Is true forever after the first mount
-
-### mounted?
-
-Is this currently mounted? 
-
-### mounting?
-
-Is this component currently in the process of mounting? Set to true before calling mount, and back to false afterwards.
-
-### scheduled?
-
-### rendered?
-
-Returns true after the first full rendering cycle `render? -> render -> rendered` is completed.
-
-## General
+## More
 
 - Would be nice to have a hook for doing things on the first mount only.
 - Do something after the first render only?
 - Clarify the order of things happening. When is render first called?
 - Want one hook that is only called when 
 - When are components _not_ scheduled?
+- Explain visit, outer render, internal render, and the order
+- Clock is a good example to step through many of the lifecycle states

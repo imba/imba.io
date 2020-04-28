@@ -119,6 +119,17 @@ def renderer.code code, lang, opts = {}
 	else
 		<app-code-block.code.code-block data-lang=lang> escaped
 
+def renderer.table header, body
+
+	let title = header.slice(header.indexOf('<th>') + 4,header.indexOf('</th>'))
+	body = body.replace(/td><embedded-app-example/g,'td class="example"><embedded-app-example')
+
+	let out = <table data-title=title>
+		<thead> '$HEADER$'
+		<tbody> '$BODY$'
+
+	return out.toString().replace('$HEADER$',header).replace('$BODY$',body)
+
 export def render content
 	var object = {toString: (do this.body), toc: [],meta: {}}
 
