@@ -6,6 +6,14 @@ multipage: true
 # Scratchpad
 
 ```imba
+import {todos} from './data.imba'
+
+# ---
+<ul> for todo in todos
+	<li.todo> <span> todo.title
+```
+
+```imba
 tag app-root
 	def render
 		console.log 'render'
@@ -13,6 +21,8 @@ tag app-root
 
 imba.mount do <app-root>
 ```
+
+
 
 ```imba
 tag app-root

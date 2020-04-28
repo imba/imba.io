@@ -32,6 +32,7 @@ tag app-root
 		elif data.code	
 			let file = ls('/examples/playground/app.imba')
 			let code = data.code.replace(/^(?=\<\w)/gm,'imba.mount do ')
+			code = code.replace(/^# ---\n/gm,'')
 			file.overwrite code
 			$repl.currentFile = file
 		$repl.show!

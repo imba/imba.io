@@ -79,3 +79,4 @@ tag app-clock
 - When are components _not_ scheduled?
 - Explain visit, outer render, internal render, and the order
 - Clock is a good example to step through many of the lifecycle states
+- Add support for scheduling with timer and/or RAF

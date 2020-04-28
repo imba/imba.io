@@ -30,9 +30,13 @@ var x = 0
 Remember that the expression will be called as is, so you never need to bind functions to their context and/or arguments.
 
 ```imba
-var items = [10,20,30,40,50]
-<ul> for item,i in items
-	<li @click=console.log(e.type,item,i)> item
+import {todos} from './data.imba'
+
+const handler = console.log.bind(console)
+
+# ---
+<ul> for item,i in todos
+	<li @click=handler(e.type,item,i)> item.title
 ```
 
 

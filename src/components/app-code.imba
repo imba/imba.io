@@ -20,7 +20,7 @@ def highlight str
 	let tokens = ImbaDocument.tmp(str.replace(/[ ]{4}/g,'\t')).getTokens()
 	let parts = []
 
-	for token in tokens
+	for token,i in tokens
 		let value = token.value
 		let types = token.type.split('.')
 		let [typ,subtyp] = types
@@ -32,6 +32,13 @@ def highlight str
 
 		if typ != 'white' and typ != 'line'
 			value = "<span class='{types.join(' ')}' data-offset={token.offset}>{escape(value)}</span>"
+
+		if typ == 'comment' and token.value == '# ---'
+			parts.unshift('<div class="code-head">')
+			parts.push('</div>')
+			# pop next token
+			try tokens[i + 1].value = ''
+			continue
 
 		parts.push(value)
 	return cache[str] = parts.join('')
@@ -48,7 +55,7 @@ tag app-code
 tag app-code-block < app-code
 
 	def hydrate
-		console.log 'hydrating code block'
+		# console.log 'hydrating code block'
 		plain = innerText.replace(/[ ]{4}/g,'\t')
 		if plain.indexOf('# light') >= 0
 			flags.add('light')
@@ -97,6 +104,10 @@ app-code-block {
 	display: block;
 	font-size: 13px;
 	color: var(--code-color);
+}
+
+app-code-block .code-head {
+	display: none;
 }
 
 ###

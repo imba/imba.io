@@ -146,8 +146,9 @@ var seen = true
 If we have a dynamic list we can simply use a `for in` loop:
 
 ```imba
-const todos = [{title: "Eat"},{title: "Sleep"},{title: "Code"}]
+import {todos} from './data.imba'
 
+# ---
 <ul> for todo in todos
 	<li.todo> <span.name> todo.title
 ```
@@ -155,12 +156,9 @@ const todos = [{title: "Eat"},{title: "Sleep"},{title: "Code"}]
 Here's an example with more advanced logic:
 
 ```imba
-const todos = [
-	{title: "Eat", done: no}
-	{title: "Sleep", done: no}
-	{title: "Code", done: yes}
-]
+import {todos} from './data.imba'
 
+# ---
 <div>
 	for todo,i in todos
 		# add a separator before every todo but the first one
