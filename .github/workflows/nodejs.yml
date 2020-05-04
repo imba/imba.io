@@ -3,7 +3,7 @@ on: [push]
 jobs:
 
   deploy:
-    name: Deploy
+    name: Deploy to imba.io
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
@@ -19,21 +19,3 @@ jobs:
           git -C /home/imba/imba.io pull origin master
           /usr/bin/yarn --cwd /home/imba/imba.io install
           sudo systemctl restart imba.io
-    v2:
-      name: Deploy v2
-      if: github.ref == 'refs/heads/v2'
-      runs-on: ubuntu-latest
-      steps:
-      - name: Connect to imba.io and run commands
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            git -C /home/imba/v2.imba.io stash
-            git -C /home/imba/v2.imba.io pull origin v2
-            /usr/bin/yarn --cwd /home/imba/v2.imba.io install
-            /usr/bin/yarn --cwd /home/imba/v2.imba.io build
-            RUN_ONCE=true /usr/bin/yarn --cwd /home/imba/v2.imba.io watch-content

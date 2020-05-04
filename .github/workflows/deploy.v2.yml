@@ -1,0 +1,21 @@
+name: Update v2.imba.io
+on: [push]
+jobs:
+    deploy:
+      name: Deploy v2
+      if: github.ref == 'refs/heads/v2'
+      runs-on: ubuntu-latest
+      steps:
+      - name: Connect to imba.io and run commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            git -C /home/imba/v2.imba.io stash
+            git -C /home/imba/v2.imba.io pull origin v2
+            /usr/bin/yarn --cwd /home/imba/v2.imba.io install
+            /usr/bin/yarn --cwd /home/imba/v2.imba.io build
+            RUN_ONCE=true /usr/bin/yarn --cwd /home/imba/v2.imba.io watch-content
