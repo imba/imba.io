@@ -15,9 +15,10 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
+          export PATH=$PATH:/home/imba/.nvm/versions/node/v13.14.0/bin
           git -C /home/imba/v2.imba.io stash
           git -C /home/imba/v2.imba.io pull origin v2
-          source ~/.bashrc && cd /home/imba/v2.imba.io && nvm use && \
-          /usr/bin/yarn --cwd /home/imba/v2.imba.io install && \
-          /usr/bin/yarn --cwd /home/imba/v2.imba.io build && \
-          RUN_ONCE=true /usr/bin/yarn --cwd /home/imba/v2.imba.io watch-content
+          cd /home/imba/v2.imba.io  && \
+          /usr/bin/yarn install && \
+          /usr/bin/yarn build && \
+          RUN_ONCE=true /usr/bin/yarn watch-content
