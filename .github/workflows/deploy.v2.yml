@@ -17,7 +17,7 @@ jobs:
         script: |
           git -C /home/imba/v2.imba.io stash
           git -C /home/imba/v2.imba.io pull origin v2
-          cd /home/imba/v2.imba.io && nvm use && \
+          source ~/.bashrc && cd /home/imba/v2.imba.io && nvm use && \
           /usr/bin/yarn --cwd /home/imba/v2.imba.io install && \
           /usr/bin/yarn --cwd /home/imba/v2.imba.io build && \
           RUN_ONCE=true /usr/bin/yarn --cwd /home/imba/v2.imba.io watch-content
