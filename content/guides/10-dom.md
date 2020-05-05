@@ -54,7 +54,7 @@ Imba brings the power of dynamic data into Class and ID declarations.
 var state = "active"
 <a.{state}> "Home"
 ```
-You could also combine dynamic data with a static segment of your class.
+You could also combine dynamic data with a static parts in your classes.
 ```imba
 <a.menu-link__{state}>
 ```
