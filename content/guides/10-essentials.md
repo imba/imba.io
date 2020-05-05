@@ -69,26 +69,36 @@ let user = "Joe"
 ## Regular Expressions
 
 ## Methods
-There are two types of functions in Imba
+There are two types of functions in Imba. We'll just call them methods and Blocks.
 - Methods (aka. Function Declarations)
 - Blocks (aka. Function Expressions)
 
-Functions can operate within three different scopes
-- global
-- class instance
-- tag instance
+Methods can operate within three different scopes
+- Global
+- Class instance
+- Tag instance
 By defining a function outside of classes or tags, they will be accessible in globally.
 
-This is how you define a method
+A *method* is defined with the `def` keyword
 ```
 def methodName
 	Math.Random()
 ```
-If placed at the root level of a document, it will be a global function accessible with the following syntax.
+If the method is defined at the root level of a document, it will be a global function accessible with the following syntax.
 ```
-methodName(argument)
-mathodName! // Optional, if not passing any arguments
+def methodName(argumentName)
+	console.log argumentName * 2
+methodName(2)
+>>> 4
 ```
+If you are not passing any arguments to your method you can simply used the exclamation mark at the end for prettier syntax.
+
+```imba
+def methodName
+	console.log "Method called"
+methodName! // Optional, if not passing any arguments
+```
+
 ## Class Methods
 Functions are called **Methods** when used within classes. You probably know that already. When an object inherits from a class that contains methods, those methods will be accessible from that object. [Learn more about **Classes** here.](https://app.gitbook.com/@imba/s/guide/logic-and-data/classes-1)
 <!-- TODO: update this link -->
