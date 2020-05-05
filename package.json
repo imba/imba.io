@@ -33,7 +33,7 @@
   "homepage": "http://imba.io",
   "repository": {
     "type": "git",
-    "url": "git://github.com/somebee/imba.io.git"
+    "url": "git://github.com/somebee/imba.io.git"g
   },
   "devDependencies": {
     "webpack": "^4.43.0",

@@ -68,39 +68,53 @@ let user = "Joe"
 
 ## Regular Expressions
 
-## Methods
-There are two types of functions in Imba. We'll just call them methods and Blocks.
-- Methods (aka. Function Declarations)
-- Blocks (aka. Function Expressions)
+## Functions
+There are two types of functions in Imba.
+- Function Declarations (aka methods)
+- Function Expressions (aka. function blocks)
 
-Methods can operate within three different scopes
+Functions can operate within three different scopes
 - Global
 - Class instance
 - Tag instance
 By defining a function outside of classes or tags, they will be accessible in globally.
 
-A *method* is defined with the `def` keyword
+A *function* is defined with the `def` keyword
 ```
 def methodName
 	Math.Random()
 ```
-If the method is defined at the root level of a document, it will be a global function accessible with the following syntax.
+If the function is defined at the root level of a document, it will be a global function accessible with the following syntax.
 ```
-def methodName(argumentName)
+def functionName(argumentName)
 	console.log argumentName * 2
-methodName(2)
+functionName(2)
 >>> 4
 ```
-If you are not passing any arguments to your method you can simply used the exclamation mark at the end for prettier syntax.
+Optionally, if you are not passing any arguments to your function you can simply use the `!` instead of `()` to call the method.
 
 ```imba
-def methodName
-	console.log "Method called"
-methodName! // Optional, if not passing any arguments
+def functionName
+	console.log "Function has been called!"
+methodName! // Optional syntax for calling functions, if you are not passing any arguments
+>>> Function has been called!
 ```
 
 ## Class Methods
-Functions are called **Methods** when used within classes. You probably know that already. When an object inherits from a class that contains methods, those methods will be accessible from that object. [Learn more about **Classes** here.](https://app.gitbook.com/@imba/s/guide/logic-and-data/classes-1)
+Methods are simply functions that are scoped to each instance of a Class, so everything that applies to functions, applies here. The only difference is that to access the methods of a class, you need to create an instance of class like this.
+```imba
+class Random
+	def randomize
+		console.log Math.random!
+let lucky = new Random
+```
+Now we have an instance of random in an object called lucky.
+To access the method we use the following syntax `.randomize!`
+[link to classes](/guides/essentials/language/##classes)
+
+
+
+methods, those methods will be accessible from that object. [Learn more about **Classes** here.](https://app.gitbook.com/@imba/s/guide/logic-and-data/classes-1)
 <!-- TODO: update this link -->
 
 Here's an example of instantiationg a class into the lucky object, and then accesing the randomize method from within the lucky object.
@@ -113,7 +127,8 @@ let lucky = Random.new
 console.log lucky.randomize!
 ```
 
-### Function Expressions
+### Function Expressions {#function-expressions}
+
 Function expressions are also called function blocks, and in the ES6, they are also implemented as arrow functions.
 
 ## Classes
