@@ -203,17 +203,17 @@ Indentation is significant in Imba, and elements follow the same principles. We 
 
 ```imba
 <div>
-  <ul>
-	<li> 'one'
-	<li> 'two'
-	<li> 'three'
+	<ul>
+		<li> 'one'
+		<li> 'two'
+		<li> 'three'
 ```
 When an element only has one child it can also be nested directly inside:
 ```imba
 <div> <ul>
-  <li.one> <span> 'one'
-  <li.two> <span> 'two'
-  <li.three> <span> 'three'
+	<li.one> <span> 'one'
+	<li.two> <span> 'two'
+	<li.three> <span> 'three'
 ```
 
 ## Conditionals and Loops
@@ -222,10 +222,10 @@ Since tags are first-class citizens in the language, logic works here as in any 
 ```imba
 var seen = true
 <div>
-  if seen
-	<span> "Now you see me"
-  else
-	<span> "Nothing to see here"
+	if seen
+		<span> "Now you see me"
+	else
+		<span> "Nothing to see here"
 ```
 
 If we have a dynamic list we can simply use a `for in` loop:
@@ -235,7 +235,7 @@ import {todos} from './data.imba'
 
 # ---
 <ul> for todo in todos
-  <li.todo> <span.name> todo.title
+	<li.todo> <span.name> todo.title
 ```
 
 Here's an example with more advanced logic:
@@ -245,13 +245,13 @@ import {todos} from './data.imba'
 
 # ---
 <div>
-  for todo,i in todos
-	# add a separator before every todo but the first one
-	<hr> if i > 0 
-	<div.todo .line-through=todo.done>
-	  <span.name> todo.title
-	  if !todo.done
-		<button> 'finish'
+	for todo,i in todos
+		# add a separator before every todo but the first one
+		<hr> if i > 0 
+		<div.todo .line-through=todo.done>
+			<span.name> todo.title
+			if !todo.done
+				<button> 'finish'
 ```
 
 > `for of` and `for own of` loops also supported for iteration
@@ -296,9 +296,9 @@ Sometimes you will want to define custom reusable components. Custom imba tags c
 
 ```imba
 tag my-component
-  def render
-	<self>
-	  <div.one.two title='hello'> "Hello there"
+	def render
+		<self>
+			<div.one.two title='hello'> "Hello there"
 ```
 
 ## What is `<self>`?
@@ -307,14 +307,14 @@ tag my-component
 ```imba
 tag app-example
 
-  def submit
-	$title
-	console.log $title.value
-
-  def render
-	<self>
-	  <input$title type='text'>
-	  <button :click.submit> 'submit'
+	def submit
+		$title
+		console.log $title.value
+	
+	def render
+		<self>
+			<input$title type='text'>
+			<button :click.submit> 'submit'
 
 imba.mount <app-example>
 ```
@@ -323,22 +323,22 @@ imba.mount <app-example>
 
 ```imba
 let items = [
-  type: 'todo'
-  title: 'My task'
-  ---
-  type: 'note'
-  title: 'My note'
+	type: 'todo'
+	title: 'My task'
+	---
+	type: 'note'
+	title: 'My note'
 ]
 
 tag todo-item
-  <self> "Todo: {data.title}"
+	<self> "Todo: {data.title}"
 
 tag note-item
-  <self> "Note: {data.title}"
+	<self> "Note: {data.title}"
 
 imba.mount do
-  <ul> for item in items
-	<li> <{item.type}-item data=item>
+	<ul> for item in items
+		<li> <{item.type}-item data=item>
 
 ```
 
