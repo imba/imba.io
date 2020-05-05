@@ -10,16 +10,101 @@ Basic syntax stuff about the language
 ## Basics
 
 ### Indentation
+Imba is an Indentation based language. What that means is that nesting of objects and elements is created by the indentation level, rather than by curly braces and opening and closing tag pairs. 
+
+Here are some of the benefits.
+
+- You will write your app a lot faster.
+- Your code will be more legible.
+- It will write a lot less lines of code.
+
+For example, here's some HTML using opening and closing brackets
+
+```
+// HTML
+<header>
+	<h1> Hello World! </h1>
+</header>
+```
+Here's the same template in Imba.
+```
+// IMBA
+<header>
+	<h1> "Hello world!"
+```
+That's a **30%** decrease in lines of code and a **52%** less characters of code (excluding text) in just that tiny example. Imba will compile to the same HTML as above, but why not spare yourself all that writing?
+
+If you have ever used an indented language like ruby, python, or pug, we're sure you will soon find it hard to live without. 
+
+> Our compiler is optimized for using tabs for indentation, so be sure to switch your editor to use tabs. If on VS Code type `CMD/CTRL + SHIFT + P` and search to find "Convert Indentation to Tabs", then click on it. You may be asked to choose number of spaces for your indentation. That is your personal choice.
 
 ### Implicit self
+<!-- TODO: UPDATE / VERIFY -->
+In imba, self is implicit within any given *Tag* or class. 
+```
+let user = "Joe"
+tag app-root
+	prop language = "Imba"
+	def render
+		<self> 
+			<h1> this.language // this works, but it's not needed
+			<h1> language // do this instead
+			<h2> user // global variables will be found as well.
 
+```
 ## Strings
+Strings in imba are no different than strings in Javascript. 
+You may use single quotes or double quotes. 
+Just be aware that interpolation within a string can only happen with double quotes.
+```
+let user = "Joe"
+<h1> 'Hi {user}, this is a string'
+// Compiles to: <h1> Hi {user}, this is a string </h1>
 
+<h1> "Hi {user}, this is a string"
+// Compiles to: <h1> Hi Joe, this is a string </h1>
+```
 ## Numbers
 
 ## Regular Expressions
 
-## Functions
+## Methods
+There are two types of functions in Imba
+- Methods (aka. Function Declarations)
+- Blocks (aka. Function Expressions)
+
+Functions can operate within three different scopes
+- global
+- class instance
+- tag instance
+By defining a function outside of classes or tags, they will be accessible in globally.
+
+This is how you define a method
+```
+def methodName
+	Math.Random()
+```
+If placed at the root level of a document, it will be a global function accessible with the following syntax.
+```
+methodName(argument)
+mathodName! // Optional, if not passing any arguments
+```
+## Class Methods
+Functions are called **Methods** when used within classes. You probably know that already. When an object inherits from a class that contains methods, those methods will be accessible from that object. [Learn more about **Classes** here.](https://app.gitbook.com/@imba/s/guide/logic-and-data/classes-1)
+<!-- TODO: update this link -->
+
+Here's an example of instantiationg a class into the lucky object, and then accesing the randomize method from within the lucky object.
+
+```
+class Random
+	def randomize
+		Math.random!
+let lucky = Random.new
+console.log lucky.randomize!
+```
+
+### Function Expressions
+Function expressions are also called function blocks, and in the ES6, they are also implemented as arrow functions.
 
 ## Classes
 
@@ -118,17 +203,17 @@ Indentation is significant in Imba, and elements follow the same principles. We 
 
 ```imba
 <div>
-	<ul>
-		<li> 'one'
-		<li> 'two'
-		<li> 'three'
+  <ul>
+	<li> 'one'
+	<li> 'two'
+	<li> 'three'
 ```
 When an element only has one child it can also be nested directly inside:
 ```imba
 <div> <ul>
-	<li.one> <span> 'one'
-	<li.two> <span> 'two'
-	<li.three> <span> 'three'
+  <li.one> <span> 'one'
+  <li.two> <span> 'two'
+  <li.three> <span> 'three'
 ```
 
 ## Conditionals and Loops
@@ -137,10 +222,10 @@ Since tags are first-class citizens in the language, logic works here as in any 
 ```imba
 var seen = true
 <div>
-	if seen
-		<span> "Now you see me"
-	else
-		<span> "Nothing to see here"
+  if seen
+	<span> "Now you see me"
+  else
+	<span> "Nothing to see here"
 ```
 
 If we have a dynamic list we can simply use a `for in` loop:
@@ -150,7 +235,7 @@ import {todos} from './data.imba'
 
 # ---
 <ul> for todo in todos
-	<li.todo> <span.name> todo.title
+  <li.todo> <span.name> todo.title
 ```
 
 Here's an example with more advanced logic:
@@ -160,13 +245,13 @@ import {todos} from './data.imba'
 
 # ---
 <div>
-	for todo,i in todos
-		# add a separator before every todo but the first one
-		<hr> if i > 0 
-		<div.todo .line-through=todo.done>
-			<span.name> todo.title
-			if !todo.done
-				<button> 'finish'
+  for todo,i in todos
+	# add a separator before every todo but the first one
+	<hr> if i > 0 
+	<div.todo .line-through=todo.done>
+	  <span.name> todo.title
+	  if !todo.done
+		<button> 'finish'
 ```
 
 > `for of` and `for own of` loops also supported for iteration
@@ -211,9 +296,9 @@ Sometimes you will want to define custom reusable components. Custom imba tags c
 
 ```imba
 tag my-component
-	def render
-		<self>
-			<div.one.two title='hello'> "Hello there"
+  def render
+	<self>
+	  <div.one.two title='hello'> "Hello there"
 ```
 
 ## What is `<self>`?
@@ -222,14 +307,14 @@ tag my-component
 ```imba
 tag app-example
 
-	def submit
-		$title
-		console.log $title.value
+  def submit
+	$title
+	console.log $title.value
 
-	def render
-		<self>
-			<input$title type='text'>
-			<button :click.submit> 'submit'
+  def render
+	<self>
+	  <input$title type='text'>
+	  <button :click.submit> 'submit'
 
 imba.mount <app-example>
 ```
@@ -238,22 +323,22 @@ imba.mount <app-example>
 
 ```imba
 let items = [
-	type: 'todo'
-	title: 'My task'
-	---
-	type: 'note'
-	title: 'My note'
+  type: 'todo'
+  title: 'My task'
+  ---
+  type: 'note'
+  title: 'My note'
 ]
 
 tag todo-item
-	<self> "Todo: {data.title}"
+  <self> "Todo: {data.title}"
 
 tag note-item
-	<self> "Note: {data.title}"
+  <self> "Note: {data.title}"
 
 imba.mount do
-	<ul> for item in items
-		<li> <{item.type}-item data=item>
+  <ul> for item in items
+	<li> <{item.type}-item data=item>
 
 ```
 
