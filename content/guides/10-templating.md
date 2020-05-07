@@ -1,5 +1,5 @@
 ---
-title: DOM
+title: DOM & Templating
 multipage: true
 ---
 
@@ -42,6 +42,7 @@ HTML properties work just as they would in vanilla HTML with the exception of cl
 
 Since classes and id's are commonly used, Imba has a special syntax for that.
 
+<!-- TODO: Link to the next page -->
 [Learn about Classes and IDs]()
 
 # HTML Classes and IDs
@@ -82,6 +83,9 @@ var state = true
 
 If the state evaluates to true, the class will be applied. If it isn't, then forget about it, it won't be compiled.
 
+
+<!-- TODO: Link to the next page -->
+[Learn about Tag (Components)]()
 # Tags (Components)
 
 > From now on, when you read the word **Tag** by itself, we will be referring to Imba custom components, not HTML tags. We will be specific when we mean HTML tags or any other kind of tag.
@@ -202,69 +206,89 @@ def functional-tag item
 	<div> <page-item item=item>
 ```
 
-# Tag Props (Custom Properties)
+<!-- TODO: Link to the next page -->
+[Learn about Tag Props]()
+
+# Tag Props (Instance Variables)
 ## What are props?
-Instance Variables
-<!-- TODO WIP -->
-## Syntax
-<!-- TODO: See Tag Property Data -->
-<!-- TODO: See Parent Tag Property Data (Context) here-->
-<!-- https://app.gitbook.com/@imba/s/guide/dom/tags-components -->
-## Tag Property Data
-In the example below we render the app-pages component once for each object in the `pages` array variable. We then dynamically pass the corresponding object data to the component with `p=page`. We then dynamically access the title from the app-pages component by using the `p.title` prop.
+Components are better when they can share data with other parent or child components. Props (short for properties) allow you to do just that. Props are fundamentally ready-to-go variables of an instance of an object.
 
-<!-- TODO: Explain Example Better -->
+## How to create a prop
+Imba has a special keyword called "prop" to create props, and props are declared at the root level of a tag using the following syntax: `prop PROPNAME = 'default value'`
+
+Here is a practical example.
 
 ```imba
-let pages = [
-	title: "Home"
-	description: "This is the home page"
-	---
-	title: "About"
-	description: "This is the about page"
-]
-tag app-root
-	def render
-		<self>
-			<h1> "Hello World"
-			for page in pages
-				<app-pages p=page >
-tag app-pages
-	def render
-		<self>
-			<h1> @p.title
+tag app-page
+	prop pagename = "Home Page"
 ```
+## How to use a prop
+We can now render the value of the language prop into our `<h1>` by simply placing the prop name within any element.
+```imba
+tag app-page
+	prop pagename = "Home Page"
+	def render
+		<self>
+			<h1> pagename
+```
+The above will render the following header `<h1> Home Page </h1>` in the html.
 
-## Parent Tag Property Data (Context)
-If we would like to use data from a prop assigned to a parent component we cannot access it by simply stating the prop name.
+## Passing dynamic values to a prop
 
-We could if we passed the prop value to the child through a new prop like this: `p=p` , but we do not need to that.
-
-In imba we can use $context.propertyName to traverse up the component tree, and it will return the value of the first matching property on any parent element.
-
-<!-- TODO: Explain example -->
+Another way to create a prop is from the instance of a tag. You don't have to declare it in the tag itself, unless you need a default value.
+We can now easily pass data from the app-root tag, to the home-page tag.
 
 ```imba
-let pages = [
-	title: "Home"
-	description: "This is the home page"
-	---
-	title: "About"
-	description: "This is the about page"
-]
+tag app-page
+	prop pagename
+	<self>
+		<h1> pagename
+
 tag app-root
-	def render
-		<self>
-			<h1> "Hello World"
-			for page in pages
-				<app-pages page=page desc=page.description>
-tag app-pages
-	def render
-		<self>
-			<h1> @page.title
-			<app-content>
-tag app-content
-	def render
-		<self>
-			<p> #context.desc
+	prop pages = [
+		"Home Page"
+		"About Page"
+		"Contact Page"
+	]
+	<self>
+		for page in pages
+			<app-page pagename=page>
 ```
+<!-- TODO: Ad link to for loops page later in sentence below. -->
+We will explain the `for page in pages` loop later, but what is happening is that for every string inside the `prop pages` array in the `app-root` tag, we are going to render a `<home-page>` tag with the corresponding string from the array.
+
+That will generate three instances of the app-page component, but each will have a different header. One will say "Home Page", the other "About Page", and the other "Contact Page"
+
+## Interactive Prop Example
+Now that we have uncovered the power behind props, let's see a more complicated example. Can you tell what this will do? Click **run** on the top right of the code box to play with the code.
+```imba
+tag likes-view
+	prop likeCounter
+	def render
+		<self>
+			<p> "Likes:" {<b> likeCounter}
+let counter = 0
+tag app-root
+	def increase
+		counter++
+	def render
+		<self>
+			<button @click.increase!> "👍"
+			<likes-view likeCounter=0>
+```
+`@click.increase!` is a method that is run upon the click event. Let's learn about methods.
+
+<!-- TODO: Link to the next page -->
+
+# [WIP] Tag Methods
+
+# [WIP] Tag Ref
+
+# [WIP] Tag Slots
+## Default Slot
+## Named Slots
+## Magic Slots
+
+# [WIP]  Tag Lifecycle
+
+# [WIP] Tag Scheduler
