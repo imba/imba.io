@@ -168,11 +168,12 @@ let chico =
 	birthYear: 2019
 	calculateAge: do(year)
 		let age = year - this.birthYear  // subtract birthYear value from from `year` argument value
-		"Chico is {age} {if (age is 1) then "year" else "years"} old"
+		"{this.firstName} is {age} {if (age is 1) then "year" else "years"} old"
 
 console.log chico.calculateAge(thisYear)
 ```
-
+<!-- TODO: Continue with Setting Properties with methods. -->
+<!-- https://app.gitbook.com/@imba/s/guide/~/drafts/-M6osQFp4Ya17gXvtMAO/logic-and-data/objects-and-object-properties -->
 # [WIP] Arrays
 
 # [WIP] Async / Await
