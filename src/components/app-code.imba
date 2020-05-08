@@ -104,6 +104,7 @@ app-code-block {
 	display: block;
 	font-size: 13px;
 	color: var(--code-color);
+	overflow-x: auto;
 }
 
 app-code-block .code-head {
