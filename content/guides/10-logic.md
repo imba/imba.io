@@ -174,8 +174,75 @@ console.log chico.calculateAge(thisYear)
 ```
 <!-- TODO: Continue with Setting Properties with methods. -->
 <!-- https://app.gitbook.com/@imba/s/guide/~/drafts/-M6osQFp4Ya17gXvtMAO/logic-and-data/objects-and-object-properties -->
-# [WIP] Arrays
+# Arrays
+## Creating Arrays
+The Array class is a global object in javascript. The syntax for creating arrays doesn't differ from arrays in Javascript. This is an array in it's most basic form.
+```imba
+['html', 'css', 'js']
+```
+## Array Instance
+Often, arrays are stored in variables to be accessible via that variable name. This is how we create an instance of an array.
+```imba
+let languages = ['html', 'css', 'js']
+```
+Everytime we call the languages variable, we are creating an instance of that array. 
+```
+let languages = new Array('html', 'css', 'js')
+```
+## Access Array values
+Arrays are Zero indexed, which means that the first item in the array is the `0` item in the array.
+so if we want to access. Can you guess what will print to the console if we access the `2` index in the `languages` variable?
+```imba
+let languages = new Array('html', 'css', 'js')
+console.log languages[2] // > js
+```
+## Mutate Array
+You can mutate the value of an array item, by assigning a new value to the desired array index.
+The following will replace html for xml.
+```imba
+languages[0] = 'xml'
+console.log languages // > [xml, css, js]
+```
+## Array Value Types
+So far we have only used strings in our array, but we can use other javascript types.
+```imba
+var details = ['Imba', 2.0, 2020, 'language', true, {creator:"Sindre"}]
+```
+Here is a list of common javascript types used in arrays.
+- undefined `[]`
+- boolean `[true]`
+- number `[1]`
+- string `['hello']`
+- object `[{lang: "imba"}]`
+- function `[(do 2*2)]`
+- null `does not exist`
 
+You can pretty much put anything in an array. Even other arrays, as they are objects as well.
+
+## Array Properties
+Any instance of an array will inherity from the Array prototype which comes with many handy built-in properties and methods such as the `length` property, which tells you how many items are in your array.
+```imba
+console.log languages.length // >> 3
+```
+## Array Methods
+The Array prototype has many methods you can use on your array instances. A useful one is the `.push()` method. It can be used to add an item to the end of your array. Here we are adding 'Imba' to the languages array.
+```imba
+languages.push('Imba') // >> ['html', 'css', 'js', 'imba']
+languages.length // >> 4
+```
+here are a few more useful array methods
+```imba
+let languages = ['html', 'css', 'js']
+languages.indexOf('css') // >> 1
+languages.pop() // removes last item of array: ['html', 'css']
+languages.push('imba') // adds to end of array: ['html', 'css', 'imba']
+languages.shift() // removes from beginning of array ['css','imba']
+languages.unshift('imba') // adds to beginning of array ['imba' 'css', 'imba']
+languages.splice(1,1, "imba") // replaces one item at index 1, with 'imba' >> ['imba','imba','imba']
+```
+[Here you can learn more about array methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), but now you at least know how to replace all web languages with imba.
+
+<!-- ## Do Array Fun Project like checker board with array -->
 # [WIP] Async / Await
 # [WIP] Comments
 # [WIP] Classes
