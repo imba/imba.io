@@ -3,8 +3,8 @@ import {ls} from '../store'
 tag app-document
 
 	def render
-		<self.markdown.block.pb-24>
-			<div.content.px-6 innerHTML=data.html>
+		<self.markdown.(l:block pb:24)>
+			<div.content.(max-width:768px px:6) innerHTML=data.html>
 
 tag embedded-app-document
 	def hydrate
@@ -22,7 +22,7 @@ tag embedded-app-example
 		emit('run',{example: data})
 
 	def render
-		<self.cursor-pointer :click.run> <span> "Show example"
+		<self.(l:flex center cursor:pointer radius:2 min-height:12 bg:blue200) @click.run> <span> "Show example"
 
 ### css scoped
 	embedded-app-example {

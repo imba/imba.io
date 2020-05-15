@@ -47,7 +47,7 @@ tag app-repl
 	def build
 		showing = no
 		logs = []
-		$iframe = <iframe.inset-0.absolute>
+		$iframe = <iframe.inset-0.absolute .(position:absolute width:100% height:100%)>
 		$iframe.replify = do(win)
 			logs = []
 			let orig = win.console.log
@@ -98,199 +98,32 @@ tag app-repl
 	def show
 		showing = yes
 
+	css header = p:3 height:12 color:gray600 d:flex ai:center fs:sm fw:500
+	css .tab = py:1 px:2 color.hover:gray500 color.is-active:blue300
+	css .underlay = l:fixed inset:0 z-index:-1 bg:black-10
+
 	def render
-		<self.repl .hidden=!showing>
-			<div.underlay.inset-0 :click.hide>
-			<div.dark.editor-pane.pane :resize.relayout>
-				<header>
-					<.select.inline-flex.relative>
-						<select[project]> for item in fs.examples.folders
-							<option value=item> item.name
-						
-						<div.tab.folder> project and "{project.name} :" or "Browse..."
-					<div.tabs.contents> for file in project..children
-						<div.tab :click.{currentFile = file} .active=(currentFile == file)> <span> file.name
-				<div$editor.editor>
-			<div.result.pane.light>
-				<div.pane.output.m-2>
-					<header> <.tab> "Preview"
-					<div.flex-1.relative> $iframe
+		<self.repl .(l:fixed flex clip inset:20 z-index:100 bg:$code-bg-lighter radius:2 shadow:xl) .(d:none)=!showing>
+			<div.underlay @click=hide>
+			<div.(l:vflex rel flex:70% bg:gray900-20) @resize=relayout>
+				<header.(color:gray600)>
+					<div.(d:contents cursor:default)> for file in project..children
+						<div.tab @click=(currentFile = file) .active=(currentFile == file)> <span> file.name
+
+				<div$editor.(l:abs inset:12 0 0)>
+
+			<div.(l:vflex flex:1 1 30% bg:white)>
+				<div.(l:vflex flex:1)>
+					<header.(bg:gray200)> <.title> "Preview"
+					<div.(l:rel flex:1)> $iframe
 				<div.divider>
-				<div$console.pane.console>
-					<header>
-						<.tab> "Console"
+				<div$console.(flex:40% l:vflex)>
+					<header.(bg:gray200)>
+						<.title> "Console"
+						<.(grow:1)>
 						<button @click=(logs = [])> 'Clear'
-					<.content> for item in logs
+					<.content.(flex:1)> for item in logs
 						<div.log-item> item.join(", ")
 	
 	def rendered
 		monaco
-
-
-### css scoped
-
-.repl {
-	display: flex;
-	flex-direction: row;
-	z-index: 300;
-	position: fixed;
-	bottom: 0px;
-	left: 40px;
-	right: 40px;
-	top: auto;
-	height: 80vh;
-	box-shadow: 0px 0px 100px 10px rgba(29, 29, 29, 0.29);
-	padding: 0px;
-	background: var(--code-bg-lighter);
-	border-radius: 3px;
-	padding-left: 3px;
-	overflow: hidden;
-}
-
-select {
-	-webkit-appearance: none;
-	font-family: inherit;
-	font-weight: inherit;
-	font-size: inherit;
-	color: inherit;
-	background: transparent;
-	position: absolute;	
-	top: 0px;
-	left: 0px;
-	width: 100%;
-	height: 100%;
-	opacity: 0;
-}
-
-.dark {
-	--bg: var(--code-bg-lighter);
-	--tab-color: var(--gray-600);
-	--tab-hover-color: var(--gray-400);
-	--tab-active-color: var(--blue-300);
-	--header-bg: transparent;
-}
-
-.light {
-	--bg: white;
-	--tab-color: var(--gray-600);
-	--header-bg: rgba(14, 14, 14, 0.05);
-	--header-bg: transparent;
-}
-
-.log-item {
-	padding-left: 1rem;
-}
-
-.divider {
-	display: block;
-	height: 1px;
-	background: rgba(0,0,0,0.2);
-	margin: 0px 0px;
-}
-
-header {
-	padding: 0px 0.5rem;
-	flex: 0 0 36px;
-	color: var(--tab-color);
-	font-size: 14px;
-	align-items: center;
-	background-color: var(--header-bg);
-	display: flex;
-	flex-direction: row;
-	font-weight: 500;
-}
-
-iframe {
-	width: 100%;
-	height: 100%;
-}
-
-.tab {
-	border-color: transparent;
-	cursor: default;
-	color: var(--tab-color);
-	font-weight: 500;
-	transition: all 0.1s ease-in-out;
-	padding: 0.25rem 0.5rem;
-}
-.tab:hover {
-	color: var(--tab-hover-color);
-}
-
-.tab.active {
-	color: var(--tab-active-color);
-	border-color: currentColor;
-}
-
-.tab span {
-	border-bottom: 1px solid;
-	border-bottom-color: inherit;
-}
-
-.folder {
-	color: white;
-}
-
-.underlay {
-	position: fixed;
-	z-index: -1;
-	background: white;
-	opacity: 0;
-}
-
-.editor-pane {
-	background: var(--code-bg-lighter);
-}
-
-.hidden {
-	display: none;
-}
-
-.empty {
-	display: none;
-}
-
-.pane {
-	flex: 1 1 50%;
-	display: flex;
-	flex-direction: column;
-	background: var(--bg);
-}
-
-.editor-pane {
-	flex-basis: 80%;
-	position: relative;
-}
-
-.output {
-	flex: 1 1 80%;
-	background-color: white;
-}
-
-.output iframe {
-	border: none;
-}
-
-.editor {
-	display: block;
-	flex: 1;
-	position: relative;
-}
-
-.editor >>> .monaco-editor {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	bottom: 0px;
-	right: 0px;
-}
-
-.console {
-	flex: 0 0 30%;
-}
-
-.output {
-	flex: 0 0 70%;
-}
-
-###

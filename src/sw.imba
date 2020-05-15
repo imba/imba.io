@@ -29,7 +29,6 @@ const clientLoadMap = {
 }
 
 const accessedPaths = {
-
 }
 
 def compileImba file
@@ -37,6 +36,7 @@ def compileImba file
 		let result = imbac.compile(file.body,{target: 'web', sourcePath: file.path, imbaPath: null})
 		file.js = result.toString!
 	catch e
+		console.log 'error compiling',e
 		return
 	return file.js
 

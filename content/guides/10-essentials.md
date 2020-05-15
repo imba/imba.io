@@ -112,6 +112,12 @@ var color = 'blue'
 <div.p-2 .{marks} .{state} .bg-{color}-200> "Bolded with bg-blue-200"
 ```
 
+### Styling
+
+```imba
+<div.(font-weight:700)> "Bold text"
+```
+
 ### Children
 
 Indentation is significant in Imba, and elements follow the same principles. We never explicitly close our tags. Instead, tags are closed implicitly by indentation. So, to add children to an element you simply indent them below:
@@ -262,8 +268,10 @@ imba.mount do
 
 
 
-# Styling
+# Inline styles
 
-Info about styling here
+[Article](/articles/styling.md)
 
-## Scoped styles
+# Component styles
+
+[Article](/articles/component-styles.md)

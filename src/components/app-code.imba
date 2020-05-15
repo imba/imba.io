@@ -54,9 +54,11 @@ tag app-code
 
 tag app-code-block < app-code
 
+	css .code-head = display: none
+
 	def hydrate
 		# console.log 'hydrating code block'
-		plain = innerText.replace(/[ ]{4}/g,'\t')
+		plain = textContent.replace(/[ ]{4}/g,'\t')
 		if plain.indexOf('# light') >= 0
 			flags.add('light')
 		highlighted = highlight(plain)
@@ -72,42 +74,13 @@ tag app-code-block < app-code
 		# console.log 'render code block',is-mounted,is-awakened,__f
 		return unless highlighted
 
-		<self>
-			<div.tools.absolute> <button.px-2 :click.run> 'run'
+		<self.(
+			l:rel block p:5 6 radius:1 fs:13px
+			color:$code-color bg:$code-bg-lighter
+			white-space:pre-wrap
+		)>
+			<div.(l:abs top:1 right:1 c:blue400)>
+				<button.(px:2 td.hover:underline fw:bold) @click.run> 'run'
 			<code innerHTML=highlighted>
-		
-
 
 tag app-code-inline < app-code
-
-### css
-
-.tools {
-	position: absolute;
-	top: 8px;
-	right: 8px;
-	color: var(--blue-400);
-}
-button {
-	font-weight: 600;
-}
-button:hover {
-	text-decoration: underline;
-}
-
-app-code-block {
-	position: relative;
-	white-space: pre;
-	padding: 24px 24px 24px 24px;
-	border-radius: 3px;
-	background: var(--code-bg-lighter);
-	display: block;
-	font-size: 13px;
-	color: var(--code-color);
-}
-
-app-code-block .code-head {
-	display: none;
-}
-
-###
