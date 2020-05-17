@@ -1,5 +1,5 @@
 ---
-title: Styles
+title: Styling
 multipage: true
 ---
 # [WIP] css inline styles

@@ -1,8 +1,8 @@
 ---
-title: Logic & Data
+title: Scripting
 multipage: true
 ---
-# [WIP] Objects
+# Objects
 ## Object Literal Syntax
 In Imba you can omit curly braces, and commas at the end of each line.
 ##### Syntax
@@ -10,9 +10,8 @@ In Imba you can omit curly braces, and commas at the end of each line.
 var objectName =
 	keyName: "value"
 ```
-</br>
 
-##### Example
+Example
 ```imba
 var language =
 	name: "imba"
@@ -26,7 +25,7 @@ You can access properties by the key names. Therea are two syntaxses for this, w
 objectName.keyName
 objectName["keyName"] // passing a string as a key selector
 ```
-##### Example
+Example
 ```imba
 // access property via dot notation
 console.log language.name
@@ -35,7 +34,7 @@ console.log language['launchDate']
 ```
 ## Use Variables as keys
 The second syntax for selecting keys `objectName['keyname']` is useful if you want to dynamically pass the key name to your object selector.
-##### example
+Example
 
 ```imba
 # store key name in variable
@@ -51,10 +50,10 @@ Even if you have pre-declared property values on your object, you can still upda
 ```imba
 object.property = 'new value'
 ```
-##### Example
+Example
 ```imba
 let language =
-    name: 'js'
+	name: 'js'
 
 # mutates object data
 langauge.name = 'imba'
@@ -70,7 +69,7 @@ You will then be able to access the data as properties of that object.
 ```imba
 let objectName = Object.new
 ```
-##### Example
+Example
 ```imba
 # Creates an object with the name chico.
 let chico = Object.new
@@ -111,7 +110,7 @@ let objectName
 		2 * 4
 ```
 With object methods can do calculations on the fly. This is useful for generating data from multiple objects at once based on unique property values of each. For example,
-##### Example
+Example
 ```imba
 let thisYear = 2020
 
@@ -133,7 +132,7 @@ let objectName
 		argumentKeyName * 4
 console.log objectName.methodName(value)
 ```
-##### example
+Example
 ```imba
 let thisYear = 2021
 
@@ -159,7 +158,7 @@ let objectName
 console.log objectName.methodName!
 ```
 Let's keep improving our previous example. let's store the birth year in it's own property, and access Chico's name from the `firstName` property.
-##### example
+Example
 ```imba
 let thisYear = 2021
 
@@ -172,8 +171,27 @@ let chico =
 
 console.log chico.calculateAge(thisYear)
 ```
-<!-- TODO: Continue with Setting Properties with methods. -->
-<!-- https://app.gitbook.com/@imba/s/guide/~/drafts/-M6osQFp4Ya17gXvtMAO/logic-and-data/objects-and-object-properties -->
+## Setting Properties Within Methods
+We can also set properties within anay method we have access to.
+##### syntax
+```imba
+let objectname
+	methodName: do
+		objectname.newPropName = 'new prop value'
+```
+We can automatically generate a new age property with an up-to-date value by running the `calculateAge!` method. We will then be able to access the updated age each year via the same `.age` prop.
+```imba
+let chico =
+	firstName: "Chico"
+	birthYear: 2019
+	calculateAge: do
+		# set age property
+		this.age = (Date.new).getFullYear() - this.birthYear
+chico.calculateAge!
+console.log chico.age 
+// >> 1
+```
+
 # Arrays
 ## Creating Arrays
 The Array class is a global object in javascript. The syntax for creating arrays doesn't differ from arrays in Javascript. This is an array in it's most basic form.
@@ -215,7 +233,7 @@ Here is a list of common javascript types used in arrays.
 - string `['hello']`
 - object `[{lang: "imba"}]`
 - function `[(do 2*2)]`
-- null `does not exist`
+- null `array does not exist`
 
 You can pretty much put anything in an array. Even other arrays, as they are objects as well.
 
@@ -242,9 +260,94 @@ languages.splice(1,1, "imba") // replaces one item at index 1, with 'imba' >> ['
 ```
 [Here you can learn more about array methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), but now you at least know how to replace all web languages with imba.
 
+## Array of Objects
+This is the normal way to do an array of objects.
+```imba
+let array [
+	{
+		key: 'value';
+	},{
+		key: 'value';
+	},{
+		key: 'value';
+	}
+]
+```
+Imba makes this a bit more fun and conscice with the following syntax.
+##### Syntax
+```imba
+let array = [
+	key: 'value'
+	---
+	key: 'value'
+	---
+	key: 'value'
+]
+```
+Let's do a more practical example. Let's use a `for` loop to render each user in a users array, and render their name and hobbies to the dom. 
+
+```imba
+let users = [
+	name: "eric"
+	hobbies: [
+		"coding"
+		"music"
+		]
+	---
+	name: "joe"
+	hobbies: [
+		"sports"
+		"reading"
+		]
+	---
+	name: "sally"
+	hobbies: [
+		"photography"
+		"running"
+		]
+]
+tag app-root
+	def render
+		<self>
+			for object in array
+				<h3> object.name
+				<ul> for item in object.hobbies
+					<li> item
+```
+
 <!-- ## Do Array Fun Project like checker board with array -->
 # [WIP] Async / Await
-# [WIP] Comments
+# Comments
+## Single line comments
+There are two ways to do single line comments in imba
+```Imba
+// Javascript style
+
+# Imba style
+```
+## Comment Blocks
+There are also two ways to do multi-line comments
+```imba
+/* 
+This is a javascript
+style comment block (supported in Imba)
+*/
+
+###This is an Imba
+style comment block
+###
+```
+## HTML Comments
+While in most cases Imba or JS comments should suffice, we have realized that some external libraries require to see HTML comments in the DOM for certain functionality, so we have included support fro HTML comments. Remember however, that Imba doesn't compile to HTML, it compiles to Javascript that will then inject HTML elements into the DOM when it is loaded on your app. That means that the comments will not appear until JS is loaded. At that point, your comments will appear in the DOM.
+##### syntax
+```imba
+tag app-root
+	<self> 
+		// JS comments (not rendered to the dom)
+		# Imba Comments (not rendered to the dom)
+		<!-- html comments (rendered to the DOM) -->
+		<h1> "hello world!"
+```
 # [WIP] Classes
 # [WIP] Decorators
 # [WIP] Functions

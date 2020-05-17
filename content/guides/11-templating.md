@@ -1,5 +1,5 @@
 ---
-title: DOM & Templating
+title: Templating
 multipage: true
 ---
 
@@ -37,7 +37,7 @@ Notice that the text is wrapped in quotes. In Imba, data types are treated as it
 HTML properties work just as they would in vanilla HTML with the exception of classes and id's.
 
 ```Imba
-<p width="200> "This is a paragraph with a defined width"
+<p width="200"> "This is a paragraph with a defined width"
 ```
 
 Since classes and id's are commonly used, Imba has a special syntax for that.
