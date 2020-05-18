@@ -39,21 +39,19 @@ tag app-root
 
 	def render
 		<self.(l:contents) @run=runCodeBlock(e.detail)>
-			# <app-repl$repl id='repl' fs=fs>
 			<app-repl$repl id='repl' fs=fs>
-			<app-header.(l:sticky top:0)>
-			<.page-wrapper.(l:flex mx:auto max-width: 1400px)>
-				<.(l:static noclip-y block)>
-					<app-menu.(l:sticky top:12) data=page>
-				<div.(flex: 1 1 auto)>
-					<app-document data=page>
+			<app-header.(l:sticky top:0 height:16)>
+			<app-menu.(l:fixed scroll-y top:16 w:240px bottom:0 -webkit-overflow-scrolling: touch) data=page>
+			<app-document.(ml:240px) data=page>
+			# <.page-wrapper.(l:flex mx:auto max-width: 1400px)>
+			#	<div.(flex: 1 1 auto)>
+			#		<app-document data=page>
 
 # Should add the colors etc to the root css here
 css :root
-	--page-max-width: 2400px
 	font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased
+	-moz-osx-font-smoothing: grayscale
 
 css html,body
 	padding:0px margin:0px

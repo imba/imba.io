@@ -1,9 +1,7 @@
 :root {
 	--code-color: #e3e3e3;
-	
 	--code-identifier: #9dcbeb;
 	--code-constant: #c1a5d6;
-
 	--code-background: #282c34;
 	--code-bg-lighter: #29313f;
 	--code-comment: #718096;
@@ -25,9 +23,7 @@
 	--code-type: #718096;
 	--code-property: #F7FAFC;
 	--code-decorator: #63b3ed;
-
 	--code-variable: #e8e6cb;
-	--code-root-variable: #c5badc;
 	--code-root-variable: #e8e6cb;
 	--code-font: "Source Code Pro", Consolas, Menlo, Monaco, Courier, monospace;
 	--code-rule-mixin: #ff9292;
@@ -57,7 +53,6 @@
 	---code-selector-context: #b79fe2;
 	---code-style-property: #b1d0ff;
 	---code-style-value:#eda0a0;
-	/* */
 }
 
 .light {
@@ -100,7 +95,6 @@
 	-webkit-box-decoration-break: clone;
 	vertical-align: middle;
 	padding: 0.1em 5px;
-	/* margin: -0.1em 0px; */
 }
 
 .code .entity.other.inherited-tag,
@@ -131,54 +125,22 @@
 .code .tag.event,.code .tag.event-modifier { color: var(--code-tag-event); }
 .code .variable.scope_root { color: var(--code-root-variable); }
 .code .decorator {color: var(--code-decorator); }
-
 .code .tag.flag.start { opacity: 1;}
-
 .code .tag.rule-modifier { color: var(--code-rule-mixin); }
 .code .tag.rule-modifier.start { opacity: 0.43; }
 .code .tag.rule { color: var(--code-rule); }
-
 .code .style.open,.code .style.close { color: var(--code-style-bracket); }
 .code .style.args.open,.code .style.args.close { color: var(--code-style); }
 .code .style { color: var(--code-style); }
 .code .style.scope { color: var(--code-style-scope); }
-
 .code .selector { color: var(--code-selector); }
-
 .code .unit { color: var(--code-style-unit); }
-
-.code .style.delimiter {
-	color: var(--code-style-delimiter);
-}
-
-.code .style.property {
-	color: var(--code-style-property);
-}
-
-.code .style.property.scope {
-	color: var(--code-style-scope);
-}
-
-.code .style.value {
-	color: var(--code-style-value);
-}
-.code .style.value.size {
-	color: var(--code-style-value-size);
-}
-
-.code .keyword.css {
-	-color: var(--code-keyword-css);
-}
-
-.code .selector.pseudostate {
-	color: var(--code-selector-pseudostate);
-}
-.code .selector.operator {
-	color: var(--code-selector-operator);
-}
-.code .selector.context {
-	color: var(--code-selector-context);
-}
-.code .style.start-operator {
-	color: var(--code-delimiter-operator);
-}
+.code .style.delimiter { color: var(--code-style-delimiter); }
+.code .style.property { color: var(--code-style-property); }
+.code .style.property.scope { color: var(--code-style-scope); }
+.code .style.value { color: var(--code-style-value); }
+.code .style.value.size { color: var(--code-style-value-size); }
+.code .selector.pseudostate { color: var(--code-selector-pseudostate); }
+.code .selector.operator { color: var(--code-selector-operator); }
+.code .selector.context { color: var(--code-selector-context) }
+.code .style.start-operator { color: var(--code-delimiter-operator); }

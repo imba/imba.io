@@ -19,8 +19,6 @@ multipage: true
 
 [Article](/articles/decorators.md)
 
-# Using Slots
-
 # Server-Side Rendering
 
 > Show flag decorator that adds/removes flag

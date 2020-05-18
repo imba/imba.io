@@ -177,6 +177,8 @@ import {todos} from './data.imba'
 
 > `for of` and `for own of` loops also supported for iteration
 
+# Components
+
 # Careless Rendering
 
 - Mention how elements update / re-render

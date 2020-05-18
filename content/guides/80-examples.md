@@ -56,9 +56,6 @@ imba.mount do <div.app>
 	<footer>
 		<button :click.{archive!}> "Archive"
 ```
-# Shortcuts
-
-# Infinite List
 
 # Multi Input Field
 ```imba

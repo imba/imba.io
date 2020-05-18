@@ -3,7 +3,7 @@ title: Styling
 multipage: true
 ---
 
-# Core Concept
+# Introduction
 
 You are free to use external stylesheets like you've always done. In addition, Imba has a custom syntax for adding styles to elements and components.
 
@@ -200,6 +200,50 @@ The goal is to make the defaults good enough so that you will only ever want to 
 
 A single property that accepts values describing various common combinators of position, display, overflow, and other properties. Here is a list of all the values layout accepts - and what they are shorthands for:
 
+```imba
+abs # position: absolute;
+rel # position: relative;
+fixed # position: fixed;
+sticky # position: sticky;
+static # position: static;
+hidden # display: none;
+block # display: block;
+inline-block # display: inline-block;
+inline # display: inline;
+flex # display: flex;
+inline-flex # display: inline-flex;
+vflex # display: flex; flex-direction: row;
+inline-vflex # display: inline-flex; flex-direction: row;
+grid # display: grid;
+inline-grid # display: inline-grid;
+grid # display: grid;
+table # display: table;
+table-caption # display: table-caption;
+table-cell # display: table-cell;
+table-column # display: table-column;
+table-column-group # display: table-column-group;
+table-footer-group # display: table-footer-group;
+table-header-group # display: table-header-group;
+table-row-group # display: table-row-group;
+table-row # display: table-row;
+contents # display: contents;
+clip # overflow: hidden;
+noclip # overflow: visible;
+clip-x # overflow-x: hidden;
+clip-y # overflow-y: hidden;
+noclip-x # overflow-x: visible;
+noclip-y # overflow-y: visible;
+scroll-x # overflow-x: auto;
+scroll-y # overflow-y: auto;
+scroll # overflow: scroll;
+border-box # box-sizing: border-box;
+content-box # box-sizing: content-box;
+inset # top: 0; left: 0; bottom: 0; right: 0;
+visible # visibility: visible;
+invisible # visibility: hidden;
+
+```
+
 | Value  | Properties |
 | --- | --- |
 | `abs` | `position: absolute;` |
@@ -303,7 +347,9 @@ Units, shorthands++
 
 # Typography
 
-## Colors and sizing
+## Fonts
+
+## Colors and Sizing
 
 An application can quickly become an entangled mess of competing css rules, different shadows, colors, and sizes. We don't want to force developers into a hardcoded set of predefined styles, but we do want to make it easy to keep styles consistent within your project.
 
@@ -311,18 +357,6 @@ An application can quickly become an entangled mess of competing css rules, diff
 
 Inline styles with superpowers. When using inline styles, how would you ever set 
 
-# Responsive Design
-
 There are some very common usecases that are pretty verbose to express in regular css. You want to have different font sizes for different screen sizes. You want to slightly change the color or opacity of a background on hover.
 
-# Extensions
-
-CSS can be pretty verbose. In web development there are many incredibly common patterns that take quite a lot of characters to express. In Imba we have extended css with a few 
-
-## layout
-
-## text
-
-## aliases
-
-## aliases
+## text property

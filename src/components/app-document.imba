@@ -1,6 +1,8 @@
 import {ls} from '../store'
+import { @watch } from '../decorators'
 
 tag app-document
+	@watch prop data
 
 	css &
 		color: #4a5568
@@ -143,8 +145,13 @@ tag app-document
 
 	def render
 		<self.markdown.(l:block pb:24)>
-			<div.content.(max-width:768px px:6) innerHTML=data.html>
+			<div$content.(max-width:768px px:6) innerHTML=data.html>
 
+	def dataDidSet data
+		console.log 'data did set!!',data
+		document.body.scrollTop = 0
+
+	
 tag embedded-app-document
 	def hydrate
 		let data = ls(dataset.path)
