@@ -99,13 +99,13 @@ tag app-repl
 		showing = yes
 
 	css header = p:3 height:12 color:gray600 d:flex ai:center fs:sm fw:500
-	css .tab = py:1 px:2 color.hover:gray500 color.is-active:blue300
-	css .underlay = l:fixed inset:0 z-index:-1 bg:black-10
+	css .tab = py:1 px:2 color.hover:gray500 color.is-active:blue300 text-decoration.is-active:underline
+	css .underlay = l:fixed inset:0 z-index:-1 bg:hsla(214,35%,83%,0.6)
 
 	def render
-		<self.repl .(l:fixed flex clip inset:20 z-index:100 bg:$code-bg-lighter radius:2 shadow:xl) .(d:none)=!showing>
-			<div.underlay @click=hide>
-			<div.(l:vflex rel flex:70% bg:gray900-20) @resize=relayout>
+		<self.repl .(l:fixed flex clip inset:20 z-index:2000 radius:2 shadow:xl) .(d:none)=!showing>
+			<div.underlay @click=hide @wheel.stop.prevent>
+			<div.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>
 				<header.(color:gray600)>
 					<div.(d:contents cursor:default)> for file in project..children
 						<div.tab @click=(currentFile = file) .active=(currentFile == file)> <span> file.name
@@ -117,10 +117,9 @@ tag app-repl
 					<header.(bg:gray200)> <.title> "Preview"
 					<div.(l:rel flex:1)> $iframe
 				<div.divider>
-				<div$console.(flex:40% l:vflex)>
+				<div$console.(flex-basis:40% l:vflex)>
 					<header.(bg:gray200)>
-						<.title> "Console"
-						<.(grow:1)>
+						<.title.(grow:1)> "Console"
 						<button @click=(logs = [])> 'Clear'
 					<.content.(flex:1)> for item in logs
 						<div.log-item> item.join(", ")
