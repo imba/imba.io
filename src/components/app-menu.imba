@@ -1,6 +1,4 @@
-tag app-menu
-
-	
+tag app-menu	
 	def render
 		<self.(l:block fs:sm p:5 w:250px fw:500)>
 			for child in data.root.children

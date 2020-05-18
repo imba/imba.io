@@ -19,6 +19,7 @@ def main
 		file.sendToWorker!
 
 tag app-root
+
 	def mount
 		main!
 	
@@ -37,7 +38,7 @@ tag app-root
 		$repl.show!
 
 	def render
-		<self.antialiased.(l:contents) @run=runCodeBlock(e.detail)>
+		<self.(l:contents) @run=runCodeBlock(e.detail)>
 			# <app-repl$repl id='repl' fs=fs>
 			<app-repl$repl id='repl' fs=fs>
 			<app-header.(l:sticky top:0)>
@@ -48,19 +49,11 @@ tag app-root
 					<app-document data=page>
 
 # Should add the colors etc to the root css here
+css :root
+	--page-max-width: 2400px
+	font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 
-### css
-:root {
-	--dark-bg: #282f33;
-	--page-max-width: 2400px;
-
-	font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
-	font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
-	--logo-color: #5997ff;
-}
-
-html,body {
-	padding: 0px;
-	margin: 0px;
-}
-###
+css html,body
+	padding:0px margin:0px

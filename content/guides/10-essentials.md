@@ -265,13 +265,3 @@ imba.mount do
 
 ## Sheduling components
 
-
-
-
-# Inline styles
-
-[Article](/articles/styling.md)
-
-# Component styles
-
-[Article](/articles/component-styles.md)
