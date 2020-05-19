@@ -15,7 +15,8 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          export PATH=$PATH:/home/imba/.nvm/versions/node/v13.14.0/bin
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
           git -C /home/imba/v2.imba.io stash
           git -C /home/imba/v2.imba.io pull origin v2
           cd /home/imba/v2.imba.io  && \
