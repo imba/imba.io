@@ -8,6 +8,10 @@ tag app-document
 		color: #4a5568
 		line-height: 1.625
 
+	css a
+		t:blue700
+		t.hover:underline
+
 	css h1
 		color: #297198;
 		margin: 20px 0px 12px;
@@ -99,6 +103,9 @@ tag app-document
 	css app-code-block + app-code-block
 		margin-top: 1rem
 
+	css app-code-block + blockquote
+		pt:4 pb:3 px:5 mt:-1 b:gray300 bg:white radius:2
+		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray600
 
 	# table stlff
 	css table
