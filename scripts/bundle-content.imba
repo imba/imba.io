@@ -79,5 +79,8 @@ watcher.on('all') do
 			models[id] = item
 			up.children.push(item)
 
-watcher.on 'ready' do save!
+watcher.on 'ready' do
+	save!
+	if process.env.RUN_ONCE
+		process.exit(0)
 

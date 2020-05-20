@@ -10,16 +10,126 @@ Basic syntax stuff about the language
 ## Basics
 
 ### Indentation
+Imba is an Indentation based language. What that means is that nesting of objects and elements is created by the indentation level, rather than by curly braces and opening and closing tag pairs. 
+
+Here are some of the benefits.
+
+- You will write your app a lot faster.
+- Your code will be more legible.
+- It will write a lot less lines of code.
+
+For example, here's some HTML using opening and closing brackets
+
+```
+// HTML
+<header>
+	<h1> Hello World! </h1>
+</header>
+```
+Here's the same template in Imba.
+```
+// IMBA
+<header>
+	<h1> "Hello world!"
+```
+That's a **30%** decrease in lines of code and a **52%** less characters of code (excluding text) in just that tiny example. Imba will compile to the same HTML as above, but why not spare yourself all that writing?
+
+If you have ever used an indented language like ruby, python, or pug, we're sure you will soon find it hard to live without. 
+
+> Our compiler is optimized for using tabs for indentation, so be sure to switch your editor to use tabs. If on VS Code type `CMD/CTRL + SHIFT + P` and search to find "Convert Indentation to Tabs", then click on it. You may be asked to choose number of spaces for your indentation. That is your personal choice.
 
 ### Implicit self
+<!-- TODO: UPDATE / VERIFY -->
+In imba, self is implicit within any given *Tag* or class. 
+```
+let user = "Joe"
+tag app-root
+	prop language = "Imba"
+	def render
+		<self> 
+			<h1> this.language // this works, but it's not needed
+			<h1> language // do this instead
+			<h2> user // global variables will be found as well.
 
+```
 ## Strings
+Strings in imba are no different than strings in Javascript. 
+You may use single quotes or double quotes. 
+Just be aware that interpolation within a string can only happen with double quotes.
+```
+let user = "Joe"
+<h1> 'Hi {user}, this is a string'
+// Compiles to: <h1> Hi {user}, this is a string </h1>
 
+<h1> "Hi {user}, this is a string"
+// Compiles to: <h1> Hi Joe, this is a string </h1>
+```
 ## Numbers
 
 ## Regular Expressions
 
 ## Functions
+There are two types of functions in Imba.
+- Function Declarations (aka methods)
+- Function Expressions (aka. function blocks)
+
+Functions can operate within three different scopes
+- Global
+- Class instance
+- Tag instance
+By defining a function outside of classes or tags, they will be accessible in globally.
+
+A *function* is defined with the `def` keyword
+```
+def methodName
+	Math.Random()
+```
+If the function is defined at the root level of a document, it will be a global function accessible with the following syntax.
+```
+def functionName(argumentName)
+	console.log argumentName * 2
+functionName(2)
+>>> 4
+```
+Optionally, if you are not passing any arguments to your function you can simply use the `!` instead of `()` to call the method.
+
+```imba
+def functionName
+	console.log "Function has been called!"
+methodName! // Optional syntax for calling functions, if you are not passing any arguments
+>>> Function has been called!
+```
+
+## Class Methods
+Methods are simply functions that are scoped to each instance of a Class, so everything that applies to functions, applies here. The only difference is that to access the methods of a class, you need to create an instance of class like this.
+```imba
+class Random
+	def randomize
+		console.log Math.random!
+let lucky = new Random
+```
+Now we have an instance of random in an object called lucky.
+To access the method we use the following syntax `.randomize!`
+[link to classes](/guides/essentials/language/##classes)
+
+
+
+methods, those methods will be accessible from that object. [Learn more about **Classes** here.](https://app.gitbook.com/@imba/s/guide/logic-and-data/classes-1)
+<!-- TODO: update this link -->
+
+Here's an example of instantiationg a class into the lucky object, and then accesing the randomize method from within the lucky object.
+
+```
+class Random
+	def randomize
+		Math.random!
+let lucky = Random.new
+console.log lucky.randomize!
+```
+
+### Function Expressions {#function-expressions}
+
+Function expressions are also called function blocks, and in the ES6, they are also implemented as arrow functions.
 
 ## Classes
 

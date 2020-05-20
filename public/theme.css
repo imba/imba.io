@@ -1028,6 +1028,9 @@
         left: 8px;
         z-index: 30;
     }
+    .markdown p +  h5 {
+        margin-top: 0.2rem;
+    }
     
     .markdown table {
         width: 100%;
