@@ -107,6 +107,22 @@ css .btn = bg:gray100 font-weight:600 px:2 py:1
 
 ## Aliases
 
+# Colors
+
+```imba
+css .item
+    # all regular pseudo-classes are supported as modifiers
+    prop.hover: value # .item:hover { prop: value }
+    prop.focus: value # .item:focus { prop: value }
+```
+
+## Default Palette
+
+<doc-colors></doc-colors>
+
+## Semi-transparent versions
+
+## Customizing colors
 
 # Modifiers
 
@@ -402,4 +418,6 @@ There are some very common usecases that are pretty verbose to express in regula
 # Transitions
 
 # Transforms
+
+# Breakpoints
 

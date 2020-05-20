@@ -116,7 +116,7 @@ imba.mount <todo-app[todos]>
 
 > Tags are compiled down to *extremely optimized* native web components
 
-##### Styling
+##### Inline styles
 ```imba
 import {todos} from './data.imba'
 
@@ -128,7 +128,35 @@ import {todos} from './data.imba'
 # conditional styles based on media queries
 <div.(padding:3rem padding.lg:5rem padding.print:0)>
 
-# scoped style rules in components
+```
+
+##### Scoped Styles
+```imba
+import {todos} from './data.imba'
+
+# ---
+tag todo-app
+    css .item = color:gray800 bg.hover:gray100
+    css .item.done = color:green800 text-decoration: line-through
+    
+    def render
+        <self> for todo in data
+            <div.item .done=data.completed> <span> data.title
+```
+
+##### Global Styles
+```imba
+css .button
+    padding: 1rem 2rem
+    color:gray700
+    border: 1px solid gray200
+    radius: 3px
+    &.blue = bg:blue500 color:white bg.hover:blue600
+    &.teal = bg:teal500 color:white bg.hover:teal600
+
+<div>
+    <div.button.blue> "Blue button"
+    <div.button.teal> "Teal button"
 ```
 
 ##### Decorators
