@@ -92,6 +92,8 @@ var list = <ul title="reminders">
 <div.panel @click.prevent=handler> "Panel"
 ```
 
+> Elements are a native part of Imba just like strings, numbers, and other types.
+
 ##### Components
 
 ```imba
@@ -113,6 +115,21 @@ imba.mount <todo-app[todos]>
 ```
 
 > Tags are compiled down to *extremely optimized* native web components
+
+##### Styling
+```imba
+import {todos} from './data.imba'
+
+# ---
+# inline styles
+<div.(position:relative display:flex flex-direction:row)>
+# conditional styles based on pseudostates
+<div.(opacity:0.5 opacity.hover:1)>
+# conditional styles based on media queries
+<div.(padding:3rem padding.lg:5rem padding.print:0)>
+
+# scoped style rules in components
+```
 
 ##### Decorators
 
