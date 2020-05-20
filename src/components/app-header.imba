@@ -1,10 +1,10 @@
 tag app-header
 
-	css .tab = p:2 c:teal500 c.hover:teal600
+	css .tab = p:2 t:blue500 t.hover:blue600
 
-	<self.(l:flex center fw:500 border-bottom: 1px solid rgba(0,0,0,0.1) bg:white-80 z-index:200)>
-		<.header-wrapper.(l:flex ai:center flex:1 px:4)>
-			<app-logo.logo.(l:rel h:8 color:yellow500) route-to='/'>
+	<self.(l:flex center t:500 bb:rgba(0,0,0,0.1) bg:white-80 z-index:200)>
+		<div.(l:flex ai:center flex:1 px:4)>
+			<app-logo.logo.(l:rel h:8 t:yellow500) route-to='/'>
 			<span.(flex: 1)>
 			<a.tab route-to='/guides'> "Learn"
 			# <a.tab route-to='/reference'> "Manual"

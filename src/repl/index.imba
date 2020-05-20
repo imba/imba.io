@@ -98,8 +98,8 @@ tag app-repl
 	def show
 		showing = yes
 
-	css header = p:3 height:12 color:gray600 d:flex ai:center fs:sm fw:500
-	css .tab = py:1 px:2 color.hover:gray500 color.is-active:blue300 text-decoration.is-active:underline
+	css header = p:3 h:12 d:flex ai:center t:sm 500 gray600
+	css .tab = py:1 px:2 t.hover:gray500 t.is-active:blue300 underline
 	css .underlay = l:fixed inset:0 z-index:-1 bg:hsla(214,35%,83%,0.6)
 
 	def render

@@ -347,7 +347,37 @@ Units, shorthands++
 
 # Typography
 
-## Fonts
+```imba
+css h1
+    text: bold sm/2 sans
+```
+
+## Font Family
+
+Default fonts defined in theme
+How to add / change fonts
+
+| Fonts  |  |
+| --- | --- |
+| `sans`  | `system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI"` |
+| `serif` | `Georgia, Cambria, "Times New Roman", Times, serif` |
+| `mono` | `Menlo, Monaco, Consolas, "Liberation Mono", "Courier New"` |
+
+## Font Size
+
+| Aliases  |  |
+| --- | --- |
+| `xxs`  | 10px |
+| `xs`   | 12px |
+| `sm`   | 14px |
+| `md`   | 16px |
+| `lg`   | 18px |
+| `xl`   | 20px |
+| `2xl`  | 24px |
+| `3xl`  | 30px |
+| `4xl`  | 36px |
+| `5xl`  | 48px |
+| `6xl`  | 64px |
 
 ## Colors and Sizing
 
@@ -360,3 +390,16 @@ Inline styles with superpowers. When using inline styles, how would you ever set
 There are some very common usecases that are pretty verbose to express in regular css. You want to have different font sizes for different screen sizes. You want to slightly change the color or opacity of a background on hover.
 
 ## text property
+
+# Backgrounds
+
+# Borders
+
+## Border
+
+## Divide
+
+# Transitions
+
+# Transforms
+

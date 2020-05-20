@@ -50,6 +50,7 @@ css :root
 	--code-style-value: #a49feb;
 	--code-style-value-size: #ff8c8c;
 	--code-style-property: #e0ade3;
+	--code-style-var: #ff93d0;
 	--code-keyword-css: #fff7b6;
 	--code-selector: #e9e19b;
 	--code-selector-pseudostate: var(--code-selector);
@@ -105,6 +106,7 @@ css .code
 	& .style.property = color: var(--code-style-property); 
 	& .style.property.scope = color: var(--code-style-scope); 
 	& .style.value = color: var(--code-style-value); 
+	& .style.value.var = color: var(--code-style-var);
 	& .style.value.size = color: var(--code-style-value-size); 
 	& .selector.pseudostate = color: var(--code-selector-pseudostate); 
 	& .selector.operator = color: var(--code-selector-operator); 
@@ -179,12 +181,12 @@ tag app-code-block < app-code
 		return unless highlighted
 
 		<self.(
-			l:rel block p:5 6 radius:1 fs:13px
+			l:rel block p:5 6 radius:1 font-size:13px
 			color:$code-color bg:$code-bg-lighter
 			white-space:pre-wrap
 		)>
-			<div.(l:abs top:1 right:1 c:blue400)>
-				<button.(px:2 td.hover:underline fw:bold) @click.run> 'run'
+			<div.(l:abs top:1 right:1)>
+				<button.(px:2 t:bold blue400 t.hover:underline) @click.run> 'run'
 			<code innerHTML=highlighted>
 
 tag app-code-inline < app-code

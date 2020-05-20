@@ -141,7 +141,7 @@ tag app-document
 			white-space: pre
 			& * = display: none
 			&:before = content: "☶"
-			&:after = content: " TRY" fs:14px fw:bold
+			&:after = content: " TRY" t:14px bold	
 
 	def render
 		<self.markdown.(l:block pb:24)>
