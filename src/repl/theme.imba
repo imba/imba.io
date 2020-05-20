@@ -8,6 +8,7 @@ export const theme =
 		keyword: 'ea9b80'
 		operator: 'ea9b80'
 		# string: 'B7DE95'
+		dimdelimiter: '6d829b'
 		number: '598DA6'
 		bool: '598DA6'
 		symbol: 'B7DE95'
@@ -39,6 +40,13 @@ export const theme =
 		tagmodifier: 'e9e19b'
 		taglistener: 'e9e19b'
 		special: 'ffdb59'
+
+		sel: 'e9e19b'
+		selpseudo: 'eec49d'
+		cssproperty: 'e0ade3'
+		cssvalue: 'a49feb'
+		cssunit: 'ff8c8c'
+
 
 	toMonaco: do
 		var json = JSON.stringify(this)
@@ -169,6 +177,14 @@ export const theme =
 		{token: "entity.name.selector.css", foreground: '@xml'}
 		{token: "support.type.property-name.css", foreground: '@decl'}
 		{token: "meta.object-literal.key", foreground: '@key'}
+
+		{token: "style.selector", foreground: '@sel'}
+		{token: "style.property", foreground: '@cssproperty'}
+		{token: "style.value", foreground: '@cssvalue'}
+		{token: "style.value.size", foreground: '@cssunit'}
+		{token: "style.start-operator", foreground: '@dimdelimiter'}
+		{token: "style.open", foreground: '@xml'}
+		{token: "style.close", foreground: '@xml'}
 	]
 	colors:
 		'foreground': '#@foreground'

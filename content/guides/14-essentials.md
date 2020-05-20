@@ -222,6 +222,12 @@ var color = 'blue'
 <div.p-2 .{marks} .{state} .bg-{color}-200> "Bolded with bg-blue-200"
 ```
 
+### Styling
+
+```imba
+<div.(font-weight:700)> "Bold text"
+```
+
 ### Children
 
 Indentation is significant in Imba, and elements follow the same principles. We never explicitly close our tags. Instead, tags are closed implicitly by indentation. So, to add children to an element you simply indent them below:
@@ -281,7 +287,12 @@ import {todos} from './data.imba'
 
 > `for of` and `for own of` loops also supported for iteration
 
-# Careless Rendering
+# Components
+
+[Article](/articles/components.md)
+
+
+# Rendering
 
 - Mention how elements update / re-render
 - Mounting an element vs mounting with a function
@@ -307,73 +318,3 @@ imba.mount <div.main> "Hello World"
 # Managing State
 
 [Article](/articles/managing-state.md)
-
-# Reusable Components
-
-Sometimes you will want to define custom reusable components. Custom imba tags compiles to web components.
-
-## Declaring
-
-> Naming rules for custom components
-> Render method is optional
-> Declaring properties
-> Declaring attributes
-
-```imba
-tag my-component
-	def render
-		<self>
-			<div.one.two title='hello'> "Hello there"
-```
-
-## What is `<self>`?
-
-## Element References
-```imba
-tag app-example
-
-	def submit
-		$title
-		console.log $title.value
-	
-	def render
-		<self>
-			<input$title type='text'>
-			<button :click.submit> 'submit'
-
-imba.mount <app-example>
-```
-
-## Dynamic element types
-
-```imba
-let items = [
-	type: 'todo'
-	title: 'My task'
-	---
-	type: 'note'
-	title: 'My note'
-]
-
-tag todo-item
-	<self> "Todo: {data.title}"
-
-tag note-item
-	<self> "Note: {data.title}"
-
-imba.mount do
-	<ul> for item in items
-		<li> <{item.type}-item data=item>
-
-```
-
-## Sheduling components
-
-
-
-
-# Styling
-
-Info about styling here
-
-## Scoped styles

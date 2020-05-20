@@ -1,47 +1,24 @@
 tag app-menu
 
+	css &:after
+		content: ' '
+		bg: linear-gradient(white-0,white-100)
+		l: block abs
+		width: 90%
+		height: 80px
+		bottom: 0
+
+	css .scroller
+		-webkit-overflow-scrolling: touch
+		p:5
+
 	def render
-		<self.text-sm>
-			for child in data.root.children
-				<h5.group.item.text-gray-500> child.title.toUpperCase!
-				<.sections> for item in child.children
-					<a.item.rounded route-to=item.href> item.title
+		<self.(t:sm 500 w:250px)>
+			<div.scroller.(l: abs scroll-y inset:0)> for child in data.root.children
+				<h5.(p:1 2 t:xs gray500)> child.title.toUpperCase!
+				<div.(pb:8)> for item in child.children
+					<a
+						.(p:1 2 l:block t:gray600 radius:1 t.hover:gray900)
+						.(t.is-active:teal600 bg.is-active:teal200-25)
+						route-to=item.href> item.title
 					#  .selected=(item==data)
-
-### css scoped
-
-	app-menu {
-		font-size: 14px;
-		font-weight: 500;
-		background: white;
-		width: 250px;
-		flex: 0 0 250px;
-		padding: 20px;
-	}
-
-	.item {
-		padding: 0.25rem 0.5rem;
-	}
-	.group {
-		color: var(--gray-500);
-		font-size: .75rem;
-	}
-	.sections {
-		padding-bottom: 2rem;
-	}
-
-	a {
-		text-decoration: none;
-		display: block;
-		color: var(--gray-600);
-	}
-
-	a:hover {
-		color: var(--gray-900);
-	}
-	a.active {
-		color: var(--teal-600);
-		background: hsla(var(--teal-200-h),var(--teal-200-s),var(--teal-200-l),25%);
-	}
-
-###

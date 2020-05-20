@@ -5,5 +5,10 @@
 			"format": "esm"
 		}
 	},
+	"theme": {
+		"fonts": {
+			"mono": ["Source Code Pro", "Consolas", "Menlo", "Monaco", "Courier", "monospace"]
+		}
+	},
 	"serve": {"port": 10004}
 }

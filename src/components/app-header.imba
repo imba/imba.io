@@ -1,45 +1,14 @@
 tag app-header
 
-	def render
-		<self.flex.flex-row.justify-center>
-			<.header-wrapper.flex.flex-row.items-center.flex-1>
-				<app-logo.logo route-to='/'>
-				<a.tab route-to='/guides'> "Learn"
-				<a.tab route-to='/examples'> "Examples"
-				# <a.tab href='https://discord.gg/mkcbkRw' target='_blank'> "Chat"
-				# <a.tab href='https://github.com/imba/imba' target='_blank'> "Repo"
+	css .tab = p:2 t:blue500 t.hover:blue600
 
-### css scoped
-app-header {
-	height: 64px;
-	width: 100%;
-	font-weight: 500;
-	border-bottom: 1px solid rgba(0,0,0,0.1);
-	backdrop-filter: blur(10px);
-	background: rgba(255,255,255,0.8);
-	z-index: 200;
-}
-
-.header-wrapper {
-	padding: 0px 1rem;
-	max-width: var(--page-max-width);
-}
-
-.logo >>> svg {
-	height: 32px;
-}
-
-a {
-	color: #daafff;
-	color: var(--gray-600);
-}
-
-a:hover {
-	color: var(--gray-900);
-}
-
-a.active {
-	color: var(--teal-600);
-}
-
-###
+	<self.(l:flex center t:500 bb:rgba(0,0,0,0.1) bg:white-80 z-index:200)>
+		<div.(l:flex ai:center flex:1 px:4)>
+			<app-logo.logo.(l:rel h:8 t:yellow500) route-to='/'>
+			<span.(flex: 1)>
+			<a.tab route-to='/guides'> "Learn"
+			# <a.tab route-to='/reference'> "Manual"
+			<a.tab route-to='/repl'> "Playground"
+			<a.tab route-to='/examples'> "Examples"
+			# <a.tab href='https://discord.gg/mkcbkRw' target='_blank'> "Chat"
+			# <a.tab href='https://github.com/imba/imba' target='_blank'> "Repo"
