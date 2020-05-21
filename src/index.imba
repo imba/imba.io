@@ -45,12 +45,24 @@ tag app-root
 			$repl.currentFile = file
 		$repl.show!
 
+	css &
+		$menu-width: 80vw
+		$menu-width.md: 240px
+
+	css app-menu
+		h:100vh t:sm 500 l:fixed pt:16 top:0 bg:white
+		width: $menu-width
+		z-index: 150
+		x:-100% x.md:0 x.focus-within:0
+		br:gray300 br.md:none
+		transition: 250ms cubic
+
 	def render
 		<self.(l:contents) @run=runCodeBlock(e.detail)>
 			<app-repl$repl id='repl' fs=fs>
-			<app-header.(l:sticky top:0 height:16)>
-			<app-menu.(l:fixed top:16 w:240px bottom:0) data=page>
-			<app-document.(ml:240px) data=page>
+			<app-header$header.(l:sticky top:0 height:16)>
+			<app-menu$menu data=page>
+			<app-document$doc.(ml.md:$menu-width) data=page>
 			# <.page-wrapper.(l:flex mx:auto max-width: 1400px)>
 			#	<div.(flex: 1 1 auto)>
 			#		<app-document data=page>
@@ -60,6 +72,9 @@ css :root
 	font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
 	-webkit-font-smoothing: antialiased
 	-moz-osx-font-smoothing: grayscale
+
+css *
+	outline:none
 
 css html,body
 	padding:0px margin:0px

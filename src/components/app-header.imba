@@ -7,7 +7,6 @@ tag app-header
 			<app-logo.logo.(l:rel h:8 t:yellow500) route-to='/'>
 			<span.(flex: 1)>
 			<a.tab route-to='/guides'> "Learn"
-			# <a.tab route-to='/reference'> "Manual"
 			<a.tab route-to='/repl'> "Playground"
 			<a.tab route-to='/examples'> "Examples"
 			# <a.tab href='https://discord.gg/mkcbkRw' target='_blank'> "Chat"

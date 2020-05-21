@@ -121,11 +121,15 @@ tag app-document
 			color: gray700
 			font-weight: 500
 			py: 0.5rem
-			text-align: left
+			text: md left
 			white-space.first: nowrap
+			width.first: 30px;
+
 		& td
+			text: sm
 			padding: 0.5rem
 			border-top: 1px solid gray200
+			width.first: 30px;
 
 		& .code-inline:only-child
 			font-size: 0.85em
@@ -155,8 +159,9 @@ tag app-document
 			<div$content.(max-width:768px px:6) innerHTML=data.html>
 
 	def dataDidSet data
-		console.log 'data did set!!',data
+		# console.log 'data did set!!',data
 		document.body.scrollTop = 0
+		setTimeout(&,200) do document.body.focus!
 
 	
 tag embedded-app-document

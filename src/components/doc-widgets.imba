@@ -101,7 +101,7 @@ tag doc-colors
 	css .pink900 = bg:pink900 t:pink100
 
 	css .palette = my:2 t:sm cursor:default radius:2 l:clip flex
-	css .color = radius:0 fg:1 p:1 h:12 l:flex ai:center jc:center w:10
+	css .color = radius:0 fg:1 p:1 h:12 l:flex ai:center jc:center w:5
 	css .color span = opacity:0 transition: 30ms ease-in-out 
 	css .color:hover span = opacity:1
 
