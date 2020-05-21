@@ -68,6 +68,14 @@ watcher.on('all') do
 			if md.sections
 				item.children = md.sections
 				item.name = item.name.slice(0,-3) # remove markdown
+
+			if name == 'meta.md'
+				Object.assign(up,md.meta)
+				
+				for own k,v of md
+					up[k] = v
+				console.log 'did set meta',up
+				return
 	
 	if item
 		# item.path = '/' + src

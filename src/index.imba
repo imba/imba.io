@@ -38,7 +38,7 @@ tag app-root
 		if data.example
 			$repl.project = data.example
 		elif data.code	
-			let file = ls('/examples/playground/app.imba')
+			let file = ls('/examples/applications/playground/app.imba')
 			let code = data.code.replace(/^(?=\<\w)/gm,'imba.mount do ')
 			code = code.replace(/^# ---\n/gm,'')
 			file.overwrite code
@@ -56,6 +56,11 @@ tag app-root
 		x:-100% x.md:0 x.focus-within:0
 		br:gray300 br.md:none
 		transition: 250ms cubic
+	
+	css $repl
+		l:fixed flex clip inset:0 top:0 z-index:2000 radius:0 shadow:xl
+		transition: transform 250ms quint-out
+		&.hidden = y:100%
 
 	def render
 		<self.(l:contents) @run=runCodeBlock(e.detail)>

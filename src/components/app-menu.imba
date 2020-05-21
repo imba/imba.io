@@ -21,7 +21,7 @@ tag app-menu
 	def render
 		<self tabIndex=-1>
 			<div.handle> "☰"
-			<div.scroller.(l: abs scroll-y inset:0)> for child in data.root.children
+			<div.scroller> for child in data.root.children
 				<h5.(p:1 2 t:xs gray500)> child.title.toUpperCase!
 				<div.(pb:8)> for item in child.children
 					<a
