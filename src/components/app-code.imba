@@ -161,6 +161,9 @@ tag app-code-block < app-code
 		font-family: var(--code-font)
 		color: var(--code-color)
 		& .code-head = display: none
+	css code
+		display:block overflow-x:auto
+		white-space:pre px:6 py:5
 
 	def hydrate
 		# console.log 'hydrating code block'
@@ -181,11 +184,10 @@ tag app-code-block < app-code
 		return unless highlighted
 
 		<self.(
-			l:rel block p:5 6 radius:1 font-size:13px
+			l:rel block radius:1 font-size:13px
 			color:$code-color bg:$code-bg-lighter
-			white-space:pre-wrap
 		)>
-			<div.(l:abs top:1 right:1)>
+			<div.(l:abs top:2 right:2)>
 				<button.(px:2 t:bold blue400 t.hover:underline) @click.run> 'run'
 			<code innerHTML=highlighted>
 
