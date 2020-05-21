@@ -50,7 +50,7 @@ tag app-root
 		$menu-width.md: 240px
 
 	css app-menu
-		h:100vh t:sm 500 l:fixed pt:16 top:0 bg:white
+		h:100vh t:sm 500 l:fixed pt:0 top:0 bg:white
 		width: $menu-width
 		z-index: 150
 		x:-100% x.md:0 x.focus-within:0
@@ -62,15 +62,20 @@ tag app-root
 		transition: transform 250ms quint-out
 		&.hidden = y:100%
 
+	css $open-ide-button
+		l:fixed block bottom:0 right:0 m:5 b:gray200 py:3 px:4 radius:3
+		cursor:pointer bg:teal300-90 t:teal800 bold b:teal400-20 shadow:md
+		y.hover:-2px shadow.hover:lg bg.hover:teal300
+		transition: 100ms cubic-out
+
+
 	def render
 		<self.(l:contents) @run=runCodeBlock(e.detail)>
 			<app-repl$repl id='repl' fs=fs>
-			<app-header$header.(l:sticky top:0 height:16)>
+			# <app-header$header.(l:sticky top:0 height:16)>
 			<app-menu$menu data=page>
 			<app-document$doc.(ml.md:$menu-width) data=page>
-			# <.page-wrapper.(l:flex mx:auto max-width: 1400px)>
-			#	<div.(flex: 1 1 auto)>
-			#		<app-document data=page>
+			<div$open-ide-button @click=$repl.show!> 'OPEN IDE'
 
 # Should add the colors etc to the root css here
 css :root

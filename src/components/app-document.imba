@@ -7,6 +7,7 @@ tag app-document
 	css &
 		color: #4a5568
 		line-height: 1.625
+		pt:4
 
 	css a
 		t:blue700

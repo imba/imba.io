@@ -6,8 +6,8 @@ tag app-header
 		<div.(l:flex ai:center flex:1 px:4)>
 			<app-logo.logo.(l:rel h:8 t:yellow500) route-to='/'>
 			<span.(flex: 1)>
-			<a.tab route-to='/guides'> "Learn"
-			<a.tab route-to='/repl'> "Playground"
-			<a.tab route-to='/examples'> "Examples"
+			# <a.tab route-to='/guides'> "Learn"
+			# <a.tab route-to='/repl'> "Playground"
+			# <a.tab route-to='/examples'> "Examples"
 			# <a.tab href='https://discord.gg/mkcbkRw' target='_blank'> "Chat"
 			# <a.tab href='https://github.com/imba/imba' target='_blank'> "Repo"

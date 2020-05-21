@@ -143,7 +143,7 @@ tag app-repl
 					<div$back.(l:block p:3 5 t:sm 500 blue400 t.hover:underline) @click=hide> "⇦ back to site"
 					<div.items> for child in examples.children
 						<h5.(p:1 7 t:xs gray600 bold)> child.title.toUpperCase!
-						<div.(pb:8)> for item in child.children
+						<div.(pb:5)> for item in child.children
 							<a.item @click=open(item) .active=(project == item)> item.title
 
 			<div.dark.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>
