@@ -111,7 +111,9 @@ css .code
 	& .selector.pseudostate = color: var(--code-selector-pseudostate); 
 	& .selector.operator = color: var(--code-selector-operator); 
 	& .selector.context = color: var(--code-selector-context) 
-	& .style.start-operator = color: var(--code-delimiter-operator); 
+	& .style.start-operator = color: var(--code-delimiter-operator);
+
+	& span.region.more = display:none display.md:contents
 
 def escape str
 	str.replace(/[\&\<\>]/g) do(m) replacements[m]
@@ -120,10 +122,22 @@ def highlight str
 	if cache[str]
 		return cache[str]
 
-	let tokens = ImbaDocument.tmp(str.replace(/[ ]{4}/g,'\t')).getTokens()
+	str = str.replace(/[ ]{4}/g,'\t')
+	let inject = {}
+	let next
+	while next = str.match(/(.*?)(\[###|###\])/)
+		let offset = next[1].length
+		inject[offset] = next[2][0] == '[' ? '<span class="region more">' : '</span>'
+		str = str.slice(0,offset) + str.slice(offset + next[2].length)
+
+	let tokens = ImbaDocument.tmp(str).getTokens()
 	let parts = []
 
 	for token,i in tokens
+
+		# if inject[token.offset]
+		#	parts.push(inject[token.offset])
+
 		let value = token.value
 		let types = token.type.split('.')
 		let [typ,subtyp] = types
@@ -161,9 +175,11 @@ tag app-code-block < app-code
 		font-family: var(--code-font)
 		color: var(--code-color)
 		& .code-head = display: none
+
 	css code
 		display:block overflow-x:auto
-		white-space:pre px:6 py:5
+		white-space:pre p:3 4 p.md:5 6
+
 
 	def hydrate
 		# console.log 'hydrating code block'
