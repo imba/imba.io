@@ -58,7 +58,8 @@ tag app-repl
 
 	def run
 		let index = project.childByName('index.html')
-		url = `{project.path}/{index ? index.name : currentFile.basename + '.html'}`
+		let app = project.childByName('app.imba') or currentFile
+		url = `{project.path}/{index ? index.name : app.basename + '.html'}`
 		self
 
 	def serialize
@@ -79,6 +80,8 @@ tag app-repl
 		if monaco and file
 			monaco.setModel(file.model)
 		project = file.parent
+		if !project.childByName('index.html') and !project.childByName('app.imba')
+			run!
 		serialize!
 
 	def url-did-set url
@@ -128,7 +131,9 @@ tag app-repl
 			p:1 7 l:block bg.hover:gray900-10
 			&.active = bg:gray900-20 t:white bold
 
-	css $back = t:blue400
+	def scrollConsole e
+		let scroller = $consolebody.parentNode
+		scroller.scrollTop = e.rect.height - scroller.offsetHeight
 
 	def render
 		<self .hidden=!showing>
@@ -157,8 +162,10 @@ tag app-repl
 					<header.(bg:gray200)>
 						<.tab.active.(flex-grow:1)> "Console"
 						<button @click=(logs = [])> 'Clear'
-					<.content.(flex:1)> for item in logs
-						<div.log-item> item.join(", ")
+					<.content.(l:rel flex:1)>
+						<div.(l:abs block scroll-y inset:0)>
+							<div$consolebody.(l:block) @resize=scrollConsole> for item in logs
+								<div.log-item.(p:1 2 mx:1 bb:gray200 t:gray700)> item.join(", ")
 	
 	def rendered
 		monaco

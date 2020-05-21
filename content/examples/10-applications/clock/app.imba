@@ -5,7 +5,7 @@ tag app-clock
 		$interval = setInterval(render.bind(self),1000)
 	
 	def unmount
-		clearInerval($interval)
+		clearInterval($interval)
 
 	def turns div
 		let num = (Date.now! / 60000 + utc * 60) / div

@@ -1,33 +1,33 @@
 const DPR = window.devicePixelRatio
 
 tag app-paint
-	prop width = 200
-	prop height = 200
+	prop size = 1000
+
 	def render
-		<self.block.overflow-hidden.bg-blue-200>
+		<self.(l:block clip bg:blue200)>
 			<canvas$canvas
-				width=2000
-				height=2000
-				css:width=(2000 / DPR)
-				css:height=(2000 / DPR)
+				width=(size * DPR)
+				height=(size * DPR)
+				css:width=size
+				css:height=size
 				@pointerdown=start
 				@pointermove=move
 				@pointerup=end
 			>
 
 	def start e
-		console.info('pointer!',e)
-		# pointerdrag
+		console.log('pointerdown',e.pressure,e.pointerId)
 		$canvas.setPointerCapture(e.pointerId)
-		path = Path2D.new
+		$path = Path2D.new
 
 	def move e
-		if e.pressure and path
-			path.lineTo(e.offsetX * DPR,e.offsetY * DPR)
-			for path,i in paths
-				$canvas.getContext('2d').stroke(path)
+		if e.pressure and $path
+			$path.lineTo(e.offsetX * DPR,e.offsetY * DPR)
+			$canvas.getContext('2d').stroke($path)
 
 	def end e
-		console.log('ended',e.pressure,e.pointerId)
+		console.log('pointerup',e.pressure,e.pointerId)
 
+console.log "Hello world"
+console.log [1,2,3,4,{a:1,b:2}]
 imba.mount <app-paint>

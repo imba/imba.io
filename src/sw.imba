@@ -17,9 +17,10 @@ const indexTemplate = "
 <html>
     <head>
         <meta charset='UTF-8'>
-        <link rel='stylesheet' href='/examples.css'>
+		<title>Playground</title>
+		<link href='/preflight.css' rel='stylesheet'>
     </head>
-    <body class='p-6'>
+    <body>
         <script type='module' src='index.imba'></script>
     </body>
 </html>"
