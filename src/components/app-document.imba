@@ -181,17 +181,3 @@ tag embedded-app-example
 
 	def render
 		<self.(l:flex center cursor:pointer radius:2 min-height:12 bg:blue200) @click.run> <span> "Show example"
-
-### css scoped
-	embedded-app-example {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 3px;
-		min-height: 3rem;	
-		background: var(--blue-100);
-	}
-	embedded-app-example:hover {
-		background: var(--blue-200);	
-	}
-###
