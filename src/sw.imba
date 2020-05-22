@@ -43,8 +43,6 @@ def compileImba file
 		body = body.replace(/# @log (.*)\n(\t*)/g) do(m,text,tabs)
 			m + "$log '{text}', "
 
-		console.log 'rewrote file',body
-
 		body = body.replace(/# (.*\s)?@(log|render)\n(\t*)/g) do(m,text,type,tabs)
 			# let out = type == 'render' ? "console.log imba.mount " : "console.log "
 			let out = "${type} "
