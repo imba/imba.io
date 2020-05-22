@@ -52,19 +52,23 @@ tag app-repl
 		examples = ls('/examples')
 		$iframe = <iframe.inset-0.absolute .(position:absolute width:100% height:100%)>
 		$iframe.replify = do(win)
-			logs = []
-			let orig = win.console.log
-			win.console.log = do(...params)
-				$console.log(...params) if $console
+			let {log,info} = win.console.log
+			if $console
+				$console.native = win.console
+				win.console.log = $console.log.bind($console)
+				win.console.info = $console.info.bind($console)
 
-		sw.on 'reload' do
-			console.log 'received reload event from serviceworker',$1,$2
-			try $iframe.contentWindow.location.reload!
+		sw.on 'reload' do reload!
 		self
+
+	def reload
+		$console.clear! if $console
+		try $iframe.contentWindow.location.reload!
 
 	def run
 		let index = project.childByName('index.html')
 		let app = project.childByName('app.imba') or currentFile
+		$console.clear! if $console
 		url = `{project.path}/{index ? index.name : app.basename + '.html'}`
 		self
 

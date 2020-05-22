@@ -36,8 +36,10 @@ def compileImba file
 	try
 		let body = file.body
 		# rewrite certain special things
-		body = body.replace(/# (.*) @run\n(\t*)/g) do(m,text,tabs)
-			m + "console.log('{text}')\n{tabs}console.log "
+		body = body.replace(/# (.*\s)?@log\n(\t*)/g) do(m,text,tabs)
+			let out = "console.log "
+			out = "console.info('{text}')\n{tabs}{out}" if text
+			m + out
 		# console.log 'rewritten body',body
 		# ranges will end up at wrong positions
 		let result = imbac.compile(body,{target: 'web', sourcePath: file.path, imbaPath: null})
