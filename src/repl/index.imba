@@ -1,6 +1,7 @@
 import './monaco'
 import { @watch } from '../decorators'
 import {ls, File, Folder} from '../store'
+import * as sw from '../sw/controller'
 
 const editorOptions = {
 	scrollBeyondLastLine: false
@@ -55,6 +56,11 @@ tag app-repl
 			win.console.log = do(...params)
 				logs.push(params)
 				render!
+		
+		sw.on 'reload' do
+			console.log 'received reload event from serviceworker',$1,$2
+			try $iframe.contentWindow.location.reload!
+		self
 
 	def run
 		let index = project.childByName('index.html')

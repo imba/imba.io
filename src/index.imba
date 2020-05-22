@@ -10,26 +10,18 @@ import './components/doc-widgets'
 import './repl/index'
 
 import {fs,files,ls} from './store'
-
-def main
-	const sw = window.navigator.serviceWorker
-	var reg = await sw.getRegistration('/')
-
-	if reg
-		console.log 'update service worker'
-		await reg.update!
-	else
-		reg = await sw.register('/sw.js')
-
-	global.fetch('/style.css') # just to register this client with the worker
-	for file in files
-		file.sw = sw.controller
-		file.sendToWorker!
+import * as sw from './sw/controller'
 
 tag app-root
 
 	def mount
-		main!
+		let controller = await sw.setup!
+		console.log 'returned from sw',controller
+
+		for file in files
+			file.sw = controller
+			file.sendToWorker!
+		return
 	
 	get page
 		ls(document.location.pathname) or ls('/guides')

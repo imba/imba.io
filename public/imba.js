@@ -953,6 +953,7 @@ class Scheduler {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EventHandler", function() { return EventHandler; });
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 function extend$(target,ext){
 	// @ts-ignore
@@ -961,6 +962,8 @@ function extend$(target,ext){
 	Object.defineProperties(target.prototype,descriptors);
 	return target;
 };
+
+
 const keyCodes = {
 	esc: [27],
 	tab: [9],
@@ -974,9 +977,7 @@ const keyCodes = {
 };
 
 
-
-
-extend$(Event,{
+extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["Event"],{
 	
 	
 	wait$mod(state,params){
@@ -1011,7 +1012,6 @@ extend$(Event,{
 		return true;
 	},
 });
-
 
 
 
@@ -1063,6 +1063,16 @@ class EventHandler {
 		if (event.handle$mod) {
 			
 			if (event.handle$mod(state,mods.options) == false) {
+				
+				return;
+			};
+		};
+		
+		let schema = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type];
+		
+		if (schema && schema.handle) {
+			
+			if (schema.handle(state,mods.options) == false) {
 				
 				return;
 			};
@@ -1177,6 +1187,10 @@ class EventHandler {
 					
 					handler = mod;
 					context = event;
+					args = [state,args];
+				} else if (schema && (schema[handler] instanceof Function)) {
+					
+					context = schema;
 					args = [state,args];
 				} else if (handler[0] == '_') {
 					
@@ -2394,43 +2408,23 @@ const observers = globalThis.WeakMap ? new (globalThis.WeakMap)() : new (globalT
 const defaults = {threshold: [0]};
 const rootTarget = {};
 
-class IntersectEvent extends _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"] {
-	static init$(){
-		return super.inherited instanceof Function && super.inherited(this);
-	}
-	
-	
-	get ratio(){
-		
-		return this.detail.ratio;
-	}
-	
-	get delta(){
-		
-		return this.detail.delta;
-	}
-	
-	get entry(){
-		
-		return this.detail.entry;
-		
-	}
-	handle$mod(state,args){
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect = {
+	handle: function(state,args) {
 		
 		let obs = state.event.detail.observer;
 		return state.modifiers._observer == obs;
-	}
+	},
 	
-	in$mod(state,args){
+	in: function(state,args) {
 		
-		return state.event.delta > 0;
-	}
+		return state.event.detail.delta > 0;
+	},
 	
-	out$mod(state,args){
+	out: function(state,args) {
 		
-		return state.event.delta < 0;
+		return state.event.detail.delta < 0;
 	}
-}; IntersectEvent.init$();
+};
 
 function callback(name,key){
 	
@@ -2445,7 +2439,9 @@ function callback(name,key){
 			let prev = map.get(entry.target) || 0;
 			let ratio = entry.intersectionRatio;
 			let detail = {entry: entry,ratio: ratio,from: prev,delta: (ratio - prev),observer: observer};
-			let e = new IntersectEvent(name,{bubbles: false,detail: detail});
+			let e = new _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"](name,{bubbles: false,detail: detail});
+			e.delta = detail.delta;
+			e.ratio = detail.ratio;
 			map.set(entry.target,ratio);
 			entry.target.dispatchEvent(e);
 		};
@@ -2553,23 +2549,6 @@ function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 
 
 
-class ResizeEvent extends _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"] {
-	static init$(){
-		return super.inherited instanceof Function && super.inherited(this);
-	}
-	
-	
-	get rect(){
-		
-		return this.detail.contentRect;
-	}
-	
-	get entry(){
-		
-		return this.detail;
-	}
-}; ResizeEvent.init$();
-
 var resizeObserver = null;
 
 function getResizeObserver(){
@@ -2587,7 +2566,8 @@ function getResizeObserver(){
 		for (let $i = 0, $items = iter$(entries), $len = $items.length; $i < $len; $i++) {
 			let entry = $items[$i];
 			
-			let e = new ResizeEvent('resize',{bubbles: false,detail: entry});
+			let e = new _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"]('resize',{bubbles: false,detail: entry});
+			e.rect = entry.contentRect;
 			entry.target.dispatchEvent(e);
 		};
 		return;

@@ -51,26 +51,31 @@ class Worker
 		self
 
 	def log ...params
-		# console.log(...params)
+		console.log(...params)
 		self
 
 	def onmessage e
-		log 'sw inbound message',e
+		# log 'sw inbound message',e
 		if e.data.event == 'file'
 			let path = e.data.path
 			files[path] = e.data
 			if accessedPaths[path]
-				log 'accessed this already...',path
+				# log 'accessed this already...',path
 				# see if it compiles first
 				if path.match(/\.imba/) and !compileImba(e.data)
+					# there were errors -- return the error?
 					return
 
 				let clients = await global.clients.matchAll({})
+				let reloads = []
 				for client in clients
 					let map = clientLoadMap[client.id]
 					if map and map[path]
-						log 'CLIENT HAS ACCESSED THIS',client
-						client.navigate(client.url)
+						reloads.push(client.url)
+						# log 'CLIENT HAS ACCESSED THIS',client
+
+				if reloads.length
+					e.source.postMessage({event: 'reload',urls: reloads})
 			# look through the files that are current
 		return
 

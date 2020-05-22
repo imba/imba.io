@@ -69,7 +69,7 @@ export class File < Entry
 			_model.onDidChangeContent do
 				body = _model.getValue!
 				clearTimeout($send)
-				$send = setTimeout(&,300) do sendToWorker!
+				$send = setTimeout(&,150) do sendToWorker!
 		_model
 	
 	def overwrite body

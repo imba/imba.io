@@ -5,14 +5,14 @@ tag page-section
 	prop revealed = 0
 
 	def render
-		<self.block.relative
+		<self.(d:block rel)
 			# only trigger when we start intersecting
 			@intersect.in=showing
 			# only trigger when we end intersecting
 			@intersect.out=hiding
 			# trigger on multiple thresholds
-			@intersect(0,0.5,1)=(revealed = e.ratio)
-		> <div.absolute.inset-0.p-10 .bg-blue-500=(revealed == 1)> <h1> name
+			@intersect(0,0.5,1)=(revealed = e.detail.ratio)
+		> <div.(d:abs inset:0 p:10) .(bg:blue5)=(revealed == 1)> <h1> name
 
 	def showing e
 		console.log 'showing',name
