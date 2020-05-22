@@ -2132,8 +2132,8 @@ extend$(HTMLSelectElement,{
 	change$(e){
 		
 		let model = this.data;
-		let prev = this.__richValue;
-		this.__richValue = undefined;
+		let prev = this.$$value;
+		this.$$value = undefined;
 		let values = this.getRichValue();
 		
 		if (this.multiple) {
@@ -2167,9 +2167,9 @@ extend$(HTMLSelectElement,{
 	getRichValue(){
 		var $res;
 		
-		if (this.__richValue) {
+		if (this.$$value) {
 			
-			return this.__richValue;
+			return this.$$value;
 		};
 		
 		$res = [];
@@ -2178,7 +2178,7 @@ extend$(HTMLSelectElement,{
 			
 			$res.push(o.richValue);
 		};
-		return this.__richValue = $res;
+		return this.$$value = $res;
 	},
 	
 	syncValue(){
@@ -2196,7 +2196,7 @@ extend$(HTMLSelectElement,{
 				option.selected = sel;
 				if (sel) { vals.push(val) };
 			};
-			this.__richValue = vals;
+			this.$$value = vals;
 		} else {
 			
 			for (let i = 0, $items = iter$(this.options), $len = $items.length; i < $len; i++) {
@@ -2205,7 +2205,7 @@ extend$(HTMLSelectElement,{
 				let val = option.richValue;
 				if (val == model) {
 					
-					this.__richValue = [val];
+					this.$$value = [val];
 					this.selectedIndex = i;break;
 				};
 			};
@@ -2223,15 +2223,15 @@ extend$(HTMLOptionElement,{
 	
 	setRichValue(value){
 		
-		this.__richValue = value;
+		this.$$value = value;
 		return this.value = value;
 	},
 	
 	getRichValue(){
 		
-		if (this.__richValue !== undefined) {
+		if (this.$$value !== undefined) {
 			
-			return this.__richValue;
+			return this.$$value;
 		};
 		return this.value;
 	},
@@ -2241,15 +2241,15 @@ extend$(HTMLTextAreaElement,{
 	
 	setRichValue(value){
 		
-		this.__richValue = value;
+		this.$$value = value;
 		return this.value = value;
 	},
 	
 	getRichValue(){
 		
-		if (this.__richValue !== undefined) {
+		if (this.$$value !== undefined) {
 			
-			return this.__richValue;
+			return this.$$value;
 		};
 		return this.value;
 	},
@@ -2278,7 +2278,7 @@ extend$(HTMLInputElement,{
 			return;
 		};
 		
-		this.__richValue = undefined;
+		this.$$value = undefined;
 		this.data = this.richValue;
 		return imba.commit();
 	},
@@ -2304,15 +2304,23 @@ extend$(HTMLInputElement,{
 	
 	setRichValue(value){
 		
-		this.__richValue = value;
-		return this.value = value;
+		if (this.$$value != value) {
+			
+			this.$$value = value;
+			console.log('setting rich value',value);
+			if (this.value != value) {
+				
+				this.value = value;
+			};
+		};
+		return;
 	},
 	
 	getRichValue(){
 		
-		if (this.__richValue !== undefined) {
+		if (this.$$value !== undefined) {
 			
-			return this.__richValue;
+			return this.$$value;
 		};
 		
 		let value = this.value;

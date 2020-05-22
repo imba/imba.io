@@ -28,6 +28,4 @@ tag app-paint
 	def end e
 		console.log('pointerup',e.pressure,e.pointerId)
 
-console.log "Hello world"
-console.log [1,2,3,4,{a:1,b:2}]
 imba.mount <app-paint>

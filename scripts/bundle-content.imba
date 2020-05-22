@@ -8,6 +8,7 @@ const marked = require '../src/util/markdown'
 const bundle = 'content'
 const root = path.resolve(__dirname,'..','content')
 const dest = path.resolve(__dirname,'..','public')
+const imbasrc = path.resolve(__dirname,'..','node_modules','imba','dist')
 
 const data = {
 	path: ''
@@ -52,6 +53,7 @@ watcher.on('all') do
 			body: fs.readFileSync(abs,'utf8')
 			ext: name.split('.').pop()
 			# path: '/' + src
+			fullPath: abs
 		}
 
 		if name == 'meta.json'

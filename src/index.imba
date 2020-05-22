@@ -15,12 +15,15 @@ import * as sw from './sw/controller'
 tag app-root
 
 	def mount
+		console.log 'mounting app-root'
 		let controller = await sw.setup!
-		console.log 'returned from sw',controller
 
 		for file in files
 			file.sw = controller
 			file.sendToWorker!
+		
+		console.log 'returned from sw',controller,files.filter(do $1.basename == 'basics')
+
 		return
 	
 	get page
@@ -30,7 +33,7 @@ tag app-root
 		if data.example
 			$repl.project = data.example
 		elif data.code	
-			let file = ls('/examples/applications/playground/app.imba')
+			let file = ls('/examples/essentials/playground/app.imba')
 			let code = data.code.replace(/^(?=\<\w)/gm,'imba.mount do ')
 			code = code.replace(/^# ---\n/gm,'')
 			file.overwrite code

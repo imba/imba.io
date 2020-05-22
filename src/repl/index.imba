@@ -3,6 +3,8 @@ import { @watch } from '../decorators'
 import {ls, File, Folder} from '../store'
 import * as sw from '../sw/controller'
 
+import './console'
+
 const editorOptions = {
 	scrollBeyondLastLine: false
 	readOnly: false
@@ -12,8 +14,8 @@ const editorOptions = {
 	wrappingIndent: "same"
 	fontIsMonospace: true
 	hideCursorInOverviewRuler: true,
-	lineNumbersMinChars: 3,
-	lineNumbers: false
+	lineNumbersMinChars: 5,
+	lineNumbers: true
 	fontSize: 13
 	minimap: {enabled: false}
 	renderLineHighlight: 'none'
@@ -47,16 +49,14 @@ tag app-repl
 	
 	def build
 		showing = no
-		logs = []
 		examples = ls('/examples')
 		$iframe = <iframe.inset-0.absolute .(position:absolute width:100% height:100%)>
 		$iframe.replify = do(win)
 			logs = []
 			let orig = win.console.log
 			win.console.log = do(...params)
-				logs.push(params)
-				render!
-		
+				$console.log(...params) if $console
+
 		sw.on 'reload' do
 			console.log 'received reload event from serviceworker',$1,$2
 			try $iframe.contentWindow.location.reload!
@@ -74,12 +74,14 @@ tag app-repl
 	def restore
 		let path = global.sessionStorage.getItem('repl')
 		if let file = (path && ls(path))
+			console.log 'deserialized file / path',path,file
 			currentFile = file
 			show!
 
 	def project-did-set project
 		if project
-			currentFile = project.files[0]
+			if (!currentFile or currentFile.parent != project)
+				currentFile = project.files[0]
 			run!
 
 	def currentFile-did-set file
@@ -137,9 +139,9 @@ tag app-repl
 			p:1 7 l:block bg.hover:gray900-10
 			&.active = bg:gray900-20 t:white bold
 
-	def scrollConsole e
-		let scroller = $consolebody.parentNode
-		scroller.scrollTop = e.rect.height - scroller.offsetHeight
+	def save
+		currentFile.save!
+		self
 
 	def render
 		<self .hidden=!showing>
@@ -155,7 +157,12 @@ tag app-repl
 			<div.dark.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>
 				<header.(color:gray600)>
 					<div.(d:contents cursor:default)> for file in project..children
-						<div.tab @click=open(file) .active=(currentFile == file)> <span> file.name
+						<div.tab @click=open(file) .active=(currentFile == file)>
+							<span.name> file.basename
+							<span.ext.{file.ext}.(d.is-imba:none)> "." + file.ext
+
+					<div.(flex:1)>
+					<button @click=save> "save"
 
 				<div$editor.(l:abs inset:12 0 0)>
 
@@ -164,14 +171,7 @@ tag app-repl
 					<header.(bg:gray200)> <.tab.active> "Preview"
 					<div.(l:rel flex:1)> <div$browserframe.(l:abs inset:0)> $iframe
 				<div.divider>
-				<div$console.(flex-basis:40% l:vflex)>
-					<header.(bg:gray200)>
-						<.tab.active.(flex-grow:1)> "Console"
-						<button @click=(logs = [])> 'Clear'
-					<.content.(l:rel flex:1)>
-						<div.(l:abs block scroll-y inset:0)>
-							<div$consolebody.(l:block) @resize=scrollConsole> for item in logs
-								<div.log-item.(p:1 2 mx:1 bb:gray200 t:gray700)> item.join(", ")
-	
+				<repl-console$console.(flex-basis:40% l:vflex)>
+
 	def rendered
 		monaco

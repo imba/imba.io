@@ -10,13 +10,15 @@ export def setup
 	var reg = await sw.getRegistration('/')
 
 	if reg
-		# console.log 'update service worker'
+		console.log 'update service worker'
 		await reg.update!
 	else
+		console.log 'register service worker'
 		reg = await sw.register('/sw.js')
 
-	global.fetch('/style.css') # just to register this client with the worker
+	global.fetch('/preflight.css') # just to register this client with the worker
 
+	console.log 'loaded service worker'
 	resolver(resolved = sw.controller)
 
 	# sw.addEventListener('message') do(e)

@@ -30,7 +30,7 @@ class Entry
 				return item
 
 	get title
-		data.title or data.name
+		data.title or data.name.replace(/\-/g,' ')
 
 	get basename
 		data.name.replace(/\.\w+$/,'')
@@ -80,7 +80,17 @@ export class File < Entry
 			sendToWorker!
 
 	def sendToWorker
-		sw.postMessage({event: 'file', path: path, body: body})
+		if sw
+			# console.log 'sending file info to worker',path
+			sw.postMessage({event: 'file', path: path, body: body})
+
+	def save
+		let payload = {path: data.fullPath,body:body}
+		let headers = {'Accept': 'application/json','Content-Type': 'application/json'}
+		let req = global.fetch('/save',method:'post',headers:headers, body: JSON.stringify(payload))
+		let res = await req
+		console.log 'req',req,res
+
 
 export class Folder < Entry
 	prop examples

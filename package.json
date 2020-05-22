@@ -18,7 +18,7 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "webpack-dev-server --mode none",
     "build": "webpack --colors --display-modules",
     "build-netlify": "yarn run build && imba src/netlify.imba",
     "watch-content": "imba scripts/bundle-content.imba",
@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@types/node": "^13.11.1",
+    "body-parser": "^1.19.0",
     "chokidar": "^3.3.1",
     "imba": "^2.0.0-alpha.50",
     "imba-document": "^0.1.7",

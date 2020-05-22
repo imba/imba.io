@@ -34,7 +34,13 @@ const accessedPaths = {
 
 def compileImba file
 	try
-		let result = imbac.compile(file.body,{target: 'web', sourcePath: file.path, imbaPath: null})
+		let body = file.body
+		# rewrite certain special things
+		body = body.replace(/# (.*) @run\n(\t*)/g) do(m,text,tabs)
+			m + "console.log('{text}')\n{tabs}console.log "
+		# console.log 'rewritten body',body
+		# ranges will end up at wrong positions
+		let result = imbac.compile(body,{target: 'web', sourcePath: file.path, imbaPath: null})
 		file.js = result.toString!
 	catch e
 		console.log 'error compiling',e
@@ -58,10 +64,10 @@ class Worker
 		# log 'sw inbound message',e
 		if e.data.event == 'file'
 			let path = e.data.path
+			# console.log 'sw got file',path
 			files[path] = e.data
+			
 			if accessedPaths[path]
-				# log 'accessed this already...',path
-				# see if it compiles first
 				if path.match(/\.imba/) and !compileImba(e.data)
 					# there were errors -- return the error?
 					return
@@ -81,10 +87,12 @@ class Worker
 
 	def oninstall e
 		log e
+		# console.log 'install sw'
 		e.waitUntil global.skipWaiting!
 	
 	def onactivate e
 		log e
+		# console.log 'activate sw'
 		e.waitUntil global.clients.claim!
 
 	def onfetch e
@@ -94,6 +102,8 @@ class Worker
 	
 		if url.pathname.indexOf('/repl/') == -1
 			return
+
+		# console.log 'onfetch',e.request.url
 
 		let path = url.pathname.replace(/^\/repl/,'') 
 		let ext = path.split('.').pop()
@@ -109,6 +119,7 @@ class Worker
 			accessedPaths[path] = yes
 
 			if !file and ext == 'html'
+				# console.log 'returning mocked html page!'
 				file = {body: indexTemplate.replace(/index\.imba/g,"{basename}.imba")}
 
 			if file

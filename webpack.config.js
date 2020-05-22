@@ -1,4 +1,19 @@
 var path = require('path');
+var fs = require('fs');
+
+var server = function(app, server) {
+	return;
+	var bodyParser = require('body-parser');    
+    app.use(bodyParser.json());
+	app.post('/save', bodyParser.json(), function(req, res) {
+		let payload = req.body;
+		console.log('returned from post save',req.body);
+		if(payload.path && payload.body){
+			fs.writeFileSync(payload.path,payload.body);
+		}
+		res.json({ custom: 'response' });
+	});
+}
 
 module.exports = [{
 	entry: {
@@ -23,6 +38,7 @@ module.exports = [{
 	devServer: {
 		contentBase: path.resolve(__dirname, 'public'),
 		watchContentBase: true,
+		setup: server,
 		historyApiFallback: {
 			index: '/index.html'
 		},

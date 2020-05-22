@@ -191,7 +191,7 @@ export const theme =
 		'editor.background': '#@background'
 		'editorGutter.background': '#@background'
 		'editor.selectionBackground': '#30455f' # #33393f
-		'editorLineNumber.foreground': '#5D6E7A'
+		'editorLineNumber.foreground': '#3c4e5d'
 		'editorWidget.background': '#20262a'
 		'editorWidget.border': '#20262a'
 		'list.focusBackground': '#33393f'
