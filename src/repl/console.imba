@@ -1,30 +1,52 @@
-
-
-def array items
-	<span.array> for item in items
-		<span> any(item)
-
-def any item,depth = 0
-	return null if depth > 2
+def any item,context,depth = 0
+	return null if depth > 3
 	
 	let typ = typeof item
 	if Array.isArray(item)
-		<span.array> for child in item
-			<span.member> any(child,depth + 1)
+		<span.{depth == 0 ? 'part' : 'array'}> for child in item
+			<span.member> any(child,context,depth + 1)
 
 	elif typ == 'string'
 		<span.string> item
 	elif typ == 'number'
 		<span.number> item
+	elif item isa context.Element
+		<log-tag.element context=context data=item>
+	elif item isa context.Text
+		<span.string.textnode> item.textContent
+		# <span.element> <log-tag> "element" + String(item)
 	elif item == null
 		<span.null> 'null'
 	elif typ == 'object'
 		<span.object> for own k,v of item
 			<span.pair>
 				<span.key> k
-				<span.value> any(v,depth + 1)
+				<span.value> any(v,context,depth + 1)
 	else
 		<span.any.{typ}> String(item)
+
+tag log-tag
+	# css & = color:blue7-50 prefix:'<' suffix:'>'
+	css .tag = color:blue7-50 prefix:'<' suffix:'>'
+	css .name = color:blue7
+	css .attrname = color:blue6 ml:1
+	css .attrvalue = prefix:"="
+	css .attrstring = color:indigo6 prefix:'"' suffix:'"'
+	css .child = mx:1
+
+	prop context
+
+	def render
+		# collapsed vs not
+		<self>
+			<span.tag>
+				<span.name> data.nodeName.toLowerCase!
+				<span.attrs> for part in Array.from(data.attributes)
+					<span.attr>
+						<span.attrname> part.name
+						<span.attrvalue> <span.attrstring> part.value
+			<span.children> for item in data.childNodes
+				<span.child> any(item,context,1)
 
 tag repl-console-item
 
@@ -34,37 +56,34 @@ tag repl-console-item
 				<span.arg> any(item)
 
 tag repl-console
-	css span = font-weight:500 color:gray5 t:md/1.2
+	css span = font-weight:500 t:md/1.2
 	
 	css .item = d:block p:1 2 mx:1 bb:gray2 t:gray7
 	css .heading = d:block p:1 2 0 mx:1 t:gray5 sm 600 mb:-1
 
-	css .string = color:green7
-		&:before = content: "'"
-		&:after = content: "'"
-
+	css .string = color:green7 prefix:"'" suffix:"'"
 	css .number = color:blue6
 	css .key = color:indigo6
 	css .arg = mr:1
+	css .array = prefix:'[ ' suffix:' ]'
+	css .array > * + * = prefix:', '
 
-	css .array:before = content:'[ '
-	css .array:after = content:' ]'
-	css .array > * + *:before = content:', '
-
+	css .textnode = color:gray6
 
 	css .object
-		&:before = content: '{ '
-		&:after = content: ' }'
-		& .key + .value:before = content: ': '
-		& .pair + .pair:before = content: ', '
+		prefix:'{ ' suffix:' }'
+		& .key + .value = prefix: ': '
+		& .pair + .pair = prefix: ', '
 
 	prop native
+	prop context
 
 	def clear
 		$body.innerHTML = ''
 
 	def log ...params
-		$body.appendChild <repl-console-item[params]>
+		# $body.appendChild <repl-console-item[params]>
+		$body.appendChild <div.item> any(params,context,0)
 
 	def info ...params
 		# special case

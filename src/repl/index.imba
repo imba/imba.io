@@ -54,6 +54,7 @@ tag app-repl
 		$iframe.replify = do(win)
 			let {log,info} = win.console.log
 			if $console
+				$console.context = win
 				$console.native = win.console
 				win.console.log = $console.log.bind($console)
 				win.console.info = $console.info.bind($console)
