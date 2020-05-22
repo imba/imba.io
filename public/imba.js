@@ -2262,9 +2262,13 @@ extend$(HTMLTextAreaElement,{
 	
 	end$(){
 		
-		return this.value = this.data;
+		if (this.$$bound && this.value != this.data) {
+			
+			return this.value = this.data;
+		};
 	},
 });
+
 
 extend$(HTMLInputElement,{
 	
@@ -2307,7 +2311,7 @@ extend$(HTMLInputElement,{
 		if (this.$$value != value) {
 			
 			this.$$value = value;
-			console.log('setting rich value',value);
+			
 			if (this.value != value) {
 				
 				this.value = value;
