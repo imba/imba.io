@@ -11,7 +11,7 @@ def any item,context,depth = 0
 	elif typ == 'number'
 		<span.number> item
 	elif item isa context.Element
-		<log-tag.element context=context data=item>
+		<log-tag.element context=context depth=depth data=item>
 	elif item isa context.Text
 		<span.string.textnode> item.textContent
 		# <span.element> <log-tag> "element" + String(item)
@@ -36,13 +36,17 @@ tag log-tag
 	css .more = color:gray5 px:1 radius:2 bg.hover:gray1 cursor:pointer
 
 	prop context
-	prop expanded = no
+	prop depth
+	prop expanded = undefined
 
 	def toggle
 		expanded = !expanded
 		render!
 
 	def render
+		if expanded == undefined and depth < 2
+			expanded = yes
+
 		# collapsed vs not
 		let items = data.childNodes
 		let text = items.length == 1 and items[0].nodeType == 3
@@ -70,10 +74,8 @@ tag repl-console-item
 
 tag repl-console
 	css & = cursor:default
-	css span = font-weight:500 t:md/1.2
-
-	css .item = d:block p:1 2 mx:1 bb:gray2 t:gray7
-	css .heading = d:block p:1 2 0 mx:1 t:gray5 sm 600 mb:-1
+	css .item = d:block p:2 3 mx:1 bb:gray2 t:gray6 md/1.4 500
+	css .heading = d:block p:1 3 0 mx:1 t:gray5 sm 600 mb:-2
 
 	css .string = color:green7 prefix:"'" suffix:"'"
 	css .number = color:blue6
