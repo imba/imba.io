@@ -32,21 +32,34 @@ tag log-tag
 	css .attrname = color:blue6 ml:1
 	css .attrvalue = prefix:"="
 	css .attrstring = color:indigo6 prefix:'"' suffix:'"'
-	css .child = mx:1
+	css .child = mx:1 d:block
+	css .more = color:gray5 px:1 radius:2 bg.hover:gray1 cursor:pointer
 
 	prop context
+	prop expanded = no
+
+	def toggle
+		expanded = !expanded
+		render!
 
 	def render
 		# collapsed vs not
+		let items = data.childNodes
+		let text = items.length == 1 and items[0].nodeType == 3
 		<self>
-			<span.tag>
+			<span.tag @click=toggle>
 				<span.name> data.nodeName.toLowerCase!
 				<span.attrs> for part in Array.from(data.attributes)
 					<span.attr>
 						<span.attrname> part.name
 						<span.attrvalue> <span.attrstring> part.value
-			<span.children> for item in data.childNodes
-				<span.child> any(item,context,1)
+			if expanded and items.length and !text
+				<span.children.(d:block ml:3)> for item in data.childNodes
+					<span.child> any(item,context,1)
+			elif text
+				<span.(ml:1)> <span.string.textnode> items[0].textContent
+			elif items.length
+				<span.more @click=toggle> "..."
 
 tag repl-console-item
 
@@ -56,8 +69,9 @@ tag repl-console-item
 				<span.arg> any(item)
 
 tag repl-console
+	css & = cursor:default
 	css span = font-weight:500 t:md/1.2
-	
+
 	css .item = d:block p:1 2 mx:1 bb:gray2 t:gray7
 	css .heading = d:block p:1 2 0 mx:1 t:gray5 sm 600 mb:-1
 
@@ -67,7 +81,6 @@ tag repl-console
 	css .arg = mr:1
 	css .array = prefix:'[ ' suffix:' ]'
 	css .array > * + * = prefix:', '
-
 	css .textnode = color:gray6
 
 	css .object

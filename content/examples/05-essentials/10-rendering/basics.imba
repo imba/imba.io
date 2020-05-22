@@ -6,6 +6,9 @@ const data = {type: 'item', state: 'busy'}
 # set attributes @log
 <div title="welcome"> "Hello"
 
+# dynamic attributes @log
+<div title=data.type> "{data.type} is {data.state}"
+
 # adding classes @log
 <div.large.panel> "Hello"
 
@@ -14,3 +17,9 @@ const data = {type: 'item', state: 'busy'}
 
 # interpolated dynamic classes @log
 <div.{data.type}.is-{data.state}>
+
+# children are indented @log
+<ul.list>
+	<li> "one"
+	<li> "two"
+	<li> "three"

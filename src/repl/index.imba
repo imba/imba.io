@@ -52,12 +52,18 @@ tag app-repl
 		examples = ls('/examples')
 		$iframe = <iframe.inset-0.absolute .(position:absolute width:100% height:100%)>
 		$iframe.replify = do(win)
+			$doc = $iframe.contentWindow.document
 			let {log,info} = win.console.log
 			if $console
 				$console.context = win
 				$console.native = win.console
 				win.console.log = $console.log.bind($console)
 				win.console.info = $console.info.bind($console)
+
+		$iframe.onload = do
+			try
+				let element = $doc.querySelector('body :not(script)')
+				flags.toggle('empty-preview',!element)
 
 		sw.on 'reload' do reload!
 		self
@@ -79,7 +85,6 @@ tag app-repl
 	def restore
 		let path = global.sessionStorage.getItem('repl')
 		if let file = (path && ls(path))
-			console.log 'deserialized file / path',path,file
 			currentFile = file
 			show!
 
@@ -127,6 +132,10 @@ tag app-repl
 	css .light .tab = t.hover:gray600 t.is-active:gray600 undecorated
 	css .underlay = l:fixed inset:0 z-index:-1 bg:hsla(214,35%,83%,0.6) d.in-hidden:none
 
+	css &.empty-preview
+		& $console = flex-grow:1
+		& $preview = display:none
+
 	css $sidebar
 		bg:gray800 w:240px cursor:default l:rel block t:gray500
 
@@ -172,7 +181,7 @@ tag app-repl
 				<div$editor.(l:abs inset:12 0 0)>
 
 			<div.light.(l:vflex flex:1 1 30% bg:white)>
-				<div.(l:vflex flex:1)>
+				<div$preview.(l:vflex flex:1)>
 					<header.(bg:gray200)> <.tab.active> "Preview"
 					<div.(l:rel flex:1)> <div$browserframe.(l:abs inset:0)> $iframe
 				<div.divider>
