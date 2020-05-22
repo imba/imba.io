@@ -21,6 +21,7 @@ const indexTemplate = "
 		<link href='/preflight.css' rel='stylesheet'>
     </head>
     <body>
+		<script type='module' src='/repl/examples/helpers.imba'></script>
         <script type='module' src='index.imba'></script>
     </body>
 </html>"
@@ -36,9 +37,18 @@ def compileImba file
 	try
 		let body = file.body
 		# rewrite certain special things
-		body = body.replace(/# (.*\s)?@log\n(\t*)/g) do(m,text,tabs)
-			let out = "console.log "
-			out = "console.info('{text}')\n{tabs}{out}" if text
+		body = body.replace(/# @show (.*)\n(\t*)/g) do(m,text,tabs)
+			m + "$show '{text}', "
+
+		body = body.replace(/# @log (.*)\n(\t*)/g) do(m,text,tabs)
+			m + "$log '{text}', "
+
+		console.log 'rewrote file',body
+
+		body = body.replace(/# (.*\s)?@(log|render)\n(\t*)/g) do(m,text,type,tabs)
+			# let out = type == 'render' ? "console.log imba.mount " : "console.log "
+			let out = "${type} "
+			out += "'{text}', " if text
 			m + out
 		# console.log 'rewritten body',body
 		# ranges will end up at wrong positions
@@ -134,6 +144,7 @@ class Worker
 					yes
 				elif ext == 'imba'
 					body = file.js or compileImba(file)
+					# body = 'import "/repl/examples/helpers.imba";\n' + body
 					body = 'import "/imba.js";\n' + body
 
 				let resp = Response.new(body,status: status,headers: {'Content-Type': mime})

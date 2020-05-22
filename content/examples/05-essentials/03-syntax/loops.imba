@@ -1,18 +1,18 @@
 const array = [1,2,3]
 const object = {a: 'one', b: 'two', c: 'three'}
 
-# basic for in @log
+# @log basic for in
 for num in array
 	num * 2
 
-# for in ranges - exclusive @log
+# @log for in ranges - exclusive
 for item in [0...5]
 	item
 
-# iterate through keys of object @log
+# @log iterate through keys of object
 for own key,value of object
 	[key,value]
 
-# for: native iterator @log
+# @log for native iterator:
 for str of 'string'
 	str

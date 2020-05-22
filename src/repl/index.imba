@@ -53,6 +53,9 @@ tag app-repl
 		$iframe = <iframe.inset-0.absolute .(position:absolute width:100% height:100%)>
 		$iframe.replify = do(win)
 			$doc = $iframe.contentWindow.document
+			$win = win # $iframe.contentWindow
+			$doc = $win.document
+
 			let {log,info} = win.console.log
 			if $console
 				$console.context = win

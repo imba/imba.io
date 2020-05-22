@@ -14,7 +14,6 @@ def any item,context,depth = 0
 		<log-tag.element context=context depth=depth data=item>
 	elif item isa context.Text
 		<span.string.textnode> item.textContent
-		# <span.element> <log-tag> "element" + String(item)
 	elif item == null
 		<span.null> 'null'
 	elif typ == 'object'
@@ -75,7 +74,7 @@ tag repl-console-item
 tag repl-console
 	css & = cursor:default
 	css .item = d:block p:2 3 mx:1 bb:gray2 t:gray6 md/1.4 500
-	css .heading = d:block p:1 3 0 mx:1 t:gray5 sm 600 mb:-2
+	css .heading = d:block p:1 3 0 mx:1 t:gray6 sm 500 mb:-2
 
 	css .string = color:green7 prefix:"'" suffix:"'"
 	css .number = color:blue6

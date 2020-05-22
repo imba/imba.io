@@ -1,24 +1,24 @@
 const data = {type: 'item', state: 'busy'}
 
-# create dom element @log
+# @log create dom element
 <div> "Hello world"
 
-# set attributes @log
+# @log set attributes
 <div title="welcome"> "Hello"
 
-# dynamic attributes @log
+# @log dynamic attributes
 <div title=data.type> "{data.type} is {data.state}"
 
-# adding classes @log
+# @log adding classes
 <div.large.panel> "Hello"
 
-# adding dynamic classes @log
+# @log adding dynamic classes
 <div.{data.type}>
 
-# interpolated dynamic classes @log
+# @log interpolated dynamic classes
 <div.{data.type}.is-{data.state}>
 
-# children are indented @log
+# @log indenting children
 <ul.list>
 	<li> "one"
 	<li> "two"

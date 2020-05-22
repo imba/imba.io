@@ -1,9 +1,9 @@
-# basic strings @log
+# @log basic strings
 'simple string'
 
-# interoplated strings with {} @log
+# @log interoplated strings with {}
 "running imba version: {imba.version}"
 
-# template strings @log
+# @log template strings
 `template string {imba.version}`
 
