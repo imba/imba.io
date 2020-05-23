@@ -7,5 +7,5 @@ and tweaking, you might see the need for
 css .button
 	bg:#4299e1 p:12px ta:center color:white radius:5px
 
-# Item with .button class @render
+# @show Item with .button class
 <div.button> "Button"

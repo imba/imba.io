@@ -133,8 +133,8 @@ tag app-document
 			width.first: 30px;
 
 		& .code-inline:only-child
-			font-size: 0.85em
-			padding: 0.125em 5px
+			text:xs/1.4
+			px:1 py:0
 			margin: 0px
 			vertical-align: top
 		
@@ -144,7 +144,7 @@ tag app-document
 			padding-left: 0px;
 			padding-right: 0px;
 
-		& embedded-app-example
+		& embedded-app-example2
 			display: inline
 			background: transparent
 			color: blue500
@@ -171,14 +171,16 @@ tag embedded-app-document
 		innerHTML = data.html if data
 
 tag embedded-app-example
+	css a =
+		l:flex center cursor:pointer radius:2 min-height:12 bg:blue2-50 
+		t:500 xs p:0.5
+		prefix: "☶ " t.before:14px 400 pr.before:1
+		&:hover = bg:blue2 t:undecorated
 	def hydrate
 		data = ls(dataset.path)
 		name = textContent
 		innerHTML = ''
 		self
 
-	def run
-		emit('run',{example: data})
-
 	def render
-		<self.(l:flex center cursor:pointer radius:2 min-height:12 bg:blue200) @click.run> <span> "Show example"
+		<self.(d:contents) @click.run> <a href=dataset.path> "TRY"

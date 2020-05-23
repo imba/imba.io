@@ -554,13 +554,16 @@ extend$(Element,{
 		
 	},
 	get flags(){
-		var self = this;
 		
 		if (!(this.$flags)) {
 			
+			
 			this.$flags = new _internal_flags__WEBPACK_IMPORTED_MODULE_0__["Flags"](this);
-			this.flag$ = function(str) { return self.flagSync$(self.__extflags = str); };
-			this.flagSelf$ = function(str) { return self.flagSync$(self.__ownflags = str); };
+			if (this.flag$ == Element.prototype.flag$) {
+				
+				this.flags$ext = this.className;
+			};
+			this.flagDeopt$();
 		};
 		return this.$flags;
 	},
@@ -569,23 +572,33 @@ extend$(Element,{
 		
 		this.className = str;
 		return;
+		
+	},
+	flagDeopt$(){
+		var self = this;
+		
+		this.flag$ = function(str) { return self.flagSync$(self.flags$ext = str); };
+		this.flagSelf$ = function(str) { return self.flagSync$(self.flags$own = str); };
+		return;
 	},
 	
 	flagSelf$(str){
-		var self = this;
 		
 		
 		
-		let existing = (this.__extflags || (this.__extflags = this.className));
-		this.flag$ = function(str) { return self.flagSync$(self.__extflags = str); };
-		this.flagSelf$ = function(str) { return self.flagSync$(self.__ownflags = str); };
-		this.className = (existing ? (existing + ' ') : '') + (this.__ownflags = str);
-		return;
+		this.flagDeopt$();
+		return this.flagSelf$(str);
+		
+		
+		
+		
+		
+		
 	},
 	
 	flagSync$(){
 		
-		return this.className = ((this.__extflags || '') + ' ' + (this.__ownflags || '') + ' ' + (this.$flags || ''));
+		return this.className = ((this.flags$ext || '') + ' ' + (this.flags$own || '') + ' ' + (this.$flags || ''));
 	},
 	
 	open$(){
@@ -692,16 +705,11 @@ imba.tags = new ImbaElementRegistry();
 
 
 
-imba.createElement = function (name,bitflags,parent,flags,text,sfc){
+imba.createElement = function (name,bitflags,parent,flags,text){
 	
 	var el = document.createElement(name);
 	
 	if (flags) { el.className = flags };
-	
-	if (sfc) {
-		
-		el.setAttribute('data-' + sfc,'');
-	};
 	
 	if (text !== null) {
 		
@@ -716,7 +724,7 @@ imba.createElement = function (name,bitflags,parent,flags,text,sfc){
 	return el;
 };
 
-imba.createComponent = function (name,bitflags,parent,flags,text,sfc){
+imba.createComponent = function (name,bitflags,parent,flags,text){
 	
 	
 	var el;
@@ -735,19 +743,16 @@ imba.createComponent = function (name,bitflags,parent,flags,text,sfc){
 	};
 	
 	
-	if (flags) { el.className = flags };
-	
-	if (sfc) {
+	if (flags) {
 		
-		el.setAttribute('data-' + sfc,'');
+		el.flag$(flags);
 	};
-	
 	return el;
 };
 
 
 
-imba.createSVGElement = function (name,bitflags,parent,flags,text,sfc){
+imba.createSVGElement = function (name,bitflags,parent,flags,text){
 	
 	var el = document.createElementNS("http://www.w3.org/2000/svg",name);
 	if (flags) {
@@ -809,7 +814,7 @@ class Flags {
 	
 	toggle(ref,bool){
 		
-		if (bool == undefined) { bool = !this.contains(ref) };
+		if (bool === undefined) { bool = !this.contains(ref) };
 		return bool ? this.add(ref) : this.remove(ref);
 	}
 	
@@ -1739,6 +1744,12 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 		
 		this.__F |= (1 | 2);
 		return this;
+		
+	}
+	flag$(str){
+		
+		this.className = this.flags$ext = str;
+		return;
 	}
 	
 	
@@ -1909,6 +1920,7 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 		
 		if (!(flags & 2)) {
 			
+			this.flags$ext = this.className;
 			this.hydrate();
 			this.__F |= 2;
 			this.commit();

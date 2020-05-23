@@ -112,6 +112,7 @@ export def ls path
 	unless hits[path]
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
 		let item = fs[parts.shift()]
+		return null unless item
 		
 		for part,i in parts
 			let child = item.childByName(part)

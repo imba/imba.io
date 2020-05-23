@@ -48,11 +48,11 @@ tag app-repl
 		$monaco
 	
 	def build
-		showing = no
 		examples = ls('/examples')
+		$placeholder = self # for the router
+	
 		$iframe = <iframe.inset-0.absolute .(position:absolute width:100% height:100%)>
 		$iframe.replify = do(win)
-			$doc = $iframe.contentWindow.document
 			$win = win # $iframe.contentWindow
 			$doc = $win.document
 
@@ -82,15 +82,6 @@ tag app-repl
 		url = `{project.path}/{index ? index.name : app.basename + '.html'}`
 		self
 
-	def serialize
-		global.sessionStorage.setItem('repl',currentFile and currentFile.path)
-
-	def restore
-		let path = global.sessionStorage.getItem('repl')
-		if let file = (path && ls(path))
-			currentFile = file
-			show!
-
 	def project-did-set project
 		if project
 			if (!currentFile or currentFile.parent != project)
@@ -100,35 +91,37 @@ tag app-repl
 	def currentFile-did-set file
 		if monaco and file
 			monaco.setModel(file.model)
+
 		project = file.parent
 		if !project.childByName('index.html') and !project.childByName('app.imba')
 			run!
-		serialize!
 
 	def url-did-set url
-		$iframe.src = `/repl{url}`
+		try
+			$iframe.contentWindow.location.replace(`/repl{url}`)
+		catch e
+			$iframe.src = `/repl{url}`
 
 	def relayout
 		if $monaco
 			$monaco.layout(height: $editor.offsetHeight, width: $editor.offsetWidth)
 
-	def awaken
-		await yes
-		restore!
+	def leave
+		router.go($parent.guide.path)
 
-	def hide
-		showing = no
-		global.sessionStorage.removeItem('repl')
-
-	def show
-		showing = yes
-
-	def open item
+	def routeDidResolve match, prev,last
+		let item = ls(match.url)
 		if item isa File
 			currentFile = item
 		elif item isa Folder
-			project = item
+			if item.files[0]
+				router.go(item.files[0].path)
+				render!
 
+	def show
+		router.go(currentFile ? currentFile.path : '/examples/essentials/playground/app.imba')
+
+	css & = overscroll-behavior: contain
 	css header = p:2 3 d:flex ai:center t:sm 500 gray600
 	css .tab = radius:2 py:1 px:2 t.hover:gray500 t.is-active:blue400
 	css .dark .tab = bg.is-active:gray800 shadow.is-active:sm
@@ -161,20 +154,20 @@ tag app-repl
 		self
 
 	def render
-		<self .hidden=!showing>
-			<div.underlay @click=hide @wheel.stop.prevent>
+		<self>
+			<div.underlay @click=leave @wheel.stop.prevent>
 			<div$sidebar>
 				<.scroller>
-					<div$back.(l:block p:3 5 t:sm 500 blue400 t.hover:underline) @click=hide> "⇦ back to site"
+					<div$back.(l:block p:3 5 t:sm 500 blue400 t.hover:underline) @click=leave> "⇦ back to site"
 					<div.items> for child in examples.children
 						<h5.(p:1 7 t:xs gray600 bold)> child.title.toUpperCase!
 						<div.(pb:5)> for item in child.children
-							<a.item @click=open(item) .active=(project == item)> item.title
+							<a.item route-to.sticky=item.path> item.title
 
 			<div.dark.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>
 				<header.(color:gray600)>
 					<div.(d:contents cursor:default)> for file in project..children
-						<div.tab @click=open(file) .active=(currentFile == file)>
+						<a.tab route-to.replace=file.path data-route=file.path>
 							<span.name> file.basename
 							<span.ext.{file.ext}.(d.is-imba:none)> "." + file.ext
 

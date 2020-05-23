@@ -40,7 +40,10 @@ module.exports = [{
 		watchContentBase: true,
 		setup: server,
 		historyApiFallback: {
-			index: '/index.html'
+			index: '/index.html',
+			rewrites: [
+				{ from: /^\/(guides|examples)/, to: '/index.html' }
+			]
 		},
 		compress: true,
 		port: 9000,
