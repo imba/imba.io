@@ -16,14 +16,11 @@ tag app-root
 	prop guide
 
 	def mount
-		console.log 'mounting app-root'
 		let controller = await sw.setup!
 
 		for file in files
 			file.sw = controller
 			file.sendToWorker!
-		
-		console.log 'returned from sw',controller,files.filter(do $1.basename == 'basics')
 
 		return
 	

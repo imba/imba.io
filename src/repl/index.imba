@@ -122,6 +122,7 @@ tag app-repl
 		router.go(currentFile ? currentFile.path : '/examples/essentials/playground/app.imba')
 
 	css =
+		bg:#29313f
 		overscroll-behavior: contain
 		l:flex clip
 		$sidebar-width:200px
