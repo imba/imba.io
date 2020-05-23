@@ -159,9 +159,9 @@ tag app-repl
 			<div$sidebar>
 				<.scroller>
 					<div$back.(l:block p:3 5 t:sm 500 blue400 t.hover:underline) @click=leave> "⇦ back to site"
-					<div.items> for child in examples.children
+					<div.items> for child in examples.folders
 						<h5.(p:1 7 t:xs gray600 bold)> child.title.toUpperCase!
-						<div.(pb:5)> for item in child.children
+						<div.(pb:5)> for item in child.folders
 							<a.item route-to.sticky=item.path> item.title
 
 			<div.dark.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>

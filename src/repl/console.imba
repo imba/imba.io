@@ -74,6 +74,7 @@ tag repl-console-item
 tag repl-console
 	css & = cursor:default
 	css .item = d:block p:2 3 mx:1 bb:gray2 t:gray6 md/1.4 500
+	css .part > .member = mr:1
 	css .heading = d:block p:1 3 0 mx:1 t:gray6 sm 500 mb:-2
 
 	css .string = color:green7 prefix:"'" suffix:"'"
@@ -96,7 +97,6 @@ tag repl-console
 		$body.innerHTML = ''
 
 	def log ...params
-		# $body.appendChild <repl-console-item[params]>
 		$body.appendChild <div.item> any(params,context,0)
 
 	def info ...params
