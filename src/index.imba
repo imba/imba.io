@@ -53,7 +53,7 @@ tag app-root
 		transition: 250ms cubic
 	
 	css $repl
-		l:fixed flex clip inset:0 top:0 z-index:2000 radius:0 shadow:xl
+		l:fixed clip inset:0 top:0 z-index:2000 radius:0 shadow:xl
 		transition: transform 250ms quint-out y:100%
 		&.routed = y:0%
 

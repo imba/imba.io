@@ -121,7 +121,13 @@ tag app-repl
 	def show
 		router.go(currentFile ? currentFile.path : '/examples/essentials/playground/app.imba')
 
-	css & = overscroll-behavior: contain
+	css =
+		overscroll-behavior: contain
+		l:flex clip
+		$sidebar-width:200px
+		pl: $sidebar-width
+
+
 	css header = p:2 3 d:flex ai:center t:sm 500 gray600
 	css .tab = radius:2 py:1 px:2 t.hover:gray500 t.is-active:blue400
 	css .dark .tab = bg.is-active:gray800 shadow.is-active:sm
@@ -133,7 +139,9 @@ tag app-repl
 		& $preview = display:none
 
 	css $sidebar
-		bg:gray800 w:240px cursor:default l:rel block t:gray500
+		bg:gray800 w:$sidebar-width cursor:default l:abs block t:gray500
+		top:0 left:0 height:100% z-index:100
+		transition: 250ms cubic
 
 		&:after
 			content: ' '
@@ -149,36 +157,47 @@ tag app-repl
 			p:1 7 l:block bg.hover:gray900-10
 			&.active = bg:gray900-20 t:white bold
 
+	css @not-md
+		pl:0
+		& $sidebar = bg:gray8-95 x:-100% x.focus-within:0px
+
+	css @not-lg
+		l:vflex
+	
+	css @lg
+		l:hflex
+
 	def save
 		currentFile.save!
 		self
 
 	def render
 		<self>
-			<div.underlay @click=leave @wheel.stop.prevent>
-			<div$sidebar>
-				<.scroller>
-					<div$back.(l:block p:3 5 t:sm 500 blue400 t.hover:underline) @click=leave> "⇦ back to site"
+			<div$sidebar tabIndex=-1>
+				<.scroller.(pt:3)>
+					<div$back.(l:block px:5 pb:3 t:sm 500 blue4 t.hover:underline l.not-lg:hidden) @click=leave> "⇦ back to site"
 					<div.items> for child in examples.folders
-						<h5.(p:1 7 t:xs gray600 bold)> child.title.toUpperCase!
+						<h5.(p:1 7 t:xs gray6 bold uppercase)> child.title
 						<div.(pb:5)> for item in child.folders
 							<a.item route-to.sticky=item.path> item.title
 
 			<div.dark.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>
-				<header.(color:gray600)>
+				<header.(color:gray6)>
+					<button.(d.md:hidden f:bold color.hover:blue5 px:1 mr:2) @click.stop.prevent=$sidebar.focus!> "☰"
 					<div.(d:contents cursor:default)> for file in project..children
 						<a.tab route-to.replace=file.path data-route=file.path>
 							<span.name> file.basename
 							<span.ext.{file.ext}.(d.is-imba:none)> "." + file.ext
 
 					<div.(flex:1)>
-					<button @click=save> "save"
+					# <button @click=save> "save"
+					<button.(d.lg:hidden f:bold color.hover:blue5) @click=leave> "✕"
 
 				<div$editor.(l:abs inset:12 0 0)>
 
-			<div.light.(l:vflex flex:1 1 30% bg:white)>
+			<div$drawer.light.(l:vflex flex:1 1 40% bg:white)>
 				<div$preview.(l:vflex flex:1)>
-					<header.(bg:gray200)> <.tab.active> "Preview"
+					<header.(bg:gray2)> <.tab.active> "Preview"
 					<div.(l:rel flex:1)> <div$browserframe.(l:abs inset:0)> $iframe
 				<div.divider>
 				<repl-console$console.(flex-basis:40% l:vflex)>
