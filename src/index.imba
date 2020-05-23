@@ -27,7 +27,7 @@ tag app-root
 		return
 	
 	get page
-		ls(document.location.pathname) or ls('/guides')
+		ls(document.location.pathname) or ls('/guides/introduction/overview')
 
 	def runCodeBlock data
 		if data.example
@@ -65,6 +65,7 @@ tag app-root
 
 
 	def render
+
 		<self.(l:contents) @run=runCodeBlock(e.detail)>
 			<app-repl$repl id='repl' fs=fs>
 			# <app-header$header.(l:sticky top:0 height:16)>
