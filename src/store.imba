@@ -65,10 +65,10 @@ export class File < Entry
 		files.push(self)
 
 	get first
-		self
+		children[0] ? children[0].first : self
 
 	get last
-		self
+		children[children.length - 1] ? children[children.length - 1].last : self
 	
 	get html
 		data.html

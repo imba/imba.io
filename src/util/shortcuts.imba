@@ -6,6 +6,10 @@ const KeyLabels =
 	option: '⌥'
 	alt: '⎇'
 	del: '⌦'
+	left: '←' # '⇐' # '←'
+	right: '→' # '→'
+	up: '↑'
+	down: '↓'
 	backspace: '⌫'
 
 const Globals = {
@@ -111,7 +115,6 @@ class HotKeyManager
 
 				if (/command|cmd|ctrl|shift/).test(combo) or params.prevent
 					e.preventDefault!
-				console.log 'emit click!'
 				receiver.click!
 			
 			unless params.bubble
@@ -123,7 +126,6 @@ const manager = HotKeyManager.instance
 extend tag element
 
 	set hotkey value
-		console.log 'added hotkey!!!',this,value
 		$hotkey = value
 		let mods = hotkey__ ||= {}
 		let identifiers = []
@@ -133,8 +135,9 @@ extend tag element
 			manager.register(combo,mods)
 			identifiers.push(manager.comboIdentifier(combo))
 		
+		let label = manager.comboLabel(value)
 		dataset.hotkey = identifiers.join(' ')
-		console.log 'set hotkey',identifiers,value
+		style.setProperty('--shortcut',"'{label}'")
 
 	get hotkey
 		$hotkey
