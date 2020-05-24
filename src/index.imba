@@ -63,7 +63,7 @@ tag app-root
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
 
 		# redirect home somehow?
-		if path.indexOf('/guides/') == 0 or path == '/'
+		if path.indexOf('/guides/') == 0 or path == '/' or path == '/index.html'
 			guide = ls(path) or guide
 
 		try document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
