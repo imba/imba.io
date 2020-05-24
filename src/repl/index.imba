@@ -226,6 +226,7 @@ tag app-repl
 					<button.(d.md:hidden f:bold lg color.hover:blue5 px:1 mr:2 mt:-2px) @click.stop.prevent=$sidebar.focus!> "☰"
 					<span hotkey='left' @click=goPrev>
 					<span hotkey='right' @click=goNext>
+					<span hotkey='esc' @click=leave>
 					<div.(d:flex wrap cursor:default)> for file in project..children
 						<a.tab route-to.replace=file.path .dirty=file.dirty>
 							<span.circ>

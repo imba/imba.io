@@ -56,6 +56,7 @@ tag app-root
 		cursor:pointer bg:teal300-90 t:teal800 bold b:teal400-20 shadow:md
 		y.hover:-2px shadow.hover:lg bg.hover:teal300
 		transition: 100ms cubic-out
+		&:after = opacity: 0.7 text:xs content: " " $shortcut
 
 	def go path
 		# console.log 'go to path',path
@@ -83,7 +84,7 @@ tag app-root
 			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
 			<app-menu$menu data=guide>
 			<app-document$doc.(ml.md:$menu-width) data=guide .nokeys=repl>
-			<div$open-ide-button @click=$repl.show!> 'OPEN IDE'
+			<div$open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 			
 
 # Should add the colors etc to the root css here
