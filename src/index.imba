@@ -1,5 +1,7 @@
 import 'imba/src/imba/router/router.imba'
 
+import './util/shortcuts'
+
 import './components/app-logo'
 import './components/app-document'
 import './components/app-header'

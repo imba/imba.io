@@ -140,8 +140,16 @@ tag app-repl
 
 
 	css header = p:2 3 d:flex ai:center t:sm 500 gray600
-	css .tab = radius:2 py:1 px:2 t.hover:gray500 t.is-active:blue400
-	css .dark .tab = bg.is-active:gray800 shadow.is-active:sm
+	css .tab =
+		l:rel radius:2 py:1 px:2 t.hover:gray500 t.is-active:blue400
+		# & .circ = l:rel inline-block size:7px radius:5 bg:gray8 mr:1
+		# & .circ = l:abs size:6px radius:5 top:4px right:2px bg:transparent
+		& .circ = l:abs block radius:2 w:8px h:2px bottom:0 bg:transparent opacity:0.6
+		&.active .circ = bg:blue4 opacity:1
+		&.dirty .circ = bg:yellow4
+		&.active.dirty = color:yellow4
+
+	css .dark .tab = bg.is-active:gray800 shadow.is-active:sm bg.is-active.is-dirty:yellow4-5
 	css .light .tab = t.hover:gray600 t.is-active:gray600 undecorated
 	css .underlay = l:fixed inset:0 z-index:-1 bg:hsla(214,35%,83%,0.6) d.in-hidden:none
 
@@ -185,6 +193,7 @@ tag app-repl
 		l:hflex
 
 	def save
+		console.log 'save file!!'
 		currentFile.save!
 		self
 
@@ -201,16 +210,18 @@ tag app-repl
 			<div.dark.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>
 				<header.(color:gray6)>
 					<button.(d.md:hidden f:bold lg color.hover:blue5 px:1 mr:2 mt:-2px) @click.stop.prevent=$sidebar.focus!> "☰"
-					<div.(d:contents cursor:default)> for file in project..children
-						<a.tab route-to.replace=file.path data-route=file.path>
+					<div.(d:flex wrap cursor:default)> for file in project..children
+						<a.tab route-to.replace=file.path .dirty=file.dirty>
+							<span.circ>
 							<span.name> file.basename
 							<span.ext.{file.ext}.(d.is-imba:none)> "." + file.ext
-
+				
 					<div.(flex:1)>
-					<span.(opacity:0 f:bold lg/1 cursor:default) @click.meta.stop=save> "✕"
+					
+					<span.(opacity:0 f:bold lg/1 cursor:default) hotkey='command+s' @click.stop=save> ""
 					<button.(d.lg:hidden f:bold lg/1 color.hover:blue5) @click=leave> "✕"
 
-				<div$editor.(l:abs inset:12 0 0)>
+				<div$editor-wrapper.(l:rel flex:1)> <div$editor.(l:abs inset:0)>
 
 			<div$drawer.light.(l:vflex rel flex:1 1 40% bg:white)>
 				<div$preview.(l:vflex flex:1 bg:white)>

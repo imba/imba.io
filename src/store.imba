@@ -58,7 +58,7 @@ class Entry
 export class File < Entry
 	def constructor data, parent
 		super
-		body = data.body
+		body = originalBody = savedBody = data.body
 		ext = data.ext or name.split('.').pop!
 		uri = "file://{path}"
 		href = path.replace(/\.(\w+)$/,'')
@@ -85,6 +85,9 @@ export class File < Entry
 				clearTimeout($send)
 				$send = setTimeout(&,150) do sendToWorker!
 		_model
+
+	get dirty
+		body != savedBody
 	
 	def overwrite body
 		if body != self.body
@@ -99,11 +102,16 @@ export class File < Entry
 			sw.postMessage({event: 'file', path: path, body: body})
 
 	def save
-		let payload = {path: data.fullPath,body:body}
-		let headers = {'Accept': 'application/json','Content-Type': 'application/json'}
-		let req = global.fetch('/save',method:'post',headers:headers, body: JSON.stringify(payload))
-		let res = await req
-		console.log 'req',req,res
+		# try to save directly to filesystem
+		if window.location.hostname == 'localhost'
+			let payload = {path: data.fullPath,body:body}
+			let headers = {'Accept': 'application/json','Content-Type': 'application/json'}
+			let req = global.fetch('/save',method:'post',headers:headers, body: JSON.stringify(payload))
+			let res = await req
+			savedBody = body
+		else
+			yes
+
 
 
 export class Folder < Entry

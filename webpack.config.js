@@ -22,7 +22,7 @@ module.exports = [{
 	plugins: [
 	],
 	resolve: {
-		extensions: [".imba",".js",".json"],
+		extensions: [".imba",".mjs",".js",".json"],
 		alias: {
 			imba: path.resolve(__dirname,'node_modules','imba')
 		}
