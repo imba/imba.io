@@ -16,7 +16,7 @@ tag app-root
 	prop guide
 
 	def mount
-		let controller = await sw.setup!
+		let controller = await sw.load!
 
 		for file in files
 			file.sw = controller
@@ -51,7 +51,7 @@ tag app-root
 	
 	css $repl
 		l:fixed clip inset:0 top:0 z-index:2000 radius:0 shadow:xl
-		transition: transform 250ms quint-out y:100%
+		transition: transform 250ms quint-out y:110%
 		&.routed = y:0%
 
 	css $open-ide-button
@@ -71,6 +71,7 @@ tag app-root
 		if path.indexOf('/guides/') == 0 or path == '/'
 			guide = ls(path) or guide
 
+		try document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
 		self
 		# data = ls(path) or ls('/guides/introduction/overview')
 
@@ -90,6 +91,9 @@ css :root
 	font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
 	-webkit-font-smoothing: antialiased
 	-moz-osx-font-smoothing: grayscale
+
+css html.noscroll body
+	overflow: hidden
 
 css *
 	outline:none

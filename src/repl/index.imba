@@ -50,8 +50,8 @@ tag app-repl
 	def build
 		examples = ls('/examples')
 		$placeholder = self # for the router
-	
-		$iframe = <iframe.inset-0.absolute .(position:absolute width:100% height:100%)>
+
+		$iframe = <iframe.(position:absolute width:100% height:100%)>
 		$iframe.replify = do(win)
 			$win = win # $iframe.contentWindow
 			$doc = $win.document
@@ -100,7 +100,7 @@ tag app-repl
 		try
 			$iframe.contentWindow.location.replace(`/repl{url}`)
 		catch e
-			$iframe.src = `/repl{url}`
+			sw.load!.then do $iframe.src = `/repl{url}`
 
 	def relayout
 		if $monaco
