@@ -42,14 +42,16 @@ tag app-repl
 
 	get monaco
 		return $monaco if !global.monaco or $monaco or !$editor
-		$monaco = global.monaco.editor.create($editor,editorOptions)
+		$monaco = global.monaco.editor.create($editor,Object.assign({},editorOptions,$options))
 		$monaco.updateOptions(editorOptions)
 		$monaco.setModel(currentFile.model) if currentFile
+		relayout!
 		$monaco
 	
 	def build
 		examples = ls('/examples')
 		$placeholder = self # for the router
+		$options = {lineNumbers: true}
 
 		$iframe = <iframe.(position:absolute width:100% height:100%)>
 		$iframe.replify = do(win)
@@ -103,8 +105,16 @@ tag app-repl
 			sw.load!.then do $iframe.src = `/repl{url}`
 
 	def relayout
+		let h = $editor.offsetHeight
+		let w = $editor.offsetWidth
+		let sln = w > 700
+
 		if $monaco
-			$monaco.layout(height: $editor.offsetHeight, width: $editor.offsetWidth)
+			$monaco.layout(height: h, width: w)
+			if sln != $options.lineNumbers
+				$monaco.updateOptions(lineNumbers:sln )
+			$options.lineNumbers = sln
+
 
 	def leave
 		router.go($parent.guide.path)
