@@ -17,11 +17,6 @@ tag app-root
 
 	def mount
 		let controller = await sw.load!
-
-		for file in files
-			file.sw = controller
-			file.sendToWorker!
-
 		return
 	
 	get page

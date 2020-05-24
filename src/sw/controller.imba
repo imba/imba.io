@@ -1,3 +1,5 @@
+import {fs,files,ls} from '../store'
+
 var resolved = null
 var resolver = null
 var promise = null
@@ -19,6 +21,11 @@ export def load
 
 		global.fetch('/preflight.css') # just to register this client with the worker
 		console.log 'loaded service worker'
+
+		for file in files
+			file.sw = sw.controller
+			file.sendToWorker!
+
 		resolve(controller = sw.controller)
 
 export def on event, cb

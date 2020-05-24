@@ -113,14 +113,14 @@ class Worker
 		if url.pathname.indexOf('/repl/') == -1
 			return
 
-		# console.log 'onfetch',e.request.url
-
 		let path = url.pathname.replace(/^\/repl/,'') 
 		let ext = path.split('.').pop()
 		let name = path.split('/').pop()
 		let basename = name.replace(/\.\w+$/,'')
 
 		let file = files[path]
+
+		console.log 'onfetch',e.request.url,!!file
 
 		let responder = Promise.new do(resolve)
 			let loadMap = clientLoadMap[clientId] ||= {}
