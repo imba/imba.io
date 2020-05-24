@@ -148,6 +148,7 @@ tag app-document
 		l:flex rel ai:center border:gray3 radius:3 p:3 flex:1 1 50% m:2
 		color:teal6
 		td.hover:none bg.hover:gray1
+		& * = pointer-events:none
 		& .arrow = bt:gray4 br:gray4 border-width:3px size:4 l:block abs
 		& svg = size:6 color:gray4
 		&:hover svg= color:gray5
