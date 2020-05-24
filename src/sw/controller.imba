@@ -26,7 +26,7 @@ export def load
 			file.sw = sw.controller
 			file.sendToWorker!
 
-		setTimeout(&,100) do resolve(controller = sw.controller)
+		setTimeout(&,200) do resolve(controller = sw.controller)
 
 export def on event, cb
 	window.navigator.serviceWorker.addEventListener('message') do(e)
