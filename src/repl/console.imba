@@ -72,7 +72,10 @@ tag repl-console-item
 				<span.arg> any(item)
 
 tag repl-console
-	css & = cursor:default
+	css & =
+		cursor:default
+		$count: 0
+
 	css .item = d:block p:2 3 mx:1 bb:gray2 t:gray6 md/1.4 500
 	css .part > .member = mr:1
 	css .heading = d:block p:1 3 0 mx:1 t:gray6 sm 500 mb:-2
@@ -90,27 +93,36 @@ tag repl-console
 		& .key + .value = prefix: ': '
 		& .pair + .pair = prefix: ', '
 
+	css .counter
+		bg:gray3 mx:1 px:1 radius:10 min-width:6 color:gray6-70 l:inline-block f:xs bold ta:center
+
 	prop native
 	prop context
+	prop count = 0
 
 	def clear
 		$body.innerHTML = ''
+		count = 0
 
 	def log ...params
 		$body.appendChild <div.item> any(params,context,0)
+		count++
 
 	def info ...params
 		# special case
 		$body.appendChild <div.heading> params[0]
+		count++
 
 	def relayout e
 		$scroller.scrollTop = e.rect.height - $scroller.offsetHeight
 
 	def render
 		<self>
-			<header.(bg:gray200)>
-				<.tab.active.(flex-grow:1)> "Console"
-				<button @click=clear> 'Clear'
-			<.content.(l:rel flex:1)>
+			<header.(bg:gray2)>
+				<.tab.active.(flex-grow:1) @click=flags.toggle('expanded')>
+					<span> "Console"
+					<span.counter> count
+				<button @click=clear .(d:none)=(!count)> 'Clear'
+			<.content.(l:rel flex:1 bg:white)>
 				<div$scroller.(l:abs block scroll-y inset:0)>
 					<div$body.(l:block) @resize=relayout>

@@ -158,13 +158,17 @@ tag app-repl
 			p:1 7 l:block bg.hover:gray900-10
 			&.active = bg:gray900-20 t:white bold
 
-	css @not-md
+	css @not-md &
 		pl:0
 		& $sidebar = bg:gray8-95 x:-100% x.focus-within:0px
+		
 
-	css @not-lg
+	css @not-lg &
 		l:vflex
-	
+		& $console
+			l:abs inset:0 y:calc(100% - 46px) y.is-expanded:0px transition: 250ms cubic
+		&.empty-preview $console = y:0
+
 	css @lg
 		l:hflex
 
@@ -196,8 +200,8 @@ tag app-repl
 
 				<div$editor.(l:abs inset:12 0 0)>
 
-			<div$drawer.light.(l:vflex flex:1 1 40% bg:white)>
-				<div$preview.(l:vflex flex:1)>
+			<div$drawer.light.(l:vflex rel flex:1 1 40% bg:white)>
+				<div$preview.(l:vflex flex:1 bg:white)>
 					<header.(bg:gray2)> <.tab.active> "Preview"
 					<div.(l:rel flex:1)> <div$browserframe.(l:abs inset:0)> $iframe
 				<div.divider>
