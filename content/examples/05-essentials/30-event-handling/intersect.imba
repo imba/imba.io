@@ -5,14 +5,16 @@ tag page-section
 	prop revealed = 0
 
 	def render
-		<self.(d:block rel)
+		<self.(d:flex rel center m:8 h:200px bg:blue1)
 			# only trigger when we start intersecting
 			@intersect.in=showing
 			# only trigger when we end intersecting
 			@intersect.out=hiding
 			# trigger on multiple thresholds
 			@intersect(0,0.5,1)=(revealed = e.detail.ratio)
-		> <div.(d:abs inset:0 p:10) .(bg:blue5)=(revealed == 1)> <h1> name
+
+			.(bg:green3)=(revealed == 1)
+		> <h1> name
 
 	def showing e
 		console.log 'showing',name
@@ -21,9 +23,6 @@ tag page-section
 		console.log 'hiding',name
 
 imba.mount do
-	<div.app>
+	<div.app.(d:block p:0)>
 		for section,i in sections
-			<page-section
-				css:height=300
-				.bg-blue-{i % 2 ? 200 : 300}
-				name=section>
+			<page-section name=section>

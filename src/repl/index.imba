@@ -207,7 +207,7 @@ tag app-repl
 							<span.ext.{file.ext}.(d.is-imba:none)> "." + file.ext
 
 					<div.(flex:1)>
-					# <button @click=save> "save"
+					<span.(opacity:0 f:bold lg/1 cursor:default) @click.meta.stop=save> "✕"
 					<button.(d.lg:hidden f:bold lg/1 color.hover:blue5) @click=leave> "✕"
 
 				<div$editor.(l:abs inset:12 0 0)>
