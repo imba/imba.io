@@ -76,12 +76,15 @@ tag app-root
 		if path != router.url.pathname
 			go(router.url.pathname)
 
+		let repl = router.match('/examples')
+
 		<self.(l:contents) @run=runCodeBlock(e.detail)>
-			<app-repl$repl id='repl' fs=fs route='/examples'>
 			# <app-header$header.(l:sticky top:0 height:16)>
+			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
 			<app-menu$menu data=guide>
-			<app-document$doc.(ml.md:$menu-width) data=guide>
+			<app-document$doc.(ml.md:$menu-width) data=guide .nokeys=repl>
 			<div$open-ide-button @click=$repl.show!> 'OPEN IDE'
+			
 
 # Should add the colors etc to the root css here
 css :root

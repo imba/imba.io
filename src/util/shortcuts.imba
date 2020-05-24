@@ -94,8 +94,8 @@ class HotKeyManager
 		
 		let identifier = comboIdentifier(combo)
 		let receivers\HTMLElement[] = Array.from(document.querySelectorAll('[data-hotkey~="' + identifier + '"],[data-hotkey~="all"]'))
-		console.log 'hotkey handle',e,combo,identifier,receivers
-		receivers = receivers.reverse!.filter(|r| !r.closest('.hiding,.no-hotkeys') )
+		# console.log 'hotkey handle',e,combo,identifier,receivers
+		receivers = receivers.reverse!.filter(|r| !r.closest('.hiding,.no-hotkeys,.nokeys') )
 
 		for receiver in receivers
 			let params = receiver.hotkey__ or {}

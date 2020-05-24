@@ -128,6 +128,12 @@ tag app-repl
 				router.go(item.files[0].path)
 				render!
 
+	# def routeDidEnter
+	#	flags.remove('nokeys')
+
+	# def routeDidLeave
+	#	flags.add('nokeys')
+
 	def show
 		router.go(currentFile ? currentFile.path : '/examples/essentials/playground/app.imba')
 
@@ -197,6 +203,14 @@ tag app-repl
 		currentFile.save!
 		self
 
+	def goPrev
+		if currentFile and currentFile.prev
+			router.replace(currentFile.prev.last.path)
+	
+	def goNext
+		if currentFile and currentFile.next
+			router.replace(currentFile.next.first.path)
+
 	def render
 		<self>
 			<div$sidebar tabIndex=-1>
@@ -210,6 +224,8 @@ tag app-repl
 			<div.dark.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>
 				<header.(color:gray6)>
 					<button.(d.md:hidden f:bold lg color.hover:blue5 px:1 mr:2 mt:-2px) @click.stop.prevent=$sidebar.focus!> "☰"
+					<span hotkey='left' @click=goPrev>
+					<span hotkey='right' @click=goNext>
 					<div.(d:flex wrap cursor:default)> for file in project..children
 						<a.tab route-to.replace=file.path .dirty=file.dirty>
 							<span.circ>
