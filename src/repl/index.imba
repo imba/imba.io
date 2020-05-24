@@ -200,7 +200,7 @@ tag app-repl
 
 			<div.dark.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>
 				<header.(color:gray6)>
-					<button.(d.md:hidden f:bold color.hover:blue5 px:1 mr:2) @click.stop.prevent=$sidebar.focus!> "☰"
+					<button.(d.md:hidden f:bold lg color.hover:blue5 px:1 mr:2 mt:-2px) @click.stop.prevent=$sidebar.focus!> "☰"
 					<div.(d:contents cursor:default)> for file in project..children
 						<a.tab route-to.replace=file.path data-route=file.path>
 							<span.name> file.basename
@@ -208,7 +208,7 @@ tag app-repl
 
 					<div.(flex:1)>
 					# <button @click=save> "save"
-					<button.(d.lg:hidden f:bold color.hover:blue5) @click=leave> "✕"
+					<button.(d.lg:hidden f:bold lg/1 color.hover:blue5) @click=leave> "✕"
 
 				<div$editor.(l:abs inset:12 0 0)>
 
