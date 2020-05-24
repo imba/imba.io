@@ -175,6 +175,8 @@ tag app-repl
 
 	css @not-lg &
 		l:vflex
+		& $preview = pb:46px
+		& $preview header = d:none
 		& $console
 			l:abs inset:0 y:calc(100% - 46px) y.is-expanded:0px transition: 250ms cubic
 		&.empty-preview $console = y:0
