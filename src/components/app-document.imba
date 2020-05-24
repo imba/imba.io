@@ -144,20 +144,38 @@ tag app-document
 			padding-left: 0px;
 			padding-right: 0px;
 
-		& embedded-app-example2
-			display: inline
-			background: transparent
-			color: blue500
-			font-weight: bold
-			padding: 0px 3px
-			white-space: pre
-			& * = display: none
-			&:before = content: "☶"
-			&:after = content: " TRY" t:14px bold	
+	css .card
+		l:flex rel ai:center border:gray3 radius:3 p:3 flex:1 1 50% m:2
+		color:teal6
+		td.hover:none bg.hover:gray1
+		& .arrow = bt:gray4 br:gray4 border-width:3px size:4 l:block abs
+		& svg = size:6 color:gray4
+		&:hover svg= color:gray5
 
 	def render
+		let prev = data.prev
+		let next = data.next
 		<self.markdown.(l:block pb:24)>
 			<div$content.(max-width:768px px:6) innerHTML=data.html>
+			<div.(max-width:768px px:4 l:flex jc:space-between)>
+				if prev
+					<a.card.(ta:right) href=prev.path>
+						<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<line x1="19" y1="12" x2="5" y2="12">
+							<polyline points="12 19 5 12 12 5">
+						<span.(flex:1 px:1)>
+							<span.(c:gray5 f:xs)> "Prev - {prev.parent.title}"
+							<span.(d:block f:500)> prev.title
+				if next
+					<a.card.(ta:left) href=next.path>
+						<span.(flex:1 px:1)>
+							<span.(c:gray5 f:xs)> "Next - {next.parent.title}"
+							<span.(d:block f:500)> next.title
+						<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<line x1="5" y1="12" x2="19" y2="12">
+							<polyline points="12 5 19 12 12 19">
+
+
 
 	def dataDidSet data
 		# console.log 'data did set!!',data

@@ -41,6 +41,14 @@ class Entry
 	get files
 		self.children.filter(do $1 isa File)
 
+	get prev
+		return null unless parent
+		parent.children[parent.children.indexOf(self) - 1] or parent.prev
+
+	get next
+		return null unless parent
+		parent.children[parent.children.indexOf(self) + 1] or parent.next
+
 	get root
 		_root ||= paths[path.split('/').slice(0,2).join('/')]
 
@@ -55,6 +63,12 @@ export class File < Entry
 		uri = "file://{path}"
 		href = path.replace(/\.(\w+)$/,'')
 		files.push(self)
+
+	get first
+		self
+
+	get last
+		self
 	
 	get html
 		data.html
@@ -101,8 +115,15 @@ export class Folder < Entry
 	get sections
 		files
 
+	get first
+		children[0] ? children[0].first : self
+
+	get last
+		children[children.length - 1] ? children[children.length - 1].last : self
+
 	def ls path
 		self
+
 
 for item in root.children
 	fs[item.name] = Folder.new(item)
