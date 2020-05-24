@@ -1,15 +1,30 @@
-tag x-app
-	css .blue = bg:blue200 color:blue800 bg.hover:blue300
-	css .teal = bg:teal200 color:teal800 bg.hover:teal300
-	css .yellow = bg:yellow200 color:yellow800 bg.hover:yellow300
-	css .red = bg:red200 color:red800 bg.hover:red300
-	css .item = p:4 flex:1 radius:3
+css button
+	l:block bg:blue3 color:blue8 radius:2 p:1 3
+	transition: 150ms cubic
 
-	def render
-		<self .(l:flex wrap space:1)>
-			<div.blue.item> "One"
-			<div.red.item> "Two"
-			<div.teal.item> "Three"
-			<div.yellow.item> "Four"
+# @show x:-5px x.hover:5px
+<button.( x:-5px x.hover:5px)> "Translate x"
+# @show y:-5px y.hover:5px
+<button.( y:-5px y.hover:5px)> "Translate y"
 
-imba.mount <x-app>
+# @show rotate
+<button.(rotate:2deg)> "Rotate"
+
+# @show skew-x
+<button.(skew-x:10deg)> "skew-x"
+# @show skew-y
+<button.(skew-y:10deg)> "skew-y"
+
+# @show scale
+<button.(scale:1.2)> "scale"
+# @show scale-x
+<button.(scale-x:1.2)> "scale-x"
+# @show scale-y
+<button.(scale-y:1.2)> "scale-y"
+
+# @show scale.hover:1.2
+<button.( scale.hover:1.2)> "Scale on hover"
+# @show rotate.hover:1.2
+<button.( rotate:-5deg rotate.hover:10deg)> "Rotate?"
+# @show offset and scale
+<button.( rotate.hover:10deg scale.hover:1.2)> "Hover me"
