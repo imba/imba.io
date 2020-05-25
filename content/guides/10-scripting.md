@@ -846,8 +846,68 @@ console.log elements.map do({length}) length
 ```
 
 # [WIP] Loops
-# [WIP] Conditional Statements
+
+# If/Else Statements
+`If/Else` statements can be used in nearly every scope in Imba (except in styles).
+They can be used to run functions in the global scope, in class or tag methods, or even to conditionally render elements to the DOM.
+## If
+If statements can be used within functions, on the globa
+##### syntax
+```imba
+if true
+	"true"
+else
+	"false
+```
+Here's a practical example on how `if` statements can be used in templating.
+```imba
+tag App
+	prop loggedIn = yes # alias for "true"
+	def render
+		<self>
+			# if statements
+			if loggedIn 
+				<span> "you are logged in
+```
+## else
+If we have two conditions that are mutually exclusive, we can simply use `else` as part of our logic.
+```imba
+tag App
+	prop loggedIn = no # default value for prop
+	def toggle
+		loggedIn=!loggedIn
+	def render
+		<self>
+			<buntton :click.toggle> 
+				if !loggedIn # if not logged in
+					"log in"
+				else # if logged in
+					"log out"
+			if loggedIn # if logged in
+				<span> "you are logged in"
+			else # if not logged in
+				<button> "you are logged out"
+```
+## elif (else if)
+If you would like to chain multiple `if statements` before running `else`, you can use the `elif` (which is short for "else if") to chain your statements
+
+```imba
+tag app-root
+	prop progress = 0
+	def render
+		<self>
+			<input[progress] type='range' min=0 max=100 step=1> 
+			<p> "{progress}% "
+				if progress < 1
+					<span> "start" 
+				elif progress > 0 and progress < 100
+					<span> "loading "
+				else
+					<span> "done "
+```
+
 # [WIP] Operators
+## and/or 
 # [WIP] Modules
 # [WIP] Variables
 # [WIP] Switch Statements
