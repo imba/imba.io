@@ -4,14 +4,19 @@ multipage: true
 ---
 # Objects
 ## Object Literal Syntax
-In Imba you can omit curly braces, and commas at the end of each line.
+In Javascript objects are created with curly braces. That syntax is supported in Imba, but you may also omit the curly braces and commas. Imba will figure out it all out when you use proper indentation.
 ##### Syntax
 ```imba
+var objectName = {
+	keyName: "value",
+	keyName: "value",
+}
+# or 
 var objectName =
 	keyName: "value"
+	keyName: "value"
 ```
-
-Example
+Here's a practical example.
 ```imba
 var language =
 	name: "imba"
