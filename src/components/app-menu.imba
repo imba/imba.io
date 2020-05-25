@@ -21,7 +21,7 @@ tag app-menu
 		<self tabIndex=-1>
 			<div.handle> "☰"
 			<div.scroller>
-				<app-logo.(l:rel block h:14 mb:4 t:red4 l:flex center) route-to='/'>
+				<app-logo.(l:rel block h:14 mb:4 t:teal4 l:flex center) route-to='/'>
 
 				for child in data.root.children
 					<h5.(p:1 2 t:xs gray500)> child.title.toUpperCase!
