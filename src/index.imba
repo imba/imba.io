@@ -58,6 +58,12 @@ tag app-root
 		transition: 100ms cubic-out
 		&:after = opacity: 0.7 text:xs content: " " $shortcut
 
+	css $header = l:flex center hidden bg:white p:3 bb:gray2
+		& .tabs = l:inline-flex radius:2 bg:teal1-0 cursor:pointer
+		& .tab = l:flex center px:3 py:2 radius:2 flex:1 t:teal5 medium bg.hover:teal2-20
+		& .tab.active = bg:teal2 t:teal7
+
+
 	def go path
 		# console.log 'go to path',path
 		self.path = path
@@ -81,6 +87,13 @@ tag app-root
 
 		<self.(l:contents) @run=runCodeBlock(e.detail) @showide=$repl.show!>
 			# <app-header$header.(l:sticky top:0 height:16)>
+			<div$header>
+				<div.(flex: 1)>
+				<div.tabs>
+					<a.tab route-to.sticky='/guides'> "Guide"
+					<a.tab route-to.sticky='/manual'> "Manual"
+					<a.tab @click.emit('showide')> "Code"
+
 			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
 			<app-menu$menu data=doc>
 			<app-document$doc.(ml.md:$menu-width) data=doc.first .nokeys=repl>

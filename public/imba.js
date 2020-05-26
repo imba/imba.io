@@ -707,7 +707,7 @@ imba.tags = new ImbaElementRegistry();
 
 
 
-imba.createElement = function (name,bitflags,parent,flags,text){
+imba.createElement = function (name,parent,flags,text){
 	
 	var el = document.createElement(name);
 	
@@ -726,7 +726,7 @@ imba.createElement = function (name,bitflags,parent,flags,text){
 	return el;
 };
 
-imba.createComponent = function (name,bitflags,parent,flags,text){
+imba.createComponent = function (name,parent,flags,text){
 	
 	
 	var el;
@@ -767,7 +767,7 @@ imba.createComponent = function (name,bitflags,parent,flags,text){
 
 
 
-imba.createSVGElement = function (name,bitflags,parent,flags,text){
+imba.createSVGElement = function (name,parent,flags,text){
 	
 	var el = document.createElementNS("http://www.w3.org/2000/svg",name);
 	if (flags) {
