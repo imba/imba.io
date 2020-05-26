@@ -3,8 +3,8 @@
   command = "yarn run build"
   publish = "public"
 
-  ## Uncomment to use this redirect for Single Page Applications like create-react-app. 
-  [[redirects]]
-    from = "/*"
-    to = "/index.html"
-    status = 200
+## Uncomment to use this redirect for Single Page Applications like create-react-app. 
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
