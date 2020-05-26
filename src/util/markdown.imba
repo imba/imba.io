@@ -162,10 +162,12 @@ export def render content
 		let parts = object.body.split(/<!--:h1:-->/g)
 
 		object.sections = object.toc.map do(item,i)
-			Object.assign({},item,{
+			{
 				name: item.slug
 				type: 'file'
 				html: parts[i + 1]
 				title: item.title
-			})
+				meta: item.meta
+			}
+
 	return object
