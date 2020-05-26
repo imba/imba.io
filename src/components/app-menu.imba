@@ -21,6 +21,10 @@ tag app-menu
 	css .tab = l:flex center py:2 radius:2 flex:1 t:teal5 bg.hover:teal2-20
 	css .tab.active = bg:teal2 t:teal7
 
+	css .wip::after
+		l:rel inline-flex center bg:yellow2 content: 'wip'
+		t:yellow6 10px/1 uppercase p:1 radius:1 ml:1 top:-1px
+
 	def render
 		<self tabIndex=-1>
 			<div.handle> "☰"
@@ -36,8 +40,8 @@ tag app-menu
 				for child in data.root.children
 					<h5.(p:1 2 t:xs gray5)> child.title.toUpperCase!
 					<div.(pb:8)> for item in child.children
-						<a
+						<a data=item
 							.(p:1 2 l:block t:gray6 capitalize radius:1 t.hover:gray9)
 							.(t.is-active:teal6 bg.is-active:teal2-25)
+							.wip=item.meta.wip
 							route-to=item.href> item.title
-						#  .selected=(item==data)

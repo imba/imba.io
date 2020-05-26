@@ -22,6 +22,7 @@ class Entry
 		data = data
 		name = data.name
 		path = data.path or (parent ? parent.path + '/' + data.name : '/' + data.name)
+		meta = data.meta || {}
 		children = []
 		paths[path] = self
 		paths[path.replace(/\.(\w+)$/,'')] = self

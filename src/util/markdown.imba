@@ -42,16 +42,19 @@ def renderer.link href, title, text
 def renderer.heading text, level
 	var next = this.parser.peek || {}
 	var flags = ["md-h{level}"]
-	var meta = {flags: flags, level: level, children: []}
+	var meta = {flags: flags, level: level, children: [], meta: {}}
 	var m 
 
 	while m = text.match(/^\.(\w+)/)
 		flags.push(m[1])
 		text = text.slice(m[0].length)
 
+	text = text.replace(/\s*\[(\w+)\]\s*/g) do(m,key)
+		meta.meta[key.toLowerCase!] = yes
+		return ''
+
 	var plain = text.replace(/\<[^\>]+\>/g,'')
 	var slug = slugify(plain)
-
 	meta.title = unescape(text)
 
 	if next.type == 'code' and level == 4
@@ -88,14 +91,7 @@ def renderer.heading text, level
 	let typ = "h{level}"
 	let node = <{typ} .{flags}> <span> text
 	let pre = "<!--:{typ}:-->"
-	
 	return pre + node.toString()
-
-	if level < 3
-		var anchor = <div.toc-anchor .l{level} id=(meta.slug)>
-		anchor.toString() + node.toString()
-	else
-		node.toString()
 
 def renderer.codespan code
 	code = unescape(code)
@@ -166,10 +162,10 @@ export def render content
 		let parts = object.body.split(/<!--:h1:-->/g)
 
 		object.sections = object.toc.map do(item,i)
-			{
+			Object.assign({},item,{
 				name: item.slug
 				type: 'file'
 				html: parts[i + 1]
 				title: item.title
-			}
+			})
 	return object
