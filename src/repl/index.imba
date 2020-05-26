@@ -117,6 +117,7 @@ tag app-repl
 
 
 	def leave
+		document.body.focus!
 		router.go($parent.guide.path)
 
 	def routeDidResolve match, prev,last

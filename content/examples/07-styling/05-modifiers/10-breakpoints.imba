@@ -1,3 +1,18 @@
+###
+xs: @media (min-width: 480px)
+sm: @media (min-width: 640px)
+md: @media (min-width: 768px)
+lg: @media (min-width: 1024px)
+xl: @media (min-width: 1280px)
+
+not-xs: @media (max-width: 479px)
+not-sm: @media (max-width: 639px)
+not-md: @media (max-width: 767px)
+not-lg: @media (max-width: 1023px)
+not-xl: @media (max-width: 1279px)
+
+###
+
 # @show inline styles are defined in .( ... )
 <div.(background:#c3dafe;padding:16px;)> "Panel"
 

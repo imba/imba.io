@@ -80,7 +80,9 @@ tag repl-console
 	css .part > .member = mr:1
 	css .heading = d:block p:1 3 0 mx:1 t:gray6 sm 500 mb:-2
 
-	css .string = color:green7 prefix:"'" suffix:"'"
+	css .string = 
+		white-space: pre-wrap
+		color:green7 prefix:"'" suffix:"'"
 	css .number = color:blue6
 	css .key = color:indigo6
 	css .arg = mr:1

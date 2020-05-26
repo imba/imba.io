@@ -1,3 +1,5 @@
+import { @commit } from './decorators'
+
 export const root = global['content.json']
 export const files = []
 export const paths = {}
@@ -11,8 +13,12 @@ const extToLanguage =
 	html: 'html'
 
 class Entry
+	
+	@commit prop dirty
+
 	def constructor data, parent
-		parent = parent		
+		dirty = no
+		parent = parent
 		data = data
 		name = data.name
 		path = data.path or (parent ? parent.path + '/' + data.name : '/' + data.name)
@@ -82,16 +88,16 @@ export class File < Entry
 			_model.updateOptions(insertSpaces: false, tabSize: 4)
 			_model.onDidChangeContent do
 				body = _model.getValue!
+				dirty = body != savedBody
 				clearTimeout($send)
 				$send = setTimeout(&,150) do sendToWorker!
 		_model
 
-	get dirty
-		body != savedBody
-	
 	def overwrite body
 		if body != self.body
 			self.body = body
+			dirty = self.body != savedBody
+
 			if _model
 				_model.setValue(body)
 			sendToWorker!
@@ -109,8 +115,8 @@ export class File < Entry
 			let req = global.fetch('/save',method:'post',headers:headers, body: JSON.stringify(payload))
 			let res = await req
 			savedBody = body
-		else
-			yes
+	
+		dirty = no
 
 
 

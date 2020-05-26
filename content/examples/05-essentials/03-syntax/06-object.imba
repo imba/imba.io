@@ -1,9 +1,12 @@
-# object literal
-const object = {a: 'one', b: 'two', c: 'three'}
+# @log object literal
+{a: 'one', b: 'two', c: 'three'}
 
 # with indentation
 const indented =
 	name: 'john'
 	age: 30
-	
-console.log indented
+
+# @log indented object literal
+indented
+
+# TODO dynamic key in object

@@ -37,11 +37,11 @@ def compileImba file
 	try
 		let body = file.body
 		# rewrite certain special things
-		body = body.replace(/# @show (.*)\n(\t*)/g) do(m,text,tabs)
-			m + "$show '{text}', "
+		body = body.replace(/# @show(\s.*)?\n(\t*)/g) do(m,text,tabs)
+			m + "$show '{text.trim!}', "
 
-		body = body.replace(/# @log (.*)\n(\t*)/g) do(m,text,tabs)
-			m + "$log '{text}', "
+		body = body.replace(/# @log(\s.*)?\n(\t*)/g) do(m,text,tabs)
+			m + "$log '{text.trim!}', "
 
 		body = body.replace(/# (.*\s)?@(log|render)\n(\t*)/g) do(m,text,type,tabs)
 			# let out = type == 'render' ? "console.log imba.mount " : "console.log "
