@@ -15,7 +15,7 @@ import {fs,files,ls} from './store'
 import * as sw from './sw/controller'
 
 tag app-root
-	prop guide
+	prop doc
 
 	def mount
 		let controller = await sw.load!
@@ -61,13 +61,13 @@ tag app-root
 	def go path
 		# console.log 'go to path',path
 		self.path = path
-		guide ||= ls('/guides/introduction/overview')
+		doc ||= ls('/guides')
 
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
-
 		# redirect home somehow?
-		if path.indexOf('/guides/') == 0 or path == '/' or path == '/index.html'
-			guide = ls(path) or guide
+		if path.indexOf('/guides') == 0 or path == '/' or path == '/index.html' or path.indexOf('/manual') == 0
+			doc = ls(path) or doc
+			
 
 		try document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
 		self
@@ -79,11 +79,11 @@ tag app-root
 
 		let repl = router.match('/examples')
 
-		<self.(l:contents) @run=runCodeBlock(e.detail)>
+		<self.(l:contents) @run=runCodeBlock(e.detail) @showide=$repl.show!>
 			# <app-header$header.(l:sticky top:0 height:16)>
 			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
-			<app-menu$menu data=guide>
-			<app-document$doc.(ml.md:$menu-width) data=guide .nokeys=repl>
+			<app-menu$menu data=doc>
+			<app-document$doc.(ml.md:$menu-width) data=doc.first .nokeys=repl>
 			<div$open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 			
 

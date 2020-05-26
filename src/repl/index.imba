@@ -118,7 +118,7 @@ tag app-repl
 
 	def leave
 		document.body.focus!
-		router.go($parent.guide.path)
+		router.go($parent.doc.path)
 
 	def routeDidResolve match, prev,last
 		let item = ls(match.url)
@@ -146,18 +146,17 @@ tag app-repl
 		pl: $sidebar-width
 
 
-	css header = p:2 3 d:flex ai:center t:sm 500 gray600
+	css header = p:2 3 d:flex ai:center t:sm 500 gray6
+
 	css .tab =
-		l:rel radius:2 py:1 px:2 t.hover:gray500 t.is-active:blue400
-		# & .circ = l:rel inline-block size:7px radius:5 bg:gray8 mr:1
-		# & .circ = l:abs size:6px radius:5 top:4px right:2px bg:transparent
-		& .circ = l:abs block radius:2 w:8px h:2px bottom:0 bg:transparent opacity:0.6
+		l:rel radius:2 py:1 px:2 t.hover:gray5 t.is-active:blue4
+		& .circ = l:abs block radius:2 w:8px h:2px bd:0 bg:transparent opacity:0.6
 		&.active .circ = bg:blue4 opacity:1
 		&.dirty .circ = bg:yellow4
 		&.active.dirty = color:yellow4
 
-	css .dark .tab = bg.is-active:gray800 shadow.is-active:sm bg.is-active.is-dirty:yellow4-5
-	css .light .tab = t.hover:gray600 t.is-active:gray600 undecorated
+	css .dark .tab = bg.is-active:gray8 shadow.is-active:sm bg.is-active.is-dirty:yellow4-5
+	css .light .tab = t.hover:gray6 t.is-active:gray6 undecorated
 	css .underlay = l:fixed inset:0 z-index:-1 bg:hsla(214,35%,83%,0.6) d.in-hidden:none
 
 	css &.empty-preview
@@ -165,7 +164,7 @@ tag app-repl
 		& $preview = display:none
 
 	css $sidebar
-		bg:gray800 w:$sidebar-width cursor:default l:abs block t:gray500
+		bg:gray8 w:$sidebar-width cursor:default l:abs block t:gray5
 		top:0 left:0 height:100% z-index:100
 		transition: 250ms cubic
 
@@ -179,9 +178,9 @@ tag app-repl
 			l: abs scroll-y inset:0 pb:5
 
 		& .item
-			t:sm/1.3 gray600-70 500 capitalize t.hover:gray500
-			p:1 7 l:block bg.hover:gray900-10
-			&.active = bg:gray900-20 t:white bold
+			t:sm/1.3 gray6-70 500 capitalize t.hover:gray5
+			p:1 7 l:block bg.hover:gray9-10
+			&.active = bg:gray9-20 t:white bold
 
 	css @not-md &
 		pl:0

@@ -14,8 +14,12 @@ tag app-menu
 
 	css .handle
 		l:abs flex center size:12 left:100% top:18 ml:-14 x:100vw
-		radius:2 bg:white shadow:sm opacity:0.9 color:teal500
-		t:lg l.md: hidden border:gray200
+		radius:2 bg:white shadow:sm opacity:0.9 color:teal5
+		t:lg l.md: hidden border:gray2
+
+	css .tabs = l:flex radius:2 bg:teal1 cursor:pointer mb:4
+	css .tab = l:flex center py:2 radius:2 flex:1 t:teal5 bg.hover:teal2-20
+	css .tab.active = bg:teal2 t:teal7
 
 	def render
 		<self tabIndex=-1>
@@ -23,11 +27,17 @@ tag app-menu
 			<div.scroller>
 				<app-logo.(l:rel block h:14 mb:4 t:teal4 l:flex center) route-to='/'>
 
+				<div.tabs>
+					<a.tab.active hotkey='g' route-to.sticky='/guides'> "Guide"
+					<a.tab hotkey='m' route-to.sticky='/manual'> "Manual"
+					<a.tab hotkey='c' @click.emit('showide')> "Code"
+
+
 				for child in data.root.children
-					<h5.(p:1 2 t:xs gray500)> child.title.toUpperCase!
+					<h5.(p:1 2 t:xs gray5)> child.title.toUpperCase!
 					<div.(pb:8)> for item in child.children
 						<a
-							.(p:1 2 l:block t:gray600 radius:1 t.hover:gray900)
-							.(t.is-active:teal600 bg.is-active:teal200-25)
+							.(p:1 2 l:block t:gray6 capitalize radius:1 t.hover:gray9)
+							.(t.is-active:teal6 bg.is-active:teal2-25)
 							route-to=item.href> item.title
 						#  .selected=(item==data)

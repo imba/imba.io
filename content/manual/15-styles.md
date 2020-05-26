@@ -1,9 +1,9 @@
 ---
-title: Styling
+title: Styles
 multipage: true
 ---
 
-# Introduction
+# Basics
 
 You are free to use external stylesheets like you've always done. In addition, Imba has a custom syntax for adding styles to elements and components.
 
@@ -106,6 +106,8 @@ css .btn = bg:gray100 font-weight:600 px:2 py:1
 > More details about the syntax of these styles. Delimiters, indent etc.
 
 ## Aliases
+
+# Aliases
 
 # Colors
 

@@ -36,7 +36,7 @@ class Entry
 				return item
 
 	get title
-		data.title or data.name.replace(/\-/g,' ')
+		data.title or basename.replace(/\-/g,' ')
 
 	get basename
 		data.name.replace(/\.\w+$/,'')
