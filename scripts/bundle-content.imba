@@ -33,7 +33,7 @@ watcher.on('all') do
 	let dirname = path.dirname(src)
 
 	return if name == '.DS_Store' or src == ''
-	console.log 'watcher',$1,src
+	console.log 'watcher',$1,src,dirname
 
 	let up = map[dirname]
 	let id = "/{src}"
