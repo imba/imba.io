@@ -4,14 +4,19 @@ multipage: true
 ---
 # Objects
 ## Object Literal Syntax
-In Imba you can omit curly braces, and commas at the end of each line.
+In Javascript objects are created with curly braces. That syntax is supported in Imba, but you may also omit the curly braces and commas. Imba will figure out it all out when you use proper indentation.
 ##### Syntax
 ```imba
+var objectName = {
+	keyName: "value",
+	keyName: "value",
+}
+# or 
 var objectName =
 	keyName: "value"
+	keyName: "value"
 ```
-
-Example
+Here's a practical example.
 ```imba
 var language =
 	name: "imba"
@@ -664,10 +669,245 @@ That is called prototypal inheritance as a verb, or the prototype chain as a nou
 When you call a method or prop, Imba will try to find it in the exact object, if it cannot find it there, it will go up the prototype chain and look for it in the parent prototype, and so on. If there are no other object prototypes, and it has not found the prop or method, it will evaluate to null. Null is the final link in the prototype chain. When reached, the prop or method call will return as "undefined".
 
 # [WIP] Decorators
-# [WIP] Functions
+# Functions
+There are two types of functions in Imba
+- Methods
+- Blocks
+
+In JavaScript, they're known respectively as Function Declarations, and Function Expressions.
+> Imba automatically returns the last expression of the function.
+
+## Declaring Functions (Methods)
+Functions can have three different scopes.
+- global
+- class instance
+- tag instance
+
+By defining a function outside of classes or tags, they will be declared in the global scope.
+```imba
+def randomize
+	Math.random()
+```
+
+## Class Methods
+Functions are called ***Methods*** when used within classes. You probably know that already. When an object inherits from a class that contains methods, those methods will be accessible from that object. [Learn more about class methods here](/).
+
+```imba
+class Random
+	def randomize
+		Math.random!
+let lucky = Random.new
+console.log lucky.randomize!
+```
+
+## Tag Methods
+Methods are more fun when paired with DOM events. In Imba you can create methods that are scoped to your components. You do so right within your tag component. And you can use Imba's event handlers to trigger methods that are defined right within your component.
+
+```imba
+tag app-root
+	prop isClicked = true
+	def toggle
+		isClicked = !isClicked
+	<self>
+		<button.isClicked=isClicked :click.toggle> 
+			if isClicked
+				"edit"
+			else
+				"done"  
+```
+
+## Single Argument Functions
+You can pass single argument to your functions by creating an argument keyword after the function name. In this example the word `num` is the argument keyword.
+
+```imba
+def square num
+	num * num
+console.log square(2)
+```
+
+## Optional Argument Functions
+<!-- TODO: Need a working Example for this and better explanations. -->
+
+```imba
+def call url, method = 'GET'
+	console.log(method, url)
+	// do some work here
+```
+
+## Varying Number of Arguments
+If you don't know how many arguments are going to be passed in or are trying to be flexible there is a syntax for that.
+
+```imba
+let array = ["Javascript", "React", "Vue"]
+def race winner, ...rest
+	"{winner} beats {rest.join(", ")}"
+console.log race("Imba", array)
+```
+
+## Accessing Arguments via Shorthand
+<!-- TODO: Need a working example for this -->
+
+```imba
+def method
+	$0 # -> arguments
+	$1 # -> arguments[0]
+	$2 # -> arguments[1]
+
+# sometimes practical for inline methods
+var doubles = [1,2,3].map do $1 * 2
+```
+## Function Blocks (Function Expressions)
+##### Syntax
+```imba
+var square = do(v) v * v
+```
+
+Function blocks are known as anonymous function expressions in JavaScript. They can be assigned and passed around. They have their own lexical scope / closure, but no dynamic scope. This means that self (implicit and explicit) inside the block still refers to the self of the outer scope.
+
+Blocks can be passed in directly when calling functions, as the last argument.
+
+## Arrow Functions
+Coming from ES6, you might be wondering how to do the handy arrow functions. Arrow functions are syntactic sugar over Function Blocks. Well in Imba, the syntax for Function blocks is already concise. So arrow functions are not really neaded. 
+Here's an arrow function converted to Imba function block.
+
+`(element) =>` equals `do(element)`
+Overall you will find that the Imba syntax will use the same number of characters.
+
+Here are some convertions of arrow functions into Imba syntax for your reference.
+##### JS
+
+```js
+fetch('https://jsonplaceholder.typicode.com/todos/1')
+	.then(response => response.json())
+	.then(json => console.log(json))
+```
+##### Imba
+```imba
+fetch('https://jsonplaceholder.typicode.com/todos/1')
+	.then do(response) response.json!
+	.then do(json) console.log(json)
+```
+
+Here's a more complex example from [MDN][https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions] in the original Javscript syntax.
+
+##### js
+
+```js
+var elements = [
+	'Hydrogen',
+	'Helium',
+	'Lithium',
+	'Beryllium'
+];
+
+elements.map(function(element) {
+	return element.length;
+});
+
+elements.map((element) => {
+	return element.length;
+});
+
+elements.map(element => {
+	return element.length;
+});
+
+elements.map(element => element.length);
+
+elements.map(({ length: lengthFooBArX }) => lengthFooBArX);
+
+elements.map(({ length }) => length);
+```
+Here is the same example converted into Imba syntax.
+
+##### imba
+```imba
+var elements = [
+	'Hydrogen'
+	'Helium'
+	'Lithium'
+	'Beryllium'
+]
+
+console.log elements.map do(element)
+	element.length
+	
+console.log elements.map do(element)
+	element.length
+	
+console.log elements.map do(element)
+	element.length
+	
+console.log elements.map do(element) element.length
+
+console.log elements.map do({length: lengthFooBarX}) lengthFooBarX
+
+console.log elements.map do({length}) length
+```
+
 # [WIP] Loops
-# [WIP] Conditional Statements
+
+# If/Else Statements
+`If/Else` statements can be used in nearly every scope in Imba (except in styles).
+They can be used to run functions in the global scope, in class or tag methods, or even to conditionally render elements to the DOM.
+## If
+If statements can be used within functions, on the globa
+##### syntax
+```imba
+if true
+	"true"
+else
+	"false
+```
+Here's a practical example on how `if` statements can be used in templating.
+```imba
+tag App
+	prop loggedIn = yes # alias for "true"
+	def render
+		<self>
+			# if statements
+			if loggedIn 
+				<span> "you are logged in
+```
+## else
+If we have two conditions that are mutually exclusive, we can simply use `else` as part of our logic.
+```imba
+tag App
+	prop loggedIn = no # default value for prop
+	def toggle
+		loggedIn=!loggedIn
+	def render
+		<self>
+			<buntton :click.toggle> 
+				if !loggedIn # if not logged in
+					"log in"
+				else # if logged in
+					"log out"
+			if loggedIn # if logged in
+				<span> "you are logged in"
+			else # if not logged in
+				<button> "you are logged out"
+```
+## elif (else if)
+If you would like to chain multiple `if statements` before running `else`, you can use the `elif` (which is short for "else if") to chain your statements
+
+```imba
+tag app-root
+	prop progress = 0
+	def render
+		<self>
+			<input[progress] type='range' min=0 max=100 step=1> 
+			<p> "{progress}% "
+				if progress < 1
+					<span> "start" 
+				elif progress > 0 and progress < 100
+					<span> "loading "
+				else
+					<span> "done "
+```
+
 # [WIP] Operators
+## and/or 
 # [WIP] Modules
 # [WIP] Variables
 # [WIP] Switch Statements
