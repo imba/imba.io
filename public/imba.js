@@ -94,11 +94,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _internal_bind__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _internal_bind__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_internal_bind__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _internal_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
-/* harmony import */ var _internal_svg__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_internal_svg__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _events_intersect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(11);
 /* harmony import */ var _events_selection__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
 /* harmony import */ var _events_resize__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
-/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5);
+/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createLiveFragment", function() { return _internal_fragment__WEBPACK_IMPORTED_MODULE_6__["createLiveFragment"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createIndexedFragment", function() { return _internal_fragment__WEBPACK_IMPORTED_MODULE_6__["createIndexedFragment"]; });
@@ -125,7 +124,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _internal_flags__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _internal_scheduler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _events__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
-/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
+/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
 /* harmony import */ var _internal_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
 /* harmony import */ var _svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
 function extend$(target,ext){
@@ -172,6 +171,8 @@ imba.setInterval = function(fn,ms) {
 
 imba.clearInterval = root.clearInterval;
 imba.clearTimeout = root.clearTimeout;
+
+Object.defineProperty(imba,'flags',{get: function() { return imba.document.documentElement.classList; }});
 
 if (false) {};
 
@@ -683,6 +684,7 @@ class ImbaElementRegistry {
 	define(name,klass,options){
 		
 		this.types[name] = klass;
+		klass.nodeName = name;
 		
 		let proto = klass.prototype;
 		
@@ -729,7 +731,20 @@ imba.createComponent = function (name,bitflags,parent,flags,text){
 	
 	var el;
 	
-	if (false) {} else {
+	if (typeof name != 'string') {
+		
+		if (name && name.nodeName) {
+			
+			name = name.nodeName;
+		};
+	};
+	
+	if (CustomTagConstructors[name]) {
+		
+		el = CustomTagConstructors[name].create$(el);
+		el.slot$ = _internal_component__WEBPACK_IMPORTED_MODULE_4__["ImbaElement"].prototype.slot$;
+		el.__slots = {};
+	} else {
 		
 		el = document.createElement(name);
 	};
@@ -857,7 +872,7 @@ class Scheduler {
 		this.scheduled = false;
 		this.listeners = {};
 		
-		this.__ticker = function(e) {
+		this.$ticker = function(e) {
 			
 			self.scheduled = false;
 			return self.tick(e);
@@ -944,7 +959,7 @@ class Scheduler {
 				
 				this.stage = 0;
 			};
-			raf(this.__ticker);
+			raf(this.$ticker);
 		};
 		return this;
 	}
@@ -958,7 +973,7 @@ class Scheduler {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EventHandler", function() { return EventHandler; });
-/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 function extend$(target,ext){
 	// @ts-ignore
@@ -1249,10 +1264,37 @@ class EventHandler {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Document", function() { return Document; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Node", function() { return Node; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Text", function() { return Text; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Comment", function() { return Comment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Element", function() { return Element; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SVGElement", function() { return SVGElement; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HTMLElement", function() { return HTMLElement; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DocumentFragment", function() { return DocumentFragment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ShadowRoot", function() { return ShadowRoot; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Event", function() { return Event; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CustomEvent", function() { return CustomEvent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MouseEvent", function() { return MouseEvent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "document", function() { return document; });
+if (false) {};
+
+
+
+var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,SVGElement: SVGElement,HTMLElement: HTMLElement,DocumentFragment: DocumentFragment,ShadowRoot: ShadowRoot,Event: Event,CustomEvent: CustomEvent,MouseEvent: MouseEvent,document: document} = window;
+
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createLiveFragment", function() { return createLiveFragment; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createIndexedFragment", function() { return createIndexedFragment; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createKeyedFragment", function() { return createKeyedFragment; });
-/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 function extend$(target,ext){
 	// @ts-ignore
@@ -1268,57 +1310,57 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["DocumentFragment"],{
 	
 	get $parent(){
 		
-		return this.up$ || this.__parent;
+		return this.up$ || this.$$parent;
 	},
 	
 	
 	setup$(flags,options){
 		
-		this.__start = imba.document.createComment('start');
-		this.__end = imba.document.createComment('end');
+		this.$start = imba.document.createComment('start');
+		this.$end = imba.document.createComment('end');
 		
-		this.__end.replaceWith$ = function(other) {
+		this.$end.replaceWith$ = function(other) {
 			
 			this.parentNode.insertBefore(other,this);
 			return other;
 		};
 		
-		this.appendChild(this.__start);
-		return this.appendChild(this.__end);
+		this.appendChild(this.$start);
+		return this.appendChild(this.$end);
 	},
 	
 	
 	
 	text$(item){
 		
-		if (!this.__text) {
+		if (!(this.$text)) {
 			
-			this.__text = this.insert$(item);
+			this.$text = this.insert$(item);
 		} else {
 			
-			this.__text.textContent = item;
+			this.$text.textContent = item;
 		};
 		return;
 	},
 	
 	insert$(item,options,toReplace){
 		
-		if (this.__parent) {
+		if (this.$$parent) {
 			
 			
 			
-			return this.__parent.insert$(item,options,toReplace || this.__end);
+			return this.$$parent.insert$(item,options,toReplace || this.$end);
 		} else {
 			
-			return _dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.insert$.call(this,item,options,toReplace || this.__end);
+			return _dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.insert$.call(this,item,options,toReplace || this.$end);
 		};
 	},
 	
 	insertInto$(parent,before){
 		
-		if (!this.__parent) {
+		if (!(this.$$parent)) {
 			
-			this.__parent = parent;
+			this.$$parent = parent;
 			
 			parent.appendChild$(this);
 		};
@@ -1327,13 +1369,13 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["DocumentFragment"],{
 	
 	replaceWith$(other,parent){
 		
-		this.__start.insertBeforeBegin$(other);
-		var el = this.__start;
+		this.$start.insertBeforeBegin$(other);
+		var el = this.$start;
 		while (el){
 			
 			let next = el.nextSibling;
 			this.appendChild(el);
-			if (el == this.__end) { break; };
+			if (el == this.$end) { break; };
 			el = next;
 			
 		};
@@ -1342,7 +1384,7 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["DocumentFragment"],{
 	
 	appendChild$(child){
 		
-		this.__end ? this.__end.insertBeforeBegin$(child) : this.appendChild(child);
+		this.$end ? this.$end.insertBeforeBegin$(child) : this.appendChild(child);
 		return child;
 	},
 	
@@ -1354,8 +1396,8 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["DocumentFragment"],{
 	
 	isEmpty$(){
 		
-		let el = this.__start;
-		let end = this.__end;
+		let el = this.$start;
+		let end = this.$end;
 		
 		while (el = el.nextSibling){
 			
@@ -1379,38 +1421,33 @@ class TagCollection {
 	
 	constructor(f,parent){
 		
-		this.__f = f;
-		this.__parent = parent;
+		this.__F = f;
+		this.$parent = parent;
 		
 		if (!((f & 128)) && (this instanceof KeyedTagFragment)) {
 			
-			this.__start = _dom__WEBPACK_IMPORTED_MODULE_0__["document"].createComment('start');
-			if (parent) { parent.appendChild$(this.__start) };
+			this.$start = _dom__WEBPACK_IMPORTED_MODULE_0__["document"].createComment('start');
+			if (parent) { parent.appendChild$(this.$start) };
 		};
 		
 		if (!(f & 256)) {
 			
-			this.__end = _dom__WEBPACK_IMPORTED_MODULE_0__["document"].createComment('end');
-			if (parent) { parent.appendChild$(this.__end) };
+			this.$end = _dom__WEBPACK_IMPORTED_MODULE_0__["document"].createComment('end');
+			if (parent) { parent.appendChild$(this.$end) };
 		};
 		
 		this.setup();
 	}
 	
-	get $parent(){
-		
-		return this.__parent;
-	}
-	
 	appendChild$(item,index){
 		
 		
-		if (this.__end && this.__parent) {
+		if (this.$end && this.$parent) {
 			
-			this.__end.insertBeforeBegin$(item);
-		} else if (this.__parent) {
+			this.$end.insertBeforeBegin$(item);
+		} else if (this.$parent) {
 			
-			this.__parent.appendChild$(item);
+			this.$parent.appendChild$(item);
 		};
 		return;
 	}
@@ -1418,9 +1455,9 @@ class TagCollection {
 	replaceWith$(other){
 		
 		this.detachNodes();
-		this.__end.insertBeforeBegin$(other);
-		this.__parent.removeChild$(this.__end);
-		this.__parent = null;
+		this.$end.insertBeforeBegin$(other);
+		this.$parent.removeChild$(this.$end);
+		this.$parent = null;
 		return;
 	}
 	
@@ -1431,10 +1468,10 @@ class TagCollection {
 	
 	insertInto$(parent,before){
 		
-		if (!this.__parent) {
+		if (!(this.$parent)) {
 			
-			this.__parent = parent;
-			before ? before.insertBeforeBegin$(this.__end) : parent.appendChild$(this.__end);
+			this.$parent = parent;
+			before ? before.insertBeforeBegin$(this.$end) : parent.appendChild$(this.$end);
 			this.attachNodes();
 		};
 		return this;
@@ -1442,11 +1479,11 @@ class TagCollection {
 	
 	replace$(other){
 		
-		if (!this.__parent) {
+		if (!(this.$parent)) {
 			
-			this.__parent = other.parentNode;
+			this.$parent = other.parentNode;
 		};
-		other.replaceWith$(this.__end);
+		other.replaceWith$(this.$end);
 		this.attachNodes();
 		return this;
 		
@@ -1473,7 +1510,7 @@ class KeyedTagFragment extends TagCollection {
 	push(item,idx){
 		
 		
-		if (!(this.__f & 1)) {
+		if (!(this.__F & 1)) {
 			
 			this.array.push(item);
 			this.appendChild$(item);
@@ -1526,12 +1563,12 @@ class KeyedTagFragment extends TagCollection {
 			let other = this.array[index - 1];
 			
 			other.insertAfterEnd$(item);
-		} else if (this.__start) {
+		} else if (this.$start) {
 			
-			this.__start.insertAfterEnd$(item);
+			this.$start.insertAfterEnd$(item);
 		} else {
 			
-			this.__parent.insertAfterBegin$(item);
+			this.$parent.insertAfterBegin$(item);
 		};
 		return;
 	}
@@ -1540,9 +1577,9 @@ class KeyedTagFragment extends TagCollection {
 		
 		
 		
-		if (item.parentNode == this.__parent) {
+		if (item.parentNode == this.$parent) {
 			
-			this.__parent.removeChild(item);
+			this.$parent.removeChild(item);
 		};
 		return;
 	}
@@ -1552,7 +1589,7 @@ class KeyedTagFragment extends TagCollection {
 		for (let i = 0, $items = iter$(this.array), $len = $items.length; i < $len; i++) {
 			let item = $items[i];
 			
-			this.__end.insertBeforeBegin$(item);
+			this.$end.insertBeforeBegin$(item);
 		};
 		return;
 	}
@@ -1562,7 +1599,7 @@ class KeyedTagFragment extends TagCollection {
 		for (let $i = 0, $items = iter$(this.array), $len = $items.length; $i < $len; $i++) {
 			let item = $items[$i];
 			
-			this.__parent.removeChild(item);
+			this.$parent.removeChild(item);
 		};
 		return;
 	}
@@ -1570,9 +1607,9 @@ class KeyedTagFragment extends TagCollection {
 	end$(index){
 		var self = this;
 		
-		if (!(this.__f & 1)) {
+		if (!(this.__F & 1)) {
 			
-			this.__f |= 1;
+			this.__F |= 1;
 			return;
 		};
 		
@@ -1620,9 +1657,9 @@ class IndexedTagFragment extends TagCollection {
 	end$(len){
 		
 		let from = this.length;
-		if (from == len || !this.__parent) { return };
+		if (from == len || !(this.$parent)) { return };
 		let array = this.$;
-		let par = this.__parent;
+		let par = this.$parent;
 		
 		if (from > len) {
 			
@@ -1647,7 +1684,7 @@ class IndexedTagFragment extends TagCollection {
 			let item = $items[i];
 			
 			if (i == this.length) { break; };
-			this.__end.insertBeforeBegin$(item);
+			this.$end.insertBeforeBegin$(item);
 		};
 		return;
 	}
@@ -1658,7 +1695,7 @@ class IndexedTagFragment extends TagCollection {
 		while (i < this.length){
 			
 			let item = this.$[i++];
-			this.__parent.removeChild$(item);
+			this.$parent.removeChild$(item);
 		};
 		return;
 	}
@@ -1686,40 +1723,13 @@ function createKeyedFragment(bitflags,parent){
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Document", function() { return Document; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Node", function() { return Node; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Text", function() { return Text; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Comment", function() { return Comment; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Element", function() { return Element; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SVGElement", function() { return SVGElement; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HTMLElement", function() { return HTMLElement; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DocumentFragment", function() { return DocumentFragment; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ShadowRoot", function() { return ShadowRoot; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Event", function() { return Event; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CustomEvent", function() { return CustomEvent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MouseEvent", function() { return MouseEvent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "document", function() { return document; });
-if (false) {};
-
-
-
-var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,SVGElement: SVGElement,HTMLElement: HTMLElement,DocumentFragment: DocumentFragment,ShadowRoot: ShadowRoot,Event: Event,CustomEvent: CustomEvent,MouseEvent: MouseEvent,document: document} = window;
-
-
-
-/***/ }),
 /* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImbaElement", function() { return ImbaElement; });
-/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 
 
 class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
@@ -1965,7 +1975,7 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 function extend$(target,ext){
 	// @ts-ignore
 	var descriptors = Object.getOwnPropertyDescriptors(ext);
@@ -1982,7 +1992,7 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["SVGElement"],{
 	
 	flag$(str){
 		
-		this.className.baseVal = str;
+		this.className.baseVal = this.flags$ext = str;
 		return;
 	},
 	
@@ -1991,15 +2001,14 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["SVGElement"],{
 		
 		
 		
-		this.flag$ = function(str) { return self.flagSync$(self.__extflags = str); };
-		this.flagSelf$ = function(str) { return self.flagSync$(self.__ownflags = str); };
-		this.className.baseVal = (this.className.baseVal || '') + ' ' + (this.__ownflags = str);
-		return;
+		this.flag$ = function(str) { return self.flagSync$(self.flags$ext = str); };
+		this.flagSelf$ = function(str) { return self.flagSync$(self.flags$own = str); };
+		return this.flagSelf$(str);
 	},
 	
 	flagSync$(){
 		
-		return this.className.baseVal = ((this.__extflags || '') + ' ' + (this.__ownflags || ''));
+		return this.className.baseVal = ((this.flags$ext || '') + ' ' + (this.flags$own || '') + ' ' + (this.$flags || ''));
 	},
 });
 
@@ -2381,8 +2390,11 @@ extend$(HTMLInputElement,{
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 function extend$(target,ext){
 	// @ts-ignore
 	var descriptors = Object.getOwnPropertyDescriptors(ext);
@@ -2391,12 +2403,13 @@ function extend$(target,ext){
 	return target;
 };
 
-extend$(SVGElement,{
+
+extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["SVGElement"],{
 	
 	
 	flag$(str){
 		
-		this.className.baseVal = str;
+		this.className.baseVal = this.flags$ext = str;
 		return;
 	},
 	
@@ -2405,15 +2418,14 @@ extend$(SVGElement,{
 		
 		
 		
-		this.flag$ = function(str) { return self.flagSync$(self.__extflags = str); };
-		this.flagSelf$ = function(str) { return self.flagSync$(self.__ownflags = str); };
-		this.className.baseVal = (this.className.baseVal || '') + ' ' + (this.__ownflags = str);
-		return;
+		this.flag$ = function(str) { return self.flagSync$(self.flags$ext = str); };
+		this.flagSelf$ = function(str) { return self.flagSync$(self.flags$own = str); };
+		return this.flagSelf$(str);
 	},
 	
 	flagSync$(){
 		
-		return this.className.baseVal = ((this.__extflags || '') + ' ' + (this.__ownflags || ''));
+		return this.className.baseVal = ((this.flags$ext || '') + ' ' + (this.flags$own || '') + ' ' + (this.$flags || ''));
 	},
 });
 
@@ -2424,7 +2436,7 @@ extend$(SVGElement,{
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 
 
@@ -2519,7 +2531,7 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.on$intersect = function(m
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 
 
 var selHandler;
@@ -2561,7 +2573,7 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.on$selection = function(m
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 function extend$(target,ext){
 	// @ts-ignore
 	var descriptors = Object.getOwnPropertyDescriptors(ext);

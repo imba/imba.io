@@ -37,18 +37,10 @@ def compileImba file
 	try
 		let body = file.body
 		# rewrite certain special things
-		body = body.replace(/# @show(\s.*)?\n(\t*)/g) do(m,text,tabs)
-			m + "$show '{text.trim!}', "
+		body = body.replace(/# @(show|log)( .*)?\n(\t*)/g) do(m,typ,text,tabs)
+			m + "${typ} '{(text or '').trim!}', "
 
-		body = body.replace(/# @log(\s.*)?\n(\t*)/g) do(m,text,tabs)
-			m + "$log '{text.trim!}', "
-
-		body = body.replace(/# (.*\s)?@(log|render)\n(\t*)/g) do(m,text,type,tabs)
-			# let out = type == 'render' ? "console.log imba.mount " : "console.log "
-			let out = "${type} "
-			out += "'{text}', " if text
-			m + out
-		# console.log 'rewritten body',body
+		# console.log 'rewritten body',file.body,body
 		# ranges will end up at wrong positions
 		let result = imbac.compile(body,{target: 'web', sourcePath: file.path, imbaPath: null})
 		file.js = result.toString!
