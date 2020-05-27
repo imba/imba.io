@@ -2,6 +2,42 @@
 title: Scripting
 multipage: true
 ---
+# Data types
+Imba is an indentation based language. If you have written any Ruby or Python then a lot of the syntax will feel familiar. Even though the syntax and semantics of Imba is much more related to Ruby than JavaScript, it does compile down to plain JavaScript, and is fully compatible with any existing JavaScript libraries. Imba does not extend any native types from JavaScript. Arrays are arrays, strings are strings, numbers are numbers, classes are constructors with prototypes and so forth.
+
+## Interoperability
+ll the fundamental types are the same as in JavaScript, so for documentation about available methods see MDN Object, Function, String, Number, RegExp, Array, Date, Math
+
+## Strings
+```imba
+var single = 'single quotes'
+var double = "double quotes"
+var interpolation = "string has {double}"
+```
+## Numbers
+```imba
+var integer = 42
+var float = 42.10
+```
+
+# Variables
+The Imba variable types are the same as the Javascript variable types.
+```imba
+let user	# can be updated but not re-declared
+var date	# can be updated and re-declared within its scope
+const site	# can neither be updated nor re-declared
+```
+### Assign values to Variables
+```imba
+# Assigning values
+let user = 'Eric' # string
+let age = 25 # number
+let loggedIn = yes|no|true|false # boolean
+
+# Other Value Types
+let email # undefined - value not assigned
+image # TypeError
+```
 # Objects
 ## Object Literal Syntax
 In Javascript objects are created with curly braces. That syntax is supported in Imba, but you may also omit the curly braces and commas. Imba will figure out it all out when you use proper indentation.
@@ -906,8 +942,188 @@ tag app-root
 					<span> "done "
 ```
 
-# [WIP] Operators
-## and/or 
+# Logical Operators
+`if/else` statements can do a lot, but the more complex your logic is, the more messy `if/else` can become.
+
+## `boolean` Values
+Boolean values of `true` and `false` are the core building blocks of all logical expression.
+Imba has an alias for true and false, that may be more legible in certain instances. `yes` and `no`
+```imba
+var loggedIn = yes
+var loggedIn = no
+```
+If something evaluates to true, your expression will run. 
+
+## `boolean` operators
+Boolean operatures help you get a return value of `true` or `false` out of almost combination of Javascript values.
+
+To start, Imba carries over all the boolean operators from Javascript, with a few aliases for the commonly used `strict equal` and `strict-not-equal` operators.
+
+Here's the list.
+##### syntax
+```imba
+item == 10 # check
+item === 10 # strictly equal
+item is 10 # also strictly equal
+item != 10 # not equal
+item !== 10 # strictly not equal
+item isnt 10 # also strictly not equal
+item > 10 # greater than
+item < 10 # less than
+item >= 10 # greater than or equal
+item <= 10 # less than or equal
+```
+
+It is common practice to use strict-equal over strict-not-equal wherever possible. Why? strict-equal will make sure the value types are also equal. Otherwise, it will return true even if you pair a string of `"10"` and a number of `10`.
+
+```imba
+10 == "10" # true (not-strict-equal)
+10 === "10" # false (strict-equal)
+10 is "10" # false (strict-equal)
+```
+
+
+## `and` operator
+If **all** expressions chained with the `and` operator evaluate to true, then the whole expression will return `true`.
+
+##### syntax
+```imba
+and # Imba syntax
+&& # js syntax also supported
+```
+The code will run only if all arguments are truthy.
+```imba
+if yes and yes
+	# code will run
+if yes and no
+	# code will not run.
+```
+
+You may also chain and nest as many expressions as you'd like.
+
+```imba
+if yes and yes and (yes and yes)
+	# code will run
+```
+Here's a basic `and` expression
+##### Example
+```imba
+loggedIn = true
+admin = true
+tag app-root
+	<self>
+		if loggedIn and admin
+			<h1> "welcome admin"
+```
+
+## OR operator
+The `OR` operator allows you to chain expressions together in a single expression. If any expression evaluates to true, then the whole expression will return `true`.
+
+Imba supports the Javascript syntax `&&`, but it also has an alias of `or` for the OR operator, we hope the alias is not hard to get used to.
+
+##### syntax
+```imba
+or # imba syntax 
+|| # js synax also supported
+```
+
+The `or` operator allows you to evaluate if two conditions are true in a single line. The code will run if any argument is truthy.
+```imba
+if no or yes
+	# will run
+if no or no
+	# will not run
+```
+Got it?
+
+## Switch Operator
+If all your expressions are going to be mutually exclusive, you can just use a switch operator.
+
+##### syntax
+
+```imba
+let emotion = 'happy'
+switch emotion
+	when 'happy'
+		console.log '😀'
+	when 'sad'
+		console.log '😢'
+	else
+		console.log '🤷‍♂️'
+```
+The if statements below essentially do the same thing, but a switch statement can your code a lot neater in many cases.
+```imba
+let emotion = 'happy'
+if emotion is 'happy'
+	console.log '😀'
+elif emotion is 'sad'
+	console.log '😢'
+else 
+	console.log '🤷‍♂️'
+
+```
+## Ternary Operator
+### Single-line Ternary Operator
+The ternary operator is sort of a quick one-line `if/else` statement.
+As with many operators, you can use a syntax similar to Javascript for this. 
+```imba
+if (condition) ? function : function
+```
+But as usual, Imba has a less cryptic alias for this.
+##### syntax
+```imba
+if (condition) then function else function
+```
+Here's a ternary operator in practice.
+```imba
+# height in centimeters
+var height = 100
+if height >= 80 then console.log('You can ride the rollercoaster!') else console.log('Sorry, you are a few centimeters short.')
+# >>> Congratulations, you can ride the rollercoaster
+```
+### Multi-line Ternary Operator
+Writing a ternary operator over multiple lines can make your code even more legible. Make sure all the parts of a ternary operator are on the same indentation level and in the same order.
+```imba
+if # expression here
+then # value or function here
+else # value or function here
+```
+```imba
+# Multiline ternary operator
+if height >= 80
+then console.log(firstName + ' can ride a rollercoaster')
+else console.log(firstName + ' cannot ride a rollercoaster')
+```
+## `NOT` Operator
+As you would in Javascript, you can negate any boolean value with an exclamation mark at the beginning of any object that returns a boolean value. Here are a few examples.
+```imba
+# (not)true value
+console.log !true # false
+
+# (not)loggedIn variable
+var loggedIn = true
+console.log !loggedIn # false
+
+# (not)isLoggedIn Method
+def isLoggedIn
+	true
+console.log !isloggedIn() # false
+
+```
+A good use for the `NOT` operator is for toggling a boolean value upon an event. Here an example where we toggle a state upon a click event.
+
+```imba
+tag app-todo
+	prop visible = true
+    def toggleItem
+    	visible = visible
+	def render
+		<self>
+			<button @click.toggleItem> "toggle"
+			<h1> 
+				if visible then "Now you see me..." else "now you don't!"
+```
+
 # [WIP] Modules
-# [WIP] Variables
+
 # [WIP] Switch Statements
