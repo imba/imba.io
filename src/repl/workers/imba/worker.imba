@@ -21,7 +21,7 @@ export class ImbaWorker
 	def getDocument uri
 		let model = getModel(uri)
 		let body = model.getValue!
-		let doc = documents[uri] ||= ImbaDocument.new(uri,'imba',0,body)
+		let doc = documents[uri] ||= new ImbaDocument(uri,'imba',0,body)
 		doc.overwrite(body) unless doc.content == body
 		return doc
 
@@ -61,4 +61,4 @@ export class ImbaWorker
 
 export def create ctx, data
 	console.log 'creating worker!'
-	return ImbaWorker.new(ctx, data)
+	return new ImbaWorker(ctx, data)

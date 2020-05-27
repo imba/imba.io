@@ -99,7 +99,7 @@ class Worker
 
 	def onfetch e
 		
-		let url = URL.new(e.request.url)
+		let url = new URL(e.request.url)
 		let clientId = e.resultingClientId or e.clientId
 	
 		if url.pathname.indexOf('/repl/') == -1
@@ -114,7 +114,7 @@ class Worker
 
 		console.log 'onfetch',e.request.url,!!file
 
-		let responder = Promise.new do(resolve)
+		let responder = new Promise do(resolve)
 			let loadMap = clientLoadMap[clientId] ||= {}
 
 			loadMap[path] = yes
@@ -137,13 +137,13 @@ class Worker
 					# body = 'import "/repl/examples/helpers.imba";\n' + body
 					body = 'import "/imba.js";\n' + body
 
-				let resp = Response.new(body,status: status,headers: {'Content-Type': mime})
+				let resp = new Response(body,status: status,headers: {'Content-Type': mime})
 				resolve(resp)
 			else
 				resolve(null)
 		return e.respondWith(responder)
 
-const worker = Worker.new
+const worker = new Worker
 global.files = worker.files
 global.loadMap = clientLoadMap
 

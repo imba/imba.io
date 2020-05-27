@@ -18,7 +18,7 @@ tag app-paint
 	def start e
 		console.log('pointerdown',e.pressure,e.pointerId)
 		$canvas.setPointerCapture(e.pointerId)
-		$path = Path2D.new
+		$path = new Path2D
 
 	def move e
 		if e.pressure and $path

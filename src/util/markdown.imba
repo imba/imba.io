@@ -27,7 +27,7 @@ var unescape = do(code)
 	code = code.replace(/\&amp;/g,"&")
 	return code
 
-var renderer = marked.Renderer.new
+var renderer = new marked.Renderer
  
 def renderer.link href, title, text
 	if href.match(/^\/.*\.md/)
@@ -151,7 +151,7 @@ export def render content
 	# if object:title
 	var toc = {level: 0, title: (object.title or "Doc"), children: [], slug: 'toc'}
 	var tokens = marked.lexer(content)
-	var parser = marked.Parser.new(opts, renderer)
+	var parser = new marked.Parser(opts, renderer)
 	renderer.parser = parser
 	renderer.toc = object.toc
 	opts.parser = parser

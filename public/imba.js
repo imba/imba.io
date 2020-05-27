@@ -134,7 +134,6 @@ function extend$(target,ext){
 	Object.defineProperties(target.prototype,descriptors);
 	return target;
 };
-var $customElements;
 var root = ((typeof window !== 'undefined') ? window : (((typeof globalThis !== 'undefined') ? globalThis : null)));
 
 var imba = {
@@ -146,7 +145,7 @@ var imba = {
 
 root.imba = imba;
 
-($customElements = root.customElements) || (root.customElements = {
+root.customElements || (root.customElements = {
 	define: function() { return true; },
 	get: function() { return true; }
 });
@@ -239,12 +238,11 @@ var emit__ = function(event,args,node) {
 
 
 imba.listen = function (obj,event,listener,path){
-	var $__listeners__;
 	
 	var cbs;
 	var list;
 	var tail;
-	cbs = ($__listeners__ = obj.__listeners__) || (obj.__listeners__ = {});
+	cbs = obj.__listeners__ || (obj.__listeners__ = {});
 	list = cbs[event] || (cbs[event] = {});
 	tail = list.tail || (list.tail = (list.next = {}));
 	tail.listener = listener;
@@ -330,7 +328,7 @@ imba.mount = function (mountable,into){
 		
 		
 		
-		element.__F = element.__F | 64;
+		element.__F |= 64;
 	};
 	
 	return parent.appendChild(element);
@@ -1063,7 +1061,6 @@ class EventHandler {
 	}
 	
 	async handleEvent(event){
-		var $currentEvents;
 		
 		var target = event.target;
 		var element = event.currentTarget;
@@ -1098,7 +1095,7 @@ class EventHandler {
 			};
 		};
 		
-		($currentEvents = this.currentEvents) || (this.currentEvents = new Set());
+		this.currentEvents || (this.currentEvents = new Set);
 		this.currentEvents.add(event);
 		
 		for (let $i = 0, $keys = Object.keys(mods), $l = $keys.length, handler, val; $i < $l; $i++){
@@ -1502,7 +1499,7 @@ class KeyedTagFragment extends TagCollection {
 	setup(){
 		
 		this.array = [];
-		this.changes = new Map();
+		this.changes = new Map;
 		this.dirty = false;
 		return this.$ = {};
 	}
@@ -2440,7 +2437,7 @@ __webpack_require__.r(__webpack_exports__);
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 
 
-const observers = globalThis.WeakMap ? new (globalThis.WeakMap)() : new (globalThis.Map)();
+const observers = new (globalThis.WeakMap || Map);
 const defaults = {threshold: [0]};
 const rootTarget = {};
 
@@ -2465,9 +2462,8 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect = {
 function callback(name,key){
 	
 	return function(entries,observer) {
-		var $prevRatios;
 		
-		let map = ($prevRatios = observer.prevRatios) || (observer.prevRatios = new WeakMap());
+		let map = observer.prevRatios || (observer.prevRatios = new WeakMap);
 		
 		for (let $i = 0, $items = iter$(entries), $len = $items.length; $i < $len; $i++) {
 			let entry = $items[$i];

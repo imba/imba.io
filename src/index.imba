@@ -73,7 +73,6 @@ tag app-root
 		# redirect home somehow?
 		if path.indexOf('/guides') == 0 or path == '/' or path == '/index.html' or path.indexOf('/manual') == 0
 			doc = ls(path) or doc
-			
 
 		try document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
 		self

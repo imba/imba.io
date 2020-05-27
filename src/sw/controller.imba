@@ -8,7 +8,7 @@ var controller = null
 export def load
 	return Promise.resolve(controller) if controller
 
-	promise ||= Promise.new do(resolve)
+	promise ||= new Promise do(resolve)
 		const sw = window.navigator.serviceWorker
 		var reg = await sw.getRegistration('/')
 

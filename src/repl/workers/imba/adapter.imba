@@ -82,7 +82,7 @@ export class DiagnosticsAdapter < Adapter
 	def locToRange model, loc
 		var a = model.getPositionAt(loc[0])
 		var b = model.getPositionAt(loc[1])
-		return global.monaco.Range.new(a.lineNumber,a.column,b.lineNumber,b.column)
+		return new global.monaco.Range(a.lineNumber,a.column,b.lineNumber,b.column)
 
 	def varToDecoration model,item,loc
 		if item isa Array

@@ -49,6 +49,6 @@ export class WorkerManager
 		worker.withSyncedResources(resources).then do client
 
 export def setupMode modeId
-	var client = WorkerManager.new('/worker.imba.js', {})
+	var client = new WorkerManager('/worker.imba.js', {})
 	var worker = client.getLanguageServiceWorker.bind(client)
-	DiagnosticsAdapter.new({}, modeId, worker)
+	new DiagnosticsAdapter({}, modeId, worker)

@@ -5,7 +5,7 @@ tag todos-app
 	prop newTitle = ''
 
 	def add event
-		let todo = Todo.new title: newTitle
+		let todo = new Todo title: newTitle
 		items.push(title: newTitle)
 		newTitle = ''
 

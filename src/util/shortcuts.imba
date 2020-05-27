@@ -58,7 +58,7 @@ const stopCallback = do |e,el,combo|
 
 class HotKeyManager
 	static get instance
-		$instance ||= self.new()
+		$instance ||= new self()
 
 	def constructor
 		combos = {'*': {}}

@@ -10,11 +10,11 @@ const path = require 'path'
 const fs = require 'fs'
 
 # creating the local app
-APP = App.new
+APP = new App
 
 const lang = LanguageCode('en')
 let guide = Guide.get 'en'
-let app = App.new(guide: guide.docs)
+let app = new App(guide: guide.docs)
 
 var html = <html router-url='/'>
 	<head>

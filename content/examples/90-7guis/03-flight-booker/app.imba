@@ -1,13 +1,13 @@
 # https://github.com/eugenkiss/7guis/wiki#flight-booker
 tag flight-booker
 	prop isReturn = false
-	prop start = Date.new.toISOString!.slice(0,10)
+	prop start = (new Date).toISOString!.slice(0,10)
 	prop end = start
 
 	def bookFlight
 		let type = isReturn ? 'return' : 'one-way'
-		let message = `You have booked a {type} flight, leaving {Date.new(end).toDateString!}`
-		message += ` and returning {Date.new(end).toDateString!}` if isReturn
+		let message = `You have booked a {type} flight, leaving {new Date(end).toDateString!}`
+		message += ` and returning {new Date(end).toDateString!}` if isReturn
 		window.alert(message)
 
 	<self>

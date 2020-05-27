@@ -32,7 +32,7 @@ class Entry
 		if data.children
 			self.children = data.children.map do
 				let typ = $1.type == 'file' ? File : Folder
-				let item = typ.new($1,self)
+				let item = new typ($1,self)
 				if typ == Folder
 					self[item.name] = item
 				return item
@@ -144,7 +144,7 @@ export class Folder < Entry
 
 
 for item in root.children
-	fs[item.name] = Folder.new(item)
+	fs[item.name] = new Folder(item)
 
 const hits = {}
 export def ls path
