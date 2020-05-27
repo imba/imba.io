@@ -19,16 +19,27 @@ const models = { }
 const map = {'.': data}
 const watcher = chokidar.watch(root)
 
+def sort item
+	if item.type == 'dir'
+		item.children.sort do(a,b) a.sortKey > b.sortKey ? 1 : -1
+		for child in item.children when child.type == 'dir'
+			sort(child)
+	return item
+
 def save
+	sort(child) for child in data.children
 	let json = JSON.stringify(data,null,2)
 	let js = "globalThis['{bundle}.json'] = {json}"
 	# fs.writeFileSync(path.resolve(dest,"{bundle}.json"),json)
 	fs.writeFileSync(path.resolve(dest,"{bundle}.json.js"),js)
+	
 
 watcher.on('all') do
 	let abs = $2
 	let is-dir = $1.indexOf('Dir') >= 0
-	let src = path.relative(root,abs).replace(/\b\d\d\-/g,'')
+	let rel = path.relative(root,abs)
+	let sorter = path.basename(rel)
+	let src = rel.replace(/\b\d\d\-/g,'')
 	let name = path.basename(src)
 	let dirname = path.dirname(src)
 
@@ -40,6 +51,7 @@ watcher.on('all') do
 	let item
 	if $1 == 'addDir'
 		item = {
+			sortKey: path.basename(rel)
 			type: 'dir'
 			name: name
 			children: []
@@ -48,6 +60,7 @@ watcher.on('all') do
 
 	elif $1 == 'add' or $1 == 'change'
 		item = {
+			sortKey: path.basename(rel)
 			type: 'file'
 			name: name
 			body: fs.readFileSync(abs,'utf8')
