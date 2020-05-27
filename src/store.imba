@@ -15,6 +15,7 @@ const extToLanguage =
 class Entry
 	
 	@commit prop dirty
+	@commit prop hasErrors
 
 	def constructor data, parent
 		dirty = no
@@ -86,6 +87,7 @@ export class File < Entry
 	get model
 		if global.monaco and !_model
 			_model = global.monaco.editor.createModel(body,extToLanguage[ext] or ext,uri)
+			_model.$file = self
 			_model.updateOptions(insertSpaces: false, tabSize: 4)
 			_model.onDidChangeContent do
 				body = _model.getValue!
@@ -102,6 +104,7 @@ export class File < Entry
 			if _model
 				_model.setValue(body)
 			sendToWorker!
+	
 
 	def sendToWorker
 		if sw

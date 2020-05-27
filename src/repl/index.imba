@@ -155,6 +155,9 @@ tag app-repl
 		&.dirty .circ = bg:yellow4
 		&.active.dirty = color:yellow4
 
+		&.errors .circ = bg:red5
+		&.active.errors = color:red5
+
 	css .dark .tab = bg.is-active:gray8 shadow.is-active:sm bg.is-active.is-dirty:yellow4-5
 	css .light .tab = t.hover:gray6 t.is-active:gray6 undecorated
 	css .underlay = l:fixed inset:0 z-index:-1 bg:hsla(214,35%,83%,0.6) d.in-hidden:none
@@ -197,6 +200,13 @@ tag app-repl
 
 	css @lg
 		l:hflex
+	
+	# markdown stuff
+	css span.variable.variable
+		color: var(--code-variable)
+
+	css .monaco-editor
+		& .error-line + .line-numbers = color:red5 font-weight:bold
 
 	def save
 		console.log 'save file!!'
@@ -228,7 +238,7 @@ tag app-repl
 					<span hotkey='right' @click=goNext>
 					<span hotkey='esc' @click=leave>
 					<div.(d:flex wrap cursor:default)> for file in project..children
-						<a.tab route-to.replace=file.path .dirty=file.dirty>
+						<a.tab route-to.replace=file.path .dirty=file.dirty .errors=file.hasErrors>
 							<span.circ>
 							<span.name> file.basename
 							<span.ext.{file.ext}.(d.is-imba:none)> "." + file.ext

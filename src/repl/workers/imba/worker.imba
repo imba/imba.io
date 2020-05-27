@@ -33,17 +33,21 @@ export class ImbaWorker
 		return results
 
 	def getDiagnostics uri
-		return Promise.resolve({})
-
 		var model = getModel(uri)
 		var code = model.getValue!
-		
-		if (/\S/).test(code)
-			var meta = imbac.analyze(code,{entities: yes})
-			model.meta = meta
-			return Promise.resolve(meta)
-		else
-			return Promise.resolve({})
+		return Promise.resolve({}) unless (/\S/).test(code)
+
+		var out = {errors: []}
+
+		try
+			var res = imbac.compile(code,{sourcePath: uri})
+			console.log 'did compile',res
+			return Promise.resolve(out)
+		catch e
+			let token = e.token
+			console.log 'error on get diagnostics',e,token
+			out.errors.push([token._loc,token._len,e.message])
+			return Promise.resolve(out)
 
 	def getCompiledCode uri
 		var model = getModel(uri)

@@ -94,11 +94,17 @@ export class DiagnosticsAdapter < Adapter
 			options: { inlineClassName: 'variable' }
 		}
 
-	def warningToMarker model, original
-		var item = locToRange(model, original.loc)
-		item.severity = 3
-		item.message = original.message
-		return item
+	def warningToMarker model, item
+		if item isa Array
+			item = {
+				loc: [item[0],item[0] + item[1]]
+				message: item[2]
+			}
+
+		var marker = locToRange(model, item.loc)
+		marker.severity = 3
+		marker.message = item.message
+		return marker
 
 	def warningToDecoration model, orig
 		var range = locToRange(model, orig.loc)
@@ -107,6 +113,25 @@ export class DiagnosticsAdapter < Adapter
 			options: {
 				name: 'error'
 				linesDecorationsClassName: 'error'
+			}
+		}
+	
+	def errorToDecoration model,item,loc
+		if item isa Array
+			item = {
+				loc: [item[0],item[0] + item[1]]
+				message: item[2]
+			}
+
+		return {
+			range: locToRange(model,item.loc)
+			options: {
+				name: 'error'
+				inlineClassName: 'error'
+				linesDecorationsClassName: 'error-line'
+				marginClassName: 'error'
+				glyphMarginHoverMessage: item.message
+				hoverMessage: item.message
 			}
 		}
 
@@ -123,13 +148,27 @@ export class DiagnosticsAdapter < Adapter
 		let markers = ranges.map do varToDecoration(model,$1)
 		model.varDecorations = model.deltaDecorations(model.varDecorations ||= [],markers)
 
+	def updateDiagnostics model, data
+		let errors = data.errors.map do errorToDecoration(model,$1)
+		model.errorDecorations = model.deltaDecorations(model.errorDecorations ||= [],errors)
+
+		let markers = data.errors.map do warningToMarker(model,$1)
+		editor.setModelMarkers(model,selector,markers)
+
+		if model.$file
+			model.$file.hasErrors = data.errors.length > 0
+
+		
+
 	def validate uri
 		var model = editor.getModel(uri)
 		var worker = await worker(uri)
 		var semantics = await worker.getSemanticTokens(uri)
 		updateSemanticTokens(model,semantics)
 		var meta = await worker.getDiagnostics(uri)
-		# console.log "returned from worker?",meta,semantics
+		console.log "returned from worker?",meta,semantics
+		return updateDiagnostics(model,meta)
+
 		var decorations = []
 		var markers = []
 
