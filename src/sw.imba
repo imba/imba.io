@@ -63,7 +63,12 @@ class Worker
 		self
 
 	def onmessage e
-		# log 'sw inbound message',e
+		if e.data.event == 'compile'
+			console.log 'sw compile',e.data.body
+			let js = compileImba(e.data)
+			return e.source.postMessage({event: 'compiled',ref: e.data.ref, source: e.data.body, js: js})
+
+
 		if e.data.event == 'file'
 			let path = e.data.path
 			# console.log 'sw got file',path
