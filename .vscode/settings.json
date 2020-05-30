@@ -17,5 +17,9 @@
         "titleBar.inactiveBackground": "#1857a499",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/public/monaco": true
+    },
     "peacock.color": "#1857a4"
 }

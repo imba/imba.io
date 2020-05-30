@@ -1,5 +1,7 @@
 import { ImbaDocument } from 'imba-document'
 
+import * as sw from '../sw/controller'
+
 const cache = {}
 
 const replacements = {
@@ -158,7 +160,7 @@ def highlight str
 		let [typ,subtyp] = types
 		
 		if token.variable
-			types = ['variable']
+			types = types.concat('variable')
 			if token.variable.varscope
 				types.push("scope_{token.variable.varscope.type}")
 
@@ -187,14 +189,25 @@ tag app-code
 tag app-code-block < app-code
 
 	css &
-		font-family: var(--code-font)
 		color: var(--code-color)
 		& .code-head = display: none
 
 	css code
 		display:block overflow-x:auto
+		font-family: var(--code-font)
 		white-space:pre p:3 4 p.md:5 6
 
+	# css .output = bg:#2b2b2d
+
+	css label
+		bg:gray7 radius:2 l:abs flex center p:1
+
+	css button = px:1 mx:1 t:gray6 medium radius:2 bg.hover:gray7-10 outline.focus:none
+		&.active = bg:blue6 text:white
+
+	css .tabs = d:flex radius:2
+
+	prop tab = 'imba'
 
 	def hydrate
 		# console.log 'hydrating code block'
@@ -209,6 +222,21 @@ tag app-code-block < app-code
 
 	def run
 		emit('run',{code: plain})
+
+	def toggleJS
+		console.log 'toggleJS',tab
+		unless js
+			let res = await sw.request(event: 'compile', body: plain, path: 'playground.imba')
+			console.log 'result from serviceworker',res,plain
+			js = res.js
+			$compiled.innerHTML = highlight(res.js)
+			render!
+		console.log 'got here!'
+		tab = tab == 'js' ? 'imba' : 'js'
+		console.log 'toggledJS',tab
+		render!
+
+		# flags.toggle('show-js')
 	
 	def render
 		# console.log 'render code block',is-mounted,is-awakened,__f
@@ -219,8 +247,13 @@ tag app-code-block < app-code
 			color:$code-color bg:$code-bg-lighter
 		)>
 			<div.(l:abs top:2 right:2)>
-				<button.(px:2 t:bold blue400 t.hover:underline) @click.run> 'run'
-			<code innerHTML=highlighted>
+				<button .active=(tab == 'js') @click=toggleJS> 'show js'
+				<button @click=run> 'run'
+				# <.tabs>
+				# <.tab .active=(tab == 'css') @click=showJS> 'css'
+			<code.source .(l:hidden)=(tab != 'imba') innerHTML=highlighted>
+			<div.output.js .(l:hidden)=(tab != 'js')> <code$compiled>
+			
 
 tag app-code-inline < app-code
 

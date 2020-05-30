@@ -42,6 +42,7 @@ export class ImbaWorker
 		try
 			var res = imbac.compile(code,{sourcePath: uri})
 			console.log 'did compile',res
+			out.js = res.js
 			return Promise.resolve(out)
 		catch e
 			let token = e.token

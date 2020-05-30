@@ -4,10 +4,23 @@ title: Objects
 
 # Objects
 
-##### Basic strings
+## Object Literal
+
+##### Syntax
 ```imba
-'hello world'
+let object = {a: 'foo', b: 42, c: {}}
+console.log(object.a) # => 'foo'
 ```
+
+##### Destructuring
+```imba
+let a = 'foo'
+let b = 42
+let c = {}
+let object = {a,b,c}
+console.log(object) # => {a: 'foo', b: 42 c: {}}
+```
+
 
 ##### Dynamic strings
 ```imba
