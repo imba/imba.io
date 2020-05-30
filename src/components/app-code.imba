@@ -145,11 +145,14 @@ css .code
 def escape str
 	str.replace(/[\&\<\>]/g) do(m) replacements[m]
 
-def highlight str
+def highlight str,lang
 	if cache[str]
 		return cache[str]
 
-	str = str.replace(/^[ ]{4}/gm,'\t')
+	if lang != 'imba'
+		return str
+
+	str = str.replace(/^\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
 	let inject = {}
 	let next
 	while next = str.match(/(.*?)(\[###|###\])/)
@@ -230,13 +233,16 @@ tag app-code-block < app-code
 	css .tabs = d:flex radius:2
 
 	prop tab = 'imba'
+	prop lang
 
 	def hydrate
-		# console.log 'hydrating code block'
-		plain = textContent.replace(/^[ ]{4}/gm,'\t')
+		# console.log 'hydrating code block',outerHTML
+		lang = dataset.lang
+		plain = textContent.replace(/^\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
 		if plain.indexOf('# light') >= 0
 			flags.add('light')
-		highlighted = highlight(plain)
+
+		highlighted = highlight(plain,lang)
 		innerHTML = '' # empty 
 
 	def mount
@@ -251,7 +257,7 @@ tag app-code-block < app-code
 			let res = await sw.request(event: 'compile', body: plain, path: 'playground.imba')
 			console.log 'result from serviceworker',res,plain
 			js = res.js
-			$compiled.innerHTML = highlight(res.js)
+			$compiled.innerHTML = highlight(res.js,'javascript')
 			render!
 		console.log 'got here!'
 		tab = tab == 'js' ? 'imba' : 'js'
