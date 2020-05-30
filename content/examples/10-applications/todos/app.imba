@@ -1,13 +1,13 @@
 import { Todo } from './todo.imba'
 
-tag todos-app
+tag App
 	prop items = []
-	prop newTitle = ''
 
-	def add event
-		let todo = new Todo title: newTitle
-		items.push(title: newTitle)
-		newTitle = ''
+	css .done = text:line-through
+
+	def add title
+		items.push(new Todo title: title)
+		$input.value = ''
 
 	def toggle item
 		item.done = !item.done
@@ -17,10 +17,12 @@ tag todos-app
 
 	def render
 		<self>
-			<form :submit.prevent.add>
-				<input[newTitle] placeholder='What to do?'>
+			<form @submit.prevent=add($input.value)>
+				<input$input placeholder='What to do?'>
 			<ul> for item in items
-				<li.todo .done=item.done :click.toggle(item)> item.title
+				<li.todo .done=item.done @click=toggle(item)> item.title
 			<footer>
 				"You have {items.length} todos"
-				<button :click.archive> "Archive"
+				<button @click=archive> "Archive"
+
+imba.mount <App>

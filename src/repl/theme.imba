@@ -5,8 +5,8 @@ export const theme =
 	named:
 		background: '29313f'
 		foreground: 'D4D4D4'
-		keyword: 'ea9b80'
-		operator: 'ea9b80'
+		keyword: 'ff9696'
+		operator: 'ff9696'
 		# string: 'B7DE95'
 		dimdelimiter: '6d829b'
 		number: '598DA6'
@@ -151,6 +151,7 @@ export const theme =
 		{ token: 'metatag.php', fontStyle: 'bold' },
 
 		{ token: 'key', foreground: '@key' },
+		{ token: 'operator.assign.key', foreground: '@key' },
 		{ token: 'string.key.json', foreground: '9CDCFE' },
 		{ token: 'string.value.json', foreground: 'CE9178' },
 

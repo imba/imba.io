@@ -13,7 +13,7 @@ const replacements = {
 css :root
 	--code-color: #e3e3e3;
 	--code-identifier: #9dcbeb;
-	--code-constant: #c1a5d6;
+	--code-constant: #d7bbeb;
 	--code-background: #282c34;
 	--code-bg-lighter: #29313f;
 	--code-comment: #718096;
@@ -32,11 +32,13 @@ css :root
 	--code-tag-event: #fff9c3;
 	--code-tag-reference: #ffae86;
 	--code-tag-angle: #9d9755;
-	--code-type: #718096;
+	--code-type: #839fc7;
+	--code-type-delimiter:#303F52;
 	--code-property: #F7FAFC;
 	--code-decorator: #63b3ed;
 	--code-variable: #e8e6cb;
-	--code-root-variable: #e8e6cb;
+	--code-root-variable: #d7bbeb;
+
 	--code-font: "Source Code Pro", Consolas, Menlo, Monaco, Courier, monospace;
 	--code-rule-mixin: #ff9292;
 	--code-rule: #ffb8b8;
@@ -56,6 +58,14 @@ css :root
 	--code-selector-pseudostate: var(--code-selector);
 	--code-selector-context: #eec49d;
 
+	--code-key: #9dcbeb;
+
+	# operators
+	--code-operator: #dee5f9
+	--code-delimiter: #889cd6
+	--code-operator: #889cd6
+	--code-delimiter-operator:#889cd6;
+
 css .code
 	tab-size: 4
 	& .invalid = color: red
@@ -66,9 +76,11 @@ css .code
 	& .regexp = color: var(--code-regexp); 
 	& .tag = color: var(--code-tag); 
 	& .type = color: var(--code-type); 
+	& .type.start = color: var(--code-type-delimiter); 
 	& .entity.name.type = color: var(--code-entity); 
 	& .keyword = color: var(--code-keyword); font-weight: 600;
 	& .argparam = color: var(--code-keyword); font-weight: 600;
+	& .delimiter = color: var(--code-delimiter);
 	& .operator = color: var(--code-operator); 
 	& .property = color: var(--code-property); 
 	& .numeric = color: var(--code-numeric); 
@@ -76,6 +88,8 @@ css .code
 	& .boolean = color: var(--code-boolean); 
 	& .null = color: var(--code-null); 
 	& .identifier = color: var(--code-identifier); 
+	& .key = color: var(--code-key); 
+	& .key + .operator = color: var(--code-key); 
 	& .variable = color: var(--code-variable); 
 	& .string = color: var(--code-string); 
 	& .propname = color: var(--code-entity); 
@@ -113,6 +127,7 @@ css .code
 	& .selector.context = color: var(--code-selector-context) 
 	& .style.start-operator = color: var(--code-delimiter-operator);
 
+	& span.operator.dot = color:var(--code-identifier)
 	& span.region.more = display:none display.md:contents
 
 def escape str
