@@ -51,8 +51,8 @@ tag app-document
 
 	css h5
 		position: relative;
-		background: teal400;
-		color: teal900;
+		background: teal4;
+		color: teal9;
 		font-size: 14px;
 		font-weight: bold;
 		border-radius: 3px;
@@ -63,6 +63,13 @@ tag app-document
 		top: 8px;
 		left: 8px;
 		z-index: 30;
+
+		& app-code-inline
+			bg:teal3
+			color: teal8
+			l:rel
+			top:-1px
+			mr.last:-4px
 
 	css p
 		font-weight: 400;

@@ -39,9 +39,7 @@ def compileImba file
 		# rewrite certain special things
 		body = body.replace(/# @(show|log)( .*)?\n(\t*)/g) do(m,typ,text,tabs)
 			m + "${typ} '{(text or '').trim!}', "
-
-		# console.log 'rewritten body',file.body,body
-		# ranges will end up at wrong positions
+		body = body.replace(/from 'imdb'/g,'from "/imdb.js"')
 		let result = imbac.compile(body,{target: 'web', sourcePath: file.path, imbaPath: null})
 		file.js = result.toString!
 	catch e
@@ -109,6 +107,7 @@ class Worker
 	
 		if url.pathname.indexOf('/repl/') == -1
 			return
+			
 
 		let path = url.pathname.replace(/^\/repl/,'') 
 		let ext = path.split('.').pop()

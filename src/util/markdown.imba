@@ -35,9 +35,9 @@ def renderer.link href, title, text
 	elif href.match(/^\/examples\//) and text and (/Example/).test(text)
 		return (<embedded-app-example data-path=href>)
 	if href.match(/scrimba\.com.*\/c/)
-		return (<a.scrimba href=href title=title target='_blank'> <span> text)
+		return (<a.scrimba href=href title=title target='_blank'> <span innerHTML=text>)
 	else
-		return (<a href=href title=title> <span> text)
+		return (<a href=href title=title> <span innerHTML=text>)
 
 def renderer.heading text, level
 	var next = this.parser.peek || {}
@@ -89,7 +89,7 @@ def renderer.heading text, level
 	stack.push(meta)
 
 	let typ = "h{level}"
-	let node = <{typ} .{flags}> <span> text
+	let node = <{typ} .{flags}> <span innerHTML=text>
 	let pre = "<!--:{typ}:-->"
 	return pre + node.toString()
 

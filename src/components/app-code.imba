@@ -15,7 +15,7 @@ const replacements = {
 css :root
 	--code-color: #e3e3e3;
 	--code-identifier: #9dcbeb;
-	--code-constant: #d7bbeb;
+	--code-constant: #8ab9ff # #d7bbeb;
 	--code-background: #282c34;
 	--code-bg-lighter: #29313f;
 	--code-comment: #718096;
@@ -39,6 +39,7 @@ css :root
 	--code-property: #F7FAFC;
 	--code-decorator: #63b3ed;
 	--code-variable: #e8e6cb;
+	--code-global-variable: #dcb9e4 # #ffc3c3;
 	--code-root-variable: #d7bbeb;
 
 	--code-font: "Source Code Pro", Consolas, Menlo, Monaco, Courier, monospace;
@@ -64,7 +65,7 @@ css :root
 
 	# operators
 	--code-operator: #dee5f9
-	--code-delimiter: #889cd6
+	--code-delimiter: #c1d1ff
 	--code-operator: #889cd6
 	--code-delimiter-operator:#889cd6;
 
@@ -101,10 +102,12 @@ css .code
 	& .tag.reference = color: var(--code-tag-reference);
 	& .tag.open = color: var(--code-tag-angle); 
 	& .tag.close = color: var(--code-tag-angle); 
-	& .tag.close = color: var(--code-tag-angle); 
 	& .tag.event = color: var(--code-tag-event); 
 	& .tag.event-modifier = color: var(--code-tag-event); 
-	& .variable.scope_root = color: var(--code-root-variable); 
+	# & .variable.scope_root = color: var(--code-root-variable); 
+	& .constant.variable = color: var(--code-constant);
+	& .variable.global = color: var(--code-global-variable);
+	& .variable.imports = color: var(--code-global-variable);
 	& .decorator =color: var(--code-decorator); 
 	& .tag.flag.start = opacity: 1;
 	& .tag.rule-modifier = color: var(--code-rule-mixin); 
@@ -139,7 +142,7 @@ def highlight str
 	if cache[str]
 		return cache[str]
 
-	str = str.replace(/[ ]{4}/g,'\t')
+	str = str.replace(/^[ ]{4}/gm,'\t')
 	let inject = {}
 	let next
 	while next = str.match(/(.*?)(\[###|###\])/)
@@ -149,6 +152,7 @@ def highlight str
 
 	let tokens = ImbaDocument.tmp(str).getTokens()
 	let parts = []
+	let vref = 1
 
 	for token,i in tokens
 
@@ -161,8 +165,19 @@ def highlight str
 		
 		if token.variable
 			types = types.concat('variable')
+			if token.variable != token
+				types = types.concat token.variable.type.split('.')
+
 			if token.variable.varscope
 				types.push("scope_{token.variable.varscope.type}")
+			if token.variable.modifiers
+				types.push(...token.variable.modifiers)
+			
+			types = (type for type,i in types when types.indexOf(type) == i)
+
+			let ref = token.variable.vref ||= vref++
+			types.push("var{ref}")
+			# console.log 'found varaible',token.variable
 
 		if typ != 'white' and typ != 'line'
 			value = "<span class='{types.join(' ')}' data-offset={token.offset}>{escape(value)}</span>"
@@ -211,7 +226,7 @@ tag app-code-block < app-code
 
 	def hydrate
 		# console.log 'hydrating code block'
-		plain = textContent.replace(/[ ]{4}/g,'\t')
+		plain = textContent.replace(/^[ ]{4}/gm,'\t')
 		if plain.indexOf('# light') >= 0
 			flags.add('light')
 		highlighted = highlight(plain)
@@ -237,6 +252,10 @@ tag app-code-block < app-code
 		render!
 
 		# flags.toggle('show-js')
+
+	def pointerover e
+		console.log 'pointer over',e
+		# let variable = 
 	
 	def render
 		# console.log 'render code block',is-mounted,is-awakened,__f
@@ -251,7 +270,7 @@ tag app-code-block < app-code
 				<button @click=run> 'run'
 				# <.tabs>
 				# <.tab .active=(tab == 'css') @click=showJS> 'css'
-			<code.source .(l:hidden)=(tab != 'imba') innerHTML=highlighted>
+			<code.source .(l:hidden)=(tab != 'imba') innerHTML=highlighted @pointerover=pointerover>
 			<div.output.js .(l:hidden)=(tab != 'js')> <code$compiled>
 			
 
