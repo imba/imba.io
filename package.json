@@ -45,7 +45,7 @@
     "body-parser": "^1.19.0",
     "chokidar": "^3.3.1",
     "imba": "^2.0.0-alpha.57",
-    "imba-document": "^0.1.7",
+    "imba-document": "^0.1.8",
     "marked": "^0.7.0"
   }
 }
