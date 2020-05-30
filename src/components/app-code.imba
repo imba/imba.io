@@ -71,6 +71,7 @@ css :root
 
 css .code
 	tab-size: 4
+	cursor:default
 	& .invalid = color: red
 	& .entity.other.inherited-tag = color: var(--code-entity); 
 	& .entity.other.inherited-class = color: var(--code-entity); 
@@ -134,6 +135,12 @@ css .code
 
 	& span.operator.dot = color:var(--code-identifier)
 	& span.region.more = display:none display.md:contents
+
+	& .variable.highlight =
+		bg:rgba(255, 253, 227, 0.11)
+		box-shadow:0px 0px 0px 2px rgba(255, 253, 227, 0.11)
+		border-radius:3px
+		transition: all 0.15s
 
 def escape str
 	str.replace(/[\&\<\>]/g) do(m) replacements[m]
@@ -254,8 +261,18 @@ tag app-code-block < app-code
 		# flags.toggle('show-js')
 
 	def pointerover e
-		console.log 'pointer over',e
-		# let variable = 
+		# console.log 'pointer over',e
+		let vref = null
+		if let el = e.target.closest('.variable')
+			vref = el.className.split(/\s+/g).find do (/var\d+/).test($1)
+		
+		if vref != hlvar
+			if hlvar
+				el.classList.remove('highlight') for el in getElementsByClassName(hlvar)
+			if vref
+				el.classList.add('highlight') for el in getElementsByClassName(vref)
+			hlvar = vref
+			
 	
 	def render
 		# console.log 'render code block',is-mounted,is-awakened,__f
@@ -264,13 +281,13 @@ tag app-code-block < app-code
 		<self.(
 			l:rel block radius:1 font-size:13px
 			color:$code-color bg:$code-bg-lighter
-		)>
+		) @pointerover=pointerover>
 			<div.(l:abs top:2 right:2)>
 				<button .active=(tab == 'js') @click=toggleJS> 'show js'
 				<button @click=run> 'run'
 				# <.tabs>
 				# <.tab .active=(tab == 'css') @click=showJS> 'css'
-			<code.source .(l:hidden)=(tab != 'imba') innerHTML=highlighted @pointerover=pointerover>
+			<code.source .(l:hidden)=(tab != 'imba') innerHTML=highlighted>
 			<div.output.js .(l:hidden)=(tab != 'js')> <code$compiled>
 			
 
