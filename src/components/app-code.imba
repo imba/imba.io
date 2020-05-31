@@ -1,4 +1,4 @@
-import { ImbaDocument } from 'imba-document'
+import { ImbaDocument,Monarch } from 'imba-document'
 
 import * as sw from '../sw/controller'
 
@@ -149,8 +149,7 @@ def highlight str,lang
 	if cache[str]
 		return cache[str]
 
-	if lang != 'imba'
-		return str
+	
 
 	str = str.replace(/^\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
 	let inject = {}
@@ -160,7 +159,27 @@ def highlight str,lang
 		inject[offset] = next[2][0] == '[' ? '<span class="region more">' : '</span>'
 		str = str.slice(0,offset) + str.slice(offset + next[2].length)
 
-	let tokens = ImbaDocument.tmp(str).getTokens()
+	let tokens = []
+	if lang != 'imba'
+		if let tokenizer = Monarch.getTokenizer(lang)
+			console.log 'found tokenizer',tokenizer
+			let lines = str.split('\n')
+			let state = tokenizer.getInitialState!
+
+			for line,i in lines
+				let lexed = tokenizer.tokenize(line,state,0)
+				let count = lexed.tokens.length
+				for tok,i in lexed.tokens
+					if i == count - 1
+						tok.value ||= line.slice(tok.offset)
+					tokens.push(tok)
+				tokens.push({type: 'white',value: '\n'})
+				state = lexed.endState
+
+			# tokens = tokenizer.tokenize(str,tokenizer.getInitialState!,0).tokens
+	else
+		tokens = ImbaDocument.tmp(str).getTokens()
+
 	let parts = []
 	let vref = 1
 
@@ -214,7 +233,9 @@ tag app-code
 tag app-code-block < app-code
 
 	css &
-		color: var(--code-color)
+		l:rel block radius:1 font-size:13px
+		color:$code-color bg:$code-bg-lighter
+		t.not-md: 12px
 		& .code-head = display: none
 
 	css code
@@ -228,6 +249,7 @@ tag app-code-block < app-code
 		bg:gray7 radius:2 l:abs flex center p:1
 
 	css button = px:1 mx:1 t:gray6 medium radius:2 bg.hover:gray7-10 outline.focus:none
+		@not-md & = mx:0 ml:1 bg:gray7-90 bg.hover:gray7-100 t:gray4
 		&.active = bg:blue6 text:white
 
 	css .tabs = d:flex radius:2
@@ -284,15 +306,11 @@ tag app-code-block < app-code
 		# console.log 'render code block',is-mounted,is-awakened,__f
 		return unless highlighted
 
-		<self.(
-			l:rel block radius:1 font-size:13px
-			color:$code-color bg:$code-bg-lighter
-		) @pointerover=pointerover>
-			<div.(l:abs top:2 right:2)>
-				<button .active=(tab == 'js') @click=toggleJS> 'show js'
-				<button @click=run> 'run'
-				# <.tabs>
-				# <.tab .active=(tab == 'css') @click=showJS> 'css'
+		<self @pointerover=pointerover>
+			if lang == 'imba'
+				<div.(l:abs top:2 right:2 top.not-md:-2 right.not-md:1)>
+					<button .active=(tab == 'js') @click=toggleJS> 'js'
+					<button @click=run> 'run'
 			<code.source .(l:hidden)=(tab != 'imba') innerHTML=highlighted>
 			<div.output.js .(l:hidden)=(tab != 'js')> <code$compiled>
 			

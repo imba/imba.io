@@ -35,6 +35,8 @@ tag app-root
 			router.go(file.path)
 
 	css &
+		$header-height: 56px
+		$header-height.md: 80px
 		$menu-width: 80vw
 		$menu-width.md: 240px
 
@@ -56,12 +58,25 @@ tag app-root
 		cursor:pointer bg:teal300-90 t:teal800 bold b:teal400-20 shadow:md
 		y.hover:-2px shadow.hover:lg bg.hover:teal300
 		transition: 100ms cubic-out
+		l.not-md:hidden
 		&:after = opacity: 0.7 text:xs content: " " $shortcut
 
-	css $header = l:flex center hidden bg:white p:3 bb:gray2
+	css $header = 
+		l:fixed flex center l.md:hidden
+		p:3 w:100% h:$header-height
+		bb:gray2 bg:white
+		z-index:300
+		font-size:15px
+
 		& .tabs = l:inline-flex radius:2 bg:teal1-0 cursor:pointer
-		& .tab = l:flex center px:3 py:2 radius:2 flex:1 t:teal5 medium bg.hover:teal2-20
-		& .tab.active = bg:teal2 t:teal7
+		& .tab = l:flex center mx:2 py:1 flex:1 t:teal5 medium
+		& .tab.active = t:teal7 bb:2px solid teal7
+		& .handle
+			l:flex center size:9
+			radius:2 bg:white opacity:0.9 color:teal5
+			t:2xl
+	
+	css $doc = pt:$header-height pt.md:0
 
 
 	def go path
@@ -87,11 +102,13 @@ tag app-root
 		<self.(l:contents) @run=runCodeBlock(e.detail) @showide=$repl.show!>
 			# <app-header$header.(l:sticky top:0 height:16)>
 			<div$header>
+				<app-logo.(l:rel flex center h:8 t:teal4) route-to='/'>
 				<div.(flex: 1)>
 				<div.tabs>
 					<a.tab route-to.sticky='/guides'> "Guide"
 					<a.tab route-to.sticky='/manual'> "Manual"
 					<a.tab @click.emit('showide')> "Code"
+				<div.handle @click=($menu.focus!)> "☰"
 
 			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
 			<app-menu$menu data=doc>

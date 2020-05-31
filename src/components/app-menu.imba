@@ -17,25 +17,26 @@ tag app-menu
 		radius:2 bg:white shadow:sm opacity:0.9 color:teal5
 		t:lg l.md: hidden border:gray2
 
-	css .tabs = l:flex radius:2 bg:teal1 cursor:pointer mb:4
+	css .tabs = l:flex radius:2 bg:teal1 cursor:pointer mb:4 l.not-md:hidden
 	css .tab = l:flex center py:2 radius:2 flex:1 t:teal5 bg.hover:teal2-20
 	css .tab.active = bg:teal2 t:teal7
 
 	css .wip::after
 		l:rel inline-flex center bg:yellow2 content: 'wip'
 		t:yellow6 10px/1 uppercase p:1 radius:1 ml:1 top:-1px
+	
+	css $logo = opacity.not-md:0
 
 	def render
 		<self tabIndex=-1>
-			<div.handle> "☰"
+			# <div.handle> "☰"
 			<div.scroller>
-				<app-logo.(l:rel block h:14 mb:4 t:teal4 l:flex center) route-to='/'>
+				<app-logo$logo.(l:rel block h:14 mb:4 t:teal4 l:flex center) route-to='/'>
 
 				<div.tabs>
 					<a.tab.active hotkey='g' route-to.sticky='/guides'> "Guide"
 					<a.tab hotkey='m' route-to.sticky='/manual'> "Manual"
 					<a.tab hotkey='c' @click.emit('showide')> "Code"
-
 
 				for child in data.root.children
 					<h5.(p:1 2 t:xs gray5)> child.title.toUpperCase!
