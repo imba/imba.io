@@ -882,6 +882,130 @@ console.log elements.map do({length}) length
 ```
 
 # [WIP] Loops
+<!-- WORKING ON -->
+Loops in Imba provide simple ways to iterate through the content of your arrays or objects. And by "simple", we mean "super simple".
+
+And loops are not limited to scripting within your functions and classes, they can also be used within your templating. That is a fantastic feature of Imba. That means that you won't have to have to be using `getElementByID("")` to inject data from your loops into the dom. Once you get used to this, it will be hard to back to the old ways.
+
+Before we explore all the different ways to loop through your arrays, let's take a common Javascript for-loop as an example and compare it with the Imba syntax.
+The example below is borrowed from [W3Schools](https://www.w3schools.com/js/tryit.asp?filename=tryjs_loop_for).
+With this loop, we will render a line of text containing each car brand to the element with the ID of "demo".
+
+##### JS
+<!-- TODO: change to ```js -->
+```imba
+var cars = ["BMW", "Volvo", "Saab", "Ford", "Fiat", "Audi"];
+var i;
+for (i = 0; i < cars.length; i++) {
+	text += cars[i] + "<br>";
+}
+document.getElementById("demo").innerHTML = text;
+```
+Here's what that looks like in Imba. You don't technically need the id of "demo" if it's sole purpose was for selecting the element and injecting data into it. In our example we just have the data injected right into the `<self>` tag. No need to use `document.getElementByID("")`. How cool is that?
+
+##### Imba
+```imba
+var cars = ["BMW", "Volvo", "Saab", "Ford", "Fiat", "Audi"]
+tag app-root
+	<self #demo>
+		for text in cars
+			text + <br>
+```
+
+## `for in` Array loop
+The `for in` loop is one of the most commonly used loops for iterating through each item in an array. So let's get familiar with it.
+
+Notice how the expression can be done at the end of the parent line, and it will render the child for each item in the array.
+```imba
+tag app-root
+	def render
+		<self>
+			<ul> for item in ['Imba','HTML', 'Javscript']
+				<li> item
+```
+> **Note**: The word "item" can be replaced for any variable name you'd like.
+```imba
+for item in list
+	item.id
+```
+## `for in when` Guarded Loop
+```imba
+for item in list when item.id > 1
+	item.id
+```
+## `for {} in` destructuring arguments
+```imba
+for {id} in list
+	id
+```
+## `for {} in when` destructuring arguments with guard
+```imba
+for {id} in list when id > 1
+	id
+```
+## `for in [..]` inclusive range
+```imba
+for item in [0 .. 2]
+	item
+```
+
+## `for in [...]` exclusive range
+```imba
+for item in [0 ... 2]
+	item
+```
+## `for of` Loop
+<!-- TODO: What's the difference for in and for of -->
+Sometimes you need to loop through keys of an Object instaed of an array. For that you will use the uses the `for of` syntax.
+
+
+```imba
+for item of ['a','b','c']
+	item
+
+```
+## For of 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # If/Else Statements
 `If/Else` statements can be used in nearly every scope in Imba (except in styles).
@@ -1115,8 +1239,8 @@ A good use for the `NOT` operator is for toggling a boolean value upon an event.
 ```imba
 tag app-todo
 	prop visible = true
-    def toggleItem
-    	visible = visible
+	def toggleItem
+		visible = visible
 	def render
 		<self>
 			<button @click.toggleItem> "toggle"
