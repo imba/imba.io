@@ -1,4 +1,4 @@
-# Loops and Iteration
+# Loops
 
 Loops in Imba behaves similar to array comprehensions in CoffeeScript and Python. They are expressions, and can be returned and assigned. When used as expressions they will always return an array.
 

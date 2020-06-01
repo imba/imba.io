@@ -2,16 +2,20 @@
 title: Glossary
 ---
 
-# Truthy
+### Truthy
 
-# Falsy
+### Falsy
 
-# Element
+### Element
 
-# Component
+### Component
 
-# Instance
+### Instance
 
-# Initializer
+### Initializer
 
-# Property
+### Property
+
+### Weak scope
+
+### Strong scope
