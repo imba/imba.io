@@ -19,8 +19,8 @@ css :root
 	--code-background: #282c34;
 	--code-bg-lighter: #29313f;
 	--code-comment: #718096;
-	--code-keyword: #e88376;
-	--code-operator: #e88376;
+	--code-keyword: #ff9a8d; # #e88376;
+	--code-operator: #ff9a8d;
 	--code-delimiter-operator:#6d829b;
 	--code-numeric: #63b3ed;
 	--code-boolean: #4299e1;
@@ -64,9 +64,9 @@ css :root
 	--code-key: #9dcbeb;
 
 	# operators
-	--code-operator: #dee5f9
-	--code-delimiter: #c1d1ff
-	--code-operator: #889cd6
+	# --code-operator: #dee5f9
+	--code-delimiter: #e3e3e3
+	# --code-operator: #889cd6
 	--code-delimiter-operator:#889cd6;
 
 css .code
@@ -82,8 +82,8 @@ css .code
 	& .type = color: var(--code-type); 
 	& .type.start = color: var(--code-type-delimiter); 
 	& .entity.name.type = color: var(--code-entity); 
-	& .keyword = color: var(--code-keyword); font-weight: 600;
-	& .argparam = color: var(--code-keyword); font-weight: 600;
+	& .keyword = color: var(--code-keyword);
+	& .argparam = color: var(--code-keyword);
 	& .delimiter = color: var(--code-delimiter);
 	& .operator = color: var(--code-operator); 
 	& .property = color: var(--code-property); 
