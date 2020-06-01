@@ -12,6 +12,38 @@ let object = {a: 'foo', b: 42, c: {}}
 console.log(object.a) # => 'foo'
 ```
 
+##### Indented
+```imba
+let person =
+    name: 'Bob Smith'
+    age: 32
+    gender: 'male'
+console.log(person.name) # => 'Bob Smith'
+```
+
+##### Dynamic keys
+```imba
+let field = 'age'
+let person = {name: 'Bob Smith', [field]: 32, gender: 'male'}
+console.log(person.age) # => 'Bob Smith'
+```
+
+##### Dot notation `.`
+```imba
+let person = {name: 'Bob Smith', age: 32, gender: 'male'}
+# ---
+person.name
+person.age = 33
+```
+
+##### Bracket notation `[]`
+```imba
+let person = {name: 'Bob Smith', age: 32, gender: 'male'}
+# ---
+person['name']
+person['age'] = 33
+```
+
 ##### Destructuring
 ```imba
 let a = 'foo'
@@ -20,18 +52,3 @@ let c = {}
 let object = {a,b,c}
 console.log(object) # => {a: 'foo', b: 42 c: {}}
 ```
-
-
-##### Dynamic strings
-```imba
-"imba version {imba.version}"
-```
-
-Double quoted strings can
-
-##### Template strings
-```imba
-`hello world`
-`imba version {imba.version}`
-```
-> In JavaScript `${}` is used for interpolation. Imba uses `{}`. If you want interpolated strings with literal curly-braces, remember to escape them with `\`
