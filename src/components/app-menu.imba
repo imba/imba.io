@@ -33,6 +33,7 @@ tag app-menu
 	
 	css $logo = opacity.not-md:0
 
+	# css .item.active + .children:not(:empty) = l:block
 	css div.children = l.empty:hidden
 
 	css div.keywords
