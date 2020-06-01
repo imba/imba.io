@@ -105,7 +105,7 @@ tag app-root
 				<app-logo.(l:rel flex center h:8 t:teal4) route-to='/'>
 				<div.(flex: 1)>
 				<div.tabs>
-					<a.tab route-to.sticky='/guides'> "Guide"
+					<a.tab route-to.sticky='/guides'> "Guides"
 					<a.tab route-to.sticky='/manual'> "Manual"
 					<a.tab @click.emit('showide')> "Code"
 				<div.handle @click=($menu.focus!)> "☰"

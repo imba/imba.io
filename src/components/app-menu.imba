@@ -49,7 +49,7 @@ tag app-menu
 				<app-logo$logo.(l:rel block h:14 mb:4 t:teal4 l:flex center) route-to='/'>
 
 				<div.tabs>
-					<a.tab.active hotkey='g' route-to.sticky='/guides'> "Guide"
+					<a.tab.active hotkey='g' route-to.sticky='/guides'> "Guides"
 					<a.tab hotkey='m' route-to.sticky='/manual'> "Manual"
 					<a.tab hotkey='c' @click.emit('showide')> "Code"
 
