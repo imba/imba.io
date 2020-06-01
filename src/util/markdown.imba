@@ -149,13 +149,18 @@ export def render content
 	object.toc.stack = []
 
 	# if object:title
-	var toc = {level: 0, title: (object.title or "Doc"), children: [], slug: 'toc'}
 	var tokens = marked.lexer(content)
 	var parser = new marked.Parser(opts, renderer)
 	renderer.parser = parser
 	renderer.toc = object.toc
 	opts.parser = parser
 	object.body = parser.parse(tokens)
+
+	console.log 'toc',object.toc.map do String($1.title)
+	unless object.meta.title
+		if let h1 = object.toc[0]
+			object.meta.title = h1.title
+
 	renderer.toc = null
 
 	if object.meta.multipage

@@ -89,7 +89,7 @@ watcher.on('all') do
 				
 				for own k,v of md
 					up[k] = v
-				console.log 'did set meta',up
+				# console.log 'did set meta',up
 				return
 	
 	if item

@@ -1,6 +1,11 @@
-# Operators
+---
+title: Operators
+multipage: true
+---
 
-## Arithmetic
+# Logical operators
+
+# Arithmetic operators
 
 ##### Addition `+`
 ```imba
@@ -32,16 +37,6 @@
 2 ** 2
 ```
 
-##### Increment `++`
-```imba
-i++
-```
-
-##### Decrement `--`
-```imba
-i--
-```
-
 ##### Unary negation `-`
 ```imba
 -i
@@ -52,7 +47,7 @@ i--
 +i
 ```
 
-## Assignment
+# Assignment operators
 
 ##### Assignment `=`
 ```imba
@@ -74,14 +69,25 @@ item &&= 100
 item ?= 100
 ```
 
+
 ##### Addition assignment `+=`
 ```imba
 item += 100
 ```
 
-##### Subtraction assignment `-=`
+##### Increment `++`
+```imba
+i++
+```
+
+##### `-=` Subtraction assignment
 ```imba
 item -= 100
+```
+
+##### Decrement `--`
+```imba
+i--
 ```
 
 ##### Multiplication assignment `*=`
@@ -190,3 +196,7 @@ let x = 2
 # ---
 10 > x > 5
 ```
+
+# Bitwise operators
+
+# Ternary operator

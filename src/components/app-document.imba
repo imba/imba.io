@@ -77,22 +77,27 @@ tag app-document
 		margin: 1em 0;
 
 	css li
-		font-size: 15px;
+		font-size: 16px;
 		line-height: 1.3em;
-		padding-top: 0.15em;
-		padding-bottom: 0.15em;
-		padding-left: 30px;
+		padding-top: 0.2em;
+		padding-bottom: 0.2em;
+		padding-left: 24px;
 		position: relative;
 		&:before
-			content: "•";
-			width: 20px;
+			content: ""
+			bg:gray4
+			size:8px
+			display:block
+			radius:full
 			text-align: center;
 			position: absolute;
 			left: 6px;
+			top:9px;
 			font-size: inherit;
 			line-height: inherit;
 			font-style: normal;
 			color: #52AF78;
+
 		& > p > code
 			display: table;
 			margin-bottom: 4px;

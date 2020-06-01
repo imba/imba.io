@@ -24,6 +24,7 @@ class Entry
 		name = data.name
 		path = data.path or (parent ? parent.path + '/' + data.name : '/' + data.name)
 		meta = data.meta || {}
+		slug = (data.slug or data.name.toLowerCase!.replace(/[^\w]/g,'_')).replace(/^(?=\d)/,'_')
 		children = []
 		paths[path] = self
 		paths[path.replace(/\.(\w+)$/,'')] = self
@@ -36,6 +37,9 @@ class Entry
 				if typ == Folder
 					self[item.name] = item
 				return item
+	
+	get type
+		'entry'
 
 	get title
 		data.title or basename.replace(/\-/g,' ')
@@ -71,6 +75,9 @@ export class File < Entry
 		uri = "file://{path}"
 		href = path.replace(/\.(\w+)$/,'')
 		files.push(self)
+	
+	get type
+		'file'
 
 	get first
 		children[0] ? children[0].first : self
@@ -129,6 +136,9 @@ export class Folder < Entry
 
 	def constructor data, parent
 		super
+	
+	get type
+		'folder'
 
 	get sections
 		files
