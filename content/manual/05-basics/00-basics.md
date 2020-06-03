@@ -1,7 +1,3 @@
----
-title: Basics
----
-
 # The Basics
 
 ```imba
@@ -24,6 +20,8 @@ let details =
     inspiration: ['ruby','python','react','coffeescript']
 ```
 
+# Overview
+
 ## Significant whitespace
 
 ## Implicit self
@@ -44,3 +42,11 @@ def grade student
     else
         'C'
 ```
+
+## Type Annotations
+
+# Installation
+
+# Tooling
+
+# Caveats

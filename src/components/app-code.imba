@@ -55,6 +55,7 @@ css :root
 	--code-style-value: #a49feb;
 	--code-style-value-size: #ff8c8c;
 	--code-style-property: #e0ade3;
+	--code-style-property-scope: #e9e19b;
 	--code-style-var: #ff93d0;
 	--code-keyword-css: #fff7b6;
 	--code-selector: #e9e19b;
@@ -124,7 +125,7 @@ css .code
 	& .unit = color: var(--code-style-unit); 
 	& .style.delimiter = color: var(--code-style-delimiter); 
 	& .style.property = color: var(--code-style-property); 
-	& .style.property.scope = color: var(--code-style-scope); 
+	& .style.property.scope = color: var(--code-style-property-scope);
 	& .style.value = color: var(--code-style-value); 
 	& .style.value.var = color: var(--code-style-var);
 	& .style.value.size = color: var(--code-style-value-size); 
@@ -147,6 +148,16 @@ css .code
 		box-shadow:0px 0px 0px 2px rgba(0, 0, 0, 0.11)
 		border-radius:3px
 		transition: all 0.15s
+
+	& .region = d:rel
+
+	& .region.arrow::before =
+		content: " "
+		d:abs block
+		size:16px
+		bg: url('/images/arrow.svg')
+		background-size: contain
+		bottom:100% right:50% mr:-2px mb:-2px
 
 def escape str
 	str.replace(/[\&\<\>]/g) do(m) replacements[m]
