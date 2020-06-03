@@ -55,7 +55,7 @@ css :root
 	--code-style-value: #a49feb;
 	--code-style-value-size: #ff8c8c;
 	--code-style-property: #e0ade3;
-	--code-style-property-scope: #e9e19b;
+	--code-style-property-scope: #df8de4; # #e9e19b;
 	--code-style-var: #ff93d0;
 	--code-keyword-css: #fff7b6;
 	--code-selector: #e9e19b;

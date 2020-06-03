@@ -36,16 +36,24 @@ tag app-root
 
 	css &
 		$header-height: 56px
-		$header-height.md: 80px
+		$header-height.md: 64px
 		$menu-width: 80vw
 		$menu-width.md: 240px
 
-	css app-menu
-		h:100vh t:sm 500 l:fixed pt:0 top:0 bg:white
-		width: $menu-width
+	css $menu
+		pt:$header-height
+		h:100vh
+		w:$menu-width
+		t:sm 500
+		l:fixed
+		top:0
+		bg:white
 		z-index: 150
-		x:-100% x.md:0 x.focus-within:0
-		br:gray300 br.md:none
+		x:-100%
+		x.md:0
+		x.focus-within:0
+		br:gray300
+		br.md:none
 		transition: 250ms cubic
 	
 	css $repl
@@ -62,22 +70,20 @@ tag app-root
 		&:after = opacity: 0.7 text:xs content: " " $shortcut
 
 	css $header = 
-		l:fixed flex center l.md:hidden
+		l:fixed flex center
 		p:3 w:100% h:$header-height
 		bb:gray2 bg:white
 		z-index:300
 		font-size:15px
+		top:0px
 
 		& .tabs = l:inline-flex radius:2 bg:teal1-0 cursor:pointer
 		& .tab = l:flex center mx:2 py:1 flex:1 t:teal5 medium
 		& .tab.active = t:teal7 bb:2px solid teal7
 		& .handle
-			l:flex center size:9
+			l:flex center l.md:hidden size:9
 			radius:2 bg:white opacity:0.9 color:teal5
 			t:2xl
-	
-	css $doc = pt:$header-height pt.md:0
-
 
 	def go path
 		# console.log 'go to path',path
@@ -105,9 +111,14 @@ tag app-root
 				<app-logo.(l:rel flex center h:8 t:teal4) route-to='/'>
 				<div.(flex: 1)>
 				<div.tabs>
-					<a.tab route-to.sticky='/guides'> "Guides"
-					<a.tab route-to.sticky='/manual'> "Manual"
-					<a.tab @click.emit('showide')> "Code"
+					# <a.tab route-to.exact='/'> "Home"
+					<a.tab route-to.sticky='/guides'> "Docs"
+					# <a.tab route-to.sticky='/manual'> "Docs"
+					<a.tab @click.emit('showide')> "Examples"
+					<a.tab href='https://github.com/imba/imba'> "Repo"
+					<a.tab href='https://discord.gg/mkcbkRw'> "Chat"
+					
+				
 				<div.handle @click=($menu.focus!)> "☰"
 
 			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
@@ -121,12 +132,19 @@ css :root
 	font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
 	-webkit-font-smoothing: antialiased
 	-moz-osx-font-smoothing: grayscale
+	$header-height: 56px
+	$header-height.md: 64px
+	$menu-width: 80vw
+	$menu-width.md: 240px
 
 css html.noscroll body
 	overflow: hidden
 
-css *
-	outline:none
-
 css html,body
 	padding:0px margin:0px
+
+css body
+	padding-top: $header-height
+
+css *
+	outline:none	
