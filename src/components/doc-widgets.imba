@@ -103,6 +103,8 @@ tag doc-colors
 	css .palette = my:2 t:sm bold cursor:default radius:2 l:clip flex
 	css .color = radius:0 fg:1 p:1 h:12 d:flex ai:center jc:center w:5 
 	css .color span = opacity:0 transition: 30ms ease-in-out 
+	css .color:first-child span = opacity:0.3
+	# css .color:last-child span = opacity:0.1
 	css .color:hover span = opacity:1
 
 	def render
@@ -110,4 +112,4 @@ tag doc-colors
 			for color in ['gray','red','orange','yellow','green','teal','blue','indigo','purple','pink']
 				<div.palette.{color}>
 					for tint in [1,2,3,4,5,6,7,8,9]
-						<div.color.{color + tint}.t{tint}> <span> "{color+tint}"
+						<div.color.{color + tint}.t{tint}> <span> "{color}{tint}"
