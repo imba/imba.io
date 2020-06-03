@@ -1,4 +1,4 @@
-# The Basics
+# Introduction
 
 ```imba
 let number = 42
@@ -50,3 +50,5 @@ def grade student
 # Tooling
 
 # Caveats
+
+# History

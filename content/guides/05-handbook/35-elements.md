@@ -1,4 +1,4 @@
-# Tags & Rendering
+# Elements
 
 # Tag Literals
 
@@ -286,7 +286,11 @@ You can use break, continue and anything else you would expect to work. Here is 
 
 # Handling Events
 
+[Article](/articles/events.md)
+
 # Form Input Bindings
+
+[Article](/articles/binding-data.md)
 
 # Using Slots
 
