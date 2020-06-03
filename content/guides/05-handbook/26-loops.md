@@ -26,6 +26,20 @@ for own key,value of obj
 ```
 > Convenient syntax for looping through key-value pairs of objects.
 
+##### while
+```imba
+let ary = [1,2,3]
+while let item = ary.pop!
+    console.log item
+```
+
+##### until
+```imba
+let ary = [1,2,3]
+until ary.length == 0
+    console.log ary.pop!
+```
+
 ## Loops as expressions
 
 One important difference from JavaScript is that loops can behave as expressions. This means that you can assign them to variables, return them from methods, and everything you could do with other expressions. When used as expressions these loops returns an array containing the result of every iteration of the loop.
