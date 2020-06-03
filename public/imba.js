@@ -155,7 +155,7 @@ imba.setTimeout = function(fn,ms) {
 	return setTimeout(function() {
 		
 		fn();
-		return imba.commit();
+		return imba.$commit();
 	},ms);
 };
 
@@ -164,7 +164,7 @@ imba.setInterval = function(fn,ms) {
 	return setInterval(function() {
 		
 		fn();
-		return imba.commit();
+		return imba.$commit();
 	},ms);
 };
 
@@ -300,7 +300,14 @@ imba.emit = function (obj,event,params){
 
 
 imba.scheduler = new _internal_scheduler__WEBPACK_IMPORTED_MODULE_1__["Scheduler"]();
-imba.commit = function() { return imba.scheduler.add('render'); };
+imba.$commit = function() { return imba.scheduler.add('render'); };
+
+imba.commit = function() {
+	
+	imba.scheduler.add('render');
+	return imba.scheduler.promise;
+};
+
 imba.tick = function() {
 	
 	imba.commit();
@@ -859,6 +866,7 @@ function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
 var raf = (typeof requestAnimationFrame !== 'undefined') ? requestAnimationFrame : (function(blk) { return setTimeout(blk,1000 / 60); });
 
 
+
 class Scheduler {
 	
 	constructor(){
@@ -869,7 +877,8 @@ class Scheduler {
 		this.batch = 0;
 		this.scheduled = false;
 		this.listeners = {};
-		
+		this.$promise = null;
+		this.$resolve = null;
 		this.$ticker = function(e) {
 			
 			self.scheduled = false;
@@ -891,7 +900,7 @@ class Scheduler {
 	listen(ns,item){
 		var $listeners;
 		
-		($listeners = this.listeners)[ns] || ($listeners[ns] = new Set());
+		($listeners = this.listeners)[ns] || ($listeners[ns] = new Set);
 		return this.listeners[ns].add(item);
 	}
 	
@@ -903,7 +912,10 @@ class Scheduler {
 	get promise(){
 		var self = this;
 		
-		return new Promise(function(resolve) { return self.add(resolve); });
+		return this.$promise || (this.$promise = new Promise(function(resolve) {
+			
+			return self.$resolve = resolve;
+		}));
 	}
 	
 	tick(timestamp){
@@ -945,6 +957,11 @@ class Scheduler {
 		};
 		this.stage = 2;
 		this.stage = this.scheduled ? 0 : -1;
+		if (this.$promise) {
+			
+			this.$resolve(this);
+			this.$promise = this.$resolve = null;
+		};
 		return this;
 	}
 	
@@ -1227,9 +1244,9 @@ class EventHandler {
 				res = context[handler].apply(context,args);
 			};
 			
-			if (res && (res.then instanceof Function)) {
+			if (res && (res.then instanceof Function) && res != imba.scheduler.$promise) {
 				
-				if (commit) { imba.commit() };
+				if (commit) imba.$commit();
 				awaited = true;
 				
 				res = await res;
@@ -1243,7 +1260,7 @@ class EventHandler {
 			state.value = res;
 		};
 		
-		if (commit) { imba.commit() };
+		if (commit) imba.$commit();
 		this.currentEvents.delete(event);
 		if (this.currentEvents.size == 0) {
 			

@@ -217,11 +217,12 @@ const array = [
 
 # Element
 
-DOM nodes are first-class citizens in Imba, meaning that they can be instantiated using a literal syntax.
+DOM nodes are first-class citizens in Imba, meaning that they can be instantiated using a literal syntax. They are *actual DOM elements*. We are not using a virtual DOM.
 
-##### Element Literal Syntax
+##### Create element
 ```imba
 let el = <div.main title='example'> "Hello world"
+document.body.appendChild el
 ```
 
 ##### Element with children
@@ -232,11 +233,7 @@ let el = <div.main title='example'> "Hello world"
 	<li.three> <span> 'three'
 ```
 
-##### Dynamic element type
-```imba
-let type = 'section'
-let el = <{type}.main title='example'> "This is a section"
-```
+
 
 ## Properties
 
@@ -366,6 +363,13 @@ import {movies} from 'imdb'
 ```
 
 > `for of` and `for own of` loops also supported for iteration
+
+## Dynamic type
+
+```imba
+let type = 'section'
+let el = <{type}.main title='example'> "This is a section"
+```
 
 ## Styling
 

@@ -103,6 +103,8 @@ tag app-document
 			margin-bottom: 4px;
 			font-weight: 600;
 
+		& > * = mt.first:0 mb.last:0
+
 	css blockquote
 		background: #F7F2E3;
 		margin: 12px 0px;
@@ -166,8 +168,8 @@ tag app-document
 		&:hover svg= color:gray5
 
 	def render
-		let prev = data.prev and data.prev.last
-		let next = data.next and data.next.first
+		let prev = data.prev # and data.prev.last
+		let next = data.next # and data.next.first
 		<self.markdown.(l:block pb:24)>
 			<div$content.(max-width:768px px:6) innerHTML=data.html>
 			<div.(max-width:768px px:4 l:flex jc:space-between)>

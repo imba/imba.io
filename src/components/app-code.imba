@@ -39,7 +39,7 @@ css :root
 	--code-property: #F7FAFC;
 	--code-decorator: #63b3ed;
 	--code-variable: #e8e6cb;
-	--code-global-variable: #dcb9e4 # #ffc3c3;
+	--code-global-variable: #ecd5f1; # #dcb9e4 # #ffc3c3;
 	--code-root-variable: #d7bbeb;
 
 	--code-font: "Source Code Pro", Consolas, Menlo, Monaco, Courier, monospace;
@@ -142,6 +142,12 @@ css .code
 		border-radius:3px
 		transition: all 0.15s
 
+	& .region.hl2 =
+		bg:rgba(0, 0, 0, 0.11)
+		box-shadow:0px 0px 0px 2px rgba(0, 0, 0, 0.11)
+		border-radius:3px
+		transition: all 0.15s
+
 def escape str
 	str.replace(/[\&\<\>]/g) do(m) replacements[m]
 
@@ -149,31 +155,62 @@ def highlight str,lang
 	if cache[str]
 		return cache[str]
 
+	# find flags at the top
+	let out = {
+		flags: {}
+	}
 	
+	str = str.replace(/^(~\w*[\[\|]?)?\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
+	
+	let flags = out.flags
+	let lines = str.split('\n')
 
-	str = str.replace(/^\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
+	# console.log 'lines',lines
+	if lines[0].indexOf('# ~') == 0
+		lines.shift!.replace(/~(\w+)/g) do(m,flag) flags[flag] = yes
+
+	for line,i in lines
+		# if line[0] == '~'
+		#	console.log line,line.replace(/^(~\w*)\|(.*)$/,'$1[$2]~')
+		lines[i] = line.replace(/^(~\w*)\|(.*)$/,'$1[$2]~')
+		
+	str = lines.join('\n')
+
 	let inject = {}
 	let next
-	while next = str.match(/(.*?)(\[###|###\])/)
-		let offset = next[1].length
-		inject[offset] = next[2][0] == '[' ? '<span class="region more">' : '</span>'
-		str = str.slice(0,offset) + str.slice(offset + next[2].length)
+	while next = str.match(/~(\w*)\[|\]~/)
+		let offset = str.indexOf(next[0])
+		# let offset = next[1].length
+		let open = next[0][0] == '~'
+		let typ = next[1] or 'focus'
+
+		if open			
+			flags['has-regions'] = yes
+			flags["has-{typ}"] = yes
+
+		inject[offset] = open ? "<span class='region {typ}'>" : '</span>'
+		str = str.slice(0,offset) + str.slice(offset + next[0].length)
+
+	out.plain = str
+	console.log inject
 
 	let tokens = []
 	if lang != 'imba'
 		if let tokenizer = Monarch.getTokenizer(lang)
-			console.log 'found tokenizer',tokenizer
+			# console.log 'found tokenizer',tokenizer
 			let lines = str.split('\n')
 			let state = tokenizer.getInitialState!
 
 			for line,i in lines
+				tokens.push({type: 'white',value: '\n'}) if i > 0
+
 				let lexed = tokenizer.tokenize(line,state,0)
 				let count = lexed.tokens.length
 				for tok,i in lexed.tokens
 					if i == count - 1
 						tok.value ||= line.slice(tok.offset)
 					tokens.push(tok)
-				tokens.push({type: 'white',value: '\n'})
+				
 				state = lexed.endState
 
 			# tokens = tokenizer.tokenize(str,tokenizer.getInitialState!,0).tokens
@@ -183,14 +220,27 @@ def highlight str,lang
 	let parts = []
 	let vref = 1
 
-	for token,i in tokens
+	let pairs = 
+		'style.open': 'style.close'
+	
+	let closers = []
 
-		# if inject[token.offset]
-		#	parts.push(inject[token.offset])
+	for token,i in tokens
+		let next = tokens[i + 1]
+		if inject[token.offset]
+			# console.log 'injecting now',token.offset,token.type,token.value,inject[token.offset]
+			parts.push(inject[token.offset])
+			delete inject[token.offset]
+
 
 		let value = token.value
+		let end  = token.offset + value.length
 		let types = token.type.split('.')
 		let [typ,subtyp] = types
+
+		if pairs[token.type]
+			parts.push("<span class='_{typ}'>")
+			closers.unshift(pairs[token.type])
 		
 		if token.variable
 			types = types.concat('variable')
@@ -210,6 +260,8 @@ def highlight str,lang
 
 		if typ != 'white' and typ != 'line'
 			value = "<span class='{types.join(' ')}' data-offset={token.offset}>{escape(value)}</span>"
+		else
+			value = "<span data-offset={token.offset}>{value}</span>"
 
 		if typ == 'comment' and token.value == '# ---'
 			parts.unshift('<div class="code-head">')
@@ -219,7 +271,21 @@ def highlight str,lang
 			continue
 
 		parts.push(value)
-	return cache[str] = parts.join('')
+
+		if inject[end] and (!next or typ != 'line')
+			parts.push(inject[end])
+			delete inject[end]
+
+		if closers[0] and token.type == closers[0]
+			parts.push('</span>')
+			closers.shift!
+
+	out.html = parts.join('')
+	out.options = out.flags
+	out.flags = Object.keys(flags).join(' ')
+	cache[str] = out
+	return out
+	# return (<code.{Object.keys(flags).join(' ')} innerHTML=html>).outerHTML
 
 tag app-code
 	
@@ -254,32 +320,58 @@ tag app-code-block < app-code
 
 	css .tabs = d:flex radius:2
 
+	css .nostyles ._style = d:none
+	# css code.has-regions > span:not(.region) = opacity: 0.4
+	css code.has-focus > span:not(.focus) = opacity: 0.6
+	css code.has-hide span.hide = d:none
+	# css code.has-focus > span:not(.focus) = opacity: 0.4
+	# css code.has-focus > span.region.focus = opacity: 1
+	css &.shared = d:none
+
+	css code.has-hl > span:not(.hl) = opacity: 0.8
+	css code span.region.hl = l:rel
+		&::before = l:abs inset:0 m:-1 radius:3 b:1px dashed yellow7 content:' '
+			box-shadow: 0px 0px 10px 2px rgba(42, 50, 63,0.7), inset 0px 0px 2px 2px rgba(42, 50, 63,0.7)
+			rotate:-1deg
+
 	prop tab = 'imba'
 	prop lang
+	prop options = {}
 
 	def hydrate
 		# console.log 'hydrating code block',outerHTML
 		lang = dataset.lang
-		plain = textContent.replace(/^\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
-		if plain.indexOf('# light') >= 0
-			flags.add('light')
-
-		highlighted = highlight(plain,lang)
-		innerHTML = '' # empty 
+		# plain = textContent # .replace(/^\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
+		code = highlight(textContent,lang)
+		innerHTML = '' # empty
+		options.compile = !code.options.nojs and !code.plain.match(/^tag /m)
+		options.run = !code.options.norun
+		# console.log 'returned with code',code
 
 	def mount
 		render!
 
 	def run
-		emit('run',{code: plain})
+		let source = ""
+		for item in parentNode.querySelectorAll('app-code-block.shared')
+			source += item.code.plain + '\n'
+
+		source += code.plain
+
+		let lines = source.split('\n')
+		let last = lines.reverse!.find do !$1.match(/^[\t\s]*$/) and $1[0] != '\t'
+		if let m = (last and last.match(/^tag ([\w\-]+)/))
+			source += "\n\nimba.mount <{m[1]}>"
+		# console.log 'found last',last
+		emit('run',{code: source})
 
 	def toggleJS
 		console.log 'toggleJS',tab
 		unless js
-			let res = await sw.request(event: 'compile', body: plain, path: 'playground.imba')
-			console.log 'result from serviceworker',res,plain
+			let res = await sw.request(event: 'compile', body: code.plain, path: 'playground.imba')
+			console.log 'result from serviceworker',res
 			js = res.js
-			$compiled.innerHTML = highlight(res.js,'javascript')
+			$compiled.innerHTML = highlight(res.js,'javascript').html
 			render!
 		console.log 'got here!'
 		tab = tab == 'js' ? 'imba' : 'js'
@@ -304,14 +396,17 @@ tag app-code-block < app-code
 	
 	def render
 		# console.log 'render code block',is-mounted,is-awakened,__f
-		return unless highlighted
+		return unless code
 
-		<self @pointerover=pointerover>
+		<self.{code.flags} @pointerover=pointerover>
 			if lang == 'imba'
 				<div.(l:abs top:2 right:2 top.not-md:-2 right.not-md:1)>
-					<button .active=(tab == 'js') @click=toggleJS> 'js'
-					<button @click=run> 'run'
-			<code.source .(l:hidden)=(tab != 'imba') innerHTML=highlighted>
+					if options.compile
+						<button .active=(tab == 'js') @click=toggleJS> 'js'
+					if options.run
+						<button @click=run> 'run'
+
+			<div$source.source .(l:hidden)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
 			<div.output.js .(l:hidden)=(tab != 'js')> <code$compiled>
 			
 

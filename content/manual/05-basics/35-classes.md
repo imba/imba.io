@@ -32,17 +32,13 @@ class Todo
 let todo = new Todo title: 'Some title'
 ```
 
-### Properties
+# Methods
 
-### Methods
+# Properties
 
-### Getters
+# Getters & Setters
 
-### Setters
-
-### Implicit self
-
-## Inheritance
+# Inheritance
 
 ### super
 

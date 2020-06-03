@@ -55,11 +55,17 @@ class Entry
 
 	get prev
 		return null unless parent
-		parent.children[parent.children.indexOf(self) - 1] or parent.prev
+		parent.children[parent.children.indexOf(self) - 1] or (parent.html ? parent : (parent.prev and parent.prev.last))
 
 	get next
 		return null unless parent
 		parent.children[parent.children.indexOf(self) + 1] or parent.next
+
+	get prevSibling
+		parent ? parent.children[parent.children.indexOf(self) - 1] : null
+
+	get nextSibling
+		parent ? parent.children[parent.children.indexOf(self) + 1] : null
 
 	get root
 		_root ||= paths[path.split('/').slice(0,2).join('/')]
@@ -80,10 +86,16 @@ export class File < Entry
 		'file'
 
 	get first
-		children[0] ? children[0].first : self
+		children[0] and !html ? children[0].first : self
 
 	get last
 		children[children.length - 1] ? children[children.length - 1].last : self
+
+	get next
+		if parent and parent.last == self
+			return parent.nextSibling.first
+		return children[0].first if children[0]
+		super
 	
 	get html
 		data.html

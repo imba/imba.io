@@ -25,7 +25,13 @@ tag app-menu
 		p:1 2 l:block t:gray6 radius:1 t.hover:gray9
 		t.is-active:teal6 bg.is-active:teal2-25
 		&.folder = t:capitalize
-		&.sub = t:14px/1.2 400 ml:1 prefix: '–' pr.before:2 opacity.before:0.3
+	
+	css .item.sub =
+		t:14px/1.2 400 ml:1 prefix: '–' pr.before:2 opacity.before:0.3 mt:-26px opacity:0
+		transition:all 150ms cubic
+		pointer-events:none
+	
+	css .item.active + .children > .item.sub = opacity:1 my:0 pointer-events:auto
 
 	css .wip::after
 		l:rel inline-flex center bg:yellow2 content: 'wip'
@@ -33,7 +39,8 @@ tag app-menu
 	
 	css $logo = opacity.not-md:0
 
-	# css .item.active + .children:not(:empty) = l:block
+	
+
 	css div.children = l.empty:hidden
 
 	css div.keywords
@@ -42,6 +49,7 @@ tag app-menu
 		& .item
 			l:inline-block t:12px/1.2 lowercase mr:1 mb:1 p:1
 			radius:2 bg:gray2
+			& .children = l:hidden
 
 	def render
 		<self tabIndex=-1>

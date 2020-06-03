@@ -19,3 +19,7 @@ title: Glossary
 ### Weak scope
 
 ### Strong scope
+
+### Tick
+
+### Tag vs Element vs Component

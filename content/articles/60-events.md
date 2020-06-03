@@ -1,3 +1,5 @@
+# Event Handling
+
 We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
 
 ```imba
@@ -5,7 +7,7 @@ let counter = 0
 <button ~[@click=(counter++)]~> "Increment to {counter + 1}"
 ```
 
-## Event Handlers
+# Listening to Events
 
 It is important to understand how these event handlers are treated. Imba is created to maximize readability and remove clutter. If you set the value to something that looks like a regular method call, this call (and its arguments) will only be called when the event is actually triggered.
 
@@ -40,7 +42,7 @@ const handler = console.log.bind(console)
 ```
 
 
-## Event Modifiers
+# Event Modifiers
 
 Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers almost never need to deal with the event that triggered them. Modifiers are chained after the event name like:
 
@@ -103,7 +105,7 @@ var counter = 0
 ```
 By default, Imba will 'commit' after all handled events, so that any scheduled elements are told to re-render in case anything has changed. Even though Imba is blazing fast, there are some cases where you might want to suppress this behaviour.
 
-## Key Modifiers
+# Key Modifiers
 
 For keyboard events (keydown, keyup, keypress) there are also some very handy modifiers available.
 
@@ -126,7 +128,7 @@ def handler e
 >
 ```
 
-## System Key Modifiers
+# System Key Modifiers
 
 You can use the following modifiers to trigger mouse or keyboard event listeners only when the corresponding modifier key is pressed:
 
@@ -186,3 +188,7 @@ Event bindings are not required to have a handler, so if you wanted an area insi
 	<div> 'clickable'
 	<div @click.stop> 'not clickable'
 ```
+
+# Triggering Events
+
+hello

@@ -140,7 +140,7 @@ item ^= 1
 item |= 1
 ```
 
-## Comparison
+# Comparison operators
 
 ##### Equality `==`
 ```imba
@@ -195,6 +195,23 @@ x <= y
 let x = 2
 # ---
 10 > x > 5
+```
+
+# Unary operators
+
+##### `delete`
+```imba
+delete object.property
+```
+
+##### `void`
+```imba
+# todo
+```
+
+##### `typeof`
+```imba
+# todo
 ```
 
 # Bitwise operators

@@ -93,7 +93,8 @@ class Worker
 	def oninstall e
 		log e
 		# console.log 'install sw'
-		e.waitUntil global.skipWaiting!
+		global.skipWaiting!
+		# e.waitUntil
 	
 	def onactivate e
 		log e

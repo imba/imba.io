@@ -163,16 +163,25 @@ export def render content
 
 	renderer.toc = null
 
-	if object.meta.multipage
-		let parts = object.body.split(/<!--:h1:-->/g)
+	let sections = object.body.split(/<!--:h1:-->/g).slice(1)
+	
+	if object.meta.multipage or sections.length > 1
 
 		object.sections = object.toc.map do(item,i)
 			{
 				name: item.slug
 				type: 'file'
-				html: parts[i + 1]
+				html: sections[i]
 				title: item.title
 				meta: item.meta
 			}
+
+		if object.meta.multipage
+			# should rather just be a core section for each part?
+			object.body = ''
+
+		else
+			let intro = object.sections.shift!
+			object.body = intro.html
 
 	return object
