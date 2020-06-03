@@ -10,7 +10,7 @@ tag app-menu
 
 	css .scroller
 		-webkit-overflow-scrolling: touch
-		l: rel scroll-y inset:0 p:5 flex:1
+		l: abs scroll-y inset:0 top:$header-height p:5 flex:1
 
 	css .handle
 		l:abs flex center size:12 left:100% top:18 ml:-14 x:100vw
