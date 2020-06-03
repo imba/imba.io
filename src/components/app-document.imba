@@ -1,6 +1,51 @@
 import {ls} from '../store'
 import { @watch } from '../decorators'
 
+tag app-document-nav
+
+	css .card
+		l:flex rel ai:center radius:3 p:3 flex:1 1 50% m:2
+		c:teal6 b:gray3
+		td.hover:none bg.hover:gray1
+		ta.is-next:left ta.is-prev:right 
+		& .parent = c:gray5 f:xs
+		& .chapter = d:block f:500
+		& * = pointer-events:none
+		& .arrow = bt:gray4 br:gray4 border-width:3px size:4 l:block abs
+		& svg = size:6 color:gray4
+		&:hover svg= color:gray5
+
+	css @not-md .card
+		p:0 b:none bg.hover:none
+		ta.is-next:right ta.is-prev:left
+		& svg = size:4
+		& .chapter = d:truncate
+		& .parent = d:hidden
+	
+	css &.top = f:sm d.md:none
+
+	def render
+		let prev = data.prev # and data.prev.last
+		let next = data.next # and data.next.first
+
+		<self.(max-width:768px px:4 l:flex jc:space-between)>
+			if prev
+				<a.card.prev href=prev.href hotkey='left'>
+					<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<line x1="19" y1="12" x2="5" y2="12">
+						<polyline points="12 19 5 12 12 5">
+					<span.(flex:1 px:1)>
+						<span.parent.( prefix:"(" $shortcut ") ")> " Prev - {prev.parent.title}"
+						<span.chapter> prev.title
+			if next
+				<a.card.next href=next.href hotkey='right'>
+					<span.(flex:1 px:1)>
+						<span.parent.(suffix:" (" $shortcut ")")> "Next - {next.parent.title}"
+						<span.chapter> next.title
+					<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<line x1="5" y1="12" x2="19" y2="12">
+						<polyline points="12 5 19 12 12 19">
+
 tag app-document
 	@watch prop data
 
@@ -158,41 +203,13 @@ tag app-document
 			padding-left: 0px;
 			padding-right: 0px;
 
-	css .card
-		l:flex rel ai:center border:gray3 radius:3 p:3 flex:1 1 50% m:2
-		color:teal6
-		td.hover:none bg.hover:gray1
-		& * = pointer-events:none
-		& .arrow = bt:gray4 br:gray4 border-width:3px size:4 l:block abs
-		& svg = size:6 color:gray4
-		&:hover svg= color:gray5
-
 	def render
-		let prev = data.prev # and data.prev.last
-		let next = data.next # and data.next.first
 		<self.markdown.(l:block pb:24)>
+			<app-document-nav.top data=data>
 			<div$content.(max-width:768px px:6) innerHTML=data.html>
-			<div.(max-width:768px px:4 l:flex jc:space-between)>
-				if prev
-					<a.card.(ta:right) href=prev.href hotkey='left'>
-						<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<line x1="19" y1="12" x2="5" y2="12">
-							<polyline points="12 19 5 12 12 5">
-						<span.(flex:1 px:1)>
-							<span.(c:gray5 f:xs prefix:"(" $shortcut ") ")> " Prev - {prev.parent.title}"
-							<span.(d:block f:500)> prev.title
-				if next
-					<a.card.(ta:left) href=next.href hotkey='right'>
-						<span.(flex:1 px:1)>
-							
-							<span.(c:gray5 f:xs suffix:" (" $shortcut ")")> "Next - {next.parent.title}"
-							<span.(d:block f:500)> next.title
-						<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<line x1="5" y1="12" x2="19" y2="12">
-							<polyline points="12 5 19 12 12 19">
+			<app-document-nav.bottom data=data>
 
 	def dataDidSet data
-		# console.log 'data did set!!',data
 		document.body.scrollTop = 0
 		setTimeout(&,200) do document.body.focus!
 
