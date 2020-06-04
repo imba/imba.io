@@ -1,78 +1,185 @@
-# Styles
+# Styling
 
 First things first; You are free to use external stylesheets like you've always done. Still, with a goal of being the friendliest language for creating web applications we have included styling as a core part of the language. We've also extended the functionality of css to make common patterns friendlier, and to make it easier to keep a consistent design language across your whole project.
 
 
 Our approach to styling is inspired by [Tailwind](https://tailwindcss.com), so we recommend reading about [their philosophy](https://tailwindcss.com/docs/utility-first). Think of the style syntax in Imba as what Tailwind might be like if it was allowed to invent a language.
 
-# Rules
+# Global Styles
 
-Style rules are declared using the `css` keyword
-
-```imba
-css .btn
-    display: block;
-    background: #b2f5ea;
-    padding-left: 4px;
-    padding-right: 4px;
-# ... other code here
-```
-Besides using indentation instead of `{}` it looks very much like regular css. We staunchly believe that less code is better code, so we have strived to make the styling syntax as concise as possible, yet easily readable. Semi-colons are optional:
+Style rules are declared using the `css` keyword.
 
 ```imba
-css .btn
+css .btn =
+    position: relative
     display: block
     background: #b2f5ea
     padding-left: 4px
     padding-right: 4px
+css .btn:hover =
+    background: #81e6d9
 ```
-The following parts might look messy on first glance, but bear with us. Line breaks are optional.
+Besides using indentation instead of `{}` and making `;` optional it looks like regular css. Line breaks are also optional. The following few snippets might look messy at first glance, but bear with us.
 
 ```imba
-css .btn
-    display:block background:#b2f5ea
+css .btn =
+    position:relative display:block background:#b2f5ea
     padding-left:4px padding-right:4px
+css .btn:hover =
+    background: #81e6d9
 ```
-While there is a case to be made against short variable names in general, css properties are static. We believe in providing short intuitive aliases for oft-used css properties.
+We firmly believe that less code is better code, so we have strived to make the styling syntax as concise yet readable as possible. There is a case to be made against short variable names in programming, but css properties are never-changing. Imba provides intuitive abbreviations for oft-used css properties, as well as additional properties covering common usecases:
 ```imba
-css .btn
-    d:block bg:#b2f5ea pl:4px pr:4px
+css .btn =
+    d:rel block pl:4px pr:4px bg:#b2f5ea
+css .btn:hover =
+    bg:#81e6d9
 ```
-These are consistent shorthands that will become second nature to write and read after only a very short period of using imba styles.
+We also want to make it easy to follow a consistent design system throughout your project while not enforcing a predefined generic look or feel. Imba provides default (but configurable) colors, fonts, size units and more to help enforce consistency:
+```imba
+css .btn =
+    d:rel block px:1 bg:teal2
+css .btn:hover =
+    bg:teal3
+```
+Rules can also be written on a single line, using `=`
+```imba
+css .btn = d:rel block px:1 bg:teal2
+css .btn:hover = bg:teal3
+```
 
-Styles can also be declared on a single line by separating the selector and the properties with `=`
+There are also some patterns that come up again and again in css. Changing a few properties on `hover` or other states, or setting certain dimensions for specific screen sizes etc. Imba got you covered with property modifiers that we will get into later. But to round up, the first block of css here would usually be written like this in Imba:
 ```imba
-css .btn ~arrow[=]~ d:block bg:#b2f5ea pl:4px pr:4px
+css .btn = d:rel block px:1 bg:teal2 bg@hover:teal3
 ```
 This conciseness comes especially handy when declaring inline styles, which we will come back to later. The imba tooling also includes commands for quickly reformatting, reordering and cleaning up style blocks.
 
-## Nested rules
+
+## Nested Rules
 Styles can also be nested. All nested selectors must include an `&` which represents the parent selector.
 ```imba
-css .btn
+css .btn =
     display: block
-    background: #b2f5ea
-    &:hover
-        transform: translateY(-2px) scale(1.1)
-    &.primary
-        background: #0000FF
-        &:hover
-            background: #0000CD
+    background: gray1
+    &:hover =
+        transform: translateY(-2px)
+    &.primary =
+        background: blue4
+        &:hover =
+            background: blue5
 ```
 Nested styles support the same compact syntax, so the rules above could be written like this:
 ```imba
-css .btn = d:block bg:#b2f5ea hover.y:-2px hover.scale:1.1
-    &.primary = bg:#0000FF hover.bg:#0000CD
+css .btn = d:block bg:gray1 y@hover:-2px
+    &.primary = bg:blue4 bg@hover:blue5
 ```
-You will learn about these `hover.*` properties and why `x` and `scale` seems to be css properties in coming chapters.
+Don't worry, you will learn about these unfamiliar modifiers and properties on the coming chapters.
 
-## Scoped Styles
+# Scoped Styles
 
-It is all fine and
+Another problem with CSS is that often end up with tons of globally competing styles spread around numerous files. Changing some styles in one place might affect some seemingly unrelated elements. In Imba it is really easy to declare styles that should only apply to certain parts of your document. If you declare style rules inside tag definitions, all the styles will magically only apply to elements inside of this tag:
+```imba
+css body = p:5
+css h1 = f:red5
 
-## Inline Styles
+# ---
+tag app-card
+    css = d:block p:3 r:2 b:gray2
+    css h1 = f:20px serif gray8
+    css p = f:15px gray5
 
-# Theme
+    <self>
+        <h1> "Card title"
+        <p> "Card description"
+
+imba.mount do <div>
+    <app-card>
+    <h1> "Unstyled header"
+    <p> "Unstyled paragraph"
+```
+
+## Local Scoping
+```imba
+css body = p:5
+css h1 = f:red5
+
+# ---
+tag app-card
+    css = d:block p:3 r:2 b:gray2
+    css .title = f:20px serif gray8
+    css .desc = f:15px gray5
+
+    <self>
+        <h1.title> "Card title"
+        <p.desc> "Card description"
+        <app-button> "Read more..."
+
+tag app-button
+    <self> <span.title> <slot> "Button"
+
+imba.mount do <div>
+    <app-card>
+    <h1> "Unstyled header"
+    <p> "Unstyled paragraph"
+```
+In the example above, the `span` inside `app-button` will also be styled with the `.title` style defined in app-card. This is not always something you want. In that case, you can use the `:local` pseudo selector to hinder that.
+```imba
+css body = p:5
+css h1 = f:red5
+
+# ---
+tag app-card
+    css = d:block p:3 r:2 b:gray2
+    css .title~[:local]~ = f:20px serif gray8
+    css .desc = f:15px gray5
+~hide[
+    <self>
+        <h1.title> "Card title"
+        <p.desc> "Card description"
+        <app-button> "Read more..."
+
+tag app-button
+    <self> <span.title> <slot> "Button"
+
+imba.mount do <div>
+    <app-card>
+    <h1> "Unstyled header"
+    <p> "Unstyled paragraph"]~
+```
+
+## Styling Named Elements
+
+You can also style named elements using their prefixed `$name` directly in the style selector.
+```imba
+tag app-card
+    css = d:block p:3 r:2 b:gray2
+    css $title = f:20px serif gray8
+    css $desc = f:15px gray5
+
+    <self>
+        <h1$title> "Card title"
+        <p$desc> "Card description"
+```
+
+# Inline Styles
+
+You can add inline styles on any element using `.(style-properties)` syntax. You can think of this as an inlined anonymous class with a bunch of css properties.
+Instead of coming up with an arbitrary class name and adding styles somewhere else, you can simply add them to elements directly:
+```imba
+<div.(position:relative display:flex flex-direction:row padding:2rem)>
+```
+This might look like regular inline styles, but with abbreviations and modifiers they become very powerful and expressive:
+```imba
+# More padding on large screens:
+<div.(l:rel vflex p:2 p@lg:3)>
+# Darker background color on hover:
+<button.(bg:gray2 bg@hover:gray3)>
+# Set text color when input is focused:
+<input.(c@focus:blue7)>
+```
+We will cover all these property modifiers in later chapters.
+
+# Design System
 
 Imba also has a goal of making it as easy as possible to be consistent with regards to fonts, colors, sizes and more throughout your application. In the spirit of Tailwind, we supply a default "theme" with a whole range of delightfully hand-picked colors, font sizes, shadows and sizing/spacing units.
 
@@ -84,11 +191,17 @@ The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`te
 
 <doc-colors></doc-colors>
 
-### Using colors
-
 ## Sizing
 
 ## Fonts
+
+### Sans-Serif
+
+### Serif
+
+### Mono
+
+### Display
 
 ## Font Sizes
 
