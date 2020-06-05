@@ -5,6 +5,12 @@ First things first; You are free to use external stylesheets like you've always 
 
 Our approach to styling is inspired by [Tailwind](https://tailwindcss.com), so we recommend reading about [their philosophy](https://tailwindcss.com/docs/utility-first). Think of the style syntax in Imba as what Tailwind might be like if it was allowed to invent a language.
 
+## Design system
+
+Imba has a goal of making it as easy as possible to be consistent with regards to fonts, colors, sizes and more throughout your application. In the spirit of Tailwind, we supply a default "theme" with a whole range of delightfully hand-picked colors, font sizes, shadows and sizing/spacing units.
+
+We are not talking about a "theme" like bootstrap – forcing you into creating generic bootstrap-looking designs – but more just a minimal set of defaults that can be used to create all sorts of varied but consistent designs. You can choose not to use them at all, or override everything in your custom theme config, but we think you will find it immensely useful.
+
 # Global Styles
 
 Style rules are declared using the `css` keyword.
@@ -35,14 +41,14 @@ css .btn =
 css .btn:hover =
     bg:#81e6d9
 ```
-We also want to make it easy to follow a consistent design system throughout your project while not enforcing a predefined generic look or feel. Imba provides default (but configurable) colors, fonts, size units and more to help enforce consistency:
+We also want to make it easy to follow a consistent design system throughout your project while not enforcing a predefined look and feel. Imba provides default (but configurable) colors, fonts, size units and more to help enforce consistency:
 ```imba
 css .btn =
     d:rel block px:1 bg:teal2
 css .btn:hover =
     bg:teal3
 ```
-Rules can also be written on a single line, using `=`
+Rules can also be written on a single line
 ```imba
 css .btn = d:rel block px:1 bg:teal2
 css .btn:hover = bg:teal3
@@ -168,47 +174,39 @@ Instead of coming up with an arbitrary class name and adding styles somewhere el
 ```imba
 <div.(position:relative display:flex flex-direction:row padding:2rem)>
 ```
-This might look like regular inline styles, but with abbreviations and modifiers they become very powerful and expressive:
+This might look like regular inline styles, but with abbreviations and modifiers they become much more powerful and expressive:
 ```imba
 # More padding on large screens:
 <div.(l:rel vflex p:2 p@lg:3)>
 # Darker background color on hover:
-<button.(bg:gray2 bg@hover:gray3)>
+<button.(bg:gray2 bg@hover:gray3)> "Click me"
 # Set text color when input is focused:
 <input.(c@focus:blue7)>
 ```
-We will cover all these property modifiers in later chapters.
-
-# Design System
-
-Imba also has a goal of making it as easy as possible to be consistent with regards to fonts, colors, sizes and more throughout your application. In the spirit of Tailwind, we supply a default "theme" with a whole range of delightfully hand-picked colors, font sizes, shadows and sizing/spacing units.
-
-We are not talking about a "theme" like bootstrap – forcing you into creating generic *bootstrap-looking* designs – but more just a minimal set of defaults that can be used to create all sorts of varied but consistent designs. You can choose not to use them at all, or override everything in your custom theme config, but we think you will find it *immensely* useful.
-
-## Colors
-
-The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`teal`,`blue`,`indigo`,`purple` and `pink`, hand-crafted by the great people behind [Tailwind](https://tailwindcss.com). You can hover over the colors below to see their name.
-
-<doc-colors></doc-colors>
-
-## Sizing
-
-## Fonts
-
-### Sans-Serif
-
-### Serif
-
-### Mono
-
-### Display
-
-## Font Sizes
-
-## Shadows
-
+Since inline styles are essentially anonymous classes, they can also be applied conditionally:
+```imba
+# line-through and lighter color if item is done
+<div.(p:2 f:green9) .(f:line-through gray4)=item.done>
+```
 
 # Modifiers
+
+## Basic syntax
+
+##### Modifiers in selector
+```imba
+# 1.25rem left & right margin 
+css @md section = mx:5
+```
+##### Modifiers after property
+```imba
+css :root =
+    $header-height:48px @md:56px @lg:68px
+```
+When you write `@modifier:value`, the value will always apply to the previous non-modifier property.
+```imba
+css :root = bg:red1 @hover:red2 px:2 @md:3 @lg:4
+```
 
 ## Pseudo class Modifiers
 
@@ -315,53 +313,19 @@ css .item
     padding.md.empty: 4 # @media (min-width: 768px) { .item:empty { padding:1rem } } 
 ```
 
+# Colors
+
+One of the most important parts of a coherent design is consistent use of colors across everything.
+
+The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`teal`,`blue`,`indigo`,`purple` and `pink`, hand-crafted by the great people behind [Tailwind](https://tailwindcss.com). You can hover over the colors below to see their name.
+
+<doc-colors></doc-colors>
+
+# Aliases
+
 # Layout
 
 A single property that accepts values describing various common combinators of position, display, overflow, and other properties. Here is a list of all the values layout accepts - and what they are shorthands for:
-
-```imba
-abs # position: absolute;
-rel # position: relative;
-fixed # position: fixed;
-sticky # position: sticky;
-static # position: static;
-hidden # display: none;
-block # display: block;
-inline-block # display: inline-block;
-inline # display: inline;
-flex # display: flex;
-inline-flex # display: inline-flex;
-vflex # display: flex; flex-direction: row;
-inline-vflex # display: inline-flex; flex-direction: row;
-grid # display: grid;
-inline-grid # display: inline-grid;
-grid # display: grid;
-table # display: table;
-table-caption # display: table-caption;
-table-cell # display: table-cell;
-table-column # display: table-column;
-table-column-group # display: table-column-group;
-table-footer-group # display: table-footer-group;
-table-header-group # display: table-header-group;
-table-row-group # display: table-row-group;
-table-row # display: table-row;
-contents # display: contents;
-clip # overflow: hidden;
-noclip # overflow: visible;
-clip-x # overflow-x: hidden;
-clip-y # overflow-y: hidden;
-noclip-x # overflow-x: visible;
-noclip-y # overflow-y: visible;
-scroll-x # overflow-x: auto;
-scroll-y # overflow-y: auto;
-scroll # overflow: scroll;
-border-box # box-sizing: border-box;
-content-box # box-sizing: content-box;
-inset # top: 0; left: 0; bottom: 0; right: 0;
-visible # visibility: visible;
-invisible # visibility: hidden;
-
-```
 
 | Value  | Properties |
 | --- | --- |
@@ -380,7 +344,6 @@ invisible # visibility: hidden;
 | `inline-vflex` | `display: inline-flex; flex-direction: row;` |
 | `grid` | `display: grid;` |
 | `inline-grid` | `display: inline-grid;` |
-| `grid` | `display: grid;` |
 | `table` | `display: table;` |
 | `table-caption` | `display: table-caption;` |
 | `table-cell` | `display: table-cell;` |
@@ -440,11 +403,13 @@ All of these values can be combined
 
 # Grid
 
-# Sizing
+# Dimensions
 
 Units, shorthands++
 
 ## Padding
+
+Properties for controlling an element's padding.
 
 | Aliases  | Properties |
 | --- | --- |
@@ -459,6 +424,8 @@ Units, shorthands++
 
 ## Margin
 
+Properties for controlling an element's margin.
+
 | Aliases  | Properties |
 | --- | --- |
 | `m`  | margin |
@@ -468,6 +435,28 @@ Units, shorthands++
 | `mb` | margin-bottom |
 | `mx` | margin-left & margin-right |
 | `my` | margin-top & margin-bottom |
+
+## Size
+
+| Aliases  | Properties |
+| --- | --- |
+| `w`  | width |
+| `h` | height |
+
+## Position
+
+| Aliases  | Properties |
+| --- | --- |
+| `ot`  | top |
+| `or`  | right |
+| `ob`  | bottom |
+| `ol`  | left |
+| `ox`  | left & right |
+| `oy`  | top & bottom |
+| `otr`  | top & right |
+| `otl`  | top & left |
+| `obr`  | bottom & right |
+| `obl`  | bottom & left |
 
 ## Space between
 
@@ -509,24 +498,84 @@ How to add / change fonts
 
 An application can quickly become an entangled mess of competing css rules, different shadows, colors, and sizes. We don't want to force developers into a hardcoded set of predefined styles, but we do want to make it easy to keep styles consistent within your project.
 
-## Inline styles
-
-Inline styles with superpowers. When using inline styles, how would you ever set 
-
-There are some very common usecases that are pretty verbose to express in regular css. You want to have different font sizes for different screen sizes. You want to slightly change the color or opacity of a background on hover.
-
 ## text property
 
 # Backgrounds
 
+| Aliases  | Properties |
+| --- | --- |
+| `bg` | background |
+| `bgc` | background-color |
+| `bgi` | background-image |
+| `bgs` | background-size |
+| `bgp` | background-position |
+| `bgr` | background-repeat |
+| `bga` | background-attachment |
+
+
 # Borders
 
-## Border
+## border
 
-## Divide
+| table  | Properties |
+| --- | --- |
+| `b` | border |
+| `bt` | border-top |
+| `br` | border-right |
+| `bb` | border-bottom |
+| `bl` | border-left |
+| `bx` | border-x |
+| `by` | border-y |
 
-# Transitions
+## border-width
+| table  | Properties |
+| --- | --- |
+| `bw` | border-width |
+| `btw` | border-top-width |
+| `brw` | border-right-width |
+| `bbw` | border-bottom-width |
+| `blw` | border-left-width |
+| `bxw` | border-x-width |
+| `byw` | border-y-width |
+
+## border-color
+| table  | Properties |
+| --- | --- |
+| `bc` | border-color |
+| `btc` | border-top-color |
+| `brc` | border-right-color |
+| `bbc` | border-bottom-color |
+| `blc` | border-left-color |
+| `bxc` | border-x-color |
+| `byc` | border-y-color |
+
+## border-style
+| table  | Properties |
+| --- | --- |
+| `bs` | border-style |
+| `bts` | border-top-style |
+| `brs` | border-right-style |
+| `bbs` | border-bottom-style |
+| `bls` | border-left-style |
+| `bxs` | border-x-style |
+| `bys` | border-y-style |
+
+## divider
 
 # Transforms
+
+| Aliases  |  |
+| --- | --- |
+| `x` | translateX |
+| `y` | translateY |
+| `z` | translateZ |
+| `rotate` | rotate |
+| `scale` | scale |
+| `scale-x` | scale-x |
+| `scale-y` | scale-y |
+| `skew-x` | skew-x |
+| `skew-y` | skew-y |
+
+# Transitions
 
 # Breakpoints

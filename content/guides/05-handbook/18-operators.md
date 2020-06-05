@@ -1,196 +1,285 @@
 ---
 title: Operators
-multipage: true
 ---
+# Operators
 
-# Logical operators
+## Arithmetic
+
+```imba
+1 + 2 # Addition
+3 - 2 # Subtraction
+6 / 3 # Division
+2 * 2 # Multiplication
+5 % 2 # Remainder / Modulo
+2 ** 2 # Exponential
+-i # Unary negation
++i # Unary plus
+```
+
+## Assignment
+
+```imba
+item = 100 
+item ||= 100 # If falsy assignment
+item &&= 100 # If truthy assignment
+item ?= 100 # If null assignment
+item += 100 # Addition assignment
+i++ # Increment assignment
+i-- # Decrement assignment
+item -= 100 # Decrement assignment
+item *= 100 # Multiplication assignment
+item /= 100 # Division assignment
+item %= 100 # Remainder assignment
+item **= 100 # Exponential assignment
+
+item <<= 1 # Left shift assignment
+item >>= 1 # Right shift assignment
+item >>>= 1 # Unsigned right shift assignment
+item &= 1 # Bitwise AND assignment
+item ^= 1 # Bitwise XOR assignment
+item |= 1 # Bitwise OR assignment
+```
+
+## Comparison
+```imba
+x == y # Equality
+x != y # Inequality
+x === y # Strict equality
+x is y # Also strict equality
+x !== y # Strict inequality
+x isnt y # Also strict inequality
+x > y # Greater than
+x >= y # Greater than or equal
+x < y # Less than
+x <= y # Less than or equal
+10 > x > 5 # Chained comparison
+```
+
+## Unary
+```imba
+delete object.property # delete
+```
 
 # Arithmetic operators
 
-##### Addition `+`
+#### Addition
 ```imba
 1 + 2
 ```
 
-##### Subtraction `-`
+#### Subtraction
 ```imba
 3 - 2
 ```
 
-##### Division `/`
+#### Division
 ```imba
 6 / 3
 ```
 
-##### Multiplication `*`
+#### Multiplication
 ```imba
 2 * 2
 ```
 
-##### Remainder `%`
+#### Remainder
 ```imba
 5 % 2
 ```
 
-##### Exponential `**`
+#### Exponential
 ```imba
 2 ** 2
 ```
 
-##### Unary negation `-`
+#### Unary negation
 ```imba
 -i
 ```
 
-##### Unary plus `+`
+#### Unary plus
 ```imba
 +i
 ```
 
 # Assignment operators
 
-##### Assignment `=`
+##### Cheat sheet
+```imba
+item = 100 
+item ||= 100 # If falsy assignment
+item &&= 100 # If truthy assignment
+item ?= 100 # If null assignment
+item += 100 # Addition assignment
+i++ # Increment assignment
+i-- # Decrement assignment
+item -= 100 # Decrement assignment
+item *= 100 # Multiplication assignment
+item /= 100 # Division assignment
+item %= 100 # Remainder assignment
+item **= 100 # Exponential assignment
+
+item <<= 1 # Left shift assignment
+item >>= 1 # Right shift assignment
+item >>>= 1 # Unsigned right shift assignment
+item &= 1 # Bitwise AND assignment
+item ^= 1 # Bitwise XOR assignment
+item |= 1 # Bitwise OR assignment
+```
+
+#### Assignment
 ```imba
 item = 100
 ```
 
-##### If falsy assignment `||=`
+#### If falsy
 ```imba
 item ||= 100
 ```
 
-##### If truthy assignment `&&=`
+#### If truthy
 ```imba
 item &&= 100
 ```
 
-##### If null assignment `?=`
+#### If null
 ```imba
 item ?= 100
 ```
 
 
-##### Addition assignment `+=`
+#### Addition
 ```imba
 item += 100
 ```
 
-##### Increment `++`
-```imba
-i++
-```
-
-##### `-=` Subtraction assignment
+#### Subtraction
 ```imba
 item -= 100
 ```
 
-##### Decrement `--`
+#### Postfix Increment
+```imba
+i++
+```
+
+#### Prefix Increment
+```imba
+++i
+```
+
+
+#### Postfix Decrement
 ```imba
 i--
 ```
 
-##### Multiplication assignment `*=`
+#### Prefix Decrement
+```imba
+--i
+```
+
+#### Multiplication
 ```imba
 item *= 100
 ```
 
-##### Division assignment `/=`
+#### Division
 ```imba
 item /= 100
 ```
 
-##### Remainder assignment `%=`
+#### Remainder
 ```imba
 item %= 100
 ```
 
-##### Exponential assignment `**=`
+#### Exponential
 ```imba
 item **= 100
 ```
 
-##### Left shift assignment `<<=`
+#### Left shift
 ```imba
 item <<= 1
 ```
 
-##### Right shift assignment `>>=`
+#### Right shift
 ```imba
 item >>= 1
 ```
 
-##### Unsigned right shift assignment `>>>=`
+#### Unsigned right shift
 ```imba
 item >>>= 1
 ```
 
-##### Bitwise AND assignment `&=`
+#### Bitwise AND
 ```imba
 item &= 1
 ```
 
-##### Bitwise XOR assignment `^=`
+#### Bitwise XOR
 ```imba
 item ^= 1
 ```
 
-##### Bitwise OR assignment `|=`
+#### Bitwise OR
 ```imba
 item |= 1
 ```
 
 # Comparison operators
 
-##### Equality `==`
+#### Equality
 ```imba
 x == y
 ```
 
-##### Inequality `!=`
+#### Inequality
 ```imba
 x != y
 ```
 
-##### Strict equality `===` or `is`
+#### Strict equality
 ```imba
 x === y
 x is y
 ```
 
-##### Strict inequality `!==` or `isnt`
+#### Strict inequality
 ```imba
 x !== y
 x isnt y
 ```
 
-##### Greater than `>`
+#### Greater than
 ```imba
 x > y
 ```
 
-##### Greater than or equal `>=`
+#### Greater than or equal
 ```imba
 let x = 3, y = 2
 # ---
 x >= y
 ```
 
-##### Less than `<`
+#### Less than
 ```imba
 let x = 2, y = 3
 # ---
 x < y
 ```
 
-##### Less than or equal `<=`
+#### Less than or equal
 ```imba
 let x = 2, y = 3
 # ---
 x <= y
 ```
 
-##### Chained comparisons
+#### Chained comparisons
 ```imba
 let x = 2
 # ---
@@ -199,21 +288,21 @@ let x = 2
 
 # Unary operators
 
-##### `delete`
+#### delete
 ```imba
 delete object.property
 ```
 
-##### `void`
+#### void
 ```imba
 # todo
 ```
 
-##### `typeof`
+#### typeof
 ```imba
 # todo
 ```
 
 # Bitwise operators
 
-# Ternary operator
+# isa / instanceof

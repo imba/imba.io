@@ -76,9 +76,6 @@ let color = 'blue'
 > To set dynamic classes you can use `{}` interpolation.
 
 
-# Inline Styles
-
-
 # Custom Elements
 
 ```imba
