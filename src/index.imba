@@ -115,7 +115,7 @@ tag app-root
 					<a.tab route-to.sticky='/guides'> "Docs"
 					# <a.tab route-to.sticky='/manual'> "Docs"
 					<a.tab @click.emit('showide')> "Examples"
-					<a.tab href='https://github.com/imba/imba'> "Repo"
+					<a.tab href='https://github.com/imba/imba'> "GitHub"
 					<a.tab href='https://discord.gg/mkcbkRw'> "Chat"
 					
 				
