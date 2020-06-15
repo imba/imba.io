@@ -218,31 +218,20 @@ Describe the various parts of this
 
 
 # Modifiers
+
+Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down.
+
 ```imba
 css button@hover
     outline:blue solid 3px
 ```
 
-Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down.
-
 ## Modifiers in Selectors
-
-
 
 ```imba
 css section @md
     padding-top:12px
 ```
-Modifiers can also be used in nested selectors, just like any other selector type
-```imba
-css #downloads
-    padding-top:12px
-    h1,h2,h3
-        color:black
-        @dark color:white
-        @hover,@focus text-decoration:underline
-```
-
 Selector modifiers separated by spaces are always merged into the closest non-modifier selector.
 ```imba
 css .card@hover@focus # matches .card:hover:focus
@@ -254,6 +243,15 @@ Special modifiers like media modifiers can be included anywhere in the selector.
 ```imba
 css .card @lg .item @hover @mac d:block
 # @media (min-width: 1024px) { html.ua-mac .item:hover { display:block } }
+```
+Modifiers can be nested like any other selector type
+```imba
+css #downloads
+    padding-top:12px
+    h1,h2,h3
+        color:black
+        @dark color:white
+        @hover,@focus text-decoration:underline
 ```
 
 
