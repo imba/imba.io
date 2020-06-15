@@ -6,23 +6,19 @@ tag app-document-nav
 	css .card
 		l:flex rel ai:center radius:3 p:3 flex:1 1 50% m:2
 		c:teal6 b:gray3
-		td.hover:none bg.hover:gray1
-		ta.is-next:left ta.is-prev:right 
-		& .parent = c:gray5 f:xs
-		& .chapter = d:block f:500
-		& * = pointer-events:none
-		& .arrow = bt:gray4 br:gray4 border-width:3px size:4 l:block abs
-		& svg = size:6 color:gray4
-		&:hover svg= color:gray5
-
-	css @not-md .card
-		p:0 b:none bg.hover:none
-		ta.is-next:right ta.is-prev:left
-		& svg = size:4
-		& .chapter = d:truncate
-		& .parent = d:hidden
+		td@hover:none bg@hover:gray1
+		ta@is-next:left ta@is-prev:right 
+		* pointer-events:none
+		.parent c:gray5 fs:xs
+		.chapter d:block fw:500
+		.arrow bt:gray4 br:gray4 border-width:3px size:4 l:block abs
+		svg size:4 @md:6 color:gray4
+		@hover svg color:gray5
+		@not-md p:0 b:none bg@hover:none ta@is-next:right ta@is-prev:left
+			.chapter l:truncate
+			.parent d:hidden
 	
-	css &.top = f:sm d.md:none
+	css &.top f:sm d@md:none
 
 	def render
 		let prev = data.prev # and data.prev.last
@@ -35,7 +31,7 @@ tag app-document-nav
 						<line x1="19" y1="12" x2="5" y2="12">
 						<polyline points="12 19 5 12 12 5">
 					<span.(flex:1 px:1)>
-						<span.parent.( prefix:"(" $shortcut ") ")> " Prev - {prev.parent.title}"
+						<span.parent.(prefix:"(" $shortcut ") ")> " Prev - {prev.parent.title}"
 						<span.chapter> prev.title
 			if next
 				<a.card.next href=next.href hotkey='right'>
@@ -49,72 +45,67 @@ tag app-document-nav
 tag app-document
 	@watch prop data
 
-	css &
-		color: #4a5568
-		line-height: 1.625
-		pt:4
+	css color: #4a5568 lh: 1.625 pt:4
 
-	css a
-		t:blue700
-		t.hover:underline
+	css a t:blue7 t@hover:underline
 
 	css h1
-		color: #297198;
-		margin: 20px 0px 12px;
-		font-size: 28px;
-		line-height: 1.4em;
-		color: #3a4652;
-		font-weight: 600;
+		color: #297198
+		margin: 20px 0px 12px
+		font-size: 28px
+		line-height: 1.4em
+		color: #3a4652
+		font-weight: 600
 
 	css h2
-		font-size: 22px;
-		margin-top: 30px;
-		padding: 10px 0px;
-		border-bottom: 1px solid #F3F5F7;
-		font-weight: 600;
-		margin: 1.5em 0em 0.5em;
-		line-height: 1.2em;
-		color: #3A4652;
+		font-size: 22px
+		margin-top: 30px
+		padding: 10px 0px
+		border-bottom: 1px solid #F3F5F7
+		font-weight: 600
+		margin: 1.5em 0em 0.5em
+		line-height: 1.2em
+		color: #3A4652
 
 	css h3
-		font-size: 18px;
-		padding: 10px 0px;
-		border-bottom: 1px solid #F3F5F7;
-		font-weight: 500;
-		line-height: 1.2em;
-		margin: 1.5em 0em 0.5em;
-		color: #3A4652;
+		font-size: 18px
+		padding: 10px 0px
+		border-bottom: 1px solid #F3F5F7
+		font-weight: 500
+		line-height: 1.2em
+		margin: 1.5em 0em 0.5em
+		color: #3A4652
 
 	css h4
-		font-size: 1rem;
-		font-weight: 500;
-		border-bottom: 1px solid #edeff1;
-		margin: 1.33em 0 1em;
-		color: #3A4652;
-		line-height: 1.7em;
-		padding: 6px 0px;
+		font-size: 1rem
+		font-weight: 500
+		border-bottom: 1px solid #edeff1
+		margin: 1.33em 0 1em
+		color: #3A4652
+		line-height: 1.7em
+		padding: 6px 0px
 
 	css h5
-		position: relative;
-		background: teal4;
-		color: teal9;
-		font-size: 14px;
-		font-weight: bold;
-		border-radius: 3px;
-		padding: 2px 8px;
-		margin-top: 1rem;
-		letter-spacing: 0.02em;
-		display: inline-block;
-		top: 8px;
-		left: 8px;
-		z-index: 30;
+		position: relative
+		background: teal4
+		color: teal9
+		font-size: 14px
+		font-weight: bold
+		border-radius: 3px
+		padding: 2px 8px
+		margin-top: 1rem
+		letter-spacing: 0.02em
+		display: inline-block
+		top: 8px
+		left: 8px
+		z-index: 30
 
-		& app-code-inline
+		app-code-inline
 			bg:teal3
 			color: teal8
 			l:rel
 			top:-1px
-			mr.last:-4px
+			mr@last:-4px
 
 	css p
 		font-weight: 400;
@@ -128,27 +119,27 @@ tag app-document
 		padding-bottom: 0.2em;
 		padding-left: 24px;
 		position: relative;
-		&:before
+		@before
 			content: ""
 			bg:gray4
 			size:8px
 			display:block
 			radius:full
-			text-align: center;
-			position: absolute;
-			left: 6px;
-			top:9px;
-			font-size: inherit;
-			line-height: inherit;
-			font-style: normal;
-			color: #52AF78;
+			text-align: center
+			position: absolute
+			left: 6px
+			top:9px
+			font-size: inherit
+			line-height: inherit
+			font-style: normal
+			color: #52AF78
 
-		& > p > code
-			display: table;
-			margin-bottom: 4px;
-			font-weight: 600;
+		> p > code
+			display: table
+			margin-bottom: 4px
+			font-weight: 600
 
-		& > * = mt.first:0 mb.last:0
+		> * mt@first:0 mb@last:0
 
 	css blockquote
 		background: #F7F2E3;
@@ -156,9 +147,8 @@ tag app-document
 		padding: 10px 12px;
 		color: #6f6850;
 		font-size: 15px;
-		& p = font-size: 15px
-		& > :first-child = margin-top: 0px
-		& > :last-child = margin-bottom: 0px
+		p font-size: 15px
+		> * mt@first:0 mb@last:0
 	
 	css app-code-block + app-code-block
 		margin-top: 1rem
@@ -175,33 +165,35 @@ tag app-document
 		font-size: 16px;
 		line-height: inherit;
 
-		&[data-title='table'] thead = display: none
+		&[data-title='table'] thead display: none
 
-		& th
+		&[data-title='Aliases'] thead display: none
+
+		th
 			color: gray700
 			font-weight: 500
 			py: 0.5rem
 			text: md left
-			white-space.first: nowrap
-			width.first: 30px;
+			white-space@first: nowrap
+			width@first: 30px
 
-		& td
+		td
 			text: sm
 			padding: 0.5rem
 			border-top: 1px solid gray200
-			width.first: 30px;
+			width.first: 30px
 
-		& .code-inline:only-child
+		.code-inline@only-child
 			text:xs/1.4
 			px:1 py:0
 			margin: 0px
 			vertical-align: top
 		
-		& td.example
-			width: 50px;
-			white-space: nowrap;
-			padding-left: 0px;
-			padding-right: 0px;
+		td.example
+			width: 50px
+			white-space: nowrap
+			padding-left: 0px
+			padding-right: 0px
 
 	def render
 		<self.markdown.(l:block pb:24)>
@@ -220,11 +212,11 @@ tag embedded-app-document
 		innerHTML = data.html if data
 
 tag embedded-app-example
-	css a =
-		l:flex center cursor:pointer radius:2 min-height:12 bg:blue2-50 
-		t:500 xs p:0.5
-		prefix: "☶ " t.before:14px 400 pr.before:1
-		&:hover = bg:blue2 t:undecorated
+	css a
+		l:flex center cursor:pointer radius:2 min-height:12 bg:blue2/50 t:500 xs p:0.5
+		@before content:"☶ " t:14px pr:1
+		@hover bg:blue2 t:undecorated
+
 	def hydrate
 		data = ls(dataset.path)
 		name = textContent

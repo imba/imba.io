@@ -120,6 +120,7 @@ export const theme =
 		{ token: 'annotation', foreground: 'cc6666' },
 		{ token: 'type', foreground: '3DC9B0' },
 		{ token: 'boolean', foreground: '@bool' },
+		{ token: 'unit', foreground: '@cssunit'},
 
 		{ token: 'constant.numeric', foreground: '@number' },
 		{ token: 'constant.language.boolean', foreground: '@bool' },

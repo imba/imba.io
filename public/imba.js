@@ -921,6 +921,8 @@ class Scheduler {
 	tick(timestamp){
 		var self = this;
 		
+		
+		
 		var items = this.queue;
 		if (!(this.ts)) { this.ts = timestamp };
 		this.dt = timestamp - this.ts;

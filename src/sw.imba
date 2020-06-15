@@ -61,6 +61,7 @@ class Worker
 		self
 
 	def onmessage e
+		let res = {status: 0}
 		if e.data.event == 'compile'
 			console.log 'sw compile',e.data.body
 			let js = compileImba(e.data)
@@ -69,25 +70,31 @@ class Worker
 
 		if e.data.event == 'file'
 			let path = e.data.path
-			# console.log 'sw got file',path
 			files[path] = e.data
-			
+
+			if typeof e.data.ref == 'number'
+				console.log 'posting message back to source',e.data.ref
+				e.source.postMessage(ref: e.data.ref, status: 0)
+
 			if accessedPaths[path]
 				if path.match(/\.imba/) and !compileImba(e.data)
 					# there were errors -- return the error?
-					return
+					false
+				else
+					let clients = await global.clients.matchAll({})
+					let reloads = []
+					for client in clients
+						let map = clientLoadMap[client.id]
+						if map and map[path]
+							reloads.push(client.url)
+							# log 'CLIENT HAS ACCESSED THIS',client
 
-				let clients = await global.clients.matchAll({})
-				let reloads = []
-				for client in clients
-					let map = clientLoadMap[client.id]
-					if map and map[path]
-						reloads.push(client.url)
-						# log 'CLIENT HAS ACCESSED THIS',client
-
-				if reloads.length
-					e.source.postMessage({event: 'reload',urls: reloads})
+					if reloads.length
+						e.source.postMessage({event: 'reload',urls: reloads})
 			# look through the files that are current
+		
+		# if e.data.ref and res
+		#	return e.source.postMessage(Object.assign({ref: e.data.ref},res))
 		return
 
 	def oninstall e
