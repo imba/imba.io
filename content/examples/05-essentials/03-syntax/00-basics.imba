@@ -1,12 +1,12 @@
 tag x-app
-	css .blue = bg:blue200 color:blue800 bg.hover:blue300
-	css .teal = bg:teal200 color:teal800 bg.hover:teal300
-	css .yellow = bg:yellow200 color:yellow800 bg.hover:yellow300
-	css .red = bg:red200 color:red800 bg.hover:red300
-	css .item = p:4 flex:1 radius:3
+	css .blue bg:blue2 color:blue8 bg@hover:blue3
+	css .teal bg:teal2 color:teal8 bg@hover:teal3
+	css .yellow bg:yellow2 color:yellow8 bg@hover:yellow3
+	css .red bg:red2 color:red8 bg@hover:red3
+	css .item p:4 flex:1 radius:3
 
 	def render
-		<self .(l:flex wrap space:1)>
+		<self .(l:flex wrap space:10)>
 			<div.blue.item> "One"
 			<div.red.item> "Two"
 			<div.teal.item> "Three"

@@ -2045,7 +2045,8 @@ function extend$(target,ext){
 const toBind = {
 	INPUT: true,
 	SELECT: true,
-	TEXTAREA: true
+	TEXTAREA: true,
+	BUTTON: true
 };
 
 var isGroup = function(obj) {
@@ -2142,6 +2143,10 @@ extend$(Element,{
 			if (this.input$) {
 				
 				this.addEventListener('input',this.input$ = this.input$.bind(this),{capture: true});
+			};
+			if (this.click$) {
+				
+				this.addEventListener('click',this.click$ = this.click$.bind(this),{capture: true});
 			};
 			
 			
@@ -2397,6 +2402,72 @@ extend$(HTMLInputElement,{
 			} else {
 				
 				this.richValue = this.data;
+			};
+		};
+		return;
+		
+	},
+});
+extend$(HTMLButtonElement,{
+	
+	
+	get checked(){
+		
+		return this.$checked;
+		
+	},
+	set checked(val){
+		
+		if (val != this.$checked) {
+			
+			this.$checked = val;
+			this.flags.toggle('checked',!!val);
+		};
+	},
+	
+	setRichValue(value){
+		
+		this.$$value = value;
+		return this.value = value;
+	},
+	
+	getRichValue(){
+		
+		if (this.$$value !== undefined) {
+			
+			return this.$$value;
+		};
+		return this.value;
+		
+	},
+	click$(e){
+		
+		let data = this.data;
+		let toggled = this.checked;
+		let val = this.richValue;
+		
+		if (isGroup(data)) {
+			
+			toggled ? bindRemove(data,val) : bindAdd(data,val);
+		} else {
+			
+			this.data = toggled ? null : val;
+		};
+		
+		return imba.commit();
+	},
+	
+	end$(){
+		
+		if (this.$$bound) {
+			
+			let val = this.data;
+			if (val === true || val === false || val == null) {
+				
+				this.checked = !!val;
+			} else {
+				
+				this.checked = bindHas(val,this.richValue);
 			};
 		};
 		return;

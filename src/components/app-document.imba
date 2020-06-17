@@ -4,27 +4,26 @@ import { @watch } from '../decorators'
 tag app-document-nav
 
 	css .card
-		l:flex rel ai:center radius:3 p:3 flex:1 1 50% m:2
-		c:teal6 b:gray3
+		pos:relative d:flex ai:center radius:3 p:3 flex:1 1 50% m:2
+		c:teal6 border:gray3
 		td@hover:none bg@hover:gray1
-		ta@is-next:left ta@is-prev:right 
+		ta.next:left ta.prev:right 
 		* pointer-events:none
 		.parent c:gray5 fs:xs
 		.chapter d:block fw:500
-		.arrow bt:gray4 br:gray4 border-width:3px size:4 l:block abs
 		svg size:4 @md:6 color:gray4
 		@hover svg color:gray5
-		@not-md p:0 b:none bg@hover:none ta@is-next:right ta@is-prev:left
-			.chapter l:truncate
-			.parent d:hidden
+		@not-md p:0 b:none bg@hover:none ta.next:right ta.prev:left
+			.chapter is:truncate
+			.parent d:none
 	
-	css &.top f:sm d@md:none
+	css &.top fs:sm d@md:none
 
 	def render
 		let prev = data.prev # and data.prev.last
 		let next = data.next # and data.next.first
 
-		<self.(max-width:768px px:4 l:flex jc:space-between)>
+		<self[max-width:768px px:4 d:flex jc:space-between]>
 			if prev
 				<a.card.prev href=prev.href hotkey='left'>
 					<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -47,7 +46,7 @@ tag app-document
 
 	css color: #4a5568 lh: 1.625 pt:4
 
-	css a t:blue7 t@hover:underline
+	css a c:blue7 t@hover:underline
 
 	css h1
 		color: #297198
@@ -103,7 +102,7 @@ tag app-document
 		app-code-inline
 			bg:teal3
 			color: teal8
-			l:rel
+			pos:relative
 			top:-1px
 			mr@last:-4px
 
@@ -151,11 +150,11 @@ tag app-document
 		> * mt@first:0 mb@last:0
 	
 	css app-code-block + app-code-block
-		margin-top: 1rem
+		mt: 1rem
 
 	css app-code-block + blockquote
-		pt:4 pb:3 px:5 mt:-1 b:gray300 bg:white radius:2
-		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray600
+		pt:4 pb:3 px:5 mt:-1 border:gray3 bg:white radius:2
+		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray6
 
 	# table stlff
 	css table
@@ -196,9 +195,9 @@ tag app-document
 			padding-right: 0px
 
 	def render
-		<self.markdown.(l:block pb:24)>
+		<self.markdown[d:block pb:24]>
 			<app-document-nav.top data=data>
-			<div$content.(max-width:768px px:6) innerHTML=data.html>
+			<div$content[max-width:768px px:6] innerHTML=data.html>
 			<app-document-nav.bottom data=data>
 
 	def dataDidSet data
@@ -213,7 +212,7 @@ tag embedded-app-document
 
 tag embedded-app-example
 	css a
-		l:flex center cursor:pointer radius:2 min-height:12 bg:blue2/50 t:500 xs p:0.5
+		d:flex ai:center cursor:pointer radius:2 min-height:12 bg:blue2/50 t:500 xs p:0.5
 		@before content:"☶ " t:14px pr:1
 		@hover bg:blue2 t:undecorated
 

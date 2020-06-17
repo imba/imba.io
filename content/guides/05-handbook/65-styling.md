@@ -202,29 +202,117 @@ Since inline styles are essentially anonymous classes, they can also be applied 
 <div[p:2 font:green9] [font:line-through gray4]=item.done>
 ```
 
+# Placeholders
+
+```imba
+css %button
+    p:2 bg:blue2 c:blue7 br:2
+    &.danger bg:red2 c:red7
+    &.warn bg:yellow2 c:yellow7
+
+imba.mount do <div>
+    <div%button> "Button"
+    <div%button.danger> "Danger"
+    <div%button.warn> "Warn"
+```
+
+```imba
+import {%button} from './styles'
+
+imba.mount do <div>
+    <div%button> "Button"
+    <div%button.danger> "Danger"
+    <div%button.warn> "Warn"
+```
+
 # Aliases
 
 We firmly believe that less code is better code, so we have strived to make the styling syntax as concise yet readable as possible. There is a case to be made against short variable names in programming, but css properties are never-changing. Imba provides intuitive abbreviations for oft-used css properties. Like everything else, using these shorthands is completely optional, but especially for inline styles, they are convenient.
 
-## is
+## size & position
 
-Describe the various parts of this
-<doc-style-is></doc-style-is>
+<doc-style-aliases data-include='w,h,t,l,b,r,size'></doc-style-aliases>
 
-## text
+## margin
+
+<doc-style-aliases data-regex='margin'></doc-style-aliases>
+
+## padding
+
+<doc-style-aliases data-regex='padding'></doc-style-aliases>
+
+## text & font
+<doc-style-aliases data-regex='text' data-neg='decoration|emphasis'  data-include='c,lh,ta,va,ls,fs,fw,ws' data-exclude='t'></doc-style-aliases>
+
+## flexbox
+
+<doc-style-aliases data-regex='flex'></doc-style-aliases>
+
+## grid
+
+<doc-style-aliases data-regex='grid'></doc-style-aliases>
+
+## alignment
+
+<doc-style-aliases cols='3-transposed' data-regex='^place|^align|^justify' data-exclude='a'></doc-style-aliases>
+
+## background
+
+<doc-style-aliases data-regex='background'></doc-style-aliases>
+
+## border
+
+<doc-style-aliases cols='3' data-regex='border' data-neg='radius'></doc-style-aliases>
+
+## text-decoration
+<doc-style-aliases data-regex='text-decoration'></doc-style-aliases>
+
+## text-emphasis
+<doc-style-aliases data-regex='text-emphasis'></doc-style-aliases>
+
+## transform
+
+<doc-style-transform-aliases></doc-style-transform-aliases>
+
+## transition
 
 
-<doc-style-aliases></doc-style-aliases>
+## other
+
+<doc-style-aliases data-regex='---' data-include='shadow,opacity,pe,zi,prefix,suffix,us'></doc-style-transform-aliases>
 
 
 # Modifiers
 
 Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down.
 
+##### in selectors
 ```imba
 css button@hover
-    outline:blue solid 3px
+    bg:blue
 ```
+
+##### in properties
+```imba
+css button
+    bg@hover:blue
+```
+
+##### after properties
+```imba
+css button
+    bg:white @hover:whitesmoke @focus:blue
+```
+
+##### class modifiers
+```imba
+css button
+    bg:white .primary:blue ..busy:gray
+```
+
+## Reference
+
+<doc-style-modifiers></doc-style-modifiers>
 
 ## Modifiers in Selectors
 
@@ -299,13 +387,13 @@ Property modifiers are especially useful for inline styles where you don't want 
 
 ## Class Modifiers
 
-Imba includes `is-classname` modifier that will apply only when the styled element has `classname`, and `in-classname` that will only take effect if a parent has `classname`. These are especially useful in inline styles, where adding nested selectors can become messy.
+Imba includes `.classname` modifier that will apply only when the styled element has `classname`, and `..classname` that will only take effect if a parent has `classname`. These are especially useful in inline styles, where adding nested selectors can become messy.
 ```imba
-<todo-item[bg:gray1 ~[@is-done:green1]~] .done=todo.completed>
+<todo-item[bg:gray1 ~[.done:green1]~] .done=todo.completed>
 ```
 ```imba
-<todo-item .done=todo.completed> ...
-    <span[td~[@in-done:line-through]~]> todo.title
+<todo-item .done=todo.completed>
+    <span[td~[..done:line-through]~]> todo.title
 ```
 
 > Discuss challenges with nested `in-class` etc.
@@ -452,378 +540,51 @@ When you set multiple styles based on multiple class names, your css can quickly
 ```
 ## Custom Modifiers
 
-# Layouts
 
-```imba
-# ~shared
-css body = p:5
-css section = m:4 s:2 bg:gray2
-css div = bg:teal2 color:teal7 radius:2px px:8px w:>80px h:6  bg:teal3
+# Presets
 
-```
-
-## Row
-
-```imba
-# ~preview
-const labels = ['one','two','three','four','five','six','seven']
-css section = bg:gray2
-css div = bg:teal2 color:teal7 radius:2px px:8px w:>80px h:6
-css ul = bg:teal1
-css li = bg:teal2 color:teal7 radius:2px px:8px
-
-# ---
-imba.mount do <article.(is:stack/380px s:4 a:left)>
-    <ul.(is:row s:2 bg:blue1)> for label in labels
-        <li.label> label
-    <ul.(is:row g:2 bg:none)> for label in labels
-        <li.label> label
-    <section.(is:row s:4)> <div/> <div/> <div/>
-    <ul.(is:stack s:2)> for label in labels
-        <li.label> label
-    <ul.(is:3col/80px s:2)> for label in labels
-        <li.label> label
-    <section.(is:row g:4 bg:white)> <div/> <div/> <div/>
-    <section.(is:row a:right)> <div/> <div/> <div/>
-    <section.(is:row a:justify)> <div/> <div/> <div/>
-```
-## Col
-
-## Auto
-
-## Stack
-
-## Cols
-
-## Combination
-
-```imba
-# ~preview
-css section = m:4 s:2 bg:gray2
-css div = bg:teal2 color:teal7 radius:2px px:8px w:>80px h:6  bg:teal3
-css p = c:gray7
-css i = position:relative size:24px radius:4px bg:blue4
-# ---
-imba.mount do <article.(is:stack a:center)>
-    <section.(is:auto)>
-        <i>
-        <p.(flex:1)> "Hello there"
-        <button> "Click"
-    <section.(is:row)> <div/> <div/> <div/>
-```
-
----
-
-## Alignment
-
-### Left
-
-### Center
-
-### Right
-
-### Middle
-
-## Sizing
-
-### Breakpoints
-
-### Margin
-
-### Padding
-
-### Spacing
-```imba
-# ~preview
-css section = m:4 s:2 bg:gray2
-css div = bg:teal2 color:teal7 radius:2px px:8px w:>80px h:6  bg:teal3
-# ---
-imba.mount do <article>
-    <section.(is:row s:1)> <div/> <div/> <div/>
-    <section.(is:row s:2)> <div/> <div/> <div/>
-    <section.(is:row s:4)> <div/> <div/> <div/>
-```
-
-### Gaps
-
-# Custom Units
-
-# Mixins
-
-A single property that accepts values describing various common combinators of position, display, overflow, and other properties. Here is a list of all the values layout accepts - and what they are shorthands for:
-
-| Value  | Properties |
-| --- | --- |
-| `abs` | `position: absolute;` |
-| `rel` | `position: relative;` |
-| `fixed` | `position: fixed;` |
-| `sticky` | `position: sticky;` |
-| `static` | `position: static;` |
-| `hidden` | `display: none;` |
-| `block` | `display: block;` |
-| `inline-block` | `display: inline-block;` |
-| `inline` | `display: inline;` |
-| `flex` | `display: flex;` |
-| `inline-flex` | `display: inline-flex;` |
-| `vflex` | `display: flex; flex-direction: row;` |
-| `inline-vflex` | `display: inline-flex; flex-direction: row;` |
-| `grid` | `display: grid;` |
-| `inline-grid` | `display: inline-grid;` |
-| `table` | `display: table;` |
-| `table-caption` | `display: table-caption;` |
-| `table-cell` | `display: table-cell;` |
-| `table-column` | `display: table-column;` |
-| `table-column-group` | `display: table-column-group;` |
-| `table-footer-group` | `display: table-footer-group;` |
-| `table-header-group` | `display: table-header-group;` |
-| `table-row-group` | `display: table-row-group;` |
-| `table-row` | `display: table-row;` |
-| `contents` | `display: contents;` |
-| `clip` | `overflow: hidden;` |
-| `noclip` | `overflow: visible;` |
-| `clip-x` | `overflow-x: hidden;` |
-| `clip-y` | `overflow-y: hidden;` |
-| `noclip-x` | `overflow-x: visible;` |
-| `noclip-y` | `overflow-y: visible;` |
-| `scroll-x` | `overflow-x: auto;` |
-| `scroll-y` | `overflow-y: auto;` |
-| `scroll` | `overflow: scroll;` |
-| `border-box` | `box-sizing: border-box;` |
-| `content-box` | `box-sizing: content-box;` |
-| `inset` | `top: 0; left: 0; bottom: 0; right: 0;` |
-| `visible` | `visibility: visible;` |
-| `invisible` | `visibility: hidden;` |
-
-All of these values can be combined 
-
-# Colors
-
-One of the most important parts of a coherent design is consistent use of colors across everything.
+## Colors
 
 The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`teal`,`blue`,`indigo`,`purple` and `pink`, hand-crafted by the great people behind [Tailwind](https://tailwindcss.com). You can hover over the colors below to see their name.
 
 <doc-colors></doc-colors>
 
-# Aliases
+## Fonts
 
-## Flexbox
+<doc-style-ff></doc-style-ff>
 
-| Aliases  |  |
-| --- | --- |
-| `ai` | align-items |
-| `as` | align-self |
-| `ac` | align-content |
-| `jc` | justify-content |
+## Font Sizes
 
-### align-items
-
-### align-content
-
-### align-self
-
-### flex-direction
-
-### flex
-
-### flex-grow
-
-### flex-shrink
-
-### flex-basis
-
-### justify-content
-
-## layout extensions
-
-## Grid
-
-| table  | Properties |
-| --- | --- |
-| `gtr` | grid-template-rows |
-| `gtc` | grid-template-columns |
-| `gta` | grid-template-areas |
-| `gar` | grid-auto-rows |
-| `gac` | grid-auto-columns |
-| `gaf` | grid-auto-flow |
-| `gcg` | grid-column-gap |
-| `grg` | grid-row-gap |
-| `ga` | grid-area |
-| `gr` | grid-row |
-| `gc` | grid-column |
-| `grs` | grid-row-start |
-| `gcs` | grid-column-start |
-| `gre` | grid-row-end |
-| `gce` | grid-column-end |
-
-## Dimensions
-
-Units, shorthands++
-
-### Padding
-
-Properties for controlling an element's padding.
-
-| Aliases  | Properties |
-| --- | --- |
-| `p` | padding |
-| `pl` | padding-left |
-| `pr` | padding-right |
-| `pt` | padding-top |
-| `pb` | padding-bottom |
-| `px` | padding-left & padding-right |
-| `py` | padding-top & padding-bottom |
-
-
-### Margin
-
-Properties for controlling an element's margin.
-
-| Aliases  | Properties |
-| --- | --- |
-| `m`  | margin |
-| `ml` | margin-left |
-| `mr` | margin-right |
-| `mt` | margin-top |
-| `mb` | margin-bottom |
-| `mx` | margin-left & margin-right |
-| `my` | margin-top & margin-bottom |
-
-### Size
-
-| Aliases  | Properties |
-| --- | --- |
-| `w`  | width |
-| `h` | height |
-
-### Position
-
-| Aliases  | Properties |
-| --- | --- |
-| `ot`  | top |
-| `or`  | right |
-| `ob`  | bottom |
-| `ol`  | left |
-| `ox`  | left & right |
-| `oy`  | top & bottom |
-| `otr`  | top & right |
-| `otl`  | top & left |
-| `obr`  | bottom & right |
-| `obl`  | bottom & left |
-
-## Typography
-
-```imba
-css h1
-    text: bold sm/2 sans
-```
-
-## Font Family
-
-Default fonts defined in theme
-How to add / change fonts
-
-| Fonts  |  |
-| --- | --- |
-| `sans`  | `system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI"` |
-| `serif` | `Georgia, Cambria, "Times New Roman", Times, serif` |
-| `mono` | `Menlo, Monaco, Consolas, "Liberation Mono", "Courier New"` |
-
-## Font Size
-
-| Aliases  |  |
-| --- | --- |
-| `xxs`  | 10px |
-| `xs`   | 12px |
-| `sm`   | 14px |
-| `md`   | 16px |
-| `lg`   | 18px |
-| `xl`   | 20px |
-| `2xl`  | 24px |
-| `3xl`  | 30px |
-| `4xl`  | 36px |
-| `5xl`  | 48px |
-| `6xl`  | 64px |
-
-## Colors and Sizing
-
-An application can quickly become an entangled mess of competing css rules, different shadows, colors, and sizes. We don't want to force developers into a hardcoded set of predefined styles, but we do want to make it easy to keep styles consistent within your project.
-
-## text property
-
-## Backgrounds
-
-| Aliases  | Properties |
-| --- | --- |
-| `bg` | background |
-| `bgc` | background-color |
-| `bgi` | background-image |
-| `bgs` | background-size |
-| `bgp` | background-position |
-| `bgr` | background-repeat |
-| `bga` | background-attachment |
-
-
-## Borders
-
-## border
-
-| table  | Properties |
-| --- | --- |
-| `b` | border |
-| `bt` | border-top |
-| `br` | border-right |
-| `bb` | border-bottom |
-| `bl` | border-left |
-| `bx` | border-x |
-| `by` | border-y |
-
-## border-width
-| table  | Properties |
-| --- | --- |
-| `bw` | border-width |
-| `btw` | border-top-width |
-| `brw` | border-right-width |
-| `bbw` | border-bottom-width |
-| `blw` | border-left-width |
-| `bxw` | border-x-width |
-| `byw` | border-y-width |
-
-## border-color
-| table  | Properties |
-| --- | --- |
-| `bc` | border-color |
-| `btc` | border-top-color |
-| `brc` | border-right-color |
-| `bbc` | border-bottom-color |
-| `blc` | border-left-color |
-| `bxc` | border-x-color |
-| `byc` | border-y-color |
-
-## border-style
-| table  | Properties |
-| --- | --- |
-| `bs` | border-style |
-| `bts` | border-top-style |
-| `brs` | border-right-style |
-| `bbs` | border-bottom-style |
-| `bls` | border-left-style |
-| `bxs` | border-x-style |
-| `bys` | border-y-style |
-
-## divider
-
-## Transforms
-
-| Aliases  |  |
-| --- | --- |
-| `x` | translateX |
-| `y` | translateY |
-| `z` | translateZ |
-| `rotate` | rotate |
-| `scale` | scale |
-| `scale-x` | scale-x |
-| `scale-y` | scale-y |
-| `skew-x` | skew-x |
-| `skew-y` | skew-y |
+<doc-style-fs></doc-style-fs>
 
 ## Transitions
+
+### Properties
+
+
+### Easings
+
+<doc-style-easings></doc-style-easings>
+
+
+
+## Units
+
+You can define your own units.
+```imba
+css @root
+    1sb: 200px
+    1u: 4px
+    1l: 64px
+```
+
+# Reference
+
+## Transitions
+
+## Document
+
+- `123c` in width
+- `123r` in height
+- `>10` and `<10` in width and height
+- Special transition properties

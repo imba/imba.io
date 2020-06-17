@@ -62,7 +62,7 @@ css :root
 	--code-selector: #e9e19b;
 	--code-selector-pseudostate: var(--code-selector);
 	--code-selector-context: #eec49d;
-	--code-selector-placeholder:hsl(36, 100%, 72%);
+	--code-selector-placeholder:hsl(321, 100%, 79%) # hsl(36, 100%, 72%);
 
 	--code-key: #9dcbeb;
 
@@ -316,9 +316,9 @@ tag app-code
 
 tag app-code-block < app-code
 
-	css l:rel block radius:1 fs:13px t@not-md: 12px
+	css pos:relative d:block radius:1 fs:13px t@not-md: 12px
 
-	css $code l:rel block radius:1 c:$code-color bg:$code-bg-lighter
+	css $code pos:relative d:block radius:1 c:$code-color bg:$code-bg-lighter
 		.code-head display: none
 
 	css code
@@ -327,11 +327,11 @@ tag app-code-block < app-code
 		white-space:pre p:3 4 p.md:5 6
 
 	css label
-		bg:gray7 radius:2 l:abs flex center p:1
+		bg:gray7 radius:2 pos:absolute d:flex ai:center p:1
 
-	css button px:1 mx:1 t:gray6 medium radius:2 bg@hover:gray7/10 outline@focus:none
-		@not-md mx:0 ml:1 bg:gray7/90 bg.hover:gray7/100 t:gray4
-		@is-active bg:blue6 text:white
+	css button px:1 mx:1 c:gray6 fw:500 radius:2 bg@hover:gray7/10 outline@focus:none
+		@not-md mx:0 ml:1 bg:gray7/90 bg@hover:gray7/100 c:gray4
+		@is-active bg:blue6 c:white
 
 	css .tabs d:flex radius:2
 
@@ -342,15 +342,15 @@ tag app-code-block < app-code
 	css &.shared d:none
 
 	css code@hover.has-hl > span@not(.hl)@not(._style) opacity: 0.7
-	css code span.region.hl l:rel
+	css code span.region.hl pos:relative
 		@before
-			l:abs inset:0 m:-1 radius:3 b:1px dashed yellow7 content:' '
+			pos:absolute inset:0 m:-1 radius:3 b:1px dashed yellow7 content:' '
 			box-shadow: 0px 0px 10px 2px rgba(42, 50, 63,0.7), inset 0px 0px 2px 2px rgba(42, 50, 63,0.7)
 			rotate:-1deg
 
 	css $preview
 		h:260px d:flex fd:column bg:white position:relative
-		mt:-1 b:gray3 bg:white bbr:3px
+		mt:-1 b:gray3 bg:white radius:0 0 3px 3px
 		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray6 z-index:2
 		header d:none
 
@@ -430,16 +430,16 @@ tag app-code-block < app-code
 		return unless code
 
 		<self.{code.flags} @pointerover=pointerover>
-			<div$code>
+			<div$code[pos:relative]>
 				if lang == 'imba'
-					<div.(l:abs top:2 right:2 top@not-md:-2 right@not-md:1)>
+					<div[pos:absolute top:-2 @md:2 right:1 @md:2]>
 						if options.compile
 							<button .active=(tab == 'js') @click=toggleJS> 'js'
 						if options.run
 							<button @click=run> 'run'
 
-				<div$source.source .(l:hidden)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
-				<div.output.js .(l:hidden)=(tab != 'js')> <code$compiled>
+				<div$source.source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
+				<div.output.js .(d:none)=(tab != 'js')> <code$compiled>
 			if options.preview
 				<app-repl-preview$preview file=options.preview>
 			

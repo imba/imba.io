@@ -57,6 +57,8 @@ def renderer.heading text, level
 	var slug = slugify(plain)
 	meta.title = unescape(text)
 
+	# flags.push("next-{next.type}")
+
 	if next.type == 'code' and level == 4
 		next.meta = meta
 		return ''
@@ -89,7 +91,7 @@ def renderer.heading text, level
 	stack.push(meta)
 
 	let typ = "h{level}"
-	let node = <{typ} .{flags}> <span innerHTML=text>
+	let node = <{typ} .{flags.join(' ')}> <span innerHTML=text>
 	let pre = "<!--:{typ}:-->"
 	return pre + node.toString()
 

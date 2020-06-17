@@ -1,13 +1,206 @@
 import {aliases} from 'imba/src/compiler/styler'
+import {fonts,modifiers,variants} from 'imba/src/compiler/theme'
+import * as selparser from 'imba/src/compiler/selparse'
+
+const selparseCache = {}
+
+def parseSel str
+	if selparseCache[str]
+		return selparseCache[str]
+	let sel = selparser.parse(str,{})
+	return selparseCache[str] = selparser.render(sel,'...')
+
+const groups = [
+	'all'
+	'padding'
+	'grid'
+	'flexbox'
+	'margin'
+	'text'
+	'alignment'
+]
+
+const transforms = 
+	x: 'translateX'
+	y: 'translateY'
+	z: 'translateZ'
+	rotate: 'rotate'
+	scale: 'scale'
+	'scale-x': 'scaleX'
+	'scale-y': 'scaleY'
+	'skew': 'skewX'
+	'skew-y': 'skewY'
+
+css .defs
+	d:grid gtc:max-content auto pc:start
+	is:mono fs:4
+	.pair d:contents
+	.dt c:purple7 pr:4
+	.dd c:gray6
+
+	[cols=2] & gtc@lg: max-content 1fr max-content 1fr
+
+	@lg [cols='3-transposed'] &
+		gtc: 1fr 1fr 1fr
+		.pair d:block
+		> @nth-child(3n+1) order:0
+		> @nth-child(3n+2) order:1
+		> @nth-child(3n+3) order:2
+
+	@lg [cols=3] &
+		gtc: max-content 1fr max-content 1fr max-content 1fr
+
+css .defbar 
+	border-bottom:1px solid gray3 pb:2
+	button mr:2 fw:500 fs:8 c:gray6 c@hover:gray7 c.checked:gray9 outline@focus:none
+		bbw:2px bc:clear bc.checked:teal6
+	# input@checked ~ .tab c:gray9
+
+tag doc-css-property < a
+
+	def render
+		<self href="https://developer.mozilla.org/en-US/docs/Web/CSS/{data}"> data
 
 tag doc-style-aliases
+	def mount
+		rule = new RegExp(dataset.regex or '---')
+		negrule = new RegExp(dataset.neg or '---')
+		inc = (dataset.include or '').split(',')
+		exc = (dataset.exclude or '').split(',')
+		console.log 'dehydrate!',rule
+		items = for own k,v of aliases
+			continue if exc.indexOf(k) >= 0
+			unless inc.indexOf(k) >= 0
+				if v isa Array
+					continue unless v.some(do rule.test($1) and !negrule.test($1) )
+				elif !rule.test(v) or negrule.test(v)
+					continue
+			[k,v isa Array ? v : [v]]
+		
+		# items = items.sort(do $1[0] > $2[0] ? 1 : -1)
+		console.log 'dehydrated',rule,items
+
+	<self[is:block mt:2]>
+		<div.defs> for [alias,name] in items
+			<div.pair>
+				<span.dt> alias
+				<span.dd> for v in name
+					<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/{v}"> v
+					# name.join(' & ')
+
+tag doc-style-spacings
+	<self>
+		<doc-style-aliases data-regex='^margin'>
+		<doc-style-aliases data-regex='^padding'>
+		<doc-style-aliases data-regex='^spacing'>
+
+
+tag doc-style-transform-aliases
+	def hydrate
+		yes
+
+	<self[is:block mt:2]>
+		<div.defs> for own alias,val of transforms
+			<div.pair>
+				<span.dt> alias
+				<span.dd> "transform: {<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/{val}"> val}(...)"
+
+tag doc-style-utils
+	<self[is:block mono mt:2 fs:4]>
+		<div.defs> for own name,mod of variants.layout
+			# <div.pair[is:grid mono gtc:max-content  pc:start fs:4]>
+			continue if name.match(/table|inline|center/)
+			<div.pair>
+				<span.dt[prefix:'is:' o@before:0.5]> name
+				<span.dd> <doc-util-output name=name data=mod>
+
+tag doc-style-val
+	def render
+		let val = data isa Array ? data : [data]
+		
+
+tag doc-style-ff
 
 	<self>
-		<div> for own k,v of aliases
-			<span.alias> k
-			<span.full> JSON.stringify(v)
+		<div.defs> for own name,val of fonts
+			<div.pair>
+				<.dt> name
+				<.dd> val
 
-tag doc-style-is
+tag doc-style-fs
+
+	<self>
+		<div.defs[gtc:max-content max-content auto ai:center]> for own name,val of variants.fontSize
+			continue if !name.match(/[a-z]/)
+			<div.pair>
+				<.dt> name
+				<.dd[pr:3]>
+					val[0]
+					# <span[prefix:' / ']> val[1]
+				<span[lh:1.2em ws:nowrap overflow:hidden text-overflow:ellipsis] css:fontSize=val[0]> "Quick brown fox"
+
+tag doc-style-easings
+	<self>
+		<div.defs> for own name,val of variants.easings
+			<div[d:contents]>
+				<.dt> name
+				<.dd> val
+
+tag doc-util-output
+
+	<self>
+		for own k,v of data
+			<span.pair[suffix:';']>
+				<span.key[suffix:': ']> k
+				<span.val> JSON.stringify(v)
+
+for own k,v of modifiers
+	v.example = "@{k}{v.type == 'selector' and '(sel)' or ''}"
+	v.parsed = parseSel("sel {v.example}")
+	v.custom = (v.name and v.name != k) or v.media or v.ua
+	v.kind = v.media ? 'media' : (v.ua ? 'user-agent' : ('pseudo-class'))
+	v.title = v.name
+
+tag doc-style-modifiers
+
+	prop preview = 'plain'
+
+	def mount
+		data = Object.values(modifiers)
+		filters = [
+			{name: 'all',regex: /.*/}
+			{name: 'media',regex: /\@media/}
+			{name: 'user-agent',regex: /ua-/}
+			{name: 'pseudo-class',regex: /[^\:]\:[^\:]/}
+			{name: 'pseudo-element',regex: /\:\:/}
+			{name: 'custom',regex: /NO/,prop:'custom'}
+		]
+		filter = filters[0]
+	
+	css cursor:default
+	css .prop d:none d..inprop:inline
+	css .sel d:none d..insel:inline
+	css .chk pos:absolute visibility:hidden
+
+	def render
+		# console.log 'render with filter',filter
+		<self.table .{preview}>
+			<header.defbar>
+				for item in filters
+					<button bind=filter value=item> item.name
+
+			<div[fs:5]> for mod in data
+				continue unless !filter or filter.regex.test(mod.parsed) or mod[filter.prop]
+				<div.pair[bc:gray3 bbw:1px py:1 bg@hover:gray1] .custom=mod.custom>
+					<span.query>
+						<span.sel> "sel"
+						<span.prop> "display"
+						<span[c:purple7 fw:500 fs:6]> mod.example
+						<span.prop> ": value"
+					<span[c:gray5 ff:mono fs:3].out>
+						<span> ' # -> '
+						<span[pr:3]> mod.parsed
+					
 
 tag doc-colors
 	css .gray1 bg:gray1 c:gray6
@@ -110,7 +303,7 @@ tag doc-colors
 	css .pink8 bg:pink8 c:pink1
 	css .pink9 bg:pink9 c:pink1
 
-	css .palette my:2 fs:sm fw:bold cursor:default radius:2 l:clip flex
+	css .palette my:2 fs:sm fw:bold cursor:default radius:2 of:hidden d:flex
 	css .color radius:0 flex:1 p:1 h:12 d:flex ai:center jc:center w:5 
 		span o:0 tween:30ms ease-in-out 
 		@first span o:0.3
