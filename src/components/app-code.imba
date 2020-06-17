@@ -29,6 +29,7 @@ css :root
 	--code-string: #77b3d1;
 	--code-entity: #8ab9ff;
 	--code-regexp: #e9e19b;
+	--code-mixin:#ffc87c;
 	--code-this: #63b3ed;
 	--code-tag: #e9e19b;
 	--code-tag-event: #fff9c3;
@@ -110,8 +111,7 @@ css .code
 	& .variable.global color: var(--code-global-variable);
 	& .variable.imports color: var(--code-global-variable);
 	& .decorator color: var(--code-decorator); 
-	# & .tag.flag.start opacity: 1;
-	& .tag.flag.mixin@not(.start) color: var(--code-selector-placeholder)
+	& .tag.mixin color: var(--code-mixin)
 	& .tag.rule-modifier color: var(--code-rule-mixin); 
 	& .tag.rule-modifier.start opacity: 0.43; 
 	& .tag.rule color: var(--code-rule); 
@@ -134,7 +134,7 @@ css .code
 	& .selector.pseudostate color: var(--code-selector-pseudostate); 
 	& .selector.operator color: var(--code-selector-operator); 
 	& .selector.context color: var(--code-selector-context) 
-	& .selector.mixin color: var(--code-selector-placeholder)
+	& .selector.mixin color: var(--code-mixin)
 	& .style.start-operator color: var(--code-delimiter-operator);
 	& span.operator.dot color:var(--code-identifier)
 	& span.region.more display:none display.md:contents
@@ -316,7 +316,7 @@ tag app-code
 
 tag app-code-block < app-code
 
-	css pos:relative d:block radius:1 fs:13px t@not-md: 12px
+	css pos:relative d:block radius:1 fs:12px @md:13px
 
 	css $code pos:relative d:block radius:1 c:$code-color bg:$code-bg-lighter
 		.code-head display: none
@@ -324,7 +324,7 @@ tag app-code-block < app-code
 	css code
 		display:block overflow-x:auto
 		font-family: var(--code-font)
-		white-space:pre p:3 4 p.md:5 6
+		white-space:pre p:3 4 p@md:5 6
 
 	css label
 		bg:gray7 radius:2 pos:absolute d:flex ai:center p:1

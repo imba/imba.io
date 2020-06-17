@@ -31,6 +31,8 @@ const transforms =
 	'skew': 'skewX'
 	'skew-y': 'skewY'
 
+css h2 + p > .deftable @first > header mt:-6 bg:white
+	
 css .defs
 	d:grid gtc:max-content auto pc:start
 	is:mono fs:4
@@ -184,7 +186,7 @@ tag doc-style-modifiers
 
 	def render
 		# console.log 'render with filter',filter
-		<self.table .{preview}>
+		<self.deftable .{preview}>
 			<header.defbar>
 				for item in filters
 					<button bind=filter value=item> item.name

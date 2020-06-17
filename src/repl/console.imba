@@ -73,9 +73,9 @@ tag repl-console-item
 tag repl-console
 	css cursor:default $count: 0
 
-	css .item d:block p:2 3 mx:1 bb:gray2 t:gray6 md/1.4 500
+	css .item d:block p:2 3 mx:1 bbw:1px bbc:gray2 c:gray6 fs:md/1.4 fw:500
 	css .part > .member mr:1
-	css .heading d:block p:1 3 0 mx:1 t:gray6 sm 500 mb:-2
+	css .heading d:block p:1 3 0 mx:1 c:gray6 fs:sm fw:500 mb:-2
 
 	css .string
 		white-space: pre-wrap
@@ -88,12 +88,14 @@ tag repl-console
 	css .textnode color:gray6
 
 	css .object
-		content@before:'{ ' content@after:' }' m:0
+		m:0
+		content@before:'{s '
+		content@after:' }'
 		.key + .value content@before: ': '
 		.pair + .pair content@before: ', '
 
 	css .counter
-		bg:gray3 mx:1 px:1 radius:10 min-width:6 color:gray6-70 l:inline-block f:xs bold ta:center
+		bg:gray3 mx:1 px:1 radius:10 min-width:6 color:gray6/70 d:inline-block fs:xs fw:bold ta:center
 
 	prop native
 	prop context
@@ -117,11 +119,11 @@ tag repl-console
 
 	def render
 		<self>
-			<header.(bg:gray2)>
-				<.tab.active.(flex-grow:1) @click=flags.toggle('expanded')>
+			<header[bg:gray2]>
+				<.tab.active[flex-grow:1] @click=flags.toggle('expanded')>
 					<span> "Console"
 					<span.counter> count
-				<button @click=clear .(d:none)=(!count)> 'Clear'
-			<.content.(is:rel flex:1 bg:white)>
-				<div$scroller.(is:abs block scroll-y inset:0)>
-					<div$body.(is:block) @resize=relayout>
+				<button @click=clear [d:none]=(!count)> 'Clear'
+			<.content[pos:relative flex:1 bg:white]>
+				<div$scroller[pos:absolute d:block ofy:auto inset:0]>
+					<div$body[d:block] @resize=relayout>

@@ -143,6 +143,7 @@ tag app-card
 ```
 
 ## Mixins
+
 Sometimes you want to create reusable "global" styles, but still not pollute your app with globally applied styles. Let's say you have a style that you reuse for buttons across components, but you don't want to risk any element with the class `.btn` to be affected. If you create a css declaration without an initial selector, it will compile to an anonymous css rule, and return the unique name representing this style.
 
 ```imba
@@ -202,27 +203,29 @@ Since inline styles are essentially anonymous classes, they can also be applied 
 <div[p:2 font:green9] [font:line-through gray4]=item.done>
 ```
 
-# Placeholders
+# Mixins
 
+##### basics
 ```imba
-css %button
-    p:2 bg:blue2 c:blue7 br:2
-    &.danger bg:red2 c:red7
-    &.warn bg:yellow2 c:yellow7
+css %btn
+    py:2 px:3 radius:2
+    bg:blue2 .warn:yellow2 .danger:red2
+    color:blue7 .warn:yellow7 .danger:red7
 
 imba.mount do <div>
-    <div%button> "Button"
-    <div%button.danger> "Danger"
-    <div%button.warn> "Warn"
+    <div%btn> "Button"
+    <div%btn.danger> "Danger"
+    <div%btn.warn> "Warn"
 ```
 
+##### importing
 ```imba
-import {%button} from './styles'
+import {%btn} from './styles'
 
 imba.mount do <div>
-    <div%button> "Button"
-    <div%button.danger> "Danger"
-    <div%button.warn> "Warn"
+    <div%btn> "Button"
+    <div%btn.danger> "Danger"
+    <div%btn.warn> "Warn"
 ```
 
 # Aliases
@@ -242,7 +245,7 @@ We firmly believe that less code is better code, so we have strived to make the 
 <doc-style-aliases data-regex='padding'></doc-style-aliases>
 
 ## text & font
-<doc-style-aliases data-regex='text' data-neg='decoration|emphasis'  data-include='c,lh,ta,va,ls,fs,fw,ws' data-exclude='t'></doc-style-aliases>
+<doc-style-aliases data-regex='text|font' data-neg='decoration|emphasis'  data-include='c,lh,ta,va,ls,fs,ff,fw,ws' data-exclude='t'></doc-style-aliases>
 
 ## flexbox
 
@@ -250,7 +253,7 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 ## grid
 
-<doc-style-aliases data-regex='grid'></doc-style-aliases>
+<doc-style-aliases data-regex='grid' data-include='g,rg,cg'></doc-style-aliases>
 
 ## alignment
 
