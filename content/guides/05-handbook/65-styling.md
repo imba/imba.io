@@ -147,6 +147,7 @@ imba.mount do <div>
     <div%btn.warn> "Warn"
 ```
 
+
 ##### extending
 ```imba
 import {%btn} from './styles'
