@@ -176,6 +176,48 @@ In the examples above, all of the `<%btn>` elements
 
 
 
+# Interpolation
+
+It is also possible to interpolate dynamic values into styles. This happens efficiently at runtime using css variables behind the scenes. This allows you to even write dynamic styles in a declarative manner.
+
+```imba
+# ~preview
+css div pos:absolute p:3 t:2 l:2
+css section d:block pos:absolute inset:0 user-select:none
+
+# ---
+let ptr = {x:0, y:0}
+let num = 0
+imba.mount do
+    <section @pointermove=(ptr = e) @click=(num++)>
+        <div[bg:teal2 x:{ptr.x} y:{ptr.y} rotate:{ptr.x / 360}]> "Full"
+        <div[bg:purple2 x:{ptr.x / 2} y:{ptr.y / 2} rotate:{num / 45}]> "Half"
+        
+```
+
+### Specifying units
+
+When you want to interpolate values with units you can include units after `{expr}` like `{expr}px`,`{expr}%` etc.
+```imba
+# ~preview
+css div p:2 m:2 overflow:hidden min-width:80px
+
+# ---
+let ptr = {x:0, y:0}
+imba.mount do
+    <section[d:block pos:absolute inset:0] @pointermove=(ptr = e) @click=(clicks++)>
+        <div[bg:indigo2 w:{ptr.x / 10}%]> "% width"
+        <div[bg:green2 w:{ptr.x}px]> "px width"
+        
+```
+
+### Set properties directly
+You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
+
+
+
+
+
 # Aliases
 
 We firmly believe that less code is better code, so we have strived to make the styling syntax as concise yet readable as possible. There is a case to be made against short variable names in programming, but css properties are never-changing. Imba provides intuitive abbreviations for oft-used css properties. Like everything else, using these shorthands is completely optional, but especially for inline styles, they are convenient.
@@ -500,6 +542,10 @@ The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`te
 
 <doc-colors></doc-colors>
 
+## Box Shadows
+
+> How to add / override these shadows
+
 ## Fonts
 
 <doc-style-ff></doc-style-ff>
@@ -507,6 +553,31 @@ The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`te
 ## Font Sizes
 
 <doc-style-fs></doc-style-fs>
+
+## Grids
+
+The `grid` property behaves in a slightly special manner in Imba. If you supply a single value/identifier to this like `grid:container`, Imba will compile the style to `grid:var(--grid-container)`.
+
+```imba
+# ~preview
+css body p:2
+css div bg:teal2 p:3
+css section p:1 gap:2 pc:center
+
+import {genres} from 'imdb'
+
+# ---
+# adding a custom grid with different values for different screen sizes
+css @root
+    --grid-genres: auto-flow / 1fr 1fr @xs: auto-flow / 1fr 1fr 1fr @sm: auto-flow / 1fr 1fr 1fr 1fr
+
+# use this grid value anywhere in the code
+imba.mount do  <section[display:grid grid:genres]>
+    for genre in genres
+        <div> genre
+```
+
+
 
 ## Transitions
 

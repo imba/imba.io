@@ -34,11 +34,15 @@ const editorOptions = {
 	}
 }
 
+tag app-divider
+
 tag app-repl-preview
 	@watch prop url
 
+	prop w = 2000
+
 	def build
-		$iframe = <iframe.(position:absolute width:100% height:100%)>
+		$iframe = <iframe[pos:absolute width:100% height:100%]>
 		$iframe.replify = do(win)
 			$win = win # $iframe.contentWindow
 			$doc = $win.document
@@ -58,13 +62,19 @@ tag app-repl-preview
 		if src
 			$iframe.src = src
 
+	def resize e
+		w = Math.max(Math.round(e.layerX),260)
+		render!
+		self
+
 	def render
 		<self>
-			<header.(bg:gray2)> <.tab.active> "Preview"
-			<div.(l:rel flex:1)> <div$frame.(l:abs inset:0)> $iframe
+			<header[bg:gray2]> <.tab.active> "Preview"
+			<div[pos:relative w:{w}px max-width:100%] @touch.lock=resize>
+				<div$frame[pos:absolute inset:0 right:6px] @pointerdown.stop> $iframe
+				<div$divider[bg:gray4 w:6px h:100% pos:absolute r:0 t:0 pe:none]>
 		
 	set file data
-		console.log 'did set file!',data
 		sw.request(event: 'file', path: data.path, body: data.body).then do
 			console.log 'returned from sw',data.path
 			url = data.path.replace('.imba','.html')
