@@ -1,44 +1,56 @@
-- Show that we can bind to both variables and properties
-- Basic syntax for binding `<element[value-to-bind]>`
-- How to expose binding
 
 ## Text inputs
 
 ```imba
+# ~preview
+css body p:4
+css input d:block p:1 px:2 c:gray8 bw:1 bc:gray4 radius:2px
+css div d:block mt:1 c:gray7
+
 let message = "Hello"
 
-imba.mount do <>
-	<input[message].field type='text'>
+imba.mount do <div>
+	<input type='text' bind=message>
 	<div> "Message is {message}"
 ```
 
 ## Numeric inputs
 
 ```imba
+# ~preview
+css body p:4
+css input[type=number] d:block p:1 c:gray8 bw:1 bc:gray4 radius:2px
+css input[type=range] d:block c:gray8
+css div d:block mt:1 c:gray7
+
+# ---
 let number = 1
 let object = {number: 2}
 
 imba.mount do <>
-	<label.flex.flex-row>
-		<input[number].field type='number' min=0 max=10>
-		<input[number].field type='range' min=0 max=10>
-	<label.flex.flex-row>
-		<input[object.number].field type='number' min=0 max=10>
-		<input[object.number].field type='range' min=0 max=10>
+	<div[d:grid gtc:1fr 3fr 1fr 3fr gap:2]>
+		<input type='number' min=0 max=10 bind=number>
+		<input type='range' min=0 max=10 bind=number>
+		<input type='number' min=0 max=10 bind=object.number>
+		<input type='range' min=0 max=10 bind=object.number>
 	<div.field> "{number} + {object.number} = {number + object.number}"
 ```
 
 ## Checkbox inputs
 ```imba
+# ~preview
+css body p:4
+
 const state =
 	message: ""
 	enabled: false
 
-imba.mount do
-	<label>
-		<input[state.enabled] type='checkbox'>
-		<span> "enabled: {state.enabled}"
+imba.mount do <label .enabled=state.enabled>
+	<input type='checkbox' bind=state.enabled>
+	<span[pl:1 color: gray6 ..enabled:green6]> "enabled: {state.enabled}"
 ```
+
+## Multiple checkboxes
 
 ## Radio inputs
 
@@ -49,16 +61,19 @@ imba.mount do
 ## Custom binding
 
 ```imba
+# ~preview
+css body p:4
+
 tag x-checkbox
 	def render
 		<self> <label.block>
-			<input[data] type='checkbox'>
-			<span.pl-2> <slot>
+			<input type='checkbox' bind=data>
+			<span[pl:1]> <slot>
 
 const state = { enabled: no }
 
 imba.mount do <main>
-	<x-checkbox[state.enabled]> 'Enable'
+	<x-checkbox bind=state.enabled> 'Enable'
 	if state.enabled
-		<span> 'State is enabled!'
+		<span[pl:1 c:gray6]> 'State is enabled'
 ```
