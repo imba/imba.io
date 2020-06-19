@@ -126,9 +126,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _internal_flags__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _internal_scheduler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _events__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
-/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
-/* harmony import */ var _internal_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
-/* harmony import */ var _svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
+/* harmony import */ var _events_pointer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
+/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
+/* harmony import */ var _internal_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7);
+/* harmony import */ var _svg__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8);
 function extend$(target,ext){
 	// @ts-ignore
 	var descriptors = Object.getOwnPropertyDescriptors(ext);
@@ -277,19 +278,21 @@ imba.toStyleValue = function (value,unit,key){
 		};
 	} else if (typ == 'string' && key) {
 		
-		if (CSS_STR_PROPS[key] && value[0] != '"' && value[0] != "'") {  };
-		if (value.indexOf('"') >= 0) {
+		if (CSS_STR_PROPS[key] && value[0] != '"' && value[0] != "'") {
 			
-			if (value.indexOf("'") >= 0) {
+			if (value.indexOf('"') >= 0) {
 				
-				true;
+				if (value.indexOf("'") == -1) {
+					
+					value = "'" + value + "'";
+				} else {
+					
+					false;
+				};
 			} else {
 				
-				value = "'" + value + "'";
+				value = '"' + value + '"';
 			};
-		} else {
-			
-			value = '"' + value + '"';
 		};
 	};
 	
@@ -461,6 +464,7 @@ var proxyHandler = {
 		return val;
 	}
 };
+
 
 
 
@@ -759,9 +763,9 @@ ShadowRoot.prototype.appendChild$ = Element.prototype.appendChild$;
 
 
 
-imba.createLiveFragment = _internal_fragment__WEBPACK_IMPORTED_MODULE_3__["createLiveFragment"];
-imba.createIndexedFragment = _internal_fragment__WEBPACK_IMPORTED_MODULE_3__["createIndexedFragment"];
-imba.createKeyedFragment = _internal_fragment__WEBPACK_IMPORTED_MODULE_3__["createKeyedFragment"];
+imba.createLiveFragment = _internal_fragment__WEBPACK_IMPORTED_MODULE_4__["createLiveFragment"];
+imba.createIndexedFragment = _internal_fragment__WEBPACK_IMPORTED_MODULE_4__["createIndexedFragment"];
+imba.createKeyedFragment = _internal_fragment__WEBPACK_IMPORTED_MODULE_4__["createKeyedFragment"];
 
 
 
@@ -784,11 +788,11 @@ class ImbaElementRegistry {
 	
 	get(name,klass){
 		
-		if (!name || name == 'component') { return _internal_component__WEBPACK_IMPORTED_MODULE_4__["ImbaElement"] };
+		if (!name || name == 'component') { return _internal_component__WEBPACK_IMPORTED_MODULE_5__["ImbaElement"] };
 		if (this.types[name]) { return this.types[name] };
 		if (false) {};
 		if (klass && root[klass]) { return root[klass] };
-		return root.customElements.get(name) || _internal_component__WEBPACK_IMPORTED_MODULE_4__["ImbaElement"];
+		return root.customElements.get(name) || _internal_component__WEBPACK_IMPORTED_MODULE_5__["ImbaElement"];
 	}
 	
 	create(name){
@@ -864,7 +868,7 @@ imba.createComponent = function (name,parent,flags,text){
 	if (CustomTagConstructors[name]) {
 		
 		el = CustomTagConstructors[name].create$(el);
-		el.slot$ = _internal_component__WEBPACK_IMPORTED_MODULE_4__["ImbaElement"].prototype.slot$;
+		el.slot$ = _internal_component__WEBPACK_IMPORTED_MODULE_5__["ImbaElement"].prototype.slot$;
 		el.__slots = {};
 	} else {
 		
@@ -2831,6 +2835,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown = {
+	handle: function(s,args) {
+		
+		let ev = s.event;
+		s.handler.x0 = ev.x;
+		return s.handler.y0 = ev.y;
+	},
+	
 	lock: function(state,args) {
 		
 		let ev = state.event;
@@ -2840,7 +2851,9 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown = {
 		let selstart = document.onselectstart;
 		el.setPointerCapture(ev.pointerId);
 		handler.pointerId = ev.pointerId;
-		console.log('got here!?!');
+		handler.x0 = ev.x;
+		handler.y0 = ev.y;
+		ev.dx = ev.dy = 0;
 		
 		el.addEventListener('pointermove',handler);
 		el.addEventListener('pointerup',handler);
@@ -2850,6 +2863,7 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown = {
 			el.releasePointerCapture(e.pointerId);
 			el.removeEventListener('pointermove',handler);
 			el.removeEventListener('pointerup',handler);
+			handler.pointerId = null;
 			return document.onselectstart = selstart;
 		},{once: true});
 		return true;
@@ -2858,14 +2872,32 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown = {
 	}
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointermove = {
-	handle: function(state,args) {
+	handle: function(s,args) {
 		
+		let h = s.handler;
+		let e = s.event;
+		let id = h.pointerId;
+		if (id && e.pointerId != id) { return false };
+		if (typeof h.x0 == 'number') {
+			
+			e.dx = e.x - h.x0;
+			e.dy = e.y - h.y0;
+		};
 		return true;
 	}
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerup = {
-	handle: function(state,args) {
+	handle: function(s,args) {
 		
+		let h = s.handler;
+		let e = s.event;
+		let id = h.pointerId;
+		if (id && e.pointerId != id) { return false };
+		if (typeof h.x0 == 'number') {
+			
+			e.dx = e.x - h.x0;
+			e.dy = e.y - h.y0;
+		};
 		return true;
 	}
 };
