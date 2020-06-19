@@ -71,14 +71,6 @@ css .card
     # to scope in on current item use &
     &.large padding:16px # matches .card.large
 ```
-When nesting pseudo selectors like `@hover`, they are always merged into the closest non-pseudo selector. This means that you can add a bunch of them one after the other with spaces between them, and they will still be applied to the closest non-pseudo selector.
-```imba
-css .card
-    opacity:0.5
-    @hover @focus opacity:1 # will match .card:hover:focus
-    .large .selected opacity:1 # will match .card .large .selected
-    .class opacity:1 # matches .card .class
-```
 
 ## Scoped Styles
 
@@ -92,93 +84,20 @@ css p color:black
 # ---
 tag app-card
     # local styles declared inside tag body
-    css d:block p:3 r:2 b:gray2
-        h1 font:serif gray8 fs:20px
-    css p font:gray5 fs:15px
+    css d:block p:3 bw:1 bc:gray2 radius:2
+        h1 font:serif color:gray8 fs:20px
+        p color:gray5 fs:15px
+        $more color:gray4
 
     <self>
         <h1> "Gray Card Header"
         <p> "Gray Card Desc"
+        <a$more> 'show more...'
 
 imba.mount do <div>
     <app-card>
     <h1> "Red Header"
     <p> "Black paragraph"
-```
-
-### Local Scoping
-
-If you render other components inside your component, and don't want the styles declared in the tag body to also apply to sub elements of included components etc, just prefix your `css` declaration with `local`:
-```imba
-css body p:5
-# ---
-tag app-button
-    <self> <span.title> <slot> "Button"
-
-tag app-card
-    css d:block p:3 radius:2 border:gray2
-    css .desc font:15px gray5
-    ~arrow[local]~ css .title font:serif 20px gray8
-
-    <self>
-        <div.title> "Card title"
-        <p.desc> "Card description"
-        # the div.title inside app-button will not be styled!
-        <app-button> "Read more..."
-
-imba.mount do <app-card>
-```
-
-### Styling Named Elements
-
-You can also style named elements using their prefixed `$name` directly in the style selector.
-```imba
-tag app-card
-    css $title font:serif 20px gray8
-    css $desc font:15px gray5
-
-    <self>
-        <h1$title> "Card title"
-        <p$desc> "Card description"
-```
-
-## Mixins
-
-Sometimes you want to create reusable "global" styles, but still not pollute your app with globally applied styles. Let's say you have a style that you reuse for buttons across components, but you don't want to risk any element with the class `.btn` to be affected. If you create a css declaration without an initial selector, it will compile to an anonymous css rule, and return the unique name representing this style.
-
-```imba
-const btn = css p:2 bg:blue2 color:blue7 radius:2
-console.log btn # a unique string that can be used as a class name
-
-imba.mount do <div.{btn}> "Styled as button"
-```
-```imba
-css %btn p:2 bg:blue2 color:blue7 radius:2
-imba.mount do <div.%btn> "Styled as button"
-```
-These styles can also contain nested rules
-
-```imba
-const btn = css p:2 bg:blue2 color:blue7 radius:2
-    &.danger bg:red2 color:red7
-    &.warn bg:yellow2 color:yellow7
-
-imba.mount do <div>
-    <div.{btn}> "Styled as button"
-    <div.{btn}.danger> "Danger"
-    <div.{btn}.warn> "Warn"
-```
-
-```imba
-
-css %button p:2 bg:blue2 color:blue7 radius:2
-    &.danger bg:red2 color:red7
-    &.warn bg:yellow2 color:yellow7
-
-imba.mount do <div>
-    <div.%button> "Styled as button"
-    <div.%button.danger> "Danger"
-    <div.%button.warn> "Warn"
 ```
 
 ## Inline Styles
@@ -191,16 +110,16 @@ Instead of coming up with an arbitrary class name and adding styles somewhere el
 This might look like regular inline styles, but with abbreviations and modifiers they become much more powerful and expressive:
 ```imba
 # More padding on large screens:
-<div[is:rel vflex p:2 @lg:3]>
+<div[pos:relative d:flex fld:row p:2 @lg:3]>
 # Darker background color on hover:
 <button[bg:gray2 @hover:gray3]> "Click me"
 # Set text color when input is focused:
-<input[font@focus:blue7]>
+<input[color@focus:blue7]>
 ```
 Since inline styles are essentially anonymous classes, they can also be applied conditionally:
 ```imba
 # line-through and lighter color if item is done
-<div[p:2 font:green9] [font:line-through gray4]=item.done>
+<div[p:2 color:green9] [td:s c:gray4]=item.done>
 ```
 
 # Mixins
@@ -227,6 +146,35 @@ imba.mount do <div>
     <div%btn.danger> "Danger"
     <div%btn.warn> "Warn"
 ```
+
+##### extending
+```imba
+import {%btn} from './styles'
+
+tag todo-item
+    css %btn color:blue5
+    <self>
+        <span> 'Todo title'
+        <%btn> 'Todo Button'
+
+tag note-item
+    css %btn color:purple5
+    <self>
+        <span> 'Note title'
+        <%btn> 'Note Button'
+
+tag app-root
+    css %btn color:green5
+    <self>
+        <note-item>
+        <todo-item>
+        <%btn> 'App Button'
+
+imba.mount do <app-root>
+```
+In the examples above, all of the `<%btn>` elements
+
+
 
 # Aliases
 
