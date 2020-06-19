@@ -1,15 +1,18 @@
-tag x-app
-	css .blue = bg:blue200 color:blue800 bg.hover:blue300
-	css .teal = bg:teal200 color:teal800 bg.hover:teal300
-	css .yellow = bg:yellow200 color:yellow800 bg.hover:yellow300
-	css .red = bg:red200 color:red800 bg.hover:red300
-	css .item = p:4 flex:1 radius:3
+let number = 42
+let bool = yes
+# strings
+let string = 'the answer is {number}'
+let dynamic = "the answer is {number}"
+let template = `the answer is {number}`
 
-	def render
-		<self .(l:flex wrap space:1)>
-			<div.blue.item> "One"
-			<div.red.item> "Two"
-			<div.teal.item> "Three"
-			<div.yellow.item> "Four"
+let regex = /answer is (\d+)/
+let array = [1,2,3]
+let object = {name: 'Imba', type: 'language'}
 
-imba.mount <x-app>
+# objects can also be indented
+let details =
+	name: "Imba"
+	version: 2.0
+	description: string
+	repository: 'https://github.com/imba/imba'
+	inspiration: ['ruby','python','react','coffeescript']

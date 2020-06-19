@@ -1,3 +1,24 @@
+export const genres = [
+	"Action",
+	"Adventure",
+	"Animation",
+	"Biography",
+	"Comedy",
+	"Crime",
+	"Drama",
+	"Family",
+	"Fantasy",
+	"History",
+	"Music",
+	"Musical",
+	"Mystery",
+	"Romance",
+	"Sci-Fi",
+	"Thriller",
+	"War",
+	"Western"
+]
+
 export const movies = [
 	{
 		"title": "The Shawshank Redemption",

@@ -29,6 +29,7 @@ css :root
 	--code-string: #77b3d1;
 	--code-entity: #8ab9ff;
 	--code-regexp: #e9e19b;
+	--code-mixin:#ffc87c;
 	--code-this: #63b3ed;
 	--code-tag: #e9e19b;
 	--code-tag-event: #fff9c3;
@@ -53,6 +54,7 @@ css :root
 	--code-style-scope: #eb9fe5;
 	--code-style-delimiter: #8c7590;
 	--code-style-value: #a49feb;
+	--code-style-value-scope: #eec49d;
 	--code-style-value-size: #ff8c8c;
 	--code-style-property: #e0ade3;
 	--code-style-property-scope: #df8de4; # #e9e19b;
@@ -61,103 +63,107 @@ css :root
 	--code-selector: #e9e19b;
 	--code-selector-pseudostate: var(--code-selector);
 	--code-selector-context: #eec49d;
+	--code-selector-placeholder:hsl(321, 100%, 79%) # hsl(36, 100%, 72%);
 
 	--code-key: #9dcbeb;
 
 	# operators
-	# --code-operator: #dee5f9
 	--code-delimiter: #e3e3e3
-	# --code-operator: #889cd6
-	--code-delimiter-operator:#889cd6;
+	--code-delimiter-operator:#889cd6
 
 css .code
 	tab-size: 4
 	cursor:default
-	& .invalid = color: red
-	& .entity.other.inherited-tag = color: var(--code-entity); 
-	& .entity.other.inherited-class = color: var(--code-entity); 
-	& .invalid = color: red; 
-	& .comment = color: var(--code-comment); 
-	& .regexp = color: var(--code-regexp); 
-	& .tag = color: var(--code-tag); 
-	& .type = color: var(--code-type); 
-	& .type.start = color: var(--code-type-delimiter); 
-	& .entity.name.type = color: var(--code-entity); 
-	& .keyword = color: var(--code-keyword);
-	& .argparam = color: var(--code-keyword);
-	& .delimiter = color: var(--code-delimiter);
-	& .operator = color: var(--code-operator); 
-	& .property = color: var(--code-property); 
-	& .numeric = color: var(--code-numeric); 
-	& .number = color: var(--code-numeric); 
-	& .boolean = color: var(--code-boolean); 
-	& .null = color: var(--code-null); 
-	& .identifier = color: var(--code-identifier); 
-	& .key = color: var(--code-key); 
-	& .key + .operator = color: var(--code-key); 
-	& .variable = color: var(--code-variable); 
-	& .string = color: var(--code-string); 
-	& .propname = color: var(--code-entity); 
-	& .this = color: var(--code-this); 
-	& .self = color: var(--code-this); 
-	& .constant = color: var(--code-constant); 
-	& .tag.reference = color: var(--code-tag-reference);
-	& .tag.open = color: var(--code-tag-angle); 
-	& .tag.close = color: var(--code-tag-angle); 
-	& .tag.event = color: var(--code-tag-event); 
-	& .tag.event-modifier = color: var(--code-tag-event); 
-	# & .variable.scope_root = color: var(--code-root-variable); 
-	& .constant.variable = color: var(--code-constant);
-	& .variable.global = color: var(--code-global-variable);
-	& .variable.imports = color: var(--code-global-variable);
-	& .decorator =color: var(--code-decorator); 
-	& .tag.flag.start = opacity: 1;
-	& .tag.rule-modifier = color: var(--code-rule-mixin); 
-	& .tag.rule-modifier.start = opacity: 0.43; 
-	& .tag.rule = color: var(--code-rule); 
-	& .style.open = color: var(--code-style-bracket); 
-	& .style.close = color: var(--code-style-bracket); 
-	& .style.args.open = color: var(--code-style); 
-	& .style.args.close = color: var(--code-style); 
-	& .style = color: var(--code-style); 
-	& .style.scope = color: var(--code-style-scope); 
-	& .selector = color: var(--code-selector); 
-	& .unit = color: var(--code-style-unit); 
-	& .style.delimiter = color: var(--code-style-delimiter); 
-	& .style.property = color: var(--code-style-property); 
-	& .style.property.scope = color: var(--code-style-property-scope);
-	& .style.value = color: var(--code-style-value); 
-	& .style.value.var = color: var(--code-style-var);
-	& .style.value.size = color: var(--code-style-value-size); 
-	& .selector.pseudostate = color: var(--code-selector-pseudostate); 
-	& .selector.operator = color: var(--code-selector-operator); 
-	& .selector.context = color: var(--code-selector-context) 
-	& .style.start-operator = color: var(--code-delimiter-operator);
+	& .invalid color: red
+	& .entity.other.inherited-tag color: var(--code-entity); 
+	& .entity.other.inherited-class color: var(--code-entity); 
+	& .invalid color: red; 
+	& .comment color: var(--code-comment); 
+	& .regexp color: var(--code-regexp); 
+	& .tag color: var(--code-tag); 
+	& .type color: var(--code-type); 
+	& .type.start color: var(--code-type-delimiter); 
+	& .entity.name.type color: var(--code-entity); 
+	& .keyword color: var(--code-keyword);
+	& .argparam color: var(--code-keyword);
+	& .delimiter color: var(--code-delimiter);
+	& .operator color: var(--code-operator); 
+	& .property color: var(--code-property); 
+	& .numeric color: var(--code-numeric); 
+	& .number color: var(--code-numeric); 
+	& .boolean color: var(--code-boolean); 
+	& .null color: var(--code-null); 
+	& .identifier color: var(--code-identifier); 
+	& .key color: var(--code-key); 
+	& .key + .operator color: var(--code-key); 
+	& .variable color: var(--code-variable); 
+	& .string color: var(--code-string); 
+	& .propname color: var(--code-entity); 
+	& .this color: var(--code-this); 
+	& .self color: var(--code-this); 
+	& .constant color: var(--code-constant); 
+	& .tag.reference color: var(--code-tag-reference);
+	& .tag.open color: var(--code-tag-angle); 
+	& .tag.close color: var(--code-tag-angle); 
+	& .tag.event color: var(--code-tag-event); 
+	& .tag.event-modifier color: var(--code-tag-event); 
+	& .constant.variable color: var(--code-constant);
+	& .variable.global color: var(--code-global-variable);
+	& .variable.imports color: var(--code-global-variable);
+	& .decorator color: var(--code-decorator); 
+	& .tag.mixin color: var(--code-mixin)
+	& .tag.rule-modifier color: var(--code-rule-mixin); 
+	& .tag.rule-modifier.start opacity: 0.43; 
+	& .tag.rule color: var(--code-rule); 
+	& .style.open color: var(--code-style-bracket); 
+	& .style.close color: var(--code-style-bracket); 
+	& .style.args.open color: var(--code-style); 
+	& .style.args.close color: var(--code-style); 
+	& .style color: var(--code-style); 
+	& .style.scope color: var(--code-style-scope); 
+	& .selector color: var(--code-selector); 
+	& .unit color: var(--code-style-unit); 
+	& .style.delimiter color: var(--code-style-delimiter); 
+	& .style.property color: var(--code-style-property); 
+	& .style.property.scope color: var(--code-style-property-scope);
+	& .style.value color: var(--code-style-value); 
+	& .style.value.var color: var(--code-style-var);
+	& .style.value.size color: var(--code-style-value-size); 
+	& .style.value.scope color: var(--code-style-value-scope); 
+	& .style.modifier color: var(--code-style-value-scope); 
+	& .selector.pseudostate color: var(--code-selector-pseudostate); 
+	& .selector.operator color: var(--code-selector-operator); 
+	& .selector.context color: var(--code-selector-context) 
+	& .selector.mixin color: var(--code-mixin)
+	& .style.start-operator color: var(--code-delimiter-operator);
+	& span.operator.dot color:var(--code-identifier)
+	& span.region.more display:none display.md:contents
 
-	& span.operator.dot = color:var(--code-identifier)
-	& span.region.more = display:none display.md:contents
-
-	& .variable.highlight =
+	& .variable.highlight
 		bg:rgba(255, 253, 227, 0.11)
 		box-shadow:0px 0px 0px 2px rgba(255, 253, 227, 0.11)
 		border-radius:3px
 		transition: all 0.15s
 
-	& .region.hl2 =
+	& .region.hl2
 		bg:rgba(0, 0, 0, 0.11)
 		box-shadow:0px 0px 0px 2px rgba(0, 0, 0, 0.11)
 		border-radius:3px
 		transition: all 0.15s
 
-	& .region = d:rel
+	& .region is:rel
 
-	& .region.arrow::before =
+	& .region.arrow@before
 		content: " "
-		d:abs block
+		is:abs block
 		size:16px
 		bg: url('/images/arrow.svg')
 		background-size: contain
 		bottom:100% right:50% mr:-2px mb:-2px
+
+	# css
+	.css.attribute.name color:var(--code-style-property)
+	.css.attribute.value color:var(--code-style-value)
 
 def escape str
 	str.replace(/[\&\<\>]/g) do(m) replacements[m]
@@ -178,7 +184,7 @@ def highlight str,lang
 
 	# console.log 'lines',lines
 	if lines[0].indexOf('# ~') == 0
-		lines.shift!.replace(/~(\w+)/g) do(m,flag) flags[flag] = yes
+		lines.shift!.replace(/~(\w+)(?:\=([^\s]+))?/g) do(m,flag,val) flags[flag] = val or yes
 
 	for line,i in lines
 		# if line[0] == '~'
@@ -232,7 +238,7 @@ def highlight str,lang
 	let vref = 1
 
 	let pairs = 
-		'style.open': 'style.close'
+		'style.openz': 'style.close'
 	
 	let closers = []
 
@@ -307,43 +313,46 @@ tag app-code
 	def render
 		<self>
 
+
 tag app-code-block < app-code
 
-	css &
-		l:rel block radius:1 font-size:13px
-		color:$code-color bg:$code-bg-lighter
-		t.not-md: 12px
-		& .code-head = display: none
+	css pos:relative d:block radius:1 fs:12px @md:13px
+
+	css $code pos:relative d:block radius:1 c:$code-color bg:$code-bg-lighter
+		.code-head display: none
 
 	css code
 		display:block overflow-x:auto
 		font-family: var(--code-font)
-		white-space:pre p:3 4 p.md:5 6
-
-	# css .output = bg:#2b2b2d
+		white-space:pre p:3 4 p@md:5 6
 
 	css label
-		bg:gray7 radius:2 l:abs flex center p:1
+		bg:gray7 radius:2 pos:absolute d:flex ai:center p:1
 
-	css button = px:1 mx:1 t:gray6 medium radius:2 bg.hover:gray7-10 outline.focus:none
-		@not-md & = mx:0 ml:1 bg:gray7-90 bg.hover:gray7-100 t:gray4
-		&.active = bg:blue6 text:white
+	css button px:1 mx:1 c:gray6 fw:500 radius:2 bg@hover:gray7/10 outline@focus:none
+		@not-md mx:0 ml:1 bg:gray7/90 bg@hover:gray7/100 c:gray4
+		@is-active bg:blue6 c:white
 
-	css .tabs = d:flex radius:2
+	css .tabs d:flex radius:2
 
-	css .nostyles ._style = d:none
+	css .nostyles ._style d:none
 	# css code.has-regions > span:not(.region) = opacity: 0.4
-	css code.has-focus > span:not(.focus) = opacity: 0.6
-	css code.has-hide span.hide = d:none
-	# css code.has-focus > span:not(.focus) = opacity: 0.4
-	# css code.has-focus > span.region.focus = opacity: 1
-	css &.shared = d:none
+	css code.has-focus > span@not(.focus)@not(._style) opacity: 0.6
+	css code.has-hide span.hide d:none
+	css &.shared d:none
 
-	css code.has-hl > span:not(.hl) = opacity: 0.8
-	css code span.region.hl = l:rel
-		&::before = l:abs inset:0 m:-1 radius:3 b:1px dashed yellow7 content:' '
+	css code@hover.has-hl > span@not(.hl)@not(._style) opacity: 0.7
+	css code span.region.hl pos:relative
+		@before
+			pos:absolute inset:0 m:-1 radius:3 b:1px dashed yellow7 content:' '
 			box-shadow: 0px 0px 10px 2px rgba(42, 50, 63,0.7), inset 0px 0px 2px 2px rgba(42, 50, 63,0.7)
 			rotate:-1deg
+
+	css $preview
+		min-height:106px d:flex fld:column pos:relative
+		mt:-1 bw:1px bc:gray3 radius:0 0 3px 3px
+		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray6 z-index:2
+		header d:none
 
 	prop tab = 'imba'
 	prop lang
@@ -352,12 +361,24 @@ tag app-code-block < app-code
 	def hydrate
 		# console.log 'hydrating code block',outerHTML
 		lang = dataset.lang
+		dataset.path
 		# plain = textContent # .replace(/^\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
 		code = highlight(textContent,lang)
 		innerHTML = '' # empty
 		options.compile = !code.options.nojs and !code.plain.match(/^tag /m)
 		options.run = !code.options.norun
+		# options.preview = code.options.preview
+		# options.path = "/examples/{Math.round(Math.random! * 10000)}"
+		# options.src = "/examples/"
 		# console.log 'returned with code',code
+		if code.options.preview
+			let file = {path: dataset.path, body: code.plain,size: code.options.preview}
+			options.preview = file
+			
+			# sw.postMessage({event: 'file', path: file.path, body: file.body})
+			# setTimeout(&,200) do
+			#	options.preview = file
+			#	render!
 
 	def mount
 		render!
@@ -410,25 +431,35 @@ tag app-code-block < app-code
 		return unless code
 
 		<self.{code.flags} @pointerover=pointerover>
-			if lang == 'imba'
-				<div.(l:abs top:2 right:2 top.not-md:-2 right.not-md:1)>
-					if options.compile
-						<button .active=(tab == 'js') @click=toggleJS> 'js'
-					if options.run
-						<button @click=run> 'run'
+			<div$code[pos:relative]>
+				if lang == 'imba'
+					<div[pos:absolute top:-2 @md:2 right:1 @md:2]>
+						if options.compile
+							<button .active=(tab == 'js') @click=toggleJS> 'js'
+						if options.run
+							<button @click=run> 'run'
 
-			<div$source.source .(l:hidden)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
-			<div.output.js .(l:hidden)=(tab != 'js')> <code$compiled>
+				<div$source.source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
+				<div.output.js .(d:none)=(tab != 'js')> <code$compiled>
+			if options.preview
+				<app-repl-preview$preview [h:{code.options.preview}] file=options.preview>
 			
 
 tag app-code-inline < app-code
 
 	css &
-		display: inline-block;
-		font-size: 0.75em;
-		border-radius: 3px;
-		background: hsla(210, 7%, 31%, 0.06);
-		-webkit-box-decoration-break: clone;
-		vertical-align: middle;
-		padding: 0.1em 5px;
-		font-family: var(--code-font);
+		display: inline-block
+		font-size: 0.75em
+		border-radius: 3px
+		background: hsla(210, 7%, 31%, 0.06)
+		-webkit-box-decoration-break: clone
+		vertical-align: middle
+		padding: 0.1em 5px
+		font-family: var(--code-font)
+
+
+tag app-code-preview
+	def render
+		<self>
+			<div> 'Preview'
+			<div$container> <iframe$frame>

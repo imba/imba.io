@@ -40,6 +40,7 @@ export const theme =
 		tagmodifier: 'e9e19b'
 		taglistener: 'e9e19b'
 		special: 'ffdb59'
+		mixin: 'ffc87c'
 
 		sel: 'e9e19b'
 		selpseudo: 'eec49d'
@@ -120,6 +121,7 @@ export const theme =
 		{ token: 'annotation', foreground: 'cc6666' },
 		{ token: 'type', foreground: '3DC9B0' },
 		{ token: 'boolean', foreground: '@bool' },
+		{ token: 'unit', foreground: '@cssunit'},
 
 		{ token: 'constant.numeric', foreground: '@number' },
 		{ token: 'constant.language.boolean', foreground: '@bool' },
@@ -134,7 +136,8 @@ export const theme =
 		{ token: 'tag.name', foreground: '@tagname' },
 		{ token: 'tag.open', foreground: '@tagbracket' },
 		{ token: 'tag.close', foreground: '@tagbracket' },
-		{ token: 'tag.attribute', foreground: '@tagattr' },
+		{ token: 'tag.attribute', foreground: '@tagattr' }
+		{ token: 'tag.mixin', foreground: '@mixin' },
 		{ token: 'tag.reference', foreground: '@tagref' },
 		{ token: 'tag.attribute.listener', foreground: '@taglistener' },
 		{ token: 'tag.attribute.modifier', foreground: '@tagmodifier' },
@@ -181,6 +184,7 @@ export const theme =
 
 		{token: "style.selector", foreground: '@sel'}
 		{token: "style.property", foreground: '@cssproperty'}
+		{token: 'style.mixin', foreground: '@mixin' }
 		{token: "style.value", foreground: '@cssvalue'}
 		{token: "style.value.size", foreground: '@cssunit'}
 		{token: "style.start-operator", foreground: '@dimdelimiter'}

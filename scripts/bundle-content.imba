@@ -76,7 +76,7 @@ watcher.on('all') do
 			return
 
 		if item.ext == 'md'
-			let md = marked.render(item.body)
+			let md = marked.render(item.body,path: id)
 			item.html = md.body
 			item.toc = md.toc
 			Object.assign(item,md.meta)

@@ -5,6 +5,7 @@ var resolver = null
 var promise = null
 var controller = null
 var requests = []
+var queued = []
 
 export def load
 	return Promise.resolve(controller) if controller
@@ -23,16 +24,25 @@ export def load
 		global.fetch('/preflight.css') # just to register this client with the worker
 		console.log 'loaded service worker'
 
+		controller = sw.controller
+
 		for file in files
 			file.sw = sw.controller
 			file.sendToWorker!
 
 		sw.addEventListener('message') do(e)
 			if e.data and typeof e.data.ref == 'number'
+				console.log 'got response?!?'
 				let req = requests[e.data.ref]
 				if req
 					req(e.data)
 					requests[e.data.ref] = null
+		
+		
+		for payload in queued
+			console.log 'flushing payloads',payload
+			sw.controller.postMessage(payload)
+		queued = []
 
 		setTimeout(&,200) do
 			resolve(controller = sw.controller)
@@ -50,6 +60,9 @@ export def request payload, cb
 		requests.push(resolve)
 		if controller
 			controller.postMessage(payload)
+		else
+			console.log 'queue payload!'
+			queued.push(payload)
 		return true
 
 	# window.navigator.serviceWorker.addEventListener('message') do(e)

@@ -76,9 +76,6 @@ let color = 'blue'
 > To set dynamic classes you can use `{}` interpolation.
 
 
-# Inline Styles
-
-
 # Custom Elements
 
 ```imba
@@ -373,3 +370,7 @@ console.log ~[app.$name]~
 # Lifecycle Hooks
 
 [Article](/articles/lifecycle.md)
+
+# Quick Tips
+
+> Elements declared without a tag name will always be of type `div`
