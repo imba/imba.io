@@ -70,10 +70,11 @@ tag app-repl-preview
 	def render
 		<self[bg:gray1]>
 			<header[bg:gray2]> <.tab.active> "Preview"
-			<div[pos:relative w:{w}px max-width:100% cursor:ew-resize bg:gray3 @hover:gray4] @touch.lock=resize>
+			<div[pos:relative flex:1 w:{w}px max-width:100% cursor:ew-resize bg:gray3 @hover:gray4] @touch.lock=resize>
 				<div$frame[pos:absolute inset:0 right:6px bg:white] @pointerdown.stop> $iframe
 		
 	set file data
+		# console.log 
 		sw.request(event: 'file', path: data.path, body: data.body).then do
 			console.log 'returned from sw',data.path
 			url = data.path.replace('.imba','.html')

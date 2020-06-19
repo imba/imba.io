@@ -205,7 +205,7 @@ css div p:2 m:2 overflow:hidden min-width:80px
 # ---
 let ptr = {x:0, y:0}
 imba.mount do
-    <section[d:block pos:absolute inset:0] @pointermove=(ptr = e) @click=(clicks++)>
+    <section[d:block pos:absolute inset:0] @pointermove=(ptr = e)>
         <div[bg:indigo2 w:{ptr.x / 10}%]> "% width"
         <div[bg:green2 w:{ptr.x}px]> "px width"
         
@@ -559,7 +559,7 @@ The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`te
 The `grid` property behaves in a slightly special manner in Imba. If you supply a single value/identifier to this like `grid:container`, Imba will compile the style to `grid:var(--grid-container)`.
 
 ```imba
-# ~preview
+# ~preview=200px
 css body p:2
 css div bg:teal2 p:3
 css section p:1 gap:2 pc:center

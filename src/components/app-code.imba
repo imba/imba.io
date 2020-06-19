@@ -184,7 +184,7 @@ def highlight str,lang
 
 	# console.log 'lines',lines
 	if lines[0].indexOf('# ~') == 0
-		lines.shift!.replace(/~(\w+)/g) do(m,flag) flags[flag] = yes
+		lines.shift!.replace(/~(\w+)(?:\=([^\s]+))?/g) do(m,flag,val) flags[flag] = val or yes
 
 	for line,i in lines
 		# if line[0] == '~'
@@ -349,7 +349,7 @@ tag app-code-block < app-code
 			rotate:-1deg
 
 	css $preview
-		h:260px d:flex fd:column position:relative
+		min-height:106px d:flex fld:column pos:relative
 		mt:-1 bw:1px bc:gray3 radius:0 0 3px 3px
 		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray6 z-index:2
 		header d:none
@@ -372,8 +372,9 @@ tag app-code-block < app-code
 		# options.src = "/examples/"
 		# console.log 'returned with code',code
 		if code.options.preview
-			let file = {path: dataset.path, body: code.plain}
+			let file = {path: dataset.path, body: code.plain,size: code.options.preview}
 			options.preview = file
+			
 			# sw.postMessage({event: 'file', path: file.path, body: file.body})
 			# setTimeout(&,200) do
 			#	options.preview = file
@@ -441,7 +442,7 @@ tag app-code-block < app-code
 				<div$source.source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
 				<div.output.js .(d:none)=(tab != 'js')> <code$compiled>
 			if options.preview
-				<app-repl-preview$preview file=options.preview>
+				<app-repl-preview$preview [h:{code.options.preview}] file=options.preview>
 			
 
 tag app-code-inline < app-code
