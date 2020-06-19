@@ -349,8 +349,8 @@ tag app-code-block < app-code
 			rotate:-1deg
 
 	css $preview
-		h:260px d:flex fd:column bg:white position:relative
-		mt:-1 b:gray3 bg:white radius:0 0 3px 3px
+		h:260px d:flex fd:column position:relative
+		mt:-1 bw:1px bc:gray3 radius:0 0 3px 3px
 		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray6 z-index:2
 		header d:none
 

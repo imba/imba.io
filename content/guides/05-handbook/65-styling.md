@@ -569,10 +569,12 @@ import {genres} from 'imdb'
 # ---
 # adding a custom grid with different values for different screen sizes
 css @root
-    --grid-genres: auto-flow / 1fr 1fr @xs: auto-flow / 1fr 1fr 1fr @sm: auto-flow / 1fr 1fr 1fr 1fr
+    --grid-cols: auto-flow / 1fr 1fr
+    --grid-cols@xs: auto-flow / 1fr 1fr 1fr
+    --grid-cols@sm: auto-flow / 1fr 1fr 1fr 1fr
 
 # use this grid value anywhere in the code
-imba.mount do  <section[display:grid grid:genres]>
+imba.mount do  <section[display:grid grid:cols]>
     for genre in genres
         <div> genre
 ```

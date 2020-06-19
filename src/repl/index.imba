@@ -68,11 +68,10 @@ tag app-repl-preview
 		self
 
 	def render
-		<self>
+		<self[bg:gray1]>
 			<header[bg:gray2]> <.tab.active> "Preview"
-			<div[pos:relative w:{w}px max-width:100%] @touch.lock=resize>
-				<div$frame[pos:absolute inset:0 right:6px] @pointerdown.stop> $iframe
-				<div$divider[bg:gray4 w:6px h:100% pos:absolute r:0 t:0 pe:none]>
+			<div[pos:relative w:{w}px max-width:100% cursor:ew-resize bg:gray3 @hover:gray4] @touch.lock=resize>
+				<div$frame[pos:absolute inset:0 right:6px bg:white] @pointerdown.stop> $iframe
 		
 	set file data
 		sw.request(event: 'file', path: data.path, body: data.body).then do
