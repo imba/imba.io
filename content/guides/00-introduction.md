@@ -103,15 +103,15 @@ import {todos} from './data.imba'
 # Define custom reusable web components
 tag todo-item
     <self .completed=data.completed>
-        <input[data.completed] type='checkbox'>
+        <input bind=data.completed type='checkbox'>
         <span.title> data.title
         <button @click.stop.emit('remove')> 'x'
 
 tag todo-app
     <self> for todo in data
-        <todo-item[todo]>
+        <todo-item data=todo>
 
-imba.mount <todo-app[todos]>
+imba.mount <todo-app data=todos>
 ```
 
 > Tags are compiled down to *extremely optimized* native web components
@@ -136,8 +136,8 @@ import {todos} from './data.imba'
 
 # ---
 tag todo-app
-    css .item = color:gray800 bg.hover:gray100
-    css .item.done = color:green800 text-decoration: line-through
+    css .item color:gray8 bg@hover:gray1
+    css .item.done color:green8 text-decoration: line-through
     
     def render
         <self> for todo in data
@@ -148,11 +148,11 @@ tag todo-app
 ```imba
 css .button
     padding: 1rem 2rem
-    color:gray700
-    border: 1px solid gray200
+    color:gray7
+    border: 1px solid gray2
     radius: 3px
-    &.blue = bg:blue500 color:white bg.hover:blue600
-    &.teal = bg:teal500 color:white bg.hover:teal600
+    &.blue bg:blue5 color:white bg@hover:blue6
+    &.teal bg:teal5 color:white bg@hover:teal6
 
 <div>
     <div.button.blue> "Blue button"

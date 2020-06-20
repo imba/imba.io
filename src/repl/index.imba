@@ -34,6 +34,59 @@ const editorOptions = {
 	}
 }
 
+tag app-divider
+
+tag app-repl-preview
+	@watch prop url
+
+	prop w = 2000
+
+	def build
+		$iframe = <iframe[pos:absolute width:100% height:100%]>
+		$iframe.replify = do(win)
+			$win = win # $iframe.contentWindow
+			$doc = $win.document
+
+			let {log,info} = win.console.log
+			if $console
+				$console.context = win
+				$console.native = win.console
+				win.console.log = $console.log.bind($console)
+				win.console.info = $console.info.bind($console)
+
+		$iframe.onload = do
+			try
+				let element = $doc.querySelector('body :not(script)')
+				flags.toggle('empty-preview',!element)
+
+		if src
+			$iframe.src = src
+
+	def resize e
+		w = Math.max(Math.round(e.layerX),260)
+		render!
+		self
+
+	def render
+		<self[bg:gray1]>
+			<header[bg:gray2]> <.tab.active> "Preview"
+			<div[pos:relative flex:1 w:{w}px max-width:100% cursor:ew-resize bg:gray3 @hover:gray4] @touch.lock=resize>
+				<div$frame[pos:absolute inset:0 right:6px bg:white] @pointerdown.stop> $iframe
+		
+	set file data
+		# console.log 
+		sw.request(event: 'file', path: data.path, body: data.body).then do
+			console.log 'returned from sw',data.path
+			url = data.path.replace('.imba','.html')
+		self
+
+	def urlDidSet url, prev
+		try
+			$iframe.contentWindow.location.replace(`/repl{url}`)
+		catch e
+			sw.load!.then do $iframe.src = `/repl{url}`
+
+
 tag app-repl
 	prop fs
 	@watch prop project
@@ -129,87 +182,65 @@ tag app-repl
 				router.go(item.files[0].path)
 				render!
 
-	# def routeDidEnter
-	#	flags.remove('nokeys')
-
-	# def routeDidLeave
-	#	flags.add('nokeys')
-
 	def show
 		router.go(currentFile ? currentFile.path : '/examples/essentials/playground/app.imba')
 
-	css =
-		bg:#29313f
-		overscroll-behavior: contain
-		l:flex clip
+
+	css bg:#29313f overscroll-behavior: contain
 		$sidebar-width:200px
-		pl: $sidebar-width
+		pl:0 @md:$sidebar-width
+		d:flex fld:column @lg:row overflow:hidden
+		# l:vflex clip @lg:hflex
+		header p:2 3 d:flex ai:center fs:sm fw:500 c:gray6
 
+	css .tab
+		pos:relative radius:2 py:1 px:2
+		c@hover:gray5 .active:blue4 .active.dirty:yellow4 .active.errors:red5
+		.circ
+			pos:absolute d:block radius:2 w:8px h:2px top:0
+			opacity:0.6 ..active:1
+			bg:clear ..active:blue4 ..dirty:yellow4 ..errors:red5
 
-	css header = p:2 3 d:flex ai:center t:sm 500 gray6
+	css .dark .tab bg@is-active:gray8 shadow@is-active:sm bg@is-active@is-dirty:yellow4/5
+	css .light .tab c@hover:gray6 c@is-active:gray6 td@is-active:none
+	css .underlay pos:fixed inset:0 zi:-1 bg:hsla(214,35%,83%,0.6) d@in-hidden:none
 
-	css .tab =
-		l:rel radius:2 py:1 px:2 t.hover:gray5 t.is-active:blue4
-		& .circ = l:abs block radius:2 w:8px h:2px bd:0 bg:transparent opacity:0.6
-		&.active .circ = bg:blue4 opacity:1
-		&.dirty .circ = bg:yellow4
-		&.active.dirty = color:yellow4
+	css $preview
+		pb@lt-lg:46px
+		d..empty-preview:none
+		header d@lt-lg:none
 
-		&.errors .circ = bg:red5
-		&.active.errors = color:red5
-
-	css .dark .tab = bg.is-active:gray8 shadow.is-active:sm bg.is-active.is-dirty:yellow4-5
-	css .light .tab = t.hover:gray6 t.is-active:gray6 undecorated
-	css .underlay = l:fixed inset:0 z-index:-1 bg:hsla(214,35%,83%,0.6) d.in-hidden:none
-
-	css &.empty-preview
-		& $console = flex-grow:1
-		& $preview = display:none
+	css $console
+		flex-grow..empty-preview:1
+		@not-lg pos:absolute inset:0 tween:250ms cubic
+			y:calc(100% - 46px) .expanded:0px ..empty-preview:0
 
 	css $sidebar
-		bg:gray8 w:$sidebar-width cursor:default l:abs block t:gray5
-		top:0 left:0 height:100% z-index:100
+		w:$sidebar-width cursor:default pos:absolute d:block c:gray5
+		top:0 left:0 height:100% zi:100
 		transition: 250ms cubic
+		bg:gray8/95 @md:gray8
+		x:-100% @md:0 @focus-within:0
 
-		&:after
+		@after
 			content: ' '
-			bg: linear-gradient(gray800-0,gray800-100)
-			l: block abs width: 90% height: 80px bottom: 0
+			bg: linear-gradient(gray8/0,gray8)
+			d:block pos:absolute width:90% height:80px bottom: 0
 
-		& .scroller
-			-webkit-overflow-scrolling: touch
-			l: abs scroll-y inset:0 pb:5
+		.scroller
+			# -webkit-overflow-scrolling: touch
+			pos:absolute ofy:auto inset:0 pb:5
 
-		& .item
-			t:sm/1.3 gray6-70 500 capitalize t.hover:gray5
-			p:1 7 l:block bg.hover:gray9-10
-			&.active = bg:gray9-20 t:white bold
-
-	css @not-md &
-		pl:0
-		& $sidebar = bg:gray8-95 x:-100% x.focus-within:0px
-		
-
-	css @not-lg &
-		l:vflex
-		& $preview = pb:46px
-		& $preview header = d:none
-		& $console
-			l:abs inset:0 y:calc(100% - 46px) y.is-expanded:0px transition: 250ms cubic
-		&.empty-preview $console = y:0
-
-	css @lg
-		l:hflex
+		.item
+			fs:sm/1.3 fw:500 tt:capitalize c:gray6/70 @hover:gray5
+			p:1 7 d:block bg@hover:gray9/10
+			&.active bg:gray9/20 c:white fw:bold
 	
-	# markdown stuff
-	css span.variable.variable
-		color: var(--code-variable)
-
-	css .monaco-editor
-		& .error-line + .line-numbers = color:red5 font-weight:bold
+	css $editor
+		span.variable.variable color: var(--code-variable)
+		.monaco-editor .error-line + .line-numbers c:red5 fw:bold
 
 	def save
-		console.log 'save file!!'
 		currentFile.save!
 		self
 
@@ -224,38 +255,38 @@ tag app-repl
 	def render
 		<self>
 			<div$sidebar tabIndex=-1>
-				<.scroller.(pt:3)>
-					<div$back.(l:block px:5 pb:3 t:sm 500 blue4 t.hover:underline l.not-lg:hidden) @click=leave> "⇦ back to site"
+				<.scroller.(pt:3 l:abs scroll-y inset:0 pb:5)>
+					<div$back.(d:none @lg:block px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline) @click=leave> "⇦ back to site"
 					<div.items> for child in examples.folders
-						<h5.(p:1 7 t:xs gray6 bold uppercase)> child.title
+						<h5.(p:1 7 fs:xs c:gray6 fw:bold tt:uppercase)> child.title
 						<div.(pb:5)> for item in child.folders
 							<a.item route-to.sticky=item.path> item.title
 
-			<div.dark.(l:vflex rel flex:70% bg:#29313f) @resize=relayout>
+			<div.dark.(pos:relative d:flex fld:column flex:70% bg:#29313f) @resize=relayout>
 				<header.(color:gray6)>
-					<button.(d.md:hidden f:bold lg color.hover:blue5 px:1 mr:2 mt:-2px) @click.stop.prevent=$sidebar.focus!> "☰"
+					<button.(d@md:none fw:bold fs:lg c@hover:blue5 px:1 mr:2 mt:-2px) @click.stop.prevent=$sidebar.focus!> "☰"
 					<span hotkey='left' @click=goPrev>
 					<span hotkey='right' @click=goNext>
 					<span hotkey='esc' @click=leave>
-					<div.(d:flex wrap cursor:default)> for file in project..children
+					<div.(d:flex flw:wrap cursor:default)> for file in project..children
 						<a.tab route-to.replace=file.path .dirty=file.dirty .errors=file.hasErrors>
 							<span.circ>
 							<span.name> file.basename
-							<span.ext.{file.ext}.(d.is-imba:none)> "." + file.ext
+							<span.ext.{file.ext}.(d@is-imba:none)> "." + file.ext
 				
 					<div.(flex:1)>
 					
-					<span.(opacity:0 f:bold lg/1 cursor:default) hotkey='command+s' @click.stop=save> ""
-					<button.(d.lg:hidden f:bold lg/1 color.hover:blue5) @click=leave> "✕"
+					<span.(opacity:0 fw:bold fs:lg/1 cursor:default) hotkey='command+s' @click.stop=save> ""
+					<button.(d@lg:none fw:bold fs:lg/1 c@hover:blue5) @click=leave> "✕"
 
-				<div$editor-wrapper.(l:rel flex:1)> <div$editor.(l:abs inset:0)>
+				<div$editor-wrapper.(pos:relative flex:1)> <div$editor.(pos:absolute inset:0)>
 
-			<div$drawer.light.(l:vflex rel flex:1 1 40% bg:white)>
-				<div$preview.(l:vflex flex:1 bg:white)>
+			<div$drawer.light.(d:flex fld:column pos:relative flex:1 1 40% bg:white)>
+				<div$preview.(d:flex fld:column flex:1 bg:white)>
 					<header.(bg:gray2)> <.tab.active> "Preview"
-					<div.(l:rel flex:1)> <div$browserframe.(l:abs inset:0)> $iframe
+					<div.(pos:relative flex:1)> <div$browserframe.(pos:absolute inset:0)> $iframe
 				<div.divider>
-				<repl-console$console.(flex-basis:40% l:vflex)>
+				<repl-console$console.(flex-basis:20% d:flex fld:column)>
 
 	def rendered
 		monaco

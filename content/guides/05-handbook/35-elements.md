@@ -370,3 +370,7 @@ console.log ~[app.$name]~
 # Lifecycle Hooks
 
 [Article](/articles/lifecycle.md)
+
+# Quick Tips
+
+> Elements declared without a tag name will always be of type `div`

@@ -57,6 +57,8 @@ def renderer.heading text, level
 	var slug = slugify(plain)
 	meta.title = unescape(text)
 
+	# flags.push("next-{next.type}")
+
 	if next.type == 'code' and level == 4
 		next.meta = meta
 		return ''
@@ -89,7 +91,7 @@ def renderer.heading text, level
 	stack.push(meta)
 
 	let typ = "h{level}"
-	let node = <{typ} .{flags}> <span innerHTML=text>
+	let node = <{typ} .{flags.join(' ')}> <span innerHTML=text>
 	let pre = "<!--:{typ}:-->"
 	return pre + node.toString()
 
@@ -113,7 +115,8 @@ def renderer.code code, lang, opts = {}
 	if opts.inline
 		<app-code-inline.code.code-inline.light data-lang=lang> escaped
 	else
-		<app-code-block.code.code-block data-lang=lang> escaped
+		let path = this.toc.path.replace(/\.md$/g,'') + "_{++this.toc.counter}.imba"
+		<app-code-block.code.code-block data-lang=lang data-path=path> escaped
 
 def renderer.table header, body
 
@@ -126,7 +129,7 @@ def renderer.table header, body
 
 	return out.toString().replace('$HEADER$',header).replace('$BODY$',body)
 
-export def render content
+export def render content, o = {}
 	var object = {toString: (do this.body), toc: [],meta: {}}
 
 	content = content.replace(/^---\n([^]+)\n---/m) do(m,inside)
@@ -147,6 +150,12 @@ export def render content
 	}
 
 	object.toc.stack = []
+	object.toc.counter = 0
+	object.toc.options = o
+
+	
+	object.toc.path = o.path or ''
+	# console.log 'sent path',o
 
 	# if object:title
 	var tokens = marked.lexer(content)
