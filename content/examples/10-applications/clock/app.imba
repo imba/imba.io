@@ -11,13 +11,16 @@ tag app-clock
 		let num = (Date.now! / 60000 + utc * 60) / div
 		return "rotate({(num % 1).toFixed(3)}turn)"
 	
+	get time
+		(Date.now! / 60000 + utc * 60)
+	
 	def render
 		<self.clock>
-			<div.dial.h css:transform=turns(720)>
-			<div.dial.m css:transform=turns(60)>
-			<div.dial.s css:transform=turns(1)>
+			<div.dial.h[rotate:{time / 720}]>
+			<div.dial.m[rotate:{time / 60}]>
+			<div.dial.s[rotate:{time}]>
 
-imba.mount do <div.clocks> # spawn 4 clocks
+imba.mount do <div.clocks>
 	<app-clock title='New York' utc=-5>
 	<app-clock title='San Fran' utc=-8>
 	<app-clock title='London' utc=0>

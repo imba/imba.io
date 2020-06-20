@@ -9,7 +9,8 @@ tag Item
 		<%button.blue> "Blue Item Button"
 tag App
 	# overriding some button styling - only for app
-	css %button bg.blue:blue3
+	css d:block bw:1 bc:gray4 p:4
+	css %button fw:bold bg.blue:blue3
 
 	<self>
 		<%button> "App Button"

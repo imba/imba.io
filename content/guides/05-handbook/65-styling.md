@@ -16,7 +16,7 @@ We are not talking about a "theme" like bootstrap – forcing you into creating 
 Style rules are declared using the `css` keyword.
 
 ```imba
-css .btn =
+css .btn
     position: relative
     display: block
     background: #b2f5ea
