@@ -20,7 +20,7 @@
   "scripts": {
     "start": "webpack-dev-server --mode none",
     "build": "webpack --colors --display-modules",
-    "build-netlify": "yarn run build && imba src/netlify.imba",
+    "build-netlify": "yarn run build && yarn run build build-content",
     "watch-content": "imba scripts/bundle-content.imba",
     "build-content": "RUN_ONCE=1 imba scripts/bundle-content.imba",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",

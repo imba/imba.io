@@ -1,6 +1,6 @@
 # example netlify.toml
 [build]
-  command = "yarn run build"
+  command = "yarn run build-netlify"
   publish = "public"
 
 ## Uncomment to use this redirect for Single Page Applications like create-react-app. 
