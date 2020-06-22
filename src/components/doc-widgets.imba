@@ -159,7 +159,7 @@ tag doc-util-output
 for own k,v of modifiers
 	v.example = "@{k}{v.type == 'selector' and '(sel)' or ''}"
 	v.parsed = parseSel("sel {v.example}")
-	v.custom = (v.name and v.name != k) or v.media or v.ua
+	v.custom = (v.name and v.name != k) or v.media or v.ua or v.flag
 	v.kind = v.media ? 'media' : (v.ua ? 'user-agent' : ('pseudo-class'))
 	v.title = v.name
 

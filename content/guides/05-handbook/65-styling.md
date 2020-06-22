@@ -217,7 +217,9 @@ imba.mount do
 You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
 
 
+# Specificity
 
+Specificity
 
 
 # Aliases
@@ -276,22 +278,7 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 <doc-style-aliases data-regex='---' data-include='shadow,opacity,pe,zi,prefix,suffix,us'></doc-style-transform-aliases>
 
-## Basic syntax
-
-##### Modifiers in selector
-```imba
-# 1.25rem left & right margin 
-css @md section = mx:5
-```
-##### Modifiers after property
-```imba
-css :root =
-    $header-height:48px @md:56px @lg:68px
-```
-When you write `@modifier:value`, the value will always apply to the previous non-modifier property.
-```imba
-css :root = bg:red1 @hover:red2 px:2 @md:3 @lg:4
-```
+# Modifiers
 
 Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down.
 

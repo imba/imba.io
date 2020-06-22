@@ -16,26 +16,24 @@ tag app-document-nav
 		@not-md p:0 b:none bg@hover:none ta.next:right ta.prev:left
 			.chapter is:truncate
 			.parent d:none
-	
-	css &.top fs:sm d@md:none
 
 	def render
 		let prev = data.prev # and data.prev.last
 		let next = data.next # and data.next.first
 
-		<self[max-width:768px px:4 d:flex jc:space-between]>
+		<self[max-width:768px px:4 d:flex jc:space-between fs.top:sm d@md.top:none]>
 			if prev
 				<a.card.prev href=prev.href hotkey='left'>
 					<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<line x1="19" y1="12" x2="5" y2="12">
 						<polyline points="12 19 5 12 12 5">
-					<span.(flex:1 px:1)>
-						<span.parent.(prefix:"(" $shortcut ") ")> " Prev - {prev.parent.title}"
+					<span[flex:1 px:1]>
+						<span.parent[prefix:"(" $shortcut ") "]> " Prev - {prev.parent.title}"
 						<span.chapter> prev.title
 			if next
 				<a.card.next href=next.href hotkey='right'>
-					<span.(flex:1 px:1)>
-						<span.parent.(suffix:" (" $shortcut ")")> "Next - {next.parent.title}"
+					<span[flex:1 px:1]>
+						<span.parent[suffix:" (" $shortcut ")"]> "Next - {next.parent.title}"
 						<span.chapter> next.title
 					<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<line x1="5" y1="12" x2="19" y2="12">
@@ -88,16 +86,16 @@ tag app-document
 		position: relative
 		background: teal4
 		color: teal9
-		font-size: 14px
-		font-weight: bold
-		border-radius: 3px
-		padding: 2px 8px
-		margin-top: 1rem
-		letter-spacing: 0.02em
-		display: inline-block
+		fs: 14px
+		fw: bold
+		radius: 3px
+		p: 2px 8px
+		mt: 1rem
+		ls: 0.02em
+		d: inline-block
 		top: 8px
 		left: 8px
-		z-index: 30
+		zi: 30
 
 		app-code-inline
 			bg:teal3
@@ -107,9 +105,9 @@ tag app-document
 			mr@last:-4px
 
 	css p
-		font-weight: 400;
-		font-size: 16px;
-		margin: 1em 0;
+		fw: 400
+		fs: 16px
+		m: 1em 0
 
 	css li
 		font-size: 16px;
@@ -141,19 +139,19 @@ tag app-document
 		> * mt@first:0 mb@last:0
 
 	css blockquote
-		background: #F7F2E3;
-		margin: 12px 0px;
-		padding: 10px 12px;
-		color: #6f6850;
-		font-size: 15px;
-		p font-size: 15px
+		background: #F7F2E3
+		margin: 12px 0px
+		padding: 10px 12px
+		color: #6f6850
+		fs: 15px
+		p fs: 15px
 		> * mt@first:0 mb@last:0
 	
 	css app-code-block + app-code-block
 		mt: 1rem
 
 	css app-code-block + blockquote
-		pt:4 pb:3 px:5 mt:-1 border:gray3 bg:white radius:2
+		pt:4 pb:3 px:5 mt:-1 bw:1 bc:gray3 bg:white radius:2
 		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray6
 
 	# table stlff
@@ -161,38 +159,36 @@ tag app-document
 		width: 100%;
 		border-bottom: 1px solid gray200;
 		color: #4a5568;
-		font-size: 16px;
-		line-height: inherit;
+		fs: 16px
+		lh: inherit
 
-		&[data-title='table'] thead display: none
-
-		&[data-title='Aliases'] thead display: none
+		&[data-title='table'] thead d: none
+		&[data-title='Aliases'] thead d: none
 
 		th
-			color: gray700
-			font-weight: 500
+			color: gray7
+			fw: 500
 			py: 0.5rem
-			text: md left
-			white-space@first: nowrap
+			fs:md ta:left
+			ws@first: nowrap
 			width@first: 30px
 
 		td
-			text: sm
-			padding: 0.5rem
-			border-top: 1px solid gray200
+			fs: sm
+			p: 0.5rem
+			border-top: 1px solid gray2
 			width.first: 30px
 
 		.code-inline@only-child
-			text:xs/1.4
+			fs:xs/1.4
 			px:1 py:0
-			margin: 0px
-			vertical-align: top
+			m: 0px
+			va: top
 		
 		td.example
 			width: 50px
-			white-space: nowrap
-			padding-left: 0px
-			padding-right: 0px
+			ws: nowrap
+			px: 0px
 
 	def render
 		<self.markdown[d:block pb:24]>
@@ -212,8 +208,8 @@ tag embedded-app-document
 
 tag embedded-app-example
 	css a
-		d:flex ai:center cursor:pointer radius:2 min-height:12 bg:blue2/50 t:500 xs p:0.5
-		@before content:"☶ " t:14px pr:1
+		d:flex ai:center cursor:pointer radius:2 min-height:12 bg:blue2/50 fw:500 fs:xs p:0.5
+		@before content:"☶ " fs:14px pr:1
 		@hover bg:blue2 t:undecorated
 
 	def hydrate
@@ -223,4 +219,4 @@ tag embedded-app-example
 		self
 
 	def render
-		<self.(d:contents) @click.run> <a href=dataset.path> "TRY"
+		<self[d:contents] @click.run> <a href=dataset.path> "TRY"

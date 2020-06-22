@@ -1,3 +1,5 @@
+css select,input,button d:block my:2 fs:inherit
+
 # https://github.com/eugenkiss/7guis/wiki#flight-booker
 tag flight-booker
 	prop isReturn = false
@@ -11,19 +13,11 @@ tag flight-booker
 		window.alert(message)
 
 	<self>
-		<select[isReturn]>
+		<select bind=isReturn>
 			<option value=false> 'one-way flight'
 			<option value=true>	'return flight'
-		<input[start] type='date'>
-		<input[end] type='date' disabled=!isReturn>
-		<button :click.bookFlight disabled=(isReturn && start >= end)> 'book'
+		<input bind=start type='date'>
+		<input bind=end type='date' disabled=!isReturn>
+		<button @click=bookFlight disabled=(isReturn && start >= end)> 'book'
 
-imba.mount <flight-booker>
-
-### css
-select, input, button {
-	display: block;
-	margin: 0.5em 0;
-	font-size: inherit;
-}
-###
+imba.mount <flight-booker[d:block p:5]>

@@ -1,34 +1,23 @@
-var depth = 0
-
 tag draggable-item
+	css p:4 m:6 pos:relative d:block
+	css @touch scale:1.05 rotate:2deg zi:2
+
+	def build
+		x = y = dx = dy = 0
+
+	def drag e
+		if e.type == 'pointerup'
+			x += dx
+			y += dy
+			dx = dy = 0
+		else
+			dx = e.dx
+			dy = e.dy
 
 	def render
-		<self.block.relative.select-none.p-4
-			:pointerdown.start
-			:pointermove.move
-			:pointerup.end
-		> <div> <slot>
+		<self[x:{x+dx} y:{y+dy}] @touch=drag> 'drag me'
 
-	def start e
-		style.zIndex = ++depth
-		setPointerCapture(e.pointerId)
-		pointer = {
-			id: e.pointerId
-			x: e.x - parseInt(style.left or '0')
-			y: e.y - parseInt(style.top or '0')
-		}
-
-	def move e
-		if e.pressure and pointer and pointer.id == e.pointerId
-			let dx = e.x - pointer.x
-			let dy = e.y - pointer.y
-			style.left = dx + 'px'
-			style.top = dy + 'px'
-
-	def end e
-		console.log('ended',e.pressure,e.pointerId)
-
-imba.mount do
-	<div>
-		<draggable-item.bg-blue-400> "First"
-		<draggable-item.bg-blue-300> "Second"
+imba.mount do <div>
+	<draggable-item[bg:blue3]>
+	<draggable-item[bg:teal3]>
+	<draggable-item[bg:orange3]>

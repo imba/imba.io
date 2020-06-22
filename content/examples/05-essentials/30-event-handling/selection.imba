@@ -1,10 +1,8 @@
-# Play around
-let name = 'One'
-let state = {}
-let counter = 0
+import '../styling/globals.imba'
 
-imba.mount do <div.app>
-	<input[name] type='text' @selection=(state = e.detail)>
-	<p> "Value is '{name}'"
-	<p> "Selection {state.start} - {state.end}"
-	<button @click=(counter++)>	"Incr"
+let name = 'One'
+let state = {start:0,end:0}
+
+imba.mount do <div.grid>
+	<input.field bind=name type='text' @selection=(state = e.detail)>
+	<p> "sel is {state.start}-{state.end} & value is '{name}'"

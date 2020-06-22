@@ -44,11 +44,3 @@ def grade student
 ```
 
 ## Type Annotations
-
-# Installation
-
-# Tooling
-
-# Caveats
-
-# History

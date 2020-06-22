@@ -122,11 +122,11 @@ import {todos} from './data.imba'
 
 # ---
 # inline styles
-<div.(position:relative display:flex flex-direction:row)>
+<div[position:relative display:flex flex-direction:row]>
 # conditional styles based on pseudostates
-<div.(opacity:0.5 opacity.hover:1)>
+<div[opacity:0.5 @hover:1]>
 # conditional styles based on media queries
-<div.(padding:3rem padding.lg:5rem padding.print:0)>
+<div[padding:3rem @lg:5rem @print:0]>
 
 ```
 

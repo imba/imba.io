@@ -1,9 +1,9 @@
-var count = 0
+let count = 0
 
 imba.mount do
 	<div>
-		<input[count] type='number'>
-		<button :click.{count++}> 'count'
+		<input type='number' bind=count>
+		<button @click=(count++)> 'count'
 
 
 ### as a reusable component

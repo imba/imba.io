@@ -45,8 +45,11 @@ export const theme =
 		sel: 'e9e19b'
 		selpseudo: 'eec49d'
 		cssproperty: 'e0ade3'
+		csspropertymod:'df8de4'
 		cssvalue: 'a49feb'
 		cssunit: 'ff8c8c'
+		cssdelim: 'dbaadf'
+
 
 
 	toMonaco: do
@@ -184,7 +187,9 @@ export const theme =
 
 		{token: "style.selector", foreground: '@sel'}
 		{token: "style.property", foreground: '@cssproperty'}
+		{token: "style.property.modifier", foreground: '@csspropertymod'}
 		{token: 'style.mixin', foreground: '@mixin' }
+		{token: 'delimiter.style', foreground: '@cssdelim' }
 		{token: "style.value", foreground: '@cssvalue'}
 		{token: "style.value.size", foreground: '@cssunit'}
 		{token: "style.start-operator", foreground: '@dimdelimiter'}

@@ -3,5 +3,5 @@ tag app-counter
 	prop count = 0
 
 	<self>
-		<input[count] type='number'>
-		<button :click.{count++}> count
+		<input bind=count type='number'>
+		<button @click.{count++}> count

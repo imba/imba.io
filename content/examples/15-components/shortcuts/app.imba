@@ -17,10 +17,12 @@ tag todos-app
 
 	def render
 		<self>
-			<form :submit.prevent.add>
-				<input[newTitle] placeholder='What to do?'>
+			<form @submit.prevent=add>
+				<input bind=newTitle placeholder='What to do?'>
 			<ul> for item in items
-				<li.todo .done=item.done :click.toggle(item)> item.title
+				<li.todo .done=item.done @click=toggle(item)> item.title
 			<footer>
 				"You have {items.length} todos"
-				<button :click.archive> "Archive"
+				<button @click=archive> "Archive"
+
+imba.mount <todos-app>

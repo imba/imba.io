@@ -1,13 +1,16 @@
-import {movies} from '../../data.imba'
+import {movies} from 'imdb'
 
 tag App
 	prop query
 
+	def match movie
+		!query or movie.title.toLowerCase!.indexOf(query) >= 0
+
 	def render
-		<self.(l:block p:5)>
-			<input[query].(b:gray3 p:2 d:block w:100%) placeholder="Search">
+		<self[d:block p:5]>
+			<input[p:2 d:block w:100%] bind=query placeholder="Search">
 			<ul> for movie in movies
-				continue if query and movie.title.toLowerCase!.indexOf(query) == -1
-				<li.(p:2 bb:gray2)> movie.title
+				continue if !match(movie)
+				<li[p:2 bbw:1 bbc:gray3]> movie.title
 
 imba.mount <App>

@@ -22,9 +22,9 @@ Because the site uses service workers it requires https: with a trusted certific
 To test things in development you need to do it via Chrome launched with specific args:
 
 ```bash
-open -na Google\ Chrome --args --allow-insecure-localhost --unsafely-treat-insecure-origin-as-secure=https://localhost
+open -na Google\ Chrome --args --ignore-certificate-errors --allow-insecure-localhost --unsafely-treat-insecure-origin-as-secure=https://localhost:9000
 # if this does not work - try
-# /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-insecure-localhost --unsafely-treat-insecure-origin-as-secure=https://localhost
+# /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-insecure-localhost --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost:9000
 ```
 
 Now visit https://localhost:9000/ in that browser
