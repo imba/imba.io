@@ -22,6 +22,7 @@
     "build": "webpack --colors --display-modules",
     "build-netlify": "yarn run build && imba src/netlify.imba",
     "watch-content": "imba scripts/bundle-content.imba",
+    "build-content": "RUN_ONCE=1 imba scripts/bundle-content.imba",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",
     "docker-deploy": "docker push imba.io:`git log --pretty=format:'%h' HEAD -n1`",
     "docker-run": "docker run -p3011:3011 -t -i imba.io:`git log --pretty=format:'%h' HEAD -n1`",
@@ -44,8 +45,8 @@
     "@types/node": "^13.11.1",
     "body-parser": "^1.19.0",
     "chokidar": "^3.3.1",
-    "imba": "^2.0.0-alpha.61",
-    "imba-document": "^0.1.10",
+    "imba": "^2.0.0-alpha.62",
+    "imba-document": "^0.1.11",
     "marked": "^0.7.0"
   }
 }
