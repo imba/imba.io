@@ -167,6 +167,9 @@ import {watch} from './decorators.imba'
 # ---
 class Reminder
     @watch prop completed
+
+    def completedDidSet value
+        console.log('completedDidSet', value)
 ```
 > Decorators
 
