@@ -32,12 +32,15 @@ var renderer = new marked.Renderer
 def renderer.link href, title, text
 	if href.match(/^\/.*\.md/)
 		return (<embedded-app-document data-path=href>)
-	elif href.match(/^\/examples\//) and text and (/Example/).test(text)
-		return (<embedded-app-example data-path=href>)
+	elif href.match(/^\/examples\//) and text
+		if (/Example/).test(text)
+			return (<embedded-app-example data-path=href>)
+		elif (/Code/).test(text)
+			return (<app-code-block data-dir=href>)
+
 	if href.match(/scrimba\.com.*\/c/)
 		return (<a.scrimba href=href title=title target='_blank'> <span innerHTML=text>)
-	else
-		return (<a href=href title=title> <span innerHTML=text>)
+	return (<a href=href title=title> <span innerHTML=text>)
 
 def renderer.heading text, level
 	var next = this.parser.peek || {}

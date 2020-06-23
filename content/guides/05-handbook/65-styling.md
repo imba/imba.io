@@ -125,6 +125,8 @@ Since inline styles are essentially anonymous classes, they can also be applied 
 
 # Mixins
 
+[Code](/examples/more/mixins)
+
 ##### basics
 ```imba
 css %btn
@@ -137,45 +139,6 @@ imba.mount do <div>
     <div%btn.danger> "Danger"
     <div%btn.warn> "Warn"
 ```
-
-##### importing
-```imba
-import {%btn} from './styles'
-
-imba.mount do <div>
-    <div%btn> "Button"
-    <div%btn.danger> "Danger"
-    <div%btn.warn> "Warn"
-```
-
-
-##### extending
-```imba
-import {%btn} from './styles'
-
-tag todo-item
-    css %btn color:blue5
-    <self>
-        <span> 'Todo title'
-        <%btn> 'Todo Button'
-
-tag note-item
-    css %btn color:purple5
-    <self>
-        <span> 'Note title'
-        <%btn> 'Note Button'
-
-tag app-root
-    css %btn color:green5
-    <self>
-        <note-item>
-        <todo-item>
-        <%btn> 'App Button'
-
-imba.mount do <app-root>
-```
-In the examples above, all of the `<%btn>` elements
-
 
 
 # Interpolation

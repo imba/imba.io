@@ -1,4 +1,5 @@
 import { @commit } from './decorators'
+import {highlight} from './util/highlight'
 
 export const root = global['content.json']
 export const files = []
@@ -82,6 +83,9 @@ export class File < Entry
 		href = path.replace(/\.(\w+)$/,'')
 		files.push(self)
 	
+	get highlighted
+		hl ||= highlight(body,ext)
+	
 	get type
 		'file'
 
@@ -163,6 +167,11 @@ export class Folder < Entry
 
 	def ls path
 		self
+
+	get replUrl
+		let index = childByName('index.html')
+		let app = childByName('app.imba') or files[0]
+		return `{path}/{index ? index.name : app.basename + '.html'}`
 
 
 for item in root.children

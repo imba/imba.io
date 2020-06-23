@@ -2404,6 +2404,7 @@ extend$(Element,{
 	},
 });
 
+console.log('loaded imba internal/bind');
 Object.defineProperty(Element.prototype,'richValue',{
 	get(){
 		

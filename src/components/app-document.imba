@@ -189,12 +189,15 @@ tag app-document
 			width: 50px
 			ws: nowrap
 			px: 0px
+	
+	css $content
+		> mb@last:0 mt@first:0
 
 	def render
 		<self.markdown[d:block pb:24]>
 			<app-document-nav.top data=data>
 			<div$content[max-width:768px px:6] innerHTML=data.html>
-			<app-document-nav.bottom data=data>
+			<app-document-nav.bottom[pt:2] data=data>
 
 	def dataDidSet data
 		document.body.scrollTop = 0

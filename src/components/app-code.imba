@@ -1,16 +1,6 @@
-import { ImbaDocument,Monarch } from 'imba-document'
-
+import {highlight} from '../util/highlight'
 import * as sw from '../sw/controller'
-
-const cache = {}
-
-const replacements = {
-	'&': '&amp;',
-	'<': '&lt;',
-	'>': '&gt;',
-	'"': '&quot;',
-	"'": '&#39;'
-};
+import {ls} from '../store'
 
 css :root
 	--code-color: #e3e3e3;
@@ -30,6 +20,7 @@ css :root
 	--code-entity: #8ab9ff;
 	--code-regexp: #e9e19b;
 	--code-mixin:#ffc87c;
+	--code-mixin:#e9e19b;
 	--code-this: #63b3ed;
 	--code-tag: #e9e19b;
 	--code-tag-event: #fff9c3;
@@ -66,10 +57,7 @@ css :root
 	--code-selector-pseudostate: var(--code-selector);
 	--code-selector-context: #eec49d;
 	--code-selector-placeholder:hsl(321, 100%, 79%) # hsl(36, 100%, 72%);
-
 	--code-key: #9dcbeb;
-
-	# operators
 	--code-delimiter: #e3e3e3
 	--code-delimiter-operator:#889cd6
 
@@ -104,19 +92,22 @@ css .code
 	.this color: var(--code-this); 
 	.self color: var(--code-this); 
 	.constant color: var(--code-constant); 
+	
 	.tag.reference color: var(--code-tag-reference);
 	.tag.open color: var(--code-tag-angle); 
 	.tag.close color: var(--code-tag-angle); 
 	.tag.event color: var(--code-tag-event); 
-	.tag.event-modifier color: var(--code-tag-event); 
+	.tag.event-modifier color: var(--code-tag-event);
+	.tag.mixin color: var(--code-mixin) fw:bold
+	.tag.rule-modifier color: var(--code-rule-mixin); 
+	.tag.rule-modifier.start opacity: 0.43; 
+	.tag.rule color: var(--code-rule); 
+
 	.constant.variable color: var(--code-constant);
 	.variable.global color: var(--code-global-variable);
 	.variable.imports color: var(--code-global-variable);
 	.decorator color: var(--code-decorator); 
-	.tag.mixin color: var(--code-mixin)
-	.tag.rule-modifier color: var(--code-rule-mixin); 
-	.tag.rule-modifier.start opacity: 0.43; 
-	.tag.rule color: var(--code-rule); 
+	
 	.style.open color: var(--code-style-bracket); 
 	.style.close color: var(--code-style-bracket); 
 	.style.args.open color: var(--code-style); 
@@ -136,7 +127,7 @@ css .code
 	.selector.pseudostate color: var(--code-selector-pseudostate); 
 	.selector.operator color: var(--code-selector-operator); 
 	.selector.context color: var(--code-selector-context) 
-	.selector.mixin color: var(--code-mixin)
+	.selector.mixin color: var(--code-mixin) fw:bold
 	.style.start-operator color: var(--code-delimiter-operator);
 	span.operator.dot color:var(--code-identifier)
 	span.region.more d:none d@md:contents
@@ -166,149 +157,8 @@ css .code
 	.css.attribute.name color:var(--code-style-property)
 	.css.attribute.value color:var(--code-style-value)
 
-def escape str
-	str.replace(/[\&\<\>]/g) do(m) replacements[m]
-
-def highlight str,lang
-	if cache[str]
-		return cache[str]
-
-	# find flags at the top
-	let out = {
-		flags: {}
-	}
-	
-	str = str.replace(/^(~\w*[\[\|]?)?\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
-	
-	let flags = out.flags
-	let lines = str.split('\n')
-
-	# console.log 'lines',lines
-	if lines[0].indexOf('# ~') == 0
-		lines.shift!.replace(/~(\w+)(?:\=([^\s]+))?/g) do(m,flag,val) flags[flag] = val or yes
-
-	for line,i in lines
-		# if line[0] == '~'
-		#	console.log line,line.replace(/^(~\w*)\|(.*)$/,'$1[$2]~')
-		lines[i] = line.replace(/^(~\w*)\|(.*)$/,'$1[$2]~')
-		
-	str = lines.join('\n')
-
-	let inject = {}
-	let next
-	while next = str.match(/~(\w*)\[|\]~/)
-		let offset = str.indexOf(next[0])
-		# let offset = next[1].length
-		let open = next[0][0] == '~'
-		let typ = next[1] or 'focus'
-
-		if open			
-			flags['has-regions'] = yes
-			flags["has-{typ}"] = yes
-
-		inject[offset] = open ? "<span class='region {typ}'>" : '</span>'
-		str = str.slice(0,offset) + str.slice(offset + next[0].length)
-
-	out.plain = str
-	console.log inject
-
-	let tokens = []
-	if lang != 'imba'
-		if let tokenizer = Monarch.getTokenizer(lang)
-			# console.log 'found tokenizer',tokenizer
-			let lines = str.split('\n')
-			let state = tokenizer.getInitialState!
-
-			for line,i in lines
-				tokens.push({type: 'white',value: '\n'}) if i > 0
-
-				let lexed = tokenizer.tokenize(line,state,0)
-				let count = lexed.tokens.length
-				for tok,i in lexed.tokens
-					if i == count - 1
-						tok.value ||= line.slice(tok.offset)
-					tokens.push(tok)
-				
-				state = lexed.endState
-
-			# tokens = tokenizer.tokenize(str,tokenizer.getInitialState!,0).tokens
-	else
-		tokens = ImbaDocument.tmp(str).getTokens()
-
-	let parts = []
-	let vref = 1
-
-	let pairs = 
-		'style.openz': 'style.close'
-	
-	let closers = []
-
-	for token,i in tokens
-		let next = tokens[i + 1]
-		if inject[token.offset]
-			# console.log 'injecting now',token.offset,token.type,token.value,inject[token.offset]
-			parts.push(inject[token.offset])
-			delete inject[token.offset]
-
-
-		let value = token.value
-		let end  = token.offset + value.length
-		let types = token.type.split('.')
-		let [typ,subtyp] = types
-
-		if pairs[token.type]
-			parts.push("<span class='_{typ}'>")
-			closers.unshift(pairs[token.type])
-		
-		if token.variable
-			types = types.concat('variable')
-			if token.variable != token
-				types = types.concat token.variable.type.split('.')
-
-			if token.variable.varscope
-				types.push("scope_{token.variable.varscope.type}")
-			if token.variable.modifiers
-				types.push(...token.variable.modifiers)
-			
-			types = (type for type,i in types when types.indexOf(type) == i)
-
-			let ref = token.variable.vref ||= vref++
-			types.push("var{ref}")
-			# console.log 'found varaible',token.variable
-
-		if typ != 'white' and typ != 'line'
-			value = "<span class='{types.join(' ')}' data-offset={token.offset}>{escape(value)}</span>"
-		else
-			value = "<span data-offset={token.offset}>{value}</span>"
-
-		if typ == 'comment' and token.value == '# ---'
-			parts.unshift('<div class="code-head">')
-			parts.push('</div>')
-			# pop next token
-			try tokens[i + 1].value = ''
-			continue
-
-		parts.push(value)
-
-		if inject[end] and (!next or typ != 'line')
-			parts.push(inject[end])
-			delete inject[end]
-
-		if closers[0] and token.type == closers[0]
-			parts.push('</span>')
-			closers.shift!
-
-	out.html = parts.join('')
-	out.options = out.flags
-	out.flags = Object.keys(flags).join(' ')
-	cache[str] = out
-	return out
-	# return (<code.{Object.keys(flags).join(' ')} innerHTML=html>).outerHTML
-
 tag app-code
-	
 	def awaken
-		# get the code and highlight it
 		self
 
 	def render
@@ -317,30 +167,25 @@ tag app-code
 
 tag app-code-block < app-code
 
-	css pos:relative d:block radius:1 fs:12px @md:13px
+	css pos:relative radius:1 fs:12px @md:13px d:block .shared:none
+		--bg:$code-bg-lighter
 
-	css $code pos:relative d:block radius:1 c:$code-color bg:$code-bg-lighter
+	css %code pos:relative d:block
 		.code-head display: none
 
-	css code
-		display:block overflow-x:auto
-		font-family: var(--code-font)
-		white-space:pre p:3 4 p@md:5 6
+	css code d:block ofx:auto ff: var(--code-font) ws:pre p:3 4 p@md:5 6
+	css label bg:gray7 radius:2 pos:absolute d:flex ai:center p:1
 
-	css label
-		bg:gray7 radius:2 pos:absolute d:flex ai:center p:1
-
-	css button px:1 mx:1 c:gray6 fw:500 radius:2 bg@hover:gray7/10 outline@focus:none
+	css %btn px:1 mx:1 c:gray6 fw:500 radius:2 bg@hover:gray7/10 outline@focus:none
 		@not-md mx:0 ml:1 bg:gray7/90 bg@hover:gray7/100 c:gray4
 		@is-active bg:blue6 c:white
 
 	css .tabs d:flex radius:2
 
 	css .nostyles ._style d:none
-	# css code.has-regions > span:not(.region) = opacity: 0.4
+
 	css code.has-focus > span@not(.focus)@not(._style) opacity: 0.6
 	css code.has-hide span.hide d:none
-	css &.shared d:none
 
 	css code@hover.has-hl > span@not(.hl)@not(._style) opacity: 0.7
 	css code span.region.hl pos:relative
@@ -349,40 +194,42 @@ tag app-code-block < app-code
 			box-shadow: 0px 0px 10px 2px rgba(42, 50, 63,0.7), inset 0px 0px 2px 2px rgba(42, 50, 63,0.7)
 			rotate:-1deg
 
-	css $preview
-		min-height:106px d:flex fld:column pos:relative
-		mt:-1 bw:1px bc:gray3 radius:0 0 3px 3px
-		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray6 z-index:2
-		header d:none
-
 	prop tab = 'imba'
 	prop lang
 	prop options = {}
+	prop dir
+	prop files
+	prop file
 
 	def hydrate
-		# console.log 'hydrating code block',outerHTML
 		lang = dataset.lang
+		files = []
+		file = null
+
+		if dataset.dir
+			dir = ls(dataset.dir)
+			console.log 'found dir?',dir
+			files = dir.files
+			file = files[0]
+
 		dataset.path
-		# plain = textContent # .replace(/^\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
+
 		code = highlight(textContent,lang)
 		innerHTML = '' # empty
 		options.compile = !code.options.nojs and !code.plain.match(/^tag /m)
 		options.run = !code.options.norun
-		# options.preview = code.options.preview
-		# options.path = "/examples/{Math.round(Math.random! * 10000)}"
-		# options.src = "/examples/"
-		# console.log 'returned with code',code
+
 		if code.options.preview
 			let file = {path: dataset.path, body: code.plain,size: code.options.preview}
 			options.preview = file
-			
-			# sw.postMessage({event: 'file', path: file.path, body: file.body})
-			# setTimeout(&,200) do
-			#	options.preview = file
-			#	render!
+
 
 	def mount
+		schedule!
 		render!
+	
+	def unmount
+		unschedule!
 
 	def run
 		let source = ""
@@ -402,11 +249,10 @@ tag app-code-block < app-code
 		console.log 'toggleJS',tab
 		unless js
 			let res = await sw.request(event: 'compile', body: code.plain, path: 'playground.imba')
-			console.log 'result from serviceworker',res
 			js = res.js
 			$compiled.innerHTML = highlight(res.js,'javascript').html
 			render!
-		console.log 'got here!'
+
 		tab = tab == 'js' ? 'imba' : 'js'
 		console.log 'toggledJS',tab
 		render!
@@ -414,7 +260,6 @@ tag app-code-block < app-code
 		# flags.toggle('show-js')
 
 	def pointerover e
-		# console.log 'pointer over',e
 		let vref = null
 		if let el = e.target.closest('.variable')
 			vref = el.className.split(/\s+/g).find do (/var\d+/).test($1)
@@ -425,25 +270,58 @@ tag app-code-block < app-code
 			if vref
 				el.classList.add('highlight') for el in getElementsByClassName(vref)
 			hlvar = vref
-			
+	
+	css %tabs d:flex cursor:default us:none
+	css %tab d:flex px:3 py:2 fs:sm fw:500 radius:3px 3px 0 0
+		bg:gray2 @hover:gray3 .on:var(--bg)
+		c:gray6 c.on:white
+
+
+	css %main
+		pos:relative radius:2 c:$code-color bg:var(--bg)
+
+	css %preview
+		min-height:106px
+		mt:0 radius:0 0 3px 3px
+		color:gray6
+		pos:absolute
+		t:0 l:100%
+		w:calc(min(100vw,1340px) - 980px - 40px)
+		max-width:500px
+		h:100%
+		w:$doc-margin
+		pl:4
+		.frame shadow:sm @lt-xl:none radius:2
+		.controls d@lt-xl:none
+		@lt-xl pos:relative l:0 h:200px ml:0 w:100% p:4 pt:0 bg:var(--bg) max-width:initial
+
+	def editorResized e
+		editorHeight = Math.max(editorHeight or 0,e.rect.height)
 	
 	def render
-		# console.log 'render code block',is-mounted,is-awakened,__f
 		return unless code
 
 		<self.{code.flags} @pointerover=pointerover>
-			<div$code[pos:relative]>
-				if lang == 'imba'
-					<div[pos:absolute top:-2 @md:2 right:1 @md:2]>
-						if options.compile
-							<button .active=(tab == 'js') @click=toggleJS> 'js'
-						if options.run
-							<button @click=run> 'run'
+			<header>
+				<div%tabs> for item in files
+					<a%tab .on=(file==item) @click=(file=item)> item.name
+			<main%main [border-top-left-radius:0]=dir>
+				<div$editor%editor.code[min-height:{editorHeight}px]  @resize=editorResized>
+					if file
+						<code.{file.highlighted.flags} %code innerHTML=file.highlighted.html>
+					unless dir
+						<div$code[pos:relative] %code>
+							if lang == 'imba'
+								<div[pos:absolute top:-2 @md:2 right:1 @md:2]>
+									if options.compile
+										<button%btn .active=(tab == 'js') @click=toggleJS> 'js'
+									if options.run
+										<button%btn @click=run> 'run'
 
-				<div$source.source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
-				<div.output.js .(d:none)=(tab != 'js')> <code$compiled>
-			if options.preview
-				<app-repl-preview$preview [h:{code.options.preview}] file=options.preview>
+							<div$source.source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
+							<div.output.js .(d:none)=(tab != 'js')> <code$compiled>
+				if options.preview or dir
+					<app-repl-preview$preview%preview file=options.preview dir=dir>
 			
 
 tag app-code-inline < app-code

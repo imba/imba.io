@@ -110,7 +110,9 @@ css :root
 	-webkit-font-smoothing: antialiased
 	-moz-osx-font-smoothing: grayscale
 	$header-height: 56px @md:64px
-	$menu-width:80vw @md:240px
+	$menu-width:80vw @md:220px
+	$doc-width: 768px
+	$doc-margin: calc(100vw - $doc-width - 20px) @md:calc(100vw - $doc-width - $menu-width - 20px)
 
 css html.noscroll body
 	overflow: hidden

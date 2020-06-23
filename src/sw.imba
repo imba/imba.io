@@ -118,13 +118,18 @@ class Worker
 			
 
 		let path = url.pathname.replace(/^\/repl/,'') 
-		let ext = path.split('.').pop()
-		let name = path.split('/').pop()
+		let name = path.split('/').pop!
 		let basename = name.replace(/\.\w+$/,'')
+		let ext = name.slice(basename.length + 1)
 
 		let file = files[path]
+		if name == basename
+			file ||= files[path + '.imba']
 
-		console.log 'onfetch',e.request.url,!!file
+		if file and !ext
+			ext = file.path.split('.').pop!
+		console.log 'onfetch',e.request.url,!!file,ext
+
 
 		let responder = new Promise do(resolve)
 			let loadMap = clientLoadMap[clientId] ||= {}
@@ -137,6 +142,8 @@ class Worker
 				file = {body: indexTemplate.replace(/index\.imba/g,"{basename}.imba")}
 
 			if file
+				loadMap[file.path] = accessedPaths[file.path] = yes
+
 				let status = 200
 				let mime = mimeTypeMap[ext] or mimeTypeMap.html
 				let body = file.body

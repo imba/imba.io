@@ -40,9 +40,11 @@ tag app-repl-preview
 	@watch prop url
 
 	prop w = 2000
+	prop scale = 1
+	prop size = 'auto-auto'
 
 	def build
-		$iframe = <iframe[pos:absolute width:100% height:100%]>
+		$iframe = <iframe[pos:absolute width:100% height:100% min-width:200px]>
 		$iframe.replify = do(win)
 			$win = win # $iframe.contentWindow
 			$doc = $win.document
@@ -62,22 +64,192 @@ tag app-repl-preview
 		if src
 			$iframe.src = src
 
-	def resize e
-		w = Math.max(Math.round(e.layerX),260)
-		render!
+
+	def maximize
+		flags.add('maximized')
 		self
 
+	def minimize
+		flags.remove('maximized')
+
+	def maximized?
+		flags.contains('maximized')
+
+	def toggle
+		maximized? ? minimize! : maximize!
+		reflow!
+		render!
+
+	def reflow e
+		ow = $bounds.offsetWidth
+		oh = $bounds.offsetHeight
+		console.log 'reflow',ow,oh,iw,ih
+		recalc!
+		self
+
+	def recalc
+		let [w,h] = size.split('-')
+		ow ||= ($bounds && $bounds.offsetWidth)
+		oh ||= ($bounds && $bounds.offsetHeight)
+
+		let gap = 0
+		if ow < 240
+			gap = 0
+			w = 240
+			h = 300
+
+		flags.toggle('pip',ow < 240)
+
+		if w == 'auto'
+			scale = sx = sy = 1
+			iw = ih = '100%'
+		else
+			w = parseInt(w)
+			sx = scale = Math.min(1,(ow - gap) / w)
+			iw = w + 'px'
+
+		if h == 'auto'
+			ih = ((oh - gap) / scale) + 'px'
+		else
+			h = parseInt(h)
+			sy = Math.min(1,(oh - gap) / h)
+			ih = ((sy < sx) ? Math.floor(h * (sy/sx)) : h) + 'px'
+		self
+
+	def intersect e
+		console.log 'intersecting',e.rx,e.ry
+
+	def resize e,dir
+		let t = e.touch
+
+		if e.type == 'pointerup' and t.dt < 100
+			return size = 'auto-auto'
+
+		unless t.sx
+			t.pip = !maximized?
+			t.sx = sx
+			t.sy = sy
+			[t.rw,t.rh] = size.split('-')
+			t.iw = $frame.offsetWidth
+			t.ih = $frame.offsetHeight
+			t.bw = $bounds.offsetWidth
+			t.bh = $bounds.offsetHeight
+			t.vw = window.innerWidth
+			t.vh = window.innerHeight
+			t.bounds = $bounds.getBoundingClientRect!
+
+		let b = t.bounds
+		let w = t.iw
+		let h = t.ih
+
+		let halfw = (b.width / 2)
+		let halfh = (b.height / 2)
+
+		let relx = (t.x - (b.left + halfw))
+		let rely = (t.y - (b.top + halfh))
+		let absx = Math.abs(relx)
+		let absy = Math.abs(rely)
+
+		let restw = 1440 - b.width
+		let resth = 2000 - b.height
+
+		if dir != 'y'
+			t.rw = null
+			if absx > halfw
+				let gap = relx > 0 ? (t.vw - b.right) : b.left
+				w = b.width + Math.min((absx - halfw) / gap,1) * restw
+			else
+				w = Math.max(absx * 2,260)
+
+		if dir != 'x' and !t.pip
+			t.rh = null
+			if absy > halfh
+				let gap = rely > 0 ? (t.vh - b.bottom) : b.top
+				h = b.height + Math.min((absy - halfh) / gap,1) * resth
+			else
+				h = Math.max(absy * 2,260)
+
+		size = "{t.rw == 'auto' ? t.rw : Math.round(w)}-{t.rh == 'auto' ? t.rh : Math.round(h)}"
+		console.log 'resize',w,h,dir,size
+		# console.log 'yes!!',e.touch,w,h,size,t.bounds,absx,halfw
+
+
+	css d:flex fld:column pos:relative min-width:40px
+
+	css $body pos:relative
+	css $bounds pos:absolute w:100% h:100% r:0 b:0 min-width:120px
+	css $frame
+		pos:absolute top:0 l:50% bg:white w:100% h:100% x:-50% y:0
+		border:1px solid gray3
+		transform-origin:50% 0%
+
+	css $cover pos:absolute inset:0 cursor:zoom-in d:none
+
+	css $controls pos:absolute b:100% r:0 my:1 w:100% d:flex jc:center
+
+	css %btn p:2 py:1 fw:500 c:gray4 @hover:gray5 .checked:blue5 outline@focus:none
+
+	css @is-pip @not(.maximized)
+		bg:clear
+		$bounds max-height:200px
+		$frame l:auto t:auto r:20px x:0 b:20px transform-origin:100% 100% y:0
+		$cover d:block bg@hover:blue5/20
+		$controls d:none
+
+	css &.maximized
+		$body pos:fixed zi:350 w:100vw h:100vh t:0 l:0 bg:gray2/85
+		$bounds w:auto h:auto inset:14 b:20
+		$controls pos:absolute t:auto b:0
+
+	css %resizer
+		pos:absolute
+		fs:14px
+		w:1em .y:100%
+		h:1em .x:100%
+		b:-1em .x:0
+		r:-1em .y:0
+		cursor: nwse-resize .x:ew-resize .y:ns-resize
+		bg:clear @hover:gray5/10
+
 	def render
-		<self[bg:gray1]>
-			<header[bg:gray2]> <.tab.active> "Preview"
-			<div[pos:relative flex:1 w:{w}px max-width:100% cursor:ew-resize bg:gray3 @hover:gray4 @touch:blue3] @touch=resize>
-				<div$frame[pos:absolute inset:0 right:6px bg:white] @pointerdown.stop> $iframe
+		recalc!
+
+		<self @intersect(10)=intersect>
+			<div$body[flex:1] @click=toggle>
+				
+				<div$bounds @resize=reflow>
+					<div$frame.frame[scale:{scale} w:{iw} h:{ih}] @click.stop>
+						$iframe
+						<div%resizer.x @touch=resize(e,'x')>
+						<div%resizer.y @touch=resize(e,'y')>
+						<div%resizer @touch=resize>
+						<div%resizer @touch=resize>
+						<div$cover @click=toggle>
+				<div$controls.controls @click.stop>
+					<button%btn bind=size value='auto-auto'> 'auto'
+					<button%btn bind=size value='480-auto'> 'xs'
+					<button%btn bind=size value='640-auto'> 'sm'
+					<button%btn bind=size value='768-auto'> 'md'
+					<button%btn bind=size value='1024-auto'> 'lg'
+					<button%btn bind=size value='1280-auto'> 'xl'
+					# <button%btn bind=size value='768x1024'> 'tablet'
+					# <button%btn bind=size value='1280x1024'> 'desktop'
+					<button%btn @click=maximize> '⤢'
 		
 	set file data
+		return unless data
 		# console.log 
 		sw.request(event: 'file', path: data.path, body: data.body).then do
 			console.log 'returned from sw',data.path
 			url = data.path.replace('.imba','.html')
+		self
+
+	set dir data
+		if $dir = data
+			let file = $dir.files[0]
+			console.log 'start with file',file,$dir.replUrl
+			url = $dir.replUrl
+			# url = `{$dir.path}/{file.basename + '.html'}`
 		self
 
 	def urlDidSet url, prev
