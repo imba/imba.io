@@ -130,22 +130,32 @@ imba.mount do <div> app-list(array)
 Element Literals in Imba are *actual DOM elements*. We are not using a virtual DOM. In the example below we create an element and add it directly to the document:
 
 ```imba
+# ~preview
+css body d:grid pi:center pc:center
+css button p:2 px:3 bw:1 bc:gray3 radius:3 bg@hover:gray1
+
+# ---
 let counter = 1
-let div = <div> "Counter is {counter}"
-document.body.appendChild div
+let button = <button> "Counter is {counter}"
+document.body.appendChild button
 ```
-If we later change the value of `counter`, it will not automatically update the text of the `div` to reflect this updated state. So, this approach really wouldn't work for any real world application. Instead, we need to add our element using `imba.mount`:
+If we later change the value of `counter`, it will not automatically update the text of the `button` to reflect this updated state. So, this approach really wouldn't work for any real world application. Instead, we need to add our element using `imba.mount`:
 
 ```imba
+# ~preview
+css body d:grid pi:center pc:center
+css button p:2 px:3 bw:1 bc:gray3 radius:3 bg@hover:gray1
+# ---
 let counter = 1
-imba.mount do <div @click=(counter++)> "Counter is {counter}"
+imba.mount do <button @click=(counter++)> "Counter is {counter}"
 ```
 > Note that we are not passing the div directly to `imba.mount` but rather a function that returns the div.
 
 We added an event handler that increments the counter when we click the element. Now the view is correctly kept in sync with the underlying state of the program. How does this happen? Under the hood, this counter is *not* being tracked in a special way. It is just a plain number. Take this more advanced example:
 ```imba
+# ~preview
 css div = position:absolute display:block inset:0 p:4
-css li = display:inline-block px:1 m:1 radius:2 bg:gray1
+css li = display:inline-block px:1 m:1 radius:2 bg:gray1 fs:xs
 css li.major = bg:blue2
 
 # ---
@@ -156,7 +166,7 @@ imba.mount do
         <p> "Mouse is at {state.x} {state.y}"
         if state.x > 350
             <p> "X is over 350!"
-        <ul> for nr in [0 ... state.x]
+        <ul> for nr in [0 ... Math.min(state.x,state.y)]
             <li .major=(nr % 10 == 0)> nr
 ```
 
@@ -243,18 +253,6 @@ imba.mount <App>
 
 # Rendering Lists
 
-```imba
-# ~shared
-import {movies} from 'imdb'
-
-css .list = p:2
-css .heading = t:gray6 sm bold p:2
-css .item = l:flex px:2 py:3 bb:gray2 bg.hover:gray1
-css .title = px:1 t:truncate
-css .number = radius:3 px:2 bg:blue2 mr:1 t:xs blue7 l:flex center
-
-```
-
 As mentioned before - there isn't really a difference between templating syntax and other code in Imba. Tag trees are just code, so logic and control flow statements work as you would expect. To render lists of items you simply write a `for` loop where you want the children to be:
 
 ```imba
@@ -266,20 +264,27 @@ As mentioned before - there isn't really a difference between templating syntax 
 You can use break, continue and anything else you would expect to work. Here is a more advanced example
 
 ```imba
-<div.list> for movie,i in movies
-    if i % 10 == 0
-        # Add a heading for every 10th item
-        <div.heading> "Ranked {i + 1} to {i + 10}"
-    <div.item>
-        <span.number> i + 1
-        <span.title> movie.title
-    
-    break if movie.title == 'The Usual Suspects'
+# ~preview
+import {movies} from 'imdb'
+
+css .list p:2
+css .heading c:gray6 fs:xs fw:bold p:2 bc:gray6 bbw:2 pos:sticky t:0 bg:white
+css .item d:flex px:2 py:3 bc:gray2 bbw:1 bg.hover:gray1
+css .title px:1 t:truncate
+css .number radius:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
+
+# ---
+imba.mount do
+    <div.list> for movie,i in movies
+        if i % 10 == 0
+            # Add a heading for every 10th item
+            <div.heading> "{i + 1} to {i + 10}"
+        <div.item>
+            <span.number> i + 1
+            <span.title> movie.title
+        
+        break if movie.title == 'The Usual Suspects'
 ```
-
-## Basic lists
-
-## Keyed Lists
 
 # Handling Events
 

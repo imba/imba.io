@@ -106,14 +106,14 @@ tag app-repl-preview
 		else
 			w = parseInt(w)
 			sx = scale = Math.min(1,(ow - gap) / w)
-			iw = w + 'px'
+			iw = Math.floor(w)
 
 		if h == 'auto'
-			ih = ((oh - gap) / scale) + 'px'
+			ih = Math.floor((oh - gap) / scale)
 		else
 			h = parseInt(h)
 			sy = Math.min(1,(oh - gap) / h)
-			ih = ((sy < sx) ? Math.floor(h * (sy/sx)) : h) + 'px'
+			ih = ((sy < sx) ? Math.floor(h * (sy/sx)) : h)
 		self
 
 	def intersect e
@@ -121,11 +121,16 @@ tag app-repl-preview
 
 	def resize e,dir
 		let t = e.touch
+		$resizing = e.touch
 
-		if e.type == 'pointerup' and t.dt < 100
-			return size = 'auto-auto'
+		if e.type == 'pointerup'
+			flags.remove('resizing')
+			$resizing = null
+			if t.dt < 100
+				return size = 'auto-auto'
 
 		unless t.sx
+			flags.add('resizing')
 			t.pip = !maximized?
 			t.sx = sx
 			t.sy = sy
@@ -187,7 +192,7 @@ tag app-repl-preview
 
 	css $controls pos:absolute b:100% r:0 my:1 w:100% d:flex jc:center
 
-	css %btn p:2 py:1 fw:500 c:gray4 @hover:gray5 .checked:blue5 outline@focus:none
+	css %btn p:1 fw:500 c:gray4 @hover:gray5 .checked:blue5 outline@focus:none
 
 	css @is-pip @not(.maximized)
 		bg:clear
@@ -216,15 +221,15 @@ tag app-repl-preview
 
 		<self @intersect(10)=intersect>
 			<div$body[flex:1] @click=toggle>
-				
 				<div$bounds @resize=reflow>
-					<div$frame.frame[scale:{scale} w:{iw} h:{ih}] @click.stop>
+					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px] @click.stop>
 						$iframe
 						<div%resizer.x @touch=resize(e,'x')>
 						<div%resizer.y @touch=resize(e,'y')>
 						<div%resizer @touch=resize>
 						<div%resizer @touch=resize>
 						<div$cover @click=toggle>
+						<div[pos:absolute transform-origin:100% 100% b:0 r:0 p:2 fs:sm/1 c:gray5 d:none ..resizing:block scale:{1 / scale}]> "{iw} x {ih}"
 				<div$controls.controls @click.stop>
 					<button%btn bind=size value='auto-auto'> 'auto'
 					<button%btn bind=size value='480-auto'> 'xs'
