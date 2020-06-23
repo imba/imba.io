@@ -180,6 +180,28 @@ def multiply a\number, b\number
 
 > Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in vscode and more.
 
+# Examples
+
+## Paint
+[Code](/examples/applications/paint)
+
+## Carefree Declarative Rendering
+```imba
+# ~preview
+css div pos:absolute d:block inset:0 p:4
+css button pos:absolute p:2 bg:teal2 radius:2
+css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
+
+let x = 0, y = 0
+
+imba.mount do <div @mousemove=(x=e.x,y=e.y)>
+    <p> "Mouse is at {x} {y}"
+    <button[bg:teal2 x:{x} y:{y} rotate:{x / 360}]> "Item"
+    <ul> for nr in [0 ... Math.min(x,y)]
+        <li> nr
+```
+
+
 # Installation
 
 ## Tooling

@@ -154,20 +154,17 @@ imba.mount do <button @click=(counter++)> "Counter is {counter}"
 We added an event handler that increments the counter when we click the element. Now the view is correctly kept in sync with the underlying state of the program. How does this happen? Under the hood, this counter is *not* being tracked in a special way. It is just a plain number. Take this more advanced example:
 ```imba
 # ~preview
-css div = position:absolute display:block inset:0 p:4
-css li = display:inline-block px:1 m:1 radius:2 bg:gray1 fs:xs
-css li.major = bg:blue2
+css div pos:absolute d:block inset:0 p:4
+css button pos:absolute p:2 bg:teal2 radius:2
+css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
 
-# ---
-const state = {x: 0, y: 0, title: "Something"}
+let x = 0, y = 0
 
-imba.mount do
-    <div @mousemove=(state.x=e.x,state.y=e.y)>
-        <p> "Mouse is at {state.x} {state.y}"
-        if state.x > 350
-            <p> "X is over 350!"
-        <ul> for nr in [0 ... Math.min(state.x,state.y)]
-            <li .major=(nr % 10 == 0)> nr
+imba.mount do <div @mousemove=(x=e.x,y=e.y)>
+    <p> "Mouse is at {x} {y}"
+    <button[bg:teal2 x:{x} y:{y} rotate:{x / 360}]> "Item"
+    <ul> for nr in [0 ... Math.min(x,y)]
+        <li> nr
 ```
 
 By default Imba will **render your whole application whenever anything *may* have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all sorts of stuff?

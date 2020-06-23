@@ -11,6 +11,22 @@ Imba has a goal of making it as easy as possible to be consistent with regards t
 
 We are not talking about a "theme" like bootstrap – forcing you into creating generic bootstrap-looking designs – but more just a minimal set of defaults that can be used to create all sorts of varied but consistent designs. You can choose not to use them at all, or override everything in your custom theme config, but we think you will find it immensely useful.
 
+```imba
+# ~preview
+# @show inline styles are defined in [ ... ]
+<div[background:#bee3f8 padding:8px]> "Panel"
+
+# @show shorthands and predefined colors
+<div[bg:teal2 color:teal7 radius:3 p:2 fs:sm fw:bold]> "Panel"
+
+# @show @hover modifier
+<div[p:2 color:green6 bg:green2 @hover:green3]> "Hover me"
+
+let skew = -10deg
+# @show dynamic style properties
+<div[bg:teal2 color:teal7 p:2 skew-x:{skew}]> "Skewed"
+```
+
 # Declarations
 
 Style rules are declared using the `css` keyword.

@@ -1469,6 +1469,43 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
 
 
+class Touch {
+	
+	constructor(e){
+		
+		this.id = e.pointerId;
+		this.t0 = Date.now();
+		this.x0 = this.x = e.x;
+		this.y0 = this.y = e.y;
+		this.mx = this.my = 0;
+		e.touch = this;
+	}
+	
+	update(e){
+		
+		this.mx = e.x - this.x;
+		this.my = e.y - this.x;
+		this.x = e.x;
+		this.y = e.y;
+		return e.touch = this;
+	}
+	
+	get dx(){
+		
+		return this.x - this.x0;
+	}
+	
+	get dy(){
+		
+		return this.y - this.y0;
+		
+	}
+	get dt(){
+		
+		return Date.now() - this.t0;
+	}
+};
+
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown = {
 	handle: function(state,options) {
 		
@@ -1482,6 +1519,8 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown = {
 		handler.x0 = e.x;
 		handler.y0 = e.y;
 		handler.pointerId = e.pointerId;
+		
+		handler.touch = new Touch(e);
 		
 		let canceller = function() { return false; };
 		let selstart = document.onselectstart;
@@ -1517,6 +1556,7 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointermove = {
 		let e = s.event;
 		let id = h.pointerId;
 		if (id && e.pointerId != id) { return false };
+		if (h.touch) { h.touch.update(e) };
 		if (typeof h.x0 == 'number') {
 			
 			e.dx = e.x - h.x0;
@@ -1532,6 +1572,8 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerup = {
 		let e = s.event;
 		let id = h.pointerId;
 		if (id && e.pointerId != id) { return false };
+		if (h.touch) { h.touch.update(e) };
+		
 		if (typeof h.x0 == 'number') {
 			
 			e.dx = e.x - h.x0;
@@ -2404,7 +2446,6 @@ extend$(Element,{
 	},
 });
 
-console.log('loaded imba internal/bind');
 Object.defineProperty(Element.prototype,'richValue',{
 	get(){
 		
@@ -2812,6 +2853,11 @@ function callback(name,key){
 			let e = new _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"](name,{bubbles: false,detail: detail});
 			e.delta = detail.delta;
 			e.ratio = detail.ratio;
+			try {
+				
+				e.rx = entry.intersectionRect.width / entry.boundingClientRect.width;
+				e.ry = entry.intersectionRect.height / entry.boundingClientRect.height;
+			} catch (e) { };
 			map.set(entry.target,ratio);
 			entry.target.dispatchEvent(e);
 		};

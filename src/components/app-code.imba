@@ -272,13 +272,13 @@ tag app-code-block < app-code
 			hlvar = vref
 	
 	css %tabs d:flex cursor:default us:none
-	css %tab d:flex px:3 py:2 fs:sm fw:500 radius:3px 3px 0 0
-		bg:gray2 @hover:gray3 .on:var(--bg)
-		c:gray6 c.on:white
+	css %tab d:flex px:3 py:1 fs:sm fw:500 radius:3px 3px 0 0
+		bg:gray2/50 @hover:gray3 .on:var(--bg)
+		c:gray6 c.on:teal2/90
 
 
 	css %main
-		pos:relative radius:2 c:$code-color bg:var(--bg)
+		pos:relative radius:2 c:$code-color bg:var(--bg) border-top-left-radius..multi:0
 
 	css %preview
 		min-height:106px
@@ -301,8 +301,8 @@ tag app-code-block < app-code
 	def render
 		return unless code
 
-		<self.{code.flags} @pointerover=pointerover>
-			<header>
+		<self.{code.flags} .multi=(files.length > 1) @pointerover=pointerover>
+			<header[d:none ..multi:block]>
 				<div%tabs> for item in files
 					<a%tab .on=(file==item) @click=(file=item)> item.name
 			<main%main [border-top-left-radius:0]=dir>

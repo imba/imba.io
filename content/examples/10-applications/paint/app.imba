@@ -2,9 +2,10 @@ const DPR = window.devicePixelRatio
 
 tag app-paint
 	def draw e
-		$path = new Path2D if e.type == 'pointerdown'
-		$path.lineTo(e.offsetX * DPR,e.offsetY * DPR)
-		$canvas.getContext('2d').stroke($path)
+		let path = e.touch.path ||= new Path2D
+		# $path = new Path2D if e.type == 'pointerdown'
+		path.lineTo(e.offsetX * DPR,e.offsetY * DPR)
+		$canvas.getContext('2d').stroke(path)
 
 	def render
 		<self[d:block overflow:hidden bg:blue1]>

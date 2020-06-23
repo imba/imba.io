@@ -11,7 +11,7 @@ tag App
 		items = items.filter(do !$1.done)
 
 	def render
-		<self[d:flex fld:column pos:absolute inset:4 bw:3 bc:gray3]>
+		<self[d:flex fld:column pos:absolute inset:0]>
 			<form[d:flex bg:gray2 p:2 m:0] @submit.prevent=add($input.value)>
 				<input$input[flex:1 p:1 bg:clear] placeholder='What to do?'>
 			<ul[flex:1 px:1]> for item in items

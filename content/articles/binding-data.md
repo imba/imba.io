@@ -18,7 +18,7 @@ imba.mount do <div>
 
 ```imba
 # ~preview
-css body p:4
+css body p:4 d:grid pc:center
 css input[type=number] d:block p:1 c:gray8 bw:1 bc:gray4 radius:2px
 css input[type=range] d:block c:gray8
 css div d:block mt:1 c:gray7
@@ -62,7 +62,7 @@ imba.mount do <label .enabled=state.enabled>
 
 ```imba
 # ~preview
-css body p:4
+css body p:4 user-select:none
 
 tag x-checkbox
 	def render
