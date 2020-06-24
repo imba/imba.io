@@ -43,134 +43,252 @@ const handler = console.log.bind(console)
 
 # Event Modifiers
 
-Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers almost never need to deal with the event that triggered them. Modifiers are chained after the event name like:
+Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our can be pure logic without any knowledge of the event that triggered them.
+
+## Utilities
+
+##### log ( ...params )
 
 ```imba
-<button @click~[.stop.cancel.once]~=handler> 'Button'
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @click.log('logged!')> 'Button'
 ```
 
-Imba comes with a bunch of predefined event modifiers that should cover most regular usecases.
+##### emit ( name, detail = {} )
 
-## Common Modifiers
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+# Emit another event directly from handler
+
+imba.mount do
+	<div @select=console.log(e.type,e.detail)>
+		<button @click.emit('select')> 'Nothing'
+		<button @click.emit('select',a:1,b:2)> 'Data'
+```
+
+##### emit-*name* ( detail = {} )
+
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+# Shorthand for emitting events
+imba.mount do
+	<div @select=console.log(e.type,e.detail)>
+		<button @click.emit-select> 'Nothing'
+		<button @click.emit-select(a:1,b:2)> 'Data'
+```
+
+## Modifiers
 
 ##### prevent
 ```imba
 # ~preview
 import 'util/styles'
-const log = console.log.bind(console)
+
 # ---
 # calls preventDefault on event
 imba.mount do
-	<a href='https://google.com' @click~[.prevent]~=log('prevented')> 'Link'
+	<a href='https://google.com' @click.prevent.log('prevented')> 'Link'
 ```
 
 ##### stop
 ```imba
 # ~preview
 import 'util/styles'
-const log = console.log.bind(console)
+
 # ---
 # .stop will call stopPropagation() on the event
-imba.mount do <div @click=log('clicked div')>
-	<button @click.stop=log('stopped')> 'stop'
-	<button @click=log('bubble')> 'bubble'
-```
-
-##### self
-```imba
-# only trigger handler if event.target is the element itself
-<section @click.self=console.log('clicked section')>
-	<div> 'not triggering if click happens here'
+imba.mount do <div @click.log('clicked div')>
+	<button @click.stop.log('stopped')> 'stop'
+	<button @click.log('bubble')> 'bubble'
 ```
 
 ##### once
 ```imba
+# ~preview
+import 'util/styles'
+# ---
 # the click event will be triggered at most once
-<div @click.once=console.log('click!')> 'Click me'
-```
-
-##### passive
-
-```imba
-# the click event will be triggered at most once
-<div @scroll.passive=console.log('scrolled')> 'Scroll me'
+imba.mount do <button @click.once.log('once!')> 'Click me'
 ```
 
 ##### capture
 
 ```imba
-# use capture mode when adding the event listener
-# i.e. an event targeting an inner element is handled here 
-# before being handled by that element
-<div @click.capture=console.log('click')> 'Click me'
+# ~preview
+import 'util/styles'
+
+# ---
+imba.mount do
+	<div @click.capture.stop.log('captured!')>
+		<button @click.log('button')> 'Click me'
+```
+
+##### passive
+
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+imba.mount do
+	<main[overflow:scroll] @scroll.passive.log('scrolled')>
+		<article> "One"
+		<article> "Two"
+		<article> "Three"
 ```
 
 ##### silence
 ```imba
-var counter = 0
-<section>
-	<span> "Rendered {++counter} times"
-	<div @click.silence=console.log('click')> "Silenced"
-	<div @click=console.log('click')> "Not silenced"
+# ~preview
+import 'util/styles'
+
+# ---
+let counter = 0
+imba.mount do <section>
+	<div>
+		<button @click.silence.log('silenced')> "Silenced"
+		<button @click.log('clicked')> "Not silenced"
+	<label> "Rendered {++counter} times"
+# By default, Imba will commit after all handled events.
+# In the few cases you want to suppress this, add the `silence` modifier.
 ```
-By default, Imba will 'commit' after all handled events, so that any scheduled elements are told to re-render in case anything has changed. Even though Imba is blazing fast, there are some cases where you might want to suppress this behaviour.
-
-## Key Modifiers
-
-For keyboard events (keydown, keyup, keypress) there are also some very handy modifiers available.
 
 
-##### All key modifiers
+## Guards
+
+##### self
 ```imba
-def handler e
-	console.log 'event',e.type,e.key
-
-<input.field placeholder='Text..'
-	@keydown.enter=handler # pressed enter arrow
-	@keydown.left=handler # pressed left arrow
-	@keydown.right=handler # pressed right arrow
-	@keydown.up=handler # pressed up arrow
-	@keydown.down=handler # pressed down arrow
-	@keydown.tab=handler # pressed tab
-	@keydown.esc=handler # pressed escape
-	@keydown.space=handler # pressed space
-	@keydown.del=handler # pressed delete or backspace
->
+# ~preview
+import 'util/styles'
+# ---
+# only trigger handler if event.target is the element itself
+imba.mount do 
+	<button @click.self.log('clicked self')>
+		"Button"
+		<mark> "Nested"
 ```
 
-## System Key Modifiers
+##### sel ( selector )
+```imba
+# ~preview
+import 'util/styles'
 
-You can use the following modifiers to trigger mouse or keyboard event listeners only when the corresponding modifier key is pressed:
+# ---
+# only trigger if event.target.closest(selector) is true
+imba.mount do <div>
+	<button @click.log('!')> 'Button'
+	<button @click.sel('.pri').log('!!')> 'Button'
+	<button.pri @click.sel('.pri').log('!!!')> 'Button'
+```
+
+##### if ( expr )
+```imba
+# ~preview
+import 'util/styles'
+# ---
+let age = 20
+# break chain unless expr is truthy
+imba.mount do <div>
+	<input type='number' bind=age>
+	<button @click.if(age > 20).log('drink')> 'drink'
+	<button @click.if(age > 16).log('drive')> 'drive'
+```
 
 ##### ctrl
 ```imba
-<button @click.prevent.ctrl=console.log('ctrl+click')> 'ctrl+click'
-```
-> On mac there is no way to detect a `control+click` event. Instead you will have to intercept the `contextmenu` event, which is triggered by `control+click` and right mouse.
-```imba
-<button @contextmenu.prevent.ctrl=console.log('ctrl+click')> 'ctrl+click'
-```
+# ~preview
+import 'util/styles'
 
+# ---
+# break chain unless ctrl key is pressed
+imba.mount do <div>
+	<button @click.ctrl.log('ctrl+click')> 'ctrl+click'
+	# On mac there is no way to detect a `control+click` event.
+	# Instead you will have to intercept the `contextmenu` event,
+	# which is triggered by `control+click` and right mouse.
+	<button @contextmenu.prevent.ctrl.log('ctrlish+click')> 'ctrlish+click'
+```
 
 ##### alt
 ```imba
-<button @click.alt=console.log('alt+click')> 'alt+click'
+# ~preview
+import 'util/styles'
+
+# ---
+# break chain unless alt key is pressed
+imba.mount do
+	<button @click.alt.log('alt+click')> 'alt+click'
 ```
 
 ##### shift
 ```imba
-<button @click.shift=console.log('shift+click')> 'shift+click'
+# ~preview
+import 'util/styles'
+
+# ---
+# break chain unless shift key is pressed
+imba.mount do
+	<button @click.shift.log('shift+click')> 'shift+click'
 ```
 
 ##### meta
 ```imba
-<button @click.meta=console.log('meta+click')> 'meta+click'
+# ~preview
+import 'util/styles'
+
+# ---
+# break chain unless meta key is pressed
+# On mac keyboards, meta is the command key (⌘).
+# On windows keyboards, meta is the Windows key (⊞)
+imba.mount do <button @click.meta.log('meta+click')> 'meta+click'
 ```
-> Note: On Macintosh keyboards, meta is the command key (⌘). On Windows keyboards, meta is the Windows key (⊞)
 
----
+##### keys
+```imba
+# ~preview
+import 'util/styles'
 
-System modifier keys are different from regular keys and when used with `@keyup` events, they have to be pressed when the event is emitted. In other words, `@keyup.ctrl` will only trigger if you release a key while holding down `ctrl`. It won’t trigger if you release the `ctrl` key alone.
+# ---
+imba.mount do 
+	<header> <input placeholder='Text..'
+		@keydown.enter.log('pressed enter')
+		@keydown.left.log('pressed left')
+		@keydown.right.log('pressed right')
+		@keydown.up.log('pressed up')
+		@keydown.down.log('pressed down')
+		@keydown.tab.log('pressed tab')
+		@keydown.esc.log('pressed esc')
+		@keydown.space.log('pressed space')
+		@keydown.del.log('pressed del')
+	>
+```
+
+## Chaining
+
+It is important to understand the concept of chaining. You can add multiple modifiers one after another (separated by `.`). When an event is handled, these modifiers will be executed in the specified order.
+
+
+## Quick Tips
+
+### System Key Modifiers
+
+System modifier keys are different from regular keys and when used with `@keyup` events, they have to be pressed when the event is emitted. In other words, `@keyup.ctrl` will only trigger if you release a key while holding down `ctrl`. It won’t trigger if you release the `ctrl` key alone. You can use the following modifiers to trigger event listeners only when the corresponding modifier key is pressed:
+
+## Deep dive
+
+- Define your own modifiers
+- Await in modifiers / chain
+- Fallback if modifiers not found
 
 # Triggering Events
 

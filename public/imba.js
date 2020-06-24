@@ -1149,13 +1149,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EventHandler", function() { return EventHandler; });
 /* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
-function extend$(target,ext){
-	// @ts-ignore
-	var descriptors = Object.getOwnPropertyDescriptors(ext);
-	// @ts-ignore
-	Object.defineProperties(target.prototype,descriptors);
-	return target;
-};
 
 
 const keyCodes = {
@@ -1170,43 +1163,47 @@ const keyCodes = {
 	del: [8,46]
 };
 
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].log$mod = function (...params){
+	
+	console.log(...params);
+	return true;
+};
 
-extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["Event"],{
-	
-	
-	wait$mod(state,params){
-		
-		return new Promise(function(resolve) {
-			
-			return setTimeout(resolve,(((typeof params[0]=='number'||params[0] instanceof Number)) ? params[0] : 1000));
-		});
-	},
-	
-	sel$mod(state,params){
-		
-		return state.event.target.closest(params[0]) || false;
-	},
-	
-	throttle$mod({handler: handler,element: element,event: event},params){
-		
-		if (handler.throttled) { return false };
-		handler.throttled = true;
-		let name = params[0];
-		if (!((typeof name=='string'||name instanceof String))) {
-			
-			name = ("in-" + (event.type || 'event'));
-		};
-		let cl = element.classList;
-		cl.add(name);
-		handler.once('idle',function() {
-			
-			cl.remove(name);
-			return handler.throttled = false;
-		});
-		return true;
-	},
-});
 
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].sel$mod = function (expr){
+	
+	return !(!this.event.target.matches(String(expr)));
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].if$mod = function (expr){
+	
+	return !!expr;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].wait$mod = function (num){
+	
+	return new Promise(function(_0) { return setTimeout(_0,((typeof num == 'number') ? num : 1000)); });
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (name){
+	var self = this;
+	
+	if (this.handler.throttled) { return false };
+	this.handler.throttled = true;
+	if (typeof name != 'string') {
+		
+		name = ("in-" + (this.event.type || 'event'));
+	};
+	
+	let cl = this.element.flags.add(name);
+	
+	this.handler.once('idle',function() {
+		
+		self.element.flags.remove(name);
+		return self.handler.throttled = false;
+	});
+	return true;
+};
 
 
 class EventHandler {
@@ -1255,20 +1252,17 @@ class EventHandler {
 		
 		if (event.handle$mod) {
 			
-			if (event.handle$mod(state,mods.options) == false) {
+			if (event.handle$mod.call(state,mods.options) == false) {
 				
 				return;
 			};
 		};
 		
-		let schema = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type];
+		let guard = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$handle'];
 		
-		if (schema && schema.handle) {
+		if (guard && guard.call(state,mods.options) == false) {
 			
-			if (schema.handle(state,mods.options) == false) {
-				
-				return;
-			};
+			return;
 		};
 		
 		this.currentEvents || (this.currentEvents = new Set);
@@ -1287,10 +1281,11 @@ class EventHandler {
 				handler = handler.split('~')[0];
 			};
 			
-			let modargs = [];
+			let modargs = null;
 			let args = [event,this];
 			let res = undefined;
 			let context = null;
+			let isstring = typeof handler == 'string';
 			
 			if (handler[0] == '$' && handler[1] == '_' && (val[0] instanceof Function)) {
 				
@@ -1324,6 +1319,13 @@ class EventHandler {
 				};
 			};
 			
+			if (typeof handler == 'string' && handler.indexOf('emit-') == 0) {
+				
+				if (!modargs) { args = [] };
+				args.unshift(handler.slice(5));
+				handler = 'emit';
+			};
+			
 			
 			
 			if (handler == 'stop') {
@@ -1335,7 +1337,7 @@ class EventHandler {
 			} else if (handler == 'commit') {
 				
 				commit = true;
-			} else if (handler == 'silence') {
+			} else if (handler == 'silence' || handler == 'silent') {
 				
 				commit = false;
 			} else if (handler == 'ctrl') {
@@ -1366,7 +1368,7 @@ class EventHandler {
 					
 					break;
 				};
-			} else if (handler == 'trigger' || handler == 'emit') {
+			} else if (handler == 'emit') {
 				
 				let name = args[0];
 				let detail = args[1];
@@ -1375,18 +1377,13 @@ class EventHandler {
 				let customRes = element.dispatchEvent(e);
 			} else if (typeof handler == 'string') {
 				
-				let mod = handler + '$mod';
+				let fn = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][handler + '$mod'] || _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$' + handler];
 				
-				if (event[mod] instanceof Function) {
+				if (fn instanceof Function) {
 					
-					
-					handler = mod;
-					context = event;
-					args = [state,modargs];
-				} else if (schema && (schema[handler] instanceof Function)) {
-					
-					context = schema;
-					args = [state,modargs];
+					handler = fn;
+					context = state;
+					args = modargs || [];
 				} else if (handler[0] == '_') {
 					
 					handler = handler.slice(1);
@@ -1506,87 +1503,75 @@ class Touch {
 	}
 };
 
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown = {
-	handle: function(state,options) {
-		
-		
-		let e = state.event;
-		let el = state.element;
-		let handler = state.handler;
-		if (handler.type != 'touch') { return true };
-		
-		e.dx = e.dy = 0;
-		handler.x0 = e.x;
-		handler.y0 = e.y;
-		handler.pointerId = e.pointerId;
-		
-		handler.touch = new Touch(e);
-		
-		let canceller = function() { return false; };
-		let selstart = document.onselectstart;
-		el.setPointerCapture(e.pointerId);
-		
-		el.addEventListener('pointermove',handler);
-		el.addEventListener('pointerup',handler);
-		document.onselectstart = canceller;
-		
-		el.flags.add('_touch_');
-		
-		el.addEventListener('pointerup',function(e) {
-			
-			el.releasePointerCapture(e.pointerId);
-			el.removeEventListener('pointermove',handler);
-			el.removeEventListener('pointerup',handler);
-			handler.pointerId = null;
-			if (handler.pointerFlag) {
-				
-				el.flags.remove(handler.pointerFlag);
-			};
-			el.flags.remove('_touch_');
-			return document.onselectstart = selstart;
-		},{once: true});
-		return true;
-	}
-};
-
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointermove = {
-	handle: function(s,args) {
-		
-		let h = s.handler;
-		let e = s.event;
-		let id = h.pointerId;
-		if (id && e.pointerId != id) { return false };
-		if (h.touch) { h.touch.update(e) };
-		if (typeof h.x0 == 'number') {
-			
-			e.dx = e.x - h.x0;
-			e.dy = e.y - h.y0;
-		};
-		return true;
-	}
-};
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerup = {
-	handle: function(s,args) {
-		
-		let h = s.handler;
-		let e = s.event;
-		let id = h.pointerId;
-		if (id && e.pointerId != id) { return false };
-		if (h.touch) { h.touch.update(e) };
-		
-		if (typeof h.x0 == 'number') {
-			
-			e.dx = e.x - h.x0;
-			e.dy = e.y - h.y0;
-		};
-		return true;
-	}
-};
-
-
-_dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.on$touch = function(mods,context) {
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown$handle = function (){
 	
-	return;
+	let e = this.event;
+	let el = this.element;
+	let handler = this.handler;
+	if (handler.type != 'touch') { return true };
+	
+	e.dx = e.dy = 0;
+	handler.x0 = e.x;
+	handler.y0 = e.y;
+	handler.pointerId = e.pointerId;
+	
+	handler.touch = new Touch(e);
+	
+	let canceller = function() { return false; };
+	let selstart = document.onselectstart;
+	el.setPointerCapture(e.pointerId);
+	
+	el.addEventListener('pointermove',handler);
+	el.addEventListener('pointerup',handler);
+	document.onselectstart = canceller;
+	
+	el.flags.add('_touch_');
+	
+	el.addEventListener('pointerup',function(e) {
+		
+		el.releasePointerCapture(e.pointerId);
+		el.removeEventListener('pointermove',handler);
+		el.removeEventListener('pointerup',handler);
+		handler.pointerId = null;
+		if (handler.pointerFlag) {
+			
+			el.flags.remove(handler.pointerFlag);
+		};
+		el.flags.remove('_touch_');
+		return document.onselectstart = selstart;
+	},{once: true});
+	return true;
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointermove$handle = function (){
+	
+	let h = this.handler;
+	let e = this.event;
+	let id = h.pointerId;
+	if (id && e.pointerId != id) { return false };
+	if (h.touch) { h.touch.update(e) };
+	if (typeof h.x0 == 'number') {
+		
+		e.dx = e.x - h.x0;
+		e.dy = e.y - h.y0;
+	};
+	return true;
+};
+
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerup$handle = function (){
+	
+	let h = this.handler;
+	let e = this.event;
+	let id = h.pointerId;
+	if (id && e.pointerId != id) { return false };
+	if (h.touch) { h.touch.update(e) };
+	if (typeof h.x0 == 'number') {
+		
+		e.dx = e.x - h.x0;
+		e.dy = e.y - h.y0;
+	};
+	return true;
 };
 
 
@@ -2820,22 +2805,20 @@ const observers = new (globalThis.WeakMap || Map);
 const defaults = {threshold: [0]};
 const rootTarget = {};
 
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect = {
-	handle: function(state,args) {
-		
-		let obs = state.event.detail.observer;
-		return state.modifiers._observer == obs;
-	},
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect$handle = function (){
 	
-	in: function(state,args) {
-		
-		return state.event.detail.delta > 0;
-	},
+	let obs = this.event.detail.observer;
+	return this.modifiers._observer == obs;
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect$in = function (){
 	
-	out: function(state,args) {
-		
-		return state.event.detail.delta < 0;
-	}
+	return this.event.detail.delta > 0;
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect$out = function (){
+	
+	return this.event.detail.delta < 0;
 };
 
 function callback(name,key){

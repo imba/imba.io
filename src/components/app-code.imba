@@ -200,6 +200,7 @@ tag app-code-block < app-code
 	prop dir
 	prop files
 	prop file
+	prop size
 
 	def hydrate
 		lang = dataset.lang
@@ -211,6 +212,7 @@ tag app-code-block < app-code
 			console.log 'found dir?',dir
 			files = dir.files
 			file = files[0]
+			
 
 		dataset.path
 
@@ -218,6 +220,8 @@ tag app-code-block < app-code
 		innerHTML = '' # empty
 		options.compile = !code.options.nojs and !code.plain.match(/^tag /m)
 		options.run = !code.options.norun
+
+		size = code.options.preview or dataset.size or ''
 
 		if code.options.preview
 			let file = {path: dataset.path, body: code.plain,size: code.options.preview}
@@ -280,8 +284,11 @@ tag app-code-block < app-code
 	css %main
 		pos:relative radius:2 c:$code-color bg:var(--bg) border-top-left-radius..multi:0
 
+	css
+		$preview-size:100px .large:100px
+
 	css %preview
-		min-height:106px
+		min-height:82px
 		mt:0 radius:0 0 3px 3px
 		color:gray6
 		pos:absolute
@@ -293,7 +300,7 @@ tag app-code-block < app-code
 		pl:4
 		.frame shadow:sm @lt-xl:none radius:2
 		.controls d@lt-xl:none
-		@lt-xl pos:relative l:0 h:200px ml:0 w:100% p:4 pt:0 bg:var(--bg) max-width:initial
+		@lt-xl pos:relative l:0 h:$preview-size ml:0 w:100% p:2 pt:0 bg:var(--bg) max-width:initial
 
 	def editorResized e
 		editorHeight = Math.max(editorHeight or 0,e.rect.height)
@@ -301,7 +308,7 @@ tag app-code-block < app-code
 	def render
 		return unless code
 
-		<self.{code.flags} .multi=(files.length > 1) @pointerover=pointerover>
+		<self.{code.flags} .{size} .multi=(files.length > 1) @pointerover=pointerover>
 			<header[d:none ..multi:block]>
 				<div%tabs> for item in files
 					<a%tab .on=(file==item) @click=(file=item)> item.name

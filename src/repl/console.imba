@@ -69,6 +69,8 @@ tag repl-console-item
 		.string
 			ws: pre-wrap
 			color:green7 content@before:"'" content@after:"'"
+		.arg > .string
+			color:gray7 content@before:"" content@after:""
 
 		.number color:blue6
 		.key color:indigo6
@@ -79,7 +81,7 @@ tag repl-console-item
 		.part > .member mr:1
 		.object
 			m:0
-			content@before:'{s '
+			content@before:'{ '
 			content@after:' }'
 			.key + .value content@before: ': '
 			.pair + .pair content@before: ', '
@@ -112,7 +114,7 @@ tag repl-console
 	css cursor:default $count:0
 
 	css $body .item p:2 3 mx:1 bbw:1px bbc:gray2
-	css $snackbars d:block pos:absolute w:100% t:0 l:0 zi:10
+	css $snackbars d:block pos:absolute w:100% t:0 l:0 zi:35
 	css $snackbars .item .body m:2 p:2 3 radius:3 bg:gray1 shadow:sm bw:1 bc:gray3 fs:sm/1.3
 
 	css .heading d:block p:1 3 0 mx:1 c:gray6 fs:sm fw:500 mb:-2
