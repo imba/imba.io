@@ -212,7 +212,6 @@ tag app-code-block < app-code
 			console.log 'found dir?',dir
 			files = dir.files
 			file = files[0]
-			
 
 		dataset.path
 
@@ -308,12 +307,12 @@ tag app-code-block < app-code
 	def render
 		return unless code
 
-		<self.{code.flags} .{size} .multi=(files.length > 1) @pointerover=pointerover>
+		<self.{code.flags} .{size} .multi=(files.length > 1) @pointerover.silence=pointerover>
 			<header[d:none ..multi:block]>
 				<div%tabs> for item in files
 					<a%tab .on=(file==item) @click=(file=item)> item.name
 			<main%main [border-top-left-radius:0]=dir>
-				<div$editor%editor.code[min-height:{editorHeight}px]  @resize=editorResized>
+				<div$editor%editor.code[min-height:{editorHeight}px] @resize=editorResized>
 					if file
 						<code.{file.highlighted.flags} %code innerHTML=file.highlighted.html>
 					unless dir

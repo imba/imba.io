@@ -17,10 +17,11 @@ tag app-menu
 
 	def render
 		<self tabIndex=-1>
-			<div.scroller.(pos:absolute ofy:auto inset:0 top:$header-height p:5 flex:1)>
+			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 flex:1]>
 				for child in data.root.children
-					<h5.(p:1 2 fs:xs c:gray5 tt:uppercase)> child.title
-					<div.(pb:8).{child.slug}> for item in child.children
+					<h5[p:1 2 fs:xs c:gray5 tt:uppercase]> child.title
+					<div[pb:8].{child.slug}> for item in child.children
 						<a.item .{item.type} data=item .wip=item.meta.wip route-to=item.href> item.title
-						<div.children.(d@empty:none)> for sub in item.children
+						<div.children[d@empty:none]> for sub in item.children
 							<a.item.sub data=sub .wip=sub.meta.wip route-to=sub.href> sub.title
+							

@@ -55,6 +55,12 @@ tag app-repl-preview
 
 	def recalc
 		let [w,h] = size.split('-')
+
+		if w == 'auto' and h == 'auto'
+			scale = sx = sy = 1
+			iw = ih = '100%'
+			return
+
 		ow ||= ($bounds && $bounds.offsetWidth)
 		oh ||= ($bounds && $bounds.offsetHeight)
 
@@ -154,7 +160,7 @@ tag app-repl-preview
 
 	css $controls pos:absolute b:100% r:0 my:1 w:100% d:flex jc:center
 
-	css %btn p:1 fw:500 c:gray4 @hover:gray5 .checked:blue5 outline@focus:none
+	css %btn p:1 fw:500 c:gray4 @hover:gray5 .checked:blue5 outline@focus:none pe.checked:none
 
 	css @is-pip @not(.maximized)
 		bg:clear
@@ -181,10 +187,13 @@ tag app-repl-preview
 	css $console
 		pos:relative
 
+	def entered e
+		$entered = yes
+		refresh! unless $refreshed
+
 	def render
 		recalc!
-
-		<self>
+		<self @intersect.in=entered>
 			<div$body[flex:1] @click=toggle>
 				<div$bounds @resize=reflow>
 					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px] @click.stop>
@@ -211,19 +220,21 @@ tag app-repl-preview
 		return unless data
 		# console.log 
 		sw.request(event: 'file', path: data.path, body: data.body).then do
-			console.log 'returned from sw',data.path
+			# console.log 'returned from sw',data.path
 			url = data.path.replace('.imba','.html')
-		self
 
 	set dir data
 		if $dir = data
 			let file = $dir.files[0]
-			console.log 'start with file',file,$dir.replUrl
+			# console.log 'start with file',file,$dir.replUrl
 			url = $dir.replUrl
-			# url = `{$dir.path}/{file.basename + '.html'}`
 		self
 
 	def urlDidSet url, prev
+		refresh! if $entered
+
+	def refresh
+		$refreshed = yes
 		try
 			$iframe.contentWindow.location.replace(`/repl{url}`)
 		catch e

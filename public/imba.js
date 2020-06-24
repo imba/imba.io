@@ -2872,11 +2872,6 @@ function callback(name,key){
 			e.entry = detail.entry;
 			e.delta = detail.delta;
 			e.ratio = detail.ratio;
-			try {
-				
-				e.rx = entry.intersectionRect.width / entry.boundingClientRect.width;
-				e.ry = entry.intersectionRect.height / entry.boundingClientRect.height;
-			} catch (e) { };
 			map.set(entry.target,ratio);
 			entry.target.dispatchEvent(e);
 		};

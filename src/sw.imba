@@ -31,6 +31,7 @@ const clientLoadMap = {
 }
 
 const accessedPaths = {
+
 }
 
 def compileImba file
@@ -132,9 +133,7 @@ class Worker
 
 		if file and !ext
 			ext = file.path.split('.').pop!
-		console.log 'onfetch',e.request.url,!!file,ext
-
-
+		# console.log 'onfetch',e.request.url,!!file,ext
 		let responder = new Promise do(resolve)
 			let loadMap = clientLoadMap[clientId] ||= {}
 
