@@ -64,35 +64,58 @@ tag log-tag
 				<span.more @click=toggle> "..."
 
 tag repl-console-item
+	css d:block c:gray6 fs:md/1.4 fw:500
+		transition: all 250ms cubic-out
+		.string
+			ws: pre-wrap
+			color:green7 content@before:"'" content@after:"'"
+
+		.number color:blue6
+		.key color:indigo6
+		.arg mr:1
+		.array content@before:'[ ' content@after:' ]'
+		.array > * + * content@before:', '
+		.textnode color:gray6
+		.part > .member mr:1
+		.object
+			m:0
+			content@before:'{s '
+			content@after:' }'
+			.key + .value content@before: ': '
+			.pair + .pair content@before: ', '
+
+	prop duration
 
 	def render
-		<self.item>
+		<self.item> <.body>
 			for item in data
-				<span.arg> any(item)
+				<span.arg> any(item,context,0)
+
+	def show
+		let h = offsetHeight
+		style.transition = 'none'
+		style.opacity = 0
+		style.marginTop = (-h)px
+		offsetHeight
+		style.removeProperty('transition')
+		style.marginTop = 0px
+		style.opacity = 1
+
+	def hide
+		let h = offsetHeight
+		style.marginBottom = (-h)px
+		style.opacity = 0
+		setTimeout(&,250) do parentNode.removeChild(self)
+		self
 
 tag repl-console
-	css cursor:default $count: 0
+	css cursor:default $count:0
 
-	css .item d:block p:2 3 mx:1 bbw:1px bbc:gray2 c:gray6 fs:md/1.4 fw:500
-	css .part > .member mr:1
+	css $body .item p:2 3 mx:1 bbw:1px bbc:gray2
+	css $snackbars d:block pos:absolute w:100% t:0 l:0 zi:10
+	css $snackbars .item .body m:2 p:2 3 radius:3 bg:gray1 shadow:sm bw:1 bc:gray3 fs:sm/1.3
+
 	css .heading d:block p:1 3 0 mx:1 c:gray6 fs:sm fw:500 mb:-2
-
-	css .string
-		white-space: pre-wrap
-		color:green7 content@before:"'" content@after:"'"
-	css .number color:blue6
-	css .key color:indigo6
-	css .arg mr:1
-	css .array content@before:'[ ' content@after:' ]'
-	css .array > * + * content@before:', '
-	css .textnode color:gray6
-
-	css .object
-		m:0
-		content@before:'{s '
-		content@after:' }'
-		.key + .value content@before: ': '
-		.pair + .pair content@before: ', '
 
 	css .counter
 		bg:gray3 mx:1 px:1 radius:10 min-width:6 color:gray6/70 d:inline-block fs:xs fw:bold ta:center
@@ -100,17 +123,32 @@ tag repl-console
 	prop native
 	prop context
 	prop count = 0
+	prop mode
+
+	get isTransient
+		mode == 'transient'
 
 	def clear
 		$body.innerHTML = ''
 		count = 0
+		
 
 	def log ...params
-		$body.appendChild <div.item> any(params,context,0)
+		# $body.appendChild <div.item> any(params,context,0)
+		let item = <repl-console-item.item context=context data=params>
+		if isTransient
+			let now = Date.now!
+			let delay = $nextTime ? Math.max($nextTime - now,0) : 0
+			$nextTime = now + delay + 100
+			setTimeout(&,delay) do
+				$snackbars.appendChild(item)
+				item.show!
+				setTimeout(&,1500) do item.hide!
+		else
+			$body.appendChild(item)
 		count++
 
 	def info ...params
-		# special case
 		$body.appendChild <div.heading> params[0]
 		count++
 
@@ -119,11 +157,12 @@ tag repl-console
 
 	def render
 		<self>
-			<header[bg:gray2]>
+			<header[bg:gray2 d..transient:none]>
 				<.tab.active[flex-grow:1] @click=flags.toggle('expanded')>
 					<span> "Console"
 					<span.counter> count
-				<button @click=clear [d:none]=(!count)> 'Clear'
+				<button[d..transient:none] @click=clear [d:none]=(!count)> 'Clear'
+			<div$snackbars>
 			<.content[pos:relative flex:1 bg:white]>
 				<div$scroller[pos:absolute d:block ofy:auto inset:0]>
 					<div$body[d:block] @resize=relayout>
