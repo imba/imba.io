@@ -40,6 +40,10 @@ def compileImba file
 		body = body.replace(/# @(show|log)( .*)?\n(\t*)/g) do(m,typ,text,tabs)
 			m + "${typ} '{(text or '').trim!}', "
 		body = body.replace(/from 'imdb'/g,'from "/imdb.js"')
+		body = body.replace(/(import [^\n]*')(\w[^']*)(?=')/g) do(m,start,path)
+			# console.log 'rewrite',path,'to',"/repl/examples/{path}"
+			start + "/repl/examples/{path}"
+
 		let result = imbac.compile(body,{target: 'web', sourcePath: file.path, imbaPath: null})
 		file.js = result.toString!
 	catch e

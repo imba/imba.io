@@ -43,38 +43,44 @@ Since tags are first-class citizens in Imba, you can use conditionals, loops and
 
 # Properties & Classes
 
-##### Setting properties
+##### id
+```imba
+<section#main> "..."
+```
+
+##### properties
 ```imba
 <input type="text" value=window.title placeholder="title...">
 ```
 > Properties are set using `prop=value` syntax.
 
-##### Setting ID
-```imba
-<section#main> "..."
-```
-
-##### Adding classes `.classname`
+##### classes
 ```imba
 <div.note.editorial> "Decent example"
 ```
 > Classes are set using a `.classname` syntax reminicent of css.
 
-##### Toggling classes `.classname=condition`
+##### conditional classes
 ```imba
 <div.note.editorial .resolved=data.isResolved> "Decent example"
 ```
 > You can conditionally set classes using the `.classname=condition` syntax, where classes will only be added to the element when `condition` is truthy.
 
-##### Adding dynamic classes `.class{name}`
+##### dynamic classes
 ```imba
 let marks = 'rounded important'
 let state = 'done'
 let color = 'blue'
+# ---
 <div.item .{marks} .{state} .bg-{color}-200>
 ```
-> To set dynamic classes you can use `{}` interpolation.
+> To set dynamic classes you use `{}` for the dynamic parts. A dynamic class-name can consist of both static and interpolated parts like `.state-{data.state}` and `.bg-{color}-200`.
 
+##### conditional & dynamic classes
+```imba
+<div.item .theme-{user.theme}=app.loggedIn>
+```
+> Dynamic classes can also be applied conditionally like regular classes using the `.some-{dynamic}-class=condition`.
 
 # Custom Elements
 
@@ -318,6 +324,7 @@ tag app-option
 ```
 You can also add named slots using `<slot name=...>` and render into them using `<el for=slotname>` in the outer rendering.
 ```imba
+# ~preview
 css app-panel
 	d:block m:3 b:gray2 t:sm
 	& header = p:1 bg:gray3
@@ -327,12 +334,12 @@ css app-panel
 # ---
 tag app-panel
     <self>
-        <header> ~[<slot name="header"> "Panel"]~
-        <main> ~[<slot> <p> "Nothing here"]~
-        <footer> ~[<slot name="footer"> "Footer"]~
+        <header> ~[<slot name="header"> "Default Header"]~
+        <main> ~[<slot> <p> "Default Body"]~
+        <footer> ~[<slot name="footer"> "Default Footer"]~
 
 imba.mount do <div> <app-panel>
-    ~[<div for="header"> "Custom header"
+    ~[<div slot="header"> "Custom Header"
     <div> "Something in main slot"
     <div> "More in main slot"]~
 ```
@@ -376,3 +383,7 @@ console.log ~[app.$name]~
 # Quick Tips
 
 > Elements declared without a tag name will always be of type `div`
+
+```imba
+<label> <input type='checkbox'/> 'Label'
+```

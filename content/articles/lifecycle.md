@@ -4,10 +4,10 @@ These methods are meant to be defined in your components. In most cases you will
 
 | table  |  | |
 | --- | --- | --- |
-| `build` | Called before any properties etc are set |
-| `hydrate` | Called before awaken if element is not hydrated | [Example](/examples/lifecycle-hydrate) |
+| `build` | Called before any properties etc are set | |
+| `hydrate` | Called before awaken if element is not hydrated | |
 | `dehydrate` | Called before serializing when rendering on server | |
-| `awaken` | Called the first time the component is mounted | [Example](/examples/lifecycle-hydrate) |
+| `awaken` | Called the first time the component is mounted | |
 | `mount` | Called when the component is attached to the document | |
 | `unmount` | Called when the component is detached from the document | |
 | `render` | Called by both visit and tick | |

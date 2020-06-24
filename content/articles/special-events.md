@@ -27,6 +27,8 @@ To ease development Imba adds a few non-standard events to get rid of boilerplat
 <div @intersect(1).out=handler>
 ```
 
+
+
 [Example](/examples/intersect-event)
 
 ## Resize
