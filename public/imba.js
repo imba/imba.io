@@ -1185,24 +1185,53 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].wait$mod = function (num){
 	return new Promise(function(_0) { return setTimeout(_0,((typeof num == 'number') ? num : 1000)); });
 	
 };
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (name){
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (ms = 250){
 	var self = this;
 	
 	if (this.handler.throttled) { return false };
 	this.handler.throttled = true;
-	if (typeof name != 'string') {
-		
-		name = ("in-" + (this.event.type || 'event'));
-	};
 	
-	let cl = this.element.flags.add(name);
+	let cl = this.element.flags.add('_cooldown_');
 	
 	this.handler.once('idle',function() {
 		
-		self.element.flags.remove(name);
-		return self.handler.throttled = false;
+		return setTimeout(function() {
+			
+			self.element.flags.remove('_cooldown_');
+			return self.handler.throttled = false;
+		},ms);
 	});
 	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].flag$mod = function (name,sel){
+	var self = this;
+	
+	
+	let el = (sel instanceof globalThis.Element) ? sel : ((sel ? this.element.closest(sel) : this.element));
+	if (!el) { return true };
+	let step = this.step;
+	this.handler[step] = this.id;
+	
+	el.flags.add(name);
+	let ts = Date.now();
+	this.handler.once('idle',function() {
+		
+		let elapsed = Date.now() - ts;
+		let delay = Math.max(250 - elapsed,0);
+		return setTimeout(function() {
+			
+			
+			if (self.handler[step] == self.id) { return el.flags.remove(name) };
+		},delay);
+	});
+	
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].busy$mod = function (sel){
+	
+	return _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].flag$mod.call(this,'busy',250,sel);
 };
 
 
@@ -1243,11 +1272,15 @@ class EventHandler {
 		let awaited = false;
 		let prevRes = undefined;
 		
+		this.count || (this.count = 0);
+		
 		let state = {
 			element: element,
 			event: event,
 			modifiers: mods,
-			handler: this
+			handler: this,
+			id: ++this.count,
+			step: -1
 		};
 		
 		if (event.handle$mod) {
@@ -1270,6 +1303,7 @@ class EventHandler {
 		
 		for (let $i = 0, $keys = Object.keys(mods), $l = $keys.length, handler, val; $i < $l; $i++){
 			handler = $keys[$i];val = mods[handler];
+			state.step++;
 			
 			if (handler[0] == '_') {
 				
@@ -1285,6 +1319,7 @@ class EventHandler {
 			let args = [event,this];
 			let res = undefined;
 			let context = null;
+			let m;
 			let isstring = typeof handler == 'string';
 			
 			if (handler[0] == '$' && handler[1] == '_' && (val[0] instanceof Function)) {
@@ -1319,11 +1354,11 @@ class EventHandler {
 				};
 			};
 			
-			if (typeof handler == 'string' && handler.indexOf('emit-') == 0) {
+			if (typeof handler == 'string' && (m = handler.match(/^(emit|flag)-(.+)$/))) {
 				
-				if (!modargs) { args = [] };
-				args.unshift(handler.slice(5));
-				handler = 'emit';
+				if (!modargs) { modargs = args = [] };
+				args.unshift(m[2]);
+				handler = m[1];
 			};
 			
 			
@@ -2834,6 +2869,7 @@ function callback(name,key){
 			let ratio = entry.intersectionRatio;
 			let detail = {entry: entry,ratio: ratio,from: prev,delta: (ratio - prev),observer: observer};
 			let e = new _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"](name,{bubbles: false,detail: detail});
+			e.entry = detail.entry;
 			e.delta = detail.delta;
 			e.ratio = detail.ratio;
 			try {
@@ -2980,7 +3016,10 @@ function getResizeObserver(){
 			let entry = $items[$i];
 			
 			let e = new _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"]('resize',{bubbles: false,detail: entry});
+			e.entry = entry;
 			e.rect = entry.contentRect;
+			e.width = entry.target.offsetWidth;
+			e.height = entry.target.offsetHeight;
 			entry.target.dispatchEvent(e);
 		};
 		return;

@@ -49,7 +49,7 @@ tag app-repl-preview
 	def reflow e
 		ow = $bounds.offsetWidth
 		oh = $bounds.offsetHeight
-		console.log 'reflow',ow,oh,iw,ih
+		# console.log 'reflow',ow,oh,iw,ih
 		recalc!
 		self
 
@@ -81,9 +81,6 @@ tag app-repl-preview
 			sy = Math.min(1,(oh - gap) / h)
 			ih = ((sy < sx) ? Math.floor(h * (sy/sx)) : h)
 		self
-
-	def intersect e
-		console.log 'intersecting',e.rx,e.ry
 
 	def resize e,dir
 		let t = e.touch
@@ -141,7 +138,7 @@ tag app-repl-preview
 				h = Math.max(absy * 2,260)
 
 		size = "{t.rw == 'auto' ? t.rw : Math.round(w)}-{t.rh == 'auto' ? t.rh : Math.round(h)}"
-		console.log 'resize',w,h,dir,size
+		# console.log 'resize',w,h,dir,size
 		# console.log 'yes!!',e.touch,w,h,size,t.bounds,absx,halfw
 
 	css d:flex fld:column pos:relative min-width:40px
@@ -187,7 +184,7 @@ tag app-repl-preview
 	def render
 		recalc!
 
-		<self @intersect(10)=intersect>
+		<self>
 			<div$body[flex:1] @click=toggle>
 				<div$bounds @resize=reflow>
 					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px] @click.stop>

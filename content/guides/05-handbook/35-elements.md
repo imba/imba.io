@@ -289,10 +289,6 @@ imba.mount do
         break if movie.title == 'The Usual Suspects'
 ```
 
-# Handling Events
-
-[Article](/articles/events.md)
-
 # Form Input Bindings
 
 [Article](/articles/binding-data.md)

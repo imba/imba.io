@@ -54,23 +54,35 @@ Inspired by vue.js, Imba also supports modifiers. More often than not, event han
 import 'util/styles'
 
 # ---
+# log to the console
 imba.mount do
-	<button @click.log('logged!')> 'Button'
+	<button @click.log('logged!')> 'test'
 ```
 
-##### emit ( name, detail = {} )
+##### wait ( duration = 1000 )
 
 ```imba
 # ~preview=small
 import 'util/styles'
 
 # ---
-# Emit another event directly from handler
+# delay subsequent modifiers by duration
+imba.mount do <div>
+	<button @click.wait.log('logged!')> 'default'
+	<button @click.wait(100).log('logged!')> 'fast'
+	<button @click.log('!').wait(500).log('!!')> 'chained'
+```
 
+##### throttle ( ms )
+
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+# disable handler for duration after triggered 
 imba.mount do
-	<div @select=console.log(e.type,e.detail)>
-		<button @click.emit('select')> 'Nothing'
-		<button @click.emit('select',a:1,b:2)> 'Data'
+	<button @click.throttle(1000).log('clicked')> 'click me'
 ```
 
 ##### emit-*name* ( detail = {} )
@@ -83,9 +95,25 @@ import 'util/styles'
 # Shorthand for emitting events
 imba.mount do
 	<div @select=console.log(e.type,e.detail)>
-		<button @click.emit-select> 'Nothing'
-		<button @click.emit-select(a:1,b:2)> 'Data'
+		<button @click.emit-select> 'emit'
+		<button @click.emit-select(a:1,b:2)> 'with data'
 ```
+
+##### flag-*name* ( target )
+
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+# Add flag while event is being handled
+imba.mount do
+	<div>
+		<button @click.flag-busy> 'flag self'
+		<button @click.flag-busy('div').wait(1000)> 'flag div'
+# Optionally supply a selector / element to flag
+```
+
 
 ## Modifiers
 
@@ -311,9 +339,23 @@ The [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObse
 | Properties  |  |
 | --- | --- |
 | `event.entry` | Returns the [ResizeObserverEntry](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry) |
-| `event.rect` | A DOMRectReadOnly object containing the new size of the observed element when the callback is run. |
+| `event.width` | Returns the new width of observed element |
+| `event.height` | Returns the new height of observed element |
 
-[Example](/examples/resize-event)
+##### Example
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+let w = 0, h = 0
+
+imba.mount do
+	<section[pi:center]>
+		<label> "Size is {w} x {h}"
+		<article[h:40px w:100px of:auto resize:both] @resize=(w=e.width,h=e.height)>
+		<mark[width:{w}px]> "Imitator"
+```
 
 ## Intersect
 
@@ -325,9 +367,8 @@ The [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObse
 | `event.ratio` | Returns the ratio of the intersectionRect to the boundingClientRect |
 | `event.delta` | Difference in ratio since previous event |
 
-> Explain intersecion ratio?
 
-### Example
+##### Example
 
 ```imba
 # ~preview

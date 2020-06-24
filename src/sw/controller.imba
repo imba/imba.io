@@ -32,7 +32,7 @@ export def load
 
 		sw.addEventListener('message') do(e)
 			if e.data and typeof e.data.ref == 'number'
-				console.log 'got response?!?'
+				# console.log 'got response?!?'
 				let req = requests[e.data.ref]
 				if req
 					req(e.data)
@@ -40,7 +40,7 @@ export def load
 		
 		
 		for payload in queued
-			console.log 'flushing payloads',payload
+			# console.log 'flushing payloads',payload
 			sw.controller.postMessage(payload)
 		queued = []
 
@@ -61,7 +61,7 @@ export def request payload, cb
 		if controller
 			controller.postMessage(payload)
 		else
-			console.log 'queue payload!'
+			# console.log 'queue payload!'
 			queued.push(payload)
 		return true
 

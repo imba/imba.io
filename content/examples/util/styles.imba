@@ -1,6 +1,9 @@
 css body
 	d:grid gaf:row pc:center gap:3 p:3
 
+css main,div,section,form,article,header,footer
+	pos:relative
+
 css main
 	d:grid gaf:row ac:start gap:3 p:3
 	pos:absolute inset:0
@@ -8,7 +11,7 @@ css main
 css div
 	d:grid gaf:column pc:center gap:3
 
-css section
+css section,form
 	d:grid gaf:row pc:center gap:3
 
 css header,footer
@@ -38,8 +41,10 @@ css button
 	bg:gray1 @hover:gray2 @active:gray3
 	shadow:sm
 	us:none
+	tween:100ms ease-in-out
 	y@active:1px	
 	@disabled c:gray5
+	# @is-busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none
 
 
 css input@not([type=checkbox])@not([type=radio])@not([type=range])
@@ -55,3 +60,5 @@ css input[type=number] w:80px
 css input@not([type]),input[type=text]
 	min-width:20
 
+css .faded o:0.5
+css .busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none

@@ -67,7 +67,7 @@ class Worker
 	def onmessage e
 		let res = {status: 0}
 		if e.data.event == 'compile'
-			console.log 'sw compile',e.data.body
+			# console.log 'sw compile',e.data.body
 			let js = compileImba(e.data)
 			return e.source.postMessage({event: 'compiled',ref: e.data.ref, source: e.data.body, js: js})
 
@@ -77,7 +77,7 @@ class Worker
 			files[path] = e.data
 
 			if typeof e.data.ref == 'number'
-				console.log 'posting message back to source',e.data.ref
+				# console.log 'posting message back to source',e.data.ref
 				e.source.postMessage(ref: e.data.ref, status: 0)
 
 			if accessedPaths[path]
