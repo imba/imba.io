@@ -9,7 +9,7 @@ css main
 	pos:absolute inset:0
 
 css div
-	d:grid gaf:column pc:center gap:3
+	d:grid gaf:column pc:center pi:center gap:3
 
 css section,form
 	d:grid gaf:row pc:center gap:3
@@ -22,6 +22,10 @@ css article
 	radius:2
 	border:1px dashed gray3
 	min-height:60px
+
+css li
+	p:1
+	bbw:1 bbc:gray3
 
 css label
 	fw:400 c:gray6 fs:sm ta:center
@@ -42,10 +46,13 @@ css button
 	shadow:sm
 	us:none
 	tween:100ms ease-in-out
-	y@active:1px	
+	y@active:1px
 	@disabled c:gray5
 	# @is-busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none
 
+css var
+	d:grid pc:center pi:center min-width:60px p:1
+	bs:dashed bw:1 bc:gray4 radius:2
 
 css input@not([type=checkbox])@not([type=radio])@not([type=range])
 	py:1 pl:3 fw:500 min-width:10
@@ -56,7 +63,7 @@ css input@not([type=checkbox])@not([type=radio])@not([type=range])
 	shadow@focus:sm
 	@disabled c:gray5
 
-css input[type=number] w:80px
+css input[type=number] w:60px
 css input@not([type]),input[type=text]
 	min-width:20
 

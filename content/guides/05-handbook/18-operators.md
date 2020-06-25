@@ -3,8 +3,7 @@ title: Operators
 ---
 # Operators
 
-## Arithmetic
-
+##### Arithmetic
 ```imba
 1 + 2 # Addition
 3 - 2 # Subtraction
@@ -16,31 +15,30 @@ title: Operators
 +i # Unary plus
 ```
 
-## Assignment
+##### Logical
+```imba
+expr1 && expr2 # Logical AND operator
+expr1 || expr2 # Logical OR operator
+!expr # Logical NOT operator
+```
 
+##### Assignment
 ```imba
 item = 100 
 item ||= 100 # If falsy assignment
 item &&= 100 # If truthy assignment
 item ?= 100 # If null assignment
 item += 100 # Addition assignment
-i++ # Increment assignment
-i-- # Decrement assignment
 item -= 100 # Decrement assignment
 item *= 100 # Multiplication assignment
 item /= 100 # Division assignment
 item %= 100 # Remainder assignment
 item **= 100 # Exponential assignment
-
-item <<= 1 # Left shift assignment
-item >>= 1 # Right shift assignment
-item >>>= 1 # Unsigned right shift assignment
-item &= 1 # Bitwise AND assignment
-item ^= 1 # Bitwise XOR assignment
-item |= 1 # Bitwise OR assignment
+i++ # Increment assignment
+i-- # Decrement assignment
 ```
 
-## Comparison
+##### Comparison
 ```imba
 x == y # Equality
 x != y # Inequality
@@ -55,8 +53,35 @@ x <= y # Less than or equal
 10 > x > 5 # Chained comparison
 ```
 
-## Unary
+##### Bitwise Comparison
 ```imba
-delete object.property # delete
-!object.property # logical NOT
+a & b # Bitwise AND
+a | b # Bitwise OR
+a ^ b # Bitwise XOR
+~ a # Bitwise NOT
+a << Left shift
+a >> b Sign-propagating right shift
+a >>> b Zero-fill right shift
+```
+
+##### Bitwise Assignment
+```imba
+a <<= 1 # Left shift assignment
+a >>= 1 # Right shift assignment
+a >>>= 1 # Unsigned right shift assignment
+a &= 1 # Bitwise AND assignment
+a |= 1 # Bitwise OR assignment
+a ^= 1 # Bitwise XOR assignment
+```
+
+##### isa
+```imba
+honda isa Car # 
+princess !isa Car 
+```
+> The `isa` operator tests whether the prototype property of a constructor appears anywhere in the prototype chain of an object. Alias for the javascript [instanceof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof) operator.
+
+##### delete
+```imba
+delete object.property
 ```

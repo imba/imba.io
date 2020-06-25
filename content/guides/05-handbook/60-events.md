@@ -43,7 +43,7 @@ const handler = console.log.bind(console)
 
 # Event Modifiers
 
-Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our can be pure logic without any knowledge of the event that triggered them.
+Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
 
 ## Utilities
 
@@ -59,7 +59,7 @@ imba.mount do
 	<button @click.log('logged!')> 'test'
 ```
 
-##### wait ( duration = 1000 )
+##### wait ( duration = 250ms )
 
 ```imba
 # ~preview=small

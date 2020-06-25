@@ -1180,9 +1180,9 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].if$mod = function (expr){
 	return !!expr;
 	
 };
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].wait$mod = function (num){
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].wait$mod = function (num = 250){
 	
-	return new Promise(function(_0) { return setTimeout(_0,((typeof num == 'number') ? num : 1000)); });
+	return new Promise(function(_0) { return setTimeout(_0,num); });
 	
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (ms = 250){

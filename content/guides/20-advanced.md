@@ -31,3 +31,7 @@ tag app-root
 If you set `<element myname.prop1.prop2=value >` how do you actually access the modifiers? As we've learned, properties in tags are essentially compiled to plain setters, so `<div title='hi'>` is like `let div = document.createElement('div'); div.title = 'hi';`
 
 > If you set `<element myname.prop1.prop2=value >` how do you actually access the modifiers?
+
+# More
+
+## Mixing imperative and declarative rendering
