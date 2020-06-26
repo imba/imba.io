@@ -25,6 +25,13 @@ css article
 	border:1px dashed gray3
 	min-height:60px
 
+css figure
+	d:grid gaf:row pc:center gap:2
+
+css body > figure@only
+	pos:absolute inset:0
+
+
 css li
 	p:1
 	bbw:1 bbc:gray3
@@ -41,8 +48,9 @@ css mark
 
 css button
 	d:grid gaf:column pc:center pi:center gap:2
-	py:2 px:3 fw:500 width
+	py:2 px:3 fw:500 min-width:6 min-height:6
 	bw:1 bc:gray4 radius:2
+	fs:md/1.2
 	c:gray8 @hover:gray9
 	bg:gray1 @hover:gray2 @active:gray3
 	shadow:sm
@@ -67,6 +75,7 @@ css samp,var
 css select,textarea,input
 	py:1 px:3 min-width:10
 	bw:1 radius:2
+	fs:md/1.2
 	c:gray8 @hover:gray9
 	bc:gray4 @hover:gray5
 	bg:white @hover:gray1 @focus:white
@@ -91,3 +100,19 @@ css select
 css .faded o:0.5
 css .busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none
 
+css input[type=range]
+	-webkit-appearance: none
+
+css input[type=range]::-webkit-slider-runnable-track
+	w:100% h:8px bg:gray2 radius:2 border:1px solid gray4 box-sizing:border-box
+css input[type=range]::-webkit-slider-thumb
+	-webkit-appearance: none 
+	w:14px h:14px mt:-4px bg:blue5 radius:10 box-sizing:border-box
+
+css #hud
+	pos:absolute t:0 l:0 r:0 p:3 bg:gray1 border-bottom:1px solid gray3
+	h:8 fs:sm c:gray5
+	input[type=range] w:60px
+	.num d:block w:6
+
+css #hud + * t:8

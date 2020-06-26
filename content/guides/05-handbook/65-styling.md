@@ -211,11 +211,11 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 ## margin
 
-<doc-style-aliases data-regex='margin'></doc-style-aliases>
+<doc-style-aliases data-regex='margin|^m[tblrxy]$'></doc-style-aliases>
 
 ## padding
 
-<doc-style-aliases data-regex='padding'></doc-style-aliases>
+<doc-style-aliases data-regex='padding|^p[tblrxy]$'></doc-style-aliases>
 
 ## text & font
 <doc-style-aliases data-regex='text|font' data-neg='decoration|emphasis'  data-include='c,lh,ta,va,ls,fs,ff,fw,ws' data-exclude='t'></doc-style-aliases>
@@ -584,13 +584,94 @@ css @root
     1l: 64px
 ```
 
+# Layouts
+
+Row & column gaps are incredibly useful properties for adding consistent spacing between items inside grids. Even though these properties are promised to come for flexbox in the future, current support [is abysmal](https://caniuse.com/#feat=flexbox-gap). Imba includes a set of spacing properties to mimic this useful behaviour.
+
+```imba
+# ~preview
+import 'util/styles'
+# ---
+let rowgap=2, colgap=2
+~hide[imba.mount do <#hud>
+    <span> 'rowgap'
+    <input type='range' min=0 max=10 bind=rowgap/> <span.num> rowgap
+    <span> 'colgap'
+    <input type='range' min=0 max=10 bind=colgap/> <span.num> colgap
+]~
+imba.mount do <main>
+    <section[d:grid pa:stretch gtc:1fr 1fr rg:{rowgap} cg:{colgap}]>
+        <button/> <button/> <button/> <button/>
+```
+Lets use some flex
+```imba
+# ~preview
+import 'util/styles'
+import {genres} from 'imdb'
+import {labels} from 'util/data'
+css .label radius:2 bg:teal2 fs:xs c:teal7 px:1
+# ---
+let rowgap=2, colgap=2
+~hide[imba.mount do <#hud>
+    <span> 'rowgap'
+    <input type='range' min=0 max=10 bind=rowgap/> <span.num> rowgap
+    <span> 'colgap'
+    <input type='range' min=0 max=10 bind=colgap/> <span.num> colgap
+]~
+imba.mount do <main>
+    <section[d:grid pa:stretch gtc:1fr 1fr rg:{rowgap} cg:{colgap}]>
+        <input/> <button/>
+        <div[d:flex]> <input/> <button/>
+        <div[d:flex]> <button[flex:1]/> <button[flex:1]/> <button[flex:1]/>
+        <div[d:flex w:2col flw:wrap jc:flex-start]> for item in labels
+            <div.label> item.name
+```
+The only way to get consistent gaps between elements inside flexboxes is to add margins around all their children (on all sides), and then add a negative margin to the container. To make this a little easier for you, imba will add the needed styling when you use `display:group`. Now for a working example:
+```imba
+# ~preview
+import 'util/styles'
+import {genres} from 'imdb'
+import {labels} from 'util/data'
+css .label radius:2 bg:teal2 fs:xs c:teal7 px:1
+# ---
+let rowgap=2, colgap=2
+~hide[imba.mount do <#hud>
+    <span> 'rowgap'
+    <input type='range' min=0 max=10 bind=rowgap/> <span.num> rowgap
+    <span> 'colgap'
+    <input type='range' min=0 max=10 bind=colgap/> <span.num> colgap
+]~
+imba.mount do <main>
+    <section[d:grid pa:stretch gtc:1fr 1fr rg:{rowgap} cg:{colgap}]>
+        <input/> <button/>
+        <div[d:group]> <input/> <button/>
+        <div[d:group]> <button[flex:1]/> <button[flex:1]/> <button[flex:1]/>
+        <div[d:group w:2col flw:wrap jc:flex-start]> for item in labels
+            <div.label> item.name
+```
+
+```imba
+# ~preview
+import 'util/styles'
+css button flex:1
+css input flex:4
+# css section outline:1px dashed red3
+# css div outline:1px dashed blue3
+imba.mount do
+    <section[d:grid gtc:80vw ji:stretch gap:8px]>
+        <div[d:flex]> <button/> <button/> <button/> <button/>
+        <div[d:flex s:2]> <button/> <button/> <button/> <button/>
+        <div[d:flex s:2]> <button/> <button/> <button/>
+        <div[d:flex s:2]> <button/> <button[flex:4]/>
+        <div[d:flex ai:stretch s:2]> <input[flex:5]/> <button> 'Add'
+```
+
 # Reference
 
 ## Transitions
 
 ## Document
 
-- `123c` in width
-- `123r` in height
+- `123c` in width and `123r` in height
 - `>10` and `<10` in width and height
 - Special transition properties
