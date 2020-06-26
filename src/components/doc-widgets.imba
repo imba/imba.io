@@ -34,20 +34,21 @@ const transforms =
 css h2 + p > .deftable @first > header mt:-6 bg:white
 	
 css .defs
-	d:grid gtc:max-content auto pc:start
-	is:mono fs:4
+	d:grid gtc:max-content auto pc:start ff:mono fs:4
 	.pair d:contents
 	.dt c:purple7 pr:4
 	.dd c:gray6
+	.dd a + a prefix: ', '
 
 	[cols=2] & gtc@lg: max-content 1fr max-content 1fr
 
 	@lg [cols='3-transposed'] &
 		gtc: 1fr 1fr 1fr
 		.pair d:block
-		> @nth-child(3n+1) order:0
-		> @nth-child(3n+2) order:1
-		> @nth-child(3n+3) order:2
+		> @nth-child(4n+1) order:0
+		> @nth-child(4n+2) order:1
+		> @nth-child(4n+3) order:2
+		> @nth-child(4n+4) order:4
 
 	@lg [cols=3] &
 		gtc: max-content 1fr max-content 1fr max-content 1fr
@@ -86,8 +87,10 @@ tag doc-style-aliases
 		<div.defs> for [alias,name] in items
 			<div.pair>
 				<span.dt> alias
-				<span.dd> for v in name
+				<span.dd> for v,i in name
+					<span.sep> ' & ' if i > 0
 					<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/{v}"> v
+					
 					# name.join(' & ')
 
 tag doc-style-spacings

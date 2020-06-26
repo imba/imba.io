@@ -196,7 +196,7 @@ imba.mount do
 You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
 
 
-# Specificity
+# [WIP] Specificity
 
 Specificity
 
@@ -230,7 +230,7 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 ## alignment
 
-<doc-style-aliases cols='3-transposed' data-regex='^place|^align|^justify' data-exclude='a'></doc-style-aliases>
+<doc-style-aliases cols='3-transposed' data-regex='^place|^align|^justify|^[paj][ics]' data-exclude='a'></doc-style-aliases>
 
 ## background
 
