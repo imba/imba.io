@@ -12,6 +12,8 @@ tag app-repl-preview
 
 	def build
 		$iframe = <iframe[pos:absolute width:100% height:100% min-width:200px]>
+		$iframe.src = 'about:blank'
+
 		$iframe.replify = do(win)
 			$win = win # $iframe.contentWindow
 			$doc = $win.document
@@ -234,8 +236,10 @@ tag app-repl-preview
 		refresh! if $entered
 
 	def refresh
+		return unless url
 		$refreshed = yes
+		let src = `/repl{url}`
 		try
-			$iframe.contentWindow.location.replace(`/repl{url}`)
+			$iframe.contentWindow.location.replace(src)
 		catch e
-			sw.load!.then do $iframe.src = `/repl{url}`
+			sw.load!.then do $iframe.src = src
