@@ -20,27 +20,22 @@ let details =
     inspiration: ['ruby','python','react','coffeescript']
 ```
 
-# Overview
+## Coming from JS
 
-## Significant whitespace
+### Indentation
 
-## Implicit self
+### Scoping
 
-Coming from JavaScript, this is one of the most important concepts you need to grasp.
+### Implicit Invocation
 
-## Implicit return
+### Bang Invocation
 
-```imba
-def grade student
-    if student.excellentWork
-        'A+'
-    elif student.okayStuff
-        if student.triedHard
-            'B'
-        else
-            'B-'
-    else
-        'C'
-```
+### Implicit Self
 
-## Type Annotations
+### Self vs This
+
+### Dashed Identifiers
+
+### Everything is Expressable
+
+### Predicate identifiers

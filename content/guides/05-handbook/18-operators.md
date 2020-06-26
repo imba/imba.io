@@ -59,9 +59,9 @@ a & b # Bitwise AND
 a | b # Bitwise OR
 a ^ b # Bitwise XOR
 ~ a # Bitwise NOT
-a << Left shift
-a >> b Sign-propagating right shift
-a >>> b Zero-fill right shift
+a << b # Left shift
+a >> b # Sign-propagating right shift
+a >>> b # Zero-fill right shift
 ```
 
 ##### Bitwise Assignment

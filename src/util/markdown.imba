@@ -53,7 +53,9 @@ def renderer.heading text, level
 		text = text.slice(m[0].length)
 
 	text = text.replace(/\s*\[(\w+)\]\s*/g) do(m,key)
-		meta.meta[key.toLowerCase!] = yes
+		let flag = key.toLowerCase!
+		meta.meta[flag] = yes
+		flags.push(flag)
 		return ''
 
 	var plain = text.replace(/\<[^\>]+\>/g,'')

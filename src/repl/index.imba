@@ -57,6 +57,8 @@ tag app-repl
 		$options = {lineNumbers: true}
 
 		$iframe = <iframe.(position:absolute width:100% height:100%)>
+		$iframe.src = 'about:blank'
+
 		$iframe.replify = do(win)
 			$win = win # $iframe.contentWindow
 			$doc = $win.document

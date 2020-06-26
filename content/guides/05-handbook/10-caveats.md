@@ -1,5 +1,0 @@
-# Caveats
-
-## Scoping
-
-## Implicit self

@@ -1,9 +1,20 @@
 # Elements
 
-DOM nodes are first-class citizens in Imba, meaning that they can be instantiated using a literal syntax. They are *actual DOM elements*. We are not using a virtual DOM.
+Imba treats DOM elements first-class citizens, on a much deeper level than JSX. Imba does not use a virtual dom but compiles declarative tag trees into an incredibly efficient [memoized dom](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52), which is orders of magnitute faster than vdom approaches, yet conceptually simpler.
 
 
 ## Literals
+
+```imba
+# Creating a literal dom element:
+let div = <div#main.note.sticky title='Welcome'>
+# is essentially equivalent to:
+let div = document.createElement('div')
+div.id = 'main'
+div.classList.add('note')
+div.classList.add('sticky')
+div.setAttribute('title','Welcome')
+```
 
 ##### plain
 ```imba
@@ -141,7 +152,7 @@ imba.mount do
         break if movie.title == 'The Usual Suspects'
 ```
 
-# Mount & Render
+# Rendering
 
 The fact that tag literals in imba generate real dom nodes means that we are not using a virtual dom.
 

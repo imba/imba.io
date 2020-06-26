@@ -2,6 +2,7 @@
 
 ##### if
 ```imba
+# indented
 if condition
     console.log 'yes!'
 ```
@@ -27,6 +28,8 @@ elif expr
 ```
 > To conveniently chain multiple conditionals, use `elif`. No `elif` or `else` statements will be executed after the first truthy condition.
 
+
+
 ##### unless
 ```imba
 unless condition
@@ -34,13 +37,23 @@ unless condition
 ```
 > The unless statement executes the indented code if a specified condition is *not* truthy.
 
-##### Ternary
+
+##### ternary
 ```imba
 condition ? console.log('yes!') : console.log('no!')
 ```
+> The [Ternary operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator) is a useful way to write compact if / else statements.
 
 
-## If/else as expressions
+##### trailing if & unless
+```imba
+console.log 'yes' if condition
+console.log 'no' unless condition
+```
+> If & unless can also be used at the end of a single line expression
+
+
+## [TIP] If/else as expressions 
 
 Almost everything in imba are expressions. So, you can theoretically return and assign an if statement:
 ```imba

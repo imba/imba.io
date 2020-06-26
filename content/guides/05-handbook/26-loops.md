@@ -32,6 +32,7 @@ let ary = [1,2,3]
 while let item = ary.pop!
     console.log item
 ```
+> Executes repeatedly as long as condition is truthy.
 
 ##### until
 ```imba
@@ -39,6 +40,7 @@ let ary = [1,2,3]
 until ary.length == 0
     console.log ary.pop!
 ```
+> Executes repeatedly until condition is truthy.
 
 ## Loops as expressions
 
