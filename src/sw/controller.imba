@@ -21,7 +21,7 @@ export def load
 			console.log 'register service worker'
 			reg = await sw.register('/sw.js')
 
-		global.fetch('/preflight.css') # just to register this client with the worker
+		await global.fetch('/preflight.css') # just to register this client with the worker
 		console.log 'loaded service worker'
 
 		controller = sw.controller
@@ -38,10 +38,10 @@ export def load
 					req(e.data)
 					requests[e.data.ref] = null
 		
-		
+		# console.log 'flushing payloads',queued
 		for payload in queued
-			# console.log 'flushing payloads',payload
 			sw.controller.postMessage(payload)
+
 		queued = []
 
 		setTimeout(&,200) do
