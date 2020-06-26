@@ -1,24 +1,26 @@
+css @focus outline:none
+
 css body
-	d:grid gaf:row pc:center gap:3 p:3
+	d:grid gaf:row ac:center jc:stretch ji:center gap:2 p:2
 
 css main,div,section,form,article,header,footer
 	pos:relative
 
 css main
-	d:grid gaf:row ac:start gap:3 p:3
+	d:grid gaf:row ac:start gap:2 p:2
 	pos:absolute inset:0
 
 css div
-	d:grid gaf:column pc:center pi:center gap:3
+	d:grid gaf:column pc:center pi:center gap:2
 
 css section,form
-	d:grid gaf:row pc:center gap:3
+	d:grid gaf:row ac:center jc:stretch ji:center gap:2
 
 css header,footer
-	d:grid gaf:column js:stretch jc:stretch ji:stretch gap:3
+	d:flex fld:row gaf:column js:stretch jc:stretch ji:stretch gap:2
 
 css article
-	d:grid gaf:row ac:start gap:3 p:3
+	d:grid gaf:row ac:start gap:2 p:2
 	radius:2
 	border:1px dashed gray3
 	min-height:60px
@@ -47,15 +49,23 @@ css button
 	us:none
 	tween:100ms ease-in-out
 	y@active:1px
+	@focus outline:none
 	@disabled c:gray5
 	# @is-busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none
 
-css var
+css .chip
+	px:2 py:1 fs:sm
+
+css .tags
+	m: -4px
+	> m:4px
+
+css samp,var
 	d:grid pc:center pi:center min-width:60px p:1
 	bs:dashed bw:1 bc:gray4 radius:2
 
-css input@not([type=checkbox])@not([type=radio])@not([type=range])
-	py:1 pl:3 fw:500 min-width:10
+css select,textarea,input
+	py:1 px:3 min-width:10
 	bw:1 radius:2
 	c:gray8 @hover:gray9
 	bc:gray4 @hover:gray5
@@ -63,9 +73,21 @@ css input@not([type=checkbox])@not([type=radio])@not([type=range])
 	shadow@focus:sm
 	@disabled c:gray5
 
-css input[type=number] w:60px
+css input[type=range],input[type=checkbox],input[type=radio]
+	p:0 bw:0 shadow:none min-width:initial
+
+css input[type=number] w:60px pr:0
+
 css input@not([type]),input[type=text]
 	min-width:20
+	flex:1
+
+css input.inline
+	bw:0 bg:clear p:0 m:0
+
+css select
+	w:160px flex:1
 
 css .faded o:0.5
 css .busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none
+
