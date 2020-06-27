@@ -115,7 +115,7 @@ tag repl-console
 
 	css $body .item p:2 3 mx:1 bbw:1px bbc:gray2
 	css $snackbars d:block pos:absolute w:100% t:0 l:0 zi:35
-	css $snackbars .item .body m:2 p:2 3 radius:3 bg:gray1 shadow:sm bw:1 bc:gray3 fs:sm/1.3
+	css $snackbars .item .body m:2 p:2 3 radius:3 bg:gray1 shadow:xs bw:1 bc:gray3 fs:sm/1.3
 
 	css .heading d:block p:1 3 0 mx:1 c:gray6 fs:sm fw:500 mb:-2
 

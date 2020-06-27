@@ -297,7 +297,7 @@ tag app-code-block < app-code
 		h:100%
 		w:$doc-margin
 		pl:4
-		.frame shadow:sm @lt-xl:none radius:2
+		.frame shadow:xs @lt-xl:none radius:2
 		.controls d@lt-xl:none
 		@lt-xl pos:relative l:0 h:$preview-size ml:0 w:100% p:2 pt:0 bg:var(--bg) max-width:initial
 

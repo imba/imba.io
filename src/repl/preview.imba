@@ -156,6 +156,7 @@ tag app-repl-preview
 	css $frame
 		pos:absolute top:0 l:50% bg:white w:100% h:100% x:-50% y:0
 		border:1px solid gray3
+		box-sizing: content-box
 		transform-origin:50% 0%
 
 	css $cover pos:absolute inset:0 cursor:zoom-in d:none

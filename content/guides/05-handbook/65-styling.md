@@ -524,19 +524,33 @@ The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`te
 
 <doc-colors></doc-colors>
 
-## Box Shadows
-
-> How to add / override these shadows
-
 ## Fonts
 
 <doc-style-ff></doc-style-ff>
+
+```imba
+# ~preview=200px
+import 'util/styles'
+# ---
+css @root
+    # To override the default fonts or add new ones
+    # simply specify --font-{name} in your styles:
+    --font-sans: Arial # override sans
+    --font-comic: Chalkboard, Comic Sans # add comic
+
+imba.mount do  <section>
+    <label[fs:xl ff:serif]> "This is serif"
+    <label[fs:xl ff:sans]> "This is sans"
+    <label[fs:xl ff:mono]> "This is mono"
+    <label[fs:xl ff:comic]> "This is comic"
+```
 
 ## Font Sizes
 
 <doc-style-fs></doc-style-fs>
 
 ## Grids
+
 
 The `grid` property behaves in a slightly special manner in Imba. If you supply a single value/identifier to this like `grid:container`, Imba will compile the style to `grid:var(--grid-container)`.
 
@@ -561,110 +575,103 @@ imba.mount do  <section[display:grid grid:cols]>
         <div> genre
 ```
 
+## Box Shadows
 
+```imba
+# ~preview=200px
+import 'util/styles'
+css body bg:gray1
+css div c:gray6 size:14 bg:white radius:2 d:grid pa:center
+css section.group px:6 jc:center gap:4 max-width:280px @xs:initial
+# ---
+css @root
+    # To override the default shadows or add new ones
+    # simply specify --box-shadow-{name} in your styles:
+    --box-shadow-ring: 0 0 0 4px blue4/30, 0 0 0 1px blue4/90
 
-## Transitions
+imba.mount do  <section.group>
+    <div[shadow:ring]> "ring" # custom
+    <div[shadow:xxs]> "xxs"
+    <div[shadow:xs]> "xs"
+    <div[shadow:sm]> "sm"
+    <div[shadow:md]> "md"
+    <div[shadow:lg]> "lg"
+    <div[shadow:xl]> "xl"
+    <div[shadow:2xl]> "2xl"
+    <div[shadow:ring,2xl]> "ring" # custom combo
+    
+```
 
-### Properties
+## Border Radius
 
+```imba
+# ~preview=200px
+import 'util/styles'
+css body bg:gray1
+css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid pa:center border:1px solid gray3
+css section.group px:6 jc:center gap:3
+# ---
+css @root
+    # To override the default shadows or add new ones
+    # simply specify --border-radius-{name} in your styles:
+    --border-radius-bubble: 5px 20px 15px 
 
-### Easings
+imba.mount do  <section.group>
+    <div[radius:xs]> "xs"
+    <div[radius:sm]> "sm"
+    <div[radius:md]> "md"
+    <div[radius:lg]> "lg"
+    <div[radius:xl]> "xl"
+    <div[radius:full]> "full"
+    <div[radius:bubble]> "bubble"
+```
+
+## Scales
+
+Imba allows unitless numeric values for all sizing related properties. For margin, padding, sizes, and positions unitless numbers are equal to `0.25rem * number`. `1rem` is `16px` by default, so this means that the scale increments by `4px` for every integer.
+
+### base unit
+
+All properties related to sizing and spacing accept numeric values in Imba. Unitless values 
+
+## Easings
 
 <doc-style-easings></doc-style-easings>
 
-
-
-## Units
-
-You can define your own units.
-```imba
-css @root
-    1sb: 200px
-    1u: 4px
-    1l: 64px
-```
-
 # Layouts
 
-Row & column gaps are incredibly useful properties for adding consistent spacing between items inside grids. Even though these properties are promised to come for flexbox in the future, current support [is abysmal](https://caniuse.com/#feat=flexbox-gap). Imba includes a set of spacing properties to mimic this useful behaviour.
+## Grid
+
+
+## Flex
+
+
+## Group
+
+Row & column gaps are incredibly useful properties for adding consistent spacing between items inside grids. Even though these properties are promised to come for flexbox in the future, current support [is abysmal](https://caniuse.com/#feat=flexbox-gap). To alleviate some of this, imba includes `display:group` which is a shorthand to allow flexboxes that work with gaps.
 
 ```imba
 # ~preview
 import 'util/styles'
-# ---
-let rowgap=2, colgap=2
-~hide[imba.mount do <#hud>
-    <span> 'rowgap'
-    <input type='range' min=0 max=10 bind=rowgap/> <span.num> rowgap
-    <span> 'colgap'
-    <input type='range' min=0 max=10 bind=colgap/> <span.num> colgap
-]~
-imba.mount do <main>
-    <section[d:grid pa:stretch gtc:1fr 1fr rg:{rowgap} cg:{colgap}]>
-        <button/> <button/> <button/> <button/>
-```
-Lets use some flex
-```imba
-# ~preview
-import 'util/styles'
-import {genres} from 'imdb'
-import {labels} from 'util/data'
-css .label radius:2 bg:teal2 fs:xs c:teal7 px:1
-# ---
-let rowgap=2, colgap=2
-~hide[imba.mount do <#hud>
-    <span> 'rowgap'
-    <input type='range' min=0 max=10 bind=rowgap/> <span.num> rowgap
-    <span> 'colgap'
-    <input type='range' min=0 max=10 bind=colgap/> <span.num> colgap
-]~
-imba.mount do <main>
-    <section[d:grid pa:stretch gtc:1fr 1fr rg:{rowgap} cg:{colgap}]>
-        <input/> <button/>
-        <div[d:flex]> <input/> <button/>
-        <div[d:flex]> <button[flex:1]/> <button[flex:1]/> <button[flex:1]/>
-        <div[d:flex w:2col flw:wrap jc:flex-start]> for item in labels
-            <div.label> item.name
-```
-The only way to get consistent gaps between elements inside flexboxes is to add margins around all their children (on all sides), and then add a negative margin to the container. To make this a little easier for you, imba will add the needed styling when you use `display:group`. Now for a working example:
-```imba
-# ~preview
-import 'util/styles'
-import {genres} from 'imdb'
-import {labels} from 'util/data'
-css .label radius:2 bg:teal2 fs:xs c:teal7 px:1
-# ---
-let rowgap=2, colgap=2
-~hide[imba.mount do <#hud>
-    <span> 'rowgap'
-    <input type='range' min=0 max=10 bind=rowgap/> <span.num> rowgap
-    <span> 'colgap'
-    <input type='range' min=0 max=10 bind=colgap/> <span.num> colgap
-]~
-imba.mount do <main>
-    <section[d:grid pa:stretch gtc:1fr 1fr rg:{rowgap} cg:{colgap}]>
-        <input/> <button/>
-        <div[d:group]> <input/> <button/>
-        <div[d:group]> <button[flex:1]/> <button[flex:1]/> <button[flex:1]/>
-        <div[d:group w:2col flw:wrap jc:flex-start]> for item in labels
-            <div.label> item.name
-```
 
-```imba
-# ~preview
-import 'util/styles'
-css button flex:1
-css input flex:4
-# css section outline:1px dashed red3
-# css div outline:1px dashed blue3
-imba.mount do
-    <section[d:grid gtc:80vw ji:stretch gap:8px]>
-        <div[d:flex]> <button/> <button/> <button/> <button/>
-        <div[d:flex s:2]> <button/> <button/> <button/> <button/>
-        <div[d:flex s:2]> <button/> <button/> <button/>
-        <div[d:flex s:2]> <button/> <button[flex:4]/>
-        <div[d:flex ai:stretch s:2]> <input[flex:5]/> <button> 'Add'
+import {labels} from 'util/data'
+
+let gap=2,inner=0
+~hide[imba.mount do <#hud.bar>
+    <span> 'gap'
+    <input type='range' min=0 max=4 bind=gap/> <span.num> gap
+    <span> 'inner'
+    <input type='range' min=0 max=4 step=0.5 bind=inner/> <span.num> inner
+]~
+imba.mount do <main[p:8]>
+    <section[d:grid ji:stretch gap:{gap}]>
+        <div[d:group]> <input/> <button> 'Add'
+        <div[d:group]> <input/> <input/> <input/>
+        <div[d:group gap:{inner or gap}]> for item in labels
+            <div.pill> item.name
 ```
+The only way to get consistent gaps between elements inside flexboxes is to add margins around all their children (on all sides), and then add a negative margin to the container. This is what `display:group` does.
+
 
 # Reference
 

@@ -1,12 +1,9 @@
 # copy($$('.js-label-link').map(v=> `{name: '${v.textContent.trim()}', color: '${v.style.backgroundColor}'}`).join('\n'))
 export const labels = [
 	{name: 'bug', color: 'rgb(252, 41, 41)'}
-	{name: 'deprecation', color: 'rgb(251, 202, 4)'}
 	{name: 'duplicate', color: 'rgb(204, 204, 204)'}
-	{name: 'enhancement', color: 'rgb(132, 182, 235)'}
 	{name: 'help wanted', color: 'rgb(21, 152, 24)'}
 	{name: 'invalid', color: 'rgb(230, 230, 230)'}
-	{name: 'proposal', color: 'rgb(115, 196, 39)'}
 	{name: 'question', color: 'rgb(204, 49, 124)'}
 	{name: 'wontfix', color: 'rgb(255, 255, 255)'}
 ]
