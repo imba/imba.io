@@ -1,4 +1,6 @@
-# Events
+---
+title: Events
+---
 
 # Listening to Events
 
@@ -45,7 +47,7 @@ const handler = console.log.bind(console)
 
 Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
 
-## Utilities
+## Utility Modifiers
 
 ##### log ( ...params )
 
@@ -67,7 +69,7 @@ import 'util/styles'
 
 # ---
 # delay subsequent modifiers by duration
-imba.mount do <div>
+imba.mount do <div.group>
 	<button @click.wait.log('logged!')> 'default'
 	<button @click.wait(100).log('logged!')> 'fast'
 	<button @click.log('!').wait(500).log('!!')> 'chained'
@@ -94,7 +96,7 @@ import 'util/styles'
 # ---
 # Shorthand for emitting events
 imba.mount do
-	<div @select=console.log(e.type,e.detail)>
+	<div.group @select=console.log(e.type,e.detail)>
 		<button @click.emit-select> 'emit'
 		<button @click.emit-select(a:1,b:2)> 'with data'
 ```
@@ -108,14 +110,11 @@ import 'util/styles'
 # ---
 # Add flag while event is being handled
 imba.mount do
-	<div>
+	<div.group>
 		<button @click.flag-busy> 'flag self'
 		<button @click.flag-busy('div').wait(1000)> 'flag div'
 # Optionally supply a selector / element to flag
 ```
-
-
-## Modifiers
 
 ##### prevent
 ```imba
@@ -135,7 +134,7 @@ import 'util/styles'
 
 # ---
 # .stop will call stopPropagation() on the event
-imba.mount do <div @click.log('clicked div')>
+imba.mount do <div.group @click.log('clicked div')>
 	<button @click.stop.log('stopped')> 'stop'
 	<button @click.log('bubble')> 'bubble'
 ```
@@ -183,7 +182,7 @@ import 'util/styles'
 # ---
 let counter = 0
 imba.mount do <section>
-	<div>
+	<div.group>
 		<button @click.silence.log('silenced')> "Silenced"
 		<button @click.log('clicked')> "Not silenced"
 	<label> "Rendered {++counter} times"
@@ -192,7 +191,7 @@ imba.mount do <section>
 ```
 
 
-## Guards
+## Modifier Guards
 
 ##### self
 ```imba
@@ -203,7 +202,7 @@ import 'util/styles'
 imba.mount do 
 	<button @click.self.log('clicked self')>
 		"Button"
-		<mark> "Nested"
+		<b> "Nested"
 ```
 
 ##### sel ( selector )
@@ -213,7 +212,7 @@ import 'util/styles'
 
 # ---
 # only trigger if event.target.closest(selector) is true
-imba.mount do <div>
+imba.mount do <div.group>
 	<button @click.log('!')> 'Button'
 	<button @click.sel('.pri').log('!!')> 'Button'
 	<button.pri @click.sel('.pri').log('!!!')> 'Button'
@@ -226,7 +225,7 @@ import 'util/styles'
 # ---
 let age = 20
 # break chain unless expr is truthy
-imba.mount do <div>
+imba.mount do <div.group>
 	<input type='number' bind=age>
 	<button @click.if(age > 20).log('drink')> 'drink'
 	<button @click.if(age > 16).log('drive')> 'drive'
@@ -239,7 +238,7 @@ import 'util/styles'
 
 # ---
 # break chain unless ctrl key is pressed
-imba.mount do <div>
+imba.mount do <div.group>
 	<button @click.ctrl.log('ctrl+click')> 'ctrl+click'
 	# On mac there is no way to detect a `control+click` event.
 	# Instead you will have to intercept the `contextmenu` event,
@@ -311,14 +310,6 @@ It is important to understand the concept of chaining. You can add multiple modi
 ### System Key Modifiers
 
 System modifier keys are different from regular keys and when used with `@keyup` events, they have to be pressed when the event is emitted. In other words, `@keyup.ctrl` will only trigger if you release a key while holding down `ctrl`. It won’t trigger if you release the `ctrl` key alone. You can use the following modifiers to trigger event listeners only when the corresponding modifier key is pressed:
-
-## Deep dive
-
-- Define your own modifiers
-- Await in modifiers / chain
-- Fallback if modifiers not found
-
-# Triggering Events
 
 # Pointer Events
 

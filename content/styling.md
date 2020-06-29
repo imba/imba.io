@@ -1,33 +1,16 @@
-# Styling
+---
+title: Styling
+multipage: true
+---
+
+# Basics
 
 First things first; You are free to use external stylesheets like you've always done. Still, with a goal of being the friendliest language for creating web applications we have included styling as a core part of the language. We've also extended the functionality of css to make common patterns friendlier, and to make it easier to keep a consistent design language across your whole project.
 
 
 Our approach to styling is inspired by [Tailwind](https://tailwindcss.com), so we recommend reading about [their philosophy](https://tailwindcss.com/docs/utility-first). Think of the style syntax in Imba as what Tailwind might be like if it was allowed to invent a language.
 
-## Design system
-
-Imba has a goal of making it as easy as possible to be consistent with regards to fonts, colors, sizes and more throughout your application. In the spirit of Tailwind, we supply a default "theme" with a whole range of delightfully hand-picked colors, font sizes, shadows and sizing/spacing units.
-
-We are not talking about a "theme" like bootstrap – forcing you into creating generic bootstrap-looking designs – but more just a minimal set of defaults that can be used to create all sorts of varied but consistent designs. You can choose not to use them at all, or override everything in your custom theme config, but we think you will find it immensely useful.
-
-```imba
-# ~preview
-# @show inline styles are defined in [ ... ]
-<div[background:#bee3f8 padding:8px]> "Panel"
-
-# @show shorthands and predefined colors
-<div[bg:teal2 color:teal7 radius:3 p:2 fs:sm fw:bold]> "Panel"
-
-# @show @hover modifier
-<div[p:2 color:green6 bg:green2 @hover:green3]> "Hover me"
-
-let skew = -10deg
-# @show dynamic style properties
-<div[bg:teal2 color:teal7 p:2 skew-x:{skew}]> "Skewed"
-```
-
-# Declarations
+## Global Styles
 
 Style rules are declared using the `css` keyword.
 
@@ -74,11 +57,7 @@ There are also some patterns that come up again and again in css. Changing a few
 ```imba
 css .btn d:block px:1 bg:teal2 bg@hover:teal3
 ```
-This conciseness comes especially handy when declaring inline styles, which we will come back to later. The imba tooling also includes commands for quickly reformatting, reordering and cleaning up style blocks.
-
-## Nesting
-
-Styles can also be nested. Everything before the first property on new lines are treated as nested selectors.
+This conciseness comes especially handy when declaring inline styles, which we will come back to later. Styles can also be nested. Everything before the first property on new lines are treated as nested selectors.
 ```imba
 css .card
     display: block
@@ -89,7 +68,7 @@ css .card
     &.large padding:16px # matches .card.large
 ```
 
-# Scoped Styles
+## Scoped Styles
 
 A problem with CSS is that often end up with tons of globally competing styles spread around numerous files. Changing some styles in one place might affect some seemingly unrelated elements. In Imba it is really easy to declare styles that should only apply to certain parts of your document. If you declare style rules inside tag definitions, all the styles will magically only apply to elements inside of this tag:
 ```imba
@@ -139,25 +118,8 @@ Since inline styles are essentially anonymous classes, they can also be applied 
 <div[p:2 color:green9] [td:s c:gray4]=item.done>
 ```
 
-# Mixins
 
-[Code](/examples/more/mixins)
-
-##### basics
-```imba
-css %btn
-    py:2 px:3 radius:2
-    bg:blue2 .warn:yellow2 .danger:red2
-    color:blue7 .warn:yellow7 .danger:red7
-
-imba.mount do <div>
-    <div%btn> "Button"
-    <div%btn.danger> "Danger"
-    <div%btn.warn> "Warn"
-```
-
-
-# Interpolation
+## Interpolation
 
 It is also possible to interpolate dynamic values into styles. This happens efficiently at runtime using css variables behind the scenes. This allows you to even write dynamic styles in a declarative manner.
 
@@ -195,65 +157,79 @@ imba.mount do
 ### Set properties directly
 You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
 
+## Mixins
 
-# [WIP] Specificity
+[Code](/examples/more/mixins)
 
-Specificity
+##### basics
+```imba
+css %btn
+    py:2 px:3 radius:2
+    bg:blue2 .warn:yellow2 .danger:red2
+    color:blue7 .warn:yellow7 .danger:red7
 
+imba.mount do <div>
+    <div%btn> "Button"
+    <div%btn.danger> "Danger"
+    <div%btn.warn> "Warn"
+```
+
+## Specificity
 
 # Aliases
 
 We firmly believe that less code is better code, so we have strived to make the styling syntax as concise yet readable as possible. There is a case to be made against short variable names in programming, but css properties are never-changing. Imba provides intuitive abbreviations for oft-used css properties. Like everything else, using these shorthands is completely optional, but especially for inline styles, they are convenient.
 
-## size & position
+### size & position
 
 <doc-style-aliases data-include='w,h,t,l,b,r,size'></doc-style-aliases>
 
-## margin
+### margin
 
 <doc-style-aliases data-regex='margin|^m[tblrxy]$'></doc-style-aliases>
 
-## padding
+### padding
 
 <doc-style-aliases data-regex='padding|^p[tblrxy]$'></doc-style-aliases>
 
-## text & font
+### typography
 <doc-style-aliases data-regex='text|font' data-neg='decoration|emphasis'  data-include='c,lh,ta,va,ls,fs,ff,fw,ws' data-exclude='t'></doc-style-aliases>
 
-## flexbox
+### text-decoration
+<doc-style-aliases data-regex='text-decoration'></doc-style-aliases>
+
+### text-emphasis
+<doc-style-aliases data-regex='text-emphasis'></doc-style-aliases>
+
+## Layout
+
+<doc-style-aliases data-include='d'></doc-style-aliases>
+
+### flexbox
 
 <doc-style-aliases data-regex='flex'></doc-style-aliases>
 
-## grid
+### grid
 
 <doc-style-aliases data-regex='grid' data-include='g,rg,cg'></doc-style-aliases>
 
-## alignment
+### alignment
 
 <doc-style-aliases cols='3-transposed' data-regex='^place|^align|^justify|^[paj][ics]' data-exclude='a'></doc-style-aliases>
 
-## background
+### background
 
 <doc-style-aliases data-regex='background'></doc-style-aliases>
 
-## border
+### border
 
 <doc-style-aliases cols='3' data-regex='border' data-neg='radius'></doc-style-aliases>
 
-## text-decoration
-<doc-style-aliases data-regex='text-decoration'></doc-style-aliases>
-
-## text-emphasis
-<doc-style-aliases data-regex='text-emphasis'></doc-style-aliases>
-
-## transform
+### transform
 
 <doc-style-transform-aliases></doc-style-transform-aliases>
 
-## transition
-
-
-## other
+### other
 
 <doc-style-aliases data-regex='---' data-include='shadow,opacity,pe,zi,prefix,suffix,us'></doc-style-transform-aliases>
 
@@ -289,234 +265,16 @@ css button
 
 <doc-style-modifiers></doc-style-modifiers>
 
-## Modifiers in Selectors
+# Extensions
 
-```imba
-css section @md
-    padding-top:12px
-```
-Selector modifiers separated by spaces are always merged into the closest non-modifier selector.
-```imba
-css .card@hover@focus # matches .card:hover:focus
-css .card @hover @focus # matches .card:hover:focus
-css .card @hover * @focus # matches .card:hover *:focus
-css .card @hover .item @focus # matches .card:hover .item:focus
-```
-Special modifiers like media modifiers can be included anywhere in the selector.
-```imba
-css .card @lg .item @hover @mac d:block
-# @media (min-width: 1024px) { html.ua-mac .item:hover { display:block } }
-```
-Modifiers can be nested like any other selector type
-```imba
-css #downloads
-    padding-top:12px
-    h1,h2,h3
-        color:black
-        @dark color:white
-        @hover,@focus text-decoration:underline
-```
+Imba has a goal of making it as easy as possible to be consistent with regards to fonts, colors, sizes and more throughout your application. In the spirit of Tailwind, we supply a default "theme" with a whole range of delightfully hand-picked colors, font sizes, shadows and sizing/spacing units.
+
+We are not talking about a "theme" like bootstrap – forcing you into creating generic bootstrap-looking designs – but more just a minimal set of defaults that can be used to create all sorts of varied but consistent designs. You can choose not to use them at all, or override everything in your custom theme config, but we think you will find it immensely useful.
 
 
-## Modifiers in Properties
+## Dimensions
 
-Modifiers can also be used directly inside single style properties by including them in the property name like `property@hover:value`
-```imba
-css .button
-    display:flex bg:white bg~arrow[@hover]~:gray
-```
-If you set a property without a name like `@hover:value`, it will automatically refer to the previous property in the declaration.
-```imba
-css .button
-    display:flex bg:white ~arrow[@hover]~:gray
-```
-This is especially convenient where you want to set multiple variations of variables, and in inline styles where you want to be as DRY as possible. Lets look at a hypotethical stylesheet:
-```css
-:root {
-    --sidebar-width:180px;
-    --sidebar-bg:#f2f2f2;
-}
-@media (min-width:768px) {
-    :root { --sidebar-width:220px; }
-}
-@media (min-width:1024px) {
-    :root { --sidebar-width:260px; }
-}
-@media (prefers-color-scheme: dark) {
-    :root { --sidebar-bg:#101010; }
-}
-```
-Maintaining this is very difficult. The various variable overrides are spread out, and it is generally hard to see the specificity and what values will be in effect at what time. In Imba, this all becomes much cleaner:
-
-```imba
-css @root
-    --sidebar-width:180px @md:220px @lg:260px
-    --sidebar-bg:#f2f2f2 @dark:#101010
-```
-
-Property modifiers are especially useful for inline styles where you don't want bloated multi-line styles.
-```imba
-<button[color:blue7 bg:blue2 @hover:blue3]> 'Click me'
-<h1[fs:26px @lg:34px color:purple6 mt:30px @lg:50px]> "Hero title"
-```
-
-## Class Modifiers
-
-Imba includes `.classname` modifier that will apply only when the styled element has `classname`, and `..classname` that will only take effect if a parent has `classname`. These are especially useful in inline styles, where adding nested selectors can become messy.
-```imba
-<todo-item[bg:gray1 ~[.done:green1]~] .done=todo.completed>
-```
-```imba
-<todo-item .done=todo.completed>
-    <span[td~[..done:line-through]~]> todo.title
-```
-
-> Discuss challenges with nested `in-class` etc.
-
-
-## Pseudo-class Modifiers
-
-All regular pseudo classes are supported as modifiers.
-
-```imba
-css .item
-    @hover color: black # .item:hover { color: black }
-    @focus color: blue # .item:focus { color: blue }
-    @checked color: green # .item:empty { color: green }
-    @invalid color: red # .item:empty { color: red }
-    @empty opacity: 0 # .item:empty { opacity: 0 }
-    # ... all regular pseudo-classes are supported
-```
-Some oft-used modifiers have shorter intuitive aliases.
-```imba
-css .item
-    @odd prop: value   # .item:nth-child(odd) { prop: value }
-    @even prop: value  # .item:nth-child(even) { prop: value }
-    @first prop: value # .item:first-child { prop: value }
-    @last prop: value  # .item:last-child { prop: value }
-    @lone prop: value  # .item:only-child { prop: value }
-```
-
-## Pseudo-element Modifiers
-```imba
-css .item
-    color:blue padding:10px
-    @before content: "hello" color:red
-```
-As with all other modifiers, pseudo-element modifiers can also be used with properties:
-```imba
-css .item
-    content@before:"hello" # .item::before { content: "hello" }
-    bg@after:red # .item::after { background: red }
-```
-
-## Screen Size Modifiers
-
-The screen-size modifiers are mobile-first. This means that all modifiers always means 'this size *and up*'. So when setting `padding@sm:2` you essentially set padding to 2 for sm,md,lg and xl.
-
-```imba
-# @xs p:1 # @media (min-width: 480px)  { .item { padding:0.25rem } }
-# @lt-xs p:1 # @media (max-width: 479px) { .item{ padding:0.25rem } }
-# ---
-css .item
-    p@sm:2 # @media (min-width: 640px)  { .item { padding:0.5rem } }
-    p@md:3 # @media (min-width: 768px)  { .item { padding:0.75rem } }
-    p@lg:4 # @media (min-width: 1024px) { .item { padding:1rem } }
-    p@xl:5 # @media (min-width: 1280px) { .item { padding:1.25rem } }
-```
-
-```imba
-css .item
-    p@lt-sm:2 # @media (max-width: 639px) { .item{ padding:0.5rem } }
-    p@lt-md:3 # @media (max-width: 767px) { .item{ padding:0.75rem } }
-    p@lt-lg:4 # @media (max-width: 1023px) { .item{ padding:1rem } }
-    p@lt-xl:5 # @media (max-width: 1279px) { .item{ padding:1.25rem } }
-```
-
-## Screen Orientation Modifiers
-
-```imba
-css .item
-    margin@landscape:8 # @media (orientation: landscape) { .item{ margin: 2rem } }
-    margin@portrait:0 # @media (orientation: portrait) { .item{ margin: 0rem } }
-```
-
-## Device Type Modifiers
-
-```imba
-css .item
-    margin@print: 8 # @media print { .item{ margin: 2rem } }
-    margin@screen: 0 # @media print { .item{ margin: 0rem } }
-```
-
-## Color Scheme Modifiers
-
-```imba
-css .item
-    bg@dark: black # @media (prefers-color-scheme: dark) { .item{ ... }  }
-    bg@light: white # @media (prefers-color-scheme: light) { .item{ ... }  }
-```
-
-## Platform Modifiers [WIP]
-
-```imba
-css .item
-    bg@mac: black # html.ua-mac .item{ ... }  }
-    bg@ios: black # html.ua-ios .item{ ... }  }
-    bg@win: black # html.ua-win .item{ ... }  }
-    bg@android: black # html.ua-android .item{ ... }  }
-    bg@linux: black # html.ua-linux .item{ ... }  }
-```
-
-## Browser Modifiers [WIP]
-
-```imba
-css .item
-    bg@ie: black # html.ua-ie .item{ ... }  }
-    bg@chrome: black # html.ua-chrome .item{ ... }  }
-    bg@safari: black # html.ua-safari .item{ ... }  }
-    bg@firefox: black # html.ua-firefox .item{ ... }  }
-    bg@opera: black # html.ua-opera .item{ ... }  }
-    bg@blink: black # html.ua-blink .item{ ... }  }
-    bg@webkit: black # html.ua-webkit .item{ ... }  }
-```
-
-## Class Modifiers
-##### Syntax
-```imba
-# background set to green when todo-item has done class
-<todo-item[bg@is-done:green1] .done=todo.completed>
-    # line-through text when some parent has done class
-    <span[td@in-done:line-through]> todo.title
-```
-
-Our goal is to keep the styling as close to the markup and logic as possible(!). Not all relevant states are expressed through the native hover/focus/active/... pseudo-classes. You might often want to style elements based on their own classes, and the classes/states of their parents. Say we have a `.done` class added to todo items that are marked as completed.
-```imba
-css todo-item
-    padding:6px 12px
-    color:gray8
-    bg:white @hover:blue1
-    button.archive display:none
-    span.title color:gray8
-    &.done
-        bg:green1
-        span.title color:green6
-        button.archive display:none
-
-<todo-item>
-    <span.title> 'Remember milk'
-    <button.archive> 'x'
-```
-When you set multiple styles based on multiple class names, your css can quickly descend into a multi-level incomprehensible mess.  In regular inline styles we would not be able to make certain properties take effect only when the element has the `.done` class.
-```imba
-<todo-item[p:6px 12px c:gray8 bg:white @hover:blue1 @is-done:green1]>
-    <span[c:gray8 @in-done:green6]> 'Remember milk'
-    <button[d:none @in-done:block]> 'x'
-```
-## Custom Modifiers
-
-
-# Presets
+Imba allows unitless numeric values for all sizing related properties. For margin, padding, sizes, and positions unitless numbers are equal to `0.25rem * number`. `1rem` is `16px` by default, so this means that the scale increments by `4px` for every integer.
 
 ## Colors
 
@@ -524,7 +282,7 @@ The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`te
 
 <doc-colors></doc-colors>
 
-## Fonts
+## Font Family
 
 <doc-style-ff></doc-style-ff>
 
@@ -549,33 +307,7 @@ imba.mount do  <section>
 
 <doc-style-fs></doc-style-fs>
 
-## Grids
-
-
-The `grid` property behaves in a slightly special manner in Imba. If you supply a single value/identifier to this like `grid:container`, Imba will compile the style to `grid:var(--grid-container)`.
-
-```imba
-# ~preview=200px
-css body p:2
-css div bg:teal2 p:3
-css section p:1 gap:2 pc:center
-
-import {genres} from 'imdb'
-
-# ---
-# adding a custom grid with different values for different screen sizes
-css @root
-    --grid-cols: auto-flow / 1fr 1fr
-    --grid-cols@xs: auto-flow / 1fr 1fr 1fr
-    --grid-cols@sm: auto-flow / 1fr 1fr 1fr 1fr
-
-# use this grid value anywhere in the code
-imba.mount do  <section[display:grid grid:cols]>
-    for genre in genres
-        <div> genre
-```
-
-## Box Shadows
+## Box Shadow
 
 ```imba
 # ~preview=200px
@@ -626,27 +358,39 @@ imba.mount do  <section.group>
     <div[radius:bubble]> "bubble"
 ```
 
-## Scales
-
-Imba allows unitless numeric values for all sizing related properties. For margin, padding, sizes, and positions unitless numbers are equal to `0.25rem * number`. `1rem` is `16px` by default, so this means that the scale increments by `4px` for every integer.
-
-### base unit
-
-All properties related to sizing and spacing accept numeric values in Imba. Unitless values 
 
 ## Easings
 
 <doc-style-easings></doc-style-easings>
 
-# Layouts
+## Layouts
 
-## Grid
+### Grid
 
+The `grid` property behaves in a slightly special manner in Imba. If you supply a single value/identifier to this like `grid:container`, Imba will compile the style to `grid:var(--grid-container)`.
 
-## Flex
+```imba
+# ~preview=200px
+css body p:2
+css div bg:teal2 p:3
+css section p:1 gap:2 pc:center
 
+import {genres} from 'imdb'
 
-## Group
+# ---
+# adding a custom grid with different values for different screen sizes
+css @root
+    --grid-cols: auto-flow / 1fr 1fr
+    --grid-cols@xs: auto-flow / 1fr 1fr 1fr
+    --grid-cols@sm: auto-flow / 1fr 1fr 1fr 1fr
+
+# use this grid value anywhere in the code
+imba.mount do  <section[display:grid grid:cols]>
+    for genre in genres
+        <div> genre
+```
+
+### Group
 
 Row & column gaps are incredibly useful properties for adding consistent spacing between items inside grids. Even though these properties are promised to come for flexbox in the future, current support [is abysmal](https://caniuse.com/#feat=flexbox-gap). To alleviate some of this, imba includes `display:group` which is a shorthand to allow flexboxes that work with gaps.
 
@@ -671,14 +415,3 @@ imba.mount do <main[p:8]>
             <div.pill> item.name
 ```
 The only way to get consistent gaps between elements inside flexboxes is to add margins around all their children (on all sides), and then add a negative margin to the container. This is what `display:group` does.
-
-
-# Reference
-
-## Transitions
-
-## Document
-
-- `123c` in width and `123r` in height
-- `>10` and `<10` in width and height
-- Special transition properties

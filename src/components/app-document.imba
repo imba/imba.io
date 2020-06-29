@@ -1,6 +1,18 @@
 import {ls} from '../store'
 import { @watch } from '../decorators'
 
+tag doc-anchor
+	css pos:relative top:-14
+
+	def entered e
+		yes
+		# console.log 'entered anchor',self,e.ratio
+		# if e.ratio > 0
+		#	document.location.hash = '#' + id
+
+	def render
+		<self @intersect.silence=entered>
+
 tag app-document-nav
 
 	css .card
@@ -200,8 +212,9 @@ tag app-document
 			<app-document-nav.bottom[pt:2] data=data>
 
 	def dataDidSet data
-		document.body.scrollTop = 0
-		setTimeout(&,200) do document.body.focus!
+		console.log 'doc data was set',data
+		# document.body.scrollTop = 0
+		# setTimeout(&,200) do document.body.focus!
 
 	
 tag embedded-app-document

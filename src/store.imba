@@ -130,7 +130,7 @@ export class File < Entry
 	
 
 	def sendToWorker
-		if sw
+		if sw and ext != 'md'
 			# console.log 'sending file info to worker',path
 			sw.postMessage({event: 'file', path: path, body: body})
 
@@ -175,7 +175,8 @@ export class Folder < Entry
 
 
 for item in root.children
-	fs[item.name] = new Folder(item)
+	let typ = item.type == 'file' ? File : Folder
+	fs[item.name] = new typ(item)
 
 const hits = {}
 export def ls path

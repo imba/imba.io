@@ -565,6 +565,12 @@ extend$(Comment,{
 extend$(Element,{
 	
 	
+	log(...params){
+		
+		console.log(...params);
+		return this;
+	},
+	
 	emit(name,detail,o = {bubbles: true}){
 		
 		if (detail != undefined) { o.detail = detail };
@@ -2848,12 +2854,12 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect$handle = function (){
 
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect$in = function (){
 	
-	return this.event.detail.delta > 0;
+	return this.event.delta >= 0 && this.event.entry.isIntersecting;
 };
 
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect$out = function (){
 	
-	return this.event.detail.delta < 0;
+	return this.event.delta < 0;
 };
 
 function callback(name,key){
@@ -2869,7 +2875,8 @@ function callback(name,key){
 			let ratio = entry.intersectionRatio;
 			let detail = {entry: entry,ratio: ratio,from: prev,delta: (ratio - prev),observer: observer};
 			let e = new _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"](name,{bubbles: false,detail: detail});
-			e.entry = detail.entry;
+			e.entry = entry;
+			e.isIntersecting = entry.isIntersecting;
 			e.delta = detail.delta;
 			e.ratio = detail.ratio;
 			map.set(entry.target,ratio);

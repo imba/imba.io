@@ -43,7 +43,7 @@ watcher.on('all') do
 	let name = path.basename(src)
 	let dirname = path.dirname(src)
 
-	return if name == '.DS_Store' or src == ''
+	return if name == '.DS_Store' or src == '' or name.match(/\-(\.\w+)?$/)
 	console.log 'watcher',$1,src,dirname
 
 	let up = map[dirname]
@@ -80,9 +80,13 @@ watcher.on('all') do
 			item.html = md.body
 			item.toc = md.toc
 			Object.assign(item,md.meta)
+
 			if md.sections
 				item.children = md.sections
 				item.name = item.name.slice(0,-3) # remove markdown
+			
+			if md.toc and md.toc.length > 1
+				item.sections = md.toc
 
 			if name == 'meta.md'
 				Object.assign(up,md.meta)

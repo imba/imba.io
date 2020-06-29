@@ -11,6 +11,7 @@ tag app-repl-preview
 	prop size = 'auto-auto'
 
 	def build
+		t0 = Date.now!
 		$iframe = <iframe[pos:absolute width:100% height:100% min-width:200px]>
 		$iframe.src = 'about:blank'
 
@@ -26,6 +27,8 @@ tag app-repl-preview
 				win.console.info = $console.info.bind($console)
 
 		$iframe.onload = do
+			return unless $refreshed
+			console.log 'iframe loaded after',Date.now! - t0
 			try
 				let element = $doc.querySelector('body :not(script)')
 				flags.toggle('empty-preview',!element)
@@ -191,12 +194,22 @@ tag app-repl-preview
 		pos:relative
 
 	def entered e
+		console.log 'entered',Date.now! - t0
 		$entered = yes
 		refresh! unless $refreshed
 
+	def intersecting e
+		console.log 'intersect',e
+		$intersect = e
+	
+	def addIs e
+		console.log 'intersect',e.ratio,e.isIntersecting
+		$intersects ||= []
+		$intersects.push(e)
+
 	def render
 		recalc!
-		<self @intersect.in=entered>
+		<self @intersect.silence.in=entered>
 			<div$body[flex:1] @click=toggle>
 				<div$bounds @resize=reflow>
 					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px] @click.stop>
@@ -221,9 +234,11 @@ tag app-repl-preview
 		
 	set file data
 		return unless data
-		# console.log 
+		# console.log
+		let t = Date.now! 
+		
 		sw.request(event: 'file', path: data.path, body: data.body).then do
-			# console.log 'returned from sw',data.path
+			console.log 'sent file to service worker',Date.now! - t0
 			url = data.path.replace('.imba','.html')
 
 	set dir data
@@ -241,6 +256,7 @@ tag app-repl-preview
 		$refreshed = yes
 		let src = `/repl{url}`
 		try
+			t0 = Date.now!
 			$iframe.contentWindow.location.replace(src)
 		catch e
 			sw.load!.then do $iframe.src = src

@@ -284,7 +284,7 @@ tag app-code-block < app-code
 		pos:relative radius:2 c:$code-color bg:var(--bg) border-top-left-radius..multi:0
 
 	css
-		$preview-size:100px .large:100px
+		$preview-size:100px .lg:180px .xl:240px
 
 	css %preview
 		min-height:82px

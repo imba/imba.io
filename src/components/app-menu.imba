@@ -1,3 +1,24 @@
+import {fs,files,ls} from '../store'
+
+tag app-menu-section
+
+	# css .content d:none
+	css a cursor:pointer
+	css .section.active + .content d:block
+	css .item.sub of:hidden text-overflow:ellipsis ws:nowrap
+
+	def jumpTo section, ev
+		console.log 'jump to',ev,section
+		self
+
+	<self>
+		<a.section[d:block p:1 2 fs:xs c:gray5 tt:uppercase cursor:default] route-to=data.href> data.title
+		<div[pb:4].content.{data.slug}> for item in data.children
+			<a.item .{item.type} data=item .wip=item.meta.wip route-to=item.href> item.title
+			<div.children[d@empty:none]> for sub in item.sections
+				<a.item.sub data=sub .wip=sub.meta.wip href="#{sub.slug}" @click.stop=jumpTo(sub,e)> sub.title
+
+
 tag app-menu
 
 	css 
@@ -13,15 +34,20 @@ tag app-menu
 			&.active + .children > .sub o:1 my:0 pointer-events:auto
 			&.wip @after
 				pos:relative d:inline-flex ai:center bg:yellow2 content:'wip'
-				c:yellow6 fs:1/1 tt:uppercase p:1 radius:1 ml:1 top:-1px
+				c:yellow6 fs:1/1 tt:uppercase p:1 radius:1 ml:1 va:top
 
 	def render
+		let root = data.root
+		let guides = ls('/guides')
 		<self tabIndex=-1>
 			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 flex:1]>
-				for child in data.root.children
-					<h5[p:1 2 fs:xs c:gray5 tt:uppercase]> child.title
-					<div[pb:8].{child.slug}> for item in child.children
-						<a.item .{item.type} data=item .wip=item.meta.wip route-to=item.href> item.title
-						<div.children[d@empty:none]> for sub in item.children
-							<a.item.sub data=sub .wip=sub.meta.wip route-to=sub.href> sub.title
-							
+				# <app-menu-section data=ls('/manual')>
+				<app-menu-section data=ls('/basics')>
+				# <app-menu-section data=ls('/tags')>
+				<app-menu-section data=ls('/views')>
+				# <app-menu-section data=ls('/events')>
+				# <app-menu-section data=ls('/events')>
+				<app-menu-section data=ls('/styling')>
+				<app-menu-section data=guides>
+				# for child in guides.children
+				#	<app-menu-section data=child>

@@ -6,7 +6,7 @@ css body
 css main,div,section,form,article,header,footer
 	pos:relative
 
-css main
+css body > main
 	d:grid gaf:row ac:start gap:2 p:2
 	pos:absolute inset:0
 
@@ -88,6 +88,11 @@ css .pill radius:2 bg:teal2 fs:xs c:teal7 py:1 px:2
 css .tags
 	m: -4px
 	> m:4px
+
+css .panel
+	d:flex fld:column flex:1
+	header,footer flex:0
+	section,main flex:1
 
 css samp,var
 	d:grid pc:center pi:center min-width:60px p:1

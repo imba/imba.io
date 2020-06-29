@@ -209,7 +209,7 @@ def functional-tag item
 <!-- TODO: Link to the next page -->
 [Learn about Tag Props]()
 
-# Tag Props (Instance Variables)
+# Tag Props
 ## What are props?
 Components are better when they can share data with other parent or child components. Props (short for properties) allow you to do just that. Props are fundamentally ready-to-go variables of an instance of an object.
 

@@ -74,9 +74,13 @@ tag app-root
 
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
 		# redirect home somehow?
-		if path.indexOf('/guides') == 0 or path == '/' or path == '/index.html' or path.indexOf('/manual') == 0
-			doc = ls(path) or doc
+		if path == '/' or path == '/index.html'
+			doc = ls('/welcome.md')
+		elif path.indexOf('/examples') != 0
+			doc = ls(path)
 
+		# if path.indexOf('/guides') == 0 or path == '/' or path == '/index.html' or path.indexOf('/manual') == 0
+		#	doc = ls(path) or ls('/welcome.md')
 		try document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
 		self
 		# data = ls(path) or ls('/guides/introduction/overview')
@@ -86,12 +90,12 @@ tag app-root
 			go(router.url.pathname)
 
 		let repl = router.match('/examples')
-
-		<self.(d:contents) @run=runCodeBlock(e.detail) @showide=$repl.show!>
+		console.log 'found data',doc
+		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show!>
 			<div$header>
-				<app-logo.(d:flex h:8 c:teal4) route-to='/'>
-				<div.(flex: 1)>
-				<div.(d:flex cursor:pointer)>
+				<app-logo[d:flex h:8 c:teal4] route-to='/'>
+				<div[flex: 1]>
+				<div[d:flex cursor:pointer]>
 					<a.tab route-to.sticky='/guides'> "Docs"
 					<a.tab @click.emit('showide')> "Examples"
 					<a.tab href='https://github.com/imba/imba'> "GitHub"

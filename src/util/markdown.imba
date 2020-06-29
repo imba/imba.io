@@ -98,7 +98,11 @@ def renderer.heading text, level
 	let typ = "h{level}"
 	let node = <{typ} .{flags.join(' ')}> <span innerHTML=text>
 	let pre = "<!--:{typ}:-->"
-	return pre + node.toString()
+	let anchor = ''
+
+	if level == 2
+		anchor = <doc-anchor id=slug>
+	return pre + String(anchor) + String(node)
 
 def renderer.codespan code
 	code = unescape(code)
@@ -171,9 +175,9 @@ export def render content, o = {}
 	object.body = parser.parse(tokens)
 
 	console.log 'toc',object.toc.map do String($1.title)
-	unless object.meta.title
-		if let h1 = object.toc[0]
-			object.meta.title = h1.title
+	# unless object.meta.title
+	#	if let h1 = object.toc[0]
+	#		object.meta.title = h1.title
 
 	renderer.toc = null
 
@@ -188,14 +192,17 @@ export def render content, o = {}
 				html: sections[i]
 				title: item.title
 				meta: item.meta
+				sections: item.children.length > 1 ? item.children : []
 			}
 
 		if object.meta.multipage
-			# should rather just be a core section for each part?
 			object.body = ''
-
+			object.toc = null
 		else
 			let intro = object.sections.shift!
 			object.body = intro.html
-
+	else
+		if object.toc.length == 1
+			object.meta.title = object.toc[0].title
+			object.toc = object.toc[0].children
 	return object
