@@ -1642,6 +1642,7 @@ class Pointer {
 			rect = rect.getBoundingClientRect();
 		};
 		
+		
 		console.warn('transform',rect,min,max,step,count);
 		
 		if (count == 2) {
@@ -1856,6 +1857,18 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod = function (...para
 		this.state.transformed = true;
 		this.state.touch.transform(...params);
 		
+	};
+	return true;
+	
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$fit$mod = function (...params){
+	
+	if (!this.state.transformed) {
+		
+		this.state.transformed = true;
+		this.state.touch.transform(...params);
+		this.state.touch.clamped = true;
 	};
 	return true;
 	

@@ -483,27 +483,27 @@ css .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% radius:sm
 css .thumb@before x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6
 
 # ---
-tag slider-1
-	<self @touch.clamp(self,0,1)=(x = e.touch.x)>
+tag slider-pct
+	<self @touch.fit(0,1)=(x = e.touch.x)>
 		<.thumb[l:{x * 100}% prefix:{x}]>
 
-tag slider-px
-	<self @touch.clamp(self)=(x = e.touch.x)>
-		<.thumb[l:{x}px prefix:{x}]>
-
-tag slider-pct
-	<self @touch.clamp(0,100)=(x = e.touch.x)>
-		<.thumb[l:{x}% prefix:{x}]>
-
 tag slider-inv
-	<self @touch.clamp(25,-25,5)=(x = e.touch.x)>
+	<self @touch.fit(25,-25,5)=(x = e.touch.x)>
 		<.thumb[l:{50 + x * -2}% prefix:{x}]>
 
+tag slider-generalized
+	prop min = -50
+	prop max = 50
+	prop step = 1
+	prop value = 0
+
+	<self @touch.fit(min,max,step)=(value = e.touch.x)>
+		<.thumb[l:{100 * (value - min) / (max - min)}% prefix:{value}]>
+
 imba.mount do <>
-	<slider-1>
-	<slider-px>
 	<slider-pct>
 	<slider-inv>
+	<slider-generalized>
 
 ```
 
@@ -534,7 +534,7 @@ tag MultiSlide
 	get t do 100 * (value[1] - min) / (max - min)
 
 	def render
-		<self @touch.clamp(min,max,step)=update>
+		<self @touch.fit(min,max,step)=update>
 			<$box> <$area[h:{t}% w:{l}%]> <$thumb>
 			<span.value> value.join(',')
 
