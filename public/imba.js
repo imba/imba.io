@@ -237,7 +237,13 @@ const CSS_DIM_PROPS = /^([tlbr]|size|[whtlbr]|[mps][tlbrxy]?|[rcxy]?[gs])$/;
 
 imba.toStyleValue = function (value,unit,key){
 	
+	if (CSS_STR_PROPS[key]) {
+		
+		value = String(value);
+	};
+	
 	let typ = typeof value;
+	
 	if (typ == 'number') {
 		
 		if (!unit) {
@@ -933,6 +939,7 @@ imba.createSVGElement = function (name,parent,flags,text){
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setup", function() { return setup; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "register", function() { return register; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseDimension", function() { return parseDimension; });
 
 let root;
 let resets = '*,::before,::after {	box-sizing: border-box;	border-width: 0;	border-style: solid;	border-color: currentColor;}';
@@ -955,6 +962,18 @@ function register(styles,id){
 	el.textContent = styles;
 	document.head.appendChild(el);
 	return;
+	
+};
+function parseDimension(val){
+	
+	if (typeof val == 'string') {
+		
+		let [m,num,unit] = val.match(/^([-+]?[\d\.]+)(%|\w+)$/);
+		return [parseFloat(num),unit];
+	} else if (typeof val == 'number') {
+		
+		return [val];
+	};
 };
 
 
@@ -1519,6 +1538,7 @@ var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 function extend$(target,ext){
 	// @ts-ignore
 	var descriptors = Object.getOwnPropertyDescriptors(ext);
@@ -1528,17 +1548,20 @@ function extend$(target,ext){
 };
 
 
+
+
 class Pointer {
 	
 	constructor(e,state){
 		
 		this.state = state;
-		this.start = e;
+		this.start = this.event = e;
 		this.id = e.pointerId;
 		this.t0 = Date.now();
 		this.cx0 = this.cx = e.x;
 		this.cy0 = this.cy = e.y;
 		this.tx0 = this.ty0 = this.ax = this.ay = this.mx = this.my = this.ox = this.oy = 0;
+		this.raw = {x0: e.x,y0: e.y};
 		e.touch = this;
 	}
 	
@@ -1546,8 +1569,9 @@ class Pointer {
 		
 		this.mx = e.x - this.x;
 		this.my = e.y - this.y;
-		this.cx = e.x;
-		this.cy = e.y;
+		this.cx = this.raw.x = e.x;
+		this.cy = this.raw.y = e.y;
+		this.event = e;
 		return e.touch = this;
 		
 	}
@@ -1562,6 +1586,18 @@ class Pointer {
 		
 	}
 	frame(frame,ax = 0,ay = ax){
+		var el;
+		
+		if (typeof frame == 'string') {
+			
+			let sel = frame;
+			console.warn('find frame?',sel,this.state);
+			if (el = this.state.element) {
+				
+				frame = el.closest(sel) || el.querySelector(sel);
+				console.warn('found frame?',frame);
+			};
+		};
 		
 		if (frame instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]) {
 			
@@ -1576,43 +1612,159 @@ class Pointer {
 		return this;
 		
 	}
-	get x(){
+	transform(rect,min,max,step){
+		var el;
 		
-		return this.cx - this.ox;
+		let count = arguments.length;
+		
+		if (typeof rect == 'string') {
+			
+			let sel = rect;
+			console.warn('find rect?',sel,this.state);
+			if (el = this.state.element) {
+				
+				rect = el.closest(sel) || el.querySelector(sel);
+				console.warn('found frame?',rect);
+			};
+		} else if (typeof rect == 'number') {
+			
+			step = max;
+			max = min;
+			min = rect;
+			rect = this.state.element;
+			count++;
+			
+		};
+		console.warn('transform!!',arguments);
+		
+		if (rect instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]) {
+			
+			rect = rect.getBoundingClientRect();
+		};
+		
+		console.warn('transform',rect,min,max,step,count);
+		
+		if (count == 2) {
+			
+			step = min;
+			count--;
+		};
+		
+		this.xaxis = [rect.left,rect.width,min,max,step];
+		this.yaxis = [rect.top,rect.height,min,max,step];
+		
+		if (count == 1) {
+			
+			this.xaxis[2] = this.yaxis[2] = 0;
+			this.xaxis[3] = this.xaxis[1];
+			this.yaxis[3] = this.yaxis[1];
+		};
+		
+		if (min instanceof Array) {
+			
+			this.xaxis = this.xaxis.slice(0,2).concat(min);
+		};
+		
+		if (max instanceof Array) {
+			
+			this.yaxis = this.yaxis.slice(0,2).concat(max);
+			
+		};
+		if (typeof this.xaxis[4] == 'string') {
+			
+			this.xaxis.splice(4,1,...Object(_css__WEBPACK_IMPORTED_MODULE_1__["parseDimension"])(this.xaxis[4]));
+		};
+		
+		if (typeof this.yaxis[4] == 'string') {
+			
+			return this.yaxis.splice(4,1,...Object(_css__WEBPACK_IMPORTED_MODULE_1__["parseDimension"])(this.yaxis[4]));
+			
+			
+		};
+	}
+	
+	$round(val,step = 1){
+		
+		let inv = 1.0 / step;
+		return Math.round(val * inv) / inv;
 		
 	}
-	get y(){
+	$conv(value,trx,clamp){
 		
-		return this.cy - this.oy;
+		if (!trx) { return value };
+		let offset = trx[0];
+		let size = trx[1];
+		let out = value - offset;
+		let min = trx[2];
+		let max = trx[3];
+		let len = max - min;
+		let step = trx[4] || 0.1;
+		let stepunit = trx[5];
+		
+		if (max != undefined) {
+			
+			out = min + len * (out / size);
+		};
+		if (clamp) {
+			
+			if (min > max) {
+				
+				out = Math.max(max,Math.min(min,out));
+			} else {
+				
+				out = Math.min(max,Math.max(min,out));
+			};
+		};
+		
+		if (stepunit == '%') {
+			
+			step = len * (step / 100);
+		};
+		
+		return this.$round(out,step);
+		
+	}
+	$x(value){
+		
+		return this.$conv(value,this.xaxis,this.clamped);
+	}
+	
+	$y(value){
+		
+		return this.$conv(value,this.yaxis,this.clamped);
+		
+	}
+	get x(){
+		return this.$x(this.raw.x);
+	}
+	get y(){
+		return this.$y(this.raw.y);
+	}
+	get x0(){
+		return this.$x(this.raw.x0);
+	}
+	get y0(){
+		return this.$y(this.raw.y0);
 	}
 	
 	get dx(){
 		
-		return this.cx - this.cx0;
+		return this.x - this.x0;
 	}
 	
 	get dy(){
 		
-		return this.cy - this.cy0;
+		return this.y - this.y0;
 		
 	}
-	get tx(){ // target x
+	get tx(){
+		
 		return this.tx0 + this.dx;
 	}
 	
 	get ty(){
 		
 		return this.ty0 + this.dy;
-		
-	}
-	get xa(){
-		
-		return this.frame ? ((this.x / this.frame.width)) : 0;
-	}
-	
-	get ya(){
-		
-		return this.frame ? ((this.y / this.frame.height)) : 0;
 		
 	}
 	get dt(){
@@ -1667,26 +1819,60 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$threshold$mod = function (dr){
 
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$sync$mod = function (item){
 	
-	item.x = this.state.ox + this.state.touch.dx;
-	item.y = this.state.oy + this.state.touch.dy;
-	return true;
 	
+	if (!this.state.offset) {
+		
+		this.state.offset = {
+			x: item.x,
+			y: item.y
+		};
+	};
+	console.log('sync touch',this.state.touch.x,this.state.offset.x);
+	item.x = this.state.offset.x + this.state.touch.dx;
+	item.y = this.state.offset.y + this.state.touch.dy;
+	return true;
 };
+
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$round$mod = function (item){
 	
 	this.state.touch.round();
 	return true;
 	
 };
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$anchor$mod = function (...params){
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$transform$mod = function (...params){
 	
-	if (!this.state.frame) {
+	if (!this.state.transformed) {
 		
-		this.state.frame = true;
-		console.warn('reframe',this.state);
-		this.state.touch.frame(...params);
+		this.state.transformed = true;
+		this.state.touch.transform(...params);
 	};
 	return true;
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod = function (...params){
+	
+	if (!this.state.transformed) {
+		
+		this.state.transformed = true;
+		this.state.touch.transform(...params);
+		
+	};
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$clamp$mod = function (...params){
+	
+	if (!this.state.transformed) {
+		
+		this.state.transformed = true;
+		this.state.touch.transform(...params);
+		this.state.touch.clamped = true;
+	};
+	return true;
+	
+	
+	
+	
 	
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$handle = function (o = {}){
@@ -1731,9 +1917,11 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$handle = function (o = {}){
 	if (this.modifiers.sync) {
 		
 		let origin = this.modifiers.sync[0];
-		this.state.ox = origin && origin.x || 0;
-		this.state.oy = origin && origin.y || 0;
-		console.warn('found sync modifier!!',origin);
+		this.state.offset = {
+			x: origin && origin.x || 0,
+			y: origin && origin.y || 0
+		};
+		console.warn('found sync modifier!!',this.state.offset);
 	};
 	
 	let canceller = function() { return false; };

@@ -464,34 +464,122 @@ This event is fired when a pointing device is moved out of the hit test boundari
 
 # Touch
 
+
+## Clamping
+
+While dealing with touches it is very common to want to convert the coordinates of your pointer in some way. `clamp` is an event modifier to do just that. It takes a bunch of arguments and allows for very flexible use.
+
+#### box
+- If box is a string, it will be treated as a selector, and Imba will try to find the closest matching element relative to event target.
+- If box is an element, it will use the bounding rect of said element as the bounds
+
+```imba
+# ~preview=small
+import 'util/styles'
+
+css body > * w:50vw m:6 h:4 bg:blue3 pos:relative radius:sm
+# css .track h:4 w:100% bg:blue3 pos:relative radius:sm
+css .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% radius:sm
+css .thumb@before x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray8
+
+# ---
+tag slider-1
+	<self @touch.clamp(self,0,1)=(x = e.touch.x)>
+		<.thumb[l:{x * 100}% prefix:{x}]>
+
+tag slider-px
+	<self @touch.clamp(self)=(x = e.touch.x)>
+		<.thumb[l:{x}px prefix:{x}]>
+
+tag slider-pct
+	<self @touch.clamp(self,0,100)=(x = e.touch.x)>
+		<.thumb[l:{x}% prefix:{x}]>
+
+tag slider-inv
+	<self @touch.clamp(self,100,0)=(x = e.touch.x)>
+		<.thumb[r:{x}% prefix:{x}]>
+
+imba.mount do <>
+	<slider-1>
+	<slider-px>
+	<slider-pct>
+	<slider-inv>
+
+```
+
+### 2 dimensions
+```imba
+# ~preview=small
+import 'util/styles'
+
+let xclamp = [0,100,2]
+
+tag MultiSlide
+	prop min = 0
+	prop max = 100
+	prop step = 1
+	prop value = [0,0]
+	
+	css d:block bg:white pos:relative size:10rem
+
+	css $box
+		pos:absolute inset:6 bg:white shadow:inset 0 0 0 1px gray4/50
+	
+	css $area
+		pos:absolute border:1px dashed gray4 t:0 l:0 bg:gray4/20
+		$thumb pos:absolute r:-2 b:-2 d:block size:4 bg:blue7 radius:sm
+	
+	def update e do value = [e.touch.x,e.touch.y]
+	get l do 100 * (value[0] - min) / (max - min)
+	get t do 100 * (value[1] - min) / (max - min)
+
+	def render
+		<self @touch.clamp([min,max,step])=update>
+			<$box> <$area[h:{t}% w:{l}%]> <$thumb>
+			<span.value> value.join(',')
+
+
+imba.mount do <>
+	<input type='range' min=0 max=100 bind=xclamp[1]>
+	<input type='range' min=1 max=10 bind=xclamp[2]>
+	<MultiSlide min=xclamp[0] max=xclamp[1] step=xclamp[2]>
+```
+
+### individual axis
+```imba
+# make x,y relative to left,top of document.body
+<div @touch.reframe(self,min,max,step)>
+<div @touch.reframe(self,[xmin,xmax,xstep],[ymin,ymax,ystep])>
+# make x,y 
+reframe(document.body,0,1) 
+```
+
+
+
 ```imba
 # ~preview=small
 import 'util/styles'
 
 # ---
-let state = {}
-imba.mount do <div>
-	<button @touch=(state=e.touch)> 'Button'
-	<label> "x:{state.x} y:{state.y} dx:{state.dx} dy:{state.dy}"
+tag Slider
+	prop min = 0
+	prop max = 100
+	prop step = 1
+	prop value = 0
+	
+	css .track h:2 w:100% bg:blue3 pos:relative radius:sm
+	css .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% radius:sm
+
+	def render
+		<self @touch.reframe(self,min,max,step).clamp=(value = e.touch.x)>
+			<$track.track> <.thumb[l:{100 * (value - min) / (max - min)}%]>
+			<span.value> value
+
+imba.mount do <Slider[w:50vw]>
+
 ```
 
-```imba
-# ~preview=small
-import 'util/styles'
-css button pos:relative
-# ---
-let s = {x:0,y:0}
-
-def move e
-	s.x = e.tx
-	s.y = e.ty
-
-imba.mount do <section>
-	<div.pill[x:{s.x} y:{s.y}]
-		@click.log('clicked')
-		@touch(s).threshold(5)=move> 'Button', <b> 'Inner'
-	<button @click=(s.x=0,s.y=0)> 'Reset'
-```
+## Syncing
 
 ```imba
 # ~preview=small
