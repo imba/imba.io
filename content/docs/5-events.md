@@ -480,7 +480,7 @@ import 'util/styles'
 css body > * w:50vw m:6 h:4 bg:blue3 pos:relative radius:sm
 # css .track h:4 w:100% bg:blue3 pos:relative radius:sm
 css .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% radius:sm
-css .thumb@before x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray8
+css .thumb@before x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6
 
 # ---
 tag slider-1
@@ -492,12 +492,12 @@ tag slider-px
 		<.thumb[l:{x}px prefix:{x}]>
 
 tag slider-pct
-	<self @touch.clamp(self,0,100)=(x = e.touch.x)>
+	<self @touch.clamp(0,100)=(x = e.touch.x)>
 		<.thumb[l:{x}% prefix:{x}]>
 
 tag slider-inv
-	<self @touch.clamp(self,100,0)=(x = e.touch.x)>
-		<.thumb[r:{x}% prefix:{x}]>
+	<self @touch.clamp(25,-25,5)=(x = e.touch.x)>
+		<.thumb[l:{50 + x * -2}% prefix:{x}]>
 
 imba.mount do <>
 	<slider-1>
@@ -534,7 +534,7 @@ tag MultiSlide
 	get t do 100 * (value[1] - min) / (max - min)
 
 	def render
-		<self @touch.clamp([min,max,step])=update>
+		<self @touch.clamp(min,max,step)=update>
 			<$box> <$area[h:{t}% w:{l}%]> <$thumb>
 			<span.value> value.join(',')
 
