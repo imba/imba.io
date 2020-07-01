@@ -38,16 +38,17 @@ tag app-menu
 
 	def render
 		let root = data.root
+		let docs = ls('/docs')
 		let guides = ls('/guides')
 		<self tabIndex=-1>
 			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 flex:1]>
 				# <app-menu-section data=ls('/manual')>
-				<app-menu-section data=ls('/basics')>
+				for item in docs.children
+					<app-menu-section data=item>
 				# <app-menu-section data=ls('/tags')>
-				<app-menu-section data=ls('/views')>
+				# <app-menu-section data=ls('/views')>
 				# <app-menu-section data=ls('/events')>
-				# <app-menu-section data=ls('/events')>
-				<app-menu-section data=ls('/styling')>
+				# <app-menu-section data=ls('/styling')>
 				<app-menu-section data=guides>
 				# for child in guides.children
 				#	<app-menu-section data=child>

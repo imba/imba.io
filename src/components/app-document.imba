@@ -100,14 +100,15 @@ tag app-document
 		color: teal9
 		fs: 14px
 		fw: bold
-		radius: 3px
-		p: 2px 8px
+		
+		p: 4px 8px
 		mt: 1rem
-		ls: 0.02em
-		d: inline-block
-		top: 8px
-		left: 8px
-		zi: 30
+		# ls: 0.02em
+		d:block
+		# radius: 3px
+		# top: 8px left: 8px d: inline-block
+		# zi: 30
+		btr:3px
 
 		app-code-inline
 			bg:teal3
@@ -115,6 +116,9 @@ tag app-document
 			pos:relative
 			top:-1px
 			mr@last:-4px
+
+		& + app-code-block
+			btr:0px
 
 	css p
 		fw: 400
@@ -163,8 +167,7 @@ tag app-document
 		mt: 1rem
 
 	css app-code-block + blockquote
-		pt:4 pb:3 px:5 mt:-1 bw:1 bc:gray3 bg:white radius:2
-		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray6
+		pt:4 pb:3 px:5 mt:-1 bw:1 bc:gray3 bg:white radius:sm color:gray6
 
 	# table stlff
 	css table

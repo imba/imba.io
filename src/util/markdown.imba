@@ -11,7 +11,7 @@ marked.setOptions({
 })
 
 var slugify = do(str)
-	str = str.replace(/^\s+|\s+$/g, '').toLowerCase() # trim
+	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
 	var from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
 	var to   = "aaaaaeeeeiiiioooouuuunc------"
 	str = str.replace(/[^a-z0-9 -]/g, '') # remove invalid chars

@@ -51,7 +51,7 @@ def method name, {title, desc = 'no description'}
 [1,2,3,4].map do(item) item * 2
 ```
 
-##### Classes
+##### Class Declarations
 ```imba
 class Todo
     prop title
@@ -1001,7 +1001,7 @@ Inside of a function `$0` always refers to the `arguments` object, and `$1`,`$2`
 ```
 > This might seem like a trivial difference, but in many cases you don't want the cognitive overload to come up with a sensible parameter name.
 
-## Calling functions
+## Invocation
 
 > Optional parenthesis
 
@@ -1012,9 +1012,9 @@ Any method that can be
 
 ### Object Arguments
 
-### Callback Arguments
+## Callbacks
 
-A callback function is a function passed into another function as an argument. This is a common pattern in JavaScript. When passing a callback argument in Imba, you can write this after the function:
+A callback is a function passed into another function as an argument. This is a common pattern in JavaScript. When passing a callback argument in Imba, you can write this after the function:
 
 ```imba
 def update data, callback
@@ -1042,8 +1042,6 @@ update(score: 1023) do(err,resp)
     console.log 'response from update',resp
 ```
 
-
-
 # Classes
 
 ##### Class declarations
@@ -1069,6 +1067,11 @@ var expr = class
 
 ## super
 
+# Decorators
+
+# Async / Await
+
+> No need to use the `async` keyword.
 
 # Modules
 

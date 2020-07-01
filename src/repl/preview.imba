@@ -159,12 +159,12 @@ tag app-repl-preview
 	css $frame
 		pos:absolute top:0 l:50% bg:white w:100% h:100% x:-50% y:0
 		border:1px solid gray3
-		box-sizing: content-box
 		transform-origin:50% 0%
 
 	css $cover pos:absolute inset:0 cursor:zoom-in d:none
 
-	css $controls pos:absolute b:100% r:0 my:1 w:100% d:flex jc:center
+	css $controls pos:absolute b:100% r:0 py:1 w:100% d:flex jc:center opacity:0
+	css @hover $controls opacity:1
 
 	css %btn p:1 fw:500 c:gray4 @hover:gray5 .checked:blue5 outline@focus:none pe.checked:none
 
@@ -219,14 +219,14 @@ tag app-repl-preview
 						<div%resizer @touch=resize>
 						<div%resizer @touch=resize>
 						<div$cover @click=toggle>
-						<div[pos:absolute transform-origin:100% 100% b:0 r:0 p:2 fs:sm/1 c:gray5 d:none ..resizing:block scale:{1 / scale}]> "{iw} x {ih}"
+						<div[pos:absolute transform-origin:100% 100% b:0 r:0 p:2 fs:sm/1 c:gray5 d:none ..resizing:block scale:{1 / scale}]> "{iw - 2} x {ih - 2}"
 				<div$controls.controls @click.stop>
 					<button%btn bind=size value='auto-auto'> 'auto'
-					<button%btn bind=size value='480-auto'> 'xs'
-					<button%btn bind=size value='640-auto'> 'sm'
-					<button%btn bind=size value='768-auto'> 'md'
-					<button%btn bind=size value='1024-auto'> 'lg'
-					<button%btn bind=size value='1280-auto'> 'xl'
+					<button%btn bind=size value='482-auto'> 'xs'
+					<button%btn bind=size value='642-auto'> 'sm'
+					<button%btn bind=size value='770-auto'> 'md'
+					<button%btn bind=size value='1026-auto'> 'lg'
+					<button%btn bind=size value='1282-auto'> 'xl'
 					# <button%btn bind=size value='768x1024'> 'tablet'
 					# <button%btn bind=size value='1280x1024'> 'desktop'
 					<button%btn @click=maximize> '⤢'

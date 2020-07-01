@@ -85,6 +85,8 @@ export def highlight str,lang
 		'style.openz': 'style.close'
 	
 	let closers = []
+	let head = null
+	let foot = null
 
 	for token,i in tokens
 		let next = tokens[i + 1]
@@ -125,8 +127,14 @@ export def highlight str,lang
 			value = "<span data-offset={token.offset}>{value}</span>"
 
 		if typ == 'comment' and token.value == '# ---'
-			parts.unshift('<div class="code-head">')
-			parts.push('</div>')
+			if !head
+				parts.unshift('<div class="code-head">')
+				parts.push('</div>')
+				head = token
+			elif !foot
+				parts.push('<div class="code-foot">')
+				foot = token
+
 			# pop next token
 			try tokens[i + 1].value = ''
 			continue
@@ -140,6 +148,9 @@ export def highlight str,lang
 		if closers[0] and token.type == closers[0]
 			parts.push('</span>')
 			closers.shift!
+
+	if foot
+		parts.push('</div>')
 
 	out.html = parts.join('')
 	out.options = out.flags

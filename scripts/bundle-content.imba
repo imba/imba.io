@@ -39,7 +39,7 @@ watcher.on('all') do
 	let is-dir = $1.indexOf('Dir') >= 0
 	let rel = path.relative(root,abs)
 	let sorter = path.basename(rel)
-	let src = rel.replace(/\b\d\d\-/g,'')
+	let src = rel.replace(/\b\d+\-/g,'')
 	let name = path.basename(src)
 	let dirname = path.dirname(src)
 
@@ -106,8 +106,16 @@ watcher.on('all') do
 			models[id] = item
 			up.children.push(item)
 
+
 watcher.on 'ready' do
 	save!
 	if process.env.RUN_ONCE
 		process.exit(0)
 
+
+unless process.env.RUN_ONCE
+	chokidar.watch(imbasrc).on('change') do
+		let from = path.resolve(imbasrc,'imba.js')
+		let to =  path.resolve(dest,'imba.js')
+		console.log 'imba runtime changed?!?',from,to
+		fs.copyFileSync(from,to)

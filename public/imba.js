@@ -607,10 +607,11 @@ extend$(Element,{
 			o = {passive: passive,capture: capture};
 		};
 		
-		if (type == 'touch') {
+		if ((/^(pointerdrag|touch)$/).test(type)) {
 			
+			handler.type = type;
 			type = 'pointerdown';
-			handler.type = 'touch';
+			
 		};
 		
 		this.addEventListener(type,handler,o);
@@ -1189,6 +1190,11 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].if$mod = function (expr){
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].wait$mod = function (num = 250){
 	
 	return new Promise(function(_0) { return setTimeout(_0,num); });
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].self$mod = function (){
+	
+	return this.event.target == this.element;
 	
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (ms = 250){
@@ -1279,6 +1285,7 @@ class EventHandler {
 		let prevRes = undefined;
 		
 		this.count || (this.count = 0);
+		this.state || (this.state = {});
 		
 		let state = {
 			element: element,
@@ -1286,20 +1293,21 @@ class EventHandler {
 			modifiers: mods,
 			handler: this,
 			id: ++this.count,
-			step: -1
+			step: -1,
+			state: this.state
 		};
 		
 		if (event.handle$mod) {
 			
-			if (event.handle$mod.call(state,mods.options) == false) {
+			if (event.handle$mod.apply(state,mods.options || []) == false) {
 				
 				return;
 			};
 		};
 		
-		let guard = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$handle'];
+		let guard = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][this.type + '$handle'] || _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$handle'] || event.handle$mod;
 		
-		if (guard && guard.call(state,mods.options) == false) {
+		if (guard && guard.apply(state,mods.options || []) == false) {
 			
 			return;
 		};
@@ -1393,9 +1401,6 @@ class EventHandler {
 			} else if (handler == 'meta') {
 				
 				if (!event.metaKey) { break; };
-			} else if (handler == 'self') {
-				
-				if (target != element) { break; };
 			} else if (handler == 'once') {
 				
 				
@@ -1418,7 +1423,8 @@ class EventHandler {
 				let customRes = element.dispatchEvent(e);
 			} else if (typeof handler == 'string') {
 				
-				let fn = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][handler + '$mod'] || _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$' + handler];
+				let fn = (this.type && _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][this.type + '$' + handler + '$mod']);
+				fn || (fn = event[handler + '$mod'] || _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$' + handler] || _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][handler + '$mod']);
 				
 				if (fn instanceof Function) {
 					
@@ -1454,9 +1460,15 @@ class EventHandler {
 			if (res === false) {
 				
 				break;
+				
 			};
 			
 			state.value = res;
+		};
+		
+		if (state.cleanup instanceof Function) {
+			
+			state.cleanup();
 		};
 		
 		if (commit) imba.$commit();
@@ -1489,12 +1501,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Event", function() { return Event; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CustomEvent", function() { return CustomEvent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MouseEvent", function() { return MouseEvent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "KeyboardEvent", function() { return KeyboardEvent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PointerEvent", function() { return PointerEvent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "document", function() { return document; });
 if (false) {};
 
 
 
-var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,SVGElement: SVGElement,HTMLElement: HTMLElement,DocumentFragment: DocumentFragment,ShadowRoot: ShadowRoot,Event: Event,CustomEvent: CustomEvent,MouseEvent: MouseEvent,document: document} = window;
+var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,SVGElement: SVGElement,HTMLElement: HTMLElement,DocumentFragment: DocumentFragment,ShadowRoot: ShadowRoot,Event: Event,CustomEvent: CustomEvent,MouseEvent: MouseEvent,KeyboardEvent: KeyboardEvent,PointerEvent: PointerEvent,document: document} = window;
 
 
 
@@ -1505,37 +1519,100 @@ var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+function extend$(target,ext){
+	// @ts-ignore
+	var descriptors = Object.getOwnPropertyDescriptors(ext);
+	// @ts-ignore
+	Object.defineProperties(target.prototype,descriptors);
+	return target;
+};
 
 
-class Touch {
+class Pointer {
 	
-	constructor(e){
+	constructor(e,state){
 		
+		this.state = state;
+		this.start = e;
 		this.id = e.pointerId;
 		this.t0 = Date.now();
-		this.x0 = this.x = e.x;
-		this.y0 = this.y = e.y;
-		this.mx = this.my = 0;
+		this.cx0 = this.cx = e.x;
+		this.cy0 = this.cy = e.y;
+		this.tx0 = this.ty0 = this.ax = this.ay = this.mx = this.my = this.ox = this.oy = 0;
 		e.touch = this;
 	}
 	
 	update(e){
 		
 		this.mx = e.x - this.x;
-		this.my = e.y - this.x;
-		this.x = e.x;
-		this.y = e.y;
+		this.my = e.y - this.y;
+		this.cx = e.x;
+		this.cy = e.y;
 		return e.touch = this;
+		
+	}
+	round(){
+		
+		this.$round = true;
+		this.cx0 = Math.round(this.cx0);
+		this.cy0 = Math.round(this.cy0);
+		this.cx = Math.round(this.cx);
+		this.cy = Math.round(this.cy);
+		return this;
+		
+	}
+	frame(frame,ax = 0,ay = ax){
+		
+		if (frame instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]) {
+			
+			frame = frame.getBoundingClientRect();
+		};
+		
+		this.frame = frame;
+		this.ax = ax;
+		this.ay = ay;
+		this.ox = frame.left + frame.width * ax;
+		this.oy = frame.top + frame.height * ay;
+		return this;
+		
+	}
+	get x(){
+		
+		return this.cx - this.ox;
+		
+	}
+	get y(){
+		
+		return this.cy - this.oy;
 	}
 	
 	get dx(){
 		
-		return this.x - this.x0;
+		return this.cx - this.cx0;
 	}
 	
 	get dy(){
 		
-		return this.y - this.y0;
+		return this.cy - this.cy0;
+		
+	}
+	get tx(){ // target x
+		return this.tx0 + this.dx;
+	}
+	
+	get ty(){
+		
+		return this.ty0 + this.dy;
+		
+	}
+	get xa(){
+		
+		return this.frame ? ((this.x / this.frame.width)) : 0;
+	}
+	
+	get ya(){
+		
+		return this.frame ? ((this.y / this.frame.height)) : 0;
 		
 	}
 	get dt(){
@@ -1544,43 +1621,171 @@ class Touch {
 	}
 };
 
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown$handle = function (){
+extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["PointerEvent"],{
+	
+	
+	primary$mod(){
+		
+		return !!this.event.isPrimary;
+	},
+	
+	mouse$mod(){
+		
+		return this.event.pointerType == 'mouse';
+	},
+	
+	pen$mod(){
+		
+		return this.event.pointerType == 'pen';
+	},
+	
+	touch$mod(){
+		
+		return this.event.pointerType == 'touch';
+	},
+	
+	pressure$mod(threshold = 0){
+		
+		return this.event.pressure > threshold;
+	},
+	
+	lock$mod(dr){
+		
+		return true;
+		
+	},
+});
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$threshold$mod = function (dr){
+	
+	if (!this.state[this.step] && this.event.dr > dr) {
+		
+		console.warn('moved past threshold!');
+		this.state[this.step] = true;
+	};
+	return !(!this.state[this.step]);
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$sync$mod = function (item){
+	
+	item.x = this.state.ox + this.state.touch.dx;
+	item.y = this.state.oy + this.state.touch.dy;
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$round$mod = function (item){
+	
+	this.state.touch.round();
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$anchor$mod = function (...params){
+	
+	if (!this.state.frame) {
+		
+		this.state.frame = true;
+		console.warn('reframe',this.state);
+		this.state.touch.frame(...params);
+	};
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$handle = function (o = {}){
+	var self = this;
 	
 	let e = this.event;
 	let el = this.element;
-	let handler = this.handler;
-	if (handler.type != 'touch') { return true };
+	if (this.state.id) {
+		
+		return this.state.id == e.pointerId;
+		
+	};
+	if (this.modifiers.self && this.element != this.event.target) {
+		
+		return false;
+	};
 	
-	e.dx = e.dy = 0;
-	handler.x0 = e.x;
-	handler.y0 = e.y;
-	handler.pointerId = e.pointerId;
 	
-	handler.touch = new Touch(e);
+	
+	let t = e.touch = new Pointer(e,this);
+	let x0 = e.x;
+	let y0 = e.y;
+	
+	if (o instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]) {
+		
+		t.originRect = o.getBoundingClientRect();
+		console.warn('adding origin rect',t.originRect);
+		
+	};
+	if (typeof o.x == 'number') {
+		
+		t.tx0 = o.x;
+	};
+	
+	if (typeof o.y == 'number') {
+		
+		t.ty0 = o.y;
+	};
+	
+	this.handler.state = this.state = {id: e.pointerId,touch: t};
+	
+	if (this.modifiers.sync) {
+		
+		let origin = this.modifiers.sync[0];
+		this.state.ox = origin && origin.x || 0;
+		this.state.oy = origin && origin.y || 0;
+		console.warn('found sync modifier!!',origin);
+	};
 	
 	let canceller = function() { return false; };
 	let selstart = document.onselectstart;
-	el.setPointerCapture(e.pointerId);
 	
-	el.addEventListener('pointermove',handler);
-	el.addEventListener('pointerup',handler);
+	let listener = function(e) {
+		
+		let typ = e.type;
+		let dx = e.dx = e.x - x0;
+		let dy = e.dy = e.y - y0;
+		let dr = e.dr = Math.sqrt(dx * dx + dy * dy);
+		let ph = t.phase;
+		
+		t.update(e);
+		e.tx = t.tx;
+		e.ty = t.ty;
+		self.handler.handleEvent(e);
+		
+		if (typ == 'pointerup' || typ == 'pointercancel') {
+			
+			el.releasePointerCapture(e.pointerId);
+			el.flags.remove('_touch_');
+			return document.onselectstart = selstart;
+			
+			
+		};
+	};
+	let teardown = function(e) {
+		
+		console.warn('teardown pointer');
+		self.handler.state = {};
+		el.removeEventListener('pointermove',listener);
+		el.removeEventListener('pointerup',listener);
+		el.removeEventListener('pointercancel',listener);
+		if (document.onselectstart == canceller) {
+			
+			return document.onselectstart = selstart;
+		};
+		
+	};
+	
+	el.setPointerCapture(e.pointerId);
+	el.addEventListener('pointermove',listener);
+	el.addEventListener('pointerup',listener);
+	el.addEventListener('pointercancel',listener);
+	el.addEventListener('lostpointercapture',teardown,{once: true});
 	document.onselectstart = canceller;
 	
-	el.flags.add('_touch_');
+	listener(e);
 	
-	el.addEventListener('pointerup',function(e) {
-		
-		el.releasePointerCapture(e.pointerId);
-		el.removeEventListener('pointermove',handler);
-		el.removeEventListener('pointerup',handler);
-		handler.pointerId = null;
-		if (handler.pointerFlag) {
-			
-			el.flags.remove(handler.pointerFlag);
-		};
-		el.flags.remove('_touch_');
-		return document.onselectstart = selstart;
-	},{once: true});
+	return false;
+	
 	return true;
 };
 

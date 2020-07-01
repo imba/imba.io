@@ -167,11 +167,12 @@ tag app-code
 
 tag app-code-block < app-code
 
-	css pos:relative radius:1 fs:12px @md:13px d:block .shared:none
+	css pos:relative radius:sm fs:12px @md:13px d:block .shared:none
 		--bg:$code-bg-lighter
 
 	css %code pos:relative d:block
-		.code-head display: none
+		.code-head d:none
+		.code-foot d:none
 
 	css code d:block ofx:auto ff: var(--code-font) ws:pre p:3 4 p@md:5 6
 	css label bg:gray7 radius:2 pos:absolute d:flex ai:center p:1
@@ -281,7 +282,7 @@ tag app-code-block < app-code
 
 
 	css %main
-		pos:relative radius:2 c:$code-color bg:var(--bg) border-top-left-radius..multi:0
+		pos:relative radius:inherit c:$code-color bg:var(--bg) border-top-left-radius..multi:0
 
 	css
 		$preview-size:100px .lg:180px .xl:240px

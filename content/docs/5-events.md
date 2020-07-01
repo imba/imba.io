@@ -1,8 +1,11 @@
 ---
 title: Events
+multipage: true
 ---
 
-# Listening to Events
+# Basics
+
+## Listening to Events
 
 We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
 
@@ -43,9 +46,12 @@ const handler = console.log.bind(console)
 	<li @click=handler(e.type,item,i)> item.title
 ```
 
-# Event Modifiers
+## Triggering Events
 
-Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
+
+# Modifiers
+
+Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
 
 ## Utility Modifiers
 
@@ -115,6 +121,8 @@ imba.mount do
 		<button @click.flag-busy('div').wait(1000)> 'flag div'
 # Optionally supply a selector / element to flag
 ```
+
+## Core Modifiers
 
 ##### prevent
 ```imba
@@ -191,7 +199,7 @@ imba.mount do <section>
 ```
 
 
-## Modifier Guards
+## Guard Modifiers
 
 ##### self
 ```imba
@@ -300,30 +308,332 @@ imba.mount do
 	>
 ```
 
-## Chaining
+## Chaining Modifiers
 
 It is important to understand the concept of chaining. You can add multiple modifiers one after another (separated by `.`). When an event is handled, these modifiers will be executed in the specified order.
 
-
-## Quick Tips
+## Custom Modifiers
 
 ### System Key Modifiers
 
 System modifier keys are different from regular keys and when used with `@keyup` events, they have to be pressed when the event is emitted. In other words, `@keyup.ctrl` will only trigger if you release a key while holding down `ctrl`. It won’t trigger if you release the `ctrl` key alone. You can use the following modifiers to trigger event listeners only when the corresponding modifier key is pressed:
 
-# Pointer Events
-
-See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events)
-
-# Keyboard Events
-
-# Mouse Events
-
 # Custom Events
 
-## Touch
+# Pointer Events
 
-## Resize
+Great documentation for pointer events can be found over at [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events)
+
+## Modifiers
+
+##### mouse
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerdown.mouse.log('only mouse!')> 'Button'
+```
+
+##### pen
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerdown.pen.log('only pen!')> 'Button'
+```
+
+##### touch
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerdown.touch.log('only touch!')> 'Button'
+```
+
+##### pressure ( threshold = 0.5 )
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerdown.pressure.log('pressured?')> 'Button'
+```
+
+## Event Types
+
+### pointerover
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerover.log('over!')> 'Button'
+```
+This event is fired when a pointing device is moved into an element's hit test boundaries.
+
+### pointerenter
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerenter.log('enter!')> 'Button'
+```
+This event is fired when a pointing device is moved into the hit test boundaries of an element or one of its descendants, including as a result of a pointerdown event from a device that does not support hover (see pointerdown). This event type is similar to pointerover, but differs in that it does not bubble.
+
+### pointerdown
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerdown.log('down!')> 'Button'
+```
+The event is fired when a pointer becomes active. For mouse, it is fired when the device transitions from no buttons depressed to at least one button depressed. For touch, it is fired when physical contact is made with the digitizer. For pen, it is fired when the stylus makes physical contact with the digitizer.
+
+### pointermove
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointermove.log('move!')> 'Button'
+```
+This event is fired when a pointer changes coordinates.
+
+### pointerup
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerup.log('up!')> 'Button'
+```
+This event is fired when a pointer is no longer active.
+
+
+### pointercancel
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointercancel.log('cancelled!')> 'Button'
+```
+A browser fires this event if it concludes the pointer will no longer be able to generate events (for example the related device is deactived).
+
+
+### pointerout
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerout.log('out!')> 'Button'
+```
+This event is fired for several reasons including: pointing device is moved out of the hit test boundaries of an element; firing the pointerup event for a device that does not support hover (see pointerup); after firing the pointercancel event (see pointercancel); when a pen stylus leaves the hover range detectable by the digitizer.
+
+
+
+### pointerleave
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerleave.log('leave!')> 'Button'
+```
+This event is fired when a pointing device is moved out of the hit test boundaries of an element. For pen devices, this event is fired when the stylus leaves the hover range detectable by the digitizer.
+
+### pointerdrag [custom]
+
+# Touch
+
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+let state = {}
+imba.mount do <div>
+	<button @touch=(state=e.touch)> 'Button'
+	<label> "x:{state.x} y:{state.y} dx:{state.dx} dy:{state.dy}"
+```
+
+```imba
+# ~preview=small
+import 'util/styles'
+css button pos:relative
+# ---
+let s = {x:0,y:0}
+
+def move e
+	s.x = e.tx
+	s.y = e.ty
+
+imba.mount do <section>
+	<div.pill[x:{s.x} y:{s.y}]
+		@click.log('clicked')
+		@touch(s).threshold(5)=move> 'Button', <b> 'Inner'
+	<button @click=(s.x=0,s.y=0)> 'Reset'
+```
+
+```imba
+# ~preview=small
+import 'util/styles'
+css button pos:relative
+# ---
+let s = {x:0,y:0}
+
+def move e
+	s.x = e.tx
+	s.y = e.ty
+
+imba.mount do <section>
+	<div.pill[x:{s.x} y:{s.y}]
+		@click.log('clicked')
+		@touch(s).prevent.threshold(5)=move>
+			'Button'
+			<b> 'Inner'
+	<button @click=(s.x=0,s.y=0)> 'Reset'
+```
+
+```imba
+# ~preview=small
+import 'util/styles'
+css button pos:relative
+# ---
+let s = {x:0,y:0}
+imba.mount do <section>
+	<div.pill[x:{s.x} y:{s.y}] @pointerdrag(s)> 'Button'
+	<label> <span> "phase:{s.phase}"
+	<label> <span> "x:{s.x} y:{s.y}"
+	<label> <span> "dx:{s.dx} dy:{s.dy}"
+```
+
+| Properties  |  |
+| --- | --- |
+| `touch.x` | The X coordinate of the point |
+| `touch.y` | Current position of touch |
+| `touch.dx` | Horizontal movement since start of touch |
+| `touch.dy` | Vertical movement since start of touch |
+| `touch.mx` | Movement since the previous event |
+| `touch.my` | Current position of touch |
+| `event.width` | Returns the new width of observed element |
+| `event.height` | Returns the new height of observed element |
+
+## Examples
+
+```imba
+# ~preview=small
+import 'util/styles'
+css button pos:relative
+# ---
+let s = {x:0,y:0}
+imba.mount do <section>
+	<div.pill[x:{s.x} y:{s.y}] @touch.round.sync(s)> 'Button'
+	<label> <span> "phase:{s.phase}"
+	<label> <span> "x:{s.x} y:{s.y}"
+	<label> <span> "dx:{s.dx} dy:{s.dy}"
+```
+
+### Draggable
+```imba
+# ~preview=xl
+import 'util/styles'
+# css body bg:gray1
+# ---
+tag drag-me
+	css d:block pos:relative p:3 m:1 radius:sm cursor:default
+		bg:white shadow:sm
+		@touch scale:1.05 rotate:2deg zi:2 shadow:lg
+
+	def build
+		x = y = 0
+
+	def drag e
+		if e.type == 'pointerup'
+			x += dx
+			y += dy
+			dx = dy = 0
+		else
+			dx = e.dx
+			dy = e.dy
+
+	def render
+		<self[x:{x+dx} y:{y+dy}] @touch.update(self)=drag> 'drag me'
+
+imba.mount do <div.grid>
+	<drag-me>
+	<drag-me>
+	<drag-me>
+```
+
+### Draggable using sync
+```imba
+# ~preview=xl
+import 'util/styles'
+# css body bg:gray1
+# ---
+tag drag-me
+	css d:block pos:relative p:3 m:1 radius:sm cursor:default
+		bg:white shadow:sm
+		@touch scale:1.05 rotate:2deg zi:2 shadow:lg
+
+	def build
+		x = y = 0
+
+	def render
+		<self[x:{x} y:{y}] @touch.threshold(20).sync(self)> 'drag me'
+
+imba.mount do <div.grid>
+	<drag-me>
+	<drag-me>
+	<drag-me>
+```
+
+### Separator
+```imba
+# ~preview=xl
+import 'util/styles'
+# css body bg:gray1
+# ---
+tag Panel
+	prop split = 0.3
+
+	def resize e
+		split = 1 - e.touch.xa
+
+	def render
+		<self[d:flex w:80vw h:80vh bg:teal1]>
+			<div[flex:1]> "Master"
+			<div[w:3 bg:teal3].separator @touch.anchor(self)=resize>
+			<div[flb:{split * 100}%]> "Detail"
+
+imba.mount do <Panel>
+```
+
+### Paint
+
+[Code](/examples/applications/paint)
+
+
+# Resize Event
 
 The [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) interface reports changes to the dimensions of an Element's content or border box. It has [decent browser support](https://caniuse.com/#feat=resizeobserver) and is very useful in a wide variety of usecases. ResizeObserver avoids infinite callback loops and cyclic dependencies that are often created when resizing via a callback function. It does this by only processing elements deeper in the DOM in subsequent frames.
 
@@ -335,7 +645,7 @@ The [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObse
 
 ##### Example
 ```imba
-# ~preview
+# ~preview=xl
 import 'util/styles'
 
 # ---
@@ -348,7 +658,7 @@ imba.mount do
 		<mark[width:{w}px]> "Imitator"
 ```
 
-## Intersect
+# Intersection Event
 
 [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) is a [well-supported](https://caniuse.com/#feat=intersectionobserver) API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document's viewport. In Imba it is extremely easy to set up an intersection observer.
 
@@ -362,7 +672,7 @@ imba.mount do
 ##### Example
 
 ```imba
-# ~preview
+# ~preview=xl
 css body p:6
 css .grid d:grid g:3
 css .box d:grid gap:4 p:4 radius:2 bw:1 bc:black/5
@@ -420,4 +730,5 @@ imba.mount do
 ```
 > The `in` modifier tells the intersection event to only trigger whenever the visibility has *decreased*.
 
-## Selection
+# Selection Event
+

@@ -104,11 +104,13 @@ tag repl-console-item
 		style.opacity = 1
 
 	def hide
-		let h = offsetHeight
-		style.marginBottom = (-h)px
-		style.opacity = 0
-		setTimeout(&,250) do parentNode.removeChild(self)
-		self
+		unless $hide
+			$hide = yes
+			let h = offsetHeight
+			style.marginBottom = (-h)px
+			style.opacity = 0
+			setTimeout(&,250) do parentNode.removeChild(self)
+			self
 
 tag repl-console
 	css cursor:default $count:0
@@ -139,13 +141,27 @@ tag repl-console
 		# $body.appendChild <div.item> any(params,context,0)
 		let item = <repl-console-item.item context=context data=params>
 		if isTransient
+			let stack = $transientItems ||= []
+			let count = $snackbars.children.length
+			let fast = stack.length > 5
 			let now = Date.now!
 			let delay = $nextTime ? Math.max($nextTime - now,0) : 0
-			$nextTime = now + delay + 100
+
+			$nextTime = now + delay + (fast ? 0 : 50)
+			$snackbars.flags.toggle('stacked',fast)
+
+			while stack.length > 5
+				stack.shift!.hide!
+
 			setTimeout(&,delay) do
+				stack.push(item)
 				$snackbars.appendChild(item)
 				item.show!
-				setTimeout(&,1500) do item.hide!
+				setTimeout(&,1500) do
+					let idx = stack.indexOf(item)
+					if idx >= 0
+						item.hide!
+						stack.splice(idx,1)
 		else
 			$body.appendChild(item)
 		count++
