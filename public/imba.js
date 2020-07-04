@@ -1021,6 +1021,24 @@ class Flags {
 		
 		if (bool === undefined) { bool = !this.contains(ref) };
 		return bool ? this.add(ref) : this.remove(ref);
+		
+	}
+	incr(ref){
+		
+		let m = this.stacks || (this.stacks = {});
+		let c = m[ref] || 0;
+		if (c < 1) { this.add(ref) };
+		m[ref] = Math.max(c,0) + 1;
+		return this;
+	}
+	
+	decr(ref){
+		
+		let m = this.stacks || (this.stacks = {});
+		let c = m[ref] || 0;
+		if (c == 1) { this.remove(ref) };
+		m[ref] = Math.max(c,1) - 1;
+		return this;
 	}
 	
 	valueOf(){
@@ -1222,13 +1240,13 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (ms = 250){
 	if (this.handler.throttled) { return false };
 	this.handler.throttled = true;
 	
-	let cl = this.element.flags.add('_cooldown_');
+	this.element.flags.incr('throttled');
 	
-	this.handler.once('idle',function() {
+	imba.once(this.current,'end',function() {
 		
 		return setTimeout(function() {
 			
-			self.element.flags.remove('_cooldown_');
+			self.element.flags.decr('throttled');
 			return self.handler.throttled = false;
 		},ms);
 	});
@@ -1236,25 +1254,22 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (ms = 250){
 	
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].flag$mod = function (name,sel){
-	var self = this;
 	
 	
 	let el = (sel instanceof globalThis.Element) ? sel : ((sel ? this.element.closest(sel) : this.element));
 	if (!el) { return true };
 	let step = this.step;
-	this.handler[step] = this.id;
+	this.state[step] = this.id;
 	
-	el.flags.add(name);
+	el.flags.incr(name);
+	
 	let ts = Date.now();
-	this.handler.once('idle',function() {
+	
+	imba.once(this.current,'end',function() {
 		
 		let elapsed = Date.now() - ts;
 		let delay = Math.max(250 - elapsed,0);
-		return setTimeout(function() {
-			
-			
-			if (self.handler[step] == self.id) { return el.flags.remove(name) };
-		},delay);
+		return setTimeout(function() { return el.flags.decr(name); },delay);
 	});
 	
 	return true;
@@ -1313,8 +1328,11 @@ class EventHandler {
 			handler: this,
 			id: ++this.count,
 			step: -1,
-			state: this.state
+			state: this.state,
+			current: null
 		};
+		
+		state.current = state;
 		
 		if (event.handle$mod) {
 			
@@ -1330,6 +1348,8 @@ class EventHandler {
 			
 			return;
 		};
+		
+		
 		
 		this.currentEvents || (this.currentEvents = new Set);
 		this.currentEvents.add(event);
@@ -1349,7 +1369,7 @@ class EventHandler {
 			};
 			
 			let modargs = null;
-			let args = [event,this];
+			let args = [event,state];
 			let res = undefined;
 			let context = null;
 			let m;
@@ -1387,7 +1407,7 @@ class EventHandler {
 				};
 			};
 			
-			if (typeof handler == 'string' && (m = handler.match(/^(emit|flag)-(.+)$/))) {
+			if (typeof handler == 'string' && (m = handler.match(/^(emit|flag|moved|pin)-(.+)$/))) {
 				
 				if (!modargs) { modargs = args = [] };
 				args.unshift(m[2]);
@@ -1485,10 +1505,7 @@ class EventHandler {
 			state.value = res;
 		};
 		
-		if (state.cleanup instanceof Function) {
-			
-			state.cleanup();
-		};
+		imba.emit(state,'end',state);
 		
 		if (commit) imba.$commit();
 		this.currentEvents.delete(event);
@@ -1538,7 +1555,7 @@ var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
-/* harmony import */ var _css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
 function extend$(target,ext){
 	// @ts-ignore
 	var descriptors = Object.getOwnPropertyDescriptors(ext);
@@ -1549,230 +1566,6 @@ function extend$(target,ext){
 
 
 
-
-class Pointer {
-	
-	constructor(e,state){
-		
-		this.state = state;
-		this.start = this.event = e;
-		this.id = e.pointerId;
-		this.t0 = Date.now();
-		this.cx0 = this.cx = e.x;
-		this.cy0 = this.cy = e.y;
-		this.tx0 = this.ty0 = this.ax = this.ay = this.mx = this.my = this.ox = this.oy = 0;
-		this.raw = {x0: e.x,y0: e.y};
-		e.touch = this;
-	}
-	
-	update(e){
-		
-		this.mx = e.x - this.x;
-		this.my = e.y - this.y;
-		this.cx = this.raw.x = e.x;
-		this.cy = this.raw.y = e.y;
-		this.event = e;
-		return e.touch = this;
-		
-	}
-	round(){
-		
-		this.$round = true;
-		this.cx0 = Math.round(this.cx0);
-		this.cy0 = Math.round(this.cy0);
-		this.cx = Math.round(this.cx);
-		this.cy = Math.round(this.cy);
-		return this;
-		
-	}
-	frame(frame,ax = 0,ay = ax){
-		var el;
-		
-		if (typeof frame == 'string') {
-			
-			let sel = frame;
-			console.warn('find frame?',sel,this.state);
-			if (el = this.state.element) {
-				
-				frame = el.closest(sel) || el.querySelector(sel);
-				console.warn('found frame?',frame);
-			};
-		};
-		
-		if (frame instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]) {
-			
-			frame = frame.getBoundingClientRect();
-		};
-		
-		this.frame = frame;
-		this.ax = ax;
-		this.ay = ay;
-		this.ox = frame.left + frame.width * ax;
-		this.oy = frame.top + frame.height * ay;
-		return this;
-		
-	}
-	transform(rect,min,max,step){
-		var el;
-		
-		let count = arguments.length;
-		
-		if (typeof rect == 'string') {
-			
-			let sel = rect;
-			console.warn('find rect?',sel,this.state);
-			if (el = this.state.element) {
-				
-				rect = el.closest(sel) || el.querySelector(sel);
-				console.warn('found frame?',rect);
-			};
-		} else if (typeof rect == 'number') {
-			
-			step = max;
-			max = min;
-			min = rect;
-			rect = this.state.element;
-			count++;
-			
-		};
-		console.warn('transform!!',arguments);
-		
-		if (rect instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]) {
-			
-			rect = rect.getBoundingClientRect();
-		};
-		
-		
-		console.warn('transform',rect,min,max,step,count);
-		
-		if (count == 2) {
-			
-			step = min;
-			count--;
-		};
-		
-		this.xaxis = [rect.left,rect.width,min,max,step];
-		this.yaxis = [rect.top,rect.height,min,max,step];
-		
-		if (count == 1) {
-			
-			this.xaxis[2] = this.yaxis[2] = 0;
-			this.xaxis[3] = this.xaxis[1];
-			this.yaxis[3] = this.yaxis[1];
-		};
-		
-		if (min instanceof Array) {
-			
-			this.xaxis = this.xaxis.slice(0,2).concat(min);
-		};
-		
-		if (max instanceof Array) {
-			
-			this.yaxis = this.yaxis.slice(0,2).concat(max);
-			
-		};
-		if (typeof this.xaxis[4] == 'string') {
-			
-			this.xaxis.splice(4,1,...Object(_css__WEBPACK_IMPORTED_MODULE_1__["parseDimension"])(this.xaxis[4]));
-		};
-		
-		if (typeof this.yaxis[4] == 'string') {
-			
-			return this.yaxis.splice(4,1,...Object(_css__WEBPACK_IMPORTED_MODULE_1__["parseDimension"])(this.yaxis[4]));
-			
-			
-		};
-	}
-	
-	$round(val,step = 1){
-		
-		let inv = 1.0 / step;
-		return Math.round(val * inv) / inv;
-		
-	}
-	$conv(value,trx,clamp){
-		
-		if (!trx) { return value };
-		let offset = trx[0];
-		let size = trx[1];
-		let out = value - offset;
-		let min = trx[2];
-		let max = trx[3];
-		let len = max - min;
-		let step = trx[4] || 0.1;
-		let stepunit = trx[5];
-		
-		if (max != undefined) {
-			
-			out = min + len * (out / size);
-		};
-		if (clamp) {
-			
-			if (min > max) {
-				
-				out = Math.max(max,Math.min(min,out));
-			} else {
-				
-				out = Math.min(max,Math.max(min,out));
-			};
-		};
-		
-		if (stepunit == '%') {
-			
-			step = len * (step / 100);
-		};
-		
-		return this.$round(out,step);
-		
-	}
-	$x(value){
-		
-		return this.$conv(value,this.xaxis,this.clamped);
-	}
-	
-	$y(value){
-		
-		return this.$conv(value,this.yaxis,this.clamped);
-		
-	}
-	get x(){
-		return this.$x(this.raw.x);
-	}
-	get y(){
-		return this.$y(this.raw.y);
-	}
-	get x0(){
-		return this.$x(this.raw.x0);
-	}
-	get y0(){
-		return this.$y(this.raw.y0);
-	}
-	
-	get dx(){
-		
-		return this.x - this.x0;
-	}
-	
-	get dy(){
-		
-		return this.y - this.y0;
-		
-	}
-	get tx(){
-		
-		return this.tx0 + this.dx;
-	}
-	
-	get ty(){
-		
-		return this.ty0 + this.dy;
-		
-	}
-	get dt(){
-		
-		return Date.now() - this.t0;
-	}
-};
 
 extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["PointerEvent"],{
 	
@@ -1805,220 +1598,372 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["PointerEvent"],{
 	lock$mod(dr){
 		
 		return true;
-		
 	},
 });
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$threshold$mod = function (dr){
+
+class Touch {
 	
-	if (!this.state[this.step] && this.event.dr > dr) {
+	constructor(e,handler,el){
 		
-		console.warn('moved past threshold!');
-		this.state[this.step] = true;
-	};
-	return !(!this.state[this.step]);
+		this.phase = 'init';
+		this.events = [];
+		this.event = e;
+		this.handler = handler;
+		this.target = this.currentTarget = el;
+	}
+	
+	set event(value){
+		
+		this.x = value.clientX;
+		this.y = value.clientY;
+		this.events.push(value);
+	}
+	
+	get start(){
+		
+		return this.events[0];
+		
+	}
+	get event(){
+		
+		return this.events[this.events.length - 1];
+	}
+	
+	get elapsed(){
+		
+		return this.event.timeStamp - this.events[0].timeStamp;
+	}
+	
+	get pointerId(){
+		return this.event.pointerId;
+	}
+	get clientX(){
+		return this.event.clientX;
+	}
+	get clientY(){
+		return this.event.clientY;
+	}
+	get offsetX(){
+		return this.event.offsetX;
+	}
+	get offsetY(){
+		return this.event.offsetY;
+	}
+	get type(){
+		return this.event.type;
+	}
+	
+	emit(name,...params){
+		return imba.emit(this,name,params);
+	}
+	on(name,...params){
+		return imba.listen(this,name,...params);
+	}
+	once(name,...params){
+		return imba.once(this,name,...params);
+	}
+	un(name,...params){
+		return imba.unlisten(this,name,...params);
+	}
 };
 
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$sync$mod = function (item){
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$in$mod = function (){
 	
+	return _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod.apply(this,arguments);
 	
-	if (!this.state.offset) {
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$fit$mod = function (){
+	var $state, $step;
+	
+	let o = (($state = this.state)[($step = this.step)] || ($state[$step] = {clamp: true}));
+	return _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod.apply(this,arguments);
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$snap$mod = function (sx = 1,sy = sx){
+	
+	this.event.x = Object(_math__WEBPACK_IMPORTED_MODULE_1__["round"])(this.event.x,sx);
+	this.event.y = Object(_math__WEBPACK_IMPORTED_MODULE_1__["round"])(this.event.y,sy);
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$moved$mod = function (a,b){
+	var self = this, $state, $step;
+	
+	let o = ($state = this.state)[($step = this.step)] || ($state[$step] = {});
+	if (!o.setup) {
 		
-		this.state.offset = {
-			x: item.x,
-			y: item.y
+		let th = a || 4;
+		if (typeof a == 'string' && a.match(/^(up|down|left|right|x|y)$/)) {
+			
+			o.dir = a;
+			th = b || 4;
+		};
+		
+		o.setup = true;
+		let [tv,tu] = Object(_math__WEBPACK_IMPORTED_MODULE_1__["parseDimension"])(th);
+		o.threshold = tv;
+		o.sy = tv;
+		o.x0 = this.event.x;
+		o.y0 = this.event.y;
+		if ((tu && tu != 'px')) {
+			
+			console.warn('only px threshold allowed in @touch.moved');
 		};
 	};
-	console.log('sync touch',this.state.touch.x,this.state.offset.x);
-	item.x = this.state.offset.x + this.state.touch.dx;
-	item.y = this.state.offset.y + this.state.touch.dy;
-	return true;
-};
-
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$round$mod = function (item){
 	
-	this.state.touch.round();
-	return true;
-	
-};
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$transform$mod = function (...params){
-	
-	if (!this.state.transformed) {
+	if (o.active) {
 		
-		this.state.transformed = true;
-		this.state.touch.transform(...params);
+		return true;
 	};
-	return true;
+	
+	let th = o.threshold;
+	let dx = this.event.x - o.x0;
+	let dy = this.event.y - o.y0;
+	let hit = false;
+	
+	if (dx > th && (o.dir == 'right' || o.dir == 'x')) {
+		
+		hit = true;
+		
+	};
+	if (!hit && dx < -th && (o.dir == 'left' || o.dir == 'x')) {
+		
+		hit = true;
+		
+	};
+	if (!hit && dy > th && (o.dir == 'down' || o.dir == 'y')) {
+		
+		hit = true;
+	};
+	
+	if (!hit && dy < -th && (o.dir == 'up' || o.dir == 'y')) {
+		
+		hit = true;
+		
+	};
+	if (!hit) {
+		
+		let dr = Math.sqrt(dx * dx + dy * dy);
+		if (dr > th && !o.dir) {
+			
+			hit = true;
+		};
+	};
+	
+	if (hit) {
+		
+		o.active = true;
+		let pinned = this.state.pinTarget;
+		this.element.flags.incr('_move_');
+		if (pinned) { pinned.flags.incr('_move_') };
+		imba.once(this.current,'end',function() {
+			
+			if (pinned) { pinned.flags.decr('_move_') };
+			return self.element.flags.decr('_move_');
+		});
+	};
+	
+	return !!o.active;
+	
 };
-
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod = function (...params){
+	var $state, $step;
 	
-	if (!this.state.transformed) {
+	let o = (($state = this.state)[($step = this.step)] || ($state[$step] = {}));
+	
+	if (!o.rect) {
 		
-		this.state.transformed = true;
-		this.state.touch.transform(...params);
+		let el = this.element;
+		let len = params.length;
+		let box = params[0];
+		let min = 0;
+		let max = '100%';
+		let snap = 0.01;
+		let typ = typeof box;
 		
+		if (typ == 'number' || (typ == 'string' && (/^([-+]?\d[\d\.]*)(%|\w+)$/).test(box)) || (box instanceof Array)) {
+			
+			box = null;
+		} else if (typ == 'string') {
+			
+			if (box == 'this' || box == '') {
+				
+				box = this.element;
+			} else if (box == 'up') {
+				
+				box = this.element.parentNode;
+			} else if (box == 'op') {
+				
+				box = this.element.offsetParent;
+			} else {
+				
+				box = el.closest(box) || el.querySelector(box);
+			};
+		};
+		
+		if (box == null) {
+			
+			len++;
+			params.unshift(box = el);
+		};
+		
+		if (len == 2) {
+			
+			snap = params[1];
+		} else if (len > 2) {
+			
+			[min,max,snap] = params.slice(1);
+		};
+		
+		let rect = box.getBoundingClientRect();
+		if (!((min instanceof Array))) { min = [min,min] };
+		if (!((max instanceof Array))) { max = [max,max] };
+		if (!((snap instanceof Array))) { snap = [snap,snap] };
+		
+		o.rect = rect;
+		o.x = Object(_math__WEBPACK_IMPORTED_MODULE_1__["scale"])(rect.left,rect.right,min[0],max[0],snap[0]);
+		o.y = Object(_math__WEBPACK_IMPORTED_MODULE_1__["scale"])(rect.top,rect.bottom,min[1],max[1],snap[1]);
+		
+		this.state.scaleX = o.x;
+		this.state.scaleY = o.y;
+		this.event.x0 = this.event.x = o.x(this.event.x,o.clamp);
+		this.event.y0 = this.event.y = o.y(this.event.y,o.clamp);
+	} else {
+		
+		let x = this.event.x = o.x(this.event.x,o.clamp);
+		let y = this.event.y = o.y(this.event.y,o.clamp);
+		this.event.dx = x - this.event.x0;
+		this.event.dy = y - this.event.y0;
+	};
+	
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$pin$mod = function (...params){
+	
+	let o = this.state[this.step];
+	
+	if (!o) {
+		
+		let box = params[0];
+		if (typeof box == 'string') {
+			
+			box = this.element.closest(box) || this.element.querySelector(box);
+		};
+		if (!((box instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]))) {
+			
+			params.unshift(box = this.state.target);
+		};
+		
+		let ax = params[1] || 0;
+		let ay = (params[2] == null) ? (params[2] = ax) : params[2];
+		let rect = box.getBoundingClientRect();
+		
+		o = this.state[this.step] = {
+			x: this.state.clientX - (rect.left + rect.width * ax),
+			y: this.state.clientY - (rect.top + rect.height * ay)
+		};
+		
+		if (box) {
+			
+			this.state.pinTarget = box;
+			box.flags.incr('_touch_');
+			this.state.once('end',function() { return box.flags.decr('_touch_'); });
+		};
+	};
+	
+	this.event.x -= o.x;
+	this.event.y -= o.y;
+	return true;
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$lock$mod = function (...params){
+	
+	let o = this.state[this.step];
+	
+	if (!o) {
+		
+		o = this.state[this.step] = this.state.target.style;
+		let prev = o.touchAction;
+		o.touchAction = 'none';
+		this.state.once('end',function() { return o.removeProperty('touch-action'); });
 	};
 	return true;
 	
-	
 };
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$fit$mod = function (...params){
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$sync$mod = function (item,xalias = 'x',yalias = 'y'){
 	
-	if (!this.state.transformed) {
+	let o = this.state[this.step];
+	
+	if (!o) {
 		
-		this.state.transformed = true;
-		this.state.touch.transform(...params);
-		this.state.touch.clamped = true;
+		o = this.state[this.step] = {
+			x: item[xalias] || 0,
+			y: item[yalias] || 0,
+			tx: this.state.x,
+			ty: this.state.y
+		};
 	};
+	
+	if (xalias) { item[xalias] = o.x + (this.state.x - o.tx) };
+	if (yalias) { item[yalias] = o.y + (this.state.y - o.ty) };
 	return true;
 	
 };
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$clamp$mod = function (...params){
-	
-	if (!this.state.transformed) {
-		
-		this.state.transformed = true;
-		this.state.touch.transform(...params);
-		this.state.touch.clamped = true;
-	};
-	return true;
-	
-	
-	
-	
-	
-};
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$handle = function (o = {}){
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$handle = function (){
 	var self = this;
 	
 	let e = this.event;
 	let el = this.element;
-	if (this.state.id) {
+	let id = this.state.pointerId;
+	this.current = this.state;
+	if (id) { return id == e.pointerId };
+	
+	let t = this.state = this.handler.state = this.current = new Touch(e,this.handler,el);
+	
+	let canceller = function(e) {
 		
-		return this.state.id == e.pointerId;
-		
-	};
-	if (this.modifiers.self && this.element != this.event.target) {
-		
+		e.preventDefault();
 		return false;
-	};
-	
-	
-	
-	let t = e.touch = new Pointer(e,this);
-	let x0 = e.x;
-	let y0 = e.y;
-	
-	if (o instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]) {
-		
-		t.originRect = o.getBoundingClientRect();
-		console.warn('adding origin rect',t.originRect);
 		
 	};
-	if (typeof o.x == 'number') {
-		
-		t.tx0 = o.x;
-	};
-	
-	if (typeof o.y == 'number') {
-		
-		t.ty0 = o.y;
-	};
-	
-	this.handler.state = this.state = {id: e.pointerId,touch: t};
-	
-	if (this.modifiers.sync) {
-		
-		let origin = this.modifiers.sync[0];
-		this.state.offset = {
-			x: origin && origin.x || 0,
-			y: origin && origin.y || 0
-		};
-		console.warn('found sync modifier!!',this.state.offset);
-	};
-	
-	let canceller = function() { return false; };
-	let selstart = document.onselectstart;
-	
 	let listener = function(e) {
 		
 		let typ = e.type;
-		let dx = e.dx = e.x - x0;
-		let dy = e.dy = e.y - y0;
-		let dr = e.dr = Math.sqrt(dx * dx + dy * dy);
 		let ph = t.phase;
-		
-		t.update(e);
-		e.tx = t.tx;
-		e.ty = t.ty;
-		self.handler.handleEvent(e);
+		t.event = e;
+		try {
+			self.handler.handleEvent(t);
+		} catch (e) { };
 		
 		if (typ == 'pointerup' || typ == 'pointercancel') {
 			
-			el.releasePointerCapture(e.pointerId);
-			el.flags.remove('_touch_');
-			return document.onselectstart = selstart;
-			
-			
+			return el.releasePointerCapture(e.pointerId);
 		};
 	};
+	
 	let teardown = function(e) {
 		
-		console.warn('teardown pointer');
+		el.flags.decr('_touch_');
+		t.emit('end');
 		self.handler.state = {};
 		el.removeEventListener('pointermove',listener);
 		el.removeEventListener('pointerup',listener);
 		el.removeEventListener('pointercancel',listener);
-		if (document.onselectstart == canceller) {
-			
-			return document.onselectstart = selstart;
-		};
-		
+		return document.removeEventListener('selectstart',canceller);
 	};
 	
+	el.flags.incr('_touch_');
 	el.setPointerCapture(e.pointerId);
 	el.addEventListener('pointermove',listener);
 	el.addEventListener('pointerup',listener);
 	el.addEventListener('pointercancel',listener);
 	el.addEventListener('lostpointercapture',teardown,{once: true});
-	document.onselectstart = canceller;
+	document.addEventListener('selectstart',canceller,{capture: true});
 	
 	listener(e);
 	
 	return false;
-	
-	return true;
-};
-
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointermove$handle = function (){
-	
-	let h = this.handler;
-	let e = this.event;
-	let id = h.pointerId;
-	if (id && e.pointerId != id) { return false };
-	if (h.touch) { h.touch.update(e) };
-	if (typeof h.x0 == 'number') {
-		
-		e.dx = e.x - h.x0;
-		e.dy = e.y - h.y0;
-	};
-	return true;
-};
-
-
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerup$handle = function (){
-	
-	let h = this.handler;
-	let e = this.event;
-	let id = h.pointerId;
-	if (id && e.pointerId != id) { return false };
-	if (h.touch) { h.touch.update(e) };
-	if (typeof h.x0 == 'number') {
-		
-		e.dx = e.x - h.x0;
-		e.dy = e.y - h.y0;
-	};
-	return true;
 };
 
 
@@ -3442,6 +3387,68 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["Element"],{
 		return getResizeObserver().observe(this);
 	},
 });
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "round", function() { return round; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clamp", function() { return clamp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseDimension", function() { return parseDimension; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scale", function() { return scale; });
+function round(val,step = 1){
+	
+	let inv = 1.0 / step;
+	return Math.round(val * inv) / inv;
+	
+};
+function clamp(val,min,max){
+	
+	if (min > max) {
+		
+		return Math.max(max,Math.min(min,val));
+	} else {
+		
+		return Math.min(max,Math.max(min,val));
+	};
+};
+
+function parseDimension(val){
+	
+	if (typeof val == 'string') {
+		
+		let [m,num,unit] = val.match(/^([-+]?[\d\.]+)(%|\w+)$/);
+		return [parseFloat(num),unit];
+	} else if (typeof val == 'number') {
+		
+		return [val];
+	};
+};
+
+function scale(a0,a1,b0r,b1r,s = 0.1){
+	
+	let [b0,b0u] = parseDimension(b0r);
+	let [b1,b1u] = parseDimension(b1r);
+	let [sv,su] = parseDimension(s);
+	
+	if (b0u == '%') { b0 = (a1 - a0) * (b0 / 100) };
+	if (b1u == '%') { b1 = (a1 - a0) * (b1 / 100) };
+	
+	if (su == '%') { sv = (b1 - b0) * (sv / 100) };
+	
+	return function(value,fit) {
+		
+		let pct = (value - a0) / (a1 - a0);
+		let val = b0 + (b1 - b0) * pct;
+		
+		if (s) { val = round(val,sv) };
+		if (fit) { val = clamp(val,b0,b1) };
+		return val;
+	};
+};
 
 
 /***/ })

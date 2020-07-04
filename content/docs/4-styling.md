@@ -3,7 +3,7 @@ title: Styling
 multipage: true
 ---
 
-# Basics
+# Styles
 
 First things first; You are free to use external stylesheets like you've always done. Still, with a goal of being the friendliest language for creating web applications we have included styling as a core part of the language. We've also extended the functionality of css to make common patterns friendlier, and to make it easier to keep a consistent design language across your whole project.
 

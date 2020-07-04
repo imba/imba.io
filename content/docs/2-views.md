@@ -190,7 +190,7 @@ To learn more about event handling jump to the [Events section](/docs/events/bas
 
 Fragments can be created using empty tag literals `<>`.
 
-# Declarative Rendering
+## Declarative Rendering
 
 The fact that tag literals generate real dom nodes means that we can add/remove/modify the dom in an imperative way. In theory.
 
@@ -211,7 +211,7 @@ document.body.appendChild view
 ```
 Even tough we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
 
-## Mounting
+### Mounting
 
 To make the tag tree update when our data changes, we need to add pass the tree to `imba.mount`.
 
@@ -252,7 +252,7 @@ imba.mount do
 
 By default Imba will **render your whole application whenever anything *may* have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all that? As long as you have mounted your root element using `imba.mount` you usually don't need to think more about it.
 
-## Updating
+### Updating
 
  The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using await or returning a promise), Imba will also re-render after the promise is finished. Practically all state changes in applications happen as a result of some user interaction.
 

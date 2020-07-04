@@ -85,9 +85,19 @@ css .chip
 
 css .pill radius:2 bg:teal2 fs:xs c:teal7 py:1 px:2
 
+css .rect
+	cursor:pointer
+	fs:sm c:black/70
+	d:flex jc:center ai:center radius:sm min-width:8 min-height:8
+	bg:purple3/60 @hover:purple3/90
+
 css .tags
 	m: -4px
 	> m:4px
+
+css .handle
+	pos:absolute fs:sm w:1em h:1em mt:-0.5em ml:-0.5em bg:purple6 radius:xs
+	top:0 left:0 
 
 css .panel
 	d:flex fld:column flex:1

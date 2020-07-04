@@ -94,14 +94,15 @@ tag app-repl-preview
 		self
 
 	def resize e,dir
-		let t = e.touch
-		$resizing = e.touch
-
+		$resizing = e
+		
 		if e.type == 'pointerup'
 			flags.remove('resizing')
 			$resizing = null
-			if t.dt < 100
+			if e.elapsed < 100
 				return size = 'auto-auto'
+
+		let t = e.data ||= {}
 
 		unless t.sx
 			flags.add('resizing')
@@ -124,8 +125,8 @@ tag app-repl-preview
 		let halfw = (b.width / 2)
 		let halfh = (b.height / 2)
 
-		let relx = (t.x - (b.left + halfw))
-		let rely = (t.y - (b.top + halfh))
+		let relx = (e.x - (b.left + halfw))
+		let rely = (e.y - (b.top + halfh))
 		let absx = Math.abs(relx)
 		let absy = Math.abs(rely)
 
@@ -149,8 +150,6 @@ tag app-repl-preview
 				h = Math.max(absy * 2,260)
 
 		size = "{t.rw == 'auto' ? t.rw : Math.round(w)}-{t.rh == 'auto' ? t.rh : Math.round(h)}"
-		# console.log 'resize',w,h,dir,size
-		# console.log 'yes!!',e.touch,w,h,size,t.bounds,absx,halfw
 
 	css d:flex fld:column pos:relative min-width:40px
 
