@@ -630,7 +630,7 @@ imba.mount do <>
 
 A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you'd want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.
 
-### fit ( box )
+### fit ( box, snap = 1 )
 
 The first argument of fit is the box you want to fit to. If box is a string it will be treated as a selector and try to look up an element matching the selector
 
@@ -643,39 +643,26 @@ tag Fitted
 	<self @touch.fit(self)=(y=e.y)> "box.y {y}"
 tag Unfitted
 	<self @touch=(y=e.y)> "window.y {y}"
+tag Snapped
+	<self @touch.fit(self,2)=(y=e.y)> "box.y {y}"
 # ---
 imba.mount do <>
 	<Fitted.rect>
 	<Unfitted.rect>
+	<Snapped.rect>
 ```
 
+### fit ( box, start, end, snap = 1)
 
-### fit ( box, snap )
-
-With two arguments, the second argument denotes that x,y should be rounded to `snap` precision.
-
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect w:80vw
-# ---
-tag Example
-	<self @touch.fit(self,10)=(x=e.x)> "box.x {x}"
-# ---
-imba.mount do <Example.rect>
-```
-
-### fit ( box, start, end, snap = 0)
-
-By passing `start` and `end` values, you can very easily convert the coordinate space of the touch. Imba will use linear interpolation to convert x,y relative to the box, to the interpolated values between start and end. If start, end or snap are arrays - they are treated as. `[value-for-xaxis,value-for-yaxis]`
+By passing `start` and `end` values, you can very easily convert the coordinate space of the touch. Imba will use linear interpolation to convert x,y relative to the box, to the interpolated values between start and end.
 ```imba
 # ~preview=lg
 import 'util/styles'
 css .rect pos:absolute inset:4
 # ---
 tag Example
-	# convert x,y to go from 0 in top left corner to 1 in bottom right
-	<self @touch.fit(self,0,1,0.1)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+	# convert x,y to go from 0 in top left corner to 100 in bottom right
+	<self @touch.fit(self,0,100)=(x=e.x,y=e.y)> "x:{x} y:{y}"
 # ---
 imba.mount <Example.rect>
 ```
@@ -686,23 +673,12 @@ import 'util/styles'
 css .rect pos:absolute inset:4
 # ---
 tag Example
-	# convert x,y to go from 0 in top left corner to 1 in bottom right
-	<self @touch.fit(self,-50,50,1)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+	# convert x,y to go from -50 to +50 with 0.1 increments
+	<self @touch.fit(self,-50,50,0.1)=(x=e.x,y=e.y)> "x:{x} y:{y}"
 # ---
 imba.mount <Example.rect>
 ```
 
-
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	<self @touch.fit(self,-10,20,0.5)=(x=e.x,y=e.y)> "x:{x} y:{y}"
-# ---
-imba.mount <Example.rect>
-```
 
 You can also use percentages in start and end to reference the width and height of the box we're mapping to.
 ```imba
@@ -712,7 +688,7 @@ css .rect pos:absolute inset:4
 # ---
 tag Example
 	# this will essentially flip the origin from top left to bottom right
-	<self @touch.fit(self,100%,0,1)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+	<self @touch.fit(self,100%,0)=(x=e.x,y=e.y)> "x:{x} y:{y}"
 # ---
 imba.mount <Example.rect>
 ```
@@ -724,7 +700,7 @@ css .rect pos:absolute inset:4
 # ---
 tag Example
 	# will flip and center the y axis
-	<self @touch.fit(self,[0,50%],[100%,-50%],1)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+	<self @touch.fit(self,[0,50%],[100%,-50%])=(x=e.x,y=e.y)> "x:{x} y:{y}"
 # ---
 imba.mount <Example.rect>
 ```
@@ -764,81 +740,20 @@ tag Panel
 	prop split = 70
 
 	<self[d:flex pos:absolute inset:0]>
-		<div[p:2 flex-basis:{split}%]> "master {split}%"
-		<div[fls:0 w:3 bg:gray2 @hover:gray3 @touch:blue4]
+		<div[bg:teal2 flex-basis:{split}%]>
+		<div[fls:0 w:2 bg:teal3 @touch:teal5]
 			@touch.pin.fit(self,0,100,2)=(split=e.x)>
-		<div[p:2 flex:1]> "detail"
+		<div[bg:teal1 flex:1]>
 
 imba.mount do <Panel>
 ```
-
-## Reframing
 
 ## Pinning
 
-## Syncing
-
-## Styling
-
-### 2 dimensions
-```imba
-# ~preview=small
-import 'util/styles'
-
-let xclamp = [0,100,2]
-
-tag MultiSlide
-	prop min = 0
-	prop max = 100
-	prop step = 1
-	prop value = [0,0]
-	
-	css d:block bg:white pos:relative size:10rem
-
-	css .box
-		pos:absolute inset:6 bg:white shadow:inset 0 0 0 1px gray4/50
-	
-	css $area
-		pos:absolute border:1px dashed gray4 t:0 l:0 bg:gray4/20
-		$thumb pos:absolute r:-2 b:-2 d:block size:4 bg:blue7 radius:sm
-	
-	def update e do value = [e.x,e.y]
-	get l do 100 * (value[0] - min) / (max - min)
-	get t do 100 * (value[1] - min) / (max - min)
-
-	def render
-		<self @touch.fit('.box',min,max,step)=update>
-			<.box> <$area[h:{t}% w:{l}%]> <$thumb>
-			<span.value> value.join(',')
-
-
-imba.mount do <>
-	<input type='range' min=0 max=100 bind=xclamp[1]>
-	<input type='range' min=1 max=10 bind=xclamp[2]>
-	<MultiSlide min=xclamp[0] max=xclamp[1] step=xclamp[2]>
-```
-
-| Properties  |  |
-| --- | --- |
-| `touch.x` | The X coordinate of the point |
-| `touch.y` | Current position of touch |
 
 ## Examples
 
-```imba
-# ~preview=small
-import 'util/styles'
-css button pos:relative
-# ---
-let s = {x:0,y:0}
-imba.mount do <section>
-	<div.pill[x:{s.x} y:{s.y}] @touch.round.sync(s)> 'Button'
-	<label> <span> "phase:{s.phase}"
-	<label> <span> "x:{s.x} y:{s.y}"
-	<label> <span> "dx:{s.dx} dy:{s.dy}"
-```
-
-### Draggable
+### Simple draggable
 ```imba
 # ~preview=xl
 import 'util/styles'
@@ -847,68 +762,19 @@ import 'util/styles'
 tag drag-me
 	css d:block pos:relative p:3 m:1 radius:sm cursor:default
 		bg:white shadow:sm
-		@touch scale:1.05 rotate:2deg zi:2 shadow:lg
-
-	def build
-		x = y = 0
-
-	def drag e
-		if e.type == 'pointerup'
-			x += dx
-			y += dy
-			dx = dy = 0
-		else
-			dx = e.dx
-			dy = e.dy
-
-	def render
-		<self[x:{x+dx} y:{y+dy}] @touch.update(self)=drag> 'drag me'
-
-imba.mount do <div.grid>
-	<drag-me>
-	<drag-me>
-	<drag-me>
-```
-
-### Draggable using sync
-```imba
-# ~preview=xl
-import 'util/styles'
-# css body bg:gray1
-# ---
-tag drag-me
-	css d:block pos:relative p:3 m:1 radius:sm cursor:default
-		bg:white shadow:sm
-		@touch scale:1.05 rotate:2deg zi:2 shadow:lg
+		@touch scale:1.02
+		@move scale:1.05 rotate:2deg zi:2 shadow:lg
 
 	def build
 		x = y = 0
 
 	def render
-		<self[x:{x} y:{y}] @touch.sync(self)> 'drag me'
+		<self[x:{x} y:{y}] @touch.moved.sync(self)> 'drag me'
 
 imba.mount do <div.grid>
 	<drag-me>
 	<drag-me>
 	<drag-me>
-```
-
-### Separator
-```imba
-# ~preview=xl
-import 'util/styles'
-# css body bg:gray1
-# ---
-tag Panel
-	prop split = 0.3
-
-	def render
-		<self[d:flex w:80vw h:80vh bg:teal1]>
-			<div[flex:1]>
-			<div[w:3 bg:teal3] @touch.pin(1).fit(self,1,0,0.01)=(split = e.x)>
-			<div[bg:teal2 flb:{split * 100}%]>
-
-imba.mount do <Panel>
 ```
 
 ### Paint

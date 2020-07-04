@@ -1,15 +1,16 @@
-const DPR = window.devicePixelRatio
+const dpr = window.devicePixelRatio
 
 tag app-paint
+	prop size = 500
+	
 	def draw e
-		let path = e.touch.path ||= new Path2D
-		# $path = new Path2D if e.type == 'pointerdown'
-		path.lineTo(e.offsetX * DPR,e.offsetY * DPR)
+		let path = e.$path ||= new Path2D
+		path.lineTo(e.x * dpr,e.y * dpr)
 		$canvas.getContext('2d').stroke(path)
 
 	def render
 		<self[d:block overflow:hidden bg:blue1]>
-			<canvas$canvas[size:1000px]
-				width=2000 height=2000 @touch=draw>
+			<canvas$canvas[size:{size}px]
+				width=size*dpr height=size*dpr @touch.fit(self)=draw>
 
 imba.mount <app-paint>

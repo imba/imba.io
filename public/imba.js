@@ -1778,7 +1778,7 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod = function (...para
 		let box = params[0];
 		let min = 0;
 		let max = '100%';
-		let snap = 0.01;
+		let snap = 1;
 		let typ = typeof box;
 		
 		if (typ == 'number' || (typ == 'string' && (/^([-+]?\d[\d\.]*)(%|\w+)$/).test(box)) || (box instanceof Array)) {
@@ -1812,7 +1812,7 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod = function (...para
 			snap = params[1];
 		} else if (len > 2) {
 			
-			[min,max,snap] = params.slice(1);
+			[min,max,snap = 1] = params.slice(1);
 		};
 		
 		let rect = box.getBoundingClientRect();
