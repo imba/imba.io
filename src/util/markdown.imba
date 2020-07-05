@@ -10,6 +10,8 @@ marked.setOptions({
 	smartypants: false
 })
 
+var state = {}
+
 var slugify = do(str)
 	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
 	var from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
@@ -58,8 +60,18 @@ def renderer.heading text, level
 		flags.push(flag)
 		return ''
 
+	if level == 1
+		console.log 'heading',text
+
+	if let n = text.match(/^-+\s/)
+		meta.nesting = n[0].length - 1
+		text = text.slice(n[0].length)
+
 	var plain = text.replace(/\<[^\>]+\>/g,'')
 	var slug = slugify(plain)
+	let typ = "h{level}"
+	let pre = "<!--:{typ}:-->"
+
 	meta.title = unescape(text)
 
 	# flags.push("next-{next.type}")
@@ -70,10 +82,11 @@ def renderer.heading text, level
 
 	if text.indexOf('<code') == 0
 		# should add code-flag?
-		
 		text = text.replace(/^\<code/,'<h'+level)
 		text = text.replace('</code>','</h'+level+'>')
 		return text
+
+	state.headings.push(meta)
 
 	var stack = this.toc.stack
 
@@ -85,7 +98,8 @@ def renderer.heading text, level
 	while stack[slug]
 		slug = slug + '-'
 	
-	stack[slug] = meta.slug = slug
+	if level < 4
+		stack[slug] = meta.slug = slug
 
 	if level < 3
 		if par
@@ -95,9 +109,8 @@ def renderer.heading text, level
 
 	stack.push(meta)
 
-	let typ = "h{level}"
 	let node = <{typ} .{flags.join(' ')}> <span innerHTML=text>
-	let pre = "<!--:{typ}:-->"
+	
 	let anchor = ''
 
 	if level == 2
@@ -147,6 +160,11 @@ export def render content, o = {}
 			object.meta[k] = (/^\d+$/).test(v) ? parseFloat(v) : v
 		return ''
 
+	state = {
+		toc: object.toc
+		headers: []
+	}
+
 	var opts = {
 		gfm: true
 		tables: true
@@ -161,7 +179,6 @@ export def render content, o = {}
 	object.toc.stack = []
 	object.toc.counter = 0
 	object.toc.options = o
-
 	
 	object.toc.path = o.path or ''
 	# console.log 'sent path',o
@@ -184,16 +201,35 @@ export def render content, o = {}
 	let sections = object.body.split(/<!--:h1:-->/g).slice(1)
 	
 	if object.meta.multipage or sections.length > 1
-
-		object.sections = object.toc.map do(item,i)
-			{
+		let last = null
+		object.sections = []
+		for item,i in object.toc
+			let section = {
 				name: item.slug
 				type: 'file'
 				html: sections[i]
 				title: item.title
 				meta: item.meta
 				sections: item.children.length > 1 ? item.children : []
+				children: []
 			}
+
+			if item.nesting && last
+				let parent = last
+				let n = item.nesting - 1
+
+				while parent && n > 0
+					console.log 'looking for separate nesting?'
+					parent = parent.children[parent.children.length - 1]
+					n--
+				
+				if parent
+					for sub in parent.sections
+						if sub.title == item.title
+							sub.hidden = yes						
+					parent.children.push(section)
+			else
+				object.sections.push(last = section)
 
 		if object.meta.multipage
 			object.body = ''
