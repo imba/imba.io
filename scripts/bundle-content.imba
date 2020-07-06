@@ -76,24 +76,29 @@ watcher.on('all') do
 			return
 
 		if item.ext == 'md'
-			let md = marked.render(item.body,path: id)
-			item.html = md.body
-			item.toc = md.toc
-			Object.assign(item,md.meta)
+			item.name = item.name.slice(0,-3)
 
-			if md.sections
-				item.children = md.sections
-				item.name = item.name.slice(0,-3) # remove markdown
+			let md = marked.render(item.body,path: id,file:item)
+			# item.html = md.body
+			# item.toc = md.toc
+			# Object.assign(item,md.meta)
+			Object.assign(item,md)
+
+			if item.hidden
+				return
+
+			# if md.sections
+			#	item.children = md.sections
+			#	item.name = item.name.slice(0,-3) # remove markdown
 			
-			if md.toc and md.toc.length > 1
-				item.sections = md.toc
+			# if md.toc and md.toc.length > 1
+			#	item.sections = md.toc
 
-			if name == 'meta.md'
+			if false and name == 'meta.md'
 				Object.assign(up,md.meta)
 				
 				for own k,v of md
 					up[k] = v
-				# console.log 'did set meta',up
 				return
 	
 	if item

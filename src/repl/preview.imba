@@ -205,6 +205,9 @@ tag app-repl-preview
 		console.log 'intersect',e.ratio,e.isIntersecting
 		$intersects ||= []
 		$intersects.push(e)
+	
+	def unmount
+		$entered = $refreshed = no
 
 	def render
 		recalc!

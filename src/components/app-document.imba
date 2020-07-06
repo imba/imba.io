@@ -1,4 +1,4 @@
-import {ls} from '../store'
+import {ls,types,Section,Doc} from '../store'
 import { @watch } from '../decorators'
 
 tag doc-anchor
@@ -30,8 +30,10 @@ tag app-document-nav
 			.parent d:none
 
 	def render
-		let prev = data.prev # and data.prev.last
-		let next = data.next # and data.next.first
+		let prev = data.prev
+		let next = data.next
+
+		console.log 'prev and next',prev,next
 
 		<self[max-width:768px px:4 d:flex jc:space-between fs.top:sm d@md.top:none]>
 			if prev
@@ -51,6 +53,71 @@ tag app-document-nav
 						<line x1="5" y1="12" x2="19" y2="12">
 						<polyline points="12 5 19 12 12 19">
 
+
+tag doc-section-link
+	css a d:flex fld:column p:2 px:3 radius:md bc:gray3 bw:1 my:2 jc:center ai:flex-start
+		bg@hover:gray1
+
+	css .title fs:md fw:500 d:block c:teal6
+	css .desc fs:sm c:gray5 m:0 d@empty:none
+	<self.{data.flagstr} .l{level}> <a href=data.href>
+		<span.title> data.title
+		<p.desc innerHTML=data.desc>
+
+tag doc-section
+	def toggle
+		# flags.toggle('collapsed')
+		self
+
+	css &.collapsed
+		> .body d:none
+
+	css .html > * mt@first:0 mb@last:0
+
+	css &
+		mt:4 .h1:8 .h2:8 .h3:8
+
+	# css &.tip border:1px solid gray3/50 radius:md p:4 bg:orange2
+
+	css .head pos:relative c:#3A4652 bc:gray3/50
+		&.l0 fs:28px/1.4 fw:600 pb:2
+		&.l1 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
+		&.l2 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
+		&.tip fs:16px/1.2 fw:500 pb:3 bbw:0 mb:0
+		&.snippet,&.tip,&.h5 c:teal9 fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bbw:0
+			.title px:2 py:1 radius:md pos:relative bg:teal4 d:inline-block
+			app-code-inline fs:12px va:baseline bg:clear p:0 fw:bold c:inherit
+		&.tip.tip c:orange9
+			.title bg:orange4 prefix:"Tip: "
+	
+	css .body
+		&.snippet,&.h5 pl:4 mt:-2 pb:1
+			p my:3 ml:3
+		
+		&.tip
+			mt:-2 pb:1 ml:3 radius:md p:6 bg:orange2
+			# max-height:80px of:auto
+			p c:gray9/70
+
+
+	css .more d@empty:none my:8
+		@before
+			content: "Table of Contents" d:block
+			c:#3A4652 bc:gray3
+			fs:18px/1.2 fw:500 pb:3
+
+	def render
+		<self .{data.flagstr}>
+			if data.head
+				<.head.html .{data.flagstr} .l{level} @click=toggle>
+					<.title innerHTML=data.head>
+			if (data isa Section or level == 0)
+				<.body.{data.flagstr}>
+					<.content.html innerHTML=(data.html or '')>
+					<.sections>
+						for item in data.sections
+							<doc-section data=item level=(level+1)>
+
 tag app-document
 	@watch prop data
 
@@ -65,6 +132,10 @@ tag app-document
 		line-height: 1.4em
 		color: #3a4652
 		font-weight: 600
+
+	css doc-section
+		my:1em d:block
+		mt:4 .h2:8 .h1:8
 
 	css h2
 		font-size: 22px
@@ -167,7 +238,8 @@ tag app-document
 		mt: 1rem
 
 	css app-code-block + blockquote
-		pt:4 pb:3 px:5 mt:-1 bw:1 bc:gray3 bg:white radius:sm color:gray6
+		# pt:4 pb:3 px:5 mt:-1 bw:1 bc:gray3 bg:white radius:sm color:gray6
+		border-left: 3px solid gray2 mx:3 p:0 pl:1 color:gray6 bg:clear
 
 	# table stlff
 	css table
@@ -210,9 +282,13 @@ tag app-document
 
 	def render
 		<self.markdown[d:block pb:24]>
-			<app-document-nav.top data=data>
-			<div$content[max-width:768px px:6] innerHTML=data.html>
-			<app-document-nav.bottom[pt:2] data=data>
+			# "Hello"
+			# <app-document-nav.top data=data>
+			<div$content[max-width:768px px:6]>
+				<doc-section data=data level=0>
+				<.toc> for item in data.docs
+					<doc-section-link data=item level=(level+1)>
+			<app-document-nav data=data>
 
 	def dataDidSet data
 		console.log 'doc data was set',data

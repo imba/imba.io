@@ -10,7 +10,7 @@ marked.setOptions({
 	smartypants: false
 })
 
-var state = {}
+var state = {headings: []}
 
 var slugify = do(str)
 	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
@@ -44,19 +44,32 @@ def renderer.link href, title, text
 		return (<a.scrimba href=href title=title target='_blank'> <span innerHTML=text>)
 	return (<a href=href title=title> <span innerHTML=text>)
 
+def renderer.blockquote quote
+	console.log 'we are inside the blockquote'
+	return String(<blockquote innerHTML=quote>)
+
+def renderer.paragraph text
+	console.log 'we are inside paragraph'
+	return String(<p innerHTML=text>)
+
 def renderer.heading text, level
-	var next = this.parser.peek || {}
-	var flags = ["md-h{level}"]
-	var meta = {flags: flags, level: level, children: [], meta: {}}
+	let typ = "h{level}"
+	var flags = [typ]
+	var meta = {type: 'section', hlevel: level, flags: flags, level: level * 10, children: [], meta: {},options: {}}
 	var m 
+
+	if level == 6
+		console.log 'FOUND LEVEL 6',text
+		state.section.desc = text
+		return ""
 
 	while m = text.match(/^\.(\w+)/)
 		flags.push(m[1])
 		text = text.slice(m[0].length)
 
-	text = text.replace(/\s*\[(\w+)\]\s*/g) do(m,key)
+	text = text.replace(/\s*\[([\w\-]+)(?:\=([^\]]+))?\]\s*/g) do(m,key,value)
 		let flag = key.toLowerCase!
-		meta.meta[flag] = yes
+		meta.options[flag] = value or yes
 		flags.push(flag)
 		return ''
 
@@ -64,21 +77,15 @@ def renderer.heading text, level
 		console.log 'heading',text
 
 	if let n = text.match(/^-+\s/)
-		meta.nesting = n[0].length - 1
+		meta.nesting = n[0].length
+		meta.level += meta.nesting
+		meta.type = 'doc'
 		text = text.slice(n[0].length)
 
 	var plain = text.replace(/\<[^\>]+\>/g,'')
-	var slug = slugify(plain)
-	let typ = "h{level}"
-	let pre = "<!--:{typ}:-->"
 
+	meta.slug = slugify(plain)
 	meta.title = unescape(text)
-
-	# flags.push("next-{next.type}")
-
-	if next.type == 'code' and level == 4
-		next.meta = meta
-		return ''
 
 	if text.indexOf('<code') == 0
 		# should add code-flag?
@@ -86,36 +93,11 @@ def renderer.heading text, level
 		text = text.replace('</code>','</h'+level+'>')
 		return text
 
-	state.headings.push(meta)
-
-	var stack = this.toc.stack
-
-	while stack.length and stack[stack.length - 1].level >= level
-		var prev = stack.pop()
-
-	var par = stack[stack.length - 1]
-	
-	while stack[slug]
-		slug = slug + '-'
-	
-	if level < 4
-		stack[slug] = meta.slug = slug
-
-	if level < 3
-		if par
-			par.children.push(meta)
-		else
-			this.toc.push(meta)
-
-	stack.push(meta)
+	state.headings.push(state.section = meta)
 
 	let node = <{typ} .{flags.join(' ')}> <span innerHTML=text>
-	
-	let anchor = ''
-
-	if level == 2
-		anchor = <doc-anchor id=slug>
-	return pre + String(anchor) + String(node)
+	meta.head = String(text)
+	return "<!--:H:-->{String(node)}<!--:/H:-->"
 
 def renderer.codespan code
 	code = unescape(code)
@@ -157,12 +139,11 @@ export def render content, o = {}
 	content = content.replace(/^---\n([^]+)\n---/m) do(m,inside)
 		inside.split('\n').map do |line|
 			var [k,v] = line.split(/\s*\:\s*/)
-			object.meta[k] = (/^\d+$/).test(v) ? parseFloat(v) : v
-		return ''
+			object[k] = (/^\d+$/).test(v) ? parseFloat(v) : v
 
 	state = {
 		toc: object.toc
-		headers: []
+		headings: []
 	}
 
 	var opts = {
@@ -191,54 +172,57 @@ export def render content, o = {}
 	opts.parser = parser
 	object.body = parser.parse(tokens)
 
-	console.log 'toc',object.toc.map do String($1.title)
-	# unless object.meta.title
-	#	if let h1 = object.toc[0]
-	#		object.meta.title = h1.title
-
+	# console.log 'toc',object.toc.map do String($1.title)
 	renderer.toc = null
 
-	let sections = object.body.split(/<!--:h1:-->/g).slice(1)
-	
-	if object.meta.multipage or sections.length > 1
-		let last = null
-		object.sections = []
-		for item,i in object.toc
-			let section = {
-				name: item.slug
-				type: 'file'
-				html: sections[i]
-				title: item.title
-				meta: item.meta
-				sections: item.children.length > 1 ? item.children : []
-				children: []
-			}
+	let segments = object.body.split(/<!--:H:-->.*?<!--:\/H:-->/g)
 
-			if item.nesting && last
-				let parent = last
-				let n = item.nesting - 1
+	let children = []
+	let stack = []
+	let sections = []
+	object.level = 0
+	object.children = []
+	object.type
+	let prev = object
+	let intro = segments[0]
 
-				while parent && n > 0
-					console.log 'looking for separate nesting?'
-					parent = parent.children[parent.children.length - 1]
-					n--
-				
-				if parent
-					for sub in parent.sections
-						if sub.title == item.title
-							sub.hidden = yes						
-					parent.children.push(section)
-			else
-				object.sections.push(last = section)
+	for html,i in segments.slice(1)
+		let up = prev
+		let meta = state.headings[i]
+		# meta.title,up && up.level
+		let section = Object.assign({},meta,{children: []})
+		let level = meta.level
 
-		if object.meta.multipage
-			object.body = ''
-			object.toc = null
-		else
-			let intro = object.sections.shift!
-			object.body = intro.html
-	else
-		if object.toc.length == 1
-			object.meta.title = object.toc[0].title
-			object.toc = object.toc[0].children
+		section.name = meta.slug
+		section.html = html
+		sections.push(section)
+
+		while up.parent and level <= up.level
+			up = up.parent
+
+		section.parent = up
+
+		if up == object
+			section.type = 'doc'
+
+		up.children.push(section)
+		prev = section
+		# console.log "{section.title}"
+
+	let print = do(section,pre = '')
+		console.log "{pre}{section.title} ({section.type} {section.level} {section.flags}) - {section.desc}"
+		for child in section.children
+			print(child,pre + '  ')
+
+	print(object)
+
+	if object.children.length > 1
+		object.type = 'guide'
+
+	delete object.toc
+
+	for section in sections
+		# section.level = section.hlevel
+		delete section.parent
+
 	return object
