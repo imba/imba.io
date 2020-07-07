@@ -2887,7 +2887,7 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 ### alignment
 
-<doc-style-aliases cols='3-transposed' data-regex='^place|^align|^justify|^[paj][ics]' data-exclude='a'></doc-style-aliases>
+<doc-style-aliases cols='3-transposed' data-keyrule='^([paj][ics]|a|j)$'></doc-style-aliases>
 
 ### background
 
@@ -2895,7 +2895,11 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 ### border
 
-<doc-style-aliases cols='3' data-regex='border' data-neg='radius'></doc-style-aliases>
+<doc-style-aliases data-keyrule='^bd'></doc-style-aliases>
+
+### border-radius
+
+<doc-style-aliases data-keyrule='^b[tlbr]*r$'></doc-style-aliases>
 
 ### transform
 
@@ -2903,7 +2907,7 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 ### other
 
-<doc-style-aliases data-regex='---' data-include='shadow,opacity,pe,zi,prefix,suffix,us'></doc-style-transform-aliases>
+<doc-style-aliases data-regex='---' data-include='bs,opacity,pe,zi,prefix,suffix,us'></doc-style-transform-aliases>
 
 # - Modifiers
 

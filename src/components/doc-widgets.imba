@@ -52,6 +52,8 @@ css .defs
 
 	@lg [cols=3] &
 		gtc: max-content 1fr max-content 1fr max-content 1fr
+	@lg [cols=4] &
+		gtc: max-content 1fr max-content 1fr max-content 1fr max-content 1fr
 
 css .defbar 
 	border-bottom:1px solid gray3 pb:2
@@ -62,21 +64,25 @@ css .defbar
 tag doc-style-aliases
 	def mount
 		rule = new RegExp(dataset.regex or '---')
+		keyrule = dataset.keyrule && new RegExp(dataset.keyrule or '')
 		negrule = new RegExp(dataset.neg or '---')
 		inc = (dataset.include or '').split(',')
 		exc = (dataset.exclude or '').split(',')
-		console.log 'dehydrate!',rule
+
 		items = for own k,v of aliases
-			continue if exc.indexOf(k) >= 0
-			unless inc.indexOf(k) >= 0
-				if v isa Array
-					continue unless v.some(do rule.test($1) and !negrule.test($1) )
-				elif !rule.test(v) or negrule.test(v)
-					continue
+			if keyrule
+				continue if !keyrule.test(k)
+			else
+				continue if exc.indexOf(k) >= 0
+				unless inc.indexOf(k) >= 0
+					if v isa Array
+						continue unless v.some(do rule.test($1) and !negrule.test($1) )
+					elif !rule.test(v) or negrule.test(v)
+						continue
 			[k,v isa Array ? v : [v]]
 		
 		# items = items.sort(do $1[0] > $2[0] ? 1 : -1)
-		console.log 'dehydrated',rule,items
+		# console.log 'dehydrated',rule,items
 
 	<self[is:block mt:2]>
 		<div.defs> for [alias,name] in items
