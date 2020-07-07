@@ -70,14 +70,14 @@ tag app-root
 
 	def go path
 		self.path = path
-		data ||= ls('/guides')
+		doc ||= ls('/guides')
 
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
 		# redirect home somehow?
 		if path == '/' or path == '/index.html'
-			data = ls('/welcome')
+			doc = ls('/welcome')
 		elif path.indexOf('/examples') != 0
-			data = ls(path)
+			doc = ls(path)
 
 		# if path.indexOf('/guides') == 0 or path == '/' or path == '/index.html' or path.indexOf('/manual') == 0
 		#	doc = ls(path) or ls('/welcome.md')
@@ -90,7 +90,7 @@ tag app-root
 			go(router.url.pathname)
 
 		let repl = router.match('/examples')
-		console.log 'found data',data
+		# console.log 'found data',doc
 		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show!>
 			<div.header>
 				<app-logo[d:flex h:8 c:teal4] route-to='/'>
@@ -103,8 +103,8 @@ tag app-root
 				<div.handle @click=($menu.focus!)> "☰"
 
 			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
-			<app-menu$menu data=data>
-			<app-document$doc[ml@md:$menu-width] data=data .nokeys=repl>
+			<app-menu$menu data=doc>
+			<app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			<div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 			
 

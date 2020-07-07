@@ -2775,7 +2775,7 @@ imba.mount do
         
 ```
 
-### Set properties directly
+### Tip! Set properties directly [tip]
 You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
 
 # - Mixins [skip]

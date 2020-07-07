@@ -1,6 +1,6 @@
 css body p:4
 css label c:gray5 fs:sm/1.2 pos:absolute t:-0.5lh px:1 ml:1 bg:white
-css section,app-list d:grid gap:4 p:4 radius:2 bw:1 bc:gray3 bs:dashed pos:relative
+css section,app-list d:grid gap:4 p:4 br:2 bw:1 bdc:gray3 bds:dashed pos:relative
 
 export css %btn
 	p:2 4 radius:3 fw:500 cursor:pointer

@@ -1,6 +1,6 @@
 import './monaco'
 import { @watch } from '../decorators'
-import {ls, File, Folder} from '../store'
+import {ls, File, Dir} from '../store'
 import * as sw from '../sw/controller'
 
 import './preview'
@@ -129,7 +129,7 @@ tag app-repl
 		let item = ls(match.url)
 		if item isa File
 			currentFile = item
-		elif item isa Folder
+		elif item isa Dir
 			if item.files[0]
 				router.go(item.files[0].path)
 				render!
@@ -143,7 +143,7 @@ tag app-repl
 		pl:0 @md:$sidebar-width
 		d:flex fld:column @lg:row overflow:hidden
 		# l:vflex clip @lg:hflex
-		header p:2 3 d:flex ai:center fs:sm fw:500 c:gray6
+		>>> header p:2 3 d:flex ai:center fs:sm fw:500 c:gray6
 
 	css .tab
 		pos:relative radius:2 py:1 px:2
@@ -207,38 +207,38 @@ tag app-repl
 	def render
 		<self>
 			<div$sidebar tabIndex=-1>
-				<.scroller.(pt:3 l:abs scroll-y inset:0 pb:5)>
-					<div$back.(d:none @lg:block px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline) @click=leave> "⇦ back to site"
+				<.scroller[pt:3 l:abs scroll-y inset:0 pb:5]>
+					<div$back[d:none @lg:block px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline] @click=leave> "⇦ back to site"
 					<div.items> for child in examples.folders
-						<h5.(p:1 7 fs:xs c:gray6 fw:bold tt:uppercase)> child.title
-						<div.(pb:5)> for item in child.folders
+						<h5[p:1 7 fs:xs c:gray6 fw:bold tt:uppercase]> child.title
+						<div[pb:5]> for item in child.folders
 							<a.item route-to.sticky=item.path> item.title
 
-			<div.dark.(pos:relative d:flex fld:column flex:70% bg:#29313f) @resize=relayout>
-				<header.(color:gray6)>
-					<button.(d@md:none fw:bold fs:lg c@hover:blue5 px:1 mr:2 mt:-2px) @click.stop.prevent=$sidebar.focus!> "☰"
+			<div.dark[pos:relative d:flex fld:column flex:70% bg:#29313f] @resize=relayout>
+				<header[c:gray6]>
+					<button[d@md:none fw:bold fs:lg c@hover:blue5 px:1 mr:2 mt:-2px] @click.stop.prevent=$sidebar.focus!> "☰"
 					<span hotkey='left' @click=goPrev>
 					<span hotkey='right' @click=goNext>
 					<span hotkey='esc' @click=leave>
-					<div.(d:flex flw:wrap cursor:default)> for file in project..children
+					<div[d:flex flw:wrap cursor:default]> for file in project..children
 						<a.tab route-to.replace=file.path .dirty=file.dirty .errors=file.hasErrors>
 							<span.circ>
 							<span.name> file.basename
-							<span.ext.{file.ext}.(d@is-imba:none)> "." + file.ext
+							<span[d.imba:none].ext.{file.ext}> "." + file.ext
 				
-					<div.(flex:1)>
+					<div[flex:1]>
 					
-					<span.(opacity:0 fw:bold fs:lg/1 cursor:default) hotkey='command+s' @click.stop=save> ""
-					<button.(d@lg:none fw:bold fs:lg/1 c@hover:blue5) @click=leave> "✕"
+					<span[opacity:0 fw:bold fs:lg/1 cursor:default] hotkey='command+s' @click.stop=save> ""
+					<button[d@lg:none fw:bold fs:lg/1 c@hover:blue5] @click=leave> "✕"
 
-				<div$editor-wrapper.(pos:relative flex:1)> <div$editor.(pos:absolute inset:0)>
+				<div$editor-wrapper[pos:relative flex:1]> <div$editor[pos:absolute inset:0]>
 
-			<div$drawer.light.(d:flex fld:column pos:relative flex:1 1 40% bg:white)>
-				<div$preview.(d:flex fld:column flex:1 bg:white)>
-					<header.(bg:gray2)> <.tab.active> "Preview"
-					<div.(pos:relative flex:1)> <div$browserframe.(pos:absolute inset:0)> $iframe
+			<div$drawer.light[d:flex fld:column pos:relative flex:1 1 40% bg:white]>
+				<div$preview[d:flex fld:column flex:1 bg:white]>
+					<header[bg:gray2]> <.tab.active> "Preview"
+					<div[pos:relative flex:1]> <div$browserframe[pos:absolute inset:0]> $iframe
 				<div.divider>
-				<repl-console$console.(flex-basis:20% d:flex fld:column)>
+				<repl-console$console[flb:20% d:flex fld:column]>
 
 	def rendered
 		monaco

@@ -57,7 +57,7 @@ class Entry
 		data.name.replace(/\.\w+$/,'')
 
 	get folders
-		self.children.filter(do $1 isa Folder)
+		self.children.filter(do $1 isa Dir)
 	
 	get files
 		self.children.filter(do $1 isa File)
@@ -156,7 +156,7 @@ export class Section < Entry
 	get href
 		"{parent.href}#{name}"
 
-export class Folder < Entry
+export class Dir < Entry
 	prop examples
 
 	def constructor data, parent
@@ -185,12 +185,16 @@ export class Root < Entry
 			''
 
 types.file = File
-types.folder = Folder
+types.dir = Dir
 types.doc = Doc
 types.section = Section
 types.guide = Guide
 
+raw.name = ''
+
 export const fs = new Root(raw)
+
+window.FS = fs
 
 const hits = {}
 

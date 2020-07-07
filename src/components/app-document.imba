@@ -8,9 +8,6 @@ tag doc-anchor
 
 	def entered e
 		yes
-		# console.log 'entered anchor',self,e.ratio
-		# if e.ratio > 0
-		#	document.location.hash = '#' + id
 
 	def render
 		<self @intersect.silence=entered>
@@ -34,8 +31,6 @@ tag app-document-nav
 	def render
 		let prev = data.prev
 		let next = data.next
-
-		console.log 'prev and next',prev,next
 
 		<self[max-width:768px px:4 d:flex jc:space-between fs.top:sm d@md.top:none]>
 			if prev
@@ -87,32 +82,36 @@ tag doc-section
 	# css &.tip border:1px solid gray3/50 radius:md p:4 bg:orange2
 
 	css .html
-		> mt@first:0 mb@last:0
+		>> * mt@first:0 mb@last:0
 
 		>>> app-code-inline
 			d:inline-block fs:0.75em ff:mono lh:1.25em
 			bg: gray3/35 br:sm va:middle p:0.1em 5px
 			-webkit-box-decoration-break: clone
 
+	css .snippet,.h5 $bg:orange2 $hbg:teal4 $hc:teal9
+	css .tip $bg:orange2 $hbg:orange4 $hc:orange8
+	css .orange $bg:orange2 $hbg:orange4 $hc:orange8
+	css .yellow $bg:yellow2 $hbg:yellow4 $hc:yellow8
+	css .red $bg:red2 $hbg:red4  $hc:red9
+	css .green $bg:green2 $hbg:green4 $hc:green8
+	css .neutral $bg:gray2 $hbg:gray4 $hc:gray8
+
 	css .head pos:relative c:#3A4652 bc:gray3/50
 		&.l0 fs:28px/1.4 fw:600 pb:2
 		&.l1 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
 		&.l2 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
 		&.tip fs:16px/1.2 fw:500 pb:3 bbw:0 mb:0
-		&.snippet,&.tip,&.h5 c:teal9 fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bbw:0
-			.title px:2 py:1 radius:md pos:relative bg:teal4 d:inline-block
+		&.snippet,&.tip,&.h5 c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bbw:0
+			.title px:2 py:1 radius:md pos:relative bg:$hbg d:inline-block
 			app-code-inline fs:12px va:baseline bg:clear p:0 fw:bold c:inherit
-		&.tip.tip c:orange9
-			.title bg:orange4
-	
+
 	css .body
 		&.snippet,&.h5 pl:4 mt:-2 pb:1
-			p my:3 ml:3
+			>>> p my:3
 		
-		&.tip
-			mt:-2 pb:1 ml:3 radius:md p:6 bg:orange2
-			# max-height:80px of:auto
-			p c:gray9/70
+		&.tip mt:-2 pb:1 ml:3 br:md p:4 bg:$bg
+			>>> p fs:md- c:gray9/70
 
 		>>> p my:3
 
