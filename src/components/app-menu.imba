@@ -27,7 +27,7 @@ tag app-menu-item
 
 	<self[d:block].l{level}>
 		<a.item .l{level} .{data.type} data=data .wip=data.meta.wip route-to=data.href> data.title
-		if data.type == 'doc'
+		if data.type != 'section'
 			<div.children[d@empty:none]>
 				# for sub in data.sections when !sub.hidden
 				#	<a.segment.item.l{level + 1} data=sub .wip=sub.meta.wip href="{data.href}#{sub.slug}" @click.stop=jumpTo(sub,e)> sub.title
