@@ -2692,26 +2692,6 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 	end$(){
 		
 		return this.visit();
-		
-	}
-	cre$(name,parent,flags,text,ctx){
-		
-		var el = document.createElement(name);
-		
-		
-		if (flags) { el.className = flags };
-		
-		if (text !== null) {
-			
-			el.text$(text);
-		};
-		
-		if (parent && (parent instanceof Node)) {
-			
-			el.insertInto$(parent);
-		};
-		
-		return el;
 	}
 	
 	connectedCallback(){

@@ -70,14 +70,14 @@ tag app-root
 
 	def go path
 		self.path = path
-		doc ||= ls('/guides')
+		doc ||= ls('/intro/overview')
 
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
 		# redirect home somehow?
 		if path == '/' or path == '/index.html'
-			doc = ls('/welcome')
+			doc = ls('/intro/overview')
 		elif path.indexOf('/examples') != 0
-			doc = ls(path)
+			doc = ls(path) or ls('/404')
 
 		# if path.indexOf('/guides') == 0 or path == '/' or path == '/index.html' or path.indexOf('/manual') == 0
 		#	doc = ls(path) or ls('/welcome.md')

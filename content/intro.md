@@ -180,10 +180,9 @@ let item\string = window.title
 def multiply a\number, b\number
     a * b
 ```
-Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in vscode and more.
+> Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in vscode and more.
 
 # Examples
-
 
 
 # Installation

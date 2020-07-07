@@ -209,7 +209,7 @@ export def ls path
 			if child
 				item = child
 			else
-				break
+				return null
 		hits[path] = item
 	
 	return hits[path]
