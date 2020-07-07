@@ -96,7 +96,6 @@ tag app-root
 				<app-logo[d:flex h:8 c:teal4] route-to='/'>
 				<div[flex: 1]>
 				<div[d:flex cursor:pointer]>
-					<a.tab route-to.sticky='/guides'> "Docs"
 					<a.tab @click.emit('showide')> "Examples"
 					<a.tab href='https://github.com/imba/imba'> "GitHub"
 					<a.tab href='https://discord.gg/mkcbkRw'> "Chat"
