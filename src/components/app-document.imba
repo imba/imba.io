@@ -1,5 +1,16 @@
-import {ls} from '../store'
+import {ls,types,Section,Doc} from '../store'
 import { @watch } from '../decorators'
+
+import '../repl/preview'
+
+tag doc-anchor
+	css pos:relative top:-14
+
+	def entered e
+		yes
+
+	def render
+		<self @intersect.silence=entered>
 
 tag app-document-nav
 
@@ -18,8 +29,8 @@ tag app-document-nav
 			.parent d:none
 
 	def render
-		let prev = data.prev # and data.prev.last
-		let next = data.next # and data.next.first
+		let prev = data.prev
+		let next = data.next
 
 		<self[max-width:768px px:4 d:flex jc:space-between fs.top:sm d@md.top:none]>
 			if prev
@@ -39,170 +50,133 @@ tag app-document-nav
 						<line x1="5" y1="12" x2="19" y2="12">
 						<polyline points="12 5 19 12 12 19">
 
+
+tag doc-section-link
+	css a d:flex fld:column p:2 px:3 radius:md bc:gray3 bw:1 my:2 jc:center ai:flex-start
+		bg@hover:gray1
+
+	css .title fs:md fw:500 d:block c:teal6
+	css .desc fs:sm c:gray5 m:0 d@empty:none
+	<self.{data.flagstr} .l{level}> <a href=data.href>
+		<span.title> data.title
+		<p.desc innerHTML=data.desc>
+
+tag doc-section
+	def toggle
+		# flags.toggle('collapsed')
+		self
+
+	css >>> a c:blue7 td@hover:underline
+
+	css >>> li
+		fs:md/1.3 py:3px pl:6 pos:relative
+		@before content: "•" w:6 ta:center l:0 pos:absolute d:block c:teal5
+		> p > code d:table mb:1 fw:600
+		> mt@first:0 mb@last:0
+
+	css &.collapsed > .body d:none
+
+	css my:1em d:block
+		mt:4 .h1:8 .h2:8 .h3:8
+
+	# css &.tip border:1px solid gray3/50 radius:md p:4 bg:orange2
+
+	css .html
+		>> * mt@first:0 mb@last:0
+
+		>>> app-code-inline
+			d:inline-block fs:0.75em ff:mono lh:1.25em
+			bg: gray3/35 br:sm va:middle p:0.1em 5px
+			-webkit-box-decoration-break: clone
+
+	css .snippet,.h5 $bg:orange2 $hbg:teal4 $hc:teal9
+	css .tip $bg:orange2 $hbg:orange4 $hc:orange8
+	css .orange $bg:orange2 $hbg:orange4 $hc:orange8
+	css .yellow $bg:yellow2 $hbg:yellow4 $hc:yellow8
+	css .red $bg:red2 $hbg:red4  $hc:red9
+	css .green $bg:green2 $hbg:green4 $hc:green8
+	css .neutral $bg:gray2 $hbg:gray4 $hc:gray8
+
+	css .head pos:relative c:#3A4652 bc:gray3/50
+		&.l0 fs:28px/1.4 fw:600 pb:2
+		&.l1 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
+		&.l2 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
+		&.tip fs:16px/1.2 fw:500 pb:3 bbw:0 mb:0
+		&.snippet,&.tip,&.h5 c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bbw:0
+			.title px:2 py:1 radius:md pos:relative bg:$hbg d:inline-block
+			app-code-inline fs:12px va:baseline bg:clear p:0 fw:bold c:inherit
+
+	css .body
+		&.snippet,&.h5 pl:4 mt:-2 pb:1
+			>>> p my:3
+		
+		&.tip mt:-2 pb:1 ml:3 br:md p:4 bg:$bg
+			>>> p fs:md- c:gray9/70
+
+		>>> p my:3
+
+		>>> blockquote
+			bg:gray2 my:3 p:2 px:3
+			color:gray8 fs:md-
+			p fs:md-
+			> mt@first:0 mb@last:0
+		
+		>>> app-code-block + app-code-block
+			mt:4
+
+		>>> app-code-block + blockquote
+			bdl:3px solid gray2 mx:3 p:0 pl:3 c:gray6 bg:clear
+
+		>>> table
+			w:100% bdb:1px solid gray2
+			color: #4a5568
+			fs: 16px
+			lh: inherit
+
+			&[data-title='table'] thead d:none
+			&[data-title='Aliases'] thead d:none
+
+			th c:gray7 fw:500 py:2 fs:md ta:left
+				@first ws:nowrap w:30px
+
+			td fs:sm p:2 bdt:1px solid gray2 w@first:30px
+
+			.code-inline@only fs:xs/1.4 px:1 py:0 m:0 va:top
+
+	css .more d@empty:none my:8
+		@before
+			content: "Table of Contents" d:block
+			c:#3A4652 bc:gray3
+			fs:18px/1.2 fw:500 pb:3
+
+	def render
+		<self .{data.flagstr}>
+			if data.head
+				<.head.html .{data.flagstr} .l{level} @click=toggle>
+					<.title innerHTML=data.head>
+			if (data isa Section or level == 0)
+				<.body.{data.flagstr}>
+					<.content.html innerHTML=(data.html or '')>
+					<.sections>
+						for item in data.sections
+							<doc-section data=item level=(level+1)>
+
 tag app-document
 	@watch prop data
 
 	css color: #4a5568 lh: 1.625 pt:4
-
-	css a c:blue7 t@hover:underline
-
-	css h1
-		color: #297198
-		margin: 20px 0px 12px
-		font-size: 28px
-		line-height: 1.4em
-		color: #3a4652
-		font-weight: 600
-
-	css h2
-		font-size: 22px
-		margin-top: 30px
-		padding: 10px 0px
-		border-bottom: 1px solid #F3F5F7
-		font-weight: 600
-		margin: 1.5em 0em 0.5em
-		line-height: 1.2em
-		color: #3A4652
-
-	css h3
-		font-size: 18px
-		padding: 10px 0px
-		border-bottom: 1px solid #F3F5F7
-		font-weight: 500
-		line-height: 1.2em
-		margin: 1.5em 0em 0.5em
-		color: #3A4652
-
-	css h4
-		font-size: 1rem
-		font-weight: 500
-		border-bottom: 1px solid #edeff1
-		margin: 1.33em 0 1em
-		color: #3A4652
-		line-height: 1.7em
-		padding: 6px 0px
-
-	css h5
-		position: relative
-		background: teal4
-		color: teal9
-		fs: 14px
-		fw: bold
-		radius: 3px
-		p: 2px 8px
-		mt: 1rem
-		ls: 0.02em
-		d: inline-block
-		top: 8px
-		left: 8px
-		zi: 30
-
-		app-code-inline
-			bg:teal3
-			color: teal8
-			pos:relative
-			top:-1px
-			mr@last:-4px
-
-	css p
-		fw: 400
-		fs: 16px
-		m: 1em 0
-
-	css li
-		font-size: 16px;
-		line-height: 1.3em;
-		padding-top: 0.2em;
-		padding-bottom: 0.2em;
-		padding-left: 24px;
-		position: relative;
-		@before
-			content: ""
-			bg:gray4
-			size:8px
-			display:block
-			radius:full
-			text-align: center
-			position: absolute
-			left: 6px
-			top:9px
-			font-size: inherit
-			line-height: inherit
-			font-style: normal
-			color: #52AF78
-
-		> p > code
-			display: table
-			margin-bottom: 4px
-			font-weight: 600
-
-		> * mt@first:0 mb@last:0
-
-	css blockquote
-		background: #F7F2E3
-		margin: 12px 0px
-		padding: 10px 12px
-		color: #6f6850
-		fs: 15px
-		p fs: 15px
-		> * mt@first:0 mb@last:0
-	
-	css app-code-block + app-code-block
-		mt: 1rem
-
-	css app-code-block + blockquote
-		pt:4 pb:3 px:5 mt:-1 bw:1 bc:gray3 bg:white radius:2
-		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05) color:gray6
-
-	# table stlff
-	css table
-		width: 100%;
-		border-bottom: 1px solid gray200;
-		color: #4a5568;
-		fs: 16px
-		lh: inherit
-
-		&[data-title='table'] thead d: none
-		&[data-title='Aliases'] thead d: none
-
-		th
-			color: gray7
-			fw: 500
-			py: 0.5rem
-			fs:md ta:left
-			ws@first: nowrap
-			width@first: 30px
-
-		td
-			fs: sm
-			p: 0.5rem
-			border-top: 1px solid gray2
-			width.first: 30px
-
-		.code-inline@only-child
-			fs:xs/1.4
-			px:1 py:0
-			m: 0px
-			va: top
-		
-		td.example
-			width: 50px
-			ws: nowrap
-			px: 0px
-	
-	css $content
-		> mb@last:0 mt@first:0
+	css $content > mb@last:0 mt@first:0
 
 	def render
 		<self.markdown[d:block pb:24]>
-			<app-document-nav.top data=data>
-			<div$content[max-width:768px px:6] innerHTML=data.html>
-			<app-document-nav.bottom[pt:2] data=data>
+			<div$content[max-width:768px px:6]>
+				<doc-section data=data level=0>
+				<.toc> for item in data.docs
+					<doc-section-link data=item level=(level+1)>
+			<app-document-nav data=data>
 
 	def dataDidSet data
-		document.body.scrollTop = 0
-		setTimeout(&,200) do document.body.focus!
-
+		yes
 	
 tag embedded-app-document
 	def hydrate

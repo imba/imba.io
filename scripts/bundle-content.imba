@@ -39,11 +39,11 @@ watcher.on('all') do
 	let is-dir = $1.indexOf('Dir') >= 0
 	let rel = path.relative(root,abs)
 	let sorter = path.basename(rel)
-	let src = rel.replace(/\b\d\d\-/g,'')
+	let src = rel.replace(/\b\d+\-/g,'')
 	let name = path.basename(src)
 	let dirname = path.dirname(src)
 
-	return if name == '.DS_Store' or src == ''
+	return if name == '.DS_Store' or src == '' or name.match(/\-(\.\w+)?$/)
 	console.log 'watcher',$1,src,dirname
 
 	let up = map[dirname]
@@ -76,20 +76,29 @@ watcher.on('all') do
 			return
 
 		if item.ext == 'md'
-			let md = marked.render(item.body,path: id)
-			item.html = md.body
-			item.toc = md.toc
-			Object.assign(item,md.meta)
-			if md.sections
-				item.children = md.sections
-				item.name = item.name.slice(0,-3) # remove markdown
+			item.name = item.name.slice(0,-3)
 
-			if name == 'meta.md'
+			let md = marked.render(item.body,path: id,file:item)
+			# item.html = md.body
+			# item.toc = md.toc
+			# Object.assign(item,md.meta)
+			Object.assign(item,md)
+
+			if item.hidden
+				return
+
+			# if md.sections
+			#	item.children = md.sections
+			#	item.name = item.name.slice(0,-3) # remove markdown
+			
+			# if md.toc and md.toc.length > 1
+			#	item.sections = md.toc
+
+			if false and name == 'meta.md'
 				Object.assign(up,md.meta)
 				
 				for own k,v of md
 					up[k] = v
-				# console.log 'did set meta',up
 				return
 	
 	if item
@@ -102,8 +111,16 @@ watcher.on('all') do
 			models[id] = item
 			up.children.push(item)
 
+
 watcher.on 'ready' do
 	save!
 	if process.env.RUN_ONCE
 		process.exit(0)
 
+
+unless process.env.RUN_ONCE
+	chokidar.watch(imbasrc).on('change') do
+		let from = path.resolve(imbasrc,'imba.js')
+		let to =  path.resolve(dest,'imba.js')
+		console.log 'imba runtime changed?!?',from,to
+		fs.copyFileSync(from,to)

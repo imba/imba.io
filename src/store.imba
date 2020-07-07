@@ -1,13 +1,13 @@
 import { @commit } from './decorators'
 import {highlight} from './util/highlight'
 
-export const root = global['content.json']
+export const raw = global['content.json']
 export const files = []
 export const paths = {}
+export const groups = {}
+export const types = {}
 
 window.paths = paths
-
-export const fs = {}
 
 const extToLanguage =
 	js: 'javascript'
@@ -22,25 +22,33 @@ class Entry
 		dirty = no
 		parent = parent
 		data = data
+		# Object.assign(self,data)
 		name = data.name
-		path = data.path or (parent ? parent.path + '/' + data.name : '/' + data.name)
+		type = data.type
+		kind = data.kind
+		level = data.level
 		meta = data.meta || {}
-		slug = (data.slug or data.name.toLowerCase!.replace(/[^\w]/g,'_')).replace(/^(?=\d)/,'_')
-		children = []
-		paths[path] = self
-		paths[path.replace(/\.(\w+)$/,'')] = self
-		href = path
+		html = data.html
+		head = data.head
+		desc = data.desc
+		options = data.options or {}
+		flags = data.flags || []
+		flagstr = flags.join(' ')
+
+		groups[type] ||= []
+		groups[type].push(this)
 
 		if data.children
 			self.children = data.children.map do
-				let typ = $1.type == 'file' ? File : Folder
+				let typ = types[$1.type] or Entry
 				let item = new typ($1,self)
-				if typ == Folder
-					self[item.name] = item
 				return item
 	
-	get type
-		'entry'
+	get path
+		parent ? (parent.path + '/' + name) : ''
+
+	get href
+		path
 
 	get title
 		data.title or basename.replace(/\-/g,' ')
@@ -49,18 +57,25 @@ class Entry
 		data.name.replace(/\.\w+$/,'')
 
 	get folders
-		self.children.filter(do $1 isa Folder)
+		self.children.filter(do $1 isa Dir)
 	
 	get files
 		self.children.filter(do $1 isa File)
+	
+	get docs
+		self.children.filter(do $1 isa Doc)
+
+	get sections
+		self.children.filter(do $1 isa Section)
 
 	get prev
 		return null unless parent
-		parent.children[parent.children.indexOf(self) - 1] or (parent.html ? parent : (parent.prev and parent.prev.last))
+		prevSibling or parent.prev
+		# parent.children[parent.children.indexOf(self) - 1] or (parent.html ? parent : (parent.prev and parent.prev.last))
 
 	get next
 		return null unless parent
-		parent.children[parent.children.indexOf(self) + 1] or parent.next
+		nextSibling or parent.next
 
 	get prevSibling
 		parent ? parent.children[parent.children.indexOf(self) - 1] : null
@@ -68,11 +83,8 @@ class Entry
 	get nextSibling
 		parent ? parent.children[parent.children.indexOf(self) + 1] : null
 
-	get root
-		_root ||= paths[path.split('/').slice(0,2).join('/')]
-
 	def childByName name
-		self.children.find(do $1.name == name)
+		self.children.find(do $1.name == name and !($1 isa Section))
 
 export class File < Entry
 	def constructor data, parent
@@ -80,32 +92,17 @@ export class File < Entry
 		body = originalBody = savedBody = data.body
 		ext = data.ext or name.split('.').pop!
 		uri = "file://{path}"
-		href = path.replace(/\.(\w+)$/,'')
+		# href = path.replace(/\.(\w+)$/,'')
 		files.push(self)
 	
 	get highlighted
 		hl ||= highlight(body,ext)
-	
-	get type
-		'file'
 
 	get first
 		children[0] and !html ? children[0].first : self
 
 	get last
 		children[children.length - 1] ? children[children.length - 1].last : self
-
-	get next
-		if parent and parent.last == self
-			return parent.nextSibling.first
-		return children[0].first if children[0]
-		super
-	
-	get html
-		data.html
-	
-	get sections
-		data.sections 
 
 	get model
 		if global.monaco and !_model
@@ -127,10 +124,9 @@ export class File < Entry
 			if _model
 				_model.setValue(body)
 			sendToWorker!
-	
 
 	def sendToWorker
-		if sw
+		if sw and ext != 'md'
 			# console.log 'sending file info to worker',path
 			sw.postMessage({event: 'file', path: path, body: body})
 
@@ -145,16 +141,26 @@ export class File < Entry
 	
 		dirty = no
 
+export class Doc < Entry
 
+export class Guide < Entry
 
-export class Folder < Entry
+	get next
+		null
+
+	get prev
+		null
+
+export class Section < Entry
+
+	get href
+		"{parent.href}#{name}"
+
+export class Dir < Entry
 	prop examples
 
 	def constructor data, parent
 		super
-	
-	get type
-		'folder'
 
 	get sections
 		files
@@ -173,23 +179,39 @@ export class Folder < Entry
 		let app = childByName('app.imba') or files[0]
 		return `{path}/{index ? index.name : app.basename + '.html'}`
 
+export class Root < Entry
 
-for item in root.children
-	fs[item.name] = new Folder(item)
+		get path
+			''
+
+types.file = File
+types.dir = Dir
+types.doc = Doc
+types.section = Section
+types.guide = Guide
+
+raw.name = ''
+
+export const fs = new Root(raw)
+
+window.FS = fs
 
 const hits = {}
+
 export def ls path
 	unless hits[path]
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
-		let item = fs[parts.shift()]
+		let item = fs # fs[parts.shift()]
 		return null unless item
-		
+
 		for part,i in parts
 			let child = item.childByName(part)
 			if child
 				item = child
 			else
-				break
+				return null
 		hits[path] = item
+	
+	return hits[path]
 
 	return paths[path.replace(/\/$/,'')]

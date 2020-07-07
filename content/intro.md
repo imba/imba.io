@@ -5,15 +5,16 @@ multipage: true
 
 # Overview
 
-## What is Imba
+### What is Imba
 
 Imba is a new programming language for the web that compiles
 to performant JavaScript. It is heavily inspired by ruby and python,
 but developed explicitly for web programming (both server and client).
 Imba treats dom elements *and* styles as first-class citizens. Elements are compiled to a [memoized dom](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than todays virtual dom implementations. We truly believe that it opens up for a new way of developing web applications.
 
-## Basic Syntax
+### Basic Syntax
 
+##### Literals
 ```imba
 let number = 42
 let bool = yes
@@ -51,7 +52,7 @@ def method name, {title, desc = 'no description'}
 [1,2,3,4].map do(item) item * 2
 ```
 
-##### Classes
+##### Class Declarations
 ```imba
 class Todo
     prop title
@@ -92,7 +93,7 @@ var list = <ul title="reminders">
 <div.panel @click.prevent=handler> "Panel"
 ```
 
-> Elements are a native part of Imba just like strings, numbers, and other types.
+Elements are a native part of Imba just like strings, numbers, and other types.
 
 ##### Components
 
@@ -114,7 +115,7 @@ tag todo-app
 imba.mount <todo-app data=todos>
 ```
 
-> Tags are compiled down to *extremely optimized* native web components
+Tags are compiled down to *extremely optimized* native web components
 
 ##### Inline styles
 ```imba
@@ -171,7 +172,6 @@ class Reminder
     def completedDidSet value
         console.log('completedDidSet', value)
 ```
-> Decorators
 
 ##### Type annotations
 ```imba
@@ -180,38 +180,12 @@ let item\string = window.title
 def multiply a\number, b\number
     a * b
 ```
-
 > Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in vscode and more.
 
 # Examples
 
-## Paint
-[Code](/examples/applications/paint)
-
-## Carefree Declarative Rendering
-```imba
-# ~preview
-css div pos:absolute d:block inset:0 p:4
-css button pos:absolute p:2 bg:teal2 radius:2
-css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
-
-let x = 0, y = 0
-
-imba.mount do <div @mousemove=(x=e.x,y=e.y)>
-    <p> "Mouse is at {x} {y}"
-    <button[bg:teal2 x:{x} y:{y} rotate:{x / 360}]> "Item"
-    <ul> for nr in [0 ... Math.min(x,y)]
-        <li> nr
-```
-
 
 # Installation
 
-## Tooling
-
 # Release Notes
 
-# Ecosystem
-
-
-Works with anything that works with javascript.

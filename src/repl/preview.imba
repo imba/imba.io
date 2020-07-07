@@ -11,6 +11,7 @@ tag app-repl-preview
 	prop size = 'auto-auto'
 
 	def build
+		t0 = Date.now!
 		$iframe = <iframe[pos:absolute width:100% height:100% min-width:200px]>
 		$iframe.src = 'about:blank'
 
@@ -26,6 +27,8 @@ tag app-repl-preview
 				win.console.info = $console.info.bind($console)
 
 		$iframe.onload = do
+			return unless $refreshed
+			console.log 'iframe loaded after',Date.now! - t0
 			try
 				let element = $doc.querySelector('body :not(script)')
 				flags.toggle('empty-preview',!element)
@@ -91,14 +94,15 @@ tag app-repl-preview
 		self
 
 	def resize e,dir
-		let t = e.touch
-		$resizing = e.touch
-
+		$resizing = e
+		
 		if e.type == 'pointerup'
 			flags.remove('resizing')
 			$resizing = null
-			if t.dt < 100
+			if e.elapsed < 100
 				return size = 'auto-auto'
+
+		let t = e.data ||= {}
 
 		unless t.sx
 			flags.add('resizing')
@@ -121,8 +125,8 @@ tag app-repl-preview
 		let halfw = (b.width / 2)
 		let halfh = (b.height / 2)
 
-		let relx = (t.x - (b.left + halfw))
-		let rely = (t.y - (b.top + halfh))
+		let relx = (e.x - (b.left + halfw))
+		let rely = (e.y - (b.top + halfh))
 		let absx = Math.abs(relx)
 		let absy = Math.abs(rely)
 
@@ -146,8 +150,6 @@ tag app-repl-preview
 				h = Math.max(absy * 2,260)
 
 		size = "{t.rw == 'auto' ? t.rw : Math.round(w)}-{t.rh == 'auto' ? t.rh : Math.round(h)}"
-		# console.log 'resize',w,h,dir,size
-		# console.log 'yes!!',e.touch,w,h,size,t.bounds,absx,halfw
 
 	css d:flex fld:column pos:relative min-width:40px
 
@@ -156,14 +158,14 @@ tag app-repl-preview
 	css $frame
 		pos:absolute top:0 l:50% bg:white w:100% h:100% x:-50% y:0
 		border:1px solid gray3
-		box-sizing: content-box
 		transform-origin:50% 0%
 
 	css $cover pos:absolute inset:0 cursor:zoom-in d:none
 
-	css $controls pos:absolute b:100% r:0 my:1 w:100% d:flex jc:center
+	css $controls pos:absolute b:100% r:0 py:1 w:100% d:flex jc:center opacity:0
+	css @hover $controls opacity:1
 
-	css %btn p:1 fw:500 c:gray4 @hover:gray5 .checked:blue5 outline@focus:none pe.checked:none
+	css .btn p:1 fw:500 c:gray4 @hover:gray5 .checked:blue5 outline@focus:none pe.checked:none
 
 	css @is-pip @not(.maximized)
 		bg:clear
@@ -177,7 +179,7 @@ tag app-repl-preview
 		$bounds w:auto h:auto inset:14 b:20
 		$controls pos:absolute t:auto b:0
 
-	css %resizer
+	css .resizer
 		pos:absolute
 		fs:14px
 		w:1em .y:100%
@@ -191,39 +193,54 @@ tag app-repl-preview
 		pos:relative
 
 	def entered e
+		console.log 'entered',Date.now! - t0
 		$entered = yes
 		refresh! unless $refreshed
 
+	def intersecting e
+		console.log 'intersect',e
+		$intersect = e
+	
+	def addIs e
+		console.log 'intersect',e.ratio,e.isIntersecting
+		$intersects ||= []
+		$intersects.push(e)
+	
+	def unmount
+		$entered = $refreshed = no
+
 	def render
 		recalc!
-		<self @intersect.in=entered>
+		<self @intersect.silence.in=entered>
 			<div$body[flex:1] @click=toggle>
 				<div$bounds @resize=reflow>
 					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px] @click.stop>
 						$iframe
-						<div%resizer.x @touch=resize(e,'x')>
-						<div%resizer.y @touch=resize(e,'y')>
-						<div%resizer @touch=resize>
-						<div%resizer @touch=resize>
+						<div.resizer.x @touch=resize(e,'x')>
+						<div.resizer.y @touch=resize(e,'y')>
+						<div.resizer @touch=resize>
+						<div.resizer @touch=resize>
 						<div$cover @click=toggle>
-						<div[pos:absolute transform-origin:100% 100% b:0 r:0 p:2 fs:sm/1 c:gray5 d:none ..resizing:block scale:{1 / scale}]> "{iw} x {ih}"
-				<div$controls.controls @click.stop>
-					<button%btn bind=size value='auto-auto'> 'auto'
-					<button%btn bind=size value='480-auto'> 'xs'
-					<button%btn bind=size value='640-auto'> 'sm'
-					<button%btn bind=size value='768-auto'> 'md'
-					<button%btn bind=size value='1024-auto'> 'lg'
-					<button%btn bind=size value='1280-auto'> 'xl'
+						<div[pos:absolute transform-origin:100% 100% b:0 r:0 p:2 fs:sm/1 c:gray5 d:none ..resizing:block scale:{1 / scale}]> "{iw - 2} x {ih - 2}"
+				<div$controls @click.stop>
+					<button.btn bind=size value='auto-auto'> 'auto'
+					<button.btn bind=size value='482-auto'> 'xs'
+					<button.btn bind=size value='642-auto'> 'sm'
+					<button.btn bind=size value='770-auto'> 'md'
+					<button.btn bind=size value='1026-auto'> 'lg'
+					<button.btn bind=size value='1282-auto'> 'xl'
 					# <button%btn bind=size value='768x1024'> 'tablet'
 					# <button%btn bind=size value='1280x1024'> 'desktop'
-					<button%btn @click=maximize> '⤢'
+					<button.btn @click=maximize> '⤢'
 			<repl-console$console.transient mode='transient'>
 		
 	set file data
 		return unless data
-		# console.log 
+		# console.log
+		let t = Date.now! 
+		
 		sw.request(event: 'file', path: data.path, body: data.body).then do
-			# console.log 'returned from sw',data.path
+			console.log 'sent file to service worker',Date.now! - t0
 			url = data.path.replace('.imba','.html')
 
 	set dir data
@@ -241,6 +258,7 @@ tag app-repl-preview
 		$refreshed = yes
 		let src = `/repl{url}`
 		try
+			t0 = Date.now!
 			$iframe.contentWindow.location.replace(src)
 		catch e
 			sw.load!.then do $iframe.src = src

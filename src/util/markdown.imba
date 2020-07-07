@@ -10,8 +10,10 @@ marked.setOptions({
 	smartypants: false
 })
 
+var state = {headings: []}
+
 var slugify = do(str)
-	str = str.replace(/^\s+|\s+$/g, '').toLowerCase() # trim
+	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
 	var from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
 	var to   = "aaaaaeeeeiiiioooouuuunc------"
 	str = str.replace(/[^a-z0-9 -]/g, '') # remove invalid chars
@@ -42,63 +44,60 @@ def renderer.link href, title, text
 		return (<a.scrimba href=href title=title target='_blank'> <span innerHTML=text>)
 	return (<a href=href title=title> <span innerHTML=text>)
 
+def renderer.blockquote quote
+	console.log 'we are inside the blockquote'
+	return String(<blockquote innerHTML=quote>)
+
+def renderer.paragraph text
+	console.log 'we are inside paragraph'
+	return String(<p innerHTML=text>)
+
 def renderer.heading text, level
-	var next = this.parser.peek || {}
-	var flags = ["md-h{level}"]
-	var meta = {flags: flags, level: level, children: [], meta: {}}
+	let typ = "h{level}"
+	var flags = [typ]
+	var meta = {type: 'section', hlevel: level, flags: flags, level: level * 10, children: [], meta: {},options: {}}
 	var m 
+
+	if level == 6
+		console.log 'FOUND LEVEL 6',text
+		state.section.desc = text
+		return ""
 
 	while m = text.match(/^\.(\w+)/)
 		flags.push(m[1])
 		text = text.slice(m[0].length)
 
-	text = text.replace(/\s*\[(\w+)\]\s*/g) do(m,key)
+	text = text.replace(/\s*\[([\w\-]+)(?:\=([^\]]+))?\]\s*/g) do(m,key,value)
 		let flag = key.toLowerCase!
-		meta.meta[flag] = yes
+		meta.options[flag] = value or yes
 		flags.push(flag)
 		return ''
 
+	if level == 1
+		console.log 'heading',text
+
+	if let n = text.match(/^-+\s/)
+		meta.nesting = n[0].length
+		meta.level += meta.nesting
+		meta.type = 'doc'
+		text = text.slice(n[0].length)
+
 	var plain = text.replace(/\<[^\>]+\>/g,'')
-	var slug = slugify(plain)
+
+	meta.slug = slugify(plain)
 	meta.title = unescape(text)
-
-	# flags.push("next-{next.type}")
-
-	if next.type == 'code' and level == 4
-		next.meta = meta
-		return ''
 
 	if text.indexOf('<code') == 0
 		# should add code-flag?
-		
 		text = text.replace(/^\<code/,'<h'+level)
 		text = text.replace('</code>','</h'+level+'>')
 		return text
 
-	var stack = this.toc.stack
+	state.headings.push(state.section = meta)
 
-	while stack.length and stack[stack.length - 1].level >= level
-		var prev = stack.pop()
-
-	var par = stack[stack.length - 1]
-	
-	while stack[slug]
-		slug = slug + '-'
-	
-	stack[slug] = meta.slug = slug
-
-	if level < 3
-		if par
-			par.children.push(meta)
-		else
-			this.toc.push(meta)
-
-	stack.push(meta)
-
-	let typ = "h{level}"
 	let node = <{typ} .{flags.join(' ')}> <span innerHTML=text>
-	let pre = "<!--:{typ}:-->"
-	return pre + node.toString()
+	meta.head = String(text)
+	return "<!--:H:-->{String(node)}<!--:/H:-->"
 
 def renderer.codespan code
 	code = unescape(code)
@@ -140,8 +139,12 @@ export def render content, o = {}
 	content = content.replace(/^---\n([^]+)\n---/m) do(m,inside)
 		inside.split('\n').map do |line|
 			var [k,v] = line.split(/\s*\:\s*/)
-			object.meta[k] = (/^\d+$/).test(v) ? parseFloat(v) : v
-		return ''
+			object[k] = (/^\d+$/).test(v) ? parseFloat(v) : v
+
+	state = {
+		toc: object.toc
+		headings: []
+	}
 
 	var opts = {
 		gfm: true
@@ -157,7 +160,6 @@ export def render content, o = {}
 	object.toc.stack = []
 	object.toc.counter = 0
 	object.toc.options = o
-
 	
 	object.toc.path = o.path or ''
 	# console.log 'sent path',o
@@ -170,32 +172,59 @@ export def render content, o = {}
 	opts.parser = parser
 	object.body = parser.parse(tokens)
 
-	console.log 'toc',object.toc.map do String($1.title)
-	unless object.meta.title
-		if let h1 = object.toc[0]
-			object.meta.title = h1.title
-
+	# console.log 'toc',object.toc.map do String($1.title)
 	renderer.toc = null
 
-	let sections = object.body.split(/<!--:h1:-->/g).slice(1)
-	
-	if object.meta.multipage or sections.length > 1
+	let segments = object.body.split(/<!--:H:-->.*?<!--:\/H:-->/g)
 
-		object.sections = object.toc.map do(item,i)
-			{
-				name: item.slug
-				type: 'file'
-				html: sections[i]
-				title: item.title
-				meta: item.meta
-			}
+	let children = []
+	let stack = []
+	let sections = []
+	object.level = 0
+	object.children = []
+	object.type
+	let prev = object
+	let intro = segments[0]
 
-		if object.meta.multipage
-			# should rather just be a core section for each part?
-			object.body = ''
+	for html,i in segments.slice(1)
+		let up = prev
+		let meta = state.headings[i]
+		# meta.title,up && up.level
+		let section = Object.assign({},meta,{children: []})
+		let level = meta.level
 
-		else
-			let intro = object.sections.shift!
-			object.body = intro.html
+		section.name = meta.slug
+		section.html = html
+		sections.push(section)
+
+		while up.parent and level <= up.level
+			up = up.parent
+
+		section.parent = up
+
+		if up == object
+			section.type = 'doc'
+
+		up.children.push(section)
+		prev = section
+		# console.log "{section.title}"
+
+	let walk = do(section,pre = '')
+		console.log "{pre}{section.title} ({section.type} {section.level} {section.flags}) - {section.desc}"
+
+		section.children = section.children.filter do !$1.options.skip
+
+		for child in section.children
+			walk(child,pre + '  ')	
+
+	walk(object)
+
+	if object.children.length > 1
+		object.type = 'guide'
+
+	delete object.toc
+
+	for section in sections
+		delete section.parent
 
 	return object

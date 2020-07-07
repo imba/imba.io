@@ -64,8 +64,13 @@ tag log-tag
 				<span.more @click=toggle> "..."
 
 tag repl-console-item
+
+	
+
 	css d:block c:gray6 fs:md/1.4 fw:500
 		transition: all 250ms cubic-out
+
+	css >>> .body
 		.string
 			ws: pre-wrap
 			color:green7 content@before:"'" content@after:"'"
@@ -104,18 +109,20 @@ tag repl-console-item
 		style.opacity = 1
 
 	def hide
-		let h = offsetHeight
-		style.marginBottom = (-h)px
-		style.opacity = 0
-		setTimeout(&,250) do parentNode.removeChild(self)
-		self
+		unless $hide
+			$hide = yes
+			let h = offsetHeight
+			style.marginBottom = (-h)px
+			style.opacity = 0
+			setTimeout(&,250) do parentNode.removeChild(self)
+			self
 
 tag repl-console
 	css cursor:default $count:0
 
-	css $body .item p:2 3 mx:1 bbw:1px bbc:gray2
+	css $body >>> .item p:2 3 mx:1 bdb:gray2
 	css $snackbars d:block pos:absolute w:100% t:0 l:0 zi:35
-	css $snackbars .item .body m:2 p:2 3 radius:3 bg:gray1 shadow:xs bw:1 bc:gray3 fs:sm/1.3
+	css $snackbars >>> .item .body m:2 p:2 3 br:3 bg:gray1 bs:xs bd:gray3 fs:sm/1.3
 
 	css .heading d:block p:1 3 0 mx:1 c:gray6 fs:sm fw:500 mb:-2
 
@@ -139,13 +146,27 @@ tag repl-console
 		# $body.appendChild <div.item> any(params,context,0)
 		let item = <repl-console-item.item context=context data=params>
 		if isTransient
+			let stack = $transientItems ||= []
+			let count = $snackbars.children.length
+			let fast = stack.length > 5
 			let now = Date.now!
 			let delay = $nextTime ? Math.max($nextTime - now,0) : 0
-			$nextTime = now + delay + 100
+
+			$nextTime = now + delay + (fast ? 0 : 50)
+			$snackbars.flags.toggle('stacked',fast)
+
+			while stack.length > 5
+				stack.shift!.hide!
+
 			setTimeout(&,delay) do
+				stack.push(item)
 				$snackbars.appendChild(item)
 				item.show!
-				setTimeout(&,1500) do item.hide!
+				setTimeout(&,1500) do
+					let idx = stack.indexOf(item)
+					if idx >= 0
+						item.hide!
+						stack.splice(idx,1)
 		else
 			$body.appendChild(item)
 		count++

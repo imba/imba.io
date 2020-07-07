@@ -11,8 +11,9 @@ export def load
 	return Promise.resolve(controller) if controller
 
 	promise ||= new Promise do(resolve)
+		let t0 = Date.now!
 		const sw = window.navigator.serviceWorker
-		var reg = await sw.getRegistration('/')
+		let reg = await sw.getRegistration('/')
 
 		if reg
 			console.log 'update service worker'
@@ -44,8 +45,10 @@ export def load
 
 		queued = []
 
-		setTimeout(&,200) do
-			resolve(controller = sw.controller)
+		console.log 'sw is ready?',Date.now! - t0
+		resolve(controller = sw.controller)
+		# setTimeout(&,200) do
+		
 
 export def on event, cb
 	window.navigator.serviceWorker.addEventListener('message') do(e)

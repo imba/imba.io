@@ -91,14 +91,14 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _internal_bind__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
+/* harmony import */ var _internal_bind__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(12);
 /* harmony import */ var _internal_bind__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_internal_bind__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _internal_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(12);
-/* harmony import */ var _events_intersect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
-/* harmony import */ var _events_selection__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
-/* harmony import */ var _events_resize__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(15);
+/* harmony import */ var _internal_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(13);
+/* harmony import */ var _events_intersect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
+/* harmony import */ var _events_selection__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(15);
+/* harmony import */ var _events_resize__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(16);
 /* harmony import */ var _events_pointer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7);
-/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8);
+/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createLiveFragment", function() { return _internal_fragment__WEBPACK_IMPORTED_MODULE_7__["createLiveFragment"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createIndexedFragment", function() { return _internal_fragment__WEBPACK_IMPORTED_MODULE_7__["createIndexedFragment"]; });
@@ -128,9 +128,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _internal_scheduler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
 /* harmony import */ var _events__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
 /* harmony import */ var _events_pointer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
-/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
-/* harmony import */ var _internal_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9);
-/* harmony import */ var _svg__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(10);
+/* harmony import */ var _internal_fragment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9);
+/* harmony import */ var _internal_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(10);
+/* harmony import */ var _svg__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(11);
 function extend$(target,ext){
 	// @ts-ignore
 	var descriptors = Object.getOwnPropertyDescriptors(ext);
@@ -237,7 +237,13 @@ const CSS_DIM_PROPS = /^([tlbr]|size|[whtlbr]|[mps][tlbrxy]?|[rcxy]?[gs])$/;
 
 imba.toStyleValue = function (value,unit,key){
 	
+	if (CSS_STR_PROPS[key]) {
+		
+		value = String(value);
+	};
+	
 	let typ = typeof value;
+	
 	if (typ == 'number') {
 		
 		if (!unit) {
@@ -565,6 +571,12 @@ extend$(Comment,{
 extend$(Element,{
 	
 	
+	log(...params){
+		
+		console.log(...params);
+		return this;
+	},
+	
 	emit(name,detail,o = {bubbles: true}){
 		
 		if (detail != undefined) { o.detail = detail };
@@ -601,10 +613,11 @@ extend$(Element,{
 			o = {passive: passive,capture: capture};
 		};
 		
-		if (type == 'touch') {
+		if ((/^(pointerdrag|touch)$/).test(type)) {
 			
+			handler.type = type;
 			type = 'pointerdown';
-			handler.type = 'touch';
+			
 		};
 		
 		this.addEventListener(type,handler,o);
@@ -695,16 +708,23 @@ extend$(Element,{
 	
 	flag$(str){
 		
-		this.className = str;
+		
+		let ns = this.flags$ns;
+		this.className = ns ? ((ns + (this.flags$ext = str))) : ((this.flags$ext = str));
 		return;
 		
 	},
 	flagDeopt$(){
 		var self = this;
 		
-		this.flag$ = function(str) { return self.flagSync$(self.flags$ext = str); };
+		this.flag$ = this.flagExt$;
 		this.flagSelf$ = function(str) { return self.flagSync$(self.flags$own = str); };
 		return;
+		
+	},
+	flagExt$(str){
+		
+		return this.flagSync$(this.flags$ext = str);
 	},
 	
 	flagSelf$(str){
@@ -723,7 +743,7 @@ extend$(Element,{
 	
 	flagSync$(){
 		
-		return this.className = ((this.flags$ext || '') + ' ' + (this.flags$own || '') + ' ' + (this.$flags || ''));
+		return this.className = ((this.flags$ns || '') + (this.flags$ext || '') + ' ' + (this.flags$own || '') + ' ' + (this.$flags || ''));
 	},
 	
 	open$(){
@@ -812,7 +832,7 @@ class ImbaElementRegistry {
 		};
 	}
 	
-	define(name,klass,options){
+	define(name,klass,options = {}){
 		
 		this.types[name] = klass;
 		klass.nodeName = name;
@@ -821,8 +841,21 @@ class ImbaElementRegistry {
 		
 		
 		
+		let basens = proto._ns_;
+		if (options.ns) {
+			
+			let ns = options.ns;
+			let flags = ns + ' ' + ns + '_ ';
+			if (basens) {
+				
+				flags += proto.flags$ns;
+				ns += ' ' + basens;
+			};
+			proto._ns_ = ns;
+			proto.flags$ns = flags;
+		};
 		
-		if (options && options.extends) {
+		if (options.extends) {
 			
 			CustomTagConstructors[name] = klass;
 		} else {
@@ -838,10 +871,19 @@ imba.tags = new ImbaElementRegistry();
 
 
 
-imba.createElement = function (name,parent,flags,text){
+imba.createElement = function (name,parent,flags,text,ctx){
 	
 	var el = document.createElement(name);
 	
+	let f = ctx && ctx._ns_;
+	
+	if (f) {
+		
+		
+		flags = flags ? ((f + ' ' + flags)) : f;
+		el.flags$ns = f + ' ';
+		
+	};
 	if (flags) { el.className = flags };
 	
 	if (text !== null) {
@@ -857,7 +899,7 @@ imba.createElement = function (name,parent,flags,text){
 	return el;
 };
 
-imba.createComponent = function (name,parent,flags,text){
+imba.createComponent = function (name,parent,flags,text,ctx){
 	
 	
 	var el;
@@ -888,10 +930,17 @@ imba.createComponent = function (name,parent,flags,text){
 		el.slot$('__').text$(text);
 	};
 	
+	let nsflag = (ctx && ctx._ns_);
 	
-	if (flags) {
+	if (nsflag) {
 		
-		el.flag$(flags);
+		el.flags$ns += nsflag + ' ';
+		el.flag$ = el.flagExt$;
+		
+	};
+	if (flags || nsflag || el.flags$ns) {
+		
+		el.flag$(flags || '');
 	};
 	return el;
 };
@@ -926,6 +975,7 @@ imba.createSVGElement = function (name,parent,flags,text){
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setup", function() { return setup; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "register", function() { return register; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseDimension", function() { return parseDimension; });
 
 let root;
 let resets = '*,::before,::after {	box-sizing: border-box;	border-width: 0;	border-style: solid;	border-color: currentColor;}';
@@ -948,6 +998,18 @@ function register(styles,id){
 	el.textContent = styles;
 	document.head.appendChild(el);
 	return;
+	
+};
+function parseDimension(val){
+	
+	if (typeof val == 'string') {
+		
+		let [m,num,unit] = val.match(/^([-+]?[\d\.]+)(%|\w+)$/);
+		return [parseFloat(num),unit];
+	} else if (typeof val == 'number') {
+		
+		return [val];
+	};
 };
 
 
@@ -995,6 +1057,24 @@ class Flags {
 		
 		if (bool === undefined) { bool = !this.contains(ref) };
 		return bool ? this.add(ref) : this.remove(ref);
+		
+	}
+	incr(ref){
+		
+		let m = this.stacks || (this.stacks = {});
+		let c = m[ref] || 0;
+		if (c < 1) { this.add(ref) };
+		m[ref] = Math.max(c,0) + 1;
+		return this;
+	}
+	
+	decr(ref){
+		
+		let m = this.stacks || (this.stacks = {});
+		let c = m[ref] || 0;
+		if (c == 1) { this.remove(ref) };
+		m[ref] = Math.max(c,1) - 1;
+		return this;
 	}
 	
 	valueOf(){
@@ -1183,6 +1263,11 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].if$mod = function (expr){
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].wait$mod = function (num = 250){
 	
 	return new Promise(function(_0) { return setTimeout(_0,num); });
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].self$mod = function (){
+	
+	return this.event.target == this.element;
 	
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (ms = 250){
@@ -1191,13 +1276,13 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (ms = 250){
 	if (this.handler.throttled) { return false };
 	this.handler.throttled = true;
 	
-	let cl = this.element.flags.add('_cooldown_');
+	this.element.flags.incr('throttled');
 	
-	this.handler.once('idle',function() {
+	imba.once(this.current,'end',function() {
 		
 		return setTimeout(function() {
 			
-			self.element.flags.remove('_cooldown_');
+			self.element.flags.decr('throttled');
 			return self.handler.throttled = false;
 		},ms);
 	});
@@ -1205,25 +1290,22 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].throttle$mod = function (ms = 250){
 	
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].flag$mod = function (name,sel){
-	var self = this;
 	
 	
 	let el = (sel instanceof globalThis.Element) ? sel : ((sel ? this.element.closest(sel) : this.element));
 	if (!el) { return true };
 	let step = this.step;
-	this.handler[step] = this.id;
+	this.state[step] = this.id;
 	
-	el.flags.add(name);
+	el.flags.incr(name);
+	
 	let ts = Date.now();
-	this.handler.once('idle',function() {
+	
+	imba.once(this.current,'end',function() {
 		
 		let elapsed = Date.now() - ts;
 		let delay = Math.max(250 - elapsed,0);
-		return setTimeout(function() {
-			
-			
-			if (self.handler[step] == self.id) { return el.flags.remove(name) };
-		},delay);
+		return setTimeout(function() { return el.flags.decr(name); },delay);
 	});
 	
 	return true;
@@ -1273,6 +1355,7 @@ class EventHandler {
 		let prevRes = undefined;
 		
 		this.count || (this.count = 0);
+		this.state || (this.state = {});
 		
 		let state = {
 			element: element,
@@ -1280,23 +1363,29 @@ class EventHandler {
 			modifiers: mods,
 			handler: this,
 			id: ++this.count,
-			step: -1
+			step: -1,
+			state: this.state,
+			current: null
 		};
+		
+		state.current = state;
 		
 		if (event.handle$mod) {
 			
-			if (event.handle$mod.call(state,mods.options) == false) {
+			if (event.handle$mod.apply(state,mods.options || []) == false) {
 				
 				return;
 			};
 		};
 		
-		let guard = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$handle'];
+		let guard = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][this.type + '$handle'] || _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$handle'] || event.handle$mod;
 		
-		if (guard && guard.call(state,mods.options) == false) {
+		if (guard && guard.apply(state,mods.options || []) == false) {
 			
 			return;
 		};
+		
+		
 		
 		this.currentEvents || (this.currentEvents = new Set);
 		this.currentEvents.add(event);
@@ -1316,7 +1405,7 @@ class EventHandler {
 			};
 			
 			let modargs = null;
-			let args = [event,this];
+			let args = [event,state];
 			let res = undefined;
 			let context = null;
 			let m;
@@ -1354,7 +1443,7 @@ class EventHandler {
 				};
 			};
 			
-			if (typeof handler == 'string' && (m = handler.match(/^(emit|flag)-(.+)$/))) {
+			if (typeof handler == 'string' && (m = handler.match(/^(emit|flag|moved|pin|fit|refit|map|remap)-(.+)$/))) {
 				
 				if (!modargs) { modargs = args = [] };
 				args.unshift(m[2]);
@@ -1387,9 +1476,6 @@ class EventHandler {
 			} else if (handler == 'meta') {
 				
 				if (!event.metaKey) { break; };
-			} else if (handler == 'self') {
-				
-				if (target != element) { break; };
 			} else if (handler == 'once') {
 				
 				
@@ -1412,7 +1498,8 @@ class EventHandler {
 				let customRes = element.dispatchEvent(e);
 			} else if (typeof handler == 'string') {
 				
-				let fn = _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][handler + '$mod'] || _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$' + handler];
+				let fn = (this.type && _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][this.type + '$' + handler + '$mod']);
+				fn || (fn = event[handler + '$mod'] || _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][event.type + '$' + handler] || _dom__WEBPACK_IMPORTED_MODULE_0__["Event"][handler + '$mod']);
 				
 				if (fn instanceof Function) {
 					
@@ -1448,10 +1535,13 @@ class EventHandler {
 			if (res === false) {
 				
 				break;
+				
 			};
 			
 			state.value = res;
 		};
+		
+		imba.emit(state,'end',state);
 		
 		if (commit) imba.$commit();
 		this.currentEvents.delete(event);
@@ -1483,12 +1573,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Event", function() { return Event; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CustomEvent", function() { return CustomEvent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MouseEvent", function() { return MouseEvent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "KeyboardEvent", function() { return KeyboardEvent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PointerEvent", function() { return PointerEvent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "document", function() { return document; });
 if (false) {};
 
 
 
-var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,SVGElement: SVGElement,HTMLElement: HTMLElement,DocumentFragment: DocumentFragment,ShadowRoot: ShadowRoot,Event: Event,CustomEvent: CustomEvent,MouseEvent: MouseEvent,document: document} = window;
+var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,SVGElement: SVGElement,HTMLElement: HTMLElement,DocumentFragment: DocumentFragment,ShadowRoot: ShadowRoot,Event: Event,CustomEvent: CustomEvent,MouseEvent: MouseEvent,KeyboardEvent: KeyboardEvent,PointerEvent: PointerEvent,document: document} = window;
 
 
 
@@ -1499,119 +1591,482 @@ var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8);
+function extend$(target,ext){
+	// @ts-ignore
+	var descriptors = Object.getOwnPropertyDescriptors(ext);
+	// @ts-ignore
+	Object.defineProperties(target.prototype,descriptors);
+	return target;
+};
 
+
+
+
+extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["PointerEvent"],{
+	
+	
+	primary$mod(){
+		
+		return !!this.event.isPrimary;
+	},
+	
+	mouse$mod(){
+		
+		return this.event.pointerType == 'mouse';
+	},
+	
+	pen$mod(){
+		
+		return this.event.pointerType == 'pen';
+	},
+	
+	touch$mod(){
+		
+		return this.event.pointerType == 'touch';
+	},
+	
+	pressure$mod(threshold = 0){
+		
+		return this.event.pressure > threshold;
+	},
+	
+	lock$mod(dr){
+		
+		return true;
+	},
+});
 
 class Touch {
 	
-	constructor(e){
+	constructor(e,handler,el){
 		
-		this.id = e.pointerId;
-		this.t0 = Date.now();
-		this.x0 = this.x = e.x;
-		this.y0 = this.y = e.y;
-		this.mx = this.my = 0;
-		e.touch = this;
+		this.phase = 'init';
+		this.events = [];
+		this.event = e;
+		this.handler = handler;
+		this.target = this.currentTarget = el;
 	}
 	
-	update(e){
+	set event(value){
 		
-		this.mx = e.x - this.x;
-		this.my = e.y - this.x;
-		this.x = e.x;
-		this.y = e.y;
-		return e.touch = this;
+		this.x = value.clientX;
+		this.y = value.clientY;
+		this.events.push(value);
 	}
 	
-	get dx(){
+	get start(){
 		
-		return this.x - this.x0;
+		return this.events[0];
+		
+	}
+	get event(){
+		
+		return this.events[this.events.length - 1];
 	}
 	
-	get dy(){
+	get elapsed(){
 		
-		return this.y - this.y0;
-		
+		return this.event.timeStamp - this.events[0].timeStamp;
 	}
-	get dt(){
-		
-		return Date.now() - this.t0;
+	
+	get pointerId(){
+		return this.event.pointerId;
+	}
+	get clientX(){
+		return this.event.clientX;
+	}
+	get clientY(){
+		return this.event.clientY;
+	}
+	get offsetX(){
+		return this.event.offsetX;
+	}
+	get offsetY(){
+		return this.event.offsetY;
+	}
+	get type(){
+		return this.event.type;
+	}
+	
+	emit(name,...params){
+		return imba.emit(this,name,params);
+	}
+	on(name,...params){
+		return imba.listen(this,name,...params);
+	}
+	once(name,...params){
+		return imba.once(this,name,...params);
+	}
+	un(name,...params){
+		return imba.unlisten(this,name,...params);
 	}
 };
 
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerdown$handle = function (){
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$in$mod = function (){
+	
+	return _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod.apply(this,arguments);
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$fit$mod = function (){
+	var $state, $step;
+	
+	let o = (($state = this.state)[($step = this.step)] || ($state[$step] = {clamp: true}));
+	return _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod.apply(this,arguments);
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$snap$mod = function (sx = 1,sy = sx){
+	
+	this.event.x = Object(_math__WEBPACK_IMPORTED_MODULE_1__["round"])(this.event.x,sx);
+	this.event.y = Object(_math__WEBPACK_IMPORTED_MODULE_1__["round"])(this.event.y,sy);
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$moved$mod = function (a,b){
+	var self = this, $state, $step;
+	
+	let o = ($state = this.state)[($step = this.step)] || ($state[$step] = {});
+	if (!o.setup) {
+		
+		let th = a || 4;
+		if (typeof a == 'string' && a.match(/^(up|down|left|right|x|y)$/)) {
+			
+			o.dir = a;
+			th = b || 4;
+		};
+		
+		o.setup = true;
+		let [tv,tu] = Object(_math__WEBPACK_IMPORTED_MODULE_1__["parseDimension"])(th);
+		o.threshold = tv;
+		o.sy = tv;
+		o.x0 = this.event.x;
+		o.y0 = this.event.y;
+		if ((tu && tu != 'px')) {
+			
+			console.warn('only px threshold allowed in @touch.moved');
+		};
+	};
+	
+	if (o.active) {
+		
+		return true;
+	};
+	
+	let th = o.threshold;
+	let dx = this.event.x - o.x0;
+	let dy = this.event.y - o.y0;
+	let hit = false;
+	
+	if (dx > th && (o.dir == 'right' || o.dir == 'x')) {
+		
+		hit = true;
+		
+	};
+	if (!hit && dx < -th && (o.dir == 'left' || o.dir == 'x')) {
+		
+		hit = true;
+		
+	};
+	if (!hit && dy > th && (o.dir == 'down' || o.dir == 'y')) {
+		
+		hit = true;
+	};
+	
+	if (!hit && dy < -th && (o.dir == 'up' || o.dir == 'y')) {
+		
+		hit = true;
+		
+	};
+	if (!hit) {
+		
+		let dr = Math.sqrt(dx * dx + dy * dy);
+		if (dr > th && !o.dir) {
+			
+			hit = true;
+		};
+	};
+	
+	if (hit) {
+		
+		o.active = true;
+		let pinned = this.state.pinTarget;
+		this.element.flags.incr('_move_');
+		if (pinned) { pinned.flags.incr('_move_') };
+		imba.once(this.current,'end',function() {
+			
+			if (pinned) { pinned.flags.decr('_move_') };
+			return self.element.flags.decr('_move_');
+		});
+	};
+	
+	return !!o.active;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod = function (...params){
+	var $state, $step;
+	
+	let o = (($state = this.state)[($step = this.step)] || ($state[$step] = {}));
+	
+	if (!o.rect) {
+		
+		let el = this.element;
+		let len = params.length;
+		let box = params[0];
+		let min = 0;
+		let max = '100%';
+		let snap = 1;
+		let typ = typeof box;
+		
+		if (typ == 'number' || (typ == 'string' && (/^([-+]?\d[\d\.]*)(%|\w+)$/).test(box)) || (box instanceof Array)) {
+			
+			box = null;
+		} else if (typ == 'string') {
+			
+			if (box == 'this' || box == '') {
+				
+				box = this.element;
+			} else if (box == 'up') {
+				
+				box = this.element.parentNode;
+			} else if (box == 'op') {
+				
+				box = this.element.offsetParent;
+			} else {
+				
+				box = el.closest(box) || el.querySelector(box);
+			};
+		};
+		
+		if (box == null) {
+			
+			len++;
+			params.unshift(box = el);
+		};
+		
+		if (len == 2) {
+			
+			snap = params[1];
+		} else if (len > 2) {
+			
+			[min,max,snap = 1] = params.slice(1);
+		};
+		
+		let rect = box.getBoundingClientRect();
+		if (!((min instanceof Array))) { min = [min,min] };
+		if (!((max instanceof Array))) { max = [max,max] };
+		if (!((snap instanceof Array))) { snap = [snap,snap] };
+		
+		o.rect = rect;
+		o.x = Object(_math__WEBPACK_IMPORTED_MODULE_1__["scale"])(rect.left,rect.right,min[0],max[0],snap[0]);
+		o.y = Object(_math__WEBPACK_IMPORTED_MODULE_1__["scale"])(rect.top,rect.bottom,min[1],max[1],snap[1]);
+		
+		this.state.scaleX = o.x;
+		this.state.scaleY = o.y;
+		this.event.x0 = this.event.x = o.x(this.event.x,o.clamp);
+		this.event.y0 = this.event.y = o.y(this.event.y,o.clamp);
+	} else {
+		
+		let x = this.event.x = o.x(this.event.x,o.clamp);
+		let y = this.event.y = o.y(this.event.y,o.clamp);
+		this.event.dx = x - this.event.x0;
+		this.event.dy = y - this.event.y0;
+	};
+	
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$pin$mod = function (...params){
+	
+	let o = this.state[this.step];
+	
+	if (!o) {
+		
+		let box = params[0];
+		if (typeof box == 'string') {
+			
+			box = this.element.closest(box) || this.element.querySelector(box);
+		};
+		if (!((box instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]))) {
+			
+			params.unshift(box = this.state.target);
+		};
+		
+		let ax = params[1] || 0;
+		let ay = (params[2] == null) ? (params[2] = ax) : params[2];
+		let rect = box.getBoundingClientRect();
+		
+		o = this.state[this.step] = {
+			x: this.state.clientX - (rect.left + rect.width * ax),
+			y: this.state.clientY - (rect.top + rect.height * ay)
+		};
+		
+		if (box) {
+			
+			this.state.pinTarget = box;
+			box.flags.incr('_touch_');
+			this.state.once('end',function() { return box.flags.decr('_touch_'); });
+		};
+	};
+	
+	this.event.x -= o.x;
+	this.event.y -= o.y;
+	return true;
+};
+
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$lock$mod = function (...params){
+	
+	let o = this.state[this.step];
+	
+	if (!o) {
+		
+		o = this.state[this.step] = this.state.target.style;
+		let prev = o.touchAction;
+		o.touchAction = 'none';
+		this.state.once('end',function() { return o.removeProperty('touch-action'); });
+	};
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$sync$mod = function (item,xalias = 'x',yalias = 'y'){
+	
+	let o = this.state[this.step];
+	
+	if (!o) {
+		
+		o = this.state[this.step] = {
+			x: item[xalias] || 0,
+			y: item[yalias] || 0,
+			tx: this.state.x,
+			ty: this.state.y
+		};
+	};
+	
+	if (xalias) { item[xalias] = o.x + (this.state.x - o.tx) };
+	if (yalias) { item[yalias] = o.y + (this.state.y - o.ty) };
+	return true;
+	
+};
+_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$handle = function (){
+	var self = this;
 	
 	let e = this.event;
 	let el = this.element;
-	let handler = this.handler;
-	if (handler.type != 'touch') { return true };
+	let id = this.state.pointerId;
+	this.current = this.state;
+	if (id) { return id == e.pointerId };
 	
-	e.dx = e.dy = 0;
-	handler.x0 = e.x;
-	handler.y0 = e.y;
-	handler.pointerId = e.pointerId;
+	let t = this.state = this.handler.state = this.current = new Touch(e,this.handler,el);
 	
-	handler.touch = new Touch(e);
-	
-	let canceller = function() { return false; };
-	let selstart = document.onselectstart;
-	el.setPointerCapture(e.pointerId);
-	
-	el.addEventListener('pointermove',handler);
-	el.addEventListener('pointerup',handler);
-	document.onselectstart = canceller;
-	
-	el.flags.add('_touch_');
-	
-	el.addEventListener('pointerup',function(e) {
+	let canceller = function(e) {
 		
-		el.releasePointerCapture(e.pointerId);
-		el.removeEventListener('pointermove',handler);
-		el.removeEventListener('pointerup',handler);
-		handler.pointerId = null;
-		if (handler.pointerFlag) {
+		e.preventDefault();
+		return false;
+		
+	};
+	let listener = function(e) {
+		
+		let typ = e.type;
+		let ph = t.phase;
+		t.event = e;
+		try {
+			self.handler.handleEvent(t);
+		} catch (e) { };
+		
+		if (typ == 'pointerup' || typ == 'pointercancel') {
 			
-			el.flags.remove(handler.pointerFlag);
+			return el.releasePointerCapture(e.pointerId);
 		};
-		el.flags.remove('_touch_');
-		return document.onselectstart = selstart;
-	},{once: true});
-	return true;
-};
-
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointermove$handle = function (){
-	
-	let h = this.handler;
-	let e = this.event;
-	let id = h.pointerId;
-	if (id && e.pointerId != id) { return false };
-	if (h.touch) { h.touch.update(e) };
-	if (typeof h.x0 == 'number') {
-		
-		e.dx = e.x - h.x0;
-		e.dy = e.y - h.y0;
 	};
-	return true;
-};
-
-
-_dom__WEBPACK_IMPORTED_MODULE_0__["Event"].pointerup$handle = function (){
 	
-	let h = this.handler;
-	let e = this.event;
-	let id = h.pointerId;
-	if (id && e.pointerId != id) { return false };
-	if (h.touch) { h.touch.update(e) };
-	if (typeof h.x0 == 'number') {
+	let teardown = function(e) {
 		
-		e.dx = e.x - h.x0;
-		e.dy = e.y - h.y0;
+		el.flags.decr('_touch_');
+		t.emit('end');
+		self.handler.state = {};
+		el.removeEventListener('pointermove',listener);
+		el.removeEventListener('pointerup',listener);
+		el.removeEventListener('pointercancel',listener);
+		return document.removeEventListener('selectstart',canceller);
 	};
-	return true;
+	
+	el.flags.incr('_touch_');
+	el.setPointerCapture(e.pointerId);
+	el.addEventListener('pointermove',listener);
+	el.addEventListener('pointerup',listener);
+	el.addEventListener('pointercancel',listener);
+	el.addEventListener('lostpointercapture',teardown,{once: true});
+	document.addEventListener('selectstart',canceller,{capture: true});
+	
+	listener(e);
+	
+	return false;
 };
 
 
 /***/ }),
 /* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "round", function() { return round; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clamp", function() { return clamp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseDimension", function() { return parseDimension; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scale", function() { return scale; });
+function round(val,step = 1){
+	
+	let inv = 1.0 / step;
+	return Math.round(val * inv) / inv;
+	
+};
+function clamp(val,min,max){
+	
+	if (min > max) {
+		
+		return Math.max(max,Math.min(min,val));
+	} else {
+		
+		return Math.min(max,Math.max(min,val));
+	};
+};
+
+function parseDimension(val){
+	
+	if (typeof val == 'string') {
+		
+		let [m,num,unit] = val.match(/^([-+]?[\d\.]+)(%|\w+)$/);
+		return [parseFloat(num),unit];
+	} else if (typeof val == 'number') {
+		
+		return [val];
+	};
+};
+
+function scale(a0,a1,b0r,b1r,s = 0.1){
+	
+	let [b0,b0u] = parseDimension(b0r);
+	let [b1,b1u] = parseDimension(b1r);
+	let [sv,su] = parseDimension(s);
+	
+	if (b0u == '%') { b0 = (a1 - a0) * (b0 / 100) };
+	if (b1u == '%') { b1 = (a1 - a0) * (b1 / 100) };
+	
+	if (su == '%') { sv = (b1 - b0) * (sv / 100) };
+	
+	return function(value,fit) {
+		
+		let pct = (value - a0) / (a1 - a0);
+		let val = b0 + (b1 - b0) * pct;
+		
+		if (s) { val = round(val,sv) };
+		if (fit) { val = clamp(val,b0,b1) };
+		return val;
+	};
+};
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2048,7 +2503,7 @@ function createKeyedFragment(bitflags,parent){
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2065,6 +2520,11 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 	constructor(){
 		
 		super();
+		if (this.flags$ns) {
+			
+			this.flag$ = this.flagExt$;
+		};
+		
 		this.setup$();
 		this.build();
 	}
@@ -2295,7 +2755,7 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2340,7 +2800,7 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["SVGElement"],{
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; };
@@ -2785,7 +3245,7 @@ extend$(HTMLButtonElement,{
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2827,7 +3287,7 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["SVGElement"],{
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2848,12 +3308,12 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect$handle = function (){
 
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect$in = function (){
 	
-	return this.event.detail.delta > 0;
+	return this.event.delta >= 0 && this.event.entry.isIntersecting;
 };
 
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].intersect$out = function (){
 	
-	return this.event.detail.delta < 0;
+	return this.event.delta < 0;
 };
 
 function callback(name,key){
@@ -2869,7 +3329,8 @@ function callback(name,key){
 			let ratio = entry.intersectionRatio;
 			let detail = {entry: entry,ratio: ratio,from: prev,delta: (ratio - prev),observer: observer};
 			let e = new _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"](name,{bubbles: false,detail: detail});
-			e.entry = detail.entry;
+			e.entry = entry;
+			e.isIntersecting = entry.isIntersecting;
 			e.delta = detail.delta;
 			e.ratio = detail.ratio;
 			map.set(entry.target,ratio);
@@ -2934,7 +3395,7 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.on$intersect = function(m
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2976,7 +3437,7 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.on$selection = function(m
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

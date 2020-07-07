@@ -59,11 +59,6 @@ css .defbar
 		bbw:2px bc:clear bc.checked:teal6
 	# input@checked ~ .tab c:gray9
 
-tag doc-css-property < a
-
-	def render
-		<self href="https://developer.mozilla.org/en-US/docs/Web/CSS/{data}"> data
-
 tag doc-style-aliases
 	def mount
 		rule = new RegExp(dataset.regex or '---')

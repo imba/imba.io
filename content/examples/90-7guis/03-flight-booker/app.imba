@@ -1,5 +1,4 @@
-css select,input,button d:block my:2 fs:inherit
-
+import 'util/styles'
 # https://github.com/eugenkiss/7guis/wiki#flight-booker
 tag flight-booker
 	prop isReturn = false
@@ -12,12 +11,12 @@ tag flight-booker
 		message += ` and returning {new Date(end).toDateString!}` if isReturn
 		window.alert(message)
 
-	<self>
-		<select bind=isReturn>
+	<self[d:grid gap:3]>
+		<select[w:100%] bind=isReturn>
 			<option value=false> 'one-way flight'
 			<option value=true>	'return flight'
 		<input bind=start type='date'>
 		<input bind=end type='date' disabled=!isReturn>
 		<button @click=bookFlight disabled=(isReturn && start >= end)> 'book'
 
-imba.mount <flight-booker[d:block p:5]>
+imba.mount <flight-booker>
