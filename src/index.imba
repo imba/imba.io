@@ -49,7 +49,7 @@ tag app-root
 		tween:transform 250ms quint-out
 		y:110% .routed:0
 
-	css $open-ide-button
+	css .open-ide-button
 		bottom:0 right:0 m:5 border:gray2 py:3 px:4 radius:3
 		cursor:pointer bg:teal3/90 c:teal8 fw:bold border:teal4/20 shadow:md
 		tween:100ms cubic-out
@@ -57,7 +57,7 @@ tag app-root
 		@hover y:-2px shadow:lg bg:teal3
 		@after o:0.7 fs:xs content: " " $shortcut
 
-	css $header
+	css .header
 		pos:fixed d:flex ai:center
 		p:3 w:100% h:$header-height top:0px
 		border-bottom:gray2 bg:white
@@ -92,7 +92,7 @@ tag app-root
 		let repl = router.match('/examples')
 		console.log 'found data',data
 		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show!>
-			<div$header>
+			<div.header>
 				<app-logo[d:flex h:8 c:teal4] route-to='/'>
 				<div[flex: 1]>
 				<div[d:flex cursor:pointer]>
@@ -105,7 +105,7 @@ tag app-root
 			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
 			<app-menu$menu data=data>
 			<app-document$doc[ml@md:$menu-width] data=data .nokeys=repl>
-			<div$open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
+			<div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 			
 
 # Should add the colors etc to the root css here

@@ -708,16 +708,23 @@ extend$(Element,{
 	
 	flag$(str){
 		
-		this.className = str;
+		
+		let ns = this.flags$ns;
+		this.className = ns ? ((ns + (this.flags$ext = str))) : ((this.flags$ext = str));
 		return;
 		
 	},
 	flagDeopt$(){
 		var self = this;
 		
-		this.flag$ = function(str) { return self.flagSync$(self.flags$ext = str); };
+		this.flag$ = this.flagExt$;
 		this.flagSelf$ = function(str) { return self.flagSync$(self.flags$own = str); };
 		return;
+		
+	},
+	flagExt$(str){
+		
+		return this.flagSync$(this.flags$ext = str);
 	},
 	
 	flagSelf$(str){
@@ -736,7 +743,7 @@ extend$(Element,{
 	
 	flagSync$(){
 		
-		return this.className = ((this.flags$ext || '') + ' ' + (this.flags$own || '') + ' ' + (this.$flags || ''));
+		return this.className = ((this.flags$ns || '') + (this.flags$ext || '') + ' ' + (this.flags$own || '') + ' ' + (this.$flags || ''));
 	},
 	
 	open$(){
@@ -825,7 +832,7 @@ class ImbaElementRegistry {
 		};
 	}
 	
-	define(name,klass,options){
+	define(name,klass,options = {}){
 		
 		this.types[name] = klass;
 		klass.nodeName = name;
@@ -834,8 +841,21 @@ class ImbaElementRegistry {
 		
 		
 		
+		let basens = proto._ns_;
+		if (options.ns) {
+			
+			let ns = options.ns;
+			let flags = ns + ' ' + ns + '_ ';
+			if (basens) {
+				
+				flags += proto.flags$ns;
+				ns += ' ' + basens;
+			};
+			proto._ns_ = ns;
+			proto.flags$ns = flags;
+		};
 		
-		if (options && options.extends) {
+		if (options.extends) {
 			
 			CustomTagConstructors[name] = klass;
 		} else {
@@ -851,10 +871,19 @@ imba.tags = new ImbaElementRegistry();
 
 
 
-imba.createElement = function (name,parent,flags,text){
+imba.createElement = function (name,parent,flags,text,ctx){
 	
 	var el = document.createElement(name);
 	
+	let f = ctx && ctx._ns_;
+	
+	if (f) {
+		
+		
+		flags = flags ? ((f + ' ' + flags)) : f;
+		el.flags$ns = f + ' ';
+		
+	};
 	if (flags) { el.className = flags };
 	
 	if (text !== null) {
@@ -870,7 +899,7 @@ imba.createElement = function (name,parent,flags,text){
 	return el;
 };
 
-imba.createComponent = function (name,parent,flags,text){
+imba.createComponent = function (name,parent,flags,text,ctx){
 	
 	
 	var el;
@@ -901,10 +930,17 @@ imba.createComponent = function (name,parent,flags,text){
 		el.slot$('__').text$(text);
 	};
 	
+	let nsflag = (ctx && ctx._ns_);
 	
-	if (flags) {
+	if (nsflag) {
 		
-		el.flag$(flags);
+		el.flags$ns += nsflag + ' ';
+		el.flag$ = el.flagExt$;
+		
+	};
+	if (flags || nsflag || el.flags$ns) {
+		
+		el.flag$(flags || '');
 	};
 	return el;
 };
@@ -2484,6 +2520,11 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 	constructor(){
 		
 		super();
+		if (this.flags$ns) {
+			
+			this.flag$ = this.flagExt$;
+		};
+		
 		this.setup$();
 		this.build();
 	}
@@ -2651,6 +2692,26 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 	end$(){
 		
 		return this.visit();
+		
+	}
+	cre$(name,parent,flags,text,ctx){
+		
+		var el = document.createElement(name);
+		
+		
+		if (flags) { el.className = flags };
+		
+		if (text !== null) {
+			
+			el.text$(text);
+		};
+		
+		if (parent && (parent instanceof Node)) {
+			
+			el.insertInto$(parent);
+		};
+		
+		return el;
 	}
 	
 	connectedCallback(){

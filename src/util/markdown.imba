@@ -209,12 +209,15 @@ export def render content, o = {}
 		prev = section
 		# console.log "{section.title}"
 
-	let print = do(section,pre = '')
+	let walk = do(section,pre = '')
 		console.log "{pre}{section.title} ({section.type} {section.level} {section.flags}) - {section.desc}"
-		for child in section.children
-			print(child,pre + '  ')
 
-	print(object)
+		section.children = section.children.filter do !$1.skip
+
+		for child in section.children
+			walk(child,pre + '  ')	
+
+	walk(object)
 
 	if object.children.length > 1
 		object.type = 'guide'
@@ -222,7 +225,6 @@ export def render content, o = {}
 	delete object.toc
 
 	for section in sections
-		# section.level = section.hlevel
 		delete section.parent
 
 	return object

@@ -12,6 +12,8 @@ multipage: true
 
 ### Indentation
 
+### Tabs > Spaces
+
 ### Scoping
 
 ### Implicit Invocation
@@ -68,6 +70,7 @@ This isn't to be abused, but can in many cases be practical.
 
 ### Tag vs Element vs Component
 
+### Literal Tags
 
 # Literal Types
 
@@ -1583,6 +1586,7 @@ import 'util/styles'
 
 # ---
 tag app-panel
+    css .name bg:blue1
     <self.group>
         <button @click=($name.value += 'Hi')> "Write"
         <input$name type='text'>
@@ -1591,6 +1595,10 @@ tag app-panel
 imba.mount <app-panel>
 ```
 In the code above, `$name` is available everywhere inside `app-panel` component, but also from outside the app-panel as a property of the component.
+
+### Quick tip [tip]
+
+Elements with a reference automatically get a flag with the same name as the reference.
 
 # - Context
 
@@ -2588,57 +2596,126 @@ css .card
 # - Scoped Styles
 
 A problem with CSS is that often end up with tons of globally competing styles spread around numerous files. Changing some styles in one place might affect some seemingly unrelated elements. In Imba it is really easy to declare styles that should only apply to certain parts of your document. If you declare style rules inside tag definitions, all the styles will magically only apply to elements inside of this tag:
-```imba
-# these are global -- applies to everything in project
-css body p:5
-css h1 color:red5
-css p color:black
 
+```imba
+# ~preview=lg
+# these are global -- applies to everything in project
 # ---
 tag app-card
-    # local styles declared inside tag body
-    css d:block p:3 bw:1 bc:gray2 radius:2
-        h1 font:serif color:gray8 fs:20px
-        p color:gray5 fs:15px
-        $more color:gray4
+    css fs:sm radius:md d:vflex bg:teal1 c:teal7
+    css .header bg:teal2/50 p:3
+    css .body p:3
 
     <self>
-        <h1> "Gray Card Header"
-        <p> "Gray Card Desc"
-        <a$more> 'show more...'
+        <.header> "Card Header"
+        <.body> <p> "Card Paragraph"
+
+tag app-root
+    # local styles does not leak into app-card
+    css .header bg:green3 p:4 fw:600
+
+    <self>
+        <.header> "App Header"
+        <app-card>
+        <app-card>
+# ---
+imba.mount do <app-root[d:grid gap:4 p:4]>
+```
+Any style you declare in a tag declaration will only ever affect the literal tags inside the declaration. You don't need to worry about affecting styles of deeply nested elements that might share the same class names. This is very practical, and allows us to safely use short and descriptive class names like `header`, `footer`, `body`, `content` etc, and use them for styling. Scoped styles are also inherited when extending components, which makes it very powerful.
+
+```imba
+# ~preview=lg
+import 'util/styles'
+# these are global -- applies to everything in project
+css @root ta:center
+# ---
+tag base-item
+    css d:block m:2 p:3 bg:gray2
+    css h1 fs:lg fw:600 c:purple7
+    <self>
+        <h1> "Heading"
+        <p> <slot> "Description"
+
+tag pink-item < base-item
+    css bg:pink2
+    css h1 c:pink7
+
+tag custom-item < pink-item
+    <self>
+        <h1> "Heading"
+        <p[fw:bold]> <slot> "Description"
+        <div> "Show more..."
 
 imba.mount do <div>
-    <app-card>
-    <h1> "Red Header"
-    <p> "Black paragraph"
+    <base-item> "Base item"
+    <pink-item> "Pink item"
+    <custom-item> "Custom item"
 ```
 
-### Only direct descendants
+### Deep Styles
 
 ```imba
-# ~preview
-
+# ~preview=lg
 # ---
-tag app-button
-    css color:blue7
-    <self> <span.title> <slot> 'button'
+tag app-item
+    <self> <p> "Nested Paragraph"
 
-tag app-card
-    # local styles declared inside tag body
-    # affects only h1 title, not title inside app-button
-    css .title color:teal7
+tag app-root
+    css p fw:600
+    <self>
+        <div> <p> "Bold Paragraph"
+        <div> <app-item>
+        <div innerHTML='<p>Normal Paragraph<p>'>
+        
+# ---
+imba.mount do <app-root[d:grid gap:4 p:4]>
+```
+As you can see in the example above, the literal `<p>` inside `app-root` is styled by the scoped rule, while the `<p>` inside the nested `<app-item>`, and the `<p>` generated via innerHTML are *not* styled.
+
+There are some cases where you don't want this strict scoping though. Imagine a component that renders markdown or really need to override styles for nested components. This can be done with two special nesting operators.
+
+##### >>>
+
+```imba
+# ~preview=lg
+# these are global -- applies to everything in project
+tag app-item
+    <self> <p> "Nested Paragraph"
+# ---
+tag app-root
+    css div p fw:600
+    css div >>> p c:blue6 
 
     <self>
-        <h1.title> "Gray Card Header"
-        <p.desc> "Gray Card Desc"
-        <app-button> 'show more...'
-
-imba.mount do <app-card>
+        <div> <p> "Literal"
+        <div> <app-item>
+        <div innerHTML='<p>Generated<p>'>
+# ---
+imba.mount do <app-root[d:grid gap:4 p:4]>
 ```
+> The `>>>` operator signifies that everything after should 'escape' from the literal confines of the tag.
 
-### Not styling elements added via slots
+##### >>
 
-## Deep scoping
+```imba
+# ~preview=lg
+# these are global -- applies to everything in project
+tag app-item
+    <self> <p> "Nested Paragraph"
+# ---
+tag app-root
+    css div p fw:600
+    css div >> p c:blue6 
+
+    <self>
+        <div> <p> "Literal"
+        <div> <app-item>
+        <div innerHTML='<p>Generated<p>'>
+# ---
+imba.mount do <app-root[d:grid gap:4 p:4]>
+```
+> The `>>` operator styles immediate children, just like the `>` operator, but it also targets non-literal immediate children.
+
 
 # - Inline Styles
 
@@ -2663,7 +2740,7 @@ Since inline styles are essentially anonymous classes, they can also be applied 
 ```
 
 
-## Interpolation
+### Interpolation
 
 It is also possible to interpolate dynamic values into styles. This happens efficiently at runtime using css variables behind the scenes. This allows you to even write dynamic styles in a declarative manner.
 
@@ -2693,7 +2770,7 @@ css div p:2 m:2 overflow:hidden min-width:80px
 let ptr = {x:0, y:0}
 imba.mount do
     <section[d:block pos:absolute inset:0] @pointermove=(ptr = e)>
-        <div[bg:indigo2 w:{ptr.x / 10}%]> "% width"
+        <div[bg:indigo2 w:{20 + ptr.x / 5}%]> "% width"
         <div[bg:green2 w:{ptr.x}px]> "px width"
         
 ```
@@ -2701,7 +2778,7 @@ imba.mount do
 ### Set properties directly
 You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
 
-# - Mixins
+# - Mixins [skip]
 
 [Code](/examples/more/mixins)
 
@@ -2959,3 +3036,11 @@ imba.mount do <main[p:8]>
 The only way to get consistent gaps between elements inside flexboxes is to add margins around all their children (on all sides), and then add a negative margin to the container. This is what `display:group` does.
 
 # - Specificity
+
+# Test [skip]
+
+## Heading
+
+- List item 1
+- List item 2
+- List item 3

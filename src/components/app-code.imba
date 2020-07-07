@@ -56,6 +56,7 @@ css :root
 	--code-selector: #e9e19b;
 	--code-selector-pseudostate: var(--code-selector);
 	--code-selector-context: #eec49d;
+	--code-selector-operator: #ff9a8d;
 	--code-selector-placeholder:hsl(321, 100%, 79%) # hsl(36, 100%, 72%);
 	--code-key: #9dcbeb;
 	--code-delimiter: #e3e3e3
@@ -167,33 +168,54 @@ tag app-code
 
 tag app-code-block < app-code
 
-	css pos:relative radius:sm fs:12px @md:13px d:block .shared:none
-		--bg:$code-bg-lighter
+	css pos:relative br:sm fs:12px @md:13px d:block .shared:none
+		$bg:$code-bg-lighter
+		$preview-size:100px .lg:180px .xl:240px
 
-	css %code pos:relative d:block
-		.code-head d:none
-		.code-foot d:none
+	css main
+		pos:relative radius:inherit c:$code-color bg:var(--bg) btlr..multi:0
 
-	css code d:block ofx:auto ff: var(--code-font) ws:pre p:3 4 p@md:5 6
-	css label bg:gray7 radius:2 pos:absolute d:flex ai:center p:1
+	css .code pos:relative d:block
+		>>> .code-head d:none
+		>>> .code-foot d:none
+		>>> span.region.hl pos:relative
 
-	css %btn px:1 mx:1 c:gray6 fw:500 radius:2 bg@hover:gray7/10 outline@focus:none
+		&.has-focus >> span@not(.focus)@not(._style) opacity: 0.6
+		&.has-hide >>> span.hide d:none
+		&.has-hl@hover >> span@not(.hl)@not(._style) opacity: 0.7
+
+	css code d:block ofx:auto ff:mono ws:pre p:3 4 p@md:5 6
+	# what should this style?
+	css label bg:gray7 br:2 pos:absolute d:flex ai:center p:1
+
+	css .btn px:1 mx:1 c:gray6 fw:500 br:2 bg@hover:gray7/10 outline@focus:none
 		@not-md mx:0 ml:1 bg:gray7/90 bg@hover:gray7/100 c:gray4
 		@is-active bg:blue6 c:white
 
-	css .tabs d:flex radius:2
-
-	css .nostyles ._style d:none
-
-	css code.has-focus > span@not(.focus)@not(._style) opacity: 0.6
-	css code.has-hide span.hide d:none
-
-	css code@hover.has-hl > span@not(.hl)@not(._style) opacity: 0.7
-	css code span.region.hl pos:relative
+	css .tabs d:flex radius:2 d:flex cursor:default us:none
 		@before
 			pos:absolute inset:0 m:-1 radius:3 b:1px dashed yellow7 content:' '
 			box-shadow: 0px 0px 10px 2px rgba(42, 50, 63,0.7), inset 0px 0px 2px 2px rgba(42, 50, 63,0.7)
 			rotate:-1deg
+
+	css .tab d:flex px:3 py:1 fs:sm fw:500 br:3px 3px 0 0
+		bg:gray2/50 @hover:gray3 .on:var(--bg)
+		c:gray6 c.on:teal2/90
+
+	css $preview
+		min-height:82px
+		mt:0 radius:0 0 3px 3px
+		color:gray6
+		pos:absolute
+		t:0 l:100%
+		w:calc(min(100vw,1340px) - 980px - 40px)
+		max-width:500px
+		h:100%
+		w:$doc-margin
+		pl:4
+		>>> .frame shadow:xs @lt-xl:none radius:2
+		>>> .controls d@lt-xl:none
+		@lt-xl pos:relative l:0 h:$preview-size ml:0 w:100% p:2 pt:0 bg:$bg max-width:initial
 
 	prop tab = 'imba'
 	prop lang
@@ -207,6 +229,9 @@ tag app-code-block < app-code
 		lang = dataset.lang
 		files = []
 		file = null
+		# manual style fixing
+		flags.add(_ns_)
+		flags.add(_ns_ + "_")
 
 		if dataset.dir
 			dir = ls(dataset.dir)
@@ -275,77 +300,35 @@ tag app-code-block < app-code
 				el.classList.add('highlight') for el in getElementsByClassName(vref)
 			hlvar = vref
 	
-	css %tabs d:flex cursor:default us:none
-	css %tab d:flex px:3 py:1 fs:sm fw:500 radius:3px 3px 0 0
-		bg:gray2/50 @hover:gray3 .on:var(--bg)
-		c:gray6 c.on:teal2/90
-
-
-	css %main
-		pos:relative radius:inherit c:$code-color bg:var(--bg) border-top-left-radius..multi:0
-
-	css
-		$preview-size:100px .lg:180px .xl:240px
-
-	css %preview
-		min-height:82px
-		mt:0 radius:0 0 3px 3px
-		color:gray6
-		pos:absolute
-		t:0 l:100%
-		w:calc(min(100vw,1340px) - 980px - 40px)
-		max-width:500px
-		h:100%
-		w:$doc-margin
-		pl:4
-		.frame shadow:xs @lt-xl:none radius:2
-		.controls d@lt-xl:none
-		@lt-xl pos:relative l:0 h:$preview-size ml:0 w:100% p:2 pt:0 bg:var(--bg) max-width:initial
+	
 
 	def editorResized e
-		editorHeight = Math.max(editorHeight or 0,e.rect.height)
+		# editorHeight = Math.max(editorHeight or 0,e.rect.height)
+		self
 	
 	def render
 		return unless code
 
 		<self.{code.flags} .{size} .multi=(files.length > 1) @pointerover.silence=pointerover>
 			<header[d:none ..multi:block]>
-				<div%tabs> for item in files
-					<a%tab .on=(file==item) @click=(file=item)> item.name
-			<main%main [border-top-left-radius:0]=dir>
-				<div$editor%editor.code[min-height:{editorHeight}px] @resize=editorResized>
+				<div.tabs> for item in files
+					<a.tab .on=(file==item) @click=(file=item)> item.name
+			<main[btlr:0]=dir>
+				<div$editor.code[min-height:{editorHeight}px] @resize=editorResized>
 					if file
-						<code.{file.highlighted.flags} %code innerHTML=file.highlighted.html>
+						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
 					unless dir
-						<div$code[pos:relative] %code>
+						<div$code[pos:relative]>
 							if lang == 'imba'
 								<div[pos:absolute top:-2 @md:2 right:1 @md:2]>
-									if options.compile
-										<button%btn .active=(tab == 'js') @click=toggleJS> 'js'
+									# if options.compile
+									#	<button.btn .active=(tab == 'js') @click=toggleJS> 'js'
 									if options.run
-										<button%btn @click=run> 'run'
-
-							<div$source.source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
-							<div.output.js .(d:none)=(tab != 'js')> <code$compiled>
+										<button.btn @click=run> 'EDIT'
+							<div$source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
+							# <div.output.js .(d:none)=(tab != 'js')> <code$compiled>
 				if options.preview or dir
-					<app-repl-preview$preview%preview file=options.preview dir=dir>
+					<app-repl-preview$preview file=options.preview dir=dir>
 			
 
 tag app-code-inline < app-code
-
-	css &
-		display: inline-block
-		font-size: 0.75em
-		border-radius: 3px
-		background: hsla(210, 7%, 31%, 0.06)
-		-webkit-box-decoration-break: clone
-		vertical-align: middle
-		padding: 0.1em 5px
-		font-family: var(--code-font)
-
-
-tag app-code-preview
-	def render
-		<self>
-			<div> 'Preview'
-			<div$container> <iframe$frame>
