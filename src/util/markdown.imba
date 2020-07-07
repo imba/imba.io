@@ -212,7 +212,7 @@ export def render content, o = {}
 	let walk = do(section,pre = '')
 		console.log "{pre}{section.title} ({section.type} {section.level} {section.flags}) - {section.desc}"
 
-		section.children = section.children.filter do !$1.skip
+		section.children = section.children.filter do !$1.options.skip
 
 		for child in section.children
 			walk(child,pre + '  ')	
