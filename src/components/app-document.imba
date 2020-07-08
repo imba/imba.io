@@ -3,6 +3,20 @@ import { @watch } from '../decorators'
 
 import '../repl/preview'
 
+const Sheets = {}
+
+Sheets.operators = [
+	{name: 'All',regex: /.*/}
+	{name: 'Math',regex: /op-math/}
+	{name: 'Logic',regex: /op-logic/}
+	{name: 'Assign',regex: /op-assign/}
+	{name: 'Bitwise',regex: /op-bitwise/}
+	{name: 'Comparison',regex: /op-compar/}
+	{name: 'Unary',regex: /op-unary/}
+	{name: 'Custom',regex: /op-custom/}
+	{name: 'Advanced',regex: /op-change/}
+]
+
 tag doc-anchor
 	css pos:relative top:-14
 
@@ -61,6 +75,24 @@ tag doc-section-link
 		<span.title> data.title
 		<p.desc innerHTML=data.desc>
 
+tag doc-section-filters
+
+	css button
+		mr:2 fw:500 fs:8
+		outline@focus:none
+		c:gray6 @hover:gray7 .checked:gray9
+		bdb:2px solid bdc:clear .checked:teal6
+
+	prop filter
+
+	get filters
+		Sheets[data.options.sheet]
+
+	def render
+		<self>
+			for item in filters
+				<button bind=data.filtering value=item> item.name
+
 tag doc-section
 	def toggle
 		# flags.toggle('collapsed')
@@ -74,10 +106,11 @@ tag doc-section
 		> p > code d:table mb:1 fw:600
 		> mt@first:0 mb@last:0
 
-	css &.collapsed > .body d:none
-
 	css my:1em d:block
 		mt:4 .h1:8 .h2:8 .h3:8
+
+	css &.hide d:none
+	css &.collapsed > .body d:none
 
 	# css &.tip border:1px solid gray3/50 radius:md p:4 bg:orange2
 
@@ -90,6 +123,7 @@ tag doc-section
 			-webkit-box-decoration-break: clone
 
 	css .snippet,.h5 $bg:orange2 $hbg:teal4 $hc:teal9
+	css .op $hbg:teal4 $hc:teal9
 	css .tip $bg:orange2 $hbg:orange4 $hc:orange8
 	css .orange $bg:orange2 $hbg:orange4 $hc:orange8
 	css .yellow $bg:yellow2 $hbg:yellow4 $hc:yellow8
@@ -102,12 +136,23 @@ tag doc-section
 		&.l1 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
 		&.l2 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
 		&.tip fs:16px/1.2 fw:500 pb:3 bbw:0 mb:0
-		&.snippet,&.tip,&.h5 c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bbw:0
+		&.snippet,&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bbw:0
 			.title px:2 py:1 radius:md pos:relative bg:$hbg d:inline-block
 			app-code-inline fs:12px va:baseline bg:clear p:0 fw:bold c:inherit
 
+		&.op pb:0
+			.title bg:#364765 fs:13px ff:mono fw:700 prefix: "a " suffix: " b" c:$code-keyword
+				@before,@after fw:400 c:$code-variable
+			
+			.title bg:blue5 fs:13px ff:mono fw:700 prefix: "a " suffix: " b" c:blue9
+				@before,@after fw:400 c:white
+
+		&.op-unary .title prefix:"" suffix:"a"
+		&.op-post .title prefix:"a" suffix:""
+		&.op-unary.op-keyword .title suffix:" a"
+
 	css .body
-		&.snippet,&.h5 pl:4 mt:-2 pb:1
+		&.snippet,&.h5,&.op pl:4 mt:-2 pb:1
 			>>> p my:3
 		
 		&.tip mt:-2 pb:1 ml:3 br:md p:4 bg:$bg
@@ -150,16 +195,22 @@ tag doc-section
 			fs:18px/1.2 fw:500 pb:3
 
 	def render
+		let filter = data.filtering..regex
+
 		<self .{data.flagstr}>
 			if data.head
 				<.head.html .{data.flagstr} .l{level} @click=toggle>
 					<.title innerHTML=data.head>
+			if data.options.sheet
+				<doc-section-filters data=data>
+
 			if (data isa Section or level == 0)
 				<.body.{data.flagstr}>
 					<.content.html innerHTML=(data.html or '')>
+					
 					<.sections>
 						for item in data.sections
-							<doc-section data=item level=(level+1)>
+							<doc-section .hide=(filter and !item.match(filter)) data=item level=(level+1)>
 
 tag app-document
 	@watch prop data

@@ -347,89 +347,337 @@ let el = <div.main title='example'> "Hello world"
 document.body.appendChild el
 ```
 
-# Operators
+# Operators [sheet=operators]
 
-##### Arithmetic
+### + [op=math]
 ```imba
-1 + 2 # Addition
-3 - 2 # Subtraction
-6 / 3 # Division
-2 * 2 # Multiplication
-5 % 2 # Remainder / Modulo
-2 ** 2 # Exponential
+1 + 2 # 3
+```
+
+### - [op=math]
+```imba
+3 - 1 # 2
+```
+
+### / [op=math]
+```imba
+6 / 3 # 2
+```
+
+### * [op=math]
+```imba
+3 * 2 # 6
+```
+
+### % [op=math]
+```imba
+5 % 2 # 1
+```
+
+### ** [op=math]
+```imba
+2 ** 3 # 8
+```
+
+### - [op=math+unary]
+```imba
 -i # Unary negation
+```
+
+### + [op=math+unary]
+```imba
 +i # Unary plus
 ```
 
-##### Logical
+### && [op=logical]
 ```imba
-expr1 && expr2 # Logical AND operator
-expr1 || expr2 # Logical OR operator
-!expr # Logical NOT operator
+null && 10 # null
+1 && 10 # 10
 ```
 
-##### Assignment
+### and [op=logical]
 ```imba
-item = 100 
-item ||= 100 # If falsy assignment
-item &&= 100 # If truthy assignment
-item ?= 100 # If null assignment
-item += 100 # Addition assignment
-item -= 100 # Decrement assignment
-item *= 100 # Multiplication assignment
-item /= 100 # Division assignment
-item %= 100 # Remainder assignment
-item **= 100 # Exponential assignment
-i++ # Increment assignment
-i-- # Decrement assignment
+null and 10 # null
+1 and 10 # 10
 ```
 
-##### Comparison
+### || [op=logical]
 ```imba
-x == y # Equality
-x != y # Inequality
-x === y # Strict equality
-x is y # Also strict equality
-x !== y # Strict inequality
-x isnt y # Also strict inequality
-x > y # Greater than
-x >= y # Greater than or equal
-x < y # Less than
-x <= y # Less than or equal
-10 > x > 5 # Chained comparison
+null || 10 # 10
+0 || 10 # 10
+1 || 10 # 1
 ```
 
-##### Bitwise Comparison
+### or [op=logical]
+```imba
+null or 10 # 10
+0 or 10 # 10
+1 or 10 # 1
+```
+
+### ?: [op=logical+existential]
+```imba
+null ?: 10 # 10
+0 ?: 10 # 0
+'' ?: 'str' # ''
+```
+
+### ! [op=unary]
+```imba
+let a = true
+!a # false
+!10 # false
+!0 # true
+```
+
+### = [op=assign]
+```imba
+a = b 
+```
+
+### ||= [op=assign]
+```imba
+a ||= b # If falsy assignment
+```
+
+### &&= [op=assign]
+```imba
+a &&= b # If truthy assignment
+```
+
+### ?= [op=assign]
+```imba
+a ?= b # If null assignment
+```
+
+### =? [op=assign+change]
+```imba
+let object = {}, input = 200
+# ---
+if object.value =? input
+    yes
+```
+Regular assignment that returns true or false depending on whether the left-hand was changed or not. More concise way of doing
+```imba
+let object = {}, input = 200
+# ---
+if object.value != input
+    object.value = input
+    yes
+```
+
+### += [op=math+assign]
+```imba
+a += b # Addition assignment
+```
+
+### -= [op=math+assign]
+```imba
+a -= b # Decrement assignment
+```
+
+### *= [op=math+assign]
+```imba
+a *= b # Multiplication assignment
+```
+
+### /= [op=math+assign]
+```imba
+a /= b # Division assignment
+```
+
+### %= [op=math+assign]
+```imba
+a %= b # Remainder assignment
+```
+
+### **= [op=math+assign]
+```imba
+a **= b # Exponential assignment
+```
+
+### ++ [op=math+assign+unary+post]
+```imba
+a++ # Increment assignment
+```
+
+### -- [op=math+assign+unary+post]
+```imba
+a-- # Decrement assignment
+```
+
+### ++ [op=math+assign+unary]
+```imba
+++a # Increment assignment
+```
+
+### -- [op=math+assign+unary]
+```imba
+--a # Decrement assignment
+```
+
+### & [op=bitwise]
 ```imba
 a & b # Bitwise AND
+```
+### | [op=bitwise]
+```imba
 a | b # Bitwise OR
+```
+### ^ [op=bitwise]
+```imba
 a ^ b # Bitwise XOR
+```
+### ~ [op=bitwise+unary]
+```imba
 ~ a # Bitwise NOT
+```
+### << [op=bitwise]
+```imba
 a << b # Left shift
+```
+### >> [op=bitwise]
+```imba
 a >> b # Sign-propagating right shift
+```
+### >>> [op=bitwise]
+```imba
 a >>> b # Zero-fill right shift
 ```
-
-##### Bitwise Assignment
+### <<= [op=bitwise+assign]
 ```imba
 a <<= 1 # Left shift assignment
+```
+### >>= [op=bitwise+assign]
+```imba
 a >>= 1 # Right shift assignment
+```
+### >>>= [op=bitwise+assign]
+```imba
 a >>>= 1 # Unsigned right shift assignment
+```
+### &= [op=bitwise+assign]
+```imba
 a &= 1 # Bitwise AND assignment
+```
+### |= [op=bitwise+assign]
+```imba
 a |= 1 # Bitwise OR assignment
+```
+### ~= [op=bitwise+assign]
+```imba
+a ~= 1 # Bitwise NOT assignment (unassignment)
+```
+### ^= [op=bitwise+assign]
+```imba
 a ^= 1 # Bitwise XOR assignment
 ```
 
-##### isa
+### |=? [op=bitwise+assign+change]
+```imba
+const STATES = {LOADED: 2}
+let data = {state: 0}
+
+# ---
+if data.state |=? STATES.LOADED
+    yes
+```
+Bitwise OR assignment that returns true only if the bit(s) was not previously set. Essentially a concise way to do 
+```imba
+const STATES = {LOADED: 2}
+let data = {state: 0}
+
+# ---
+if (data.state & STATES.LOADED) == 0
+    data.state |= STATES.LOADED
+    yes
+```
+
+### ~=? [op=bitwise+assign+change]
+```imba
+const STATES = {LOADED: 2}
+let data = {state: 0}
+
+# ---
+if data.state ~=? STATES.LOADED
+    # went from loaded to not loaded
+```
+Bitwise unassignment that unsets the right-hand bits from left-hand value and returns true / false depending on whether this actually changed the left-side or not.
+```imba
+const STATES = {LOADED: 2}
+let data = {state: 0}
+
+# ---
+if (data.state & STATES.LOADED) == 0
+    data.state |= STATES.LOADED
+    yes
+```
+### ^=? [op=bitwise+assign+change]
+```imba
+a ^=? 1 # Bitwise XOR assignment
+```
+
+### == [op=compare]
+```imba
+x == y # Equality
+```
+### != [op=compare]
+```imba
+x != y # Inequality
+```
+### === [op=compare]
+```imba
+x === y # Strict equality
+```
+### is [op=compare]
+```imba
+x is y # Also strict equality
+```
+### !== [op=compare]
+```imba
+x !== y # Strict inequality
+```
+### isnt [op=compare]
+```imba
+x isnt y # Also strict inequality
+```
+### > [op=compare]
+```imba
+x > y # Greater than
+```
+### >= [op=compare]
+```imba
+x >= y # Greater than or equal
+```
+### < [op=compare]
+```imba
+x < y # Less than
+```
+### <= [op=compare]
+```imba
+x <= y # Less than or equal
+```
+
+### isa [op=isa+keyword]
 ```imba
 honda isa Car # 
 princess !isa Car 
 ```
 > The `isa` operator tests whether the prototype property of a constructor appears anywhere in the prototype chain of an object. Alias for the javascript [instanceof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof) operator.
 
-##### delete
+### delete  [op=unary+keyword]
 ```imba
 delete object.property
+```
+
+### typeof [op=unary+keyword]
+```imba
+typeof item
+```
+
+### ?= [op=assign+change]
+```imba
+test
 ```
 
 
@@ -1787,10 +2035,10 @@ Inspired by vue.js, Imba supports event modifiers. More often than not, event ha
 import 'util/styles'
 
 # ---
-# calls preventDefault on event
 imba.mount do
 	<a href='https://google.com' @click.prevent.log('prevented')> 'Link'
 ```
+> Calls preventDefault on event
 
 ##### stop [event-modifier] [snippet]
 ```imba
@@ -1798,20 +2046,21 @@ imba.mount do
 import 'util/styles'
 
 # ---
-# .stop will call stopPropagation() on the event
 imba.mount do <div.group @click.log('clicked div')>
 	<button @click.stop.log('stopped')> 'stop'
 	<button @click.log('bubble')> 'bubble'
 ```
+> Calls stopPropagation on event
 
 ##### once [event-modifier] [snippet]
 ```imba
 # ~preview
 import 'util/styles'
 # ---
-# the click event will be triggered at most once
-imba.mount do <button @click.once.log('once!')> 'Click me'
+imba.mount do
+    <button @click.once.log('once!')> 'Click me'
 ```
+> The click event will be triggered at most once 
 
 ##### capture [event-modifier] [snippet]
 
@@ -2885,9 +3134,17 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 <doc-style-aliases data-regex='grid' data-include='g,rg,cg'></doc-style-aliases>
 
-### alignment
+### align
 
-<doc-style-aliases cols='3-transposed' data-keyrule='^([paj][ics]|a|j)$'></doc-style-aliases>
+<doc-style-aliases data-keyrule='^a[ics]?$'></doc-style-aliases>
+
+### justify
+
+<doc-style-aliases data-keyrule='^j[ics]?$'></doc-style-aliases>
+
+### place
+
+<doc-style-aliases data-keyrule='^p[ics]$'></doc-style-aliases>
 
 ### background
 
@@ -3094,10 +3351,22 @@ The only way to get consistent gaps between elements inside flexboxes is to add 
 
 # - Specificity
 
-# Test [skip]
+# Quick tips [skip]
 
-## Heading
+## Language
 
-- List item 1
-- List item 2
-- List item 3
+- `return key ||= if true ...`
+
+## Events
+
+- The order of `once` modifier matters
+
+## Styling
+
+- Named elements can be styled just by the class name
+
+# Advanced guides [skip]
+
+# - Server-Side Rendering
+
+# - Using Imba Rendering Context

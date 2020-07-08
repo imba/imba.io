@@ -85,6 +85,11 @@ class Entry
 
 	def childByName name
 		self.children.find(do $1.name == name and !($1 isa Section))
+	
+	def match filter
+		if filter isa RegExp
+			return filter.test(flagstr)
+		return true
 
 export class File < Entry
 	def constructor data, parent

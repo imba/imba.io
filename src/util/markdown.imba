@@ -71,6 +71,15 @@ def renderer.heading text, level
 		let flag = key.toLowerCase!
 		meta.options[flag] = value or yes
 		flags.push(flag)
+
+		if value
+			let parts = value.split('+')
+			# value = {}
+			for part in parts when part.match(/^[\w\-]+$/)
+				flags.push("{flag}-{part}")
+				# value[part] = yes
+
+		
 		return ''
 
 	if level == 1
