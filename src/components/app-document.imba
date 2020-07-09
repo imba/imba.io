@@ -7,13 +7,12 @@ const Sheets = {}
 
 Sheets.operators = [
 	{name: 'All',regex: /.*/}
-	{name: 'Math',regex: /op-math/}
-	{name: 'Logic',regex: /op-logic/}
-	{name: 'Assign',regex: /op-assign/}
+	{name: 'Arithmetic',regex: /op-math/}
+	{name: 'Logical',regex: /op-logic/}
+	{name: 'Assignment',regex: /op-assign/}
 	{name: 'Bitwise',regex: /op-bitwise/}
 	{name: 'Comparison',regex: /op-compar/}
 	{name: 'Unary',regex: /op-unary/}
-	{name: 'Custom',regex: /op-custom/}
 	{name: 'Advanced',regex: /op-change/}
 ]
 
@@ -147,9 +146,9 @@ tag doc-section
 			.title bg:blue5 fs:13px ff:mono fw:700 prefix: "a " suffix: " b" c:blue9
 				@before,@after fw:400 c:white
 
-		&.op-unary .title prefix:"" suffix:"a"
-		&.op-post .title prefix:"a" suffix:""
-		&.op-unary.op-keyword .title suffix:" a"
+			&.op-unary .title prefix:"" suffix:"a"
+			&.op-post .title prefix:"a" suffix:""
+			&.op-unary.op-keyword .title suffix:" a"
 
 	css .body
 		&.snippet,&.h5,&.op pl:4 mt:-2 pb:1

@@ -349,6 +349,10 @@ document.body.appendChild el
 
 # Operators [sheet=operators]
 
+### Arithmethic Operators [op-math]
+
+Stuff about arithmetic operators
+
 ### + [op=math]
 ```imba
 1 + 2 # 3
@@ -389,10 +393,14 @@ document.body.appendChild el
 +i # Unary plus
 ```
 
+### Logical Operators [op-logical]
+
 ### && [op=logical]
 ```imba
 null && 10 # null
+0 && 10 # 0
 1 && 10 # 10
+'' && 'str' # ''
 ```
 
 ### and [op=logical]
@@ -430,10 +438,15 @@ let a = true
 !0 # true
 ```
 
+### Assignment Operators [op-assign]
+
+
 ### = [op=assign]
 ```imba
 a = b 
 ```
+
+### Conditional Assignment [op-assign]
 
 ### ||= [op=assign]
 ```imba
@@ -450,21 +463,7 @@ a &&= b # If truthy assignment
 a ?= b # If null assignment
 ```
 
-### =? [op=assign+change]
-```imba
-let object = {}, input = 200
-# ---
-if object.value =? input
-    yes
-```
-Regular assignment that returns true or false depending on whether the left-hand was changed or not. More concise way of doing
-```imba
-let object = {}, input = 200
-# ---
-if object.value != input
-    object.value = input
-    yes
-```
+### Compound Assignment [op-assign]
 
 ### += [op=math+assign]
 ```imba
@@ -516,10 +515,99 @@ a-- # Decrement assignment
 --a # Decrement assignment
 ```
 
+### Reassignment Operators [op-change]
+
+### =? [op=assign+change]
+```imba
+let object = {}, input = 200
+# ---
+if object.value =? input
+    yes
+```
+Regular assignment that returns true or false depending on whether the left-hand was changed or not. More concise way of doing
+```imba
+let object = {}, input = 200
+# ---
+if object.value != input
+    object.value = input
+    yes
+```
+
+
+### Comparison Operators [op-compare]
+
+### == [op=compare]
+```imba
+x == y # Equality
+```
+### != [op=compare]
+```imba
+x != y # Inequality
+```
+### === [op=compare]
+```imba
+x === y # Strict equality
+```
+### is [op=compare]
+```imba
+x is y # Also strict equality
+```
+### !== [op=compare]
+```imba
+x !== y # Strict inequality
+```
+### isnt [op=compare]
+```imba
+x isnt y # Also strict inequality
+```
+### > [op=compare]
+```imba
+x > y # Greater than
+```
+### >= [op=compare]
+```imba
+x >= y # Greater than or equal
+```
+### < [op=compare]
+```imba
+x < y # Less than
+```
+### <= [op=compare]
+```imba
+x <= y # Less than or equal
+```
+
+### isa [op=compare+keyword+isa]
+```imba
+honda isa Car # 
+princess !isa Car 
+```
+> The `isa` operator tests whether the prototype property of a constructor appears anywhere in the prototype chain of an object. Alias for the javascript [instanceof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof) operator.
+
+### delete  [op=unary+keyword]
+```imba
+delete object.property
+```
+
+### typeof [op=unary+keyword]
+```imba
+typeof item
+```
+
+
+### Bitwise Operators [op-bitwise]
+
 ### & [op=bitwise]
 ```imba
 a & b # Bitwise AND
 ```
+
+### !& [op=bitwise]
+```imba
+a !& b # Bitwise NOT AND
+```
+> Essentially the same as `(a & b) == 0`
+
 ### | [op=bitwise]
 ```imba
 a | b # Bitwise OR
@@ -528,10 +616,13 @@ a | b # Bitwise OR
 ```imba
 a ^ b # Bitwise XOR
 ```
+
+
 ### ~ [op=bitwise+unary]
 ```imba
 ~ a # Bitwise NOT
 ```
+
 ### << [op=bitwise]
 ```imba
 a << b # Left shift
@@ -544,6 +635,9 @@ a >> b # Sign-propagating right shift
 ```imba
 a >>> b # Zero-fill right shift
 ```
+
+### Bitwise Assignment [op-bitwise] [op-assign]
+
 ### <<= [op=bitwise+assign]
 ```imba
 a <<= 1 # Left shift assignment
@@ -572,6 +666,8 @@ a ~= 1 # Bitwise NOT assignment (unassignment)
 ```imba
 a ^= 1 # Bitwise XOR assignment
 ```
+
+### Bitwise Reassignment [op-bitwise] [op-assign] [op-change]
 
 ### |=? [op=bitwise+assign+change]
 ```imba
@@ -616,70 +712,6 @@ if (data.state & STATES.LOADED) == 0
 ```imba
 a ^=? 1 # Bitwise XOR assignment
 ```
-
-### == [op=compare]
-```imba
-x == y # Equality
-```
-### != [op=compare]
-```imba
-x != y # Inequality
-```
-### === [op=compare]
-```imba
-x === y # Strict equality
-```
-### is [op=compare]
-```imba
-x is y # Also strict equality
-```
-### !== [op=compare]
-```imba
-x !== y # Strict inequality
-```
-### isnt [op=compare]
-```imba
-x isnt y # Also strict inequality
-```
-### > [op=compare]
-```imba
-x > y # Greater than
-```
-### >= [op=compare]
-```imba
-x >= y # Greater than or equal
-```
-### < [op=compare]
-```imba
-x < y # Less than
-```
-### <= [op=compare]
-```imba
-x <= y # Less than or equal
-```
-
-### isa [op=isa+keyword]
-```imba
-honda isa Car # 
-princess !isa Car 
-```
-> The `isa` operator tests whether the prototype property of a constructor appears anywhere in the prototype chain of an object. Alias for the javascript [instanceof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof) operator.
-
-### delete  [op=unary+keyword]
-```imba
-delete object.property
-```
-
-### typeof [op=unary+keyword]
-```imba
-typeof item
-```
-
-### ?= [op=assign+change]
-```imba
-test
-```
-
 
 # Control Flow
 
