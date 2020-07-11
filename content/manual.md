@@ -72,12 +72,12 @@ This isn't to be abused, but can in many cases be practical.
 
 ### Literal Tags
 
-# Literal Types
+# Literal Types [tabbed]
 
 The fundamental types are the same as in JavaScript, so for documentation about available methods see MDN [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function), [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp), [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), [Math](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
 
 
-
+## Basics
 
 ##### String
 
@@ -1046,7 +1046,7 @@ console.log res # [2,4,8,10]
 `when` is essentially a shorthand for continuing past values that don't match a condition.
 
 
-# Functions
+# Functions [tabbed]
 
 ##### Defining functions
 ```imba
@@ -1060,7 +1060,7 @@ square(5)
 square 5
 ```
 
-### Parameters
+## Parameters
 
 ##### With default parameters
 ```imba
@@ -1092,7 +1092,7 @@ draw(coords: {x: 18, y:30},radius:30)
 ```
 Inside of a function `$0` always refers to the `arguments` object, and `$1`,`$2`,`$3`,`$n` refers to argument number 1,2,3 etc. This can come handy in many inline methods where you just want to access the first argument. This might seem like a trivial difference, but in many cases you don't want the cognitive overload to come up with a sensible parameter name.
 
-### Invocation
+## Invocation
 
 ##### Invoking with arguments
 ```imba
@@ -1114,7 +1114,7 @@ You are free to use empty parens `()` for invoking functions without arguments, 
 
 
 
-### Callbacks
+## Callbacks
 
 A callback is a function passed into another function as an argument. This is a common pattern in JavaScript. When passing a callback argument in Imba, you can write this after the function:
 
@@ -1230,10 +1230,6 @@ item.name = 'john'
 item.name = 'jane'
 ```
 
-# Async / Await
-
-> No need to use the `async` keyword.
-
 # Modules
 
 In this section we will be looking closer at how you can use existing code in your Imba projects. We will cover the `import` and `export` keywords. While it will beneficial for you to know about ESM and how it works in [Node.js](https://nodejs.org/api/esm.html#esm_ecmascript_modules) and the behavior of [export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export) and [import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) in the browser. This page only focuses on the Imba specific bits you need to know and how to use them effectively.
@@ -1331,7 +1327,12 @@ Note that if you have a `default` export then you will need to access the defaul
 let instance = MyClassAlias.default.new()
 ```
 
-# Elements
+# Elements [tabbed]
+
+
+# - Literals [tabbed]
+
+## Intro
 
 Imba treats DOM elements first-class citizens, on a much deeper level than JSX. Imba does not use a virtual dom but compiles declarative tag trees into an incredibly efficient [memoized dom](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52), which is orders of magnitute faster than vdom approaches, yet conceptually simpler.
 
@@ -1372,21 +1373,20 @@ imba.mount do <{data.type} title="Item"> data.label
 
 If you create an element without a node name it will always be created as a `div`.
 
-# - Properties & Classes
 
-### ID
+## Properties
 
-To set the id of an element you can use the shorthand `<element#my-id>` syntax
-```imba
-<div#main> "Hello"
-```
-
-### Properties
 ```imba
 <div lang="en" title=data.title> "Hello"
 ```
 
-### Classes
+##### ID
+```imba
+<div#main> "Hello"
+```
+> To set the id of an element you can use the shorthand `<element#my-id>` syntax
+
+## Classes
 
 You can add classes to your elements by adding one or more identifiers preceded by `.` to your tags
 ```imba
@@ -1410,7 +1410,7 @@ These interpolated classes can also be toggled by a condition:
 <div.item .theme-{user.theme}=app.loggedIn> "Hello"
 ```
 
-### Inline Styles
+## Styles
 
 ```imba
 <div[color:red bg:blue padding:8px]> "Hello"
@@ -1420,73 +1420,9 @@ Just like classes, styles can be conditionally applied
 <div[color:red bg:blue] [display:none]=app.loggedIn> "Hello"
 ```
 
-# - Nested Elements
 
-Indentation is significant in Imba, and tags follow the same principles. We never explicitly close our tags. Instead, tags are closed implicitly by indentation. So, to add children to an element you simply indent them below:
 
-```imba
-<div> <ul>
-	<li> <span> 'one'
-	<li> <span> 'two'
-	<li> <span> 'three'
-```
-Tags can also be included inside string interpolations, so that templates like this:
-```imba
-<div>
-    "This is "
-    <b> "very"
-    " important"
-```
-Can be written like on a single line
-```imba
-<div> "This is {<b> "very"} important"
-```
-Also, if you explicitly close your elements using `/>` at the end, you can add multiple elements after one another without problem:
-```imba
-<label> <input type='checkbox'/> 'Dark Mode'
-```
-
-### Fragments
-
-Fragments can be created using empty tag literals `<>`.
-
-# - Conditionals & Loops
-
-There isn't really a difference between templating syntax and other code in Imba. Tag trees are just code, so logic and control flow statements work as you would expect. To render dynamic lists of items you simply write a `for` loop where you want the children to be:
-```imba
-<div>
-    if items
-        <h1> "List of items:"
-        <ul> for item in items
-            <li> <span> item
-    else
-        <span> "No items found"
-```
-
-You can use break, continue and other control flow concepts as well:
-
-```imba
-# ~preview=xl
-import {movies} from 'imdb'
-
-css .heading c:blue7 fs:xs fw:bold p:2 bc:gray3 bbw:1 pos:sticky t:0 bg:white
-css .item mx:2 d:flex px:2 py:3 bc:gray2 bbw:1 bg.hover:gray1
-css .title px:1 t:truncate
-css .number radius:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
-
-# ---
-imba.mount do <div.list> for movie,i in movies
-    if i % 10 == 0
-        # Add a heading for every 10th item
-        <div.heading> "{i + 1} to {i + 10}"
-    <div.item>
-        <span.number> i + 1
-        <span.title> movie.title
-    # break out of the loop early
-    break if movie.title == 'The Usual Suspects'
-```
-
-# - Handling Events
+## Listeners
 
 We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
 
@@ -1514,94 +1450,9 @@ let x = 0
 <button @click=console.log(e.type,e.x,e.y)> "Click"
 <button @mousemove=(x = e.x)> "Mouse at {x}"
 ```
-To learn more about event handling jump to the [Events section](/docs/events/basics).
+To learn more about event handling jump to the [Events section](/manual/events).
 
-
-# - Declarative Rendering
-
-The fact that tag literals generate real dom nodes means that we can add/remove/modify the dom in an imperative way. In theory.
-
-```imba
-# ~preview=xl
-import 'util/styles'
-
-# ---
-let array = ["First","Second"]
-
-let view = <main>
-    <button @click=array.push('More')> 'Add'
-    <ul.list> for item in array
-        <li> item
-
-# view is a real native DOM element
-document.body.appendChild view
-```
-Even tough we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
-
-## Mounting
-
-To make the tag tree update when our data changes, we need to add pass the tree to `imba.mount`.
-
-```imba
-# ~preview=xl
-import 'util/styles'
-
-# ---
-let array = ["First","Second"]
-
-imba.mount do 
-    <main>
-        <button @click=array.push('More')> 'Add'
-        <ul.list> for item in array
-            <li> item
-```
-Now you will see that when you click the button, our view instantly updates to reflect the new state. How does this happen without a virtual dom? The array is not being tracked in a special way (it is just a plain array), and we are only dealing with real dom elements, which are only changed and updated when there is real need for it. Imba uses a technique we call `memoized dom`, and you can read more about how it works [here](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52). Here is a more advanced example with more dynamic data and even dynamic inline styles:
-
-```imba
-# ~preview=xl
-import 'util/styles'
-
-css div pos:absolute d:block inset:0 p:4
-css mark pos:absolute
-css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
-
-# ---
-let x = 20, y = 20, title = "Hey"
-
-imba.mount do
-    <main @mousemove=(x=e.x,y=e.y)>
-        <input bind=title>
-        <label> "Mouse is at {x} {y}"
-        <mark[x:{x} y:{y} rotate:{x / 360}]> "Item"
-        <ul> for nr in [0 ... y]
-            <li> nr % 12 and nr or title
-```
-
-By default Imba will **render your whole application whenever anything *may* have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all that? As long as you have mounted your root element using `imba.mount` you usually don't need to think more about it.
-
-## Updating
-
- The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using await or returning a promise), Imba will also re-render after the promise is finished. Practically all state changes in applications happen as a result of some user interaction.
-
-In the few occasions where you need to manually make sure views are updated, you should call `imba.commit`. It schedules an update for the next animation frame, and things will only be rerendered once even if you call `imba.commit` a thousand times. It returns a promise that resolves after the actual updates are completed, which is practical when you need to ensure that the view is in sync before doing something.
-
-##### commit from websocket
-```imba
-socket.addEventListener('message',imba.commit)
-```
-Calling `imba.commit` after every message from socket will ensure that your views are up-to-date when your state changes as a result of some socket message.
-
-##### commit after fetching data
-```imba
-def load
-    let res = await window.fetch("/items")
-    state.items = await res.json!
-    imba.commit!
-```
-
-# - Form Input Bindings
-
-## Basic Usage
+## Form Bindings
 
 ##### text
 ```imba
@@ -1766,8 +1617,6 @@ imba.mount do <section>
 ```
 > Buttons bound to data behave just like checkboxes. A `checked` class indicates when their value matches the bound data. Clicking a button multiple times will toggle just like a checkbox.
 
-## Custom Bindings
-
 ##### custom elements
 ```imba
 # ~preview
@@ -1828,11 +1677,161 @@ imba.mount do <main>
             <button[mr:1].chip bind=person.interests value=item> item
 ```
 
-# - Managing State
+## Advanced
+
+# - Children
+
+Indentation is significant in Imba, and tags follow the same principles. We never explicitly close our tags. Instead, tags are closed implicitly by indentation. So, to add children to an element you simply indent them below:
+
+```imba
+<div> <ul>
+	<li> <span> 'one'
+	<li> <span> 'two'
+	<li> <span> 'three'
+```
+Tags can also be included inside string interpolations, so that templates like this:
+```imba
+<div>
+    "This is "
+    <b> "very"
+    " important"
+```
+Can be written like on a single line
+```imba
+<div> "This is {<b> "very"} important"
+```
+Also, if you explicitly close your elements using `/>` at the end, you can add multiple elements after one another without problem:
+```imba
+<label> <input type='checkbox'/> 'Dark Mode'
+```
+
+### Fragments
+
+Fragments can be created using empty tag literals `<>`.
+
+## Conditionals & Loops
+
+There isn't really a difference between templating syntax and other code in Imba. Tag trees are just code, so logic and control flow statements work as you would expect. To render dynamic lists of items you simply write a `for` loop where you want the children to be:
+```imba
+<div>
+    if items
+        <h1> "List of items:"
+        <ul> for item in items
+            <li> <span> item
+    else
+        <span> "No items found"
+```
+
+You can use break, continue and other control flow concepts as well:
+
+```imba
+# ~preview=xl
+import {movies} from 'imdb'
+
+css .heading c:blue7 fs:xs fw:bold p:2 bc:gray3 bbw:1 pos:sticky t:0 bg:white
+css .item mx:2 d:flex px:2 py:3 bc:gray2 bbw:1 bg.hover:gray1
+css .title px:1 t:truncate
+css .number radius:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
+
+# ---
+imba.mount do <div.list> for movie,i in movies
+    if i % 10 == 0
+        # Add a heading for every 10th item
+        <div.heading> "{i + 1} to {i + 10}"
+    <div.item>
+        <span.number> i + 1
+        <span.title> movie.title
+    # break out of the loop early
+    break if movie.title == 'The Usual Suspects'
+```
+
+
+
+
+# - Rendering
+
+The fact that tag literals generate real dom nodes means that we can add/remove/modify the dom in an imperative way. In theory.
+
+```imba
+# ~preview=xl
+import 'util/styles'
+
+# ---
+let array = ["First","Second"]
+
+let view = <main>
+    <button @click=array.push('More')> 'Add'
+    <ul.list> for item in array
+        <li> item
+
+# view is a real native DOM element
+document.body.appendChild view
+```
+Even tough we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
+
+## Mounting
+
+To make the tag tree update when our data changes, we need to add pass the tree to `imba.mount`.
+
+```imba
+# ~preview=xl
+import 'util/styles'
+
+# ---
+let array = ["First","Second"]
+
+imba.mount do 
+    <main>
+        <button @click=array.push('More')> 'Add'
+        <ul.list> for item in array
+            <li> item
+```
+Now you will see that when you click the button, our view instantly updates to reflect the new state. How does this happen without a virtual dom? The array is not being tracked in a special way (it is just a plain array), and we are only dealing with real dom elements, which are only changed and updated when there is real need for it. Imba uses a technique we call `memoized dom`, and you can read more about how it works [here](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52). Here is a more advanced example with more dynamic data and even dynamic inline styles:
+
+```imba
+# ~preview=xl
+import 'util/styles'
+
+css div pos:absolute d:block inset:0 p:4
+css mark pos:absolute
+css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
+
+# ---
+let x = 20, y = 20, title = "Hey"
+
+imba.mount do
+    <main @mousemove=(x=e.x,y=e.y)>
+        <input bind=title>
+        <label> "Mouse is at {x} {y}"
+        <mark[x:{x} y:{y} rotate:{x / 360}]> "Item"
+        <ul> for nr in [0 ... y]
+            <li> nr % 12 and nr or title
+```
+
+By default Imba will **render your whole application whenever anything *may* have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all that? As long as you have mounted your root element using `imba.mount` you usually don't need to think more about it.
+
+## Updating
+
+ The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using await or returning a promise), Imba will also re-render after the promise is finished. Practically all state changes in applications happen as a result of some user interaction.
+
+In the few occasions where you need to manually make sure views are updated, you should call `imba.commit`. It schedules an update for the next animation frame, and things will only be rerendered once even if you call `imba.commit` a thousand times. It returns a promise that resolves after the actual updates are completed, which is practical when you need to ensure that the view is in sync before doing something.
+
+##### commit from websocket
+```imba
+socket.addEventListener('message',imba.commit)
+```
+Calling `imba.commit` after every message from socket will ensure that your views are up-to-date when your state changes as a result of some socket message.
+
+##### commit after fetching data
+```imba
+def load
+    let res = await window.fetch("/items")
+    state.items = await res.json!
+    imba.commit!
+```
+
 
 # Components [tabbed]
-
-# - Introduction
 
 # - Declarations [tabbed]
 
@@ -1865,19 +1864,6 @@ tag App
 ```
 
 As opposed to web components, local components must be exported and imported in the files where they are actually used.
-
-### Functional Components
-
-Any method can essentially act like a component in Imba.
-
-```imba
-def app-list items
-    <ul> for item in items
-        <li> item
-
-const array = [1,2,3]
-imba.mount do <div> app-list(array)
-```
 
 ## Properties
 
@@ -2032,7 +2018,7 @@ tag app-clock
 ## Context
 
 
-# Events [tabbed]
+# Event Handling [tabbed]
 
 # - Listening
 
@@ -2456,7 +2442,7 @@ Break unless intersection ratio has increased.
 ```
 Break unless intersection ratio has decreased.
 
-# - Custom Events [tabbed]
+# - Events [tabbed]
 
 # -- System
 

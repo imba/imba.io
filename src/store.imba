@@ -84,7 +84,7 @@ class Entry
 		nextSibling or parent.next
 
 	get tab?
-		parent and parent.options.tabbed
+		parent and parent.options.tabbed and type == 'doc'
 
 	get prevSibling
 		parent ? parent.children[parent.children.indexOf(self) - 1] : null

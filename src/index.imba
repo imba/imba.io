@@ -79,18 +79,16 @@ tag app-root
 		elif path.indexOf('/examples') != 0
 			doc = ls(path) or ls('/404')
 
-		# if path.indexOf('/guides') == 0 or path == '/' or path == '/index.html' or path.indexOf('/manual') == 0
-		#	doc = ls(path) or ls('/welcome.md')
-		try document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
+		try
+			document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
 		self
-		# data = ls(path) or ls('/guides/introduction/overview')
 
 	def render
 		if path != router.url.pathname
 			go(router.url.pathname)
 
 		let repl = router.match('/examples')
-		# console.log 'found data',doc
+
 		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show!>
 			<div.header>
 				<app-logo[d:flex h:8 c:teal4] route-to='/'>
@@ -114,7 +112,7 @@ global css
 		-webkit-font-smoothing: antialiased
 		-moz-osx-font-smoothing: grayscale
 		$header-height: 56px @md:64px
-		$menu-width:80vw @md:220px
+		$menu-width:80vw @md:180px
 		$doc-width: 768px
 		$doc-margin: calc(100vw - $doc-width - 20px) @md:calc(100vw - $doc-width - $menu-width - 20px)
 
