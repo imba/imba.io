@@ -164,9 +164,10 @@ tag doc-section
 			# td:underline .active:none
 			
 
-		&.tabs d:hflex flw:wrap pb:0 mb:3 bdb:2px solid gray2
-			fs:18px .l1:20px
-			.tab mr:2
+		&.tabs d:hflex flw:wrap pb:0 mb:3
+			bdb:none @md:2px solid gray2
+			fs:16px .l1:20px
+			.tab mr:2 pb:0 @md:1
 			&.l1 .tab mr:3
 
 

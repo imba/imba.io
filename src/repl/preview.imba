@@ -163,7 +163,7 @@ tag app-repl-preview
 	css $cover pos:absolute inset:0 cursor:zoom-in d:none
 
 	css $controls pos:absolute b:100% r:0 py:1 w:100% d:flex jc:center opacity:0
-	css @hover $controls opacity:1
+	css self@hover $controls opacity:1
 
 	css .btn p:1 fw:500 c:gray4 @hover:gray5 .checked:blue5 outline@focus:none pe.checked:none
 

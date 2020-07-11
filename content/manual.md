@@ -1327,10 +1327,9 @@ Note that if you have a `default` export then you will need to access the defaul
 let instance = MyClassAlias.default.new()
 ```
 
-# Elements [tabbed]
+# Tags [tabbed]
 
-
-# - Literals [tabbed]
+# - Elements [tabbed]
 
 ## Intro
 
@@ -1348,30 +1347,66 @@ div.title = 'Welcome'
 div.textContent = 'Hello'
 ```
 
-
-The first part of your tag literal should be the node name. So, to create a section you write `<section>`, for a list item you write `<li>` and so forth. 
+Indentation is significant in Imba, and tags follow the same principles. We never explicitly close our tags. Instead, tags are closed implicitly by indentation. So, to add children to an element you simply indent them below:
 
 ```imba
-# ~preview
-import 'util/styles'
-# ---
-let data = {type: 'button', label: 'Hello'}
-imba.mount do
-    <div.group>
-        <section> "A section"
-        <{data.type}> data.label
+<div> <ul>
+	<li> <span> 'one'
+	<li> <span> 'two'
+	<li> <span> 'three'
 ```
-
-It is even possible to spawn a tag with a dynamic type - by using `{}` interpolation in the tag name
+Tags can also be included inside string interpolations, so that templates like this:
 ```imba
-# ~preview
-import 'util/styles'
-# ---
-let data = {type: 'button', label: 'Hello'}
-imba.mount do <{data.type} title="Item"> data.label
+<div>
+    "This is "
+    <b> "very"
+    " important"
+```
+Can be written like on a single line
+```imba
+<div> "This is {<b> "very"} important"
+```
+Also, if you explicitly close your elements using `/>` at the end, you can add multiple elements after one another without problem:
+```imba
+<label> <input type='checkbox'/> 'Dark Mode'
 ```
 
-If you create an element without a node name it will always be created as a `div`.
+
+There isn't really a difference between templating syntax and other code in Imba. Tag trees are just code, so logic and control flow statements work as you would expect. To render dynamic lists of items you simply write a `for` loop where you want the children to be:
+```imba
+<div>
+    if items
+        <h1> "List of items:"
+        <ul> for item in items
+            <li> <span> item
+    else
+        <span> "No items found"
+```
+
+You can use break, continue and other control flow concepts as well:
+
+```imba
+# ~preview=xl
+import {movies} from 'imdb'
+
+css .heading c:blue7 fs:xs fw:bold p:2 bc:gray3 bbw:1 pos:sticky t:0 bg:white
+css .item mx:2 d:flex px:2 py:3 bc:gray2 bbw:1 bg.hover:gray1
+css .title px:1 t:truncate
+css .number radius:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
+
+# ---
+imba.mount do <div.list> for movie,i in movies
+    if i % 10 == 0
+        # Add a heading for every 10th item
+        <div.heading> "{i + 1} to {i + 10}"
+    <div.item>
+        <span.number> i + 1
+        <span.title> movie.title
+    # break out of the loop early
+    break if movie.title == 'The Usual Suspects'
+```
+
+
 
 
 ## Properties
@@ -1380,7 +1415,7 @@ If you create an element without a node name it will always be created as a `div
 <div lang="en" title=data.title> "Hello"
 ```
 
-##### ID
+## ID
 ```imba
 <div#main> "Hello"
 ```
@@ -1452,7 +1487,7 @@ let x = 0
 ```
 To learn more about event handling jump to the [Events section](/manual/events).
 
-## Form Bindings
+## Bindings
 
 ##### text
 ```imba
@@ -1679,76 +1714,28 @@ imba.mount do <main>
 
 ## Advanced
 
-# - Children
+### Dynamic Element Type
 
-Indentation is significant in Imba, and tags follow the same principles. We never explicitly close our tags. Instead, tags are closed implicitly by indentation. So, to add children to an element you simply indent them below:
+The first part of your tag literal should be the node name. So, to create a section you write `<section>`, for a list item you write `<li>` and so forth. You can use `{}` interpolation in the node name to spawn custom tags:
 
 ```imba
-<div> <ul>
-	<li> <span> 'one'
-	<li> <span> 'two'
-	<li> <span> 'three'
+# ~preview
+import 'util/styles'
+# ---
+let data = {type: 'button', label: 'Hello'}
+imba.mount do
+    <div.group>
+        <section> "A section"
+        <{data.type}> data.label
 ```
-Tags can also be included inside string interpolations, so that templates like this:
-```imba
-<div>
-    "This is "
-    <b> "very"
-    " important"
-```
-Can be written like on a single line
-```imba
-<div> "This is {<b> "very"} important"
-```
-Also, if you explicitly close your elements using `/>` at the end, you can add multiple elements after one another without problem:
-```imba
-<label> <input type='checkbox'/> 'Dark Mode'
-```
+
+If you create an element without a node name it will always be created as a `div`.
 
 ### Fragments
 
 Fragments can be created using empty tag literals `<>`.
 
-## Conditionals & Loops
-
-There isn't really a difference between templating syntax and other code in Imba. Tag trees are just code, so logic and control flow statements work as you would expect. To render dynamic lists of items you simply write a `for` loop where you want the children to be:
-```imba
-<div>
-    if items
-        <h1> "List of items:"
-        <ul> for item in items
-            <li> <span> item
-    else
-        <span> "No items found"
-```
-
-You can use break, continue and other control flow concepts as well:
-
-```imba
-# ~preview=xl
-import {movies} from 'imdb'
-
-css .heading c:blue7 fs:xs fw:bold p:2 bc:gray3 bbw:1 pos:sticky t:0 bg:white
-css .item mx:2 d:flex px:2 py:3 bc:gray2 bbw:1 bg.hover:gray1
-css .title px:1 t:truncate
-css .number radius:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
-
-# ---
-imba.mount do <div.list> for movie,i in movies
-    if i % 10 == 0
-        # Add a heading for every 10th item
-        <div.heading> "{i + 1} to {i + 10}"
-    <div.item>
-        <span.number> i + 1
-        <span.title> movie.title
-    # break out of the loop early
-    break if movie.title == 'The Usual Suspects'
-```
-
-
-
-
-# - Rendering
+# - Rendering [tabbed]
 
 The fact that tag literals generate real dom nodes means that we can add/remove/modify the dom in an imperative way. In theory.
 
@@ -1831,9 +1818,7 @@ def load
 ```
 
 
-# Components [tabbed]
-
-# - Declarations [tabbed]
+# - Components [tabbed]
 
 ## Basics
 
@@ -1919,7 +1904,7 @@ imba.mount do <app-panel>
     <div> "More in main slot"]~
 ```
 
-# -- References
+# -- Refs
 
 It can be useful to keep references to certain child elements inside a component. This can be done using `<node$reference>` syntax.
 
@@ -1943,11 +1928,11 @@ In the code above, `$name` is available everywhere inside `app-panel` component,
 
 Elements with a reference automatically get a flag with the same name as the reference.
 
-# - Missing [skip]
+# -- Missing [skip]
 
 - component.flags
 
-# - Lifecycle
+# -- Lifecycle
 
 ## Hooks
 
@@ -2013,12 +1998,7 @@ tag app-clock
         commit! unless scheduled?
 ```
 
-# - Advanced
-
-## Context
-
-
-# Event Handling [tabbed]
+# Events [tabbed]
 
 # - Listening
 
@@ -2442,7 +2422,7 @@ Break unless intersection ratio has increased.
 ```
 Break unless intersection ratio has decreased.
 
-# - Events [tabbed]
+# - Event Types [tabbed]
 
 # -- System
 
@@ -2875,7 +2855,7 @@ imba.mount do
 
 # -- Selection
 
-# Styling [tabbed]
+# Styles [tabbed]
 
 ## Intro [skip]
 
