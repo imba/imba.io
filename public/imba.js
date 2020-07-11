@@ -875,15 +875,6 @@ imba.createElement = function (name,parent,flags,text,ctx){
 	
 	var el = document.createElement(name);
 	
-	let f = ctx && ctx._ns_;
-	
-	if (f) {
-		
-		
-		flags = flags ? ((f + ' ' + flags)) : f;
-		el.flags$ns = f + ' ';
-		
-	};
 	if (flags) { el.className = flags };
 	
 	if (text !== null) {
@@ -928,17 +919,9 @@ imba.createComponent = function (name,parent,flags,text,ctx){
 	if (text !== null) {
 		
 		el.slot$('__').text$(text);
-	};
-	
-	let nsflag = (ctx && ctx._ns_);
-	
-	if (nsflag) {
-		
-		el.flags$ns += nsflag + ' ';
-		el.flag$ = el.flagExt$;
 		
 	};
-	if (flags || nsflag || el.flags$ns) {
+	if (flags || el.flags$ns) { // or nsflag
 		
 		el.flag$(flags || '');
 	};
@@ -947,9 +930,10 @@ imba.createComponent = function (name,parent,flags,text,ctx){
 
 
 
-imba.createSVGElement = function (name,parent,flags,text){
+imba.createSVGElement = function (name,parent,flags,text,ctx){
 	
 	var el = document.createElementNS("http://www.w3.org/2000/svg",name);
+	
 	if (flags) {
 		
 		if (false) {} else {
@@ -957,6 +941,7 @@ imba.createSVGElement = function (name,parent,flags,text){
 			el.className.baseVal = flags;
 		};
 	};
+	
 	if (parent && (parent instanceof Node)) {
 		
 		el.insertInto$(parent);
@@ -2616,7 +2601,7 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 	
 	commit(){
 		
-		if (!(this.isRender())) { return this };
+		if (!this.isRender) { return this };
 		this.__F |= 256;
 		this.render && this.render();
 		this.rendered();
@@ -2777,7 +2762,8 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["SVGElement"],{
 	
 	flag$(str){
 		
-		this.className.baseVal = this.flags$ext = str;
+		let ns = this.flags$ns;
+		this.className.baseVal = ns ? ((ns + (this.flags$ext = str))) : ((this.flags$ext = str));
 		return;
 	},
 	
@@ -2793,7 +2779,7 @@ extend$(_dom__WEBPACK_IMPORTED_MODULE_0__["SVGElement"],{
 	
 	flagSync$(){
 		
-		return this.className.baseVal = ((this.flags$ext || '') + ' ' + (this.flags$own || '') + ' ' + (this.$flags || ''));
+		return this.className.baseVal = ((this.flags$ns || '') + (this.flags$ext || '') + ' ' + (this.flags$own || '') + ' ' + (this.$flags || ''));
 	},
 });
 

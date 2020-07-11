@@ -191,6 +191,7 @@ export def render content, o = {}
 	let sections = []
 	object.level = 0
 	object.children = []
+	object.options = {}
 	object.type
 	let prev = object
 	let intro = segments[0]
@@ -213,6 +214,12 @@ export def render content, o = {}
 
 		if up == object
 			section.type = 'doc'
+
+		if up.options.tabbed
+			if (level - up.level) < 11
+				section.type = 'doc'
+			else
+				console.log 'not tab??',level,up.level,section.name
 
 		up.children.push(section)
 		prev = section

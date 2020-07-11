@@ -10,8 +10,8 @@ Sheets.operators = [
 	{name: 'Arithmetic',regex: /op-math/}
 	{name: 'Logical',regex: /op-logic/}
 	{name: 'Assignment',regex: /op-assign/}
-	{name: 'Bitwise',regex: /op-bitwise/}
 	{name: 'Comparison',regex: /op-compar/}
+	{name: 'Bitwise',regex: /op-bitwise/}
 	{name: 'Unary',regex: /op-unary/}
 	{name: 'Advanced',regex: /op-change/}
 ]
@@ -90,7 +90,7 @@ tag doc-section-filters
 	def render
 		<self>
 			for item in filters
-				<button bind=data.filtering value=item> item.name
+				<button bind=selection value=item> item.name
 
 tag doc-section
 	def toggle
@@ -133,7 +133,9 @@ tag doc-section
 	css .head pos:relative c:#3A4652 bc:gray3/50
 		&.l0 fs:28px/1.4 fw:600 pb:2
 		&.l1 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
+		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
 		&.l2 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
+		&.l3 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
 		&.tip fs:16px/1.2 fw:500 pb:3 bbw:0 mb:0
 		&.snippet,&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bbw:0
 			.title px:2 py:1 radius:md pos:relative bg:$hbg d:inline-block
@@ -149,6 +151,24 @@ tag doc-section
 			&.op-unary .title prefix:"" suffix:"a"
 			&.op-post .title prefix:"a" suffix:""
 			&.op-unary.op-keyword .title suffix:" a"
+
+		.tab mr:3 fw:500 td:none @hover:none
+			outline@focus:none
+			c:blue6 @hover:gray7 .active:gray9
+			# bdb:2px solid
+			bdb:2px solid blue6
+			bdc:clear @hover:gray7 .active:teal6
+			c:gray6 @hover:gray7 .active:gray9
+			mb:-2px pb:1
+			# bdc.active:clear
+			# td:underline .active:none
+			
+
+		&.tabs d:hflex flw:wrap pb:0 mb:3 bdb:2px solid gray2
+			fs:18px .l1:20px
+			.tab mr:2
+			&.l1 .tab mr:3
+
 
 	css .body
 		&.snippet,&.h5,&.op pl:4 mt:-2 pb:1
@@ -187,29 +207,52 @@ tag doc-section
 
 			.code-inline@only fs:xs/1.4 px:1 py:0 m:0 va:top
 
+		&.tabbed > .content@not(@empty) ~ .head.tabs mt:6
+		&.tabbed mb:6
+
 	css .more d@empty:none my:8
 		@before
 			content: "Table of Contents" d:block
 			c:#3A4652 bc:gray3
 			fs:18px/1.2 fw:500 pb:3
 
-	def render
-		let filter = data.filtering..regex
+	prop filters
+	prop query
 
-		<self .{data.flagstr}>
-			if data.head
+	set filters value
+		console.log 'setting filters',value
+		$filters = value
+
+	get filters
+		$filters
+
+	def render
+		return unless data
+
+		# let filter = data.filtering..regex
+		let par = data.parent
+		let filter = query or $filters..regex
+		let tabbed = data.options.tabbed
+
+		<self .{data.flagstr} .hide=(query and !data.match(query))>
+			if data.head and !data.tab?
 				<.head.html .{data.flagstr} .l{level} @click=toggle>
 					<.title innerHTML=data.head>
-			if data.options.sheet
-				<doc-section-filters data=data>
 
-			if (data isa Section or level == 0)
+			if data.options.sheet
+				<doc-section-filters data=data bind:selection=filters>
+
+			if (data isa Section or level == 0 or par.options.tabbed)
 				<.body.{data.flagstr}>
 					<.content.html innerHTML=(data.html or '')>
-					
 					<.sections>
 						for item in data.sections
-							<doc-section .hide=(filter and !item.match(filter)) data=item level=(level+1)>
+							<doc-section query=filter data=item level=(level+1)>
+					if tabbed
+						<.head.tabs .l{level+1}> for item in data.docs
+							<a.tab.title .active=(data.currentTab == item) href=item.href> item.title
+						<.section.html>
+							<doc-section data=data.currentTab level=(level+1)>
 
 tag app-document
 	@watch prop data
@@ -218,12 +261,20 @@ tag app-document
 	css $content > mb@last:0 mt@first:0
 
 	def render
+		let doc = data
+		while doc && doc.parent.options.tabbed
+			doc.parent.$currentTab = doc
+			doc = doc.parent			
+
 		<self.markdown[d:block pb:24]>
 			<div$content[max-width:768px px:6]>
-				<doc-section data=data level=0>
-				<.toc> for item in data.docs
-					<doc-section-link data=item level=(level+1)>
-			<app-document-nav data=data>
+				for section in [doc]
+					<doc-section $key=section.id data=section level=0>
+					unless section.options.tabbed
+						<.toc> for item in section.docs
+							<doc-section-link data=item level=(level+1)>
+			
+			<app-document-nav data=doc>
 
 	def dataDidSet data
 		yes

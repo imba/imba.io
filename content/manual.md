@@ -349,9 +349,9 @@ document.body.appendChild el
 
 # Operators [sheet=operators]
 
-### Arithmethic Operators [op-math]
 
-Stuff about arithmetic operators
+
+## Arithmethic Operators
 
 ### + [op=math]
 ```imba
@@ -393,7 +393,7 @@ Stuff about arithmetic operators
 +i # Unary plus
 ```
 
-### Logical Operators [op-logical]
+## Logical Operators [op-logical]
 
 ### && [op=logical]
 ```imba
@@ -438,15 +438,14 @@ let a = true
 !0 # true
 ```
 
-### Assignment Operators [op-assign]
-
+## Basic Assignment [op-assign]
 
 ### = [op=assign]
 ```imba
 a = b 
 ```
 
-### Conditional Assignment [op-assign]
+## Conditional Assignment [op-assign]
 
 ### ||= [op=assign]
 ```imba
@@ -463,7 +462,7 @@ a &&= b # If truthy assignment
 a ?= b # If null assignment
 ```
 
-### Compound Assignment [op-assign]
+## Compound Assignment [op-assign]
 
 ### += [op=math+assign]
 ```imba
@@ -515,9 +514,9 @@ a-- # Decrement assignment
 --a # Decrement assignment
 ```
 
-### Reassignment Operators [op-change]
+## Reassignment [op-change]
 
-### =? [op=assign+change]
+### =? [op=assign+change+advanced]
 ```imba
 let object = {}, input = 200
 # ---
@@ -534,7 +533,7 @@ if object.value != input
 ```
 
 
-### Comparison Operators [op-compare]
+## Comparison [op-compare]
 
 ### == [op=compare]
 ```imba
@@ -584,18 +583,13 @@ princess !isa Car
 ```
 > The `isa` operator tests whether the prototype property of a constructor appears anywhere in the prototype chain of an object. Alias for the javascript [instanceof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof) operator.
 
-### delete  [op=unary+keyword]
-```imba
-delete object.property
-```
-
 ### typeof [op=unary+keyword]
 ```imba
 typeof item
 ```
 
 
-### Bitwise Operators [op-bitwise]
+## Bitwise Operators [op-bitwise]
 
 ### & [op=bitwise]
 ```imba
@@ -636,7 +630,9 @@ a >> b # Sign-propagating right shift
 a >>> b # Zero-fill right shift
 ```
 
-### Bitwise Assignment [op-bitwise] [op-assign]
+## Bitwise Assignment
+
+Usecases etc
 
 ### <<= [op=bitwise+assign]
 ```imba
@@ -667,9 +663,9 @@ a ~= 1 # Bitwise NOT assignment (unassignment)
 a ^= 1 # Bitwise XOR assignment
 ```
 
-### Bitwise Reassignment [op-bitwise] [op-assign] [op-change]
+## Bitwise Reassignment
 
-### |=? [op=bitwise+assign+change]
+### |=? [op=bitwise+assign+change+advanced]
 ```imba
 const STATES = {LOADED: 2}
 let data = {state: 0}
@@ -689,7 +685,7 @@ if (data.state & STATES.LOADED) == 0
     yes
 ```
 
-### ~=? [op=bitwise+assign+change]
+### ~=? [op=bitwise+assign+change+advanced]
 ```imba
 const STATES = {LOADED: 2}
 let data = {state: 0}
@@ -708,9 +704,16 @@ if (data.state & STATES.LOADED) == 0
     data.state |= STATES.LOADED
     yes
 ```
-### ^=? [op=bitwise+assign+change]
+### ^=? [op=bitwise+assign+change+advanced]
 ```imba
 a ^=? 1 # Bitwise XOR assignment
+```
+
+## Other Operators
+
+### delete  [op=unary+keyword]
+```imba
+delete object.property
 ```
 
 # Control Flow
@@ -779,9 +782,11 @@ else
     throw 'nope'
 ```
 
-# Loops
+# Loops [tabbed]
 
 Loops in Imba behaves similar to array comprehensions in CoffeeScript and Python. They are expressions, and can be returned and assigned. When used as expressions they will always return an array.
+
+# - Basics
 
 ##### for in [snippet]
 ```imba
@@ -846,7 +851,7 @@ console.log hits
 # console.log dramas
 ```
 
-## For in
+# - for-in
 
 For in is the basic syntax for looping through arrays and any other object that has a `length` property and allows accessing their members through `object[index]`. This includes `Array`, `NodeList`, `DOMTokenList`, `String` and more. It was created before `for of` iterables became standard in ES2015, but is still a practical alternative to using `for of` in many cases. Imba `for in` is not to be confused with `for in` [in javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in).
 
@@ -904,7 +909,7 @@ for label in labels
 ```
 > When Imba cannot infer that an object is an array during compilation it will behind the scenes look for a `toIterable` method on the object before looping. This way one can make any type of object easily support being iterated using a `for in` loop.
 
-## For of
+# - for-of
 
 The for...of statement creates a loop iterating over iterable objects, including: built-in String, Array, array-like objects (e.g., arguments or NodeList), TypedArray, Map, Set, and user-defined iterables. This maps directly to `for of` [in javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of) with a few convenient additions.
 
@@ -967,7 +972,7 @@ for [key,value],idx of iterable
 > In imba you can supply a second parameter to `for ... of`. This will be populated with the current iteration number (starting at 0), just like the second argument in `Array#map` and `Array#forEach`.
 
 
-## For own of
+# - for-own-of
 
 One pretty common need is to loop through the key-value pairs of plain objects. The commonly recommended way to do this in JavaScript is:
 ```javascript
@@ -984,7 +989,7 @@ for own key,value of obj
     console.log "{key} is {value}"
 ```
 
-## Break, Continue & When
+# - break
 
 `break`, `continue` & `when` is supported in all loop types (`for in`, `for of` and `for own of`)
 
@@ -996,6 +1001,20 @@ var res = for num in [1,2,3,4,5]
 # [2,4]
 ```
 
+##### break *value*
+```imba
+# break with argument
+var res = for num in [1,2,3,4,5]
+    break -1 if num == 3
+    num * 2
+res == [2,4,-1]
+```
+> When supplying an argument to break, this value will be added to the resulting array. Especially useful when you want to return until some condition is met, but also want to include the item at which condition was met.
+
+# - continue
+
+`continue` is supported in all loop types (`for in`, `for of` and `for own of`)
+
 ##### continue
 ```imba
 let res = for num in [1,2,3,4,5]
@@ -1003,14 +1022,6 @@ let res = for num in [1,2,3,4,5]
     num * 2
 console.log res # [2,4,8,10]
 ```
-
-##### when
-```imba
-const res = for num of [1,2,3,4,5] when num != 3
-    num * 2
-console.log res # [2,4,8,10]
-```
-`when` is essentially a shorthand for continuing past values that don't match a condition.
 
 ##### continue *value*
 ```imba
@@ -1020,17 +1031,20 @@ var res = for num in [1,2,3,4,5]
 # continue with an argument acts like early return within Array#map
 # res => [2,4,-1,8,10]
 ```
-When supplying an argument to continue, this value will be added to the resulting array, much like an early return would do in an `Array#map` function.
+> When supplying an argument to continue, this value will be added to the resulting array, much like an early return would do in an `Array#map` function.
 
-##### break *value*
+# - when
+
+`when` is supported in all loop types (`for in`, `for of` and `for own of`)
+
+##### when
 ```imba
-# break with argument
-var res = for num in [1,2,3,4,5]
-    break -1 if num == 3
+const res = for num of [1,2,3,4,5] when num != 3
     num * 2
-res == [2,4,-1]
+console.log res # [2,4,8,10]
 ```
-When supplying an argument to break, this value will be added to the resulting array. Especially useful when you want to return until some condition is met, but also want to include the item at which condition was met.
+`when` is essentially a shorthand for continuing past values that don't match a condition.
+
 
 # Functions
 
@@ -1130,7 +1144,9 @@ update(score: 1023) do(err,resp)
     console.log 'response from update',resp
 ```
 
-# Classes
+# Classes [tabbed]
+
+## Basics
 
 ##### Class declarations
 ```imba
@@ -1151,9 +1167,13 @@ var expr = class
         self.width = width
 ```
 
+## Properties [wip]
+
+## Methods
+
 ## Inheritance
 
-## super
+### super
 
 # Decorators [wip]
 
@@ -1810,11 +1830,15 @@ imba.mount do <main>
 
 # - Managing State
 
-# Components
+# Components [tabbed]
 
 # - Introduction
 
-## Web Components
+# - Declarations [tabbed]
+
+## Basics
+
+### Global Tags (Web Components)
 
 Components are reusable elements with functionality and children attached to them. Components are *just like regular classes* and uses all the same syntax to declare properties, methods, getters and setters. To create a Component, use the keyword `tag` followed by a component name according to web-component's custom component naming convention. It must contain at least two words separated by a dash. 
 
@@ -1825,7 +1849,7 @@ tag app-component
 
 These components are compiled to [native Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) and are *global* in your project. As long as you have imported the component *somewhere in your code*, you can create instances of the component anywhere.
 
-## Local Components
+### Local Tags
 
 Custom Elements that start with an uppercase letter is treated as a local component.
 
@@ -1860,7 +1884,7 @@ imba.mount do <div> app-list(array)
 ## Attributes
 
 
-# - Using Slots
+# -- Slots
 
 Sometimes you want to allow taking in elements from the outside and render them somewhere inside the tree of your component. `<slot>` is a placeholder for the content being passed in from the outside.
 
@@ -1909,7 +1933,7 @@ imba.mount do <app-panel>
     <div> "More in main slot"]~
 ```
 
-# - Named Elements
+# -- References
 
 It can be useful to keep references to certain child elements inside a component. This can be done using `<node$reference>` syntax.
 
@@ -1933,10 +1957,11 @@ In the code above, `$name` is available everywhere inside `app-panel` component,
 
 Elements with a reference automatically get a flag with the same name as the reference.
 
-# - Context
+# - Missing [skip]
+
+- component.flags
 
 # - Lifecycle
-
 
 ## Hooks
 
@@ -2002,14 +2027,14 @@ tag app-clock
         commit! unless scheduled?
 ```
 
+# - Advanced
+
+## Context
 
 
+# Events [tabbed]
 
-# Events
-
-Stuff about event handling.
-
-# - Listening to Events
+# - Listening
 
 We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
 
@@ -2050,11 +2075,9 @@ const handler = console.log.bind(console)
 	<li @click=handler(e.type,item,i)> item.title
 ```
 
-# - Chaining Handlers
+# - Triggering
 
-# - Triggering Events
-
-# - Event Modifiers
+# - Modifiers
 
 
 Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
@@ -2433,9 +2456,17 @@ Break unless intersection ratio has increased.
 ```
 Break unless intersection ratio has decreased.
 
+# - Custom Events [tabbed]
 
+# -- System
 
-# - Handling Touches
+# -- Key
+
+# -- Mouse
+
+# -- Pointer
+
+# -- Touch
 
 
 To make it easier and more fun to work with touches, Imba includes a custom `touch` event that combines `pointerdown` -> `pointermove` -> `pointerup/pointercancel` in one convenient handler, with modifiers for commonly needed functionality.
@@ -2781,8 +2812,6 @@ tag app-paint
 imba.mount <app-paint>
 ```
 
-# - Custom Events
-
 # -- Intersection
 
 [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) is a [well-supported](https://caniuse.com/#feat=intersectionobserver) API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document's viewport. In Imba it is extremely easy to set up an intersection observer.
@@ -2860,18 +2889,26 @@ imba.mount do
 
 # -- Selection
 
+# Styling [tabbed]
 
-
-# Styling
+## Intro [skip]
 
 First things first; You are free to use external stylesheets like you've always done. Still, with a goal of being the friendliest language for creating web applications we have included styling as a core part of the language. We've also extended the functionality of css to make common patterns friendlier, and to make it easier to keep a consistent design language across your whole project.
 
 
 Our approach to styling is inspired by [Tailwind](https://tailwindcss.com), so we recommend reading about [their philosophy](https://tailwindcss.com/docs/utility-first). Think of the style syntax in Imba as what Tailwind might be like if it was allowed to invent a language.
 
-# - Global Styles
+#### Todo [skip]
 
-Style rules are declared using the `css` keyword.
+- Difference between top-level local and global css
+- Explain `@local` modifier
+- Explain `self` styling
+- When to use file styles vs component styles
+- Why single-class selectors in component applies to component **and** children
+
+# - Declarations [tabbed]
+
+# -- Basics
 
 ```imba
 css .btn
@@ -2884,7 +2921,7 @@ css .btn
 css .btn@hover
     background: #81e6d9
 ```
-Besides using indentation instead of `{}`, making `;` optional, and using `@pseudo` instead of `:pseudo` it looks like regular css. Line breaks are also optional. The following few snippets might look messy at first glance, but bear with us.
+Styles are declared using the `css` keyword. Besides using indentation instead of `{}`, making `;` optional, and using `@pseudo` instead of `:pseudo` it looks like regular css. Line breaks are also optional. The following few snippets might look messy at first glance, but bear with us.
 
 ```imba
 css .btn
@@ -2927,9 +2964,34 @@ css .card
     &.large padding:16px # matches .card.large
 ```
 
-# - Scoped Styles
+A problem with CSS is that often end up with tons of globally competing styles spread around numerous files. Changing some styles in one place might affect some seemingly unrelated elements. In Imba it is really easy to declare styles that should only apply to certain parts of your application.
 
-A problem with CSS is that often end up with tons of globally competing styles spread around numerous files. Changing some styles in one place might affect some seemingly unrelated elements. In Imba it is really easy to declare styles that should only apply to certain parts of your document. If you declare style rules inside tag definitions, all the styles will magically only apply to elements inside of this tag:
+
+# -- File
+```imba
+css button
+    position: relative
+    display: block
+    background: #b2f5ea
+
+# rest of file ...
+```
+By default, any style rules declared at the top level of your file using `css selector ...` will only apply to the elements declared inside that file. The `button` style above will only affect literal `button` tags rendered **in the same file**. This means that you can declare styles like this in your file without having to worry about affecting styles in other parts of your application, or even inside nested components that are defined in other files, but used here.
+
+# -- Global
+```imba
+global css button
+    position: relative
+    display: block
+    background: #b2f5ea
+
+# rest of file ...
+```
+If you prefix your css declaration with the `global` keyword - the styles will be included globally, and in this example affect all `button` elements in your application. The styles will be included as long as they are required somewhere.
+
+# -- Component
+
+If you declare style rules inside tag definitions, all the styles will magically only apply to elements inside of this tag.
 
 ```imba
 # ~preview=lg
@@ -3051,7 +3113,7 @@ imba.mount do <app-root[d:grid gap:4 p:4]>
 > The `>>` operator styles immediate children, just like the `>` operator, but it also targets non-literal immediate children.
 
 
-# - Inline Styles
+# -- Inline
 
 You can add inline styles on any element using `[style-properties]` syntax. You can think of this as an inlined anonymous class with a bunch of css properties.
 Instead of coming up with an arbitrary class name and adding styles somewhere else, you can simply add them to elements directly:
@@ -3230,16 +3292,14 @@ css button
 
 <doc-style-modifiers></doc-style-modifiers>
 
-# - Theming
+# - Theming [tabbed]
+
+## Basics
 
 Imba has a goal of making it as easy as possible to be consistent with regards to fonts, colors, sizes and more throughout your application. In the spirit of Tailwind, we supply a default "theme" with a whole range of delightfully hand-picked colors, font sizes, shadows and sizing/spacing units.
 
 We are not talking about a "theme" like bootstrap – forcing you into creating generic bootstrap-looking designs – but more just a minimal set of defaults that can be used to create all sorts of varied but consistent designs. You can choose not to use them at all, or override everything in your custom theme config, but we think you will find it immensely useful.
 
-
-## Dimensions
-
-Imba allows unitless numeric values for all sizing related properties. For margin, padding, sizes, and positions unitless numbers are equal to `0.25rem * number`. `1rem` is `16px` by default, so this means that the scale increments by `4px` for every integer.
 
 ## Colors
 
@@ -3247,7 +3307,13 @@ The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`te
 
 <doc-colors></doc-colors>
 
-## Font Family
+## Units
+
+Imba allows unitless numeric values for all sizing related properties. For margin, padding, sizes, and positions unitless numbers are equal to `0.25rem * number`. `1rem` is `16px` by default, so this means that the scale increments by `4px` for every integer.
+
+## Typography
+
+### Font Family
 
 <doc-style-ff></doc-style-ff>
 
@@ -3268,11 +3334,11 @@ imba.mount do  <section>
     <label[fs:xl ff:comic]> "This is comic"
 ```
 
-## Font Sizes
+### Font Sizes
 
 <doc-style-fs></doc-style-fs>
 
-## Box Shadow
+## Shadows
 
 ```imba
 # ~preview=200px
@@ -3299,7 +3365,7 @@ imba.mount do  <section.group>
     
 ```
 
-## Border Radius
+## Radius
 
 ```imba
 # ~preview=200px

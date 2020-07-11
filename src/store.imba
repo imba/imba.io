@@ -9,6 +9,8 @@ export const types = {}
 
 window.paths = paths
 
+let counter = 1
+
 const extToLanguage =
 	js: 'javascript'
 	html: 'html'
@@ -19,6 +21,7 @@ class Entry
 	@commit prop hasErrors
 
 	def constructor data, parent
+		id = counter++
 		dirty = no
 		parent = parent
 		data = data
@@ -68,6 +71,9 @@ class Entry
 	get sections
 		self.children.filter(do $1 isa Section)
 
+	get categories
+		self.children.filter(do $1 isa Category)
+
 	get prev
 		return null unless parent
 		prevSibling or parent.prev
@@ -77,17 +83,26 @@ class Entry
 		return null unless parent
 		nextSibling or parent.next
 
+	get tab?
+		parent and parent.options.tabbed
+
 	get prevSibling
 		parent ? parent.children[parent.children.indexOf(self) - 1] : null
 
 	get nextSibling
 		parent ? parent.children[parent.children.indexOf(self) + 1] : null
+	
+	get currentTab
+		$currentTab or docs[0]
 
 	def childByName name
 		self.children.find(do $1.name == name and !($1 isa Section))
 	
 	def match filter
 		if filter isa RegExp
+			if sections and sections.some(do $1.match(filter) )
+				return true
+
 			return filter.test(flagstr)
 		return true
 
@@ -161,6 +176,8 @@ export class Section < Entry
 	get href
 		"{parent.href}#{name}"
 
+export class Category < Entry
+
 export class Dir < Entry
 	prop examples
 
@@ -192,6 +209,7 @@ export class Root < Entry
 types.file = File
 types.dir = Dir
 types.doc = Doc
+types.category = Category
 types.section = Section
 types.guide = Guide
 

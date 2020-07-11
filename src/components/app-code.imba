@@ -2,7 +2,7 @@ import {highlight} from '../util/highlight'
 import * as sw from '../sw/controller'
 import {ls} from '../store'
 
-css :root
+global css @root
 	--code-color: #e3e3e3;
 	--code-identifier: #9dcbeb;
 	--code-constant: #8ab9ff # #d7bbeb;
@@ -62,7 +62,7 @@ css :root
 	--code-delimiter: #e3e3e3
 	--code-delimiter-operator:#889cd6
 
-css .code
+global css .code
 	tab-size: 4
 	cursor:default
 	.invalid color: red

@@ -108,23 +108,17 @@ tag app-root
 			
 
 # Should add the colors etc to the root css here
-css :root
-	font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
-	-webkit-font-smoothing: antialiased
-	-moz-osx-font-smoothing: grayscale
-	$header-height: 56px @md:64px
-	$menu-width:80vw @md:220px
-	$doc-width: 768px
-	$doc-margin: calc(100vw - $doc-width - 20px) @md:calc(100vw - $doc-width - $menu-width - 20px)
+global css
+	@root
+		font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
+		-webkit-font-smoothing: antialiased
+		-moz-osx-font-smoothing: grayscale
+		$header-height: 56px @md:64px
+		$menu-width:80vw @md:220px
+		$doc-width: 768px
+		$doc-margin: calc(100vw - $doc-width - 20px) @md:calc(100vw - $doc-width - $menu-width - 20px)
 
-css html.noscroll body
-	overflow: hidden
-
-css html,body
-	p:0px m:0px
-
-css body
-	pt: $header-height
-
-css *
-	outline:none	
+	html.noscroll body overflow: hidden
+	html,body p:0px m:0px
+	body pt: $header-height
+	* outline:none	
