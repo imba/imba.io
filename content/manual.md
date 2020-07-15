@@ -402,12 +402,14 @@ null && 10 # null
 1 && 10 # 10
 '' && 'str' # ''
 ```
+The logical AND operator is true if all of its operands are true. The operator returns the value of the last truthy operand.
 
 ### and [op=logical]
 ```imba
 null and 10 # null
 1 and 10 # 10
 ```
+Alias for `&&` operator
 
 ### || [op=logical]
 ```imba
@@ -415,6 +417,7 @@ null || 10 # 10
 0 || 10 # 10
 1 || 10 # 1
 ```
+The logical OR operator is true if one or more of its operands is true. The operator returns the value of the first truthy operand.
 
 ### or [op=logical]
 ```imba
@@ -422,13 +425,15 @@ null or 10 # 10
 0 or 10 # 10
 1 or 10 # 1
 ```
+Alias for `||` operator
 
-### ?: [op=logical+existential]
+### ?? [op=logical+existential]
 ```imba
-null ?: 10 # 10
-0 ?: 10 # 0
-'' ?: 'str' # ''
+null ?? 10 # 10
+0 ?? 10 # 0
+'' ?? 'str' # ''
 ```
+The nullish coalescing operator `??` is a logical operator that returns its right-hand side operand when its left-hand side operand is `null` or `undefined`, and otherwise returns its left-hand side operand.
 
 ### ! [op=unary]
 ```imba
@@ -1327,9 +1332,7 @@ Note that if you have a `default` export then you will need to access the defaul
 let instance = MyClassAlias.default.new()
 ```
 
-# Tags [tabbed]
-
-# - Elements [tabbed]
+# Elements [tabbed]
 
 ## Intro
 
@@ -1454,38 +1457,6 @@ Just like classes, styles can be conditionally applied
 ```imba
 <div[color:red bg:blue] [display:none]=app.loggedIn> "Hello"
 ```
-
-
-
-## Listeners
-
-We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
-
-```imba
-let counter = 0
-<button ~[@click=(counter++)]~> "Increment to {counter + 1}"
-```
-
-It is important to understand how these event handlers are treated. Imba is created to maximize readability and remove clutter. If you set the value to something that looks like a regular method call, this call (and its arguments) will only be called when the event is actually triggered.
-
-```imba
-<div @click=console.log('hey')> 'Will log hey'
-```
-
-In the example above, the console.log will only be called when clicking the element. If you just supply a reference to some function, imba will call that handler, with the event as the only argument.
-
-```imba
-<div @click=console.log> 'Will log the event'
-```
-
-Inside of these lazy handlers you can also refer to the event itself as `e`.
-
-```imba
-let x = 0
-<button @click=console.log(e.type,e.x,e.y)> "Click"
-<button @mousemove=(x = e.x)> "Mouse at {x}"
-```
-To learn more about event handling jump to the [Events section](/manual/events).
 
 ## Bindings
 
@@ -1735,92 +1706,9 @@ If you create an element without a node name it will always be created as a `div
 
 Fragments can be created using empty tag literals `<>`.
 
-# - Rendering [tabbed]
+# Components [tabbed]
 
-The fact that tag literals generate real dom nodes means that we can add/remove/modify the dom in an imperative way. In theory.
-
-```imba
-# ~preview=xl
-import 'util/styles'
-
-# ---
-let array = ["First","Second"]
-
-let view = <main>
-    <button @click=array.push('More')> 'Add'
-    <ul.list> for item in array
-        <li> item
-
-# view is a real native DOM element
-document.body.appendChild view
-```
-Even tough we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
-
-## Mounting
-
-To make the tag tree update when our data changes, we need to add pass the tree to `imba.mount`.
-
-```imba
-# ~preview=xl
-import 'util/styles'
-
-# ---
-let array = ["First","Second"]
-
-imba.mount do 
-    <main>
-        <button @click=array.push('More')> 'Add'
-        <ul.list> for item in array
-            <li> item
-```
-Now you will see that when you click the button, our view instantly updates to reflect the new state. How does this happen without a virtual dom? The array is not being tracked in a special way (it is just a plain array), and we are only dealing with real dom elements, which are only changed and updated when there is real need for it. Imba uses a technique we call `memoized dom`, and you can read more about how it works [here](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52). Here is a more advanced example with more dynamic data and even dynamic inline styles:
-
-```imba
-# ~preview=xl
-import 'util/styles'
-
-css div pos:absolute d:block inset:0 p:4
-css mark pos:absolute
-css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
-
-# ---
-let x = 20, y = 20, title = "Hey"
-
-imba.mount do
-    <main @mousemove=(x=e.x,y=e.y)>
-        <input bind=title>
-        <label> "Mouse is at {x} {y}"
-        <mark[x:{x} y:{y} rotate:{x / 360}]> "Item"
-        <ul> for nr in [0 ... y]
-            <li> nr % 12 and nr or title
-```
-
-By default Imba will **render your whole application whenever anything *may* have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all that? As long as you have mounted your root element using `imba.mount` you usually don't need to think more about it.
-
-## Updating
-
- The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using await or returning a promise), Imba will also re-render after the promise is finished. Practically all state changes in applications happen as a result of some user interaction.
-
-In the few occasions where you need to manually make sure views are updated, you should call `imba.commit`. It schedules an update for the next animation frame, and things will only be rerendered once even if you call `imba.commit` a thousand times. It returns a promise that resolves after the actual updates are completed, which is practical when you need to ensure that the view is in sync before doing something.
-
-##### commit from websocket
-```imba
-socket.addEventListener('message',imba.commit)
-```
-Calling `imba.commit` after every message from socket will ensure that your views are up-to-date when your state changes as a result of some socket message.
-
-##### commit after fetching data
-```imba
-def load
-    let res = await window.fetch("/items")
-    state.items = await res.json!
-    imba.commit!
-```
-
-
-# - Components [tabbed]
-
-## Basics
+## Declarations
 
 ### Global Tags (Web Components)
 
@@ -2000,7 +1888,7 @@ tag app-clock
 
 # Events [tabbed]
 
-# - Listening
+# -- Listening
 
 We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
 
@@ -2041,9 +1929,9 @@ const handler = console.log.bind(console)
 	<li @click=handler(e.type,item,i)> item.title
 ```
 
-# - Triggering
+# -- Triggering
 
-# - Modifiers
+# -- Modifiers
 
 
 Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
@@ -2422,17 +2310,17 @@ Break unless intersection ratio has increased.
 ```
 Break unless intersection ratio has decreased.
 
-# - Event Types [tabbed]
+# -- Event Types [tabbed]
 
-# -- System
+# --- System
 
-# -- Key
+# --- Key
 
-# -- Mouse
+# --- Mouse
 
-# -- Pointer
+# --- Pointer
 
-# -- Touch
+# --- Touch
 
 
 To make it easier and more fun to work with touches, Imba includes a custom `touch` event that combines `pointerdown` -> `pointermove` -> `pointerup/pointercancel` in one convenient handler, with modifiers for commonly needed functionality.
@@ -2778,7 +2666,7 @@ tag app-paint
 imba.mount <app-paint>
 ```
 
-# -- Intersection
+# --- Intersection
 
 [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) is a [well-supported](https://caniuse.com/#feat=intersectionobserver) API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document's viewport. In Imba it is extremely easy to set up an intersection observer.
 
@@ -2851,30 +2739,102 @@ imba.mount do
 > The `in` modifier tells the intersection event to only trigger whenever the visibility has *decreased*.
 
 
-# -- Resize
+# --- Resize
 
-# -- Selection
+# --- Selection
+
+# State Management [tabbed]
+
+## Introduction
+
+The fact that tag literals generate real dom nodes means that we can add/remove/modify the dom in an imperative way. In theory.
+
+```imba
+# ~preview=xl
+import 'util/styles'
+
+# ---
+let array = ["First","Second"]
+
+let view = <main>
+    <button @click=array.push('More')> 'Add'
+    <ul.list> for item in array
+        <li> item
+
+# view is a real native DOM element
+document.body.appendChild view
+```
+Even tough we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
+
+## Mounting
+
+To make the tag tree update when our data changes, we need to add pass the tree to `imba.mount`.
+
+```imba
+# ~preview=xl
+import 'util/styles'
+
+# ---
+let array = ["First","Second"]
+
+imba.mount do 
+    <main>
+        <button @click=array.push('More')> 'Add'
+        <ul.list> for item in array
+            <li> item
+```
+Now you will see that when you click the button, our view instantly updates to reflect the new state. How does this happen without a virtual dom? The array is not being tracked in a special way (it is just a plain array), and we are only dealing with real dom elements, which are only changed and updated when there is real need for it. Imba uses a technique we call `memoized dom`, and you can read more about how it works [here](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52). Here is a more advanced example with more dynamic data and even dynamic inline styles:
+
+```imba
+# ~preview=xl
+import 'util/styles'
+
+css div pos:absolute d:block inset:0 p:4
+css mark pos:absolute
+css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
+
+# ---
+let x = 20, y = 20, title = "Hey"
+
+imba.mount do
+    <main @mousemove=(x=e.x,y=e.y)>
+        <input bind=title>
+        <label> "Mouse is at {x} {y}"
+        <mark[x:{x} y:{y} rotate:{x / 360}]> "Item"
+        <ul> for nr in [0 ... y]
+            <li> nr % 12 and nr or title
+```
+
+By default Imba will **render your whole application whenever anything *may* have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all that? As long as you have mounted your root element using `imba.mount` you usually don't need to think more about it.
+
+## Updating
+
+ The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using await or returning a promise), Imba will also re-render after the promise is finished. Practically all state changes in applications happen as a result of some user interaction.
+
+In the few occasions where you need to manually make sure views are updated, you should call `imba.commit`. It schedules an update for the next animation frame, and things will only be rerendered once even if you call `imba.commit` a thousand times. It returns a promise that resolves after the actual updates are completed, which is practical when you need to ensure that the view is in sync before doing something.
+
+##### commit from websocket
+```imba
+socket.addEventListener('message',imba.commit)
+```
+Calling `imba.commit` after every message from socket will ensure that your views are up-to-date when your state changes as a result of some socket message.
+
+##### commit after fetching data
+```imba
+def load
+    let res = await window.fetch("/items")
+    state.items = await res.json!
+    imba.commit!
+```
+
 
 # Styles [tabbed]
 
-## Intro [skip]
+# - Basics
 
-First things first; You are free to use external stylesheets like you've always done. Still, with a goal of being the friendliest language for creating web applications we have included styling as a core part of the language. We've also extended the functionality of css to make common patterns friendlier, and to make it easier to keep a consistent design language across your whole project.
+First things first – you are free to use external stylesheets like you've always done. Still, aiming to be the friendliest full-stack language we have included styling as a core part of the language. We've also extended the functionality of css to make common patterns friendlier, and to make it easier to keep a consistent design language across your whole project. Our approach to styling is inspired by [Tailwind](https://tailwindcss.com), so we recommend reading about [their philosophy](https://tailwindcss.com/docs/utility-first).
 
-
-Our approach to styling is inspired by [Tailwind](https://tailwindcss.com), so we recommend reading about [their philosophy](https://tailwindcss.com/docs/utility-first). Think of the style syntax in Imba as what Tailwind might be like if it was allowed to invent a language.
-
-#### Todo [skip]
-
-- Difference between top-level local and global css
-- Explain `@local` modifier
-- Explain `self` styling
-- When to use file styles vs component styles
-- Why single-class selectors in component applies to component **and** children
-
-# - Declarations [tabbed]
-
-# -- Basics
+## Declaring styles
 
 ```imba
 css .btn
@@ -2919,7 +2879,9 @@ There are also some patterns that come up again and again in css. Changing a few
 ```imba
 css .btn d:block px:1 bg:teal2 bg@hover:teal3
 ```
-This conciseness comes especially handy when declaring inline styles, which we will come back to later. Styles can also be nested. Everything before the first property on new lines are treated as nested selectors.
+This conciseness comes especially handy when declaring inline styles, which we will come back to later.
+
+Styles can also be nested. Everything before the first property on new lines are treated as nested selectors.
 ```imba
 css .card
     display: block
@@ -2930,8 +2892,18 @@ css .card
     &.large padding:16px # matches .card.large
 ```
 
-A problem with CSS is that often end up with tons of globally competing styles spread around numerous files. Changing some styles in one place might affect some seemingly unrelated elements. In Imba it is really easy to declare styles that should only apply to certain parts of your application.
 
+#### Todo [skip]
+
+- Difference between top-level local and global css
+- Explain `@local` modifier
+- Explain `self` styling
+- When to use file styles vs component styles
+- Why single-class selectors in component applies to component **and** children
+
+# - Scoping [tabbed]
+
+A problem with CSS is that often end up with tons of globally competing styles spread around numerous files. Changing some styles in one place might affect some seemingly unrelated elements. In Imba it is really easy to declare styles that should only apply to certain parts of your application.
 
 # -- File
 ```imba
@@ -3156,7 +3128,6 @@ imba.mount do <div>
     <div%btn.danger> "Danger"
     <div%btn.warn> "Warn"
 ```
-
 # - Aliases
 
 We firmly believe that less code is better code, so we have strived to make the styling syntax as concise yet readable as possible. There is a case to be made against short variable names in programming, but css properties are never-changing. Imba provides intuitive abbreviations for oft-used css properties. Like everything else, using these shorthands is completely optional, but especially for inline styles, they are convenient.
@@ -3412,8 +3383,6 @@ imba.mount do <main[p:8]>
             <div.pill> item.name
 ```
 The only way to get consistent gaps between elements inside flexboxes is to add margins around all their children (on all sides), and then add a negative margin to the container. This is what `display:group` does.
-
-# - Specificity
 
 # Quick tips [skip]
 
