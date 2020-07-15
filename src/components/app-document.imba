@@ -166,7 +166,7 @@ tag doc-section
 
 		&.tabs d:hflex flw:wrap pb:0 mb:3
 			bdb:none @md:2px solid gray2
-			fs:16px .l1:20px
+			fs:16px .l1:18px
 			.tab mr:2 pb:0 @md:1
 			&.l1 .tab mr:3
 
@@ -269,11 +269,10 @@ tag app-document
 
 		<self.markdown[d:block pb:24]>
 			<div$content[max-width:768px px:6]>
-				for section in [doc]
-					<doc-section $key=section.id data=section level=0>
-					unless section.options.tabbed
-						<.toc> for item in section.docs
-							<doc-section-link data=item level=(level+1)>
+				<doc-section $key=doc.id data=doc level=0>
+				unless doc.options.tabbed
+					<.toc> for item in doc.docs
+						<doc-section-link data=item level=(level+1)>
 			
 			<app-document-nav data=doc>
 

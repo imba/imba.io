@@ -7,13 +7,12 @@ tag app-menu-item
 	css .item
 		p:1 2 d:block radius:1
 		c:gray6 @hover:gray9 .active:teal6
-		bg:clear .active:teal2/25
 		tween:all 150ms cubic tt.folder:capitalize
 		of:hidden text-overflow:ellipsis ws:nowrap
 		fs:sm/1.2 fw:400
-		&.l1 fw:500 py:1.5
+		# &.l1 fw:500 py:1.5
 		&.doc.l2 fw:400
-		&.active fw:500
+		&.active fw:500 c:gray9
 		&.section pl:4
 		# &.l3 fs:4/1.2 fw:400
 		
@@ -42,7 +41,7 @@ tag app-menu-section
 	css .section.active + .content d:block
 
 	<self>
-		<a.l0.section[d:block p:1 2 fs:xs c:gray5 tt:uppercase cursor:default] route-to=data.href> data.title
+		<a.l0.section[d:block p:1 2 fs:xs c:teal5 tt:uppercase cursor:default] route-to=data.href> data.title
 		<div[pb:4].content.{data.slug}> for item in data.children
 			<app-menu-item data=item level=1>
 
