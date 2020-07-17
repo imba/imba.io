@@ -8,23 +8,87 @@ multipage: true
 
 ## Caveats
 
-### Coming from JS
+If you are familiar with JavaScript there are a few key differences that are very useful to konw about before diving into Imba.
 
 ### Indentation
+In JavaScript and most other programming languages, indentation is for readabillity only. Imba, like python, uses indentation to indicate a block of code (instead of curlybraces in js etc). In addition, Imba uses **tabs for indentation**. The tooling will help you set these settings specifically for Imba files so that you never have to think about it.
 
-### Tabs > Spaces
+### Scoping & Implicit Self
 
-### Scoping
+A lone identifier will always be treated as an accessor on `self` unless a variable of the same name exists in the current scope or any of the outer scopes.
 
-### Implicit Invocation
+```imba
+const scale = 1
+class Rectangle
+    def check forced
+        width # no variable - equivalent to self.width
+        forced # found variable named arg - no implicit self
+        scale # found in scope! - no implicit self
+        normalize! # not found - method call on self
+
+```
+Self is also implicit when setting properties.
+```imba
+let changes = 0
+class Line
+    def expand
+        changes += 1 # changes += 1
+        width += 10 # self.width += 10
+```
+Self always refers to the closest **strong** scope.
+
+
+### Parenless Invocation
+```imba
+Math.round(0.5) # or
+Math.round 0.5
+```
+Parenthesis are optional when invoking a method with arguments.
 
 ### Bang Invocation
+```imba
+Math.random() # or
+Math.random!
+```
+Methods can be invoked using `!` if it has no arguments.
 
-### Implicit Self
 
 ### Self vs This
+Self is always refering to the closest strong scope (def/get/set), while this compiles directly to the native `this` in JavaScript.
+```imba
+class List
+    def add item
+        items.push(item)
+
+    def load array
+        # anonymous functions (do) has weak scopes
+        array.map do(item) 
+            self.add(item) # self refers to the List instance
+            add(item) # implicit self resolves to the List as well
+```
 
 ### Dashed Identifiers
+```imba
+background-color = 'red' # or
+backgroundColor = 'red'
+```
+Dashed identifiers are allowed in Imba. They are compiled to the equivalent camelCase version. A result of this is that you always need spaces around subtraction operators.
+```imba
+a-1 # is an identifier
+a - 1 # is a subtraction operation
+```
+
+### Predicate Identifiers
+Imba also allows `?` at the end of identifiers for methods, properties, and variables. This might seem strange at first, but makes for readable code. 
+```imba
+class Item
+    get dirty?
+        changes > 0
+
+    def update force?
+        render! if dirty? or force?
+```
+> Behind the scenes, a `dirty?` property will compile to `isDirty` in JavaScript.
 
 ### Everything is Expressable
 
@@ -44,9 +108,7 @@ console.log result # 'medium odd'
 ```
 This isn't to be abused, but can in many cases be practical.
 
-### Predicate identifiers
-
-## Terminology
+## Terminology [skip]
 
 ### Truthy
 
@@ -1151,34 +1213,288 @@ update(score: 1023) do(err,resp)
 
 # Classes [tabbed]
 
+Classes are general-purpose, flexible constructs that become the building blocks of your program's code. You define properties and methods to add functionality to your classes using the same syntax you use to define constants, variables, and functions. Classes in Imba are compiled directly to native [JavaScript Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes).
+
 ## Basics
 
-##### Class declarations
+##### Defining class
+
+```imba
+class Rectangle
+    # custom constructor
+    constructor w,h
+        width = w
+        height = h
+    
+    # class method
+    def expand hor,ver = hor
+        width += hor
+        height += ver
+
+    # getter
+    get area
+        width * height
+
+    # setter
+    set area size
+        width = height = Math.sqrt size
+```
+
+##### Instantiate class
+```imba
+let fido = new Dog
+```
+The `new` keyword will let you create an instance of your class. This instance inherits properties and methods from its class.
+
+
+##### Constructors
+```imba
+class Rectangle
+    constructor w,h
+        width = w
+        height = h
+    # ...
+```
+Use the `constructor` keyword to declare a custom constructor method for your class. This method will be executed whenever an instance of the class is created (using the `new` keyword).
+
+##### Methods
+```imba
+class Rectangle
+    def expand hor,ver = hor
+        width += hor
+        height += ver
+```
+You can add methods to your class instances using the `def` keyword, followed by the method name and optional arguments.
+
+##### Getters
+```imba
+class Rectangle
+    # ...
+    get area
+        width * height
+```
+You can add dynamic / computed properties to your class instances using the `get` keyword followed by the name of the property.
+
+##### Setters
+```imba
+class Rectangle
+    # ...
+    set sides value
+        width = value
+        height = value
+```
+You can define setters which are to be called whenever there is an attempt to set that property.
+
+
+##### Fields
+```imba
+class Rectangle
+    width = 10
+    height = 10
+    point = new Point(0,0)
+```
+
+Instance fields exist on every created instance of a class. By declaring a field, you can ensure the field is always present, and the class definition is more self-documenting. See [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Public_class_fields) for more details.
+
+##### Static Methods
+```imba
+class Rectangle
+    static def square side
+        new Rectangle(side,side)
+
+let rect = Rectangle.square(10)
+```
+
+##### Static Fields
+```imba
+class Todo
+    static items = []
+    constructor
+        Todo.items.push self
+        # ...
+```
+You can also create static fields - properties that exist on the class itself, as opposed to instance fields which exist on every instance of the class.
+
+
+##### Computed properties
+```imba
+let method = 'items'
+let getter = 'title'
+
+class Todo
+    get [getter]
+        data[getter]
+
+    def [method]
+        console.log "called method {method}"
+
+let todo = new Todo
+todo.items! # called method items
+todo.title
+```
+
+## Scoping
+
+A lone identifier inside of a method, getter or setter will always be treated as an accessor on `self`, unless a variable of the same name exists in the current scope or any of the outer scopes.
+```imba
+const scale = 1
+class Rectangle
+    def check forced
+        width # no variable - equivalent to self.width
+        forced # found variable named arg - no implicit self
+        scale # found in scope! - no implicit self
+        normalize! # not found - method call on self
+
+```
+Self is also implicit when setting properties.
+```imba
+let changes = 0
+class Line
+    def expand
+        changes += 1 # changes += 1
+        width += 10 # self.width += 10
+```
+
+### Tip [tip]
+In all the examples throughout this documentation you can hover over an identifier to highlight all references to the variable. Identifiers resolving to variables have a different color than identifiers resolving as implicit accessors of self.
+
+## Inheritance
+
+An important feature of Classes is the ability to inherit from other classes. For example, an Athlete is also a person, so it makes sense to inherit the properties of a person so that if we ever update the person class, the Athlete's class will also be updated. It will also help us keep our code light.
+
+```imba
+class Animal 
+	def constructor name
+		name = name
+
+    def move distance = 0
+        console.log "Animal moved {distance} meters."
+
+    def speak
+        console.log "{name} makes a noise."
+
+class Dog < Animal
+    def speak
+        console.log "{name} barks."
+
+let dog = new Dog 'Mitzie'
+dog.move 10 # Animal moved 10 meters.
+dog.speak! # Mitzie barks.
+```
+An inherited class will inherit all methods and functionality from the parent class.
+
+## Super
+
+##### super
+```imba
+class Designer < Person
+	def greet greeting
+        console.log 'will greet'
+		super # same as super.greet(...arguments)
+```
+
+Lone `super` is treated in a special way. It is always equivalent to calling the same method in super class, passing along the arguments from the current method.
+##### super ( arguments )
+```imba
+class Designer < Person
+	def greet greeting
+		super "Hey {greeting}" # same as super.greet
+```
+
+##### super.property
+```imba
+class Animal 
+	def constructor name
+		name = name
+
+    def move distance = 0
+        console.log "Animal moved {distance} meters."
+
+    def speak
+        console.log "{name} makes a noise."
+
+class Dog < Animal
+    def speak
+        console.log "{name} barks."
+
+    def move distance = 0
+        super.speak! # call the Animal#speak method directly!
+        console.log "{name} ran {distance} meters."
+
+let dog = new Dog 'Mitzie'
+dog.move 10 # Mitzie makes a noise. Mitzie ran 10 meters.
+```
+
+## Advanced
+
+### Default Constructor
+
+If you don't add a constructor, Imba will autogenerate a constructor that expects an optional object argument that it will use to set declared fields - if any are supplied.
+
+```imba
+class Todo
+    title = 'Untitled'
+    desc = 'No description'
+    important = no
+    done = no
+
+let todo = new Todo(title: 'Sleep', done: yes)
+console.log(todo.title) # Sleep
+console.log(todo.desc) # No description
+```
+
+```imba
+class Point
+    def constructor x,y
+        self.x = x
+        self.y = y
+    
+    def move dx, dy
+        x += dx
+        y += dy
+```
+
+### Class Expressions
+You can also define classes using class expressions. Class expressions can be named or unnamed.
+```imba
+// unnamed
+let Rectangle = class
+    constructor height, width
+        this.height = height
+        this.width = width
+console.log(Rectangle.name)
+# output: "Rectangle"
+
+# named
+let Rectangle = class Rectangle2
+    constructor height, width
+        this.height = height
+        this.width = width
+console.log(Rectangle.name)
+# output: "Rectangle2"
+```
+
+
+```imba
+class Retangle
+    constructor height, width
+        self.height = height
+        self.width = width
+```
+Or
 ```imba
 class Retangle
     def constructor height, width
         self.height = height
         self.width = width
-
-    def setup
-        self
 ```
-
-##### Class expressions
+Or
 ```imba
-var expr = class
-    def constructor height, width
+class Retangle
+    new height, width
         self.height = height
         self.width = width
 ```
-
-## Properties [wip]
-
-## Methods
-
-## Inheritance
-
-### super
 
 # Decorators [wip]
 
@@ -1829,6 +2145,7 @@ These methods are meant to be defined in your components. In most cases you will
 | table  |  | |
 | --- | --- | --- |
 | `build` | Called before any properties etc are set | |
+| `setup` | Called the first time element is rendered in template  | |
 | `hydrate` | Called before awaken if element is not hydrated | |
 | `dehydrate` | Called before serializing when rendering on server | |
 | `awaken` | Called the first time the component is mounted | |
@@ -3231,12 +3548,7 @@ css button
 
 # - Theming [tabbed]
 
-## Basics
-
 Imba has a goal of making it as easy as possible to be consistent with regards to fonts, colors, sizes and more throughout your application. In the spirit of Tailwind, we supply a default "theme" with a whole range of delightfully hand-picked colors, font sizes, shadows and sizing/spacing units.
-
-We are not talking about a "theme" like bootstrap – forcing you into creating generic bootstrap-looking designs – but more just a minimal set of defaults that can be used to create all sorts of varied but consistent designs. You can choose not to use them at all, or override everything in your custom theme config, but we think you will find it immensely useful.
-
 
 ## Colors
 
@@ -3255,10 +3567,10 @@ Imba allows unitless numeric values for all sizing related properties. For margi
 <doc-style-ff></doc-style-ff>
 
 ```imba
-# ~preview=200px
+# ~preview=xl
 import 'util/styles'
 # ---
-css @root
+global css @root
     # To override the default fonts or add new ones
     # simply specify --font-{name} in your styles:
     --font-sans: Arial # override sans
@@ -3278,13 +3590,13 @@ imba.mount do  <section>
 ## Shadows
 
 ```imba
-# ~preview=200px
+# ~preview=lg
 import 'util/styles'
 css body bg:gray1
 css div c:gray6 size:14 bg:white radius:2 d:grid pa:center
 css section.group px:6 jc:center gap:4 max-width:280px @xs:initial
 # ---
-css @root
+global css @root
     # To override the default shadows or add new ones
     # simply specify --box-shadow-{name} in your styles:
     --box-shadow-ring: 0 0 0 4px blue4/30, 0 0 0 1px blue4/90
@@ -3298,7 +3610,7 @@ imba.mount do  <section.group>
     <div[shadow:lg]> "lg"
     <div[shadow:xl]> "xl"
     <div[shadow:2xl]> "2xl"
-    <div[shadow:ring,2xl]> "ring" # custom combo
+    <div[shadow:ring,2xl]> "combo"
     
 ```
 
@@ -3311,19 +3623,19 @@ css body bg:gray1
 css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid pa:center border:1px solid gray3
 css section.group px:6 jc:center gap:3
 # ---
-css @root
+global css @root
     # To override the default shadows or add new ones
     # simply specify --border-radius-{name} in your styles:
     --border-radius-bubble: 5px 20px 15px 
 
 imba.mount do  <section.group>
-    <div[radius:xs]> "xs"
-    <div[radius:sm]> "sm"
-    <div[radius:md]> "md"
-    <div[radius:lg]> "lg"
-    <div[radius:xl]> "xl"
-    <div[radius:full]> "full"
-    <div[radius:bubble]> "bubble"
+    <div[br:xs]> "xs"
+    <div[br:sm]> "sm"
+    <div[br:md]> "md"
+    <div[br:lg]> "lg"
+    <div[br:xl]> "xl"
+    <div[br:full]> "full"
+    <div[br:bubble]> "bubble"
 ```
 
 
@@ -3338,7 +3650,7 @@ imba.mount do  <section.group>
 The `grid` property behaves in a slightly special manner in Imba. If you supply a single value/identifier to this like `grid:container`, Imba will compile the style to `grid:var(--grid-container)`.
 
 ```imba
-# ~preview=200px
+# ~preview=xl
 css body p:2
 css div bg:teal2 p:3
 css section p:1 gap:2 pc:center
@@ -3347,7 +3659,7 @@ import {genres} from 'imdb'
 
 # ---
 # adding a custom grid with different values for different screen sizes
-css @root
+global css @root
     --grid-cols: auto-flow / 1fr 1fr
     --grid-cols@xs: auto-flow / 1fr 1fr 1fr
     --grid-cols@sm: auto-flow / 1fr 1fr 1fr 1fr
@@ -3363,12 +3675,12 @@ imba.mount do  <section[display:grid grid:cols]>
 Row & column gaps are incredibly useful properties for adding consistent spacing between items inside grids. Even though these properties are promised to come for flexbox in the future, current support [is abysmal](https://caniuse.com/#feat=flexbox-gap). To alleviate some of this, imba includes `display:group` which is a shorthand to allow flexboxes that work with gaps.
 
 ```imba
-# ~preview
+# ~preview=xl
 import 'util/styles'
-
 import {labels} from 'util/data'
 
-let gap=2,inner=0
+# ---
+let gap=2, inner=0
 ~hide[imba.mount do <#hud.bar>
     <span> 'gap'
     <input type='range' min=0 max=4 bind=gap/> <span.num> gap
