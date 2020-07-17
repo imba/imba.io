@@ -1,5 +1,4 @@
 import {ls,types,Section,Doc} from '../store'
-import { @watch } from '../decorators'
 
 import '../repl/preview'
 
@@ -256,7 +255,7 @@ tag doc-section
 							<doc-section data=data.currentTab level=(level+1)>
 
 tag app-document
-	@watch prop data
+	prop data
 
 	css color: #4a5568 lh: 1.625 pt:4
 	css $content > mb@last:0 mt@first:0
@@ -275,9 +274,6 @@ tag app-document
 						<doc-section-link data=item level=(level+1)>
 			
 			<app-document-nav data=doc>
-
-	def dataDidSet data
-		yes
 	
 tag embedded-app-document
 	def hydrate

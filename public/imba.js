@@ -432,9 +432,6 @@ imba.tick = function() {
 	return imba.scheduler.promise;
 };
 
-
-
-
 imba.mount = function (mountable,into){
 	
 	let parent = into || document.body;
@@ -1122,9 +1119,9 @@ class Scheduler {
 	}
 	
 	listen(ns,item){
-		var $listeners;
+		var $0;
 		
-		($listeners = this.listeners)[ns] || ($listeners[ns] = new Set);
+		($0 = this.listeners)[ns] || ($0[ns] = new Set);
 		return this.listeners[ns].add(item);
 	}
 	
@@ -1157,7 +1154,6 @@ class Scheduler {
 			
 			for (let i = 0, $items = iter$(items), $len = $items.length; i < $len; i++) {
 				let item = $items[i];
-				
 				if (typeof item === 'string' && this.listeners[item]) {
 					
 					this.listeners[item].forEach(function(item) {
@@ -1408,9 +1404,6 @@ class EventHandler {
 				
 				for (let i = 0, $items = iter$(args), $len = $items.length; i < $len; i++) {
 					let par = $items[i];
-					
-					
-					
 					if (typeof par == 'string' && par[0] == '~' && par[1] == '$') {
 						
 						let name = par.slice(2);
@@ -1419,7 +1412,6 @@ class EventHandler {
 						
 						for (let i = 0, $ary = iter$(chain), $len = $ary.length; i < $len; i++) {
 							let part = $ary[i];
-							
 							value = value ? value[part] : undefined;
 						};
 						
@@ -1694,9 +1686,9 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$in$mod = function (){
 	
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$fit$mod = function (){
-	var $state, $step;
+	var $1, $0;
 	
-	let o = (($state = this.state)[($step = this.step)] || ($state[$step] = {clamp: true}));
+	let o = (($1 = this.state)[($0 = this.step)] || ($1[$0] = {clamp: true}));
 	return _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod.apply(this,arguments);
 };
 
@@ -1708,9 +1700,9 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$snap$mod = function (sx = 1,sy 
 	
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$moved$mod = function (a,b){
-	var self = this, $state, $step;
+	var self = this, $1, $0;
 	
-	let o = ($state = this.state)[($step = this.step)] || ($state[$step] = {});
+	let o = ($1 = this.state)[($0 = this.step)] || ($1[$0] = {});
 	if (!o.setup) {
 		
 		let th = a || 4;
@@ -1788,9 +1780,9 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$moved$mod = function (a,b){
 	
 };
 _dom__WEBPACK_IMPORTED_MODULE_0__["Event"].touch$reframe$mod = function (...params){
-	var $state, $step;
+	var $1, $0;
 	
-	let o = (($state = this.state)[($step = this.step)] || ($state[$step] = {}));
+	let o = (($1 = this.state)[($0 = this.step)] || ($1[$0] = {}));
 	
 	if (!o.rect) {
 		
@@ -2260,9 +2252,6 @@ class TagCollection {
 };
 
 class KeyedTagFragment extends TagCollection {
-	static init$(){
-		return super.inherited instanceof Function && super.inherited(this);
-	}
 	
 	setup(){
 		
@@ -2353,7 +2342,6 @@ class KeyedTagFragment extends TagCollection {
 		
 		for (let i = 0, $items = iter$(this.array), $len = $items.length; i < $len; i++) {
 			let item = $items[i];
-			
 			this.$end.insertBeforeBegin$(item);
 		};
 		return;
@@ -2363,7 +2351,6 @@ class KeyedTagFragment extends TagCollection {
 		
 		for (let $i = 0, $items = iter$(this.array), $len = $items.length; $i < $len; $i++) {
 			let item = $items[$i];
-			
 			this.$parent.removeChild(item);
 		};
 		return;
@@ -2405,12 +2392,9 @@ class KeyedTagFragment extends TagCollection {
 		};
 		return;
 	}
-}; KeyedTagFragment.init$();
+};
 
 class IndexedTagFragment extends TagCollection {
-	static init$(){
-		return super.inherited instanceof Function && super.inherited(this);
-	}
 	
 	
 	setup(){
@@ -2447,7 +2431,6 @@ class IndexedTagFragment extends TagCollection {
 		
 		for (let i = 0, $items = iter$(this.$), $len = $items.length; i < $len; i++) {
 			let item = $items[i];
-			
 			if (i == this.length) { break; };
 			this.$end.insertBeforeBegin$(item);
 		};
@@ -2464,7 +2447,7 @@ class IndexedTagFragment extends TagCollection {
 		};
 		return;
 	}
-}; IndexedTagFragment.init$();
+};
 
 function createLiveFragment(bitflags,options,par){
 	
@@ -2498,9 +2481,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
-	static init$(){
-		return super.inherited instanceof Function && super.inherited(this);
-	}
 	
 	constructor(){
 		
@@ -2534,14 +2514,14 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 	
 	
 	slot$(name,ctx){
-		var $__slots;
+		var $0;
 		
 		if (name == '__' && !this.render) {
 			
 			return this;
 		};
 		
-		return ($__slots = this.__slots)[name] || ($__slots[name] = imba.createLiveFragment(0,null,this));
+		return ($0 = this.__slots)[name] || ($0[name] = imba.createLiveFragment(0,null,this));
 	}
 	
 	
@@ -2736,7 +2716,7 @@ class ImbaElement extends _dom__WEBPACK_IMPORTED_MODULE_0__["HTMLElement"] {
 		if (this.__F & 128) { this.unschedule() };
 		return this.unmount();
 	}
-}; ImbaElement.init$();
+};
 
 
 /***/ }),
@@ -2870,8 +2850,6 @@ function createProxyProperty(target){
 	};
 };
 
-
-
 extend$(Element,{
 	
 	getRichValue(){
@@ -2940,14 +2918,12 @@ extend$(HTMLSelectElement,{
 				for (let $i = 0, $items = iter$(prev), $len = $items.length; $i < $len; $i++) {
 					let value = $items[$i];
 					if (values.indexOf(value) != -1) { continue; };
-					
 					bindRemove(model,value);
 				};
 			};
 			
 			for (let $i = 0, $items = iter$(values), $len = $items.length; $i < $len; $i++) {
 				let value = $items[$i];
-				
 				if (!prev || prev.indexOf(value) == -1) {
 					
 					bindAdd(model,value);
@@ -2972,7 +2948,6 @@ extend$(HTMLSelectElement,{
 		$res = [];
 		for (let $i = 0, $items = iter$(this.selectedOptions), $len = $items.length; $i < $len; $i++) {
 			let o = $items[$i];
-			
 			$res.push(o.richValue);
 		};
 		return this.$$value = $res;
@@ -2987,7 +2962,6 @@ extend$(HTMLSelectElement,{
 			let vals = [];
 			for (let i = 0, $items = iter$(this.options), $len = $items.length; i < $len; i++) {
 				let option = $items[i];
-				
 				let val = option.richValue;
 				let sel = bindHas(model,val);
 				option.selected = sel;
@@ -2998,7 +2972,6 @@ extend$(HTMLSelectElement,{
 			
 			for (let i = 0, $items = iter$(this.options), $len = $items.length; i < $len; i++) {
 				let option = $items[i];
-				
 				let val = option.richValue;
 				if (val == model) {
 					
@@ -3310,7 +3283,6 @@ function callback(name,key){
 		
 		for (let $i = 0, $items = iter$(entries), $len = $items.length; $i < $len; $i++) {
 			let entry = $items[$i];
-			
 			let prev = map.get(entry.target) || 0;
 			let ratio = entry.intersectionRatio;
 			let detail = {entry: entry,ratio: ratio,from: prev,delta: (ratio - prev),observer: observer};
@@ -3345,7 +3317,6 @@ _dom__WEBPACK_IMPORTED_MODULE_0__["Element"].prototype.on$intersect = function(m
 		
 		for (let $i = 0, $items = iter$(mods.options), $len = $items.length; $i < $len; $i++) {
 			let arg = $items[$i];
-			
 			if (arg instanceof _dom__WEBPACK_IMPORTED_MODULE_0__["Element"]) {
 				
 				opts.root = arg;
@@ -3456,7 +3427,6 @@ function getResizeObserver(){
 		
 		for (let $i = 0, $items = iter$(entries), $len = $items.length; $i < $len; $i++) {
 			let entry = $items[$i];
-			
 			let e = new _dom__WEBPACK_IMPORTED_MODULE_0__["CustomEvent"]('resize',{bubbles: false,detail: entry});
 			e.entry = entry;
 			e.rect = entry.contentRect;
