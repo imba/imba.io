@@ -156,7 +156,7 @@ let interpolation = "string has {double}"
 let template = `current version is {imba.version}`
 ```
 
-In JavaScript `${}` is used for interpolation. Imba uses `{}`. If you want interpolated strings with literal curly-braces, remember to escape them with `\`. Other than that, the String type is identical to String in JavaScript. See documentatino at [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).
+In JavaScript `${}` is used for interpolation. Imba uses `{}`. If you want interpolated strings with literal curly-braces, remember to escape them with `\`. Other than that, the String type is identical to String in JavaScript. See documentation at [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).
 
 
 ### Multiline Strings
@@ -196,9 +196,9 @@ let string = '''
 `string text line 1
  string text line 2`
 # interpolated expression
-`string text ${expression} string text`
+`string text {expression} string text`
 # tagged template
-method`string text ${expression} string text`
+method`string text {expression} string text`
 ```
 
 # - Number
@@ -501,22 +501,22 @@ a **= b # Exponential assignment
 
 ### ++ [op=math+assign+unary+post]
 ```imba
-a++ # Increment assignment
+a++ # Increment assignment, returns original value
 ```
 
 ### -- [op=math+assign+unary+post]
 ```imba
-a-- # Decrement assignment
+a-- # Decrement assignment, returns original value
 ```
 
 ### ++ [op=math+assign+unary]
 ```imba
-++a # Increment assignment
+++a # Increment assignment, returns incremented value
 ```
 
 ### -- [op=math+assign+unary]
 ```imba
---a # Decrement assignment
+--a # Decrement assignment, returns decremented value
 ```
 
 ## Reassignment [op-change]
