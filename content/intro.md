@@ -184,6 +184,3 @@ def multiply a\number, b\number
 # Installation
 
 TODO(alexander)
-
-# Release Notes
-
