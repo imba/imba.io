@@ -62,7 +62,7 @@ class Todo
         completed = yes
 
 
-let todo = Todo.new 'Read introduction'
+let todo = new Todo 'Read introduction'
 ```
 
 ##### Loops & Iteration
@@ -81,7 +81,7 @@ for num in array when num != 2
 ##### Elements
 ```imba
 # elements are first class citizens
-var list = <ul title="reminders">
+const list = <ul title="reminders">
     <li> "Remember milk"
     <li> "Greet visitor"
 
@@ -135,7 +135,6 @@ import {todos} from './data.imba'
 ```imba
 import {todos} from './data.imba'
 
-# ---
 tag todo-app
     css .item color:gray8 bg@hover:gray1
     css .item.done color:green8 text-decoration: line-through
