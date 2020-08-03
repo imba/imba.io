@@ -181,10 +181,9 @@ def multiply a\number, b\number
 ```
 > Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in vscode and more.
 
-# Examples
-
-
 # Installation
+
+TODO(alexander)
 
 # Release Notes
 
