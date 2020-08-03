@@ -314,7 +314,7 @@ let array [
 	}
 ]
 ```
-Imba makes this a bit more fun and conscice with the following syntax.
+Imba makes this a bit more fun and concise with the following syntax.
 ##### Syntax
 ```imba
 let array = [
@@ -361,7 +361,7 @@ tag app-root
 # Comments
 ## Single line comments
 There are two ways to do single line comments in imba
-```Imba
+```imba
 // Javascript style
 
 # Imba style
