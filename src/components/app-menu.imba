@@ -20,6 +20,8 @@ tag app-menu-item
 	css .children > * mt:calc($height * -1) o:0 pointer-events:none
 	css .active + .children > * o:1 my:0 pointer-events:auto
 
+	prop level = 0
+
 	def jumpTo section, ev
 		console.log 'jump to',ev,section
 		self

@@ -1,5 +1,5 @@
 import { WorkerManager, setupMode } from '../workers/imba/client'
-import {grammar} from 'imba-document/src/grammar.imba'
+import {grammar} from 'imba/src/program/grammar.imba'
 
 export const id = 'imba'
 export const extensions = ['.imba']

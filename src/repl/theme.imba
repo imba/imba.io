@@ -9,8 +9,8 @@ export const theme =
 		operator: 'ff9696'
 		# string: 'B7DE95'
 		dimdelimiter: '6d829b'
-		number: '598DA6'
-		bool: '598DA6'
+		number: '#29a7e4' # 598DA6
+		bool: '29a7e4'
 		symbol: 'B7DE95'
 		regex: 'FD9231'
 		regexgroup: 'FFB26D'
@@ -89,6 +89,7 @@ export const theme =
 		{ token: 'variable.predefined', foreground: '@keyword' },
 		{ token: 'variable.parameter', foreground: '9CDCFE' },
 		{ token: 'identifier', foreground: '@identifier' },
+		{ token: 'accessor', foreground: 'F3F3F3' },
 		{ token: 'identifier.const', foreground: '@constant' },
 		{ token: 'identifier.constant', foreground: '@constant' },
 		{ token: 'identifier.const.class', foreground: '@decl' },
@@ -104,10 +105,12 @@ export const theme =
 		{ token: 'identifier.special', foreground: '@special' },
 		{ token: 'identifier.import', foreground: '@limport' },
 		
+		{ token: 'entity.name', foreground: '@decl'},
 		{ token: 'entity.name.type', foreground: '@decl'},
 		{ token: 'entity.name.function', foreground: '@decl'},
 		{ token: 'entity.name.tag', foreground: '@xml'}
 
+		{ token: 'path', foreground: '@string'}
 		{ token: 'self', foreground: '@context'}
 		{ token: 'this', foreground: '@context'}
 

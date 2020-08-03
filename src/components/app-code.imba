@@ -61,79 +61,103 @@ global css @root
 	--code-key: #9dcbeb;
 	--code-delimiter: #e3e3e3
 	--code-delimiter-operator:#889cd6
+	--code-special: #fffab4
 
 global css .code
 	tab-size: 4
 	cursor:default
-	.invalid color: red
-	.entity.other.inherited-tag color: var(--code-entity); 
-	.entity.other.inherited-class color: var(--code-entity); 
-	.invalid color: red; 
-	.comment color: var(--code-comment); 
-	.regexp color: var(--code-regexp); 
-	.tag color: var(--code-tag); 
-	.type color: var(--code-type); 
-	.type.start color: var(--code-type-delimiter); 
-	.entity.name.type color: var(--code-entity); 
-	.keyword color: var(--code-keyword);
-	.argparam color: var(--code-keyword);
-	.delimiter color: var(--code-delimiter);
-	.operator color: var(--code-operator); 
-	.property color: var(--code-property); 
-	.numeric color: var(--code-numeric); 
-	.number color: var(--code-numeric); 
-	.boolean color: var(--code-boolean); 
-	.null color: var(--code-null); 
-	.identifier color: var(--code-identifier); 
-	.key color: var(--code-key); 
-	.key + .operator color: var(--code-key); 
-	.variable color: var(--code-variable); 
-	.string color: var(--code-string); 
-	.propname color: var(--code-entity); 
-	.this color: var(--code-this); 
-	.self color: var(--code-this); 
-	.constant color: var(--code-constant); 
-	
-	.tag.reference color: var(--code-tag-reference);
-	.tag.open color: var(--code-tag-angle); 
-	.tag.close color: var(--code-tag-angle); 
-	.tag.event color: var(--code-tag-event); 
-	.tag.event-modifier color: var(--code-tag-event);
-	.tag.mixin color: var(--code-mixin) fw:bold
-	.tag.rule-modifier color: var(--code-rule-mixin); 
-	.tag.rule-modifier.start opacity: 0.43; 
-	.tag.rule color: var(--code-rule); 
+	b,i fw:500 font-style:normal
 
-	.constant.variable color: var(--code-constant);
-	.variable.global color: var(--code-global-variable);
-	.variable.imports color: var(--code-global-variable);
-	.decorator color: var(--code-decorator); 
+	.invalid color: red
+	.entity.other.inherited-tag color: var(--code-entity)
+	.entity.other.inherited-class color: var(--code-entity)
+	.invalid color: red
+	.comment color: var(--code-comment)
+	.regexp color: var(--code-regexp)
+	.tag color: var(--code-tag)
+	.type color: var(--code-type)
+	.type.start color: var(--code-type-delimiter)
+	.entity.name.type color: var(--code-entity)
+	.keyword color: var(--code-keyword)
+	.argparam color: var(--code-keyword)
+	.delimiter color: var(--code-delimiter)
+	.operator color: var(--code-operator)
+	.property color: var(--code-property)
+	.numeric color: var(--code-numeric)
+	.number color: var(--code-numeric)
+	.boolean color: var(--code-boolean)
+	.null color: var(--code-null)
+	.identifier color: var(--code-identifier)
+	.uppercase color: var(--code-constant)
+	.accessor color: #f3f3f3
+	.key color: var(--code-key)
+	.key + .operator color: var(--code-key)
+	.variable color: var(--code-variable)
+	.string color: var(--code-string)
+	.propname color: var(--code-entity)
 	
-	.style.open color: var(--code-style-bracket); 
-	.style.close color: var(--code-style-bracket); 
-	.style.args.open color: var(--code-style); 
-	.style.args.close color: var(--code-style); 
-	.style color: var(--code-style); 
-	.style.scope color: var(--code-style-scope); 
-	.selector color: var(--code-selector); 
-	.unit color: var(--code-style-unit); 
-	.style.delimiter color: var(--code-style-delimiter); 
-	.style.property color: var(--code-style-property); 
-	.style.property.modifier color: var(--code-style-property-scope);
-	.style.value color: var(--code-style-value); 
-	.style.value.var color: var(--code-style-var);
-	.style.value.size color: var(--code-style-value-size); 
-	.style.value.scope color: var(--code-style-value-scope);
-	.style.modifier color: var(--code-style-value-scope); 
-	.selector.pseudostate color: var(--code-selector-pseudostate); 
-	.selector.operator color: var(--code-selector-operator); 
+	.this color: var(--code-this)
+	.self color: var(--code-this)
+	.constant color: var(--code-constant)
+	
+	.tag.reference color: var(--code-tag-reference)
+	.tag.open color: var(--code-tag-angle)
+	.tag.close color: var(--code-tag-angle)
+	.tag.event color: var(--code-tag-event)
+	.tag.event-modifier color: var(--code-tag-event)
+	.tag.mixin color: var(--code-mixin) fw:bold
+	.tag.rule-modifier color: var(--code-rule-mixin)
+	.tag.rule-modifier.start opacity: 0.43
+	.tag.rule color: var(--code-rule)
+
+	.constant.variable color: var(--code-constant)
+	.variable.global color: var(--code-global-variable)
+	.variable.imports color: var(--code-global-variable)
+	.decorator color: var(--code-decorator)
+	
+	.style.open color: var(--code-style-bracket)
+	.style.close color: var(--code-style-bracket)
+	.style.args.open color: var(--code-style)
+	.style.args.close color: var(--code-style)
+	.style color: var(--code-style)
+	.style.scope color: var(--code-style-scope)
+	.selector color: var(--code-selector)
+	.unit color: var(--code-style-unit)
+	.style.delimiter color: var(--code-style-delimiter)
+	.style.property color: var(--code-style-property)
+	.style.property.modifier color: var(--code-style-property-scope)
+	.style.value color: var(--code-style-value)
+	.style.value.var color: var(--code-style-var)
+	.style.value.size color: var(--code-style-value-size)
+	.style.value.scope color: var(--code-style-value-scope)
+	.style.modifier color: var(--code-style-value-scope)
+	.selector.pseudostate color: var(--code-selector-pseudostate)
+	.selector.operator color: var(--code-selector-operator)
 	.selector.context color: var(--code-selector-context) 
 	.selector.mixin color: var(--code-mixin) fw:bold
-	.style.start-operator color: var(--code-delimiter-operator);
+	.style.start-operator color: var(--code-delimiter-operator)
 	span.operator.dot color:var(--code-identifier)
 	span.region.more d:none d@md:contents
 
-	.variable.highlight
+	.parameter_ c:var(--code-variable)
+	.variable_ c:var(--code-variable)
+	.variable_.global_ c:var(--code-global-variable)
+	.special_,.special c:#fffab4
+	.entity.name.constructor c:var(--code-keyword)
+	
+	._do > .paren@first >
+		c@first:var(--code-keyword)
+		c@last:var(--code-keyword)
+
+	.global_ + .paren >
+		c@first:var(--code-global-variable)
+		c@last:var(--code-global-variable)
+
+
+	.path c:var(--code-string)
+	.entity,.field c:var(--code-entity)
+
+	.__ref.highlight
 		bg:rgba(255, 253, 227, 0.11)
 		box-shadow:0px 0px 0px 2px rgba(255, 253, 227, 0.11)
 		border-radius:3px
@@ -224,6 +248,7 @@ tag app-code-block < app-code
 	prop files
 	prop file
 	prop size
+	prop editorHeight = 0
 
 	def hydrate
 		lang = dataset.lang
@@ -290,8 +315,8 @@ tag app-code-block < app-code
 
 	def pointerover e
 		let vref = null
-		if let el = e.target.closest('.variable')
-			vref = el.className.split(/\s+/g).find do (/var\d+/).test($1)
+		if let el = e.target.closest('.__ref')
+			vref = el.className.split(/\s+/g).find do (/symbol--\d+/).test($1)
 		
 		if vref != hlvar
 			if hlvar

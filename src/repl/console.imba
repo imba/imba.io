@@ -101,19 +101,19 @@ tag repl-console-item
 	def show
 		let h = offsetHeight
 		style.transition = 'none'
-		style.opacity = 0
+		style.opacity = '0'
 		style.marginTop = (-h)px
 		offsetHeight
 		style.removeProperty('transition')
 		style.marginTop = 0px
-		style.opacity = 1
+		style.opacity = '1'
 
 	def hide
 		unless $hide
 			$hide = yes
 			let h = offsetHeight
 			style.marginBottom = (-h)px
-			style.opacity = 0
+			style.opacity = '0'
 			setTimeout(&,250) do parentNode.removeChild(self)
 			self
 

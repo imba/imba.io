@@ -1,4 +1,4 @@
-import { ImbaDocument,Monarch } from 'imba-document'
+import { ImbaDocument,Monarch,highlight as imbaHighlight,M } from 'imba/program'
 
 const cache = {}
 
@@ -8,7 +8,19 @@ const replacements = {
 	'>': '&gt;',
 	'"': '&quot;',
 	"'": '&#39;'
-};
+}
+
+const typenames = {
+	'[': 'square open'
+	']': 'square close'
+	'{': 'curly open'
+	'}': 'curly close'
+	'(': 'paren open'
+	')': 'paren close'
+}
+
+def classify types
+	types.join(' ').replace(/[\[\]\{\}\(\)]/g,do(m) typenames[m]).replace(/[^\w\- ]/g,'')
 
 def escape str
 	str.replace(/[\&\<\>]/g) do(m) replacements[m]
@@ -76,17 +88,23 @@ export def highlight str,lang
 
 			# tokens = tokenizer.tokenize(str,tokenizer.getInitialState!,0).tokens
 	else
-		tokens = ImbaDocument.tmp(str).getTokens()
+		tokens = ImbaDocument.tmp(str).parse!
+
+	###
+	let html = imbaHighlight(tokens)
+	out.html = html # parts.join('')
+	out.options = out.flags
+	out.flags = Object.keys(flags).join(' ')
+	cache[str] = out
+	return out
+	###
 
 	let parts = []
 	let vref = 1
 
-	let pairs = 
-		'style.openz': 'style.close'
-	
-	let closers = []
 	let head = null
 	let foot = null
+	let ids = []
 
 	for token,i in tokens
 		let next = tokens[i + 1]
@@ -95,38 +113,61 @@ export def highlight str,lang
 			parts.push(inject[token.offset])
 			delete inject[token.offset]
 
+		# unless token.value
+		#	console.log 'no value??',token
 
-		let value = token.value
+		let value = token.value or ''
 		let end  = token.offset + value.length
 		let types = token.type.split('.')
 		let [typ,subtyp] = types
+		if typenames[typ]
+			[typ,subtyp] = typenames[typ].split(' ')
 
-		if pairs[token.type]
-			parts.push("<span class='_{typ}'>")
-			closers.unshift(pairs[token.type])
-		
-		if token.variable
-			types = types.concat('variable')
-			if token.variable != token
-				types = types.concat token.variable.type.split('.')
+		let mods = token.mods
+		let sym = token.symbol
 
-			if token.variable.varscope
-				types.push("scope_{token.variable.varscope.type}")
-			if token.variable.modifiers
-				types.push(...token.variable.modifiers)
+		if sym and sym.scoped?
+			let symkind = sym.semanticKind
 			
-			types = (type for type,i in types when types.indexOf(type) == i)
+			let id = ids.indexOf(sym)
+			if id == -1
+				id = ids.push(sym) - 1
 
-			let ref = token.variable.vref ||= vref++
-			types.push("var{ref}")
-			# console.log 'found varaible',token.variable
+			mods |= sym.semanticFlags
+			types.push('__ref')
+			types.push(symkind+'_')
+			types.push('symbol--'+id)
+
+		if mods
+			for own k,v of M
+				if k.match(/^[a-z]/) and mods & v
+					types.push(k+'_')
+					
+
+		if subtyp == 'start' or subtyp == 'open'
+			parts.push("<b class='{typ}'>")
+			continue unless value
+
+		if (subtyp == 'end' or subtyp == 'close') and !value
+			parts.push('</b>')
+			continue
+
+		if typ == 'push'
+			let kind = subtyp.indexOf('_') >= 0 ? 'group' : 'scope'
+			let end = token.scope && token.scope.end
+			parts.push("<b class='{kind}-{subtyp.split('_').pop!} _{subtyp} o{token.offset} e{end && end.offset}'>")
+			continue
+		elif typ == 'pop'
+			parts.push("</b>")
+			continue
 
 		if typ != 'white' and typ != 'line'
-			value = "<span class='{types.join(' ')}' data-offset={token.offset}>{escape(value)}</span>"
-		else
-			value = "<span data-offset={token.offset}>{value}</span>"
+			value = "<span class='{classify types} o{token.offset}'>{escape(value or '')}</span>"
+			# value = "<span class='{types.join(' ')}' data-offset={token.offset}>{escape(value)}</span>"
+		# else
+		#	value = "<span data-offset={token.offset}>{value}</span>"
 
-		if typ == 'comment' and token.value == '# ---'
+		if typ == 'comment' and token.value == '# ---\n'
 			if !head
 				parts.unshift('<div class="code-head">')
 				parts.push('</div>')
@@ -134,9 +175,8 @@ export def highlight str,lang
 			elif !foot
 				parts.push('<div class="code-foot">')
 				foot = token
-
 			# pop next token
-			try tokens[i + 1].value = ''
+			# try tokens[i + 1].value = ''
 			continue
 
 		parts.push(value)
@@ -144,10 +184,9 @@ export def highlight str,lang
 		if inject[end] and (!next or typ != 'line')
 			parts.push(inject[end])
 			delete inject[end]
-
-		if closers[0] and token.type == closers[0]
-			parts.push('</span>')
-			closers.shift!
+		
+		if subtyp == 'end' or subtyp == 'close'
+			parts.push('</b>')
 
 	if foot
 		parts.push('</div>')

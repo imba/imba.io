@@ -216,7 +216,6 @@ tag doc-section
 			c:#3A4652 bc:gray3
 			fs:18px/1.2 fw:500 pb:3
 
-	prop filters
 	prop query
 
 	set filters value

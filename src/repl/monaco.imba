@@ -7,3 +7,8 @@ global.loadMonaco and global.loadMonaco do
 	global.monaco.editor.defineTheme('scrimba-dark',theme.toMonaco!)
 	imba-lang.setup(global.monaco)
 	imba.commit!
+
+global css .monaco-editor
+	.variable_ c:var(--code-variable)
+	.parameter_ c:var(--code-variable)
+	.variable_.global_ c:var(--code-special)

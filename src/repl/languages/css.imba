@@ -1,4 +1,4 @@
-import { Monarch } from 'imba-document'
+import { Monarch } from 'imba/program'
 
 export const language = {
 	defaultToken: '',

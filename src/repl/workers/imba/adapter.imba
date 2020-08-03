@@ -1,3 +1,4 @@
+import {SemanticTokenTypes,SemanticTokenModifiers,M} from 'imba/program'
 
 export class Adapter
 	
@@ -145,7 +146,42 @@ export class DiagnosticsAdapter < Adapter
 		self
 
 	def updateSemanticTokens model, ranges
-		let markers = ranges.map do varToDecoration(model,$1)
+		let markers = []
+		let i = 0
+		let l = 1
+		let c = 1
+		while i < ranges.length
+			
+			let lo = ranges[i++]
+			if lo
+				c = 1
+
+			let co = ranges[i++]
+			let len = ranges[i++]
+			let typ = ranges[i++]
+			let mods = ranges[i++]
+			let kind = SemanticTokenTypes[typ] + '_ '
+			let range = new global.monaco.Range(l + lo,c + co,l + lo,c + co + len)
+
+			if mods & M.Import
+				kind += 'import_ '
+			if mods & M.Root
+				kind += 'root_ '
+			if mods & M.Global
+				kind += 'global_ '
+			if mods & M.Special
+				kind += 'special_ '
+			
+			let decoration = {
+				range: range
+				options: { inlineClassName: kind }
+			}
+			markers.push decoration
+			l += lo
+			c += co
+
+		# console.log 'markers',markers
+		# let markers = ranges.map do varToDecoration(model,$1)
 		model.varDecorations = model.deltaDecorations(model.varDecorations ||= [],markers)
 
 	def updateDiagnostics model, data
@@ -166,7 +202,7 @@ export class DiagnosticsAdapter < Adapter
 		var semantics = await worker.getSemanticTokens(uri)
 		updateSemanticTokens(model,semantics)
 		var meta = await worker.getDiagnostics(uri)
-		console.log "returned from worker?",meta,semantics
+		# console.log "returned from worker?",meta,semantics
 		return updateDiagnostics(model,meta)
 
 		var decorations = []

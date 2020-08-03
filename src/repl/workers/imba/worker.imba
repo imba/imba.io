@@ -1,5 +1,6 @@
 var imbac = require 'imba/dist/compiler'
-import {ImbaDocument} from 'imba-document'
+
+import {ImbaDocument} from 'imba/program'
 
 # this should talk to the languageservice
 export class ImbaWorker
@@ -27,10 +28,11 @@ export class ImbaWorker
 
 	def getSemanticTokens uri
 		let doc = getDocument(uri)
-		let tokens = doc.getSemanticTokens!
+
+		return doc.getEncodedSemanticTokens!
 		# console.log 'get semantic tokens',uri,doc,getModel(uri),tokens
-		let results = tokens.map do [$1.offset,$1.value.length]
-		return results
+		# let results = tokens.map do [$1.offset,$1.value.length]
+		# return results
 
 	def getDiagnostics uri
 		var model = getModel(uri)

@@ -143,7 +143,7 @@ tag doc-style-fs
 				<.dd[pr:3]>
 					val[0]
 					# <span[prefix:' / ']> val[1]
-				<span[lh:1.2em ws:nowrap overflow:hidden text-overflow:ellipsis] css:fontSize=val[0]> "Quick brown fox"
+				<span[lh:1.2em ws:nowrap overflow:hidden text-overflow:ellipsis fs:{val[0]}]> "Quick brown fox"
 
 tag doc-style-easings
 	<self>
@@ -153,6 +153,7 @@ tag doc-style-easings
 				<.dd> val
 
 tag doc-util-output
+	prop name
 
 	<self>
 		for own k,v of data

@@ -1557,7 +1557,7 @@ if (false) {};
 
 
 
-var {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,SVGElement: SVGElement,HTMLElement: HTMLElement,DocumentFragment: DocumentFragment,ShadowRoot: ShadowRoot,Event: Event,CustomEvent: CustomEvent,MouseEvent: MouseEvent,KeyboardEvent: KeyboardEvent,PointerEvent: PointerEvent,document: document} = window;
+const {Document: Document,Node: Node,Text: Text,Comment: Comment,Element: Element,SVGElement: SVGElement,HTMLElement: HTMLElement,DocumentFragment: DocumentFragment,ShadowRoot: ShadowRoot,Event: Event,CustomEvent: CustomEvent,MouseEvent: MouseEvent,KeyboardEvent: KeyboardEvent,PointerEvent: PointerEvent,document: document} = window;
 
 
 
