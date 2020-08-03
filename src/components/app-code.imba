@@ -145,13 +145,25 @@ global css .code
 	.special_,.special c:#fffab4
 	.entity.name.constructor c:var(--code-keyword)
 	
+	.blockparam c:var(--code-operator)
+
 	._do > .paren@first >
 		c@first:var(--code-keyword)
 		c@last:var(--code-keyword)
 
+	.parameter_ + .paren >
+		c@first:var(--code-variable)
+		c@last:var(--code-variable)
+	
+	.variable_ + .paren >
+		c@first:var(--code-variable)
+		c@last:var(--code-variable)
+
 	.global_ + .paren >
 		c@first:var(--code-global-variable)
 		c@last:var(--code-global-variable)
+
+	
 
 
 	.path c:var(--code-string)
