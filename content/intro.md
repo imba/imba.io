@@ -11,7 +11,7 @@ Imba is a programming language for building web applications with insane perform
 
 In Imba DOM elements *and* CSS are treated as first-class citizens. DOM elements are compiled to a [memoized DOM](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than todays virtual DOM implementations. 
 
-This truly open opens up for a new way of developing web applications.
+This truly opens up for a new way of developing web applications.
 
 ### Basic Syntax
 
