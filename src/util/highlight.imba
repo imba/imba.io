@@ -70,7 +70,6 @@ export def highlight str,lang
 	let tokens = []
 	if lang != 'imba'
 		if let tokenizer = Monarch.getTokenizer(lang)
-			# console.log 'found tokenizer',tokenizer
 			let lines = str.split('\n')
 			let state = tokenizer.getInitialState!
 
@@ -86,7 +85,12 @@ export def highlight str,lang
 				
 				state = lexed.endState
 
-			# tokens = tokenizer.tokenize(str,tokenizer.getInitialState!,0).tokens
+		else
+			let lines = str.split('\n')
+			for line,i in lines
+				tokens.push({type: 'white',value: '\n'}) if i > 0
+				tokens.push({type: 'text', value: line, offset:0})
+			
 	else
 		tokens = ImbaDocument.tmp(str).parse!
 
