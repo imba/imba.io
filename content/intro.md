@@ -80,6 +80,7 @@ for num in array when num != 2
 ```
 
 ##### Elements
+> Elements are a native part of Imba just like strings, numbers, and other types.
 ```imba
 # elements are first class citizens
 const list = <ul title="reminders">
@@ -94,9 +95,8 @@ const list = <ul title="reminders">
 <div.panel @click.prevent=handler> "Panel"
 ```
 
-Elements are a native part of Imba just like strings, numbers, and other types.
-
 ##### Components
+> Tags are compiled down to *extremely optimized* native web components.
 
 ```imba
 import {todos} from './data.imba'
@@ -115,8 +115,6 @@ tag todo-app
 
 imba.mount <todo-app data=todos>
 ```
-
-Tags are compiled down to *extremely optimized* native web components
 
 ##### Inline styles
 ```imba
@@ -174,13 +172,14 @@ class Reminder
 ```
 
 ##### Type annotations
+
+> Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in Visual Studio Code.
 ```imba
 let item\string = window.title
 
 def multiply a\number, b\number
     a * b
 ```
-> Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in vscode and more.
 
 # Installation
 
