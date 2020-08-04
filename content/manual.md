@@ -8,7 +8,7 @@ multipage: true
 
 ## Caveats
 
-If you are familiar with JavaScript there are a few key differences that are very useful to konw about before diving into Imba.
+If you are familiar with JavaScript there are a few key differences that are very useful to know about before diving into Imba.
 
 ### Indentation
 In JavaScript and most other programming languages, indentation is for readabillity only. Imba, like python, uses indentation to indicate a block of code (instead of curlybraces in js etc). In addition, Imba uses **tabs for indentation**. The tooling will help you set these settings specifically for Imba files so that you never have to think about it.
@@ -92,7 +92,7 @@ class Item
 
 ### Everything is Expressable
 
-Almost everything in imba are expressions. So, you can theoretically return and assign an if statement:
+Almost everything in Imba are expressions. So, you can theoretically return and assign an if statement:
 ```imba
 let x = 7
 let result = if x > 10
@@ -1036,7 +1036,7 @@ for entry,idx of iterable
 for [key,value],idx of iterable
     console.log key,value,idx
 ```
-> In imba you can supply a second parameter to `for ... of`. This will be populated with the current iteration number (starting at 0), just like the second argument in `Array#map` and `Array#forEach`.
+> In Imba you can supply a second parameter to `for ... of`. This will be populated with the current iteration number (starting at 0), just like the second argument in `Array#map` and `Array#forEach`.
 
 
 # - for-own-of
@@ -2220,7 +2220,7 @@ It is important to understand how these event handlers are treated. Imba is crea
 <div @click=console.log('hey')> 'Will log hey'
 ```
 
-In the example above, the console.log will only be called when clicking the element. If you just supply a reference to some function, imba will call that handler, with the event as the only argument.
+In the example above, the console.log will only be called when clicking the element. If you just supply a reference to some function, Imba will call that handler, with the event as the only argument.
 
 ```imba
 <div @click=console.log> 'Will log the event'
@@ -3672,7 +3672,7 @@ imba.mount do  <section[display:grid grid:cols]>
 
 ### Group
 
-Row & column gaps are incredibly useful properties for adding consistent spacing between items inside grids. Even though these properties are promised to come for flexbox in the future, current support [is abysmal](https://caniuse.com/#feat=flexbox-gap). To alleviate some of this, imba includes `display:group` which is a shorthand to allow flexboxes that work with gaps.
+Row & column gaps are incredibly useful properties for adding consistent spacing between items inside grids. Even though these properties are promised to come for flexbox in the future, current support [is abysmal](https://caniuse.com/#feat=flexbox-gap). To alleviate some of this, Imba includes `display:group` which is a shorthand to allow flexboxes that work with gaps.
 
 ```imba
 # ~preview=xl

@@ -9,7 +9,7 @@ multipage: true
 
 Imba is a programming language for building web applications with insane performance. You can use it both for the server and client.
 
-In Imba DOM elements *and* CSS are treated as first-class citizens. DOM elements are compiled to a [memoized DOM](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than todays virtual DOM implementations. 
+In Imba DOM elements *and* CSS are treated as first-class citizens. DOM elements are compiled to a [memoized DOM](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than today's virtual DOM implementations. 
 
 This truly opens up for a new way of developing web applications.
 
@@ -173,7 +173,7 @@ class Reminder
 
 ##### Type annotations
 
-> Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in Visual Studio Code.
+> Type annotations in Imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in Visual Studio Code.
 ```imba
 let item\string = window.title
 
