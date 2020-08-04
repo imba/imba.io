@@ -7,10 +7,11 @@ multipage: true
 
 ### What is Imba
 
-Imba is a new programming language for the web that compiles
-to performant JavaScript. It is heavily inspired by ruby and python,
-but developed explicitly for web programming (both server and client).
-Imba treats dom elements *and* styles as first-class citizens. Elements are compiled to a [memoized dom](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than todays virtual dom implementations. We truly believe that it opens up for a new way of developing web applications.
+Imba is a programming language for building web applications with insane performance. You can use it both for the server and client.
+
+In Imba DOM elements *and* CSS are treated as first-class citizens. DOM elements are compiled to a [memoized DOM](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than todays virtual DOM implementations. 
+
+This truly open opens up for a new way of developing web applications.
 
 ### Basic Syntax
 
@@ -79,6 +80,7 @@ for num in array when num != 2
 ```
 
 ##### Elements
+> Elements are a native part of Imba just like strings, numbers, and other types.
 ```imba
 # elements are first class citizens
 const list = <ul title="reminders">
@@ -93,9 +95,8 @@ const list = <ul title="reminders">
 <div.panel @click.prevent=handler> "Panel"
 ```
 
-Elements are a native part of Imba just like strings, numbers, and other types.
-
 ##### Components
+> Tags are compiled down to *extremely optimized* native web components.
 
 ```imba
 import {todos} from './data.imba'
@@ -114,8 +115,6 @@ tag todo-app
 
 imba.mount <todo-app data=todos>
 ```
-
-Tags are compiled down to *extremely optimized* native web components
 
 ##### Inline styles
 ```imba
@@ -173,18 +172,15 @@ class Reminder
 ```
 
 ##### Type annotations
+
+> Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in Visual Studio Code.
 ```imba
 let item\string = window.title
 
 def multiply a\number, b\number
     a * b
 ```
-> Type annotations in imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in vscode and more.
-
-# Examples
-
 
 # Installation
 
-# Release Notes
-
+TODO(alexander)
