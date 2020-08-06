@@ -1,6 +1,6 @@
 import {highlight} from '../util/highlight'
 import * as sw from '../sw/controller'
-import {ls} from '../store'
+import {ls,fs} from '../store'
 
 global css @root
 	--code-color: #e3e3e3;
@@ -286,7 +286,9 @@ tag app-code-block < app-code
 		size = code.options.preview or dataset.size or ''
 
 		if code.options.preview
+
 			let file = {path: dataset.path, body: code.plain,size: code.options.preview}
+			fsfile = fs.register(dataset.path,{body: code.plain, options: code.options})
 			options.preview = file
 
 

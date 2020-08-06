@@ -1,6 +1,8 @@
 import { @watch } from '../decorators'
 import * as sw from '../sw/controller'
 
+import {fs} from '../store'
+
 import './console'
 
 tag app-repl-preview
@@ -16,6 +18,7 @@ tag app-repl-preview
 		$iframe.src = 'about:blank'
 
 		$iframe.replify = do(win)
+			# console.log 'replify',win.ServiceSessionID,win.navigator.serviceWorker.controller
 			$win = win # $iframe.contentWindow
 			$doc = $win.document
 
@@ -238,10 +241,13 @@ tag app-repl-preview
 		return unless data
 		# console.log
 		let t = Date.now! 
+
+		sw.load!.then do
+			url = data.path.replace('.imba','.imba.html')
 		
-		sw.request(event: 'file', path: data.path, body: data.body).then do
+		false && sw.request(event: 'file', path: data.path, body: data.body).then do
 			console.log 'sent file to service worker',Date.now! - t0
-			url = data.path.replace('.imba','.html')
+			url = data.path.replace('.imba','.imba.html')
 
 	set dir data
 		if $dir = data
@@ -258,7 +264,11 @@ tag app-repl-preview
 		$refreshed = yes
 		let src = `/repl{url}`
 		try
+			$iframe.src = src
+			return
+
 			t0 = Date.now!
+			console.log 'refreshing',src
 			$iframe.contentWindow.location.replace(src)
 		catch e
 			sw.load!.then do $iframe.src = src

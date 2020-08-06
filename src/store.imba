@@ -8,7 +8,9 @@ export const groups = {}
 export const types = {}
 
 window.paths = paths
+window.files = files
 
+let root = null
 let counter = 1
 
 const extToLanguage =
@@ -19,6 +21,13 @@ class Entry
 	
 	@commit prop dirty
 	@commit prop hasErrors
+
+	static def create data, parent
+		let typ = types[data.type] or Entry
+		let item = new typ($1,parent)
+		if parent and parent.children
+			parent.children.push(item)
+		return item
 
 	def constructor data, parent
 		id = counter++
@@ -46,6 +55,8 @@ class Entry
 				let typ = types[$1.type] or Entry
 				let item = new typ($1,self)
 				return item
+		else
+			self.children = []
 	
 	get path
 		parent ? (parent.path + '/' + name) : ''
@@ -97,7 +108,7 @@ class Entry
 
 	def childByName name
 		self.children.find(do $1.name == name and !($1 isa Section))
-	
+
 	def match filter
 		if filter isa RegExp
 			if sections and sections.some(do $1.match(filter) )
@@ -133,7 +144,8 @@ export class File < Entry
 				body = _model.getValue!
 				dirty = body != savedBody
 				clearTimeout($send)
-				$send = setTimeout(&,150) do sendToWorker!
+				$send = setTimeout(&,150) do
+					sendToWorker!
 		_model
 
 	def overwrite body
@@ -146,9 +158,9 @@ export class File < Entry
 			sendToWorker!
 
 	def sendToWorker
-		if sw and ext != 'md'
+		if ext != 'md'
 			# console.log 'sending file info to worker',path
-			sw.postMessage({event: 'file', path: path, body: body})
+			root.rpc('fileChanged',path,body) # .postMessage({event: 'file', path: path, body: body})
 
 	def save
 		# try to save directly to filesystem
@@ -194,17 +206,92 @@ export class Dir < Entry
 		children[children.length - 1] ? children[children.length - 1].last : self
 
 	def ls path
-		self
+		let parts = path.replace(/(^\/|\/$)/,'').split('/')
+		let item = self # fs[parts.shift()]
+
+		for part,i in parts
+			if let child = item.childByName(part)
+				parts[i] = item = child
+			else
+				break
+
+		return parts
+	
+	def find path
+		let parts = self.ls(path)
+		let last = parts[parts.length - 1]
+		if last isa Entry
+			return last
+		return null
 
 	get replUrl
 		let index = childByName('index.html')
 		let app = childByName('app.imba') or files[0]
 		return `{path}/{index ? index.name : app.basename + '.html'}`
 
-export class Root < Entry
+export class Root < Dir
 
-		get path
-			''
+	def constructor
+		super
+
+	def connectToWorker sw
+		console.log 'connecting to service worker',sw
+		self.sw = sw
+		await sw.ready
+		console.log 'connected to worker'
+		sw.addEventListener('message') do(e)
+			console.log 'sw.message',e.data
+			if e.data isa Array
+				let [action,params] = e.data
+				let result = null
+				if self[action]
+					result = await self[action](...params)
+
+				e.ports[0].postMessage(result)
+
+	def rpc action, ...params
+		new Promise do(resolve,reject)
+			const channel = new MessageChannel
+			channel.port1.onmessage = do(event) resolve(event.data)
+			sw.controller.postMessage([action,params], [channel.port2])
+
+	def registerSession id
+		console.log 'registerSession',id
+		self
+
+	def resolvePath path
+		console.log 'Root.readFile',path
+		let alternatives = [path,path + '.imba',path + '/index.imba']
+		for alt in alternatives
+			let entry = find(alt)
+			if entry
+				return {name: entry.name, path: entry.path, body: entry.body}
+		return null
+
+	def register path, kind
+		let entries = ls(path)
+		# console.log 'entries!!',entries.slice(0),kind
+		let last = entries[entries.length - 1]
+
+		if last isa Entry
+			return last
+
+		for entry,i in entries
+			let prev = entries[i - 1] or self
+
+			if typeof entry == 'string'
+				let data = {type: 'dir', name: entry}
+				if i == entries.length - 1
+					data.type = 'file'
+					Object.assign(data,kind)
+					yes
+				
+				entries[i] = Entry.create(data,prev)
+		# console.log 'entries!!',entries
+		return entries.pop!
+
+	get path
+		''
 
 types.file = File
 types.dir = Dir
@@ -214,8 +301,9 @@ types.section = Section
 types.guide = Guide
 
 raw.name = ''
+root = new Root(raw)
+export const fs = root
 
-export const fs = new Root(raw)
 
 window.FS = fs
 

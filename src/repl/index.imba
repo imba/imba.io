@@ -86,7 +86,7 @@ tag app-repl
 		let index = project.childByName('index.html')
 		let app = project.childByName('app.imba') or currentFile
 		$console.clear! if $console
-		url = `{project.path}/{index ? index.name : app.basename + '.html'}`
+		url = `{project.path}/{index ? index.name : app.name + '.html'}`
 		self
 
 	def project-did-set project
