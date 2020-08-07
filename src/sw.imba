@@ -182,7 +182,8 @@ class Worker
 			if e.resultingClientId
 				let clients = await global.clients.matchAll(includeUncontrolled: true)
 				let source = clients.find do $1.frameType == 'top-level' and $1.visibilityState == 'visible'
-				service = clientServiceMap[clientId] = Service.forClient(source)
+				source ||= clients.find do $1.frameType == 'top-level'
+				service = clientServiceMap[clientId] = Service.forClient(source)	
 
 			if name.match(/\.imba\.html/)
 				let js = 'try { window.frameElement.replify(this) } catch(e){ }'
