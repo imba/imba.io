@@ -208,10 +208,10 @@ tag app-code-block < app-code
 
 	css pos:relative br:sm fs:12px @md:13px d:block .shared:none
 		$bg:$code-bg-lighter
-		$preview-size:100px .lg:180px .xl:240px
+		$preview-size:72px .md:120px .lg:180px .xl:240px
 
 	css main
-		pos:relative radius:inherit c:$code-color bg:var(--bg) btlr..multi:0
+		pos:relative radius:inherit c:$code-color btlr..multi:0
 
 	css .code pos:relative d:block
 		>>> .code-head d:none
@@ -240,9 +240,12 @@ tag app-code-block < app-code
 		bg:gray2/50 @hover:gray3 .on:var(--bg)
 		c:gray6 c.on:teal2/90
 
+	css $editor
+		bg:$bg br:inherit
+
 	css $preview
-		min-height:82px
-		mt:0 radius:0 0 3px 3px
+		min-height:$preview-size
+		mt:0 br:inherit
 		color:gray6
 		pos:absolute
 		t:0 l:100%
@@ -251,9 +254,9 @@ tag app-code-block < app-code
 		h:100%
 		w:$doc-margin
 		pl:4
-		>>> .frame shadow:xs @lt-xl:none radius:2
+		>>> .frame shadow:xs br:inherit
 		>>> .controls d@lt-xl:none
-		@lt-xl pos:relative l:0 h:$preview-size ml:0 w:100% p:2 pt:0 bg:$bg max-width:initial
+		@lt-xl pos:relative l:0 h:$preview-size m:0 mt:2 w:100% p:0 max-width:initial
 
 	prop tab = 'imba'
 	prop lang
