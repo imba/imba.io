@@ -145,7 +145,7 @@ export class File < Entry
 				dirty = body != savedBody
 				clearTimeout($send)
 				$send = setTimeout(&,150) do
-					sendToWorker!
+					root.updateFile(self)
 		_model
 
 	def overwrite body
@@ -155,12 +155,13 @@ export class File < Entry
 
 			if _model
 				_model.setValue(body)
-			sendToWorker!
+			root.updateFile(self)
 
 	def sendToWorker
 		if ext != 'md'
 			# console.log 'sending file info to worker',path
-			root.rpc('fileChanged',path,body) # .postMessage({event: 'file', path: path, body: body})
+			root.updateFile(self)
+			# .postMessage({event: 'file', path: path, body: body})
 
 	def save
 		# try to save directly to filesystem
@@ -230,17 +231,14 @@ export class Dir < Entry
 		return `{path}/{index ? index.name : app.basename + '.html'}`
 
 export class Root < Dir
-
+	service = null
 	def constructor
 		super
 
 	def connectToWorker sw
-		console.log 'connecting to service worker',sw
-		self.sw = sw
-		await sw.ready
-		console.log 'connected to worker'
-		sw.addEventListener('message') do(e)
-			console.log 'sw.message',e.data
+		service = sw
+		await service.ready
+		service.addEventListener('message') do(e)
 			if e.data isa Array
 				let [action,params] = e.data
 				let result = null
@@ -253,11 +251,24 @@ export class Root < Dir
 		new Promise do(resolve,reject)
 			const channel = new MessageChannel
 			channel.port1.onmessage = do(event) resolve(event.data)
-			sw.controller.postMessage([action,params], [channel.port2])
+			service.controller.postMessage([action,params], [channel.port2])
 
 	def registerSession id
 		console.log 'registerSession',id
 		self
+	
+	def updateFile file
+		let raw = {name: file.name, path: file.path, body: file.body}
+		let result = await rpc('updateFile',raw)
+
+		for frame of document.getElementsByTagName('iframe')
+			try
+				let map = frame.contentWindow.ImbaFiles
+				if map and map[file.path]
+					# console.log 'iframe depends on file!',frame.src
+					frame.contentWindow.location.reload!
+		return
+				
 
 	def resolvePath path
 		console.log 'Root.readFile',path

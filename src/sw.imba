@@ -27,11 +27,26 @@ const indexTemplate = "
     </body>
 </html>"
 
-const clientLoadMap = {}
-const accessedPaths = {}
-const fileCache = {}
-
+const clientServiceMap = {}
 const services = {}
+
+def compileImba file
+	try
+		let body = file.body
+		# rewrite certain special things
+		body = body.replace(/# @(show|log)( .*)?\n(\t*)/g) do(m,typ,text,tabs)
+			m + "${typ} '{(text or '').trim!}', "
+		body = body.replace(/from 'imdb'/g,'from "/imdb.js"')
+		body = body.replace(/(import [^\n]*')(\w[^']*)(?=')/g) do(m,start,path)
+			# console.log 'rewrite',path,'to',"/repl/examples/{path}"
+			start + "/repl/examples/{path}"
+
+		let result = imbac.compile(body,{target: 'web', sourcePath: file.path, imbaPath: null})
+		file.js = result.toString!
+	catch e
+		console.log 'error compiling',e
+		return
+	return file.js
 
 class File
 	def constructor service, data
@@ -63,16 +78,38 @@ class Service
 		
 		promises[path] ||= new Promise do(resolve)
 			let result = await rpc('resolvePath',path)
-			console.log 'resolvePath',path,result
+			# console.log 'resolvePath',path,result
 			cacheFile(path,result)
 			return resolve(result)
 
 	def cacheFile path, file
 		files[path] = file
 
+	def updateFile entry
+		# console.log 'update file',path,body
+		let file = files[entry.path]
+		unless file
+			file = files[entry.path] = entry
+		else
+			file.body = entry.body
+
+		# compare with previous version etc
+		if (/\.imba$/).test(entry.path)
+			let js = compileImba(file)
+			return js
+		return
+
+	def compileFile path, body, options = {}
+		self
+
 	def onmessage e
 		if e.data isa Array
-			console.log 'sw message from service',e.data
+			# console.log 'sw message from service',e.data
+			let [action,params] = e.data
+			let result = null
+			if self[action]
+				result = await self[action](...params)
+				e.ports[0].postMessage(result)
 
 	def rpc action, ...params
 		new Promise do(resolve,reject)
@@ -80,45 +117,13 @@ class Service
 			channel.port1.onmessage = do(event) resolve(event.data)
 			owner.postMessage([action,params], [channel.port2])
 
-def compileImba file
-	try
-		let body = file.body
-		# rewrite certain special things
-		body = body.replace(/# @(show|log)( .*)?\n(\t*)/g) do(m,typ,text,tabs)
-			m + "${typ} '{(text or '').trim!}', "
-		body = body.replace(/from 'imdb'/g,'from "/imdb.js"')
-		body = body.replace(/(import [^\n]*')(\w[^']*)(?=')/g) do(m,start,path)
-			# console.log 'rewrite',path,'to',"/repl/examples/{path}"
-			start + "/repl/examples/{path}"
-
-		let result = imbac.compile(body,{target: 'web', sourcePath: file.path, imbaPath: null})
-		file.js = result.toString!
-	catch e
-		console.log 'error compiling',e
-		return
-	return file.js
-
-
 
 class Worker
 
 	def constructor
-		files = {}
-
 		for ev in ['message','fetch','install','activate']
 			global.addEventListener(ev,self["on{ev}"].bind(self))
 		self
-
-	def getClient id
-		let clients = await global.clients.matchAll(includeUncontrolled: true)
-		if id
-			return clients.find do $1.id == id
-		else
-			return clients.find do $1.frameType == 'top-level'
-
-	def getService id
-		let client = await getClient(id)
-		return Service.forClient(client)
 
 	def log ...params
 		console.log(...params)
@@ -131,63 +136,27 @@ class Worker
 			cli.onmessage(e)
 
 		if e.data isa Array
-			console.log 'array to port?!',e.data
-			e.ports[0].postMessage('test': 'Response from sw')
-			setTimeout(&,200) do e.ports[0].postMessage('test': 'Response from sw again')
-			cli.rpc('readFilez',{path: 'tata'})
 			return
 
-		console.log 'sw onmessage',e,cli
+		# console.log 'sw onmessage',e,cli
 
 		if e.data.event == 'compile'
 			# console.log 'sw compile',e.data.body
 			let js = compileImba(e.data)
 			return e.source.postMessage({event: 'compiled',ref: e.data.ref, source: e.data.body, js: js})
 
-		if e.data.event == 'preload'
-			console.log 'preload',rnd
-			for own path,file of e.data.files
-				files[path] = file
-			e.source.postMessage(event: 'ready')
-
-		if e.data.event == 'file'
-			let path = e.data.path
-			files[path] = e.data
-
-			if typeof e.data.ref == 'number'
-				# console.log 'posting message back to source',e.data.ref
-				e.source.postMessage(ref: e.data.ref, status: 0)
-
-			if accessedPaths[path]
-				if path.match(/\.imba/) and !compileImba(e.data)
-					# there were errors -- return the error?
-					false
-				else
-					let clients = await global.clients.matchAll({})
-					let reloads = []
-					for client in clients
-						let map = clientLoadMap[client.id]
-						if map and map[path]
-							reloads.push(client.url)
-							# log 'CLIENT HAS ACCESSED THIS',client
-
-					if reloads.length
-						e.source.postMessage({event: 'reload',urls: reloads})
 		return
 
 	def oninstall e
 		log e
-		console.log 'install sw',Object.keys(files).length,rnd
-		e.waitUntil global.skipWaiting!
-		# e.waitUntil
+		# console.log 'install sw',Object.keys(files).length,rnd
+		global.skipWaiting!
+		return
 	
 	def onactivate e
 		log e
-		console.log 'activate sw',Object.keys(files).length,rnd
+		# console.log 'activate sw',Object.keys(files).length,rnd
 		e.waitUntil global.clients.claim!
-		var clients = await global.clients.matchAll({})
-		for client in clients
-			client.postMessage(event: 'activate')
 		self
 
 	def onfetch e
@@ -205,39 +174,26 @@ class Worker
 
 		let responder = new Promise do(resolve)
 			let t0 = Date.now!
-			let service = null
-			# let service = await getService!
-			console.log 'onfetch!',e.request.url,!!file,ext,e.resultingClientId,e.clientId
+			let service = clientServiceMap[clientId]
 
-			let loadMap = clientLoadMap[clientId] ||= {}
+			# console.log 'onfetch!',e.request.url,!!file,ext,e.resultingClientId,e.clientId,e.replacesClientId,e
 
-			#  find closest visible top-levle window
+			#  find closest visible top-level window
 			if e.resultingClientId
 				let clients = await global.clients.matchAll(includeUncontrolled: true)
 				let source = clients.find do $1.frameType == 'top-level' and $1.visibilityState == 'visible'
-				console.log 'found source',source
-				loadMap.service = Service.forClient(source)
-
-			unless loadMap.service
-				console.log 'could not find serviceworker!!'
-			else
-				service = loadMap.service
+				service = clientServiceMap[clientId] = Service.forClient(source)
 
 			if name.match(/\.imba\.html/)
 				let js = 'try { window.frameElement.replify(this) } catch(e){ }'
-				let body = "<script>window.ServiceSessionID = '{clientId}'; {js}</script>" + indexTemplate.replace(/index\.imba/g,basename)
+				let body = "<script>window.ServiceSessionID = '{clientId}'; window.ImbaFiles = \{\}; {js}</script>" + indexTemplate.replace(/index\.imba/g,basename)
 				let resp = new Response(body,status: 200,headers: {'Content-Type': 'text/html'})
-				# console.log 'respond',url.pathname,body
 				return resolve(resp)
-			
-			loadMap[path] = yes
-			accessedPaths[path] = yes
 
 			let file = await service.readFile(path)
 
 			if file
 				let ext = file.name.split('.').pop!
-				loadMap[file.path] = accessedPaths[file.path] = yes
 
 				let status = 200
 				let mime = mimeTypeMap[ext] or mimeTypeMap.html
@@ -245,21 +201,19 @@ class Worker
 
 				if ext == 'html'
 					let js = 'try { window.frameElement.replify(this) } catch(e){ }'
-					body = "<script>window.ServiceSessionID = '{clientId}'; {js}</script>" + body
+					body = "<script>window.ServiceSessionID = '{clientId}'; window.ImbaFiles = \{\}; {js}</script>" + body
 				elif ext == 'imba'
 					body = file.js or compileImba(file)
-					body = 'import "/imba.js";\n' + body
+					body = "import '/imba.js';\nImbaFiles['{file.path}']=1;\n" + body
 
 				let resp = new Response(body,status: status,headers: {'Content-Type': mime})
-				console.log 'responding',Date.now! - t0
+				# console.log 'responding',Date.now! - t0
 				resolve(resp)
 			else
 				resolve(null)
 		return e.respondWith(responder)
 
 const worker = new Worker
-global.files = worker.files
-global.loadMap = clientLoadMap
 
 global.INSPECT = do
 	var clients = await global.clients.matchAll({})

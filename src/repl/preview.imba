@@ -196,7 +196,7 @@ tag app-repl-preview
 		pos:relative
 
 	def entered e
-		console.log 'entered',Date.now! - t0
+		# console.log 'entered',Date.now! - t0
 		$entered = yes
 		refresh! unless $refreshed
 
@@ -239,15 +239,7 @@ tag app-repl-preview
 		
 	set file data
 		return unless data
-		# console.log
-		let t = Date.now! 
-
-		sw.load!.then do
-			url = data.path.replace('.imba','.imba.html')
-		
-		false && sw.request(event: 'file', path: data.path, body: data.body).then do
-			console.log 'sent file to service worker',Date.now! - t0
-			url = data.path.replace('.imba','.imba.html')
+		sw.load!.then do url = data.path.replace('.imba','.imba.html')
 
 	set dir data
 		if $dir = data

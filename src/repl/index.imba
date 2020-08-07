@@ -75,7 +75,6 @@ tag app-repl
 				let element = $doc.querySelector('body :not(script)')
 				flags.toggle('empty-preview',!element)
 
-		sw.on 'reload' do reload!
 		self
 
 	def reload
