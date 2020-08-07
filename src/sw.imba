@@ -28,6 +28,7 @@ const indexTemplate = "
 
 const clientServiceMap = {}
 const services = {}
+global.services = services
 
 def compileImba file
 	try
@@ -126,7 +127,6 @@ class Worker
 		self
 
 	def onmessage e
-		let res = {status: 0}
 		let cli = Service.forClient(e.source)
 		if cli
 			cli.onmessage(e)
@@ -156,7 +156,7 @@ class Worker
 	def onfetch e
 		
 		let url = new URL(e.request.url)
-		let clientId = e.resultingClientId or e.clientId
+		let clientId = e.resultingClientId or e.clientId or e.targetClientId
 	
 		if url.pathname.indexOf('/repl/') == -1
 			return
@@ -170,19 +170,23 @@ class Worker
 			let t0 = Date.now!
 			let service = clientServiceMap[clientId]
 
-			# console.log 'onfetch!',e.request.url,!!file,ext,e.resultingClientId,e.clientId,e.replacesClientId,e
+			# console.log 'onfetch!',e.request.url,ext,e.resultingClientId,e.clientId,e.replacesClientId,e
 
 			#  find closest visible top-level window
-			if e.resultingClientId
+			unless service
 				let clients = await global.clients.matchAll(includeUncontrolled: true)
 				let source = clients.find do $1.frameType == 'top-level' and $1.visibilityState == 'visible'
 				source ||= clients.find do $1.frameType == 'top-level'
-				service = clientServiceMap[clientId] = Service.forClient(source)	
+				service = clientServiceMap[clientId] = Service.forClient(source)
 
 			if name.match(/\.imba\.html/)
 				let js = 'try { window.frameElement.replify(this) } catch(e){ }'
 				let body = "<script>window.ServiceSessionID = '{clientId}'; window.ImbaFiles = \{\}; {js}</script>" + indexTemplate.replace(/index\.imba/g,basename)
 				let resp = new Response(body,status: 200,headers: {'Content-Type': 'text/html'})
+				return resolve(resp)
+
+			unless service
+				let resp = new Response("Whoops",status: 404,headers: {'Content-Type': 'text/plain'})
 				return resolve(resp)
 
 			let file = await service.readFile(path)
