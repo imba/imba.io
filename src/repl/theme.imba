@@ -3,7 +3,7 @@ export const theme =
 	inherit: false, # can also be false to completely replace the builtin rules
 
 	named:
-		background: '29313f'
+		background: '202732'
 		foreground: 'D4D4D4'
 		keyword: 'ff9696'
 		operator: 'ff9696'

@@ -6,8 +6,10 @@ global css @root
 	--code-color: #e3e3e3;
 	--code-identifier: #9dcbeb;
 	--code-constant: #8ab9ff # #d7bbeb;
+	--code-bg: #202732;
 	--code-background: #282c34;
 	--code-bg-lighter: #29313f;
+
 	--code-comment: #718096;
 	--code-keyword: #ff9a8d; # #e88376;
 	--code-operator: #ff9a8d;
