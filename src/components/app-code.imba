@@ -1,13 +1,15 @@
 import {highlight} from '../util/highlight'
 import * as sw from '../sw/controller'
-import {ls} from '../store'
+import {ls,fs} from '../store'
 
 global css @root
 	--code-color: #e3e3e3;
 	--code-identifier: #9dcbeb;
 	--code-constant: #8ab9ff # #d7bbeb;
+	--code-bg: #202732;
 	--code-background: #282c34;
 	--code-bg-lighter: #29313f;
+
 	--code-comment: #718096;
 	--code-keyword: #ff9a8d; # #e88376;
 	--code-operator: #ff9a8d;
@@ -272,7 +274,6 @@ tag app-code-block < app-code
 
 		if dataset.dir
 			dir = ls(dataset.dir)
-			console.log 'found dir?',dir
 			files = dir.files
 			file = files[0]
 
@@ -287,7 +288,8 @@ tag app-code-block < app-code
 
 		if code.options.preview
 			let file = {path: dataset.path, body: code.plain,size: code.options.preview}
-			options.preview = file
+			fsfile = fs.register(dataset.path,{body: code.plain, options: code.options})
+			options.preview = fsfile
 
 
 	def mount
@@ -308,22 +310,8 @@ tag app-code-block < app-code
 		let last = lines.reverse!.find do !$1.match(/^[\t\s]*$/) and $1[0] != '\t'
 		if let m = (last and last.match(/^tag ([\w\-]+)/))
 			source += "\n\nimba.mount <{m[1]}>"
-		# console.log 'found last',last
+
 		emit('run',{code: source})
-
-	def toggleJS
-		console.log 'toggleJS',tab
-		unless js
-			let res = await sw.request(event: 'compile', body: code.plain, path: 'playground.imba')
-			js = res.js
-			$compiled.innerHTML = highlight(res.js,'javascript').html
-			render!
-
-		tab = tab == 'js' ? 'imba' : 'js'
-		console.log 'toggledJS',tab
-		render!
-
-		# flags.toggle('show-js')
 
 	def pointerover e
 		let vref = null
@@ -358,12 +346,9 @@ tag app-code-block < app-code
 						<div$code[pos:relative]>
 							if lang == 'imba'
 								<div[pos:absolute top:-2 @md:2 right:1 @md:2]>
-									# if options.compile
-									#	<button.btn .active=(tab == 'js') @click=toggleJS> 'js'
 									if options.run
 										<button.btn @click=run> 'EDIT'
 							<div$source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
-							# <div.output.js .(d:none)=(tab != 'js')> <code$compiled>
 				if options.preview or dir
 					<app-repl-preview$preview file=options.preview dir=dir>
 			

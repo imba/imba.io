@@ -75,7 +75,6 @@ tag app-repl
 				let element = $doc.querySelector('body :not(script)')
 				flags.toggle('empty-preview',!element)
 
-		sw.on 'reload' do reload!
 		self
 
 	def reload
@@ -86,7 +85,7 @@ tag app-repl
 		let index = project.childByName('index.html')
 		let app = project.childByName('app.imba') or currentFile
 		$console.clear! if $console
-		url = `{project.path}/{index ? index.name : app.basename + '.html'}`
+		url = `{project.path}/{index ? index.name : app.name + '.html'}`
 		self
 
 	def project-did-set project
@@ -138,7 +137,7 @@ tag app-repl
 		router.go(currentFile ? currentFile.path : '/examples/essentials/playground/app.imba')
 
 
-	css bg:#29313f overscroll-behavior: contain
+	css bg:var(--code-bg) overscroll-behavior: contain
 		$sidebar-width:200px
 		pl:0 @md:$sidebar-width
 		d:flex fld:column @lg:row overflow:hidden
@@ -214,7 +213,7 @@ tag app-repl
 						<div[pb:5]> for item in child.folders
 							<a.item route-to.sticky=item.path> item.title
 
-			<div.dark[pos:relative d:flex fld:column flex:70% bg:#29313f] @resize=relayout>
+			<div.dark[pos:relative d:flex fld:column flex:70% bg:var(--code-bg)] @resize=relayout>
 				<header[c:gray6]>
 					<button[d@md:none fw:bold fs:lg c@hover:blue5 px:1 mr:2 mt:-2px] @click.stop.prevent=$sidebar.focus!> "☰"
 					<span hotkey='left' @click=goPrev>

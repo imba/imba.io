@@ -6,65 +6,45 @@ var promise = null
 var controller = null
 var requests = []
 var queued = []
+var isReady = false
+var sentFiles = {}
 
 export def load
 	return Promise.resolve(controller) if controller
-
+	
 	promise ||= new Promise do(resolve)
 		let t0 = Date.now!
 		const sw = window.navigator.serviceWorker
-		let reg = await sw.getRegistration('/')
 
+		sw.oncontrollerchange = do(e)
+			console.log 'oncontrollerchange'
+
+		let reg = await sw.getRegistration('/')
+		# reg = await sw.register('/sw.js')
 		if reg
 			console.log 'update service worker'
-			await reg.update!
+			reg = await reg.update!
 		else
 			console.log 'register service worker'
 			reg = await sw.register('/sw.js')
 
 		await global.fetch('/preflight.css') # just to register this client with the worker
-		console.log 'loaded service worker'
-
-		controller = sw.controller
-
-		for file in files
-			file.sw = sw.controller
-			file.sendToWorker!
-
-		sw.addEventListener('message') do(e)
-			if e.data and typeof e.data.ref == 'number'
-				# console.log 'got response?!?'
-				let req = requests[e.data.ref]
-				if req
-					req(e.data)
-					requests[e.data.ref] = null
-		
-		# console.log 'flushing payloads',queued
-		for payload in queued
-			sw.controller.postMessage(payload)
-
-		queued = []
-
-		console.log 'sw is ready?',Date.now! - t0
-		resolve(controller = sw.controller)
-		# setTimeout(&,200) do
-		
-
-export def on event, cb
-	window.navigator.serviceWorker.addEventListener('message') do(e)
-		if e.data and e.data.event == event
-			cb(e.data,e)
+		await fs.connectToWorker(sw)
+		console.log 'returning early!'
+		# sw.controller.postMessage({type: 'hello'})
+		return resolve(sw)
 
 export def request payload, cb
 	let nr = requests.length
 	payload.ref = nr
 
 	new Promise do(resolve)
+		if payload.event == 'file'
+			sentFiles[payload.path] = payload
 		requests.push(resolve)
-		if controller
+		if controller and isReady
 			controller.postMessage(payload)
 		else
-			# console.log 'queue payload!'
 			queued.push(payload)
 		return true
 

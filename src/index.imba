@@ -18,7 +18,7 @@ tag app-root
 	prop doc
 
 	def mount
-		let controller = await sw.load!
+		await sw.load!
 		return
 	
 	get page
