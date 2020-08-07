@@ -1,7 +1,6 @@
 const imbac = require 'imba/dist/compiler'
 global.imbac = imbac
 
-const rnd = Math.random!
 const mimeTypeMap = {
 	'html': 'text/html;charset=utf-8'
 	'css': 'text/css;charset=utf-8'
@@ -64,12 +63,9 @@ class Service
 		services[client.id] ||= new self(client)
 
 	def constructor client, options = {}
-		client._container = self
 		owner = client
 		options = options
-		counter = 1
 		promises = {}
-		requests = {}
 		files = {}
 	
 	def readFile path
@@ -149,13 +145,11 @@ class Worker
 
 	def oninstall e
 		log e
-		# console.log 'install sw',Object.keys(files).length,rnd
 		global.skipWaiting!
 		return
 	
 	def onactivate e
 		log e
-		# console.log 'activate sw',Object.keys(files).length,rnd
 		e.waitUntil global.clients.claim!
 		self
 
