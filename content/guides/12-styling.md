@@ -2,19 +2,10 @@
 title: Styling
 multipage: true
 ---
-# [WIP] css inline styles
-# [WIP] css blocks
-# [WIP] Imba Theme
 
-## Base Theme
-## Extend or Customize the Imba Theme
-### Variants
-### Breakpoints
-### Colors
+# Responsive Styles
 
-# [WIP] Inline Smart
-# [WIP] Imba Scoped Styles
+# Using Custom Units
 
-global styles
-scoped styles
-inline styles
+# Custom Presets
+

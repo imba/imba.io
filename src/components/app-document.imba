@@ -129,14 +129,14 @@ tag doc-section
 	css .green $bg:green2 $hbg:green4 $hc:green8
 	css .neutral $bg:gray2 $hbg:gray4 $hc:gray8
 
-	css .head pos:relative c:#3A4652 bc:gray3/50
+	css .head pos:relative c:#3A4652 bc:gray3/75
 		&.l0 fs:28px/1.4 fw:600 pb:2
-		&.l1 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
-		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
-		&.l2 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
-		&.l3 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
-		&.tip fs:16px/1.2 fw:500 pb:3 bbw:0 mb:0
-		&.snippet,&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bbw:0
+		&.l1 fs:22px/1.2 fw:600 pb:3 bdbw:0px mb:3
+		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bdbw:0px mb:3
+		&.l2 fs:20px/1.2 fw:500 pb:3 bdbw:1px mb:3
+		&.l3 fs:18px/1.2 fw:500 pb:3 bdbw:1px mb:3
+		&.tip fs:16px/1.2 fw:500 pb:3 bdbw:0 mb:0
+		&.snippet,&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bdbw:0
 			.title px:2 py:1 radius:md pos:relative bg:$hbg d:inline-block
 			app-code-inline fs:12px va:baseline bg:clear p:0 fw:bold c:inherit
 

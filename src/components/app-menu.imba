@@ -28,12 +28,12 @@ tag app-menu-item
 
 	<self[d:block].l{level}>
 		<a.item .l{level} .{data.type} data=data .wip=data.meta.wip route-to=data.href> data.title
-		if data.type != 'section' and !data.options.tabbed and data.docs.length
+		if data.children.length # and !data.options.tabbed and data.type != 'section'
 			<div.children[d@empty:none]>
 				# for sub in data.sections when !sub.hidden
 				#	<a.segment.item.l{level + 1} data=sub .wip=sub.meta.wip href="{data.href}#{sub.slug}" @click.stop=jumpTo(sub,e)> sub.title
 				for sub in data.children
-					continue if sub.level >= 30
+					continue if sub.level >= 40
 					<app-menu-item.sub data=sub level=(level + 1)>
 	
 tag app-menu-section
@@ -66,12 +66,14 @@ tag app-menu
 		let docs = ls('/docs')
 		let guides = ls('/guides')
 		<self tabIndex=-1>
-			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 flex:1]>
+			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 flex:1]>
 				# <app-menu-section data=ls('/manual')>
 				# for item in docs.children
 				<app-menu-section data=ls('/intro')>
-				<app-menu-section data=ls('/manual')>
+				# <app-menu-section data=ls('/manual')>
+				<app-menu-section data=ls('/essentials')>
 				<app-menu-section data=guides>
+				<app-menu-section data=ls('/reference')>
 				# <app-menu-section data=ls('/tags')>
 				# <app-menu-section data=ls('/views')>
 				# <app-menu-section data=ls('/events')>

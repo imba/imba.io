@@ -112,7 +112,7 @@ global css
 		-webkit-font-smoothing: antialiased
 		-moz-osx-font-smoothing: grayscale
 		$header-height: 56px @md:64px
-		$menu-width:80vw @md:180px
+		$menu-width:80vw @md:200px
 		$doc-width: 768px
 		$doc-margin: calc(100vw - $doc-width - 20px) @md:calc(100vw - $doc-width - $menu-width - 20px)
 

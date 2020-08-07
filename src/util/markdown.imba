@@ -93,7 +93,7 @@ def renderer.heading text, level
 
 	var plain = text.replace(/\<[^\>]+\>/g,'')
 
-	meta.slug = slugify(plain)
+	meta.slug = meta.options.slug or slugify(plain)
 	meta.title = unescape(text)
 
 	if text.indexOf('<code') == 0
