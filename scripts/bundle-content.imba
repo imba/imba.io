@@ -44,7 +44,7 @@ watcher.on('all') do
 	let dirname = path.dirname(src)
 
 	return if name == '.DS_Store' or src == '' or name.match(/\-(\.\w+)?$/)
-	console.log 'watcher',$1,src,dirname
+	# console.log 'watcher',$1,src,dirname
 
 	let up = map[dirname]
 	let id = "/{src}"

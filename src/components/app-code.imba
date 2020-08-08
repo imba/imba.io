@@ -264,7 +264,6 @@ tag app-code-block < app-code
 		>>> .controls d@lt-xl:none
 		@lt-xl pos:relative l:0 h:$preview-size m:0 mt:2 w:100% p:0 max-width:initial
 
-	prop tab = 'imba'
 	prop lang
 	prop options = {}
 	prop dir
@@ -275,55 +274,29 @@ tag app-code-block < app-code
 	prop editorHeight = 0
 
 	def hydrate
-		lang = dataset.lang
 		files = []
 		file = null
 		# manual style fixing
 		flags.add(_ns_)
 		flags.add(_ns_ + "_")
 
-		if dataset.dir
-			dir = ls(dataset.dir)
-			files = dir.files
-			file = files[0]
-
 		let meta = JSON.parse(dataset.meta or '{}')
-		let path = dataset.path
-		let raw = textContent
-		let parts = raw.split(/^\~\~\~(?=[\w\.]+\n)/m)
+		let path = "/examples{dataset.path}"
 
-		if parts.length > 1
-			let files = []
+		Object.assign(options,meta)
 
-			for part in parts.slice(1)
-				let [name,...lines] = part.split('\n')
-				let body = clean(lines.join('\n'))
-				let path = dataset.path.replace('.imba',"/{name}")
-				let file = {path: path, name: name, body: body}
-				file = fs.register(path,file)
-				files.push(file)
-				# let file = {path: path, body: code.plain,size: code.options.preview}
-			console.log files
-			self.files = files
-			self.file = files[0]
-			self.dir = self.file.parent
-			code = self.file.highlighted
-			options.preview = self.file
-		else
-			code = highlight(raw,lang)
+		let parts = getElementsByTagName('code')
+		for part,i in parts
+			let data = {
+				name: part.dataset.name or "example.{part.dataset.lang}"
+				lang: part.dataset.lang
+				body: clean(part.textContent)
+			}
+			let file = fs.register(path + '/' + data.name,data)
+			files.push(file)
 
-		innerHTML = '' # empty
-
-		if !file
-			options.compile = !code.options.nojs and !code.plain.match(/^tag /m)
-			options.run = !code.options.norun
-
-			size = code.options.preview or dataset.size or ''
-
-			if code.options.preview
-				let file = {path: dataset.path, body: code.plain,size: code.options.preview}
-				fsfile = fs.register(dataset.path,{body: code.plain, options: code.options})
-				options.preview = fsfile
+		file = files[0]
+		innerHTML = ''
 		render!
 
 	def mount
@@ -370,25 +343,14 @@ tag app-code-block < app-code
 	def render
 		return unless code or file
 
-		<self.{code.flags} .{size} .multi=(files.length > 1) @pointerover.silence=pointerover>
-			# <header[d:none ..multi:block]>
-			# 	<div.tabs> for item in files
-			#		<a.tab .on=(file==item) @click=(file=item)> item.name
+		<self.{size} .multi=(files.length > 1) @pointerover.silence=pointerover>
 			<main>
 				<div$editor.code[min-height:{editorHeight}px] @resize=editorResized>
-					<div.tabs> for item in files
+					<div.tabs [d:none]=(files.length < 2) > for item in files
 						<a.tab .on=(file==item) @click.stop.silence=openFile(item)> item.name
 					if file
 						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
-					else
-						<div$code[pos:relative]>
-							if lang == 'imba'
-								<div[pos:absolute top:-2 @md:2 right:1 @md:2]>
-									if options.run
-										<button.btn @click=run> 'EDIT'
-							<div$source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
-				if options.preview or dir
-					<app-repl-preview$preview file=options.preview dir=dir>
-			
+				if options.preview
+					<app-repl-preview$preview file=files[0] dir=dir>
 
 tag app-code-inline < app-code

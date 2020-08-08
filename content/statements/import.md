@@ -44,27 +44,38 @@ import * as myModule from 'my-module'
 ```
 
 ### Import a single export from a module [preview=md]
-```imba
-~~~app.imba
-# ~preview
+```imba app.imba
 import {myExport} from './util'
 console.log myExport!
-~~~util.imba
+```
+```imba util.imba
 export def myExport
     return 123
 ```
 
 
-### Import web component [preview=md]
-```imba
-~~~app.imba
-# ~preview
+### Importing a web component [preview=md]
+```imba app.imba
 import './component'
 
 imba.mount do <div[pos:absolute inset:0 d:flex a:center j:center]>
     <my-component>
     <my-component>
-~~~component.imba
-export tag my-component
+```
+```imba component.imba
+# no need to export this - it is globally available
+# as long as the file is imported somewhere in your project
+tag my-component
     <self[d:inline-block p:2]> "Custom component"
+```
+
+### Importing a custom element [preview=md]
+```imba app.imba
+import {MyElement} from './element'
+
+imba.mount do <div> <MyElement>
+```
+```imba element.imba
+export tag MyElement
+    <self[d:inline-block p:2]> "Custom element here"
 ```

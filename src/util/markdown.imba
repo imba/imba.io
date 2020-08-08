@@ -45,11 +45,9 @@ def renderer.link href, title, text
 	return (<a href=href title=title> <span innerHTML=text>)
 
 def renderer.blockquote quote
-	console.log 'we are inside the blockquote'
 	return String(<blockquote innerHTML=quote>)
 
 def renderer.paragraph text
-	console.log 'we are inside paragraph'
 	state.last = text
 	return String(<p innerHTML=text>)
 
@@ -129,6 +127,19 @@ def renderer.code code, lang, opts = {}
 	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 	let last = state.last
 	state.last = code
+
+	let [type,name] = lang.split(' ')
+
+	let parts = code.split(/^\~\~\~\~/m)
+	let files = [{name: name, lang: type, code: parts[0]}]
+	if parts.length > 1
+		for part in parts.slice(1)
+			let [start,...lines] = part.split('\n')
+			let [lang,name] = start.split(' ')
+			let code = lines.join('\n')
+			files.push(start: start, name: name, lang: lang, code: code)
+		console.log "FOUND MULTIPLE FILES!!!",files
+
 	if opts.inline
 		<app-code-inline.code.code-inline.light data-lang=lang> escaped
 	else
@@ -138,7 +149,12 @@ def renderer.code code, lang, opts = {}
 		let meta = ""
 		if last and last.hlevel
 			meta = JSON.stringify(last.options)
-		<app-code-block.code.code-block data-lang=lang data-path=path data-meta=meta> escaped
+
+		<app-code-block.code.code-block data-meta=meta data-path="{dir}/{nr}">
+			for file in files
+				<code data-name=file.name data-lang=file.lang> file.code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
+		# else
+		#	<app-code-block.code.code-block data-lang=type data-name=name data-path=path data-meta=meta> escaped
 
 def renderer.table header, body
 
@@ -158,6 +174,8 @@ export def render content, o = {}
 		inside.split('\n').map do |line|
 			var [k,v] = line.split(/\s*\:\s*/)
 			object[k] = (/^\d+$/).test(v) ? parseFloat(v) : v
+
+	content = content.replace(/\`\`\`\n\`\`\`/g,'~~~~')
 
 	state = {
 		toc: object.toc
@@ -235,7 +253,7 @@ export def render content, o = {}
 		# console.log "{section.title}"
 
 	let walk = do(section,pre = '')
-		console.log "{pre}{section.title} ({section.type} {section.level} {section.flags}) - {section.desc}"
+		# console.log "{pre}{section.title} ({section.type} {section.level} {section.flags}) - {section.desc}"
 
 		section.children = section.children.filter do !$1.options.skip
 
@@ -253,7 +271,7 @@ export def render content, o = {}
 		delete section.parent
 
 	if object.children.length == 1
-		console.log 'children length is one!!',object.children[0]
+		# console.log 'children length is one!!',object.children[0]
 		return object.children[0]
 
 	return object
