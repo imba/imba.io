@@ -46,9 +46,135 @@ multipage: true
 
 ## Conditional Statements
 
+##### if [snippet]
+```imba
+# indented
+if condition
+    console.log 'yes!'
+```
+> The if statement executes the indented code if a specified condition is truthy.
+
+##### else [snippet]
+```imba
+if condition
+    console.log 'yes!'
+else
+    console.log 'no!'
+```
+> If the condition is falsy, code inside the connected else block will execute.
+
+##### elif [snippet]
+```imba
+if expr > 10
+    console.log 'over 10'
+elif expr > 5
+    console.log 'over 5'
+elif expr
+    console.log 'not falsy'
+```
+> To conveniently chain multiple conditionals, use `elif`. No `elif` or `else` statements will be executed after the first truthy condition.
+
+
+
+##### unless [snippet]
+```imba
+unless condition
+    console.log 'condition was not truthy'
+```
+> The unless statement executes the indented code if a specified condition is *not* truthy.
+
+
+##### ternary [snippet]
+```imba
+condition ? console.log('yes!') : console.log('no!')
+```
+> The [Ternary operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator) is a useful way to write compact if / else statements.
+
+
+##### trailing if & unless [snippet]
+```imba
+console.log 'yes' if condition
+console.log 'no' unless condition
+```
+> If & unless can also be used at the end of a single line expression
+
+##### switch [snippet]
+
+```imba
+switch value
+when 10
+    yes
+when 5
+    no
+else
+    throw 'nope'
+```
+
 ## Loops and Iteration
 
+##### for in [snippet]
+```imba
+let ary = [1,2,3]
+for num,index in ary
+    console.log num * index
+```
+Basic syntax for looping through arrays and any other object that has a `length` property and allows accessing their members through `object[index]`
+
+### For..of
+
+The for...of statement creates a loop iterating over iterable objects, including: built-in String, Array, array-like objects (e.g., arguments or NodeList), TypedArray, Map, Set, and user-defined iterables. This maps directly to `for of` [in javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of) with a few convenient additions.
+
+##### for of [snippet]
+```imba
+let iter = new Set([1, 2, 3])
+for value of iter
+    value
+```
+Iterating over iterable objects following the [iterable protocol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) added in ES2015. 
+
+##### for own of [snippet]
+```imba
+let obj = {a:1, b:2, c:3}
+for own key,value of obj
+    "{key} is {value}"
+```
+Convenient syntax for looping through key-value pairs of objects.
+
+##### while [snippet]
+```imba
+let ary = [1,2,3]
+while let item = ary.pop!
+    console.log item
+```
+Executes repeatedly as long as condition is truthy.
+
+##### until [snippet]
+```imba
+let ary = [1,2,3]
+until ary.length == 0
+    console.log ary.pop!
+```
+Executes repeatedly until condition is truthy.
+
 ## Async and Await
+
+Any method using an await in imba will automatically be compiled as an async method, so the `async` keyword is not needed (nor supported) in imba.
+
+##### basic await [snippet]
+```imba
+def load
+    let items = await long-lasting-task!
+    return items
+```
+
+##### await in loop [snippet]
+```imba
+def load
+    let items = for url in urls
+        let req = await global.fetch(url)
+        await req.json!
+    console.log items
+```
 
 ## Error Handling
 
@@ -133,6 +259,8 @@ These interpolated classes can also be toggled by a condition:
 ### Binding Events [slug=events]
 
 ### Mounting & Updating [slug=mounting]
+
+## Conditional Rendering [slug=conditional]
 
 ## Rendering Lists [slug=lists]
 

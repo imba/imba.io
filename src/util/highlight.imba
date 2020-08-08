@@ -25,6 +25,9 @@ def classify types
 def escape str
 	str.replace(/[\&\<\>]/g) do(m) replacements[m]
 
+export def clean str
+	str = str.replace(/^(~\w*[\[\|]?)?\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
+
 export def highlight str,lang
 	if cache[str]
 		return cache[str]

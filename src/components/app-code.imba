@@ -1,4 +1,4 @@
-import {highlight} from '../util/highlight'
+import {highlight,clean} from '../util/highlight'
 import * as sw from '../sw/controller'
 import {ls,fs} from '../store'
 
@@ -211,7 +211,7 @@ tag app-code-block < app-code
 		$preview-size:72px .md:120px .lg:180px .xl:240px
 
 	css main
-		pos:relative radius:inherit c:$code-color btlr..multi:0
+		pos:relative radius:inherit c:$code-color
 
 	css .code pos:relative d:block
 		>>> .code-head d:none
@@ -230,18 +230,24 @@ tag app-code-block < app-code
 		@not-md mx:0 ml:1 bg:gray7/90 bg@hover:gray7/100 c:gray4
 		@is-active bg:blue6 c:white
 
-	css .tabs d:flex radius:2 d:flex cursor:default us:none
+	css .tabsz d:flex radius:2 d:flex cursor:default us:none
 		@before
 			pos:absolute inset:0 m:-1 radius:3 b:1px dashed yellow7 content:' '
 			box-shadow: 0px 0px 10px 2px rgba(42, 50, 63,0.7), inset 0px 0px 2px 2px rgba(42, 50, 63,0.7)
 			rotate:-1deg
 
-	css .tab d:flex px:3 py:1 fs:sm fw:500 br:3px 3px 0 0
+	css .tabz d:flex px:3 py:1 fs:sm fw:500 br:3px 3px 0 0
 		bg:gray2/50 @hover:gray3 .on:var(--bg)
 		c:gray6 c.on:teal2/90
 
 	css $editor
 		bg:$bg br:inherit
+
+		.tabs pos:relative px:2 py:1 zi:2 bg:#3d4253
+			d:hflex @empty:none
+			btr:inherit
+			c:gray6 fs:sm fw:500 
+			.tab d:block c:gray6 c.on:blue3 py:0.25 mx:1 td:none
 
 	css $preview
 		min-height:$preview-size
@@ -265,6 +271,7 @@ tag app-code-block < app-code
 	prop files
 	prop file
 	prop size
+	prop hlvar
 	prop editorHeight = 0
 
 	def hydrate
@@ -280,20 +287,44 @@ tag app-code-block < app-code
 			files = dir.files
 			file = files[0]
 
-		dataset.path
+		let meta = JSON.parse(dataset.meta or '{}')
+		let path = dataset.path
+		let raw = textContent
+		let parts = raw.split(/^\~\~\~(?=[\w\.]+\n)/m)
 
-		code = highlight(textContent,lang)
+		if parts.length > 1
+			let files = []
+
+			for part in parts.slice(1)
+				let [name,...lines] = part.split('\n')
+				let body = clean(lines.join('\n'))
+				let path = dataset.path.replace('.imba',"/{name}")
+				let file = {path: path, name: name, body: body}
+				file = fs.register(path,file)
+				files.push(file)
+				# let file = {path: path, body: code.plain,size: code.options.preview}
+			console.log files
+			self.files = files
+			self.file = files[0]
+			self.dir = self.file.parent
+			code = self.file.highlighted
+			options.preview = self.file
+		else
+			code = highlight(raw,lang)
+
 		innerHTML = '' # empty
-		options.compile = !code.options.nojs and !code.plain.match(/^tag /m)
-		options.run = !code.options.norun
 
-		size = code.options.preview or dataset.size or ''
+		if !file
+			options.compile = !code.options.nojs and !code.plain.match(/^tag /m)
+			options.run = !code.options.norun
 
-		if code.options.preview
-			let file = {path: dataset.path, body: code.plain,size: code.options.preview}
-			fsfile = fs.register(dataset.path,{body: code.plain, options: code.options})
-			options.preview = fsfile
+			size = code.options.preview or dataset.size or ''
 
+			if code.options.preview
+				let file = {path: dataset.path, body: code.plain,size: code.options.preview}
+				fsfile = fs.register(dataset.path,{body: code.plain, options: code.options})
+				options.preview = fsfile
+		render!
 
 	def mount
 		schedule!
@@ -327,25 +358,29 @@ tag app-code-block < app-code
 			if vref
 				el.classList.add('highlight') for el in getElementsByClassName(vref)
 			hlvar = vref
-	
-	
 
 	def editorResized e
 		# editorHeight = Math.max(editorHeight or 0,e.rect.height)
 		self
 	
+	def openFile file
+		self.file = file
+		render!
+	
 	def render
-		return unless code
+		return unless code or file
 
 		<self.{code.flags} .{size} .multi=(files.length > 1) @pointerover.silence=pointerover>
-			<header[d:none ..multi:block]>
-				<div.tabs> for item in files
-					<a.tab .on=(file==item) @click=(file=item)> item.name
-			<main[btlr:0]=dir>
+			# <header[d:none ..multi:block]>
+			# 	<div.tabs> for item in files
+			#		<a.tab .on=(file==item) @click=(file=item)> item.name
+			<main>
 				<div$editor.code[min-height:{editorHeight}px] @resize=editorResized>
+					<div.tabs> for item in files
+						<a.tab .on=(file==item) @click.stop.silence=openFile(item)> item.name
 					if file
 						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
-					unless dir
+					else
 						<div$code[pos:relative]>
 							if lang == 'imba'
 								<div[pos:absolute top:-2 @md:2 right:1 @md:2]>

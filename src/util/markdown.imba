@@ -10,7 +10,7 @@ marked.setOptions({
 	smartypants: false
 })
 
-var state = {headings: []}
+var state = {headings: [],last: null}
 
 var slugify = do(str)
 	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
@@ -50,6 +50,7 @@ def renderer.blockquote quote
 
 def renderer.paragraph text
 	console.log 'we are inside paragraph'
+	state.last = text
 	return String(<p innerHTML=text>)
 
 def renderer.heading text, level
@@ -57,6 +58,8 @@ def renderer.heading text, level
 	var flags = [typ]
 	var meta = {type: 'section', hlevel: level, flags: flags, level: level * 10, children: [], meta: {},options: {}}
 	var m 
+
+	state.last = meta
 
 	if level == 6
 		console.log 'FOUND LEVEL 6',text
@@ -124,12 +127,18 @@ def renderer.codespan code
 
 def renderer.code code, lang, opts = {}
 	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
-
+	let last = state.last
+	state.last = code
 	if opts.inline
 		<app-code-inline.code.code-inline.light data-lang=lang> escaped
 	else
-		let path = this.toc.path.replace(/\.md$/g,'') + "_{++this.toc.counter}.imba"
-		<app-code-block.code.code-block data-lang=lang data-path=path> escaped
+		let dir = this.toc.path.replace(/\.md$/g,'')
+		let nr = ++this.toc.counter
+		let path = dir + "_{nr}.imba"
+		let meta = ""
+		if last and last.hlevel
+			meta = JSON.stringify(last.options)
+		<app-code-block.code.code-block data-lang=lang data-path=path data-meta=meta> escaped
 
 def renderer.table header, body
 
@@ -242,5 +251,9 @@ export def render content, o = {}
 
 	for section in sections
 		delete section.parent
+
+	if object.children.length == 1
+		console.log 'children length is one!!',object.children[0]
+		return object.children[0]
 
 	return object
