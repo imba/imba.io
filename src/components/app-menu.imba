@@ -64,17 +64,15 @@ tag app-menu
 	def render
 		console.log 'app-menu for data',data
 		let root = data.root
-		let docs = ls('/docs')
 		let guides = ls('/guides')
+		let main = data.path.indexOf('essentials') >= 0 ? ls('/essentials') : ls('/manual')
 		<self tabIndex=-1>
 			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 flex:1]>
-				# <app-menu-section data=ls('/manual')>
 				# for item in docs.children
 				<app-menu-section data=ls('/intro')>
-				# <app-menu-section data=ls('/manual')>
-				<app-menu-section data=ls('/essentials')>
+				<app-menu-section data=main>
 				<app-menu-section data=guides>
-				<app-menu-section data=ls('/reference')>
+				# <app-menu-section data=ls('/reference')>
 				# <app-menu-section data=ls('/tags')>
 				# <app-menu-section data=ls('/views')>
 				# <app-menu-section data=ls('/events')>

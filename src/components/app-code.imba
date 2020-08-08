@@ -243,11 +243,18 @@ tag app-code-block < app-code
 	css $editor
 		bg:$bg br:inherit
 
-		.tabs pos:relative px:2 py:1 zi:2 bg:#3d4253
-			d:hflex @empty:none
-			btr:inherit
-			c:gray6 fs:sm fw:500 
-			.tab d:block c:gray6 c.on:blue3 py:0.25 mx:1 td:none
+	css	$header pos:relative zi:2 bg:#3d4253
+		d:hflex @empty:none
+		btr:inherit
+		c:gray6 fs:sm fw:500 
+		.tabs d:hflex px:2 py:1
+		.actions ml:auto px:2 py:1 zi:2
+		.item d:block c:gray6 c.on:blue3 py:0.25 mx:1 td:none
+		&.collapsed
+			.tabs d:none
+			.actions pos:absolute t:0 r:0
+			
+		
 
 	css $preview
 		min-height:$preview-size
@@ -339,6 +346,10 @@ tag app-code-block < app-code
 	def openFile file
 		self.file = file
 		render!
+
+	def openInEditor
+		router.go(file.path)
+		self
 	
 	def render
 		return unless code or file
@@ -346,8 +357,11 @@ tag app-code-block < app-code
 		<self.{size} .multi=(files.length > 1) @pointerover.silence=pointerover>
 			<main>
 				<div$editor.code[min-height:{editorHeight}px] @resize=editorResized>
-					<div.tabs [d:none]=(files.length < 2) > for item in files
-						<a.tab .on=(file==item) @click.stop.silence=openFile(item)> item.name
+					<$header .collapsed=(files.length < 2)>
+						<div.tabs> for item in files
+							<a.tab.item .on=(file==item) @click.stop.silence=openFile(item)> item.name
+						<div.actions>
+							<div.item @click=openInEditor> "open"
 					if file
 						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
 				if options.preview

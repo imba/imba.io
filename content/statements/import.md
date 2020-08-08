@@ -18,11 +18,6 @@ import "module-name"
 
 ## Examples
 
-### importing web components
-```imba
-import './my-component'
-```
-
 ### import default
 ```imba
 import DefaultExport from './source'
