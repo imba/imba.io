@@ -65,9 +65,7 @@ tag log-tag
 
 tag repl-console-item
 
-	
-
-	css d:block c:gray6 fs:md/1.4 fw:500
+	css d:block c:gray6 fw:500
 		transition: all 250ms cubic-out
 
 	css >>> .body
@@ -118,9 +116,9 @@ tag repl-console-item
 			self
 
 tag repl-console
-	css cursor:default $count:0
+	css cursor:default $count:0 fs:md/1.4
 
-	css $body >>> .item p:2 3 mx:1 bdb:gray2
+	css $body >>> .item p:1 2 mx:1 bdb:gray2 bdb@last:clear
 	css $snackbars d:block pos:absolute w:100% t:0 l:0 zi:35
 	css $snackbars >>> .item .body m:2 p:2 3 br:3 bg:gray1 bs:xs bd:gray3 fs:sm/1.3
 
@@ -128,6 +126,8 @@ tag repl-console
 
 	css .counter
 		bg:gray3 mx:1 px:1 radius:10 min-width:6 color:gray6/70 d:inline-block fs:xs fw:bold ta:center
+	
+	css $header bg:gray2 p:2 px:3 d:hflex ..transient:none
 
 	prop native
 	prop context
@@ -180,12 +180,12 @@ tag repl-console
 
 	def render
 		<self>
-			<header[bg:gray2 d..transient:none]>
+			<header$header>
 				<.tab.active[flex-grow:1] @click=flags.toggle('expanded')>
 					<span> "Console"
 					<span.counter> count
 				<button[d..transient:none] @click=clear [d:none]=(!count)> 'Clear'
 			<div$snackbars>
 			<.content[pos:relative flex:1 bg:white]>
-				<div$scroller[pos:absolute d:block ofy:auto inset:0]>
+				<div$scroller[pos:relative d:block ofy:auto inset:0]>
 					<div$body[d:block] @resize=relayout>

@@ -232,6 +232,7 @@ tag doc-section
 		let par = data.parent
 		let filter = query or $filters..regex
 		let tabbed = data.options.tabbed
+		let level = level
 
 		<self .{data.flagstr} .hide=(query and !data.match(query))>
 			if data.head and !data.tab?

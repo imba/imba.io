@@ -11,6 +11,7 @@ tag app-repl-preview
 	prop w = 2000
 	prop scale = 1
 	prop size = 'auto-auto'
+	prop mode
 
 	def build
 		t0 = Date.now!
@@ -28,6 +29,7 @@ tag app-repl-preview
 				$console.native = win.console
 				win.console.log = $console.log.bind($console)
 				win.console.info = $console.info.bind($console)
+				$console.clear!
 
 		$iframe.onload = do
 			return unless $refreshed
@@ -235,7 +237,7 @@ tag app-repl-preview
 					# <button%btn bind=size value='768x1024'> 'tablet'
 					# <button%btn bind=size value='1280x1024'> 'desktop'
 					<button.btn @click=maximize> '⤢'
-			<repl-console$console.transient mode='transient'>
+			<repl-console$console mode=(mode == 'console' ? mode : 'transient')>
 		
 	set file data
 		return unless data

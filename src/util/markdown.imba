@@ -126,7 +126,6 @@ def renderer.codespan code
 def renderer.code code, lang, opts = {}
 	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 	let last = state.last
-	
 
 	let [type,name] = lang.split(' ')
 
@@ -143,7 +142,7 @@ def renderer.code code, lang, opts = {}
 	if opts.inline
 		<app-code-inline.code.code-inline.light data-lang=lang> escaped
 	else
-		state.last = code
+		# state.last = code
 		let dir = this.toc.path.replace(/\.md$/g,'')
 		let nr = ++this.toc.counter
 		let path = dir + "_{nr}.imba"

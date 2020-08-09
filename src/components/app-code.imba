@@ -271,6 +271,16 @@ tag app-code-block < app-code
 		>>> .controls d@lt-xl:none
 		@lt-xl pos:relative l:0 h:$preview-size m:0 mt:2 w:100% p:0 max-width:initial
 
+		>>> $console $header d:none
+
+	css &.console
+		$preview h:auto min-height:initial
+		$preview >> .body d:none
+		$preview >>> $console shadow:xs br:sm border:1px solid gray3 bg:white
+			$header d@force:none
+			$scroller max-height@force:140px p:1 fs:sm
+		
+
 	prop lang
 	prop options = {}
 	prop dir
@@ -365,6 +375,6 @@ tag app-code-block < app-code
 					if file
 						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
 				if options.preview or (files[0].name == 'main.imba')
-					<app-repl-preview$preview file=files[0] dir=dir>
+					<app-repl-preview$preview file=files[0] dir=dir mode=options.preview>
 
 tag app-code-inline < app-code

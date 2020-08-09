@@ -96,6 +96,9 @@ class Entry
 
 	get tab?
 		parent and parent.options.tabbed and type == 'doc'
+		
+	get reference?
+		parent and parent.name == 'reference'
 
 	get prevSibling
 		parent ? parent.children[parent.children.indexOf(self) - 1] : null

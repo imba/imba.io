@@ -2,7 +2,7 @@
 
 <doc-style-ff></doc-style-ff>
 
-### Predeclared fonts  [preview=xl]
+### Predeclared fonts  [preview=lg]
 ```imba
 import 'util/styles'
 # ---
