@@ -49,20 +49,26 @@ export def myExport
 ```
 
 
-### Importing a web component [preview=md]
+### Importing web components [preview=md]
 ```imba app.imba
-import './component'
+import './controls'
 
 imba.mount do <div[pos:absolute inset:0 d:flex a:center j:center]>
     <my-component>
-    <my-component>
+    <app-avatar>
 ```
-```imba component.imba
+```imba controls.imba
 # no need to export this - it is globally available
 # as long as the file is imported somewhere in your project
 tag my-component
     <self[d:inline-block p:2]> "Custom component"
+
+tag app-avatar
+    <self[d:inline-block]> "Avatar"
 ```
+Web components are not explicitly imported by name. As long as the files
+where your components are imported somewhere in your project they will
+be available everywhere.
 
 ### Importing a custom element [preview=md]
 ```imba app.imba
@@ -74,3 +80,16 @@ imba.mount do <div> <MyElement>
 export tag MyElement
     <self[d:inline-block p:2]> "Custom element here"
 ```
+
+### Importing styles [preview=md]
+```imba app.imba
+import './styles'
+
+imba.mount do <div>
+    <p> "Globally styled"
+```
+```imba styles.imba
+global css
+    p color:blue5
+```
+Global styles that you want included in your project must be imported somewhere.

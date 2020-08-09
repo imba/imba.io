@@ -48,7 +48,7 @@ def renderer.blockquote quote
 	return String(<blockquote innerHTML=quote>)
 
 def renderer.paragraph text
-	state.last = text
+	# state.last = text
 	return String(<p innerHTML=text>)
 
 def renderer.heading text, level

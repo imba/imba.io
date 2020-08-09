@@ -21,7 +21,12 @@ If you don't explicitly return for your methods - imba will by default return th
 
 ## Examples
 
-### implicit return list [snippet]
+### implicit return list [preview]
 ```imba
+def method params = [1,2,3]
+    for item in params
+        item * 2
 
+console.log method(), method(10,20,30)
 ```
+Remember that everything is an expression in imba, so even the result of loops will be implicitly returned unless otherwise stated

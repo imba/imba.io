@@ -2,10 +2,12 @@
 
 For in is the basic syntax for looping through arrays and any other object that has a `length` property and allows accessing their members through `object[index]`. This includes `Array`, `NodeList`, `DOMTokenList`, `String` and more. It was created before `for of` iterables became standard in ES2015, but is still a practical alternative to using `for of` in many cases. Imba `for in` is not to be confused with `for in` [in javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in).
 
+## Examples
+
 ##### for in [snippet]
 ```imba
 for num in [1,2,3]
-    num
+    num * 2
 ```
 
 ##### with optional index parameter [snippet]
@@ -22,10 +24,10 @@ for num in [1,2,3] by 2
     num * 2
 ```
 
-##### inclusive range `..` [snippet]
+##### inclusive range `..` [snippet] [preview]
 ```imba
 # from 0 up to (including) 3
-console.log for num in [0 .. 3]
+for num in [0 .. 3]
     num
 # [0,1,2,3]
 ```

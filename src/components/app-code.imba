@@ -354,7 +354,7 @@ tag app-code-block < app-code
 	def render
 		return unless code or file
 
-		<self.{size} .multi=(files.length > 1) @pointerover.silence=pointerover>
+		<self.{options.preview} .multi=(files.length > 1) @pointerover.silence=pointerover>
 			<main>
 				<div$editor.code[min-height:{editorHeight}px] @resize=editorResized>
 					<$header .collapsed=(files.length < 2)>
@@ -364,7 +364,7 @@ tag app-code-block < app-code
 							<div.item @click=openInEditor> "open"
 					if file
 						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
-				if options.preview
+				if options.preview or (files[0].name == 'main.imba')
 					<app-repl-preview$preview file=files[0] dir=dir>
 
 tag app-code-inline < app-code
