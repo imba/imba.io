@@ -26,3 +26,20 @@ imba.mount do <div[p:4]>
     # gray color only when done is truthy
     <span[p:2] [color:gray4]=done> "Checked?"
 ```
+
+## Dynamic values [preview]
+
+It is also possible to interpolate dynamic values into styles. This happens efficiently at runtime using css variables behind the scenes. This allows you to even write dynamic styles in a declarative manner.
+
+```imba
+css div pos:absolute p:3 t:2 l:2
+css section d:block pos:absolute inset:0 user-select:none
+# ---
+let ptr = {x:0, y:0}
+let num = 0
+imba.mount do
+    <section @pointermove=(ptr = e) @click=(num++)>
+        <div[bg:teal2 x:{ptr.x} y:{ptr.y} rotate:{ptr.x / 360}]> "Full"
+        <div[bg:purple2 x:{ptr.x / 2} y:{ptr.y / 2} rotate:{num / 45}]> "Half"
+        
+```
