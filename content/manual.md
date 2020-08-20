@@ -1383,6 +1383,24 @@ dog.speak! # Mitzie barks.
 ```
 An inherited class will inherit all methods and functionality from the parent class.
 
+If the heritor class accesses any variables or functions on self in its constructor, the constructor must first call `super`.
+
+```imba
+class Animal 
+	constructor name
+		name = name
+
+class Dog < Animal
+    constructor name, breed
+        super # calls Animal constructor with the same arguments (name, breed). 
+        # super(name) # This would be an explit way to achieve the same effect
+        breed = breed
+
+let dog = new Dog 'Mitzie', 'Pug'
+console.log dog.name 
+dog.speak! # Mitzie barks.
+```
+
 ## Super
 
 ##### super
