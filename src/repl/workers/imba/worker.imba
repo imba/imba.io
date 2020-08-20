@@ -7,7 +7,7 @@ export class ImbaWorker
 
 	prop ctx
 
-	def constructor ctx, options
+	constructor ctx, options
 		ctx = ctx
 		options = options
 		models = {}

@@ -49,7 +49,7 @@ def compileImba file
 	return file.js
 
 class File
-	def constructor service, data
+	constructor service, data
 		service = service
 		name = data.name
 		path = data.path
@@ -63,7 +63,7 @@ class Service
 	static def forClient client
 		services[client.id] ||= new self(client)
 
-	def constructor client, options = {}
+	constructor client, options = {}
 		owner = client
 		options = options
 		promises = {}
@@ -117,7 +117,7 @@ class Service
 
 class Worker
 
-	def constructor
+	constructor
 		for ev in ['message','fetch','install','activate']
 			global.addEventListener(ev,self["on{ev}"].bind(self))
 		self

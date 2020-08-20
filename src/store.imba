@@ -29,7 +29,7 @@ class Entry
 			parent.children.push(item)
 		return item
 
-	def constructor data, parent
+	constructor data, parent
 		id = counter++
 		dirty = no
 		parent = parent
@@ -118,7 +118,7 @@ class Entry
 		return true
 
 export class File < Entry
-	def constructor data, parent
+	constructor data, parent
 		super
 		body = originalBody = savedBody = data.body
 		ext = data.ext or name.split('.').pop!
@@ -194,7 +194,7 @@ export class Category < Entry
 export class Dir < Entry
 	prop examples
 
-	def constructor data, parent
+	constructor data, parent
 		super
 
 	get sections
@@ -232,7 +232,7 @@ export class Dir < Entry
 
 export class Root < Dir
 	service = null
-	def constructor
+	constructor
 		super
 
 	def connectToWorker sw
