@@ -21,5 +21,4 @@ jobs:
           git -C /home/imba/v1.imba.io pull origin v1
           cd /home/imba/v1.imba.io  && \
           /usr/bin/yarn install && \
-          /usr/bin/yarn build && \
-          /usr/bin/yarn build-content
+          /usr/bin/yarn build
