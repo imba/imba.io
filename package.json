@@ -45,7 +45,7 @@
     "@types/node": "^13.11.1",
     "body-parser": "^1.19.0",
     "chokidar": "^3.3.1",
-    "imba": "^2.0.0-alpha.77",
+    "imba": "2.0.0-alpha.77",
     "marked": "^0.7.0"
   }
 }
