@@ -93,6 +93,7 @@ tag app-root
 			<div.header>
 				<app-logo[d:flex h:8 c:teal4] route-to='/'>
 				<div[flex: 1]>
+				<input id="search-input" placeholder="search...">
 				<div[d:flex cursor:pointer]>
 					<a.tab @click.emit('showide')> "Examples"
 					<a.tab href='https://github.com/imba/imba'> "GitHub"
