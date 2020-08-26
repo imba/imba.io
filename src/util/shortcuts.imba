@@ -60,7 +60,7 @@ class HotKeyManager
 	static get instance
 		$instance ||= new self()
 
-	def constructor
+	constructor
 		combos = {'*': {}}
 		identifiers = {}
 		labels = {}

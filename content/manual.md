@@ -962,7 +962,7 @@ Ranges **must include spaces** around `..` and `...`
 ##### toIterable [snippet]
 ```imba
 class LabelString
-    def constructor label
+    constructor label
         label = label
 
     def toIterable
@@ -1364,7 +1364,7 @@ An important feature of Classes is the ability to inherit from other classes. Fo
 
 ```imba
 class Animal 
-	def constructor name
+	constructor name
 		name = name
 
     def move distance = 0
@@ -1382,6 +1382,24 @@ dog.move 10 # Animal moved 10 meters.
 dog.speak! # Mitzie barks.
 ```
 An inherited class will inherit all methods and functionality from the parent class.
+
+If the heritor class accesses any variables or functions on self in its constructor, the constructor must first call `super`.
+
+```imba
+class Animal 
+	constructor name
+		name = name
+
+class Dog < Animal
+    constructor name, breed
+        super # calls Animal constructor with the same arguments (name, breed). 
+        # super(name) # This would be an explit way to achieve the same effect
+        breed = breed
+
+let dog = new Dog 'Mitzie', 'Pug'
+console.log dog.name 
+dog.speak! # Mitzie barks.
+```
 
 ## Super
 
@@ -1404,7 +1422,7 @@ class Designer < Person
 ##### super.property
 ```imba
 class Animal 
-	def constructor name
+	constructor name
 		name = name
 
     def move distance = 0
@@ -1445,7 +1463,7 @@ console.log(todo.desc) # No description
 
 ```imba
 class Point
-    def constructor x,y
+    constructor x,y
         self.x = x
         self.y = y
     
@@ -1484,7 +1502,7 @@ class Retangle
 Or
 ```imba
 class Retangle
-    def constructor height, width
+    constructor height, width
         self.height = height
         self.width = width
 ```
