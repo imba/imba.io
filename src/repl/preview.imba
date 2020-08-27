@@ -27,9 +27,10 @@ tag app-repl-preview
 			if $console
 				$console.context = win
 				$console.native = win.console
+				$console.autoclear!
 				win.console.log = $console.log.bind($console)
 				win.console.info = $console.info.bind($console)
-				$console.clear!
+				# $console.clear!
 
 		$iframe.onload = do
 			return unless $refreshed

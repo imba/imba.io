@@ -10,7 +10,7 @@ for num in [1,2,3]
     num * 2
 ```
 
-##### with optional index parameter [snippet]
+##### with optional index parameter [snippet] [preview=console]
 ```imba
 for num,index in [1,2,3]
     num * index

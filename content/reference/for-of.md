@@ -3,11 +3,11 @@
 The for...of statement creates a loop iterating over iterable objects, including: built-in String, Array, array-like objects (e.g., arguments or NodeList), TypedArray, Map, Set, and user-defined iterables. This maps directly to `for of` [in javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of) with a few convenient additions.
 
 
-##### Iterating over an `Array` [snippet]
+##### Iterating over an `Array` [snippet] [preview=console]
 ```imba
 let iterable = [10,20,30]
 for value of iterable
-    console.log value
+    puts value
 ```
 
 ##### Iterating over a `String` [snippet]

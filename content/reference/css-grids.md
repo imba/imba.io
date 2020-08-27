@@ -21,9 +21,9 @@ imba.mount do
             <div> genre
 ```
 
-In combination with css modifiers, especially breakpoints for different screen sizes, we can then create reusable responsive grids very easily. 
-
 ### Responsive example [preview=xl]
+
+In combination with css modifiers, especially breakpoints for different screen sizes, we can then create reusable responsive grids very easily. 
 
 ```imba
 css body p:2

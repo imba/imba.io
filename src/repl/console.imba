@@ -94,7 +94,7 @@ tag repl-console-item
 	def render
 		<self.item> <.body>
 			for item in data
-				<span.arg> any(item,context,0)
+				<span.arg> any(item,context,1)
 
 	def show
 		let h = offsetHeight
@@ -139,10 +139,14 @@ tag repl-console
 
 	def clear
 		$body.innerHTML = ''
+		$autoclear = no
 		count = 0
-		
+	
+	def autoclear
+		$autoclear = yes
 
 	def log ...params
+		clear! if $autoclear
 		# $body.appendChild <div.item> any(params,context,0)
 		let item = <repl-console-item.item context=context data=params>
 		if isTransient
@@ -172,6 +176,7 @@ tag repl-console
 		count++
 
 	def info ...params
+		clear! if $autoclear
 		$body.appendChild <div.heading> params[0]
 		count++
 
