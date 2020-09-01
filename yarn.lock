@@ -1761,15 +1761,10 @@ iferr@^0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/iferr/-/iferr-0.1.5.tgz#c60eed69e6d8fdb6b3104a1fcbca1c192dc5b501"
 
-imba-document@^0.1.11:
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/imba-document/-/imba-document-0.1.11.tgz#8727af55213cc58144cff6a2fc20be33c1260052"
-  integrity sha512-lXgQ3kur436GCLcVvYtNndP2DbDoFKmASCcOkWOmj2tVMwKpHOnL98T6ZpoVxInuNO1Dj0uvIVMmhMn8vP6ElQ==
-
-imba@^2.0.0-alpha.62:
-  version "2.0.0-alpha.62"
-  resolved "https://registry.yarnpkg.com/imba/-/imba-2.0.0-alpha.62.tgz#fb86e568f15525a4eabde798ce16d6a0d7738969"
-  integrity sha512-fK4G7UQWN42vTo6GvSOc0glJHWg2VJ1cYD6cyFCojWqPwB83+0K4JnaUt4vJXVf8lK8ZTYor2A8A0jjC7gPSXA==
+imba@^2.0.0-alpha.90:
+  version "2.0.0-alpha.90"
+  resolved "https://registry.yarnpkg.com/imba/-/imba-2.0.0-alpha.90.tgz#878628dcf91e97a7ad2331c28af107d75d3aa0f5"
+  integrity sha512-k8YF3HxNes6DHQAwuR5AzlV746KBebpgs9SxsN0pBRb2+CwEhTatsLISco6l74H0Q5eynaicBpvfE7lm3gf1zQ==
 
 import-local@2.0.0, import-local@^2.0.0:
   version "2.0.0"

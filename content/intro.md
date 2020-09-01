@@ -145,7 +145,7 @@ tag todo-app
 
 ##### Global Styles
 ```imba
-css .button
+global css .button
     padding: 1rem 2rem
     color:gray7
     border: 1px solid gray2

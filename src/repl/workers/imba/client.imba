@@ -5,7 +5,7 @@ var STOP_WHEN_IDLE_FOR = 2 * 60 * 1000 # 2min
 
 export class WorkerManager
 
-	def constructor path, defaults
+	constructor path, defaults
 		path = path
 		defaults = defaults
 		worker = null

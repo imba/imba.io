@@ -5,7 +5,7 @@ export class Adapter
 	prop worker
 	prop selector
 
-	def constructor defaults, selector, worker
+	constructor defaults, selector, worker
 		defaults = defaults
 		selector = selector
 		worker = worker
@@ -29,7 +29,7 @@ export class Adapter
 
 export class DiagnosticsAdapter < Adapter
 	
-	def constructor defaults, selector, worker
+	constructor defaults, selector, worker
 		super
 
 		var onModelAdd = do |model|

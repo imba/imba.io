@@ -1,5 +1,5 @@
 export class Todo
-	def constructor title
+	constructor title
 		title = title
 		done = no
 

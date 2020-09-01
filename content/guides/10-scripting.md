@@ -499,7 +499,7 @@ Construtors are also known as initializer or prototype.
 ##### syntax
 ```imba
 class ClassName
-	def constructor argOne, argTwo, argThree
+	constructor argOne, argTwo, argThree
 		propOne = argOne
 		propTwo = argTwo
 		propThree = argThree
@@ -531,7 +531,7 @@ var joe = Person.new
 The above have the same three properties, but we don't want them to have the same three values. We need to pass values dynamically to each one, and that is done via arguments in the **constructor method**
 ```imba
 class Person
-	def constructor x, y, z
+	constructor x, y, z
 		name = x
 		age = y
 		job = z
@@ -554,7 +554,7 @@ console.log joe.age
 > **TIP** Imba also knows the difference between props and arguments within the cunstructor method, so you could use the same name if you wanted.
 ```imba
 class Person
-	def constructor name, age, job
+	constructor name, age, job
 		name = name
 		age = age
 		job = job
@@ -564,7 +564,7 @@ class Person
 Don't forget that Methods, are simply functions within a Class. So anything you can do in a function, you can do in a method.
 ```imba
 class Person
-	def constructor name, age, job
+	constructor name, age, job
 		name = name
 		age = age
 		job = job
@@ -583,11 +583,11 @@ For example, an Athlete is also a person, so it makes sense to inherit the prope
 
 ```imba
 class Person 
-	def constructor name, age
+	constructor name, age
 		name = name
 		age = age
 class Athlete
-	def constructor name, age, trophies
+	constructor name, age, trophies
 		name = name
 		age = age
 		trophies = trophies
@@ -601,24 +601,24 @@ class Athlete < Person
 In order to call the Parent's constructor we need to use the super() method within our Athlete's constructor.
 ```imba
 class Athlete < Person
-	def constructor
+	constructor
 		super!
 ```
 If our Person constructor did not take arguments, the above would be enough, but since we want to dynamically pass arguments from the athelete constructor to the person constructor, we need to pass them inside the `super(...)` method.
 
 ```imba
 class Athlete < Person
-	def constructor name, age
+	constructor name, age
 		super(name, age)
 ```
 We can then pass the new arguments that will be unique to the althele class.
 ```imba
 class Person
-	def constructor name, age
+	constructor name, age
 		name = name
 		age = age
 class Athlete < Person
-	def constructor name, age, trophies
+	constructor name, age, trophies
 		super(name, age) # calls the parent constructor, and passes arguments.
 		trophies = trophies
 ```
@@ -641,11 +641,11 @@ Let's grab the name prop on our greet method.
 
 ```imba
 class Person
-	def constructor name, age
+	constructor name, age
 		name = name
 		age = age
 class King < Person
-	def constructor name, age
+	constructor name, age
 		super(name, age)
 	def greet
 		console.log "Your Royal Highness, King {name}."
@@ -664,7 +664,7 @@ In the example below. `super` passes a value to the parameter `words` of the wri
 
 ```imba
 class Person
-	def constructor name
+	constructor name
 		name = name
 	def writes words
 		console.log "{name} writes an average of {words} words a day."
