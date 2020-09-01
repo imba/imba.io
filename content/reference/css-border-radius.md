@@ -8,7 +8,7 @@
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid pa:center border:1px solid gray3
+css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid ja:center border:1px solid gray3
 css section.group px:6 jc:center gap:2
 # ---
 imba.mount do  <section.group>
@@ -28,7 +28,7 @@ imba.mount do  <section.group>
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid pa:center border:1px solid gray3
+css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid ja:center border:1px solid gray3
 css section.group px:6 jc:center gap:2
 # ---
 imba.mount do  <section.group>
@@ -45,7 +45,7 @@ To override the default shadows or add new ones simply specify `--border-radius-
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid pa:center border:1px solid gray3
+css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid ja:center border:1px solid gray3
 css section.group px:6 jc:center gap:3
 # ---
 global css @root

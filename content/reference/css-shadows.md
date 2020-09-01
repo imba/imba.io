@@ -6,7 +6,7 @@
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 size:14 bg:white radius:2 d:grid pa:center
+css div c:gray6 size:14 bg:white radius:2 d:grid ja:center
 css section.group px:6 jc:center gap:4 max-width:280px @xs:initial
 # ---
 imba.mount do <section.group>
@@ -25,7 +25,7 @@ Imba comes with 7 predefined shadows (from tailwind).
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 size:14 bg:white radius:2 d:grid pa:center
+css div c:gray6 size:14 bg:white radius:2 d:grid ja:center
 css section.group px:6 jc:center gap:4 max-width:280px @xs:initial
 # ---
 global css @root
