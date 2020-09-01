@@ -62,7 +62,7 @@ tag app-menu
 				c:yellow6 fs:1/1 tt:uppercase p:1 radius:1 ml:1 va:top
 
 	def render
-		console.log 'app-menu for data',data
+		# console.log 'app-menu for data',data
 		let root = data.root
 		let guides = ls('/guides')
 		let ref = ls('/reference')
