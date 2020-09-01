@@ -301,7 +301,7 @@ tag doc-colors
 	css .pink8 bg:pink8 c:pink1
 	css .pink9 bg:pink9 c:pink1
 
-	css .palette my:2 fs:sm fw:bold cursor:default radius:2 of:hidden d:flex
+	css .palette my:2 fs:sm fw:bold cursor:default rd:sm of:hidden d:flex
 	css .color radius:0 flex:1 p:1 h:12 d:flex ai:center jc:center w:5 
 		span o:0 tween:30ms ease-in-out 
 		@first span o:0.3

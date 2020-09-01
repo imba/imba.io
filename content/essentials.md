@@ -440,7 +440,7 @@ import 'util/styles'
 
 # ---
 let state = 'one'
-css button.checked shadow:inset bg:gray2 o:0.6
+css button.checked bxs:inset bg:gray2 o:0.6
 
 imba.mount do <section>
     <div.group>

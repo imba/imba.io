@@ -79,7 +79,7 @@ tag doc-section-filters
 		mr:2 fw:500 fs:8
 		outline@focus:none
 		c:gray6 @hover:gray7 .checked:gray9
-		bdb:2px solid bdc:clear .checked:teal6
+		bdb:2px solid bc:clear .checked:teal6
 
 	prop filter
 
@@ -117,7 +117,7 @@ tag doc-section
 
 		>>> app-code-inline
 			d:inline-block fs:0.75em ff:mono lh:1.25em
-			bg: gray3/35 br:sm va:middle p:0.1em 5px
+			bg: gray3/35 rd:sm va:middle p:0.1em 5px
 			-webkit-box-decoration-break: clone
 
 	css .snippet,.h5 $bg:orange2 $hbg:teal4 $hc:teal9
@@ -131,13 +131,13 @@ tag doc-section
 
 	css .head pos:relative c:#3A4652 bc:gray3/75
 		&.l0 fs:28px/1.4 fw:600 pb:2
-		&.l1 fs:22px/1.2 fw:600 pb:3 bdbw:0px mb:3
-		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bdbw:0px mb:3
-		&.l2 fs:20px/1.2 fw:500 pb:3 bdbw:1px mb:3
-		&.l3 fs:18px/1.2 fw:500 pb:3 bdbw:1px mb:3
-		&.tip fs:16px/1.2 fw:500 pb:3 bdbw:0 mb:0
-		&.snippet,&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bdbw:0
-			.title px:2 py:1 radius:md pos:relative bg:$hbg d:inline-block
+		&.l1 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3
+		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3
+		&.l2 fs:20px/1.2 fw:500 pb:3 bwb:1px mb:3
+		&.l3 fs:18px/1.2 fw:500 pb:3 bwb:1px mb:3
+		&.tip fs:16px/1.2 fw:500 pb:3 bwb:0 mb:0
+		&.snippet,&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bwb:0
+			.title px:2 py:1 rd:md pos:relative bg:$hbg d:inline-block
 			app-code-inline fs:12px va:baseline bg:clear p:0 fw:bold c:inherit
 
 		&.op pb:0
@@ -156,7 +156,7 @@ tag doc-section
 			c:blue6 @hover:gray7 .active:gray9
 			# bdb:2px solid
 			bdb:2px solid blue6
-			bdc:clear @hover:gray7 .active:teal6
+			bc:clear @hover:gray7 .active:teal6
 			c:gray6 @hover:gray7 .active:gray9
 			mb:-2px pb:1
 			# bdc.active:clear
@@ -174,7 +174,7 @@ tag doc-section
 		&.snippet,&.h5,&.op pl:4 mt:-2 pb:1
 			>>> p my:3
 		
-		&.tip mt:-2 pb:1 ml:3 br:md p:4 bg:$bg
+		&.tip mt:-2 pb:1 ml:3 rd:md p:4 bg:$bg
 			>>> p fs:md- c:gray9/70
 
 		>>> p my:3

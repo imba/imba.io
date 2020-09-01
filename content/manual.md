@@ -1972,7 +1972,7 @@ import 'util/styles'
 
 # ---
 let state = 'one'
-css button.checked shadow:inset bg:gray2 o:0.6
+css button.checked bxs:inset bg:gray2 o:0.6
 
 imba.mount do <section>
     <div.group>
@@ -2696,7 +2696,7 @@ imba.mount do  <section>
 # ~preview=lg
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 size:14 bg:white radius:2 d:grid pa:center
+css div c:gray6 size:14 bg:white radius:2 d:grid ja:center
 css section.group px:6 jc:center gap:4 max-width:280px @xs:initial
 # ---
 global css @root
@@ -2705,25 +2705,24 @@ global css @root
     --box-shadow-ring: 0 0 0 4px blue4/30, 0 0 0 1px blue4/90
 
 imba.mount do  <section.group>
-    <div[shadow:ring]> "ring" # custom
-    <div[shadow:xxs]> "xxs"
-    <div[shadow:xs]> "xs"
-    <div[shadow:sm]> "sm"
-    <div[shadow:md]> "md"
-    <div[shadow:lg]> "lg"
-    <div[shadow:xl]> "xl"
-    <div[shadow:2xl]> "2xl"
-    <div[shadow:ring,2xl]> "combo"
+    <div[bxs:ring]> "ring" # custom
+    <div[bxs:xxs]> "xxs"
+    <div[bxs:xs]> "xs"
+    <div[bxs:sm]> "sm"
+    <div[bxs:md]> "md"
+    <div[bxs:lg]> "lg"
+    <div[bxs:xl]> "xl"
+    <div[bxs:2xl]> "2xl"
+    <div[bxs:ring,2xl]> "combo"
     
 ```
 
-## Radius
+## Radius [preview=200px]
 
 ```imba
-# ~preview=200px
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid pa:center border:1px solid gray3
+css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid ja:center border:1px solid gray3
 css section.group px:6 jc:center gap:3
 # ---
 global css @root
@@ -2732,13 +2731,13 @@ global css @root
     --border-radius-bubble: 5px 20px 15px 
 
 imba.mount do  <section.group>
-    <div[br:xs]> "xs"
-    <div[br:sm]> "sm"
-    <div[br:md]> "md"
-    <div[br:lg]> "lg"
-    <div[br:xl]> "xl"
-    <div[br:full]> "full"
-    <div[br:bubble]> "bubble"
+    <div[rd:xs]> "xs"
+    <div[rd:sm]> "sm"
+    <div[rd:md]> "md"
+    <div[rd:lg]> "lg"
+    <div[rd:xl]> "xl"
+    <div[rd:full]> "full"
+    <div[rd:bubble]> "bubble"
 ```
 
 
@@ -3561,9 +3560,9 @@ import 'util/styles'
 # ---
 tag drag-me
 	css d:block pos:relative p:3 m:1 radius:sm cursor:default
-		bg:white shadow:sm
+		bg:white bxs:sm
 		@touch scale:1.02
-		@move scale:1.05 rotate:2deg zi:2 shadow:lg
+		@move scale:1.05 rotate:2deg zi:2 bxs:lg
 
 	def build
 		x = y = 0

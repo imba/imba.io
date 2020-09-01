@@ -52,7 +52,7 @@ global css @root
     --border-radius-bubble: 5px 20px 15px 
 
 imba.mount do  <section.group>
-    <div[br:xl]> "xl"
-    <div[br:bubble]> "bubble"
+    <div[rd:xl]> "xl"
+    <div[rd:bubble]> "bubble"
 ```
 

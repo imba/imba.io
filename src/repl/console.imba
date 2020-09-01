@@ -120,7 +120,7 @@ tag repl-console
 
 	css $body >>> .item p:1 2 mx:1 bdb:gray2 bdb@last:clear
 	css $snackbars d:block pos:absolute w:100% t:0 l:0 zi:35
-	css $snackbars >>> .item .body m:2 p:2 3 br:3 bg:gray1 bs:xs bd:gray3 fs:sm/1.3
+	css $snackbars >>> .item .body m:2 p:2 3 rd:3 bg:gray1 bs:xs bd:gray3 fs:sm/1.3
 
 	css .heading d:block p:1 3 0 mx:1 c:gray6 fs:sm fw:500 mb:-2
 

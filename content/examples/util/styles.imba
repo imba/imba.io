@@ -73,11 +73,11 @@ global css
 		fs:md/1.2
 		c:gray8 @hover:gray9
 		bg:gray1 @hover:gray2 @active:gray3
-		shadow:xs
+		bxs:xs
 		us:none
 		tween:100ms ease-in-out
 		y@active:1px
-		@focus outline:none shadow:0 0 0 3px blue3/35 bc:blue4
+		@focus outline:none bxs:0 0 0 3px blue3/35 bc:blue4
 		@disabled c:gray5
 		# @is-busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none
 
@@ -116,11 +116,11 @@ global css
 		c:gray8 @hover:gray9
 		bc:gray4 @hover:gray5/80
 		bg:white @focus:white
-		@focus shadow:0 0 0 3px blue3/35 bc:blue4
+		@focus bxs:0 0 0 3px blue3/35 bc:blue4
 		@disabled c:gray5
 
 	input[type=range],input[type=checkbox],input[type=radio]
-		p:0 bw:0 shadow:none min-width:initial
+		p:0 bw:0 bxs:none min-width:initial
 
 	input[type=number] w:60px pr:0
 

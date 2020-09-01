@@ -45,16 +45,16 @@ tag app-root
 		tween:250ms cubic
 	
 	css $repl
-		pos:fixed of:hidden inset:0 zi:2000 radius:0 shadow:xl
+		pos:fixed of:hidden inset:0 zi:2000 radius:0 bxs:xl
 		tween:transform 250ms quint-out
 		y:110% .routed:0
 
 	css .open-ide-button
 		bottom:0 right:0 m:5 border:gray2 py:3 px:4 radius:3
-		cursor:pointer bg:teal3/90 c:teal8 fw:bold border:teal4/20 shadow:md
+		cursor:pointer bg:teal3/90 c:teal8 fw:bold border:teal4/20 bxs:md
 		tween:100ms cubic-out
 		pos:fixed d:block @not-md:none
-		@hover y:-2px shadow:lg bg:teal3
+		@hover y:-2px bxs:lg bg:teal3
 		@after o:0.7 fs:xs content: " " $shortcut
 
 	css .header

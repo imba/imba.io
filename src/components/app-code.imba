@@ -206,7 +206,7 @@ tag app-code
 
 tag app-code-block < app-code
 
-	css pos:relative br:sm fs:12px @md:13px d:block .shared:none
+	css pos:relative rd:sm fs:12px @md:13px d:block .shared:none
 		$bg:$code-bg-lighter
 		$preview-size:72px .md:120px .lg:180px .xl:240px
 
@@ -224,28 +224,18 @@ tag app-code-block < app-code
 
 	css code d:block ofx:auto ff:mono ws:pre p:3 4 p@md:5 6
 	# what should this style?
-	css label bg:gray7 br:2 pos:absolute d:flex ai:center p:1
+	css label bg:gray7 rd:md pos:absolute d:flex ai:center p:1
 
-	css .btn px:1 mx:1 c:gray6 fw:500 br:2 bg@hover:gray7/10 outline@focus:none
+	css .btn px:1 mx:1 c:gray6 fw:500 rd:md bg@hover:gray7/10 outline@focus:none
 		@not-md mx:0 ml:1 bg:gray7/90 bg@hover:gray7/100 c:gray4
 		@is-active bg:blue6 c:white
 
-	css .tabsz d:flex radius:2 d:flex cursor:default us:none
-		@before
-			pos:absolute inset:0 m:-1 radius:3 b:1px dashed yellow7 content:' '
-			box-shadow: 0px 0px 10px 2px rgba(42, 50, 63,0.7), inset 0px 0px 2px 2px rgba(42, 50, 63,0.7)
-			rotate:-1deg
-
-	css .tabz d:flex px:3 py:1 fs:sm fw:500 br:3px 3px 0 0
-		bg:gray2/50 @hover:gray3 .on:var(--bg)
-		c:gray6 c.on:teal2/90
-
 	css $editor
-		bg:$bg br:inherit
+		bg:$bg rd:sm
 
 	css	$header pos:relative zi:2 bg:#3d4253
 		d:hflex @empty:none
-		btr:inherit
+		rdt:inherit
 		c:gray6 fs:sm fw:500 
 		.tabs d:hflex px:2 py:1
 		.actions ml:auto px:2 py:1 zi:2
@@ -258,7 +248,7 @@ tag app-code-block < app-code
 
 	css $preview
 		min-height:$preview-size
-		mt:0 br:inherit
+		mt:0 r:inherit
 		color:gray6
 		pos:absolute
 		t:0 l:100%
@@ -267,7 +257,7 @@ tag app-code-block < app-code
 		h:100%
 		w:$doc-margin
 		pl:4
-		>>> .frame shadow:xs br:inherit
+		>>> .frame shadow:xs rd:inherit
 		>>> .controls d@lt-xl:none
 		@lt-xl pos:relative l:0 h:$preview-size m:0 mt:2 w:100% p:0 max-width:initial
 
@@ -276,7 +266,7 @@ tag app-code-block < app-code
 	css &.console
 		$preview h:auto min-height:initial
 		$preview >> .body d:none
-		$preview >>> $console shadow:xs br:sm border:1px solid gray3 bg:white
+		$preview >>> $console bxs:xs rd:sm border:1px solid gray3 bg:white
 			$header d@force:none
 			$scroller max-height@force:140px p:1 fs:sm
 		

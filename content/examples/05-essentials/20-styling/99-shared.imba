@@ -7,10 +7,10 @@ export css %box
 
 export css %btn
 	p:2 4 radius:3 fw:500 cursor:pointer
-	c:gray8 bw:1 bc:black/2 shadow:sm
+	c:gray8 bw:1 bc:black/2 bxs:sm
 	transition: 100ms cubic-out
 	d:grid pc:center
-	@hover y:-2px shadow:md
+	@hover y:-2px bxs:md
 	&.primary bg:blue5 @hover:blue6 c:blue1 @hover:white
 	&.teal bg:teal2 @hover:teal3 c:teal7 @hover:teal8
 	&.blue bg:blue2 @hover:blue3 c:blue7 @hover:blue8
