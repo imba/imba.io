@@ -3268,7 +3268,7 @@ You can add arbitrary properties to the touch object if you need to keep track o
 
 ## Thresholds
 
-##### moved ( threshold = 4px )
+##### moved ( threshold = 4px ) [preview=lg]
 
 ```imba
 # ~preview=lg
@@ -3287,7 +3287,7 @@ This guard will break the chain unless the touch has moved more than `threshold`
 
 
 
-##### moved-up ( threshold = 4px )
+##### moved-up ( threshold = 4px ) [preview=lg]
 ```imba
 # ~preview=lg
 import 'util/styles'
