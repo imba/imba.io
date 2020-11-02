@@ -260,6 +260,8 @@ tag app-document
 	css color: #4a5568 lh: 1.625 pt:4
 	css $content > mb@last:0 mt@first:0
 
+	css .embed w:100% bd:0px h:500px
+
 	def render
 		let doc = data
 		while doc && doc.parent.options.tabbed
@@ -272,7 +274,7 @@ tag app-document
 				unless doc.options.tabbed
 					<.toc> for item in doc.docs
 						<doc-section-link data=item level=(level+1)>
-			
+
 			<app-document-nav data=doc>
 	
 tag embedded-app-document

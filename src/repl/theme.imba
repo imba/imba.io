@@ -104,6 +104,7 @@ export const theme =
 		{ token: 'identifier.env', foreground: '@keyword' },
 		{ token: 'identifier.special', foreground: '@special' },
 		{ token: 'identifier.import', foreground: '@limport' },
+		{ token: 'identifier.symbol', foreground: '@keyword' },
 		
 		{ token: 'entity.name', foreground: '@decl'},
 		{ token: 'entity.name.type', foreground: '@decl'},

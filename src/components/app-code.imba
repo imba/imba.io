@@ -361,7 +361,7 @@ tag app-code-block < app-code
 						<div.tabs> for item in files
 							<a.tab.item .on=(file==item) @click.stop.silence=openFile(item)> item.name
 						<div.actions>
-							<div.item @click=openInEditor> "open"
+							<div.item @click=openInEditor> 'open'
 					if file
 						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
 				if options.preview or (files[0].name == 'main.imba')

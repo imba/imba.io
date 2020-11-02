@@ -1,4 +1,4 @@
-import 'imba/src/imba/router/router.imba'
+import 'imba/router'
 
 import './util/shortcuts'
 

@@ -7,10 +7,10 @@ The for...of statement creates a loop iterating over iterable objects, including
 ```imba
 let iterable = [10,20,30]
 for value of iterable
-    puts value
+    console.log value
 ```
 
-##### Iterating over a `String` [snippet]
+##### Iterating over a `String` [snippet] [preview=console]
 ```imba
 let iterable = 'foo'
 for value of iterable
@@ -18,13 +18,13 @@ for value of iterable
 ```
 
 
-##### Iterating over a `TypedArray`
+##### Iterating over a `TypedArray` [snippet] [preview=console]
 ```imba
 let iterable = new Uint8Array([0x00,0xff])
 for value of iterable
     console.log value
 ```
-##### Iterating over a `Map`
+##### Iterating over a `Map` [snippet] [preview=console]
 ```imba
 let iterable = new Map([['a',1],['b',2],['c',3]])
 for entry of iterable
@@ -35,14 +35,14 @@ for [key,value] of iterable
     console.log value
 ```
 
-##### Iterating over a `Set`
+##### Iterating over a `Set` [snippet] [preview=console]
 ```imba
 let iterable = new Set([1, 1, 2, 2, 3, 3])
 for value of iterable
     console.log value
 ```
 
-##### Iterating over the arguments object
+##### Iterating over the arguments object [snippet] [preview=console]
 ```imba
 def fn
     for arg of arguments
