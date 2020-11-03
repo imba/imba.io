@@ -4,12 +4,13 @@
 
 ## Why Imba?
 
+# Grammar
 
-# Basic Types
+## Literals
 
 It is important to understand that Imba compiles directly to readable JavaScript. This means that every native type with all of their methods, properties and behaviour are the exact same. So, strings are just strings, arrays are just arrays etc. Mozilla Developer Network is a great place to look up extensive documentation for these things.
 
-## Strings
+### Strings
 
 ```imba
 let single = 'single quotes'
@@ -21,7 +22,7 @@ let template = `current version is {imba.version}`
 Imba uses `{}` for string interpolation while JavaScript uses `${}`. If you want interpolated strings with literal curly-braces, remember to escape them with `\`. Other than that, the String type is identical to String in JavaScript. See documentation at [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).
 
 
-### Multiline Strings
+#### Multiline Strings
 
 Regular string literals can be written over multiple lines, but line breaks are ignored.
 ```imba
@@ -51,7 +52,7 @@ let string = '''
 ```
 
 
-### Template Strings
+#### Template Strings
 ```imba
 `string text`
 # multiple lines
@@ -62,12 +63,12 @@ let string = '''
 # tagged template
 method`string text {expression} string text`
 ```
-### Tagged templates [tip]
+#### Tagged templates [tip]
 
 Tagged templates from JavaScript are on the roadmap, but not currently supported.
 
 
-## Numbers
+### Numbers
 
 ```imba
 let integer = 42
@@ -77,7 +78,7 @@ let binary = 0b0010110
 ```
 The Number type is identical to Number in JavaScript. See documentation at [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number).
 
-### Numeric Separators
+#### Numeric Separators
 
 You can use `_` as a separator inside numbers for improved readability.
 
@@ -88,7 +89,7 @@ let hex = 0xA0_B0_C0
 let binary = 0b0010_1100
 ```
 
-### Numeric Constants
+#### Numeric Constants
 
 ```imba
 const biggestNum     = Number.MAX_VALUE
@@ -98,9 +99,9 @@ const negInfiniteNum = Number.NEGATIVE_INFINITY
 const notANum        = Number.NaN
 ```
 
-## Arrays
+### Arrays
 
-##### Array Literal
+###### Array Literal
 ```imba
 [1, 2, 3, 4]
 ```
@@ -116,22 +117,22 @@ const array = [
 ]
 ```
 
-## Objects
+### Objects
 
-##### Syntax
+###### Syntax
 ```imba
 let object = {a: 'foo', b: 42, c: {}}
 console.log(object.a) # => 'foo'
 ```
 
-##### Dynamic keys
+###### Dynamic keys
 ```imba
 let field = 'age'
 let person = {name: 'Bob Smith', [field]: 32, gender: 'male'}
 console.log(person.age) # => 'Bob Smith'
 ```
 
-##### Indented
+###### Indented
 ```imba
 let person =
     name: 'Bob Smith'
@@ -141,7 +142,7 @@ console.log(person.name) # => 'Bob Smith'
 ```
 
 
-##### Dot notation `.`
+###### Dot notation `.`
 ```imba
 let person = {name: 'Bob Smith', age: 32, gender: 'male'}
 # ---
@@ -149,7 +150,7 @@ person.name
 person.age = 33
 ```
 
-##### Bracket notation `[]`
+###### Bracket notation `[]`
 ```imba
 let person = {name: 'Bob Smith', age: 32, gender: 'male'}
 # ---
@@ -157,7 +158,7 @@ person['name']
 person['age'] = 33
 ```
 
-##### Destructuring
+###### Destructuring
 ```imba
 let a = 'foo'
 let b = 42
@@ -166,7 +167,7 @@ let object = {a,b,c}
 console.log(object) # => {a: 'foo', b: 42 c: {}}
 ```
 
-## Booleans
+### Booleans
 
 ```imba
 let bool1 = true
@@ -175,7 +176,7 @@ let bool3 = false
 let bool4 = no # alias for false
 ```
 
-## Null
+### Null
 
 ```imba
 let value = null
@@ -183,29 +184,29 @@ let value = null
 
 The value `null` represents the intentional absence of any object value. It is one of JavaScript's primitive values and is treated as falsy for boolean operations.
 
-## Undefined
+### Undefined
 
 The global `undefined` property represents the primitive value `undefined`. A variable that has not been assigned a value is of type undefined
 
-### Strict equality
+#### Strict equality
 
 Example
 
-## Regular Expressions
+### Regular Expressions
 
 The RegExp object is used for matching text with a pattern. Read more at [MDN RegExp Reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp). For an introduction to regular expressions, read the [Regular Expressions chapter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions) on MDN.
 
-##### Literal
+###### Literal
 ```imba
 let regex = /ab+c/i
 ```
 
-##### Constructor
+###### Constructor
 ```imba
 let regex = new RegExp('ab+c', 'i')
 ```
 
-##### Multiline
+###### Multiline
 ```imba
 let regex = ///
     ab+ # allows comments and whitespace
@@ -213,11 +214,11 @@ let regex = ///
 ///
 ```
 
-## Ranges
+### Ranges
 
-# Keywords & Identifiers
+### Elements
 
-## Keywords
+One of the unique features of Imba is that DOM elements are true first-class citizens of the language.
 
 ## Identifiers
 
@@ -276,10 +277,9 @@ Also, identifiers `$0`, `$1`, `$2` and so forth are not valid variables names â€
 
 
 
+## Variables
 
-# Variables & Scoping
-
-## Declaring variables
+### Declaring variables
 
 Variables are declared using `let` and `const` keywords. `let` variables can be changed through reassignment, while `const` variables are readonly after the initial declaration.
 
@@ -299,11 +299,13 @@ if let user = array.find(do $1 isa Person)
 	yes
 ```
 
-### Tip [tip]
+#### Tip [tip]
 
 In all the examples throughout this documentation you can hover over an identifier to highlight all references to the variable. Identifiers resolving to variables have a different color than identifiers resolving as implicit accessors of self.
 
-## Lexical Scopes
+## Scoping
+
+### Lexical Scopes
 
 `if`, `elif`, `else`, `do`, `for`,`while`,`until`,`switch`,`do` create block scopes. This means that any variable declared in the indented code inside these statements are only available within that scope.
 
@@ -316,7 +318,7 @@ if true
 y # not a variable in scope
 ```
 
-## This vs Self
+### This vs Self
 
 If you come from js, `this` will be a well-known concept. While `this` still exists in imba, working exactly like its js counterpart, `self` is what you should use in imba. It is a very common pattern in js to need to refer to an outer scope when dealing with callbacks, event listeners and more.
 ```javascript
@@ -340,7 +342,7 @@ class Item
 ```
 If this looks confusing, fear not â€“ `this` is something you will practically never see or use in imba codebases.
 
-## Implicit Self
+### Implicit Self
 
 To understand Imba, you have to understand the concept of implicit self. A lone (lowercase) identifier will always be treated as an accessor on `self` unless a variable of the same name exists in the current scope or any of the outer scopes. 
 
@@ -364,11 +366,11 @@ class Line
 ```
 Self always refers to the closest *selfish* scope, and lone identifiers not declared in the lexical scope are treated as properties on self. **Uppercased identifiers are not treated as accessors**. So `Array`, `Map`, or `SomeIdentifier` will always resolve the same way they do in JavaScript.
 
-## Global variables
+### Global variables
 
 Mention the globals.
 
-## Variable hoisting
+### Variable hoisting
 
 Variables are *not* hoisted in Imba. This means that a reference to a variable before its declaration will behave is if there is no declaration - and instead be an implicit access on self.
 
@@ -378,10 +380,6 @@ def method
 	let data = {a:1,b:2}
 	data # in scope
 ```
-
-## Root Scope
-
-> TODO Explain how the root scope works with self++
 
 # Operators
 
@@ -1491,16 +1489,6 @@ class Dog < Animal
 let dog = new Dog 'Mitzie'
 dog.move 10 # Mitzie makes a noise. Mitzie ran 10 meters.
 ```
-
-# Methods
-
-# Properties
-
-## Stored Properties
-## Lazy Properties
-## Computed Properties
-## Meta Properties
-
 
 # Import & Export
 

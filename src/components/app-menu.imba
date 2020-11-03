@@ -44,7 +44,7 @@ tag app-menu-section
 
 	<self>
 		<a.l0.section[d:block p:1 2 fs:xs c:teal5 tt:uppercase cursor:default] route-to=data.href> data.title
-		<div[pb:4].content.{data.slug}> for item in data.children
+		<div[pb:4 pl:2].content.{data.slug}> for item in data.children
 			<app-menu-item data=item level=1>
 
 tag app-menu
@@ -74,11 +74,11 @@ tag app-menu
 				<app-menu-section data=ls('/handbook/language')>
 				<app-menu-section data=ls('/handbook/tags')>
 				<app-menu-section data=ls('/handbook/styles')>
-				<app-menu-section data=main>
-				<app-menu-section data=ls('/tags')>
-				<app-menu-section data=ls('/styling')>
+				# <app-menu-section data=main>
+				# <app-menu-section data=ls('/tags')>
+				# <app-menu-section data=ls('/styling')>
 				# <app-menu-section data=guides>
-				<app-menu-section data=ref>
+				# <app-menu-section data=ref>
 				# <app-menu-section data=ls('/reference')>
 				# <app-menu-section data=ls('/tags')>
 				# <app-menu-section data=ls('/views')>
