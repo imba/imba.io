@@ -27,7 +27,7 @@ tag doc-anchor
 tag app-document-nav
 
 	css .card
-		pos:relative d:flex ai:center radius:3 p:3 flex:1 1 50% m:2
+		pos:relative d:flex ai:center rd:3 p:3 flex:1 1 50% m:2
 		c:teal6 border:gray3
 		td@hover:none bg@hover:gray1
 		ta.next:left ta.prev:right 
@@ -64,7 +64,7 @@ tag app-document-nav
 
 
 tag doc-section-link
-	css a d:flex fld:column p:2 px:3 radius:md bc:gray3 bw:1 my:2 jc:center ai:flex-start
+	css a d:flex fld:column p:2 px:3 rd:md bc:gray3 bw:1 my:2 jc:center ai:flex-start
 		bg@hover:gray1
 
 	css .title fs:md fw:500 d:block c:teal6
@@ -110,7 +110,7 @@ tag doc-section
 	css &.hide d:none
 	css &.collapsed > .body d:none
 
-	# css &.tip border:1px solid gray3/50 radius:md p:4 bg:orange2
+	# css &.tip border:1px solid gray3/50 rd:md p:4 bg:orange2
 
 	css .html
 		>> * mt@first:0 mb@last:0
@@ -131,13 +131,14 @@ tag doc-section
 
 	css .head pos:relative c:#3A4652 bc:gray3/75
 		&.l0 fs:28px/1.4 fw:600 pb:2
-		&.l1 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3
+		&.l1 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
 		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3
 		&.l2 fs:20px/1.2 fw:500 pb:3 bwb:1px mb:3
 		&.l3 fs:18px/1.2 fw:500 pb:3 bwb:1px mb:3
 		&.tip fs:16px/1.2 fw:500 pb:3 bwb:0 mb:0
-		&.snippet,&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bwb:0
-			.title px:2 py:1 rd:md pos:relative bg:$hbg d:inline-block
+
+		&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:-1 bwb:0 mb.tip:-3 mb.op:-3
+			.title px:2 py:1 rd:md pos:relative bg:$hbg d:inline-block ml:-1.5
 			app-code-inline fs:12px va:baseline bg:clear p:0 fw:bold c:inherit
 
 		&.op pb:0
@@ -171,10 +172,10 @@ tag doc-section
 
 
 	css .body
-		&.snippet,&.h5,&.op pl:4 mt:-2 pb:1
-			>>> p my:3
+		# &.snippet,&.h5,&.op pl:4 mt:-2 pb:1
+		#	>>> p my:3
 		
-		&.tip mt:-2 pb:1 ml:3 rd:md p:4 bg:$bg
+		&.tip mt:-2 pb:1 ml:0 rd:md p:4 bg:$bg
 			>>> p fs:md- c:gray9/70
 
 		>>> p my:3
@@ -284,7 +285,7 @@ tag embedded-app-document
 
 tag embedded-app-example
 	css a
-		d:flex ai:center cursor:pointer radius:2 min-height:12 bg:blue2/50 fw:500 fs:xs p:0.5
+		d:flex ai:center cursor:pointer rd:2 min-height:12 bg:blue2/50 fw:500 fs:xs p:0.5
 		@before content:"☶ " fs:14px pr:1
 		@hover bg:blue2 t:undecorated
 

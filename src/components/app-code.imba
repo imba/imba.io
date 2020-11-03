@@ -211,7 +211,7 @@ tag app-code-block < app-code
 		$preview-size:72px .md:120px .lg:180px .xl:240px
 
 	css main
-		pos:relative radius:inherit c:$code-color
+		pos:relative rd:inherit c:$code-color
 
 	css .code pos:relative d:block
 		>>> .code-head d:none

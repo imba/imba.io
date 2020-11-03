@@ -104,7 +104,7 @@ If you declare style rules inside tag definitions, all the styles will magically
 # these are global -- applies to everything in project
 # ---
 tag app-card
-    css fs:sm radius:md d:vflex bg:teal1 c:teal7
+    css fs:sm rd:md d:vflex bg:teal1 c:teal7
     css .header bg:teal2/50 p:3
     css .body p:3
 
@@ -458,7 +458,7 @@ The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`te
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid ja:center border:1px solid gray3
+css div c:gray6 fs:sm size:14 bg:white rd:2 d:grid ja:center border:1px solid gray3
 css section.group px:6 jc:center gap:2
 # ---
 imba.mount do  <section.group>
@@ -478,7 +478,7 @@ imba.mount do  <section.group>
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid ja:center border:1px solid gray3
+css div c:gray6 fs:sm size:14 bg:white rd:2 d:grid ja:center border:1px solid gray3
 css section.group px:6 jc:center gap:2
 # ---
 imba.mount do  <section.group>
@@ -495,7 +495,7 @@ To override the default shadows or add new ones simply specify `--border-radius-
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid ja:center border:1px solid gray3
+css div c:gray6 fs:sm size:14 bg:white rd:2 d:grid ja:center border:1px solid gray3
 css section.group px:6 jc:center gap:3
 # ---
 global css @root
@@ -518,7 +518,7 @@ Imba comes with 7 predefined shadows (from tailwind).
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 size:14 bg:white radius:2 d:grid ja:center
+css div c:gray6 size:14 bg:white rd:2 d:grid ja:center
 css section.group px:6 jc:center gap:4 max-width:280px @xs:initial
 # ---
 imba.mount do <section.group>
@@ -539,7 +539,7 @@ To override the default shadows or add new ones simply specify `--box-shadow-{na
 ```imba
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 size:14 bg:white radius:2 d:grid ja:center
+css div c:gray6 size:14 bg:white rd:2 d:grid ja:center
 css section.group px:6 jc:center gap:4 max-width:280px @xs:initial
 # ---
 global css @root

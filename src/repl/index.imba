@@ -145,10 +145,10 @@ tag app-repl
 		>>> header p:2 3 d:flex ai:center fs:sm fw:500 c:gray6
 
 	css .tab
-		pos:relative radius:2 py:1 px:2
+		pos:relative rd:2 py:1 px:2
 		c@hover:gray5 .active:blue4 .active.dirty:yellow4 .active.errors:red5
 		.circ
-			pos:absolute d:block radius:2 w:8px h:2px top:0
+			pos:absolute d:block rd:2 w:8px h:2px top:0
 			opacity:0.6 ..active:1
 			bg:clear ..active:blue4 ..dirty:yellow4 ..errors:red5
 

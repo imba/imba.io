@@ -149,7 +149,7 @@ global css .button
     padding: 1rem 2rem
     color:gray7
     border: 1px solid gray2
-    radius: 3px
+    rd: 3px
     &.blue bg:blue5 color:white bg@hover:blue6
     &.teal bg:teal5 color:white bg@hover:teal6
 

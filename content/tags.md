@@ -114,7 +114,7 @@ import {movies} from 'imdb'
 css .heading c:blue7 fs:xs fw:bold p:2 bc:gray3 bbw:1 pos:sticky t:0 bg:white
 css .item mx:2 d:flex px:2 py:3 bc:gray2 bbw:1 bg.hover:gray1
 css .title px:1 t:truncate
-css .number radius:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
+css .number rd:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
 
 # ---
 imba.mount do <div.list> for movie,i in movies
@@ -178,7 +178,7 @@ import 'util/styles'
 
 css div pos:absolute d:block inset:0 p:4
 css mark pos:absolute
-css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
+css li d:inline-block px:1 m:1 rd:2 fs:xs bg:gray1 @hover:blue2
 
 # ---
 let x = 20, y = 20, title = "Hey"

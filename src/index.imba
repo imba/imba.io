@@ -45,12 +45,12 @@ tag app-root
 		tween:250ms cubic
 	
 	css $repl
-		pos:fixed of:hidden inset:0 zi:2000 radius:0 bxs:xl
+		pos:fixed of:hidden inset:0 zi:2000 rd:0 bxs:xl
 		tween:transform 250ms quint-out
 		y:110% .routed:0
 
 	css .open-ide-button
-		bottom:0 right:0 m:5 border:gray2 py:3 px:4 radius:3
+		bottom:0 right:0 m:5 border:gray2 py:3 px:4 rd:3
 		cursor:pointer bg:teal3/90 c:teal8 fw:bold border:teal4/20 bxs:md
 		tween:100ms cubic-out
 		pos:fixed d:block @not-md:none
@@ -63,7 +63,7 @@ tag app-root
 		border-bottom:gray2 bg:white
 		zi:300 fs:15px 
 
-		.handle d:flex @md:none ai:center size:9 radius:2 bg:white o:0.9 c:teal5 fs:2xl
+		.handle d:flex @md:none ai:center size:9 rd:2 bg:white o:0.9 c:teal5 fs:2xl
 		.tab l:flex mx:2 py:1 c:teal5 fw:500 bb:2px solid teal6/0
 			&.active c:teal7 bbc:teal6
 		

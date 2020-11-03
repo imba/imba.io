@@ -32,7 +32,7 @@ tag log-tag
 	css .attrvalue content@before:"="
 	css .attrstring color:indigo6 content@before:'"' content@after:'"'
 	css .child mx:1 d:block
-	css .more color:gray5 px:1 radius:2 bg.hover:gray1 cursor:pointer
+	css .more color:gray5 px:1 rd:2 bg.hover:gray1 cursor:pointer
 
 	prop context
 	prop depth
@@ -125,7 +125,7 @@ tag repl-console
 	css .heading d:block p:1 3 0 mx:1 c:gray6 fs:sm fw:500 mb:-2
 
 	css .counter
-		bg:gray3 mx:1 px:1 radius:10 min-width:6 color:gray6/70 d:inline-block fs:xs fw:bold ta:center
+		bg:gray3 mx:1 px:1 rd:10 min-width:6 color:gray6/70 d:inline-block fs:xs fw:bold ta:center
 	
 	css $header bg:gray2 p:2 px:3 d:hflex ..transient:none
 
