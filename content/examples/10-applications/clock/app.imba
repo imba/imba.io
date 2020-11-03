@@ -1,17 +1,17 @@
 tag app-clock
 	prop utc
 
-	css pos:relative w:100% py:50% radius:2 bg:gray3
+	css pos:relative w:100% py:50% rd:2 bg:gray3
 
 	css .dial
-		transform-origin: 50% 100% radius:1
+		transform-origin: 50% 100% rd:1
 		pos:absolute b:50% l:50% x:-50%
 		bg:gray8 .m:gray7 .s:red
 		h:30% .m:42% .s:45%
 		w:5px .m:4px .s:3px
 		i,b pos:absolute d:block t:100% bg:inherit l:50% x:-50%
 		i h:10px ..s:20px w:75% o:0.7
-		b size:10px radius:100 y:-50%
+		b size:10px rd:100 y:-50%
 
 	def mount
 		$interval = setInterval(render.bind(self),1000)

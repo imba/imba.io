@@ -1,11 +1,11 @@
 tag example-app
-	prop counter = 0
+	counter = 0
 
 	def mount
-		$interval = setInterval(render.bind(self),1000)
+		#interval = setInterval(&,1000) do render!
 
 	def unmount
-		clearInterval($interval)
+		clearInterval(#interval)
 
 	def render
 		<self.clock> "Rendered {counter++} times"

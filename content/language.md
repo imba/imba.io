@@ -1067,7 +1067,7 @@ var res = for num in [1,2,3,4,5]
     num * 2
 ```
 
-## If / Elif / Else
+## Conditionals
 
 ### If [snippet]
 
@@ -1148,7 +1148,9 @@ else
     throw 'nope'
 ```
 
-## Try / Catch / Finally
+## Await [wip]
+
+## Error Handling [wip]
 
 ```imba app.imba
 def run
@@ -1157,7 +1159,6 @@ def run
     return test
 ```
 
-> Documentation for Try / Catch is incomplete
 
 # Classes
 
@@ -1260,7 +1261,7 @@ class Rect
 ```
 You can define setters which are to be called whenever there is an attempt to set that property.
 
-## Lazy Getters
+## Lazy Getters [wip]
 
 Work in progress - not currently available.
 

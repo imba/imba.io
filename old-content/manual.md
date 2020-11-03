@@ -849,7 +849,7 @@ else
     throw 'nope'
 ```
 
-# Loops [tabbed]
+# Loops
 
 Loops in Imba behaves similar to array comprehensions in CoffeeScript and Python. They are expressions, and can be returned and assigned. When used as expressions they will always return an array.
 
@@ -928,7 +928,7 @@ for num in [1,2,3]
     num
 ```
 
-##### with optional index parameter [snippet]
+##### for-in with optional index parameter [snippet]  [preview=console]
 ```imba
 for num,index in [1,2,3]
     num * index
@@ -1113,7 +1113,7 @@ console.log res # [2,4,8,10]
 `when` is essentially a shorthand for continuing past values that don't match a condition.
 
 
-# Functions [tabbed]
+# Functions
 
 ##### Defining functions
 ```imba
@@ -1150,6 +1150,8 @@ def draw {size = 'big', coords = {x:0, y:0}, radius = 25}
 
 draw(coords: {x: 18, y:30},radius:30)
 ```
+
+## Special arguments
 
 ##### Parameter references
 ```imba
@@ -1514,61 +1516,6 @@ class Retangle
         self.width = width
 ```
 
-# Decorators [wip]
-
-Decorators are used to extend properties and methods with common functionality. Let's say you want to log when calling a method.
-
-```imba
-
-def @log target, key, descriptor
-    let fn = descriptor.value
-    descriptor.value = do
-        console.log("call {key}")
-        let res = fn.apply(this,arguments)
-        console.log("called {key}")
-        return res
-    return descriptor
-
-# ---
-class Item
-    # by adding @log before def we let the @log decorator
-    # alter the function definition to inject logging
-    @log def setup
-        yes
-
-var item = Item.new
-item.setup!
-```
-
-This can also be useful for properties. Let's say we want to trigger a function whenever a property changes. We can define a `@watch` decorator, and use it like this:
-
-```imba
-
-def @watch target,key,desc
-	let meth = this[0] or (key + 'DidSet')
-	let setter = desc.set
-
-	if setter isa Function
-		desc.set = do(value)
-			let prev = this[key]
-			if value != prev
-				setter.call(this,value)
-				this[meth] and this[meth](value,prev,key)
-
-	return desc
-
-# ---
-class Item
-    @watch prop name
-
-    def nameDidSet to, from
-        console.log "name changed from {from} to {to}"
-
-var item = Item.new
-item.name = 'john'
-item.name = 'jane'
-```
-
 # Modules
 
 In this section we will be looking closer at how you can use existing code in your Imba projects. We will cover the `import` and `export` keywords. While it will beneficial for you to know about ESM and how it works in [Node.js](https://nodejs.org/api/esm.html#esm_ecmascript_modules) and the behavior of [export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export) and [import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) in the browser. This page only focuses on the Imba specific bits you need to know and how to use them effectively.
@@ -1729,7 +1676,7 @@ import {movies} from 'imdb'
 css .heading c:blue7 fs:xs fw:bold p:2 bc:gray3 bbw:1 pos:sticky t:0 bg:white
 css .item mx:2 d:flex px:2 py:3 bc:gray2 bbw:1 bg.hover:gray1
 css .title px:1 t:truncate
-css .number radius:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
+css .number rd:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
 
 # ---
 imba.mount do <div.list> for movie,i in movies
@@ -1771,7 +1718,7 @@ These interpolated classes can also be toggled by a condition:
 
 
 
-## Properties
+## Setting Properties
 
 ```imba
 <div lang="en" title=data.title> "Hello"
@@ -2356,7 +2303,7 @@ If you declare style rules inside tag definitions, all the styles will magically
 # these are global -- applies to everything in project
 # ---
 tag app-card
-    css fs:sm radius:md d:vflex bg:teal1 c:teal7
+    css fs:sm rd:md d:vflex bg:teal1 c:teal7
     css .header bg:teal2/50 p:3
     css .body p:3
 
@@ -2819,9 +2766,9 @@ The only way to get consistent gaps between elements inside flexboxes is to add 
 # - Using Imba Rendering Context
 
 
-# Event Handling [tabbed]
+# Event Handling
 
-# -- Listening
+## Listening to events
 
 We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
 
@@ -2862,7 +2809,26 @@ const handler = console.log.bind(console)
 	<li @click=handler(e.type,item,i)> item.title
 ```
 
-# -- Triggering
+## Triggering Events
+
+### Trigger Event from method
+
+To trigger a custom event you call `emit` on the element you want to trigger an event from.
+```imba
+tag App
+    def lateTrigger
+        setTimeout(&,1000) do
+            emit('lateclick',some: 'data')
+
+    def render
+        <div> <button @click=lateTrigger> 'click me'
+```
+
+
+### Trigger event via event listener
+
+You can use the `emit-eventname` modifier to trigger a custom event directly from an event handler.
+
 
 # -- Modifiers
 
