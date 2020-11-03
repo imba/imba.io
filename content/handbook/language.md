@@ -1490,7 +1490,7 @@ let dog = new Dog 'Mitzie'
 dog.move 10 # Mitzie makes a noise. Mitzie ran 10 meters.
 ```
 
-# Import & Export
+# Modules
 
 ## Syntax
 ```imba
