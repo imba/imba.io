@@ -2,11 +2,11 @@
 title:Styling
 ---
 
-# Introduction
+# Basic Syntax
 
 First things first – you are free to use external stylesheets like you've always done. Still, aiming to be the friendliest full-stack language we have included styling as a core part of the language. We've also extended the functionality of css to make common patterns friendlier, and to make it easier to keep a consistent design language across your whole project. Our approach to styling is inspired by [Tailwind](https://tailwindcss.com), so we recommend reading about [their philosophy](https://tailwindcss.com/docs/utility-first).
 
-## Basic Selectors
+## Selectors
 
 ```imba
 css .btn
@@ -53,9 +53,10 @@ css .btn d:block px:1 bg:teal2 bg@hover:teal3
 ```
 This conciseness comes especially handy when declaring inline styles, which we will come back to later.
 
-## Nested selectors
+## Nested Selectors
 
 Styles can also be nested. Everything before the first property on new lines are treated as nested selectors.
+
 ```imba
 css .card
     display: block
@@ -66,11 +67,9 @@ css .card
     &.large padding:16px # matches .card.large
 ```
 
-# Declarations
+## Scoped Styles
 
 A problem with CSS is that often end up with tons of globally competing styles spread around numerous files. Changing some styles in one place might affect some seemingly unrelated elements. In Imba it is really easy to declare styles that should only apply to certain parts of your application.
-
-## Per-file styles
 
 By default, any style rules declared at the top level of your file using `css selector ...` will only apply to the elements declared inside that file. The `button` style above will only affect literal `button` tags rendered **in the same file**. This means that you can declare styles like this in your file without having to worry about affecting styles in other parts of your application, or even inside nested components that are defined in other files, but used here.
 
@@ -83,7 +82,7 @@ css button
 # rest of file ...
 ```
 
-## Global styles
+## Global Styles
 If you prefix your css declaration with the `global` keyword - the styles will apply globally, and in this example affect all `button` elements in your application. The styles will be included as long as they are required somewhere.
 
 ```imba
@@ -95,9 +94,52 @@ global css button
 # rest of file ...
 ```
 
-## Component styles
+## Keyframes
 
-If you declare style rules inside tag definitions, all the styles will magically only apply to elements inside of this tag.
+Keyframes are declared with `css @keyframes name` syntax. They work just like keyframes in css.
+
+```imba
+# to declare an anim available everywhere - use global
+global css @keyframes blink
+	0% c:white
+	100% c:blue
+
+# non-global animations are only available in the file
+css @keyframes blink
+	0% c:white
+	100% c:blue
+```
+
+### Overriding animations in selector [preview=lg]
+
+One improvement over standard css is that you can define keyframes inside other selectors, and thereby override default animations of the same name.
+
+```imba
+# We have a global blink animation
+global css @keyframes blink
+	0% c:white
+	100% c:blue
+# animate all links on hover
+global css a
+	d:block bg:gray2 rd:md m:2 p:2
+	@hover animation: blink 2s
+	
+# Override blink animation just inside #header .item
+css #header a
+	@keyframes blink
+		from opacity:0
+		to opacity:1
+
+imba.mount do <div[pos:absolute inset:0 d:flex ja:center]>
+	<a> "changing color"
+	<div#header> <a> "fading"
+```
+
+## Custom Units [wip]
+
+# Styling Components [preview=lg]
+
+If you declare style rules inside `tag` definitions, all the styles will magically only apply to elements inside of this component.
 
 ```imba
 # ~preview=lg
@@ -126,7 +168,7 @@ imba.mount do <app-root[d:grid gap:4 p:4]>
 
 Any style you declare in a tag declaration will only ever affect the literal tags inside the declaration. You don't need to worry about affecting styles of deeply nested elements that might share the same class names. This is very practical, and allows us to safely use short and descriptive class names like `header`, `footer`, `body`, `content` etc, and use them for styling.
 
-### Inherited styles
+## Inherited styles
 
 Scoped styles are also inherited when extending components, which makes it very powerful.
 
@@ -159,7 +201,7 @@ imba.mount do <div>
     <custom-item> "Custom item"
 ```
 
-### Deep Selectors
+## Deep Selectors
 
 ```imba
 # ~preview=lg
@@ -218,6 +260,7 @@ tag app-root
 # ---
 imba.mount do <app-root[d:grid gap:4 p:4]>
 ```
+
 
 # Inline Styles
 
@@ -283,6 +326,8 @@ You can definitely use interpolated values with css variables as well, but it is
 
 Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down.
 
+## Syntax
+
 ##### in selectors
 ```imba
 css button@hover
@@ -306,6 +351,12 @@ css button
 css button
     bg:white .primary:blue ..busy:gray
 ```
+
+## Class Modifiers [wip]
+
+## Breakpoints [wip]
+
+## Custom Modifiers [wip]
 
 ## Reference
 
@@ -596,18 +647,13 @@ imba.mount do <section[fs:lg]>
 ## Typography [linked]
 
 
+## Transitions [linked]
 
-# Keyframes
-
-# Variables
-
-# Transitions
-
-## Easings
+### Easings
 
 <doc-style-easings></doc-style-easings>
 
-### Using easings [preview=lg]
+#### Using easings [preview=lg]
 ```imba
 css button
     transition: opacity quint-out 1s
