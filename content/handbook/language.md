@@ -7,45 +7,234 @@
 
 # Basic Types
 
+It is important to understand that Imba compiles directly to readable JavaScript. This means that every native type with all of their methods, properties and behaviour are the exact same. So, strings are just strings, arrays are just arrays etc. Mozilla Developer Network is a great place to look up extensive documentation for these things.
+
 ## Strings
+
+```imba
+let single = 'single quotes'
+let double = "double quotes"
+let interpolation = "string has {double}"
+let template = `current version is {imba.version}`
+```
+
+Imba uses `{}` for string interpolation while JavaScript uses `${}`. If you want interpolated strings with literal curly-braces, remember to escape them with `\`. Other than that, the String type is identical to String in JavaScript. See documentation at [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).
+
+
+### Multiline Strings
+
+Regular string literals can be written over multiple lines, but line breaks are ignored.
+```imba
+let string = 'one
+two three'
+# => 'onetwo three'
+```
+
+
+If you need a string that spans several lines and includes line breaks, use a sequence of characters surrounded by `'''` or `"""`
+```imba
+let string = '''
+This string is written
+over multiple lines
+'''
+# => 'This string\nis written over\nmultiple lines'
+```
+
+Multiline strings preserves indentation, but only relative to the least indented line:
+
+```imba
+let string = '''
+    First level is ignored
+        This is indented
+    Not indented
+    '''
+```
+
+
+### Template Strings
+```imba
+`string text`
+# multiple lines
+`string text line 1
+ string text line 2`
+# interpolated expression
+`string text {expression} string text`
+# tagged template
+method`string text {expression} string text`
+```
+### Tagged templates [tip]
+
+Tagged templates from JavaScript are on the roadmap, but not currently supported.
+
 
 ## Numbers
 
+```imba
+let integer = 42
+let float = 42.10
+let hex = 0x00
+let binary = 0b0010110
+```
+The Number type is identical to Number in JavaScript. See documentation at [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number).
+
+### Numeric Separators
+
+You can use `_` as a separator inside numbers for improved readability.
+
+```imba
+let budget = 120_000_000
+let spent = 123_150_077.59
+let hex = 0xA0_B0_C0
+let binary = 0b0010_1100
+```
+
+### Numeric Constants
+
+```imba
+const biggestNum     = Number.MAX_VALUE
+const smallestNum    = Number.MIN_VALUE
+const infiniteNum    = Number.POSITIVE_INFINITY
+const negInfiniteNum = Number.NEGATIVE_INFINITY
+const notANum        = Number.NaN
+```
+
 ## Arrays
+
+##### Array Literal
+```imba
+[1, 2, 3, 4]
+```
+
+Arrays can also be declared over multiple lines, where the value of each line represents an entry in the array. Commas are optional when array elements are separated by line breaks.
+
+```imba
+const array = [
+    'one'
+    'two'
+    'three'
+    'four'
+]
+```
 
 ## Objects
 
+##### Syntax
+```imba
+let object = {a: 'foo', b: 42, c: {}}
+console.log(object.a) # => 'foo'
+```
+
+##### Dynamic keys
+```imba
+let field = 'age'
+let person = {name: 'Bob Smith', [field]: 32, gender: 'male'}
+console.log(person.age) # => 'Bob Smith'
+```
+
+##### Indented
+```imba
+let person =
+    name: 'Bob Smith'
+    age: 32
+    gender: 'male'
+console.log(person.name) # => 'Bob Smith'
+```
+
+
+##### Dot notation `.`
+```imba
+let person = {name: 'Bob Smith', age: 32, gender: 'male'}
+# ---
+person.name
+person.age = 33
+```
+
+##### Bracket notation `[]`
+```imba
+let person = {name: 'Bob Smith', age: 32, gender: 'male'}
+# ---
+person['name']
+person['age'] = 33
+```
+
+##### Destructuring
+```imba
+let a = 'foo'
+let b = 42
+let c = {}
+let object = {a,b,c}
+console.log(object) # => {a: 'foo', b: 42 c: {}}
+```
+
 ## Booleans
 
-## Null & Undefined
+```imba
+let bool1 = true
+let bool2 = yes # alias for true
+let bool3 = false
+let bool4 = no # alias for false
+```
+
+## Null
+
+```imba
+let value = null
+```
+
+The value `null` represents the intentional absence of any object value. It is one of JavaScript's primitive values and is treated as falsy for boolean operations.
+
+## Undefined
+
+The global `undefined` property represents the primitive value `undefined`. A variable that has not been assigned a value is of type undefined
+
+### Strict equality
+
+Example
 
 ## Regular Expressions
 
+The RegExp object is used for matching text with a pattern. Read more at [MDN RegExp Reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp). For an introduction to regular expressions, read the [Regular Expressions chapter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions) on MDN.
+
+##### Literal
+```imba
+let regex = /ab+c/i
+```
+
+##### Constructor
+```imba
+let regex = new RegExp('ab+c', 'i')
+```
+
+##### Multiline
+```imba
+let regex = ///
+    ab+ # allows comments and whitespace
+    c
+///
+```
+
 ## Ranges
 
-# Keywords
+# Keywords & Identifiers
 
-# Identifiers
+## Keywords
 
-## Names vs Identifiers
+## Identifiers
+
+### Names vs Identifiers
 
 When we talk about identifiers, or sometimes "lone identifiers" we mean identifiers that 
-
-## Basic Identifiers
+### Basic Identifiers
 
 The convention in Imba is actually to seu
-
-## Kebab-case Identifiers
+### Kebab-case Identifiers
 
 Like css and html, dashes inside identifiers are perfectly valid in Imba. Variables and properties can also end with a `?`
-
-## PascalCased Identifiers
+### PascalCased Identifiers
 
 Identifiers starting with an uppercase letter is treated somewhat differently than other identiers
-
-## Predicate Identifiers
-
-## Symbol Identifiers
+### Predicate Identifiers
+### Symbol Identifiers
 
 Symbol identifiers start with one or more `#` in the beginning of the identifier. So `#name` is a type of identifier representing a symbol. Symbol identifiers are not allowed as variable names, and are always scoped to the closest strong scope.
 
@@ -55,8 +244,7 @@ obj.name
 obj.#clearance
 ```
 Lone symbol identi
-
-## Using reserved keywords
+### Using reserved keywords
 
 Essentially all reserved keywords can still be used as properties.
 ```imba
@@ -64,8 +252,7 @@ a.import
 a['import']
 a = { import: 'test' }
 ```
-
-## Identifiers with special meanings
+### Identifiers with special meanings
 
 There are a few identifiers that are reserved as keywords in certain contexts. `get`, `set` and `attr` are perfectly valid to use as variables, arguments, and properties, but in class definitions they have a special meaning.
 
@@ -80,6 +267,14 @@ Also, identifiers `$0`, `$1`, `$2` and so forth are not valid variables names â€
 ```javascript
 [1,2,3,4]
 ```
+
+
+
+
+
+
+
+
 
 
 # Variables & Scoping
@@ -103,6 +298,10 @@ let {g,h,data:i} = {g:1,h:2,data:3}
 if let user = array.find(do $1 isa Person)
 	yes
 ```
+
+### Tip [tip]
+
+In all the examples throughout this documentation you can hover over an identifier to highlight all references to the variable. Identifiers resolving to variables have a different color than identifiers resolving as implicit accessors of self.
 
 ## Lexical Scopes
 
@@ -165,6 +364,10 @@ class Line
 ```
 Self always refers to the closest *selfish* scope, and lone identifiers not declared in the lexical scope are treated as properties on self.
 
+## Global variables
+
+Mention the globals.
+
 ## Variable hoisting
 
 Variables are *not* hoisted in Imba. This means that a reference to a variable before its declaration will behave is if there is no declaration - and instead be an implicit access on self.
@@ -184,13 +387,371 @@ def method
 
 ## Arithmethic Operators
 
+### + [op=math]
+```imba
+1 + 2 # 3
+```
+
+### - [op=math]
+```imba
+3 - 1 # 2
+```
+
+### / [op=math]
+```imba
+6 / 3 # 2
+```
+
+### * [op=math]
+```imba
+3 * 2 # 6
+```
+
+### % [op=math]
+```imba
+5 % 2 # 1
+```
+
+### ** [op=math]
+```imba
+2 ** 3 # 8
+```
+
+### - [op=math+unary]
+```imba
+-i # Unary negation
+```
+
+### + [op=math+unary]
+```imba
++i # Unary plus
+```
+
 ## Logical Operators
+
+### && [op=logical]
+```imba
+null && 10 # null
+0 && 10 # 0
+1 && 10 # 10
+'' && 'str' # ''
+```
+The logical AND operator is true if all of its operands are true. The operator returns the value of the last truthy operand.
+
+### and [op=logical]
+```imba
+null and 10 # null
+1 and 10 # 10
+```
+Alias for `&&` operator
+
+### || [op=logical]
+```imba
+null || 10 # 10
+0 || 10 # 10
+1 || 10 # 1
+```
+The logical OR operator is true if one or more of its operands is true. The operator returns the value of the first truthy operand.
+
+### or [op=logical]
+```imba
+null or 10 # 10
+0 or 10 # 10
+1 or 10 # 1
+```
+Alias for `||` operator
+
+### ?? [op=logical+existential]
+```imba
+null ?? 10 # 10
+0 ?? 10 # 0
+'' ?? 'str' # ''
+```
+The nullish coalescing operator `??` is a logical operator that returns its right-hand side operand when its left-hand side operand is `null` or `undefined`, and otherwise returns its left-hand side operand.
+
+### ! [op=unary]
+```imba
+let a = true
+!a # false
+!10 # false
+!0 # true
+```
 
 ## Comparisons
 
-## Assignments
+### == [op=compare]
+```imba
+x == y # Equality
+```
+### != [op=compare]
+```imba
+x != y # Inequality
+```
+### === [op=compare]
+```imba
+x === y # Strict equality
+```
+### is [op=compare]
+```imba
+x is y # Also strict equality
+```
+### !== [op=compare]
+```imba
+x !== y # Strict inequality
+```
+### isnt [op=compare]
+```imba
+x isnt y # Also strict inequality
+```
+### > [op=compare]
+```imba
+x > y # Greater than
+```
+### >= [op=compare]
+```imba
+x >= y # Greater than or equal
+```
+### < [op=compare]
+```imba
+x < y # Less than
+```
+### <= [op=compare]
+```imba
+x <= y # Less than or equal
+```
+
+### isa [op=compare+keyword+isa]
+```imba
+honda isa Car # 
+```
+The `isa` operator tests whether the prototype property of a constructor appears anywhere in the prototype chain of an object. Alias for the javascript [instanceof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof) operator.
+
+### !isa [op=compare+keyword+isa]
+```imba
+princess !isa Car 
+```
+
+### typeof [op=unary+keyword]
+```imba
+typeof item
+```
+
+
+## Assignment
+
+### Basic Assignment [op-assign]
+
+#### = [op=assign]
+```imba
+a = b 
+```
+
+### Conditional Assignment [op-assign]
+
+#### ||= [op=assign]
+```imba
+a ||= b # If falsy assignment
+```
+
+#### &&= [op=assign]
+```imba
+a &&= b # If truthy assignment
+```
+
+#### ??= [op=assign]
+```imba
+a ??= b # If null assignment
+```
+
+### Compound Assignment [op-assign]
+
+#### += [op=math+assign]
+```imba
+a += b # Addition assignment
+```
+
+#### -= [op=math+assign]
+```imba
+a -= b # Decrement assignment
+```
+
+#### *= [op=math+assign]
+```imba
+a *= b # Multiplication assignment
+```
+
+#### /= [op=math+assign]
+```imba
+a /= b # Division assignment
+```
+
+#### %= [op=math+assign]
+```imba
+a %= b # Remainder assignment
+```
+
+#### **= [op=math+assign]
+```imba
+a **= b # Exponential assignment
+```
+
+#### ++ [op=math+assign+unary+post]
+```imba
+a++ # Increment assignment, returns original value
+```
+
+#### -- [op=math+assign+unary+post]
+```imba
+a-- # Decrement assignment, returns original value
+```
+
+#### ++ [op=math+assign+unary]
+```imba
+++a # Increment assignment, returns incremented value
+```
+
+#### -- [op=math+assign+unary]
+```imba
+--a # Decrement assignment, returns decremented value
+```
+
+### Reassignment [op-change]
+
+#### =? [op=assign+change+advanced]
+```imba
+let object = {}, input = 200
+# ---
+if object.value =? input
+    yes
+```
+Regular assignment that returns true or false depending on whether the left-hand was changed or not. More concise way of doing. The reassignment may seem unnecessary at first, but since memoization is an oft-used pattern in Imba, this is a very convenient addition.
+```imba
+let object = {}, input = 200
+# ---
+if object.value != input
+    object.value = input
+    yes
+```
 
 ## Bitwise Operators
+
+### Bitwise Comparisons
+
+#### & [op=bitwise]
+```imba
+a & b # Bitwise AND
+```
+
+#### !& [op=bitwise]
+```imba
+a !& b # Bitwise NOT AND
+```
+> Essentially the same as `(a & b) == 0`
+
+#### | [op=bitwise]
+```imba
+a | b # Bitwise OR
+```
+#### ^ [op=bitwise]
+```imba
+a ^ b # Bitwise XOR
+```
+
+
+#### ~ [op=bitwise+unary]
+```imba
+~ a # Bitwise NOT
+```
+
+#### << [op=bitwise]
+```imba
+a << b # Left shift
+```
+#### >> [op=bitwise]
+```imba
+a >> b # Sign-propagating right shift
+```
+#### >>> [op=bitwise]
+```imba
+a >>> b # Zero-fill right shift
+```
+
+### Bitwise Assignment
+
+#### <<= [op=bitwise+assign]
+```imba
+a <<= 1 # Left shift assignment
+```
+#### >>= [op=bitwise+assign]
+```imba
+a >>= 1 # Right shift assignment
+```
+#### >>>= [op=bitwise+assign]
+```imba
+a >>>= 1 # Unsigned right shift assignment
+```
+#### &= [op=bitwise+assign]
+```imba
+a &= 1 # Bitwise AND assignment
+```
+#### |= [op=bitwise+assign]
+```imba
+a |= 1 # Bitwise OR assignment
+```
+#### ~= [op=bitwise+assign]
+```imba
+a ~= 1 # Bitwise NOT assignment (unassignment)
+```
+#### ^= [op=bitwise+assign]
+```imba
+a ^= 1 # Bitwise XOR assignment
+```
+
+### Bitwise Reassignment
+
+#### |=? [op=bitwise+assign+change+advanced]
+```imba
+const STATES = {LOADED: 2}
+let data = {state: 0}
+
+# ---
+if data.state |=? STATES.LOADED
+    yes
+```
+Bitwise OR assignment that returns true only if the bit(s) was not previously set. Essentially a concise way to do 
+```imba
+const STATES = {LOADED: 2}
+let data = {state: 0}
+
+# ---
+if (data.state & STATES.LOADED) == 0
+    data.state |= STATES.LOADED
+    # do something here...
+```
+
+#### ~=? [op=bitwise+assign+change+advanced]
+```imba
+const STATES = {LOADED: 2}
+let data = {state: 0}
+
+# ---
+if data.state ~=? STATES.LOADED
+    # went from loaded to not loaded
+```
+Bitwise unassignment that unsets the right-hand bits from left-hand value and returns true / false depending on whether this actually changed the left-side or not.
+```imba
+const STATES = {LOADED: 2}
+let data = {state: 0}
+
+# ---
+if (data.state & STATES.LOADED) == 0
+    data.state |= STATES.LOADED
+    # do something here...
+```
+#### ^=? [op=bitwise+assign+change+advanced]
+```imba
+a ^=? 1 # Bitwise XOR assignment
+```
 
 # Functions
 
@@ -604,16 +1165,242 @@ else
     throw 'nope'
 ```
 
+## Try / Catch / Finally
 
 # Classes
 
+Classes are general-purpose, flexible constructs that become the building blocks of your program's code. You define properties and methods to add functionality to your classes using the same syntax you use to define constants, variables, and functions. Classes in Imba are compiled directly to native [JavaScript Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes).
+
 ## Defining Classes
-## Class Instances
+
+```imba
+class Rect
+    # custom constructor
+    constructor w,h
+        width = w
+        height = h
+    
+    # class method
+    def expand hor,ver = hor
+        width += hor
+        height += ver
+
+    # getter
+    get area
+        width * height
+
+    # setter
+    set area size
+        width = height = Math.sqrt size
+```
+
+## Class Constructors
+
+Use the `constructor` keyword to declare a custom constructor method for your class. This method will be executed whenever an instance of the class is created (using the `new` keyword).
+
+```imba
+class Rect
+    constructor w,h
+        width = w
+        height = h
+    # ...
+```
+
+## Instance Methods
+
+You can add methods to your class instances using the `def` keyword, followed by the method name and optional arguments.
+
+```imba
+class Rect
+    def expand hor,ver = hor
+        width += hor
+        height += ver
+```
+
+## Class Fields
+
+Instance fields exist on every created instance of a class. By declaring a field, you can ensure the field is always present, and the class definition is more self-documenting. See [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Public_class_fields) for more details.
+
+```imba
+class Rect
+	width = 10
+	height = 10
+```
+> instances of Rect will always be initialized with width and height set to 10.
+
+The scope after `=` in a class field refers to the instance itself, so class fields can also reference other properties and methods.
+
+```imba
+class Rect
+	width = 10
+	height = 10
+	area = width * height
+
+console.log (new Rect).area # 100
+```
+
+
+## Computed Properties
+
+You can add computed properties to your class instances using the `get` keyword followed by the name of the property. The `get` syntax binds an object property to a function that will be called when that property is looked up
+
+```imba
+class Rect
+    get area
+        width * height
+```
+
+Using `set` you can define a function that will be called when there is an attempt to set that property.
+
+```imba
+class Rect
+    set sides value
+        width = value
+        height = value
+```
+You can define setters which are to be called whenever there is an attempt to set that property.
+
+## Lazy Getters
+
+Work in progress - not currently available.
+
+## Computed Names
+
+You can define methods, getters and setters with computed names using `[]`.
+
+```imba
+let method = 'items'
+let getter = 'title'
+
+class Todo
+    get [getter]
+        data[getter]
+
+    def [method]
+        console.log "called method {method}"
+
+let todo = new Todo
+todo.items! # called method items
+todo.title
+```
+
+## Meta Properties
+
+Upcoming versions of JavaScript has support for "private fields" using the `#` prefix for properties. Imba has a similar syntax that serves a similar purpose. See [Meta Properties]. Meta properties can be used in classes for method, fields, and other properties.
+
+Meta properties are implemented as symbols, They do not show up on an Object using `for in`, `for of`, `Object.getOwnPropertyNames` or `Object.keys`, and they will never conflict with string-based / plain properties on your classes & instances. These are useful for a wide variety of things and are used extensively in the imba runtime itself.
+
+### Storing values for getters and setters
+
+You may often find yourself defining setters because you want to do something when a property is set. The problem is that a property with a setter cannot also store an actual value with the same name. The ideomatic way to store underlying values in setters is to use a meta property with the same name:
+
+```imba
+class Todo
+    set title value
+        # do something here
+        #title = value
+    
+    get title
+        #title
+```
+This is also useful if you want to declare memoized / lazy fields, where the value of the field should not be initialized until the first time it is accessed.
+
+```imba
+class Component
+    get ref
+        #ref ||= utils.uuid!
+```
+
+Let's say we want to add a `#ref` property to *all objects* - that returns a unique id for every object. As in the example above, we only want to create the id if/when it is accessed. We don't want to pollute every object with a visible textual `ref` property that may interfere with other code and libraries, so we use a meta property for this.
+
+```imba
+const map = new WeakMap
+
+extend class Object
+    get #ref
+        map.set(self,utils.uuid!) unless map.has(self)
+        return map.get(self)
+```
+The above approach of using a WeakMap to store the actual metadata is common, and even the way Babel and other transpilers usually implement private fields today. But weakmaps are quite slow and clunky. Remember that meta properties start with one *or more* `#` characters. The convention in Imba is to always prepend an additional `#` for each nested level of indirectness. So, instead we would extend Object like this:
+
+```imba
+extend class Object
+    get #ref
+        ##ref ||= utils.uuid!
+```
+Now you will be able to access `#ref` on *all* objects.
+
+```imba
+const object = {}
+object.#ref # '... uuid ...'
+# Even built in objects now have this property
+window.#ref
+```
+
+### Extending native types
+
+You can also use meta properties for methods and class fields. Since they are not enumerable, and won't collide with native methods from JavaScript it is great if you want to extend native prototypes. Imba adds a bunch of methods to the native Node / Element classes in your browser, but to be sure that it does not interact with other libraries, these methods are implemented using meta properties.
+
+```imba
+extend class Node
+    def #append node
+        # setup some listeners etc
+        appendChild(node)
+```
+
+In your own projects you could even add functionality to _all_ objects without worry using meta properties.
+```imba
+const map = new WeakMap
+
+extend class Object
+    get #ref
+        map.set(self,Symbol()) unless map.has(self)
+        return map.get(self)
+
+# Now you will be able to access `.#ref` on _all_ objects,
+# and get a unique symbol back every time.
+const object = {}
+object.#ref # Symbol()
+```
+
+### Private or not?
+
+Unlike in js, these properties are not strictly private. You can access them from outside just like other properties. So if a class has a method called `#synchronize`, you *can* call it from outside by `instance.#synchronize!`. At the same time, meta properties are usually used for "internals".
+
+## Static Properties
+
+Methods, fields and computed properties can also be defined on the class itself, as opposed to its instances, by including the `static` keyword before each declaration.
+
+```imba
+class Rect
+	static size = 50
+	size = 100
+console.log Rect.size # 50
+console.log (new Rect).size # 100
+```
+
+```imba
+class Rect
+	static def build side
+		let item = new self
+		item.width = item.height = side
+		return item
+
+Rect.build(10)
+```
+
+## Creating Instances
+
+The `new` keyword will let you create an instance of your class. This instance inherits properties and methods from its class.
+
+```imba
+let fido = new Dog
+```
+
+
 ## Class Inheritance
 
 # Methods
-
-## Defining methods on target
 
 # Properties
 
