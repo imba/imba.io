@@ -216,6 +216,10 @@ tag doc-section
 			content: "Table of Contents" d:block
 			c:#3A4652 bc:gray3
 			fs:18px/1.2 fw:500 pb:3
+	
+	css .marktext
+		bg:yellow3 d:inline px:0.5
+		-webkit-box-decoration-break: clone
 
 	prop query
 
@@ -241,11 +245,11 @@ tag doc-section
 					<.title innerHTML=data.head>
 			
 			if level == 0
-				<.wip.l{level} [mb:6 c:gray8/80 fs:lg max-width:600px]>
-					<span[bg:yellow3 d:inline]> "The documentation is a work-in-progress and will gradually improve as we move towards beta. If you have any questions or suggestions please reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}. We are actively looking for contributors."
+				<.wip.l{level} [mb:3 c:gray8/80 fs:lg max-width:650px]>
+					<span.marktext> "The documentation is a work-in-progress and will gradually improve as we move towards beta. We are actively looking for contributors. If you have any questions, suggestions or general feedback please reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}."
 			elif data.options.wip
 				# <.wip[bg:yellow3 rd:md px:4 py:2 c:yellow9 fs:sm mb:4 bdb:yellow4]>
-				<.wip.l{level} [mb:6 c:gray8/80 .l:xl bg:yellow3 d:inline]>
+				<.wip [mb:6 c:gray8/80 bg:yellow3 d:inline]>
 					"Help document this topic? Reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}"
 
 			if data.options.sheet
