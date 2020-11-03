@@ -9,12 +9,16 @@ tag app-menu-item
 		c:gray6 @hover:gray9 .active:teal6
 		tween:all 150ms cubic tt.folder:capitalize
 		of:hidden text-overflow:ellipsis ws:nowrap
-		fs:md-/1.2 fw:400
+		fs:sm/1.2 fw:400
 		# &.l1 fw:500 py:1.5
 		&.doc.l2 fw:400
 		&.active fw:500 c:gray9
 		&.section pl:4
 		# &.l3 fs:4/1.2 fw:400
+
+		&.wip @after
+			pos:relative d:inline ai:center bg:yellow3 content:'wip'
+			c:yellow7 fs:xxs/12px tt:uppercase px:1 py:0.5 rd:1 ml:1 va:middle fw:bold
 		
 	css .children pl:3
 	css .children > * mt:calc($height * -1) o:0 pointer-events:none
@@ -26,8 +30,8 @@ tag app-menu-item
 		console.log 'jump to',ev,section
 		self
 
-	<self[d:block].l{level}>
-		<a.item .l{level} .{data.type} data=data .wip=data.meta.wip route-to=data.href> data.title
+	<self[d:block].l{level} .{data.flagstr}>
+		<a.item .l{level} .{data.type} data=data .{data.flagstr} route-to=data.href> data.title
 		if data.children.length and !data.reference? # and !data.options.tabbed and data.type != 'section'
 			<div.children[d@empty:none]>
 				# for sub in data.sections when !sub.hidden

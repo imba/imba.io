@@ -1,5 +1,6 @@
 ---
 title:Rendering
+multipage:true
 ---
 
 # Basic Syntax
@@ -1093,6 +1094,6 @@ Components also has a bunch of methods that you can call to inspect where in the
 | `rendered?` | Has component been rendered? |
 | `scheduled?` | Is component scheduled? |
 
-# Server-side Rendering
+# Server-side Rendering [wip]
 
 Documentation coming.  See [ssr-app-imba](https://github.com/imba/ssr-app-imba) repository as an example.

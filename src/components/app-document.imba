@@ -239,6 +239,14 @@ tag doc-section
 			if data.head and !data.tab?
 				<.head.html .{data.flagstr} .l{level} @click=toggle>
 					<.title innerHTML=data.head>
+			
+			if level == 0
+				<.wip.l{level} [mb:6 c:gray8/80 fs:lg max-width:600px]>
+					<span[bg:yellow3 d:inline]> "The documentation is a work-in-progress and will gradually improve as we move towards beta. If you have any questions or suggestions please reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}. We are actively looking for contributors."
+			elif data.options.wip
+				# <.wip[bg:yellow3 rd:md px:4 py:2 c:yellow9 fs:sm mb:4 bdb:yellow4]>
+				<.wip.l{level} [mb:6 c:gray8/80 .l:xl bg:yellow3 d:inline]>
+					"Help document this topic? Reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}"
 
 			if data.options.sheet
 				<doc-section-filters data=data bind:selection=filters>
@@ -274,7 +282,6 @@ tag app-document
 				<doc-section $key=doc.id data=doc level=0>
 				unless doc.options.tabbed
 					<.toc> for item in doc.docs
-						<doc-section-link data=item level=(level+1)>
 
 			<app-document-nav data=doc>
 	

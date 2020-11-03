@@ -1,10 +1,14 @@
 # Introduction
 
+The documentation is a work-in-progress.
+
 ## What is Imba?
 
 ## Why Imba?
 
 # Grammar
+
+## Comments [wip]
 
 ## Literals
 
@@ -834,25 +838,6 @@ setTimeout(&,1500) do
     [1,2,3].reduce(&,0) do(sum,value)
         sum + value
 ```
-
-### with arguments
-```imba
-console.log(1,2,3)
-# when invoking a function with arguments the parens are optional
-console.log 1,2,3
-```
-
-Functions that take a callback can be called with an inline function (`do ...`) after other arguments.
-```imba
-[10,20,30,40].map do(num) num * 2
-```
-
-##### without arguments
-```imba
-document.location.reload!
-```
-You are free to use empty parens `()` for invoking functions without arguments, but the preferred style in imba is to use the exclamation mark.
-
 
 
 # Control Flow
