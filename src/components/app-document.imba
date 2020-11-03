@@ -103,7 +103,7 @@ tag doc-section
 		> mt@first:0 mb@last:0
 
 	css my:1em d:block
-		mt:4 .h1:8 .h2:8 .h3:8
+		mt:4 .h1:12 .h2:12 .h3:8 @first:8
 
 	css &.hide d:none
 	css &.collapsed > .body d:none
@@ -130,10 +130,10 @@ tag doc-section
 
 	css .head pos:relative c:#3A4652 bc:gray3/75 d:block
 		&.l0 fs:28px/1.4 fw:600 pb:2
-		&.l1 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
-		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3
-		&.l2 fs:20px/1.2 fw:500 pb:3 bwb:1px mb:3
-		&.l3 fs:18px/1.2 fw:500 pb:3 bwb:1px mb:3
+		&.l1 fs:24px/1.2 fw:600 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
+		&.h2.l2 fs:24px/1.2 fw:600 pb:3 bwb:0px mb:3
+		&.l2 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:3
+		&.l3 fs:18px/1.2 fw:500 pb:3 bwb:0px mb:3
 		&.tip fs:16px/1.2 fw:500 pb:3 bwb:0 mb:0
 
 		&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:-1 bwb:0 mb.tip:-3 mb.op:-3
