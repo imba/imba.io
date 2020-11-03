@@ -122,7 +122,7 @@ tag app-repl
 
 	def leave
 		document.body.focus!
-		router.go($parent.doc.href)
+		router.go(#parent.doc.href)
 
 	def routeDidResolve match, prev,last
 		let item = ls(match.url)
@@ -145,10 +145,10 @@ tag app-repl
 		>>> header p:2 3 d:flex ai:center fs:sm fw:500 c:gray6
 
 	css .tab
-		pos:relative radius:2 py:1 px:2
+		pos:relative rd:2 py:1 px:2
 		c@hover:gray5 .active:blue4 .active.dirty:yellow4 .active.errors:red5
 		.circ
-			pos:absolute d:block radius:2 w:8px h:2px top:0
+			pos:absolute d:block rd:2 w:8px h:2px top:0
 			opacity:0.6 ..active:1
 			bg:clear ..active:blue4 ..dirty:yellow4 ..errors:red5
 
@@ -163,13 +163,13 @@ tag app-repl
 
 	css $console
 		flex-grow..empty-preview:1
-		@not-lg pos:absolute inset:0 tween:250ms cubic
+		@not-lg pos:absolute inset:0 transition:all 250ms cubic-in-out
 			y:calc(100% - 46px) .expanded:0px ..empty-preview:0
 
 	css $sidebar
 		w:$sidebar-width cursor:default pos:absolute d:block c:gray5
 		top:0 left:0 height:100% zi:100
-		transition: 250ms cubic
+		transition: all 250ms cubic-in-out
 		bg:gray8/95 @md:gray8
 		x:-100% @md:0 @focus-within:0
 

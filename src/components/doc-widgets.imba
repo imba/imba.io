@@ -105,20 +105,11 @@ tag doc-style-transform-aliases
 	def hydrate
 		yes
 
-	<self[is:block mt:2]>
+	<self[d:block mt:2]>
 		<div.defs> for own alias,val of transforms
 			<div.pair>
 				<span.dt> alias
 				<span.dd> "transform: {<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/{val}"> val}(...)"
-
-tag doc-style-utils
-	<self[is:block mono mt:2 fs:4]>
-		<div.defs> for own name,mod of variants.layout
-			# <div.pair[is:grid mono gtc:max-content  pc:start fs:4]>
-			continue if name.match(/table|inline|center/)
-			<div.pair>
-				<span.dt[prefix:'is:' o@before:0.5]> name
-				<span.dd> <doc-util-output name=name data=mod>
 
 tag doc-style-val
 	def render
@@ -310,8 +301,8 @@ tag doc-colors
 	css .pink8 bg:pink8 c:pink1
 	css .pink9 bg:pink9 c:pink1
 
-	css .palette my:2 fs:sm fw:bold cursor:default radius:2 of:hidden d:flex
-	css .color radius:0 flex:1 p:1 h:12 d:flex ai:center jc:center w:5 
+	css .palette my:2 fs:sm fw:bold cursor:default rd:sm of:hidden d:flex
+	css .color rd:0 flex:1 p:1 h:12 d:flex ai:center jc:center w:5 
 		span o:0 tween:30ms ease-in-out 
 		@first span o:0.3
 		@hover span o:1

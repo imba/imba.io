@@ -11,6 +11,7 @@ tag app-repl-preview
 	prop w = 2000
 	prop scale = 1
 	prop size = 'auto-auto'
+	prop mode
 
 	def build
 		t0 = Date.now!
@@ -26,8 +27,10 @@ tag app-repl-preview
 			if $console
 				$console.context = win
 				$console.native = win.console
+				$console.autoclear!
 				win.console.log = $console.log.bind($console)
 				win.console.info = $console.info.bind($console)
+				# $console.clear!
 
 		$iframe.onload = do
 			return unless $refreshed
@@ -215,9 +218,9 @@ tag app-repl-preview
 	def render
 		recalc!
 		<self @intersect.silence.in=entered>
-			<div$body[flex:1 br:inherit] @click=toggle>
-				<div$bounds[br:inherit] @resize=reflow>
-					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px br:inherit] @click.stop>
+			<div$body[flex:1 rd:inherit] @click=toggle>
+				<div$bounds[rd:inherit] @resize=reflow>
+					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px rd:inherit] @click.stop>
 						$iframe
 						<div.resizer.x @touch=resize(e,'x')>
 						<div.resizer.y @touch=resize(e,'y')>
@@ -235,7 +238,7 @@ tag app-repl-preview
 					# <button%btn bind=size value='768x1024'> 'tablet'
 					# <button%btn bind=size value='1280x1024'> 'desktop'
 					<button.btn @click=maximize> '⤢'
-			<repl-console$console.transient mode='transient'>
+			<repl-console$console mode=(mode == 'console' ? mode : 'transient')>
 		
 	set file data
 		return unless data

@@ -12,7 +12,7 @@ global css
 		pos:absolute inset:0
 
 	div
-		gaf:column pc:center pi:center
+		gaf:column ja:center
 
 	section,form
 		d:grid gaf:row ac:center jc:stretch ji:center gap:2
@@ -27,7 +27,7 @@ global css
 		min-height:60px
 
 	figure
-		d:grid gaf:row pc:center gap:2
+		d:grid gaf:row ja:center gap:2
 
 	body > figure@only
 		pos:absolute inset:0
@@ -62,22 +62,22 @@ global css
 	a td:u c:blue6
 
 	mark
-		d:grid gaf:column pc:center pi:center gap:2
+		d:grid gaf:column ja:center gap:2
 		bw:1 bc:yellow4 radius:1 py:1 px:2 fs:smaller
 		bg:yellow3 c:yellow8
 
 	button
-		d:grid gaf:column pc:center pi:center gap:2
+		d:grid gaf:column ja:center gap:2
 		py:1 px:3 fw:400 min-width:6 min-height:8
 		bw:1 bc:gray4 radius:2
 		fs:md/1.2
 		c:gray8 @hover:gray9
 		bg:gray1 @hover:gray2 @active:gray3
-		shadow:xs
+		bxs:xs
 		us:none
 		tween:100ms ease-in-out
 		y@active:1px
-		@focus outline:none shadow:0 0 0 3px blue3/35 bc:blue4
+		@focus outline:none bxs:0 0 0 3px blue3/35 bc:blue4
 		@disabled c:gray5
 		# @is-busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none
 
@@ -97,7 +97,7 @@ global css
 		> m:4px
 
 	.handle
-		pos:absolute fs:sm w:1em h:1em mt:-0.5em ml:-0.5em bg:purple6 radius:xs
+		pos:absolute fs:sm w:1em h:1em mt:-0.5em ml:-0.5em bg:purple6 rd:xs
 		top:0 left:0 
 
 	.panel
@@ -106,21 +106,21 @@ global css
 		section,main flex:1
 
 	samp,var
-		d:grid pc:center pi:center min-width:60px p:1
-		bs:dashed bw:1 bc:gray4 radius:2
+		d:grid ja:center min-width:60px p:1
+		bs:dashed bw:1 bc:gray4 rd:2
 
 	select,textarea,input
 		py:1 px:3 min-width:10 min-height:8
-		bw:1 radius:2
+		bw:1 rd:2
 		fs:md/1.2
 		c:gray8 @hover:gray9
 		bc:gray4 @hover:gray5/80
 		bg:white @focus:white
-		@focus shadow:0 0 0 3px blue3/35 bc:blue4
+		@focus bxs:0 0 0 3px blue3/35 bc:blue4
 		@disabled c:gray5
 
 	input[type=range],input[type=checkbox],input[type=radio]
-		p:0 bw:0 shadow:none min-width:initial
+		p:0 bw:0 bxs:none min-width:initial
 
 	input[type=number] w:60px pr:0
 
@@ -141,10 +141,10 @@ global css
 		-webkit-appearance: none min-height:initial
 
 	input[type=range]::-webkit-slider-runnable-track
-		w:100% h:8px bg:gray2 radius:2 border:1px solid gray4 box-sizing:border-box
+		w:100% h:8px bg:gray2 rd:2 border:1px solid gray4 box-sizing:border-box
 	input[type=range]::-webkit-slider-thumb
 		-webkit-appearance: none 
-		w:14px h:14px mt:-4px bg:blue5 radius:10 box-sizing:border-box
+		w:14px h:14px mt:-4px bg:blue5 rd:10 box-sizing:border-box
 
 	input[type=checkbox]
 		min-height:initial

@@ -27,7 +27,7 @@ tag doc-anchor
 tag app-document-nav
 
 	css .card
-		pos:relative d:flex ai:center radius:3 p:3 flex:1 1 50% m:2
+		pos:relative d:flex ai:center rd:3 p:3 flex:1 1 50% m:2
 		c:teal6 border:gray3
 		td@hover:none bg@hover:gray1
 		ta.next:left ta.prev:right 
@@ -64,7 +64,7 @@ tag app-document-nav
 
 
 tag doc-section-link
-	css a d:flex fld:column p:2 px:3 radius:md bc:gray3 bw:1 my:2 jc:center ai:flex-start
+	css a d:flex fld:column p:2 px:3 rd:md bc:gray3 bw:1 my:2 jc:center ai:flex-start
 		bg@hover:gray1
 
 	css .title fs:md fw:500 d:block c:teal6
@@ -79,7 +79,7 @@ tag doc-section-filters
 		mr:2 fw:500 fs:8
 		outline@focus:none
 		c:gray6 @hover:gray7 .checked:gray9
-		bdb:2px solid bdc:clear .checked:teal6
+		bdb:2px solid bc:clear .checked:teal6
 
 	prop filter
 
@@ -96,8 +96,6 @@ tag doc-section
 		# flags.toggle('collapsed')
 		self
 
-	css >>> a c:blue7 td@hover:underline
-
 	css >>> li
 		fs:md/1.3 py:3px pl:6 pos:relative
 		@before content: "•" w:6 ta:center l:0 pos:absolute d:block c:teal5
@@ -110,14 +108,15 @@ tag doc-section
 	css &.hide d:none
 	css &.collapsed > .body d:none
 
-	# css &.tip border:1px solid gray3/50 radius:md p:4 bg:orange2
+	# css &.tip border:1px solid gray3/50 rd:md p:4 bg:orange2
 
 	css .html
 		>> * mt@first:0 mb@last:0
+		>>> a c:blue7 td@hover:underline
 
 		>>> app-code-inline
 			d:inline-block fs:0.75em ff:mono lh:1.25em
-			bg: gray3/35 br:sm va:middle p:0.1em 5px
+			bg: gray3/35 rd:sm va:middle p:0.1em 5px
 			-webkit-box-decoration-break: clone
 
 	css .snippet,.h5 $bg:orange2 $hbg:teal4 $hc:teal9
@@ -129,15 +128,16 @@ tag doc-section
 	css .green $bg:green2 $hbg:green4 $hc:green8
 	css .neutral $bg:gray2 $hbg:gray4 $hc:gray8
 
-	css .head pos:relative c:#3A4652 bc:gray3/50
+	css .head pos:relative c:#3A4652 bc:gray3/75 d:block
 		&.l0 fs:28px/1.4 fw:600 pb:2
-		&.l1 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
-		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bbw:1px mb:3
-		&.l2 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
-		&.l3 fs:18px/1.2 fw:500 pb:3 bbw:1px mb:3
-		&.tip fs:16px/1.2 fw:500 pb:3 bbw:0 mb:0
-		&.snippet,&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:0 bbw:0
-			.title px:2 py:1 radius:md pos:relative bg:$hbg d:inline-block
+		&.l1 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
+		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3
+		&.l2 fs:20px/1.2 fw:500 pb:3 bwb:1px mb:3
+		&.l3 fs:18px/1.2 fw:500 pb:3 bwb:1px mb:3
+		&.tip fs:16px/1.2 fw:500 pb:3 bwb:0 mb:0
+
+		&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:-1 bwb:0 mb.tip:-3 mb.op:-3
+			.title px:2 py:1 rd:md pos:relative bg:$hbg d:inline-block ml:-1.5
 			app-code-inline fs:12px va:baseline bg:clear p:0 fw:bold c:inherit
 
 		&.op pb:0
@@ -156,7 +156,7 @@ tag doc-section
 			c:blue6 @hover:gray7 .active:gray9
 			# bdb:2px solid
 			bdb:2px solid blue6
-			bdc:clear @hover:gray7 .active:teal6
+			bc:clear @hover:gray7 .active:teal6
 			c:gray6 @hover:gray7 .active:gray9
 			mb:-2px pb:1
 			# bdc.active:clear
@@ -171,10 +171,10 @@ tag doc-section
 
 
 	css .body
-		&.snippet,&.h5,&.op pl:4 mt:-2 pb:1
-			>>> p my:3
+		# &.snippet,&.h5,&.op pl:4 mt:-2 pb:1
+		#	>>> p my:3
 		
-		&.tip mt:-2 pb:1 ml:3 br:md p:4 bg:$bg
+		&.tip mt:-2 pb:1 ml:0 rd:md p:4 bg:$bg
 			>>> p fs:md- c:gray9/70
 
 		>>> p my:3
@@ -215,6 +215,16 @@ tag doc-section
 			content: "Table of Contents" d:block
 			c:#3A4652 bc:gray3
 			fs:18px/1.2 fw:500 pb:3
+	
+	css .marktext
+		bg:yellow3 d:inline px:0.5
+		-webkit-box-decoration-break: clone
+
+	css &.as-link > .head
+		mb:0 # d:inline-block
+		c:blue7 @hover:blue6
+		cursor:pointer
+		.title @before content: "➤ " fw:600
 
 	prop query
 
@@ -232,16 +242,27 @@ tag doc-section
 		let par = data.parent
 		let filter = query or $filters..regex
 		let tabbed = data.options.tabbed
+		let level = level
+		let linked = level > 0 and data.options.linked
 
-		<self .{data.flagstr} .hide=(query and !data.match(query))>
+		<self .{data.flagstr} .as-link=(linked) .hide=(query and !data.match(query))>
 			if data.head and !data.tab?
-				<.head.html .{data.flagstr} .l{level} @click=toggle>
-					<.title innerHTML=data.head>
+				<a.head.html .{data.flagstr} .l{level} @click=toggle href=data.href>
+					<span.title innerHTML=data.head>
+
+			if level == 0
+				<.wip.l{level} [mb:3 c:gray8/80 fs:lg max-width:650px]>
+					<span.marktext> "The documentation is a work-in-progress and will gradually improve as we move towards beta. We are actively looking for contributors. If you have any questions, suggestions or general feedback please reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}."
+
+			elif data.options.wip
+				# <.wip[bg:yellow3 rd:md px:4 py:2 c:yellow9 fs:sm mb:4 bdb:yellow4]>
+				<.wip [mb:6 c:gray8/80 bg:yellow3 d:inline]>
+					"Help document this topic? Reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}"
 
 			if data.options.sheet
 				<doc-section-filters data=data bind:selection=filters>
 
-			if (data isa Section or level == 0 or par.options.tabbed)
+			if (data isa Section or level == 0 or par.options.tabbed) and !linked
 				<.body.{data.flagstr}>
 					<.content.html innerHTML=(data.html or '')>
 					<.sections>
@@ -259,6 +280,8 @@ tag app-document
 	css color: #4a5568 lh: 1.625 pt:4
 	css $content > mb@last:0 mt@first:0
 
+	css .embed w:100% bd:0px h:500px
+
 	def render
 		let doc = data
 		while doc && doc.parent.options.tabbed
@@ -270,8 +293,7 @@ tag app-document
 				<doc-section $key=doc.id data=doc level=0>
 				unless doc.options.tabbed
 					<.toc> for item in doc.docs
-						<doc-section-link data=item level=(level+1)>
-			
+
 			<app-document-nav data=doc>
 	
 tag embedded-app-document
@@ -281,7 +303,7 @@ tag embedded-app-document
 
 tag embedded-app-example
 	css a
-		d:flex ai:center cursor:pointer radius:2 min-height:12 bg:blue2/50 fw:500 fs:xs p:0.5
+		d:flex ai:center cursor:pointer rd:2 min-height:12 bg:blue2/50 fw:500 fs:xs p:0.5
 		@before content:"☶ " fs:14px pr:1
 		@hover bg:blue2 t:undecorated
 

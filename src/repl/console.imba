@@ -32,7 +32,7 @@ tag log-tag
 	css .attrvalue content@before:"="
 	css .attrstring color:indigo6 content@before:'"' content@after:'"'
 	css .child mx:1 d:block
-	css .more color:gray5 px:1 radius:2 bg.hover:gray1 cursor:pointer
+	css .more color:gray5 px:1 rd:2 bg.hover:gray1 cursor:pointer
 
 	prop context
 	prop depth
@@ -65,9 +65,7 @@ tag log-tag
 
 tag repl-console-item
 
-	
-
-	css d:block c:gray6 fs:md/1.4 fw:500
+	css d:block c:gray6 fw:500
 		transition: all 250ms cubic-out
 
 	css >>> .body
@@ -96,7 +94,7 @@ tag repl-console-item
 	def render
 		<self.item> <.body>
 			for item in data
-				<span.arg> any(item,context,0)
+				<span.arg> any(item,context,1)
 
 	def show
 		let h = offsetHeight
@@ -118,16 +116,18 @@ tag repl-console-item
 			self
 
 tag repl-console
-	css cursor:default $count:0
+	css cursor:default $count:0 fs:md/1.4
 
-	css $body >>> .item p:2 3 mx:1 bdb:gray2
+	css $body >>> .item p:1 2 mx:1 bdb:gray2 bdb@last:clear
 	css $snackbars d:block pos:absolute w:100% t:0 l:0 zi:35
-	css $snackbars >>> .item .body m:2 p:2 3 br:3 bg:gray1 bs:xs bd:gray3 fs:sm/1.3
+	css $snackbars >>> .item .body m:2 p:2 3 rd:3 bg:gray1 bs:xs bd:gray3 fs:sm/1.3
 
 	css .heading d:block p:1 3 0 mx:1 c:gray6 fs:sm fw:500 mb:-2
 
 	css .counter
-		bg:gray3 mx:1 px:1 radius:10 min-width:6 color:gray6/70 d:inline-block fs:xs fw:bold ta:center
+		bg:gray3 mx:1 px:1 rd:10 min-width:6 color:gray6/70 d:inline-block fs:xs fw:bold ta:center
+	
+	css $header bg:gray2 p:2 px:3 d:hflex ..transient:none
 
 	prop native
 	prop context
@@ -139,10 +139,14 @@ tag repl-console
 
 	def clear
 		$body.innerHTML = ''
+		$autoclear = no
 		count = 0
-		
+	
+	def autoclear
+		$autoclear = yes
 
 	def log ...params
+		clear! if $autoclear
 		# $body.appendChild <div.item> any(params,context,0)
 		let item = <repl-console-item.item context=context data=params>
 		if isTransient
@@ -172,6 +176,7 @@ tag repl-console
 		count++
 
 	def info ...params
+		clear! if $autoclear
 		$body.appendChild <div.heading> params[0]
 		count++
 
@@ -180,12 +185,12 @@ tag repl-console
 
 	def render
 		<self>
-			<header[bg:gray2 d..transient:none]>
+			<header$header>
 				<.tab.active[flex-grow:1] @click=flags.toggle('expanded')>
 					<span> "Console"
 					<span.counter> count
 				<button[d..transient:none] @click=clear [d:none]=(!count)> 'Clear'
 			<div$snackbars>
 			<.content[pos:relative flex:1 bg:white]>
-				<div$scroller[pos:absolute d:block ofy:auto inset:0]>
+				<div$scroller[pos:relative d:block ofy:auto inset:0]>
 					<div$body[d:block] @resize=relayout>

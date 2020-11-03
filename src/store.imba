@@ -71,19 +71,22 @@ class Entry
 		data.name.replace(/\.\w+$/,'')
 
 	get folders
-		self.children.filter(do $1 isa Dir)
+		children.filter(do $1 isa Dir)
 	
 	get files
-		self.children.filter(do $1 isa File)
+		children.filter(do $1 isa File)
 	
 	get docs
-		self.children.filter(do $1 isa Doc)
+		children.filter(do $1 isa Doc)
 
 	get sections
-		self.children.filter(do $1 isa Section)
+		children.filter(do $1 isa Section)
+
+	get parts
+		children.filter(do $1 isa Doc or $1 isa Section)
 
 	get categories
-		self.children.filter(do $1 isa Category)
+		children.filter(do $1 isa Category)
 
 	get prev
 		return null unless parent
@@ -96,6 +99,9 @@ class Entry
 
 	get tab?
 		parent and parent.options.tabbed and type == 'doc'
+		
+	get reference?
+		parent and parent.name == 'reference'
 
 	get prevSibling
 		parent ? parent.children[parent.children.indexOf(self) - 1] : null
@@ -107,7 +113,7 @@ class Entry
 		$currentTab or docs[0]
 
 	def childByName name
-		self.children.find(do $1.name == name and !($1 isa Section))
+		children.find(do $1.name == name) #  and !($1 isa Section)
 
 	def match filter
 		if filter isa RegExp
@@ -185,9 +191,12 @@ export class Guide < Entry
 		null
 
 export class Section < Entry
-
+	
 	get href
-		"{parent.href}#{name}"
+		path
+
+	# get href
+	#	"{parent.href}#{name}"
 
 export class Category < Entry
 

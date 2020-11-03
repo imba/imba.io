@@ -44,7 +44,7 @@ watcher.on('all') do
 	let dirname = path.dirname(src)
 
 	return if name == '.DS_Store' or src == '' or name.match(/\-(\.\w+)?$/)
-	console.log 'watcher',$1,src,dirname
+	# console.log 'watcher',$1,src,dirname
 
 	let up = map[dirname]
 	let id = "/{src}"
@@ -76,13 +76,15 @@ watcher.on('all') do
 			return
 
 		if item.ext == 'md'
-			item.name = item.name.slice(0,-3)
+			let name = item.name.slice(0,-3)
+			item.name = name
 
 			let md = marked.render(item.body,path: id,file:item)
 			# item.html = md.body
 			# item.toc = md.toc
 			# Object.assign(item,md.meta)
 			Object.assign(item,md)
+			item.name = name
 
 			if item.hidden
 				return

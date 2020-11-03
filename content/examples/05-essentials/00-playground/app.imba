@@ -3,7 +3,7 @@ tag x-app
 	css .teal bg:teal2 @hover:teal3 color:teal8
 	css .yellow bg:yellow2 @hover:yellow3 color:yellow8
 	css .red bg:red2 @hover:red3 color:red8 
-	css .item p:4 flex:1 radius:3 m:4
+	css .item p:4 flex:1 rd:3 m:4
 
 	def render
 		<self [d:flex flw:wrap]>

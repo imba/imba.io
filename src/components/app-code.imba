@@ -1,4 +1,4 @@
-import {highlight} from '../util/highlight'
+import {highlight,clean} from '../util/highlight'
 import * as sw from '../sw/controller'
 import {ls,fs} from '../store'
 
@@ -206,12 +206,12 @@ tag app-code
 
 tag app-code-block < app-code
 
-	css pos:relative br:sm fs:12px @md:13px d:block .shared:none
+	css pos:relative rd:sm fs:12px @md:13px d:block .shared:none
 		$bg:$code-bg-lighter
 		$preview-size:72px .md:120px .lg:180px .xl:240px
 
 	css main
-		pos:relative radius:inherit c:$code-color btlr..multi:0
+		pos:relative rd:inherit c:$code-color
 
 	css .code pos:relative d:block
 		>>> .code-head d:none
@@ -224,28 +224,31 @@ tag app-code-block < app-code
 
 	css code d:block ofx:auto ff:mono ws:pre p:3 4 p@md:5 6
 	# what should this style?
-	css label bg:gray7 br:2 pos:absolute d:flex ai:center p:1
+	css label bg:gray7 rd:md pos:absolute d:flex ai:center p:1
 
-	css .btn px:1 mx:1 c:gray6 fw:500 br:2 bg@hover:gray7/10 outline@focus:none
+	css .btn px:1 mx:1 c:gray6 fw:500 rd:md bg@hover:gray7/10 outline@focus:none
 		@not-md mx:0 ml:1 bg:gray7/90 bg@hover:gray7/100 c:gray4
 		@is-active bg:blue6 c:white
 
-	css .tabs d:flex radius:2 d:flex cursor:default us:none
-		@before
-			pos:absolute inset:0 m:-1 radius:3 b:1px dashed yellow7 content:' '
-			box-shadow: 0px 0px 10px 2px rgba(42, 50, 63,0.7), inset 0px 0px 2px 2px rgba(42, 50, 63,0.7)
-			rotate:-1deg
-
-	css .tab d:flex px:3 py:1 fs:sm fw:500 br:3px 3px 0 0
-		bg:gray2/50 @hover:gray3 .on:var(--bg)
-		c:gray6 c.on:teal2/90
-
 	css $editor
-		bg:$bg br:inherit
+		bg:$bg rd:sm
+
+	css	$header pos:relative zi:2 bg:#3d4253
+		d:hflex @empty:none
+		rdt:inherit
+		c:gray6 fs:sm fw:500 
+		.tabs d:hflex px:2 py:1
+		.actions ml:auto px:2 py:1 zi:2
+		.item d:block c:gray6 c.on:blue3 py:0.25 mx:1 td:none
+		&.collapsed
+			.tabs d:none
+			.actions pos:absolute t:0 r:0
+			
+		
 
 	css $preview
 		min-height:$preview-size
-		mt:0 br:inherit
+		mt:0 r:inherit
 		color:gray6
 		pos:absolute
 		t:0 l:100%
@@ -254,46 +257,54 @@ tag app-code-block < app-code
 		h:100%
 		w:$doc-margin
 		pl:4
-		>>> .frame shadow:xs br:inherit
+		>>> .frame shadow:xs rd:inherit
 		>>> .controls d@lt-xl:none
 		@lt-xl pos:relative l:0 h:$preview-size m:0 mt:2 w:100% p:0 max-width:initial
 
-	prop tab = 'imba'
+		>>> $console $header d:none
+
+	css &.console
+		$preview h:auto min-height:initial
+		$preview >> .body d:none
+		$preview >>> $console bxs:xs rd:sm border:1px solid gray3 bg:white
+			$header d@force:none
+			$scroller max-height@force:140px p:1 fs:sm
+		
+
 	prop lang
 	prop options = {}
 	prop dir
 	prop files
 	prop file
 	prop size
+	prop hlvar
 	prop editorHeight = 0
 
 	def hydrate
-		lang = dataset.lang
 		files = []
 		file = null
 		# manual style fixing
 		flags.add(_ns_)
 		flags.add(_ns_ + "_")
 
-		if dataset.dir
-			dir = ls(dataset.dir)
-			files = dir.files
-			file = files[0]
+		let meta = JSON.parse(dataset.meta or '{}')
+		let path = "/examples{dataset.path}"
 
-		dataset.path
+		Object.assign(options,meta)
 
-		code = highlight(textContent,lang)
-		innerHTML = '' # empty
-		options.compile = !code.options.nojs and !code.plain.match(/^tag /m)
-		options.run = !code.options.norun
+		let parts = getElementsByTagName('code')
+		for part,i in parts
+			let data = {
+				name: part.dataset.name or "example.{part.dataset.lang}"
+				lang: part.dataset.lang
+				body: clean(part.textContent)
+			}
+			let file = fs.register(path + '/' + data.name,data)
+			files.push(file)
 
-		size = code.options.preview or dataset.size or ''
-
-		if code.options.preview
-			let file = {path: dataset.path, body: code.plain,size: code.options.preview}
-			fsfile = fs.register(dataset.path,{body: code.plain, options: code.options})
-			options.preview = fsfile
-
+		file = files[0]
+		innerHTML = ''
+		render!
 
 	def mount
 		schedule!
@@ -327,33 +338,33 @@ tag app-code-block < app-code
 			if vref
 				el.classList.add('highlight') for el in getElementsByClassName(vref)
 			hlvar = vref
-	
-	
 
 	def editorResized e
 		# editorHeight = Math.max(editorHeight or 0,e.rect.height)
 		self
 	
-	def render
-		return unless code
+	def openFile file
+		self.file = file
+		render!
 
-		<self.{code.flags} .{size} .multi=(files.length > 1) @pointerover.silence=pointerover>
-			<header[d:none ..multi:block]>
-				<div.tabs> for item in files
-					<a.tab .on=(file==item) @click=(file=item)> item.name
-			<main[btlr:0]=dir>
+	def openInEditor
+		router.go(file.path)
+		self
+	
+	def render
+		return unless code or file
+
+		<self.{options.preview} .multi=(files.length > 1) @pointerover.silence=pointerover>
+			<main>
 				<div$editor.code[min-height:{editorHeight}px] @resize=editorResized>
+					<$header .collapsed=(files.length < 2)>
+						<div.tabs> for item in files
+							<a.tab.item .on=(file==item) @click.stop.silence=openFile(item)> item.name
+						<div.actions>
+							<div.item @click=openInEditor> 'open'
 					if file
 						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
-					unless dir
-						<div$code[pos:relative]>
-							if lang == 'imba'
-								<div[pos:absolute top:-2 @md:2 right:1 @md:2]>
-									if options.run
-										<button.btn @click=run> 'EDIT'
-							<div$source .(d:none)=(tab != 'imba')> <code.{code.flags} innerHTML=code.html>
-				if options.preview or dir
-					<app-repl-preview$preview file=options.preview dir=dir>
-			
+				if options.preview or (files[0].name == 'main.imba')
+					<app-repl-preview$preview file=files[0] dir=dir mode=options.preview>
 
 tag app-code-inline < app-code

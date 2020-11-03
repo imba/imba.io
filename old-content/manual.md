@@ -849,7 +849,7 @@ else
     throw 'nope'
 ```
 
-# Loops [tabbed]
+# Loops
 
 Loops in Imba behaves similar to array comprehensions in CoffeeScript and Python. They are expressions, and can be returned and assigned. When used as expressions they will always return an array.
 
@@ -928,7 +928,7 @@ for num in [1,2,3]
     num
 ```
 
-##### with optional index parameter [snippet]
+##### for-in with optional index parameter [snippet]  [preview=console]
 ```imba
 for num,index in [1,2,3]
     num * index
@@ -1113,7 +1113,7 @@ console.log res # [2,4,8,10]
 `when` is essentially a shorthand for continuing past values that don't match a condition.
 
 
-# Functions [tabbed]
+# Functions
 
 ##### Defining functions
 ```imba
@@ -1150,6 +1150,8 @@ def draw {size = 'big', coords = {x:0, y:0}, radius = 25}
 
 draw(coords: {x: 18, y:30},radius:30)
 ```
+
+## Special arguments
 
 ##### Parameter references
 ```imba
@@ -1514,61 +1516,6 @@ class Retangle
         self.width = width
 ```
 
-# Decorators [wip]
-
-Decorators are used to extend properties and methods with common functionality. Let's say you want to log when calling a method.
-
-```imba
-
-def @log target, key, descriptor
-    let fn = descriptor.value
-    descriptor.value = do
-        console.log("call {key}")
-        let res = fn.apply(this,arguments)
-        console.log("called {key}")
-        return res
-    return descriptor
-
-# ---
-class Item
-    # by adding @log before def we let the @log decorator
-    # alter the function definition to inject logging
-    @log def setup
-        yes
-
-var item = Item.new
-item.setup!
-```
-
-This can also be useful for properties. Let's say we want to trigger a function whenever a property changes. We can define a `@watch` decorator, and use it like this:
-
-```imba
-
-def @watch target,key,desc
-	let meth = this[0] or (key + 'DidSet')
-	let setter = desc.set
-
-	if setter isa Function
-		desc.set = do(value)
-			let prev = this[key]
-			if value != prev
-				setter.call(this,value)
-				this[meth] and this[meth](value,prev,key)
-
-	return desc
-
-# ---
-class Item
-    @watch prop name
-
-    def nameDidSet to, from
-        console.log "name changed from {from} to {to}"
-
-var item = Item.new
-item.name = 'john'
-item.name = 'jane'
-```
-
 # Modules
 
 In this section we will be looking closer at how you can use existing code in your Imba projects. We will cover the `import` and `export` keywords. While it will beneficial for you to know about ESM and how it works in [Node.js](https://nodejs.org/api/esm.html#esm_ecmascript_modules) and the behavior of [export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export) and [import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) in the browser. This page only focuses on the Imba specific bits you need to know and how to use them effectively.
@@ -1729,7 +1676,7 @@ import {movies} from 'imdb'
 css .heading c:blue7 fs:xs fw:bold p:2 bc:gray3 bbw:1 pos:sticky t:0 bg:white
 css .item mx:2 d:flex px:2 py:3 bc:gray2 bbw:1 bg.hover:gray1
 css .title px:1 t:truncate
-css .number radius:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
+css .number rd:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center
 
 # ---
 imba.mount do <div.list> for movie,i in movies
@@ -1743,10 +1690,35 @@ imba.mount do <div.list> for movie,i in movies
     break if movie.title == 'The Usual Suspects'
 ```
 
+### Adding Classes
+
+You can add classes to your elements by adding one or more identifiers preceded by `.` to your tags
+```imba
+# add note and editorial classes
+<div.note.editorial> "Hello"
+```
+Setting a class only when a certain condition is met can be done using `.class=condition`.
+```imba
+<div.note.editorial .resolved=data.isResolved> "Hello"
+```
+When you want to add dynamic classes based on data you can use `{}` for interpolation inside class names:
+```imba
+let marks = 'rounded important'
+let state = 'done'
+let color = 'blue'
+# ---
+<div.item .{marks} .{state} .bg-{color}-200> "Hello"
+```
+These interpolated classes can also be toggled by a condition:
+```imba
+<div.item .theme-{user.theme}=app.loggedIn> "Hello"
+```
 
 
 
-## Properties
+
+
+## Setting Properties
 
 ```imba
 <div lang="en" title=data.title> "Hello"
@@ -1796,7 +1768,7 @@ Just like classes, styles can be conditionally applied
 
 ##### text
 ```imba
-# ~preview
+# ~preview=md
 import 'util/styles'
 
 # ---
@@ -1809,7 +1781,7 @@ imba.mount do <section>
 
 ##### textarea
 ```imba
-# ~preview
+# ~preview=md
 import 'util/styles'
 
 # ---
@@ -1822,7 +1794,7 @@ imba.mount do <section>
 
 ##### range
 ```imba
-# ~preview
+# ~preview=md
 import 'util/styles'
 
 # ---
@@ -1902,7 +1874,7 @@ imba.mount do <section>
 
 ##### select
 ```imba
-# ~preview
+# ~preview=md
 import {genres} from 'imdb'
 import 'util/styles'
 
@@ -1920,7 +1892,7 @@ imba.mount do <section>
 
 ##### multiselect
 ```imba
-# ~preview
+# ~preview=lg
 import {genres} from 'imdb'
 import 'util/styles'
 
@@ -1941,13 +1913,13 @@ imba.mount do <section>
 
 ##### button
 ```imba
-# ~preview
+# ~preview=md
 import {genres} from 'imdb'
 import 'util/styles'
 
 # ---
 let state = 'one'
-css button.checked shadow:inset bg:gray2 o:0.6
+css button.checked bxs:inset bg:gray2 o:0.6
 
 imba.mount do <section>
     <div.group>
@@ -1959,7 +1931,7 @@ imba.mount do <section>
 
 ##### custom elements
 ```imba
-# ~preview
+# ~preview=lg
 import 'util/styles'
 
 # ---
@@ -1986,7 +1958,7 @@ imba.mount do <section>
 
 ##### combination
 ```imba
-# ~preview
+# ~preview=xl
 import {genres} from 'imdb'
 import 'util/styles'
 
@@ -2221,946 +2193,6 @@ tag app-clock
         commit! unless scheduled?
 ```
 
-# Events [tabbed]
-
-# -- Listening
-
-We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
-
-```imba
-let counter = 0
-<button ~[@click=(counter++)]~> "Increment to {counter + 1}"
-```
-
-It is important to understand how these event handlers are treated. Imba is created to maximize readability and remove clutter. If you set the value to something that looks like a regular method call, this call (and its arguments) will only be called when the event is actually triggered.
-
-```imba
-<div @click=console.log('hey')> 'Will log hey'
-```
-
-In the example above, the console.log will only be called when clicking the element. If you just supply a reference to some function, Imba will call that handler, with the event as the only argument.
-
-```imba
-<div @click=console.log> 'Will log the event'
-```
-
-Inside of these lazy handlers you can also refer to the event itself as `e`.
-
-```imba
-let x = 0
-<button @click=console.log(e.type,e.x,e.y)> "Click"
-<button @mousemove=(x = e.x)> "Mouse at {x}"
-```
-
-Remember that the expression will be called as is, so you never need to bind functions to their context and/or arguments.
-
-```imba
-import {todos} from './data.imba'
-
-const handler = console.log.bind(console)
-
-# ---
-<ul> for item,i in todos
-	<li @click=handler(e.type,item,i)> item.title
-```
-
-# -- Triggering
-
-# -- Modifiers
-
-
-Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
-
-## Core Modifiers
-
-##### prevent [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-imba.mount do
-	<a href='https://google.com' @click.prevent.log('prevented')> 'Link'
-```
-> Calls preventDefault on event
-
-##### stop [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-imba.mount do <div.group @click.log('clicked div')>
-	<button @click.stop.log('stopped')> 'stop'
-	<button @click.log('bubble')> 'bubble'
-```
-> Calls stopPropagation on event
-
-##### once [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-# ---
-imba.mount do
-    <button @click.once.log('once!')> 'Click me'
-```
-> The click event will be triggered at most once 
-
-##### capture [event-modifier] [snippet]
-
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-imba.mount do
-	<div @click.capture.stop.log('captured!')>
-		<button @click.log('button')> 'Click me'
-```
-
-##### passive [event-modifier] [snippet]
-
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-imba.mount do
-	<main[overflow:scroll] @scroll.passive.log('scrolled')>
-		<article> "One"
-		<article> "Two"
-		<article> "Three"
-```
-
-## Utility Modifiers
-
-##### log ( ...params ) [event-modifier] [snippet]
-
-```imba
-# ~preview=small
-import 'util/styles'
-
-# ---
-# log to the console
-imba.mount do
-	<button @click.log('logged!')> 'test'
-```
-
-##### wait ( duration = 250ms ) [event-modifier] [snippet]
-
-```imba
-# ~preview=small
-import 'util/styles'
-
-# ---
-# delay subsequent modifiers by duration
-imba.mount do <div.group>
-	<button @click.wait.log('logged!')> 'default'
-	<button @click.wait(100).log('logged!')> 'fast'
-	<button @click.log('!').wait(500).log('!!')> 'chained'
-```
-
-##### throttle ( ms ) [event-modifier] [snippet]
-
-```imba
-# ~preview=small
-import 'util/styles'
-
-# ---
-# disable handler for duration after triggered 
-imba.mount do
-	<button @click.throttle(1000).log('clicked')> 'click me'
-```
-
-##### emit-*name* ( detail = {} ) [event-modifier] [snippet]
-
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-# Shorthand for emitting events
-imba.mount do
-	<div.group @select=console.log(e.type,e.detail)>
-		<button @click.emit-select> 'emit'
-		<button @click.emit-select(a:1,b:2)> 'with data'
-```
-
-##### flag-*name* ( target ) [event-modifier] [snippet]
-
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-# Add flag while event is being handled
-imba.mount do
-	<div.group>
-		<button @click.flag-busy> 'flag self'
-		<button @click.flag-busy('div').wait(1000)> 'flag div'
-# Optionally supply a selector / element to flag
-```
-
-
-##### silence [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-let counter = 0
-imba.mount do <section>
-	<div.group>
-		<button @click.silence.log('silenced')> "Silenced"
-		<button @click.log('clicked')> "Not silenced"
-	<label> "Rendered {++counter} times"
-# By default, Imba will commit after all handled events.
-# In the few cases you want to suppress this, add the `silence` modifier.
-```
-
-
-## Guard Modifiers
-
-##### self [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-# ---
-# only trigger handler if event.target is the element itself
-imba.mount do 
-	<button @click.self.log('clicked self')>
-		"Button"
-		<b> "Nested"
-```
-
-##### sel ( selector ) [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-# only trigger if event.target.closest(selector) is true
-imba.mount do <div.group>
-	<button @click.log('!')> 'Button'
-	<button @click.sel('.pri').log('!!')> 'Button'
-	<button.pri @click.sel('.pri').log('!!!')> 'Button'
-```
-
-##### if ( expr ) [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-# ---
-let age = 20
-# break chain unless expr is truthy
-imba.mount do <div.group>
-	<input type='number' bind=age>
-	<button @click.if(age > 20).log('drink')> 'drink'
-	<button @click.if(age > 16).log('drive')> 'drive'
-```
-
-##### keys [snippet]
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-imba.mount do 
-	<header> <input placeholder='Text..'
-		@keydown.enter.log('pressed enter')
-		@keydown.left.log('pressed left')
-		@keydown.right.log('pressed right')
-		@keydown.up.log('pressed up')
-		@keydown.down.log('pressed down')
-		@keydown.tab.log('pressed tab')
-		@keydown.esc.log('pressed esc')
-		@keydown.space.log('pressed space')
-		@keydown.del.log('pressed del')
-	>
-```
-
-## System Key Modifiers
-
-System modifier keys are different from regular keys and when used with @keyup events, they have to be pressed when the event is emitted. In other words, @keyup.ctrl will only trigger if you release a key while holding down ctrl. It won’t trigger if you release the ctrl key alone. You can use the following modifiers to trigger event listeners only when the corresponding modifier key is pressed:
-
-##### ctrl [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-# break chain unless ctrl key is pressed
-imba.mount do <div.group>
-	<button @click.ctrl.log('ctrl+click')> 'ctrl+click'
-	# On mac there is no way to detect a `control+click` event.
-	# Instead you will have to intercept the `contextmenu` event,
-	# which is triggered by `control+click` and right mouse.
-	<button @contextmenu.prevent.ctrl.log('ctrlish+click')> 'ctrlish+click'
-```
-
-##### alt [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-# break chain unless alt key is pressed
-imba.mount do
-	<button @click.alt.log('alt+click')> 'alt+click'
-```
-
-##### shift [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-# break chain unless shift key is pressed
-imba.mount do
-	<button @click.shift.log('shift+click')> 'shift+click'
-```
-
-##### meta [event-modifier] [snippet]
-```imba
-# ~preview
-import 'util/styles'
-
-# ---
-# break chain unless meta key is pressed
-# On mac keyboards, meta is the command key (⌘).
-# On windows keyboards, meta is the Windows key (⊞)
-imba.mount do <button @click.meta.log('meta+click')> 'meta+click'
-```
-
-## Pointer Modifiers
-
-Modifiers available for all pointer events – pointerover, pointerenter, pointerdown, pointermove, pointerup, pointercancel, pointerout & pointerleave.
-
-##### mouse [event-modifier] [pointer-modifier] [snippet]
-```imba
-# ~preview=small
-import 'util/styles'
-
-# ---
-imba.mount do
-	<button @pointerdown.mouse.log('only mouse!')> 'Button'
-```
-
-##### pen [event-modifier] [pointer-modifier] [snippet]
-```imba
-# ~preview=small
-import 'util/styles'
-
-# ---
-imba.mount do
-	<button @pointerdown.pen.log('only pen!')> 'Button'
-```
-
-##### touch [event-modifier] [pointer-modifier] [snippet]
-```imba
-# ~preview=small
-import 'util/styles'
-
-# ---
-imba.mount do
-	<button @pointerdown.touch.log('only touch!')> 'Button'
-```
-
-##### pressure ( threshold = 0.5 ) [event-modifier] [pointer-modifier] [snippet]
-```imba
-# ~preview=small
-import 'util/styles'
-
-# ---
-imba.mount do
-	<button @pointerdown.pressure.log('pressured?')> 'Button'
-```
-
-## Touch Modifiers
-
-The following modifiers are available for the special `touch` event. More in depth examples of these modifiers can be seen in the [Touch](/docs/events/touch) docs.
-
-##### moved ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
-
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	# won't trigger until moved 30px from start
-	<self @touch.moved(30)=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-Will break the chain until the touch has moved more than `threshold`. The element will also activate the `@move` pseudostate during touch - after threshold is reached.
-
-
-
-##### moved-*direction* ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-up=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-Direction can be `up`, `down`, `left`, `right`, `x`, and `y`
-
-##### sync ( data, xname = 'x', yname = 'y' ) [event-modifier] [touch-modifier] [snippet]
-
-```imba
-# ~preview=lg
-import 'util/styles'
-
-# ---
-tag Draggable
-	prop pos = {x:0,y:0}
-	<self[w:80px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)>
-# ---
-imba.mount do <Draggable>
-```
-
-A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.
-
-## Resize Modifiers
-
-## Intersection Modifiers
-
-##### in [event-modifier] [intersection-modifier] [snippet]
-```imba
-<div @intersect.in=handler>
-```
-Break unless intersection ratio has increased.
-
-##### out [event-modifier] [intersection-modifier] [snippet]
-```imba
-<div @intersect.out=handler>
-```
-Break unless intersection ratio has decreased.
-
-# -- Event Types [tabbed]
-
-# --- System
-
-# --- Key
-
-# --- Mouse
-
-# --- Pointer
-
-# --- Touch
-
-
-To make it easier and more fun to work with touches, Imba includes a custom `touch` event that combines `pointerdown` -> `pointermove` -> `pointerup/pointercancel` in one convenient handler, with modifiers for commonly needed functionality.
-
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	<self @touch=(x=e.x,y=e.y)> "x={x} y={y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-The `event` emitted by this handler is not an event, but a `Touch` object, that remains the same across the whole touch. 
-
-| Properties  |  |
-| --- | --- |
-| `e.event` | The last/current event in this touch |
-| `e.target` | The element that initiated this touch |
-| `e.events` | Array of all the events that are part of this touch |
-| `e.x` | Normalized x coordinate for the pointer |
-| `e.y` | Normalized y coordinate for the pointer |
-| `e.elapsed` | The time elapsed since pointerdown started (in milliseconds) |
-
-
-You can add arbitrary properties to the touch object if you need to keep track of things across the many events that will be triggered during this touch.
-
-## Thresholds
-
-##### moved ( threshold = 4px )
-
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	# won't trigger until moved 30px from start
-	<self @touch.moved(30)=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-This guard will break the chain unless the touch has moved more than `threshold`. Once this threshold has been reached, all subsequent updates of touch will pass through. The element will also activate the `@move` pseudostate during touch - after threshold is reached.
-
-
-
-##### moved-up ( threshold = 4px )
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-up=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-##### moved-down ( threshold = 4px )
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-down=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-##### moved-left ( threshold = 4px )
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-left=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-##### moved-right ( threshold = 4px )
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-right=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-##### moved-x ( threshold = 4px )
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-x=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-##### moved-y ( threshold = 4px )
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-y=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-## Syncing
-
-A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.
-
-##### sync ( data )
-
-
-```imba
-# ~preview=lg
-import 'util/styles'
-
-# ---
-tag Draggable
-	prop pos = {x:0,y:0}
-	<self[w:80px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)>
-# ---
-imba.mount do <Draggable>
-```
-
-```imba
-# ~preview=lg
-import 'util/styles'
-
-# ---
-const pos = {x:0,y:0}
-# mounting two draggables - tracing the same one
-imba.mount do <>
-	<[w:60px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)> 'drag'
-	<[w:60px x:{pos.y} y:{pos.x}].rect> 'flipped'
-```
-Sync will update the x and y properties of whatever object you decide to supply as an argument.
-
-##### sync ( data, alias-x, alias-y )
-```imba
-# ~preview=lg
-import 'util/styles'
-
-# ---
-const data = {a:0,b:0}
-# mounting two draggables - tracing the same one
-imba.mount do <>
-	<[w:80px x:{data.a} top:{data.b}px].rect @touch.sync(data,'a','b')> 'drag'
-	<label> "a:{data.a} b:{data.b}"
-```
-You can also include the property names you want to sync x and y to/from.
-
-
-## Interpolating
-
-A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you'd want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.
-
-##### fit ( box, snap = 1 )
-
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect w:80vw
-# ---
-tag Fitted
-	<self @touch.fit(self)=(y=e.y)> "box.y {y}"
-tag Unfitted
-	<self @touch=(y=e.y)> "window.y {y}"
-tag Snapped
-	<self @touch.fit(self,2)=(y=e.y)> "box.y {y}"
-# ---
-imba.mount do <>
-	<Fitted.rect>
-	<Unfitted.rect>
-	<Snapped.rect>
-```
-The first argument of fit is the box you want to fit to. If box is a string it will be treated as a selector and try to look up an element matching the selector
-
-##### fit ( box, start, end, snap = 1)
-
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	# convert x,y to go from 0 in top left corner to 100 in bottom right
-	<self @touch.fit(self,0,100)=(x=e.x,y=e.y)> "x:{x} y:{y}"
-# ---
-imba.mount <Example.rect>
-```
-By passing `start` and `end` values, you can very easily convert the coordinate space of the touch. Imba will use linear interpolation to convert x,y relative to the box, to the interpolated values between start and end.
-You can use negative values on `start` and `end` as well.
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	# convert x,y to go from -50 to +50 with 0.1 increments
-	<self @touch.fit(self,-50,50,0.1)=(x=e.x,y=e.y)> "x:{x} y:{y}"
-# ---
-imba.mount <Example.rect>
-```
-
-
-You can also use percentages in start and end to reference the width and height of the box we're mapping to.
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	# this will essentially flip the origin from top left to bottom right
-	<self @touch.fit(self,100%,0)=(x=e.x,y=e.y)> "x:{x} y:{y}"
-# ---
-imba.mount <Example.rect>
-```
-You can also use arrays to fit the x and y axis to different values.
-```imba
-# ~preview=lg
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	# will flip and center the y axis
-	<self @touch.fit(self,[0,50%],[100%,-50%])=(x=e.x,y=e.y)> "x:{x} y:{y}"
-# ---
-imba.mount <Example.rect>
-```
-
-## Pinning
-
-## Examples
-
-##### Custom slider
-```imba
-# ~preview=small
-import 'util/styles'
-
-css body > * w:50vw m:2 h:4 bg:blue3 pos:relative radius:sm
-# css .track h:4 w:100% bg:blue3 pos:relative radius:sm
-css .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% radius:sm
-css .thumb b x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6
-
-# ---
-tag Slider
-	prop min = -50
-	prop max = 50
-	prop step = 1
-	prop value = 0
-
-	<self @touch.fit(min,max,step)=(value = e.x)>
-		<.thumb[l:{100 * (value - min) / (max - min)}%]> <b> value
-
-imba.mount do <>
-	<Slider min=0 max=1 step=0.25>
-	<Slider min=-100 max=100 step=1>
-	<Slider min=10 max=-10 step=0.5>
-```
-
-##### Pane with divider
-```imba
-# ~preview=small
-import 'util/styles'
-
-# ---
-tag Panel
-	prop split = 70
-
-	<self[d:flex pos:absolute inset:0]>
-		<div[bg:teal2 flex-basis:{split}%]>
-		<div[fls:0 w:2 bg:teal3 @touch:teal5]
-			@touch.pin.fit(self,0,100,2)=(split=e.x)>
-		<div[bg:teal1 flex:1]>
-
-imba.mount do <Panel>
-```
-
-##### Simple draggable [app]
-```imba
-# ~preview=xl
-import 'util/styles'
-# css body bg:gray1
-# ---
-tag drag-me
-	css d:block pos:relative p:3 m:1 radius:sm cursor:default
-		bg:white shadow:sm
-		@touch scale:1.02
-		@move scale:1.05 rotate:2deg zi:2 shadow:lg
-
-	def build
-		x = y = 0
-
-	def render
-		<self[x:{x} y:{y}] @touch.moved.sync(self)> 'drag me'
-
-imba.mount do <div.grid>
-	<drag-me>
-	<drag-me>
-	<drag-me>
-```
-
-##### Paint [app]
-
-```imba
-# ~preview=xl
-# ---
-const dpr = window.devicePixelRatio
-
-tag app-paint
-	prop size = 500
-	
-	def draw e
-		let path = e.$path ||= new Path2D
-		path.lineTo(e.x * dpr,e.y * dpr)
-		$canvas.getContext('2d').stroke(path)
-
-	def render
-		<self[d:block overflow:hidden bg:blue1]>
-			<canvas$canvas[size:{size}px]
-				width=size*dpr height=size*dpr @touch.fit(self)=draw>
-
-imba.mount <app-paint>
-```
-
-# --- Intersection
-
-[IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) is a [well-supported](https://caniuse.com/#feat=intersectionobserver) API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document's viewport. In Imba it is extremely easy to set up an intersection observer.
-
-| Properties  |  |
-| --- | --- |
-| `event.entry` | Returns the [IntersectionObserverEntry](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry) |
-| `event.ratio` | Returns the ratio of the intersectionRect to the boundingClientRect |
-| `event.delta` | Difference in ratio since previous event |
-
-
-##### Example
-
-```imba
-# ~preview=xl
-css body p:6
-css .grid d:grid g:3
-css .box d:grid gap:4 p:4 radius:2 bw:1 bc:black/5
-css .field p:1 px:2 radius:2 bw:1 bc:gray4 c:gray8
-css .box bg:white .teal:teal3 .blue:blue3
-
-# ---
-import {genres} from 'imdb'
-
-tag Genre
-    css @force p:4 bg:blue2 h:120px
-
-	prop ratio = 0
-
-    def intersected e
-        ratio = e.ratio
-
-	def render
-		<self[opacity:{ratio}] @intersect(10)=intersected> <slot>
-
-imba.mount do
-	<div.box> for genre in genres
-		<Genre> genre
-```
-
-##### intersect(n)
-```imba
-# n 0-1 adds single threshold at n visibility
-<div @intersect(0)=handler> # On 0%
-<div @intersect(0.5)=handler> # On 50%
-<div @intersect(1)=handler> # On 100%
-
-# n > 1 will add n thresholds - spread evenly
-<div @intersect(2)=handler> # Trigger [0%,100%]
-<div @intersect(3)=handler> # Trigger [0%,50%,100%]
-<div @intersect(5)=handler> # Trigger [0%,25%,50%,75%,100%]
-# ... and so forth
-```
-
-##### intersect.in
-```imba
-# Will only trigger when intersection ratio increases
-<div @intersect.in=handler>
-# Will only trigger when element is more than 50% visible
-<div @intersect(0.5).in=handler>
-```
-> The `in` modifier tells the intersection event to only trigger whenever the visibility has *increased*.
-
-##### intersect.out
-```imba
-# Will only trigger when element starts intersecting
-<div @intersect.out=handler>
-# Will trigger whenever any part of the div is hidden
-<div @intersect(1).out=handler>
-```
-> The `in` modifier tells the intersection event to only trigger whenever the visibility has *decreased*.
-
-
-# --- Resize
-
-# --- Selection
-
-# State Management [tabbed]
-
-## Introduction
-
-The fact that tag literals generate real dom nodes means that we can add/remove/modify the dom in an imperative way. In theory.
-
-```imba
-# ~preview=xl
-import 'util/styles'
-
-# ---
-let array = ["First","Second"]
-
-let view = <main>
-    <button @click=array.push('More')> 'Add'
-    <ul.list> for item in array
-        <li> item
-
-# view is a real native DOM element
-document.body.appendChild view
-```
-Even tough we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
-
-## Mounting
-
-To make the tag tree update when our data changes, we need to add pass the tree to `imba.mount`.
-
-```imba
-# ~preview=xl
-import 'util/styles'
-
-# ---
-let array = ["First","Second"]
-
-imba.mount do 
-    <main>
-        <button @click=array.push('More')> 'Add'
-        <ul.list> for item in array
-            <li> item
-```
-Now you will see that when you click the button, our view instantly updates to reflect the new state. How does this happen without a virtual dom? The array is not being tracked in a special way (it is just a plain array), and we are only dealing with real dom elements, which are only changed and updated when there is real need for it. Imba uses a technique we call `memoized dom`, and you can read more about how it works [here](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52). Here is a more advanced example with more dynamic data and even dynamic inline styles:
-
-```imba
-# ~preview=xl
-import 'util/styles'
-
-css div pos:absolute d:block inset:0 p:4
-css mark pos:absolute
-css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
-
-# ---
-let x = 20, y = 20, title = "Hey"
-
-imba.mount do
-    <main @mousemove=(x=e.x,y=e.y)>
-        <input bind=title>
-        <label> "Mouse is at {x} {y}"
-        <mark[x:{x} y:{y} rotate:{x / 360}]> "Item"
-        <ul> for nr in [0 ... y]
-            <li> nr % 12 and nr or title
-```
-
-By default Imba will **render your whole application whenever anything *may* have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all that? As long as you have mounted your root element using `imba.mount` you usually don't need to think more about it.
-
-## Updating
-
- The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using await or returning a promise), Imba will also re-render after the promise is finished. Practically all state changes in applications happen as a result of some user interaction.
-
-In the few occasions where you need to manually make sure views are updated, you should call `imba.commit`. It schedules an update for the next animation frame, and things will only be rerendered once even if you call `imba.commit` a thousand times. It returns a promise that resolves after the actual updates are completed, which is practical when you need to ensure that the view is in sync before doing something.
-
-##### commit from websocket
-```imba
-socket.addEventListener('message',imba.commit)
-```
-Calling `imba.commit` after every message from socket will ensure that your views are up-to-date when your state changes as a result of some socket message.
-
-##### commit after fetching data
-```imba
-def load
-    let res = await window.fetch("/items")
-    state.items = await res.json!
-    imba.commit!
-```
 
 
 # Styles [tabbed]
@@ -3271,7 +2303,7 @@ If you declare style rules inside tag definitions, all the styles will magically
 # these are global -- applies to everything in project
 # ---
 tag app-card
-    css fs:sm radius:md d:vflex bg:teal1 c:teal7
+    css fs:sm rd:md d:vflex bg:teal1 c:teal7
     css .header bg:teal2/50 p:3
     css .body p:3
 
@@ -3564,7 +2596,7 @@ css button
 
 <doc-style-modifiers></doc-style-modifiers>
 
-# - Theming [tabbed]
+# - Theming
 
 Imba has a goal of making it as easy as possible to be consistent with regards to fonts, colors, sizes and more throughout your application. In the spirit of Tailwind, we supply a default "theme" with a whole range of delightfully hand-picked colors, font sizes, shadows and sizing/spacing units.
 
@@ -3611,7 +2643,7 @@ imba.mount do  <section>
 # ~preview=lg
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 size:14 bg:white radius:2 d:grid pa:center
+css div c:gray6 size:14 bg:white radius:2 d:grid ja:center
 css section.group px:6 jc:center gap:4 max-width:280px @xs:initial
 # ---
 global css @root
@@ -3620,25 +2652,24 @@ global css @root
     --box-shadow-ring: 0 0 0 4px blue4/30, 0 0 0 1px blue4/90
 
 imba.mount do  <section.group>
-    <div[shadow:ring]> "ring" # custom
-    <div[shadow:xxs]> "xxs"
-    <div[shadow:xs]> "xs"
-    <div[shadow:sm]> "sm"
-    <div[shadow:md]> "md"
-    <div[shadow:lg]> "lg"
-    <div[shadow:xl]> "xl"
-    <div[shadow:2xl]> "2xl"
-    <div[shadow:ring,2xl]> "combo"
+    <div[bxs:ring]> "ring" # custom
+    <div[bxs:xxs]> "xxs"
+    <div[bxs:xs]> "xs"
+    <div[bxs:sm]> "sm"
+    <div[bxs:md]> "md"
+    <div[bxs:lg]> "lg"
+    <div[bxs:xl]> "xl"
+    <div[bxs:2xl]> "2xl"
+    <div[bxs:ring,2xl]> "combo"
     
 ```
 
-## Radius
+## Radius [preview=200px]
 
 ```imba
-# ~preview=200px
 import 'util/styles'
 css body bg:gray1
-css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid pa:center border:1px solid gray3
+css div c:gray6 fs:sm size:14 bg:white radius:2 d:grid ja:center border:1px solid gray3
 css section.group px:6 jc:center gap:3
 # ---
 global css @root
@@ -3647,13 +2678,13 @@ global css @root
     --border-radius-bubble: 5px 20px 15px 
 
 imba.mount do  <section.group>
-    <div[br:xs]> "xs"
-    <div[br:sm]> "sm"
-    <div[br:md]> "md"
-    <div[br:lg]> "lg"
-    <div[br:xl]> "xl"
-    <div[br:full]> "full"
-    <div[br:bubble]> "bubble"
+    <div[rd:xs]> "xs"
+    <div[rd:sm]> "sm"
+    <div[rd:md]> "md"
+    <div[rd:lg]> "lg"
+    <div[rd:xl]> "xl"
+    <div[rd:full]> "full"
+    <div[rd:bubble]> "bubble"
 ```
 
 
@@ -3733,3 +2764,966 @@ The only way to get consistent gaps between elements inside flexboxes is to add 
 # - Server-Side Rendering
 
 # - Using Imba Rendering Context
+
+
+# Event Handling
+
+## Listening to events
+
+We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
+
+```imba
+let counter = 0
+<button ~[@click=(counter++)]~> "Increment to {counter + 1}"
+```
+
+It is important to understand how these event handlers are treated. Imba is created to maximize readability and remove clutter. If you set the value to something that looks like a regular method call, this call (and its arguments) will only be called when the event is actually triggered.
+
+```imba
+<div @click=console.log('hey')> 'Will log hey'
+```
+
+In the example above, the console.log will only be called when clicking the element. If you just supply a reference to some function, Imba will call that handler, with the event as the only argument.
+
+```imba
+<div @click=console.log> 'Will log the event'
+```
+
+Inside of these lazy handlers you can also refer to the event itself as `e`.
+
+```imba
+let x = 0
+<button @click=console.log(e.type,e.x,e.y)> "Click"
+<button @mousemove=(x = e.x)> "Mouse at {x}"
+```
+
+Remember that the expression will be called as is, so you never need to bind functions to their context and/or arguments.
+
+```imba
+import {todos} from './data.imba'
+
+const handler = console.log.bind(console)
+
+# ---
+<ul> for item,i in todos
+	<li @click=handler(e.type,item,i)> item.title
+```
+
+## Triggering Events
+
+### Trigger Event from method
+
+To trigger a custom event you call `emit` on the element you want to trigger an event from.
+```imba
+tag App
+    def lateTrigger
+        setTimeout(&,1000) do
+            emit('lateclick',some: 'data')
+
+    def render
+        <div> <button @click=lateTrigger> 'click me'
+```
+
+
+### Trigger event via event listener
+
+You can use the `emit-eventname` modifier to trigger a custom event directly from an event handler.
+
+
+# -- Modifiers
+
+
+Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
+
+## Core Modifiers
+
+##### prevent [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+imba.mount do
+	<a href='https://google.com' @click.prevent.log('prevented')> 'Link'
+```
+> Calls preventDefault on event
+
+##### stop [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+imba.mount do <div.group @click.log('clicked div')>
+	<button @click.stop.log('stopped')> 'stop'
+	<button @click.log('bubble')> 'bubble'
+```
+> Calls stopPropagation on event
+
+##### once [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+# ---
+imba.mount do
+    <button @click.once.log('once!')> 'Click me'
+```
+> The click event will be triggered at most once 
+
+##### capture [event-modifier] [snippet]
+
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+imba.mount do
+	<div @click.capture.stop.log('captured!')>
+		<button @click.log('button')> 'Click me'
+```
+
+##### passive [event-modifier] [snippet]
+
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+imba.mount do
+	<main[overflow:scroll] @scroll.passive.log('scrolled')>
+		<article> "One"
+		<article> "Two"
+		<article> "Three"
+```
+
+## Utility Modifiers
+
+##### log ( ...params ) [event-modifier] [snippet]
+
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+# log to the console
+imba.mount do
+	<button @click.log('logged!')> 'test'
+```
+
+##### wait ( duration = 250ms ) [event-modifier] [snippet]
+
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+# delay subsequent modifiers by duration
+imba.mount do <div.group>
+	<button @click.wait.log('logged!')> 'default'
+	<button @click.wait(100).log('logged!')> 'fast'
+	<button @click.log('!').wait(500).log('!!')> 'chained'
+```
+
+##### throttle ( ms ) [event-modifier] [snippet]
+
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+# disable handler for duration after triggered 
+imba.mount do
+	<button @click.throttle(1000).log('clicked')> 'click me'
+```
+
+##### emit-*name* ( detail = {} ) [event-modifier] [snippet]
+
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+# Shorthand for emitting events
+imba.mount do
+	<div.group @select=console.log(e.type,e.detail)>
+		<button @click.emit-select> 'emit'
+		<button @click.emit-select(a:1,b:2)> 'with data'
+```
+
+##### flag-*name* ( target ) [event-modifier] [snippet]
+
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+# Add flag while event is being handled
+imba.mount do
+	<div.group>
+		<button @click.flag-busy> 'flag self'
+		<button @click.flag-busy('div').wait(1000)> 'flag div'
+# Optionally supply a selector / element to flag
+```
+
+
+##### silence [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+let counter = 0
+imba.mount do <section>
+	<div.group>
+		<button @click.silence.log('silenced')> "Silenced"
+		<button @click.log('clicked')> "Not silenced"
+	<label> "Rendered {++counter} times"
+# By default, Imba will commit after all handled events.
+# In the few cases you want to suppress this, add the `silence` modifier.
+```
+
+
+## Guard Modifiers
+
+##### self [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+# ---
+# only trigger handler if event.target is the element itself
+imba.mount do 
+	<button @click.self.log('clicked self')>
+		"Button"
+		<b> "Nested"
+```
+
+##### sel ( selector ) [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+# only trigger if event.target.closest(selector) is true
+imba.mount do <div.group>
+	<button @click.log('!')> 'Button'
+	<button @click.sel('.pri').log('!!')> 'Button'
+	<button.pri @click.sel('.pri').log('!!!')> 'Button'
+```
+
+##### if ( expr ) [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+# ---
+let age = 20
+# break chain unless expr is truthy
+imba.mount do <div.group>
+	<input type='number' bind=age>
+	<button @click.if(age > 20).log('drink')> 'drink'
+	<button @click.if(age > 16).log('drive')> 'drive'
+```
+
+##### keys [snippet]
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+imba.mount do 
+	<header> <input placeholder='Text..'
+		@keydown.enter.log('pressed enter')
+		@keydown.left.log('pressed left')
+		@keydown.right.log('pressed right')
+		@keydown.up.log('pressed up')
+		@keydown.down.log('pressed down')
+		@keydown.tab.log('pressed tab')
+		@keydown.esc.log('pressed esc')
+		@keydown.space.log('pressed space')
+		@keydown.del.log('pressed del')
+	>
+```
+
+## System Key Modifiers
+
+System modifier keys are different from regular keys and when used with @keyup events, they have to be pressed when the event is emitted. In other words, @keyup.ctrl will only trigger if you release a key while holding down ctrl. It won’t trigger if you release the ctrl key alone. You can use the following modifiers to trigger event listeners only when the corresponding modifier key is pressed:
+
+##### ctrl [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+# break chain unless ctrl key is pressed
+imba.mount do <div.group>
+	<button @click.ctrl.log('ctrl+click')> 'ctrl+click'
+	# On mac there is no way to detect a `control+click` event.
+	# Instead you will have to intercept the `contextmenu` event,
+	# which is triggered by `control+click` and right mouse.
+	<button @contextmenu.prevent.ctrl.log('ctrlish+click')> 'ctrlish+click'
+```
+
+##### alt [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+# break chain unless alt key is pressed
+imba.mount do
+	<button @click.alt.log('alt+click')> 'alt+click'
+```
+
+##### shift [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+# break chain unless shift key is pressed
+imba.mount do
+	<button @click.shift.log('shift+click')> 'shift+click'
+```
+
+##### meta [event-modifier] [snippet]
+```imba
+# ~preview
+import 'util/styles'
+
+# ---
+# break chain unless meta key is pressed
+# On mac keyboards, meta is the command key (⌘).
+# On windows keyboards, meta is the Windows key (⊞)
+imba.mount do <button @click.meta.log('meta+click')> 'meta+click'
+```
+
+## Pointer Modifiers
+
+Modifiers available for all pointer events – pointerover, pointerenter, pointerdown, pointermove, pointerup, pointercancel, pointerout & pointerleave.
+
+##### mouse [event-modifier] [pointer-modifier] [snippet]
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerdown.mouse.log('only mouse!')> 'Mouse Only'
+```
+
+##### pen [event-modifier] [pointer-modifier] [snippet]
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerdown.pen.log('only pen!')> 'Pen Only'
+```
+
+##### touch [event-modifier] [pointer-modifier] [snippet]
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerdown.touch.log('only touch!')> 'Touch Only'
+```
+
+##### pressure ( threshold = 0.5 ) [event-modifier] [pointer-modifier] [snippet]
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+imba.mount do
+	<button @pointerdown.pressure.log('pressured?')> 'Button'
+```
+
+## Touch Modifiers
+
+The following modifiers are available for the special `touch` event. More in depth examples of these modifiers can be seen in the [Touch](/docs/events/touch) docs.
+
+##### moved ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
+
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	# won't trigger until moved 30px from start
+	<self @touch.moved(30)=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+Will break the chain until the touch has moved more than `threshold`. The element will also activate the `@move` pseudostate during touch - after threshold is reached.
+
+
+
+##### moved-*direction* ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-up=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+Direction can be `up`, `down`, `left`, `right`, `x`, and `y`
+
+##### sync ( data, xname = 'x', yname = 'y' ) [event-modifier] [touch-modifier] [snippet]
+
+```imba
+# ~preview=lg
+import 'util/styles'
+
+# ---
+tag Draggable
+	prop pos = {x:0,y:0}
+	<self[w:80px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)>
+# ---
+imba.mount do <Draggable>
+```
+
+A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.
+
+## Resize Modifiers
+
+## Intersection Modifiers
+
+##### in [event-modifier] [intersection-modifier] [snippet]
+```imba
+<div @intersect.in=handler>
+```
+Break unless intersection ratio has increased.
+
+##### out [event-modifier] [intersection-modifier] [snippet]
+```imba
+<div @intersect.out=handler>
+```
+Break unless intersection ratio has decreased.
+
+# -- Event Types [tabbed]
+
+# --- System
+
+# --- Key
+
+# --- Mouse
+
+# --- Pointer
+
+# --- Touch
+
+
+To make it easier and more fun to work with touches, Imba includes a custom `touch` event that combines `pointerdown` -> `pointermove` -> `pointerup/pointercancel` in one convenient handler, with modifiers for commonly needed functionality.
+
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	<self @touch=(x=e.x,y=e.y)> "x={x} y={y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+The `event` emitted by this handler is not an event, but a `Touch` object, that remains the same across the whole touch. 
+
+| Properties  |  |
+| --- | --- |
+| `e.event` | The last/current event in this touch |
+| `e.target` | The element that initiated this touch |
+| `e.events` | Array of all the events that are part of this touch |
+| `e.x` | Normalized x coordinate for the pointer |
+| `e.y` | Normalized y coordinate for the pointer |
+| `e.elapsed` | The time elapsed since pointerdown started (in milliseconds) |
+
+
+You can add arbitrary properties to the touch object if you need to keep track of things across the many events that will be triggered during this touch.
+
+## Thresholds
+
+##### moved ( threshold = 4px ) [preview=lg]
+
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	# won't trigger until moved 30px from start
+	<self @touch.moved(30)=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+This guard will break the chain unless the touch has moved more than `threshold`. Once this threshold has been reached, all subsequent updates of touch will pass through. The element will also activate the `@move` pseudostate during touch - after threshold is reached.
+
+
+
+##### moved-up ( threshold = 4px ) [preview=lg]
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-up=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+##### moved-down ( threshold = 4px )
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-down=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+##### moved-left ( threshold = 4px )
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-left=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+##### moved-right ( threshold = 4px )
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-right=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+##### moved-x ( threshold = 4px )
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-x=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+##### moved-y ( threshold = 4px )
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-y=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+## Syncing
+
+A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.
+
+##### sync ( data )
+
+
+```imba
+# ~preview=lg
+import 'util/styles'
+
+# ---
+tag Draggable
+	prop pos = {x:0,y:0}
+	<self[w:80px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)>
+# ---
+imba.mount do <Draggable>
+```
+
+```imba
+# ~preview=lg
+import 'util/styles'
+
+# ---
+const pos = {x:0,y:0}
+# mounting two draggables - tracing the same one
+imba.mount do <>
+	<[w:60px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)> 'drag'
+	<[w:60px x:{pos.y} y:{pos.x}].rect> 'flipped'
+```
+Sync will update the x and y properties of whatever object you decide to supply as an argument.
+
+##### sync ( data, alias-x, alias-y )
+```imba
+# ~preview=lg
+import 'util/styles'
+
+# ---
+const data = {a:0,b:0}
+# mounting two draggables - tracing the same one
+imba.mount do <>
+	<[w:80px x:{data.a} top:{data.b}px].rect @touch.sync(data,'a','b')> 'drag'
+	<label> "a:{data.a} b:{data.b}"
+```
+You can also include the property names you want to sync x and y to/from.
+
+
+## Interpolating
+
+A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you'd want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.
+
+##### fit ( box, snap = 1 )
+
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect w:80vw
+# ---
+tag Fitted
+	<self @touch.fit(self)=(y=e.y)> "box.y {y}"
+tag Unfitted
+	<self @touch=(y=e.y)> "window.y {y}"
+tag Snapped
+	<self @touch.fit(self,2)=(y=e.y)> "box.y {y}"
+# ---
+imba.mount do <>
+	<Fitted.rect>
+	<Unfitted.rect>
+	<Snapped.rect>
+```
+The first argument of fit is the box you want to fit to. If box is a string it will be treated as a selector and try to look up an element matching the selector
+
+##### fit ( box, start, end, snap = 1)
+
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	# convert x,y to go from 0 in top left corner to 100 in bottom right
+	<self @touch.fit(self,0,100)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+# ---
+imba.mount <Example.rect>
+```
+By passing `start` and `end` values, you can very easily convert the coordinate space of the touch. Imba will use linear interpolation to convert x,y relative to the box, to the interpolated values between start and end.
+You can use negative values on `start` and `end` as well.
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	# convert x,y to go from -50 to +50 with 0.1 increments
+	<self @touch.fit(self,-50,50,0.1)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+# ---
+imba.mount <Example.rect>
+```
+
+
+You can also use percentages in start and end to reference the width and height of the box we're mapping to.
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	# this will essentially flip the origin from top left to bottom right
+	<self @touch.fit(self,100%,0)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+# ---
+imba.mount <Example.rect>
+```
+You can also use arrays to fit the x and y axis to different values.
+```imba
+# ~preview=lg
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	# will flip and center the y axis
+	<self @touch.fit(self,[0,50%],[100%,-50%])=(x=e.x,y=e.y)> "x:{x} y:{y}"
+# ---
+imba.mount <Example.rect>
+```
+
+## Pinning
+
+## Examples
+
+##### Custom slider
+```imba
+# ~preview=small
+import 'util/styles'
+
+css body > * w:50vw m:2 h:4 bg:blue3 pos:relative radius:sm
+# css .track h:4 w:100% bg:blue3 pos:relative radius:sm
+css .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% radius:sm
+css .thumb b x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6
+
+# ---
+tag Slider
+	prop min = -50
+	prop max = 50
+	prop step = 1
+	prop value = 0
+
+	<self @touch.fit(min,max,step)=(value = e.x)>
+		<.thumb[l:{100 * (value - min) / (max - min)}%]> <b> value
+
+imba.mount do <>
+	<Slider min=0 max=1 step=0.25>
+	<Slider min=-100 max=100 step=1>
+	<Slider min=10 max=-10 step=0.5>
+```
+
+##### Pane with divider
+```imba
+# ~preview=small
+import 'util/styles'
+
+# ---
+tag Panel
+	prop split = 70
+
+	<self[d:flex pos:absolute inset:0]>
+		<div[bg:teal2 flex-basis:{split}%]>
+		<div[fls:0 w:2 bg:teal3 @touch:teal5]
+			@touch.pin.fit(self,0,100,2)=(split=e.x)>
+		<div[bg:teal1 flex:1]>
+
+imba.mount do <Panel>
+```
+
+##### Simple draggable [app]
+```imba
+# ~preview=xl
+import 'util/styles'
+# css body bg:gray1
+# ---
+tag drag-me
+	css d:block pos:relative p:3 m:1 radius:sm cursor:default
+		bg:white bxs:sm
+		@touch scale:1.02
+		@move scale:1.05 rotate:2deg zi:2 bxs:lg
+
+	def build
+		x = y = 0
+
+	def render
+		<self[x:{x} y:{y}] @touch.moved.sync(self)> 'drag me'
+
+imba.mount do <div.grid>
+	<drag-me>
+	<drag-me>
+	<drag-me>
+```
+
+##### Paint [app]
+
+```imba
+# ~preview=xl
+# ---
+const dpr = window.devicePixelRatio
+
+tag app-paint
+	prop size = 500
+	
+	def draw e
+		let path = e.$path ||= new Path2D
+		path.lineTo(e.x * dpr,e.y * dpr)
+		$canvas.getContext('2d').stroke(path)
+
+	def render
+		<self[d:block overflow:hidden bg:blue1]>
+			<canvas$canvas[size:{size}px]
+				width=size*dpr height=size*dpr @touch.fit(self)=draw>
+
+imba.mount <app-paint>
+```
+
+# --- Intersection
+
+[IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) is a [well-supported](https://caniuse.com/#feat=intersectionobserver) API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document's viewport. In Imba it is extremely easy to set up an intersection observer.
+
+| Properties  |  |
+| --- | --- |
+| `event.entry` | Returns the [IntersectionObserverEntry](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry) |
+| `event.ratio` | Returns the ratio of the intersectionRect to the boundingClientRect |
+| `event.delta` | Difference in ratio since previous event |
+
+
+##### Example
+
+```imba
+# ~preview=xl
+css body p:6
+css .grid d:grid g:3
+css .box d:grid gap:4 p:4 radius:2 bw:1 bc:black/5
+css .field p:1 px:2 radius:2 bw:1 bc:gray4 c:gray8
+css .box bg:white .teal:teal3 .blue:blue3
+
+# ---
+import {genres} from 'imdb'
+
+tag Genre
+    css @force p:4 bg:blue2 h:120px
+
+	prop ratio = 0
+
+    def intersected e
+        ratio = e.ratio
+
+	def render
+		<self[opacity:{ratio}] @intersect(10)=intersected> <slot>
+
+imba.mount do
+	<div.box> for genre in genres
+		<Genre> genre
+```
+
+##### intersect(n)
+```imba
+# n 0-1 adds single threshold at n visibility
+<div @intersect(0)=handler> # On 0%
+<div @intersect(0.5)=handler> # On 50%
+<div @intersect(1)=handler> # On 100%
+
+# n > 1 will add n thresholds - spread evenly
+<div @intersect(2)=handler> # Trigger [0%,100%]
+<div @intersect(3)=handler> # Trigger [0%,50%,100%]
+<div @intersect(5)=handler> # Trigger [0%,25%,50%,75%,100%]
+# ... and so forth
+```
+
+##### intersect.in
+```imba
+# Will only trigger when intersection ratio increases
+<div @intersect.in=handler>
+# Will only trigger when element is more than 50% visible
+<div @intersect(0.5).in=handler>
+```
+> The `in` modifier tells the intersection event to only trigger whenever the visibility has *increased*.
+
+##### intersect.out
+```imba
+# Will only trigger when element starts intersecting
+<div @intersect.out=handler>
+# Will trigger whenever any part of the div is hidden
+<div @intersect(1).out=handler>
+```
+> The `in` modifier tells the intersection event to only trigger whenever the visibility has *decreased*.
+
+
+# --- Resize
+
+# --- Selection
+
+# State Management [tabbed]
+
+## Introduction
+
+The fact that tag literals generate real dom nodes means that we can add/remove/modify the dom in an imperative way. In theory.
+
+```imba
+# ~preview=xl
+import 'util/styles'
+
+# ---
+let array = ["First","Second"]
+
+let view = <main>
+    <button @click=array.push('More')> 'Add'
+    <ul.list> for item in array
+        <li> item
+
+# view is a real native DOM element
+document.body.appendChild view
+```
+Even tough we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
+
+## Mounting
+
+To make the tag tree update when our data changes, we need to add pass the tree to `imba.mount`.
+
+```imba
+# ~preview=xl
+import 'util/styles'
+
+# ---
+let array = ["First","Second"]
+
+imba.mount do 
+    <main>
+        <button @click=array.push('More')> 'Add'
+        <ul.list> for item in array
+            <li> item
+```
+Now you will see that when you click the button, our view instantly updates to reflect the new state. How does this happen without a virtual dom? The array is not being tracked in a special way (it is just a plain array), and we are only dealing with real dom elements, which are only changed and updated when there is real need for it. Imba uses a technique we call `memoized dom`, and you can read more about how it works [here](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52). Here is a more advanced example with more dynamic data and even dynamic inline styles:
+
+```imba
+# ~preview=xl
+import 'util/styles'
+
+css div pos:absolute d:block inset:0 p:4
+css mark pos:absolute
+css li d:inline-block px:1 m:1 radius:2 fs:xs bg:gray1 @hover:blue2
+
+# ---
+let x = 20, y = 20, title = "Hey"
+
+imba.mount do
+    <main @mousemove=(x=e.x,y=e.y)>
+        <input bind=title>
+        <label> "Mouse is at {x} {y}"
+        <mark[x:{x} y:{y} rotate:{x / 360}]> "Item"
+        <ul> for nr in [0 ... y]
+            <li> nr % 12 and nr or title
+```
+
+By default Imba will **render your whole application whenever anything *may* have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all that? As long as you have mounted your root element using `imba.mount` you usually don't need to think more about it.
+
+## Updating
+
+ The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using await or returning a promise), Imba will also re-render after the promise is finished. Practically all state changes in applications happen as a result of some user interaction.
+
+In the few occasions where you need to manually make sure views are updated, you should call `imba.commit`. It schedules an update for the next animation frame, and things will only be rerendered once even if you call `imba.commit` a thousand times. It returns a promise that resolves after the actual updates are completed, which is practical when you need to ensure that the view is in sync before doing something.
+
+##### commit from websocket
+```imba
+socket.addEventListener('message',imba.commit)
+```
+Calling `imba.commit` after every message from socket will ensure that your views are up-to-date when your state changes as a result of some socket message.
+
+##### commit after fetching data
+```imba
+def load
+    let res = await window.fetch("/items")
+    state.items = await res.json!
+    imba.commit!
+```
+
+# Form Input Bindings
