@@ -122,7 +122,7 @@ tag app-repl
 
 	def leave
 		document.body.focus!
-		router.go($parent.doc.href)
+		router.go(#parent.doc.href)
 
 	def routeDidResolve match, prev,last
 		let item = ls(match.url)

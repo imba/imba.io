@@ -71,8 +71,13 @@ tag app-menu
 			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 flex:1]>
 				# for item in docs.children
 				<app-menu-section data=ls('/intro')>
+				<app-menu-section data=ls('/handbook/language')>
+				<app-menu-section data=ls('/handbook/tags')>
+				<app-menu-section data=ls('/handbook/styles')>
 				<app-menu-section data=main>
-				<app-menu-section data=guides>
+				<app-menu-section data=ls('/tags')>
+				<app-menu-section data=ls('/styling')>
+				# <app-menu-section data=guides>
 				<app-menu-section data=ref>
 				# <app-menu-section data=ls('/reference')>
 				# <app-menu-section data=ls('/tags')>

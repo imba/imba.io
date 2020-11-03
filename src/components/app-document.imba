@@ -246,7 +246,7 @@ tag doc-section
 				<.body.{data.flagstr}>
 					<.content.html innerHTML=(data.html or '')>
 					<.sections>
-						for item in data.sections
+						for item in data.parts
 							<doc-section query=filter data=item level=(level+1)>
 					if tabbed
 						<.head.tabs .l{level+1}> for item in data.docs

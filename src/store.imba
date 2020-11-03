@@ -82,6 +82,9 @@ class Entry
 	get sections
 		children.filter(do $1 isa Section)
 
+	get parts
+		children.filter(do $1 isa Doc or $1 isa Section)
+
 	get categories
 		children.filter(do $1 isa Category)
 
