@@ -342,7 +342,7 @@ If this looks confusing, fear not – `this` is something you will practically n
 
 ## Implicit Self
 
-A lone identifier will always be treated as an accessor on `self` unless a variable of the same name exists in the current scope or any of the outer scopes. This is a hugely important concept to understand.
+To understand Imba, you have to understand the concept of implicit self. A lone (lowercase) identifier will always be treated as an accessor on `self` unless a variable of the same name exists in the current scope or any of the outer scopes. 
 
 ```imba
 const scale = 1
@@ -362,7 +362,7 @@ class Line
         changes += 1 # changes += 1
         width += 10 # self.width += 10
 ```
-Self always refers to the closest *selfish* scope, and lone identifiers not declared in the lexical scope are treated as properties on self.
+Self always refers to the closest *selfish* scope, and lone identifiers not declared in the lexical scope are treated as properties on self. **Uppercased identifiers are not treated as accessors**. So `Array`, `Map`, or `SomeIdentifier` will always resolve the same way they do in JavaScript.
 
 ## Global variables
 
@@ -1167,6 +1167,15 @@ else
 
 ## Try / Catch / Finally
 
+```imba app.imba
+def run
+    # adding a try without a catch block will silently swallow an error
+    let test = try Math.rendom!
+    return test
+```
+
+> Documentation for Try / Catch is incomplete
+
 # Classes
 
 Classes are general-purpose, flexible constructs that become the building blocks of your program's code. You define properties and methods to add functionality to your classes using the same syntax you use to define constants, variables, and functions. Classes in Imba are compiled directly to native [JavaScript Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes).
@@ -1192,6 +1201,14 @@ class Rect
     # setter
     set area size
         width = height = Math.sqrt size
+```
+
+## Creating Instances
+
+The `new` keyword will let you create an instance of your class. This instance inherits properties and methods from its class.
+
+```imba
+let fido = new Dog
 ```
 
 ## Class Constructors
@@ -1389,16 +1406,91 @@ class Rect
 Rect.build(10)
 ```
 
-## Creating Instances
-
-The `new` keyword will let you create an instance of your class. This instance inherits properties and methods from its class.
-
-```imba
-let fido = new Dog
-```
-
 
 ## Class Inheritance
+
+An important feature of Classes is the ability to inherit from other classes. For example, an Athlete is also a person, so it makes sense to inherit the properties of a person so that if we ever update the person class, the Athlete's class will also be updated. It will also help us keep our code light.
+
+```imba
+class Animal 
+	constructor name
+		name = name
+
+    def move distance = 0
+        console.log "Animal moved {distance} meters."
+
+    def speak
+        console.log "{name} makes a noise."
+
+class Dog < Animal
+    def speak
+        console.log "{name} barks."
+
+let dog = new Dog 'Mitzie'
+dog.move 10 # Animal moved 10 meters.
+dog.speak! # Mitzie barks.
+```
+An inherited class will inherit all methods and functionality from the parent class.
+
+If the heritor class accesses any variables or functions on self in its constructor, the constructor must first call `super`.
+
+```imba
+class Animal 
+	constructor name
+		name = name
+
+class Dog < Animal
+    constructor name, breed
+        super # calls Animal constructor with the same arguments (name, breed). 
+        # super(name) # This would be an explit way to achieve the same effect
+        breed = breed
+
+let dog = new Dog 'Mitzie', 'Pug'
+console.log dog.name 
+dog.speak! # Mitzie barks.
+```
+
+### super [keyword]
+
+##### super
+```imba
+class Designer < Person
+	def greet greeting
+        console.log 'will greet'
+		super # same as super.greet(...arguments)
+```
+
+Lone `super` is treated in a special way. It is always equivalent to calling the same method in super class, passing along the arguments from the current method.
+##### super ( arguments )
+```imba
+class Designer < Person
+	def greet greeting
+		super "Hey {greeting}" # same as super.greet
+```
+
+##### super.property
+```imba
+class Animal 
+	constructor name
+		name = name
+
+    def move distance = 0
+        console.log "Animal moved {distance} meters."
+
+    def speak
+        console.log "{name} makes a noise."
+
+class Dog < Animal
+    def speak
+        console.log "{name} barks."
+
+    def move distance = 0
+        super.speak! # call the Animal#speak method directly!
+        console.log "{name} ran {distance} meters."
+
+let dog = new Dog 'Mitzie'
+dog.move 10 # Mitzie makes a noise. Mitzie ran 10 meters.
+```
 
 # Methods
 
@@ -1410,5 +1502,115 @@ let fido = new Dog
 ## Meta Properties
 
 
-
 # Import & Export
+
+## Syntax
+```imba
+import defaultExport from "module-name"
+import * as name from "module-name"
+import { export1 } from "module-name"
+import { export1 as alias1 } from "module-name"
+import { export1 , export2 } from "module-name"
+import { foo , bar } from "module-name/path/to/specific/un-exported/file"
+import { export1 , export2 as alias2 , [...] } from "module-name"
+import defaultExport, { export1 [ , [...] ] } from "module-name"
+import defaultExport, * as name from "module-name"
+import "module-name"
+```
+
+## Examples
+
+### import default
+```imba
+import DefaultExport from './source'
+```
+
+### import members
+```imba
+import {capitalize,camelize} from './util'
+```
+
+### import members with alias
+```imba main.imba
+import {capitalize as upcase,camelize} from './util'
+```
+```imba util.imba
+export def capitalize
+    return 123
+
+export def camelize
+    return 123
+```
+
+### Import an entire module's contents
+```imba main.imba
+import * as utils from './util'
+console.log utils.ping!, utils.pong!
+```
+```imba util.imba
+export def ping
+    return 123
+
+export def pong
+    return 123
+```
+
+### Import a single export from a module [preview=md]
+```imba app.imba
+import {myExport} from './util'
+console.log myExport!
+```
+```imba util.imba
+export def myExport
+    return 123
+```
+
+### Importing web components [preview=md]
+
+Web components are not explicitly imported by name. As long as the files
+where your components are imported somewhere in your project they will
+be available everywhere.
+
+```imba app.imba
+import './controls'
+
+imba.mount do <div[pos:absolute inset:0 d:flex a:center j:center]>
+    <my-component>
+    <app-avatar>
+```
+```imba controls.imba
+# no need to export this - it is globally available
+# as long as the file is imported somewhere in your project
+tag my-component
+    <self[d:inline-block p:2]> "Custom component"
+
+tag app-avatar
+    <self[d:inline-block]> "Avatar"
+```
+
+
+### Importing a custom element [preview=md]
+```imba app.imba
+import {MyElement} from './element'
+
+imba.mount do <div> <MyElement>
+```
+```imba element.imba
+export tag MyElement
+    <self[d:inline-block p:2]> "Custom element here"
+```
+
+### Importing styles [preview=md]
+
+Global styles that you want included in your project must be imported somewhere.
+
+```imba app.imba
+import './styles'
+
+imba.mount do <div>
+    <p> "Globally styled"
+```
+```imba styles.imba
+global css
+    p color:blue5
+```
