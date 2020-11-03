@@ -1,13 +1,13 @@
 import {fs,files,ls} from '../store'
 
 tag app-menu-item
-	css tween:all 150ms cubic
+	css transition:all 150ms cubic-in-out
 		$height:26px .l1:30px
 
 	css .item
 		p:1 2 d:block rd:1
 		c:gray6 @hover:gray9 .active:teal6
-		tween:all 150ms cubic tt.folder:capitalize
+		transition:all 150ms cubic-in-out tt.folder:capitalize
 		of:hidden text-overflow:ellipsis ws:nowrap
 		fs:sm/1.2 fw:400
 		# &.l1 fw:500 py:1.5
@@ -55,15 +55,6 @@ tag app-menu
 
 	css 
 		@after content:' ' bg:linear-gradient(white/0,white/100) l:vflex abs w:90% h:80px bottom:0
-
-		.item
-			p:1 2 d:block rd:1
-			c:gray6 @hover:gray9 .active:teal6
-			bg:clear .active:teal2/25
-			tween:all 150ms cubic tt.folder:capitalize
-			&.wip @after
-				pos:relative d:inline-flex ai:center bg:yellow2 content:'wip'
-				c:yellow6 fs:1/1 tt:uppercase p:1 rd:1 ml:1 va:top
 
 	def render
 		# console.log 'app-menu for data',data

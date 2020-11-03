@@ -42,11 +42,11 @@ tag app-root
 		zi:150
 		x:-100% @md:0 @focin:0
 		border-right:gray3 @md:none
-		tween:250ms cubic
+		transition:all 250ms cubic-in-out
 	
 	css $repl
 		pos:fixed of:hidden inset:0 zi:2000 rd:0 bxs:xl
-		tween:transform 250ms quint-out
+		transition:transform 250ms quint-out
 		y:110% .routed:0
 
 	css .open-ide-button
@@ -93,7 +93,6 @@ tag app-root
 			<div.header>
 				<app-logo[d:flex h:8 c:teal4] route-to='/'>
 				<div[flex: 1]>
-				<input id="search-input" placeholder="search...">
 				<div[d:flex cursor:pointer]>
 					<a.tab @click.emit('showide')> "Examples"
 					<a.tab href='https://github.com/imba/imba'> "GitHub"

@@ -163,13 +163,13 @@ tag app-repl
 
 	css $console
 		flex-grow..empty-preview:1
-		@not-lg pos:absolute inset:0 tween:250ms cubic
+		@not-lg pos:absolute inset:0 transition:all 250ms cubic-in-out
 			y:calc(100% - 46px) .expanded:0px ..empty-preview:0
 
 	css $sidebar
 		w:$sidebar-width cursor:default pos:absolute d:block c:gray5
 		top:0 left:0 height:100% zi:100
-		transition: 250ms cubic
+		transition: all 250ms cubic-in-out
 		bg:gray8/95 @md:gray8
 		x:-100% @md:0 @focus-within:0
 
