@@ -126,6 +126,27 @@ imba.mount do <div.list> for movie,i in movies
 
 ## Mounting Elements
 
+## Dynamic Element Type [advanced]
+
+The first part of your tag literal should be the node name. So, to create a section you write `<section>`, for a list item you write `<li>` and so forth. You can use `{}` interpolation in the node name to spawn custom tags:
+
+```imba
+# ~preview
+import 'util/styles'
+# ---
+let data = {type: 'button', label: 'Hello'}
+imba.mount do
+    <div.group>
+        <section> "A section"
+        <{data.type}> data.label
+```
+
+If you create an element without a node name it will always be created as a `div`.
+
+## Fragments [advanced]
+
+Fragments can be created using empty tag literals `<>`.
+
 # Custom Components
 
 ## Defining Components
