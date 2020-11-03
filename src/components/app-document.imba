@@ -96,8 +96,6 @@ tag doc-section
 		# flags.toggle('collapsed')
 		self
 
-	css >>> a c:blue7 td@hover:underline
-
 	css >>> li
 		fs:md/1.3 py:3px pl:6 pos:relative
 		@before content: "•" w:6 ta:center l:0 pos:absolute d:block c:teal5
@@ -114,6 +112,7 @@ tag doc-section
 
 	css .html
 		>> * mt@first:0 mb@last:0
+		>>> a c:blue7 td@hover:underline
 
 		>>> app-code-inline
 			d:inline-block fs:0.75em ff:mono lh:1.25em
@@ -129,7 +128,7 @@ tag doc-section
 	css .green $bg:green2 $hbg:green4 $hc:green8
 	css .neutral $bg:gray2 $hbg:gray4 $hc:gray8
 
-	css .head pos:relative c:#3A4652 bc:gray3/75
+	css .head pos:relative c:#3A4652 bc:gray3/75 d:block
 		&.l0 fs:28px/1.4 fw:600 pb:2
 		&.l1 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
 		&.h2.l2 fs:22px/1.2 fw:600 pb:3 bwb:0px mb:3
@@ -221,6 +220,12 @@ tag doc-section
 		bg:yellow3 d:inline px:0.5
 		-webkit-box-decoration-break: clone
 
+	css &.as-link > .head
+		mb:0 # d:inline-block
+		c:blue7 @hover:blue6
+		cursor:pointer
+		.title @before content: "➤ " fw:600
+
 	prop query
 
 	set filters value
@@ -238,15 +243,17 @@ tag doc-section
 		let filter = query or $filters..regex
 		let tabbed = data.options.tabbed
 		let level = level
+		let linked = level > 0 and data.options.linked
 
-		<self .{data.flagstr} .hide=(query and !data.match(query))>
+		<self .{data.flagstr} .as-link=(linked) .hide=(query and !data.match(query))>
 			if data.head and !data.tab?
-				<.head.html .{data.flagstr} .l{level} @click=toggle>
-					<.title innerHTML=data.head>
-			
+				<a.head.html .{data.flagstr} .l{level} @click=toggle href=data.href>
+					<span.title innerHTML=data.head>
+
 			if level == 0
 				<.wip.l{level} [mb:3 c:gray8/80 fs:lg max-width:650px]>
 					<span.marktext> "The documentation is a work-in-progress and will gradually improve as we move towards beta. We are actively looking for contributors. If you have any questions, suggestions or general feedback please reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}."
+
 			elif data.options.wip
 				# <.wip[bg:yellow3 rd:md px:4 py:2 c:yellow9 fs:sm mb:4 bdb:yellow4]>
 				<.wip [mb:6 c:gray8/80 bg:yellow3 d:inline]>
@@ -255,11 +262,11 @@ tag doc-section
 			if data.options.sheet
 				<doc-section-filters data=data bind:selection=filters>
 
-			if (data isa Section or level == 0 or par.options.tabbed)
+			if (data isa Section or level == 0 or par.options.tabbed) and !linked
 				<.body.{data.flagstr}>
 					<.content.html innerHTML=(data.html or '')>
 					<.sections>
-						for item in data.parts
+						for item in data.sections
 							<doc-section query=filter data=item level=(level+1)>
 					if tabbed
 						<.head.tabs .l{level+1}> for item in data.docs

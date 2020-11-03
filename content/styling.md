@@ -66,7 +66,7 @@ css .card
     &.large padding:16px # matches .card.large
 ```
 
-# Scoping
+# Declarations
 
 A problem with CSS is that often end up with tons of globally competing styles spread around numerous files. Changing some styles in one place might affect some seemingly unrelated elements. In Imba it is really easy to declare styles that should only apply to certain parts of your application.
 
@@ -219,10 +219,9 @@ tag app-root
 imba.mount do <app-root[d:grid gap:4 p:4]>
 ```
 
-## Inline styles
+# Inline Styles
 
-You can add inline styles on any element using `[style-properties]` syntax. You can think of this as an inlined anonymous class with a bunch of css properties.
-Instead of coming up with an arbitrary class name and adding styles somewhere else, you can simply add them to elements directly:
+You can add inline styles on any element using `[style-properties]` syntax. Think of this as an inlined anonymous class with a bunch of css properties. Instead of coming up with an arbitrary class name and adding styles somewhere else, you can simply add them to elements directly:
 ```imba
 <div[position:relative display:flex flex-direction:row padding:2rem]>
 ```
@@ -280,7 +279,7 @@ imba.mount do
 ### Tip! Set properties directly [tip]
 You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
 
-# Modifiers
+# Style Modifiers
 
 Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down.
 
@@ -312,11 +311,9 @@ css button
 
 <doc-style-modifiers></doc-style-modifiers>
 
-# Aliases
+# Property Aliases
 
 We firmly believe that less code is better code, so we have strived to make the styling syntax as concise yet readable as possible. There is a case to be made against short variable names in programming, but css properties are never-changing. Imba provides intuitive abbreviations for oft-used css properties. Like everything else, using these shorthands is completely optional, but they are incredibly convenient, especially for inline styles.
-
-
 
 ### margin
 
@@ -383,9 +380,11 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 <doc-style-aliases data-regex='---' data-include='bs,opacity,pe,zi,prefix,suffix,us'></doc-style-transform-aliases>
 
-# Layout
+# Design System
 
-## Spacing
+Imba has a goal of making it as easy as possible to be consistent with regards to fonts, colors, sizes and more throughout your application. In the spirit of Tailwind, we supply a default "theme" with a whole range of delightfully hand-picked colors, font sizes, shadows and sizing/spacing units.
+
+## Sizing [linked]
 
 ### margin
 
@@ -395,11 +394,18 @@ We firmly believe that less code is better code, so we have strived to make the 
 
 <doc-style-aliases data-regex='padding|^p[tblrxy]$'></doc-style-aliases>
 
-## Grid
+## Colors [linked]
+
+The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`teal`,`blue`,`indigo`,`purple` and `pink`, hand-crafted by the great people behind [Tailwind](https://tailwindcss.com). You can hover over the colors below to see their name.
+
+<doc-colors></doc-colors>
+
+
+## Grids [linked]
 
 The `grid` property gets special treatment in Imba. If you supply a single word to the `grid` property like `grid:cols`, Imba will compile that down to `grid:var(--grid-cols)` in css. This allows us to predeclare grids for our project and concisely reuse them across our styles.
 
-### Custom named grid [preview=xl]
+#### Custom named grid [preview=xl]
 ```imba
 css body p:2
 css div bg:blue2 p:3
@@ -418,7 +424,7 @@ imba.mount do
             <div> genre
 ```
 
-### Custom responsive grid [preview=xl]
+#### Custom responsive grid [preview=xl]
 
 In combination with css modifiers, especially breakpoints for different screen sizes, we can then create reusable responsive grids very easily. 
 
@@ -442,19 +448,13 @@ imba.mount do
             <div> genre
 ```
 
-# Colors
+## Borders [linked]
 
-The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`teal`,`blue`,`indigo`,`purple` and `pink`, hand-crafted by the great people behind [Tailwind](https://tailwindcss.com). You can hover over the colors below to see their name.
-
-<doc-colors></doc-colors>
-
-# Borders
-
-### aliases
+#### aliases
 
 <doc-style-aliases data-keyrule='^rd.*$'></doc-style-aliases>
 
-### Property Aliases [preview=lg]
+#### Property Aliases [preview=lg]
 ```imba
 import 'util/styles'
 css body bg:gray1
@@ -474,7 +474,7 @@ imba.mount do  <section.group>
 ```
 
 
-### Value Aliases [preview=lg]
+#### Value Aliases [preview=lg]
 ```imba
 import 'util/styles'
 css body bg:gray1
@@ -490,7 +490,7 @@ imba.mount do  <section.group>
     <div[rd:full]> "full"
 ```
 
-### Custom Value Aliases [preview=lg]
+#### Custom Value Aliases [preview=lg]
 To override the default shadows or add new ones simply specify `--border-radius-{name}` in your styles
 ```imba
 import 'util/styles'
@@ -507,11 +507,10 @@ imba.mount do  <section.group>
     <div[rd:bubble]> "bubble"
 ```
 
+## Shadows [linked]
 
-# Shadows
 
-
-### Predefined shadows [preview=lg]
+#### Predefined shadows [preview=lg]
 
 Imba comes with 7 predefined shadows (from tailwind).
 
@@ -532,7 +531,7 @@ imba.mount do <section.group>
 ```
 
 
-### Declare custom shadows [preview=lg]
+#### Declare custom shadows [preview=lg]
 
 To override the default shadows or add new ones simply specify `--box-shadow-{name}` in your styles. You can even override the style of a certain shadow only for a file or specific component by declearing the `--box-shadow-{name}` in a deeper selector.
 
@@ -552,10 +551,7 @@ imba.mount do  <section.group>
     <div[bxs:ring,xxl]> "combo"
 ```
 
-
-# Typography
-
-## Fonts
+## Fonts [linked]
 
 <doc-style-ff></doc-style-ff>
 
@@ -583,13 +579,23 @@ imba.mount do <section[fs:lg]>
     <div[ff:comic]> "This is comic"
 ```
 
-## Font Sizes
+## Font Sizes [linked]
 
 <doc-style-fs></doc-style-fs>
 
 ### Tips
 
 - It is currently not possible to override or create your own named font-sizes. If needed, consider using css variables or just plain font values instead.
+
+
+
+
+
+
+
+## Typography [linked]
+
+
 
 # Keyframes
 
