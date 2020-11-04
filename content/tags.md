@@ -433,23 +433,44 @@ const handler = console.log.bind(console)
 
 ## Triggering Events
 
-### Trigger Event from method
+### Trigger Event from method [preview]
 
-To trigger a custom event you call `emit` on the element you want to trigger an event from.
+To trigger a custom event you call `element.emit(name,data = {})`
+
 ```imba
+import 'util/styles'
+# ---
 tag App
     def lateTrigger
-        setTimeout(&,1000) do
-            emit('lateclick',some: 'data')
+        setTimeout(&,500) do
+            emit('waited',some: 'data')
 
-    def render
-        <div> <button @click=lateTrigger> 'click me'
+    <self @waited=console.log('done',e.detail)>
+        <button @click=lateTrigger> 'click me'
+
+imba.mount <App>
 ```
 
 
-### Trigger event via event listener
+### Trigger event via event listener [preview]
 
 You can use the `emit-eventname` modifier to trigger a custom event directly from an event handler.
+
+```imba
+import 'util/styles'
+# ---
+tag Item
+    <self>
+        # wait 500ms after click - then emit custom waited event
+        <button @click.wait(500).emit-waited([1,2,3])> 'click me'
+
+tag App
+    <self>
+        # listen to custom waited event
+        <Item @waited=console.log('done',e.detail)>
+
+imba.mount <App>
+```
 
 ## Event Modifiers
 
