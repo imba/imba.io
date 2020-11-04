@@ -465,11 +465,8 @@ const handler = console.log.bind(console)
 
 To trigger a custom event you call `element.emit(name,data = {})`
 
-<<<<<<< HEAD
 To trigger a custom event you call `emit` on the element you want to trigger an event from.
 
-=======
->>>>>>> d0d8beb5e26c0480d58e5bff1313679adcf5bc4a
 ```imba
 import 'util/styles'
 # ---
@@ -484,12 +481,8 @@ tag App
 imba.mount <App>
 ```
 
-<<<<<<< HEAD
-### Trigger event via event listener
-=======
 
 ### Trigger event via event listener [preview]
->>>>>>> d0d8beb5e26c0480d58e5bff1313679adcf5bc4a
 
 You can use the `emit-eventname` modifier to trigger a custom event directly from an event handler.
 
