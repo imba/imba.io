@@ -275,12 +275,19 @@ tag doc-section
 							<doc-section data=data.currentTab level=(level+1)>
 
 tag app-document
-	prop data
 
 	css color: #4a5568 lh: 1.625 pt:4
 	css $content > mb@last:0 mt@first:0
 
 	css .embed w:100% bd:0px h:500px
+
+	set data value
+		#data = value
+		document.scrollingElement.scrollTop = 0
+
+
+	get data
+		#data
 
 	def render
 		let doc = data
