@@ -5,20 +5,22 @@ multipage: true
 
 # Overview
 
-### What is Imba
+### What is Imba?
 
-Imba is a programming language for building web applications with insane performance. You can use it both for the server and client.
+Imba is a programming language for building web applications with amazing performance. It replaces and works with Javascript. You can use it both for the server and client.
 
 In Imba DOM elements *and* CSS are treated as first-class citizens. DOM elements are compiled to a [memoized DOM](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than today's virtual DOM implementations. 
 
-This truly opens up for a new way of developing web applications.
+This opens up a new way of developing web applications.
 
 ### Basic Syntax
+Imba's minimal syntax makes it quick and flexible. Learn all the details in the [Language](/language/introduction) section.
 
 ##### Literals
 ```imba
 let number = 42
 let bool = yes
+
 # strings
 let string = 'the answer is 42'
 let dynamic = "the answer is {number}"
@@ -183,7 +185,9 @@ def multiply a\number, b\number
 
 # Installation [wip]
 
-Installation guide and decent starter templates coming soon. Until then, just `npm install imba@pre` and start exploring :)
+The easiest way to get started using Imba is to clone the [webpack-app-imba](https://github.com/imba/webpack-app-imba) template on GitHub and use it to start your project.
+
+Installation guide and decent starter templates coming soon. Until then, you can run `npm install imba@pre` and start exploring.
 
 
 # Community
@@ -196,7 +200,7 @@ For questions and support please use our community chat on
 
 ## Bi-Weekly Meeting
 
-Everyone is welcome! The developer meetings are usually on Monday's every 2 weeks. This is a great place to report your issues, hangout and talk about your project using Imba. If you have an open pull request which has not seen attention, you can ping during the meeting.
+Everyone is welcome! The developer meetings are usually on Monday's every 2 weeks. This is a great place to report your issues, hangout and talk about your project using Imba. If you have an open pull request which has not seen attention, you can mention it during the meeting.
 
 For the exact meeting times please use the Meetup group [Imba Oslo Meetup](https://www.meetup.com/Imba-Oslo-Meetup), this is where you can see the timezone, cancellations, etc.
 

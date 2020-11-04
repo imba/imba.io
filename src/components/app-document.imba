@@ -27,7 +27,7 @@ tag doc-anchor
 tag app-document-nav
 
 	css .card
-		pos:relative d:flex ai:center rd:3 p:3 flex:1 1 50% m:2
+		pos:relative d:flex ai:center rd:3 p:3 flex:1 1 50% m:10 2
 		c:teal6 border:gray3
 		td@hover:none bg@hover:gray1
 		ta.next:left ta.prev:right 
@@ -129,10 +129,10 @@ tag doc-section
 	css .neutral $bg:gray2 $hbg:gray4 $hc:gray8
 
 	css .head pos:relative c:#3A4652 bc:gray3/75 d:block
-		&.l0 fs:28px/1.4 fw:600 pb:2
-		&.l1 fs:24px/1.2 fw:600 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
-		&.h2.l2 fs:24px/1.2 fw:600 pb:3 bwb:0px mb:3
-		&.l2 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:3
+		&.l0 fs:30px/1.4 fw:500 pb:2
+		&.l1 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
+		&.h2.l2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
+		&.l2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
 		&.l3 fs:18px/1.2 fw:500 pb:3 bwb:0px mb:3
 		&.tip fs:16px/1.2 fw:500 pb:3 bwb:0 mb:0
 
@@ -217,8 +217,9 @@ tag doc-section
 			fs:18px/1.2 fw:500 pb:3
 	
 	css .marktext
-		bg:yellow3 d:inline px:0.5
+		bg:yellow3 d:block px:0.5 rd:xl p:10px 15px fs:sm c:yellow7 fw:500
 		-webkit-box-decoration-break: clone
+		& a td: underline
 
 	css &.as-link > .head
 		mb:0 # d:inline-block
@@ -234,7 +235,7 @@ tag doc-section
 
 	get filters
 		$filters
-
+	
 	def render
 		return unless data
 
@@ -246,18 +247,20 @@ tag doc-section
 		let linked = level > 0 and data.options.linked
 
 		<self .{data.flagstr} .as-link=(linked) .hide=(query and !data.match(query))>
+
+			if level == 0
+				<.wip.l{level} [mb:5 c:gray8/80 fs:lg]>
+					<span.marktext> "This documentation is a work-in-progress. We are actively looking for contributors. If you have can help, have feedback, or want to ask questions, please reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}."
+
 			if data.head and !data.tab?
 				<a.head.html .{data.flagstr} .l{level} @click=toggle href=data.href>
 					<span.title innerHTML=data.head>
 
-			if level == 0
-				<.wip.l{level} [mb:3 c:gray8/80 fs:lg max-width:650px]>
-					<span.marktext> "The documentation is a work-in-progress and will gradually improve as we move towards beta. We are actively looking for contributors. If you have any questions, suggestions or general feedback please reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}."
 
 			elif data.options.wip
 				# <.wip[bg:yellow3 rd:md px:4 py:2 c:yellow9 fs:sm mb:4 bdb:yellow4]>
 				<.wip [mb:6 c:gray8/80 bg:yellow3 d:inline]>
-					"Help document this topic? Reach out on {<a href="https://discord.gg/mkcbkRw"> "discord"}"
+					"Can you help document this topic? Reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}"
 
 			if data.options.sheet
 				<doc-section-filters data=data bind:selection=filters>

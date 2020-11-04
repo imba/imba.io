@@ -5,13 +5,16 @@ multipage:true
 
 # Basic Syntax
 
-Imba treats DOM elements first-class citizens, on a much deeper level than JSX. Imba does not use a virtual dom but compiles declarative tag trees into an incredibly efficient [memoized dom](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52), which is orders of magnitute faster than vdom approaches, yet conceptually simpler.
+In Imba, DOM elements are a first-class part of the language. Imba does not use a virtual DOM, instead it compiles declarative tag trees into an extremely efficient [memoized dom](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52), which is orders of magnitute faster than virtual DOM approaches, yet conceptually simpler.
 
 ## Constructing Elements
+
 ```imba
 let div = <div#main.note.sticky title='Welcome'> 'Hello'
 ```
+
 The code above creates an actual HTMLDivElement. It will be helpful to understand what happens behind the scenes when creating an element using the literal syntax. Imba breaks up each part of the node, and applies them one after the other. The code above roughly compiles to:
+
 ```imba
 let div = document.createElement('div') # create div
 div.id = 'main' # set id
@@ -26,15 +29,20 @@ div.textContent = 'Hello' # set textContent
 ### Classes
 
 You can add classes to your elements by adding one or more identifiers preceded by `.`
+
 ```imba
 # add note and editorial classes
 <div.note.editorial> "Hello"
 ```
-Setting a class only when a certain condition is met can be done using `.class=condition`.
+
+Set a class only when a certain condition is met can be done using `.class=condition`.
+
 ```imba
 <div.note.editorial .resolved=data.isResolved> "Hello"
 ```
-When you want to add dynamic classes based on data you can use `{}` for interpolation inside class names:
+
+To add dynamic classes based on data use `{}` for interpolation inside class names:
+
 ```imba
 let marks = 'rounded important'
 let state = 'done'
@@ -42,7 +50,9 @@ let color = 'blue'
 # ---
 <div.item .{marks} .{state} .bg-{color}-200> "Hello"
 ```
+
 These interpolated classes can also be toggled by a condition:
+
 ```imba
 <div.item .theme-{user.theme}=app.loggedIn> "Hello"
 ```
@@ -62,13 +72,15 @@ Read the Styling section for in-depth documentation about styling, both via sele
 ```imba
 <div[color:red bg:blue padding:8px]> "Hello"
 ```
+
 Just like classes, styles can be conditionally applied
+
 ```imba
 <div[color:red bg:blue] [display:none]=app.loggedIn> "Hello"
 ```
 
-
 ## Rendering Children
+
 Indentation is significant in Imba, and tags follow the same principles. We never explicitly close our tags. Instead, tags are closed implicitly by indentation. So, to add children to an element you simply indent them below:
 
 ```imba
@@ -77,18 +89,24 @@ Indentation is significant in Imba, and tags follow the same principles. We neve
 	<li> <span> 'two'
 	<li> <span> 'three'
 ```
+
 Tags can also be included inside string interpolations, so that templates like this:
+
 ```imba
 <div>
     "This is "
     <b> "very"
     " important"
 ```
+
 Can be written like on a single line
+
 ```imba
 <div> "This is {<b> "very"} important"
 ```
+
 Also, if you explicitly close your elements using `/>` at the end, you can add multiple elements after one another without problem:
+
 ```imba
 <label> <input type='checkbox'/> 'Dark Mode'
 ```
@@ -96,6 +114,7 @@ Also, if you explicitly close your elements using `/>` at the end, you can add m
 ## Conditionals & Loops
 
 There isn't really a difference between templating syntax and other code in Imba. Tag trees are just code, so logic and control flow statements work as you would expect. To render dynamic lists of items you simply write a `for` loop where you want the children to be:
+
 ```imba
 <div>
     if items
@@ -134,6 +153,7 @@ imba.mount do <div.list> for movie,i in movies
 The fact that tag literals generate real dom nodes means that we can add/remove/modify the dom in an imperative way. In theory.
 
 ##### [preview=lg]
+
 ```imba
 # ~preview=xl
 import 'util/styles'
@@ -149,6 +169,7 @@ let view = <main>
 # view is a real native DOM element
 document.body.appendChild view
 ```
+
 Even tough we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
 
 ### imba.mount
@@ -163,12 +184,13 @@ import 'util/styles'
 # ---
 let array = ["First","Second"]
 
-imba.mount do 
+imba.mount do
     <main>
         <button @click=array.push('More')> 'Add'
         <ul.list> for item in array
             <li> item
 ```
+
 Now you will see that when you click the button, our view instantly updates to reflect the new state. How does this happen without a virtual dom? The array is not being tracked in a special way (it is just a plain array), and we are only dealing with real dom elements, which are only changed and updated when there is real need for it. Imba uses a technique we call `memoized dom`, and you can read more about how it works [here](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52). Here is a more advanced example with more dynamic data and even dynamic inline styles:
 
 ##### [preview=lg]
@@ -193,28 +215,30 @@ imba.mount do
             <li> nr % 12 and nr or title
 ```
 
-By default Imba will **render your whole application whenever anything *may* have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all that? As long as you have mounted your root element using `imba.mount` you usually don't need to think more about it.
+By default Imba will **render your whole application whenever anything _may_ have changed**. Imba isn't tracking anything. This sounds insane right? Isn't there a reason for all the incredibly complex state management libraries and patterns that track updates and wraps your data in proxies and all that? As long as you have mounted your root element using `imba.mount` you usually don't need to think more about it.
 
-### imba.commit 
+### imba.commit
 
- The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using await or returning a promise), Imba will also re-render after the promise is finished. Practically all state changes in applications happen as a result of some user interaction.
+The default approach of Imba is to re-render the mounted application after every handled DOM event. If a handler is asynchronous (using await or returning a promise), Imba will also re-render after the promise is finished. Practically all state changes in applications happen as a result of some user interaction.
 
 In the few occasions where you need to manually make sure views are updated, you should call `imba.commit`. It schedules an update for the next animation frame, and things will only be rerendered once even if you call `imba.commit` a thousand times. It returns a promise that resolves after the actual updates are completed, which is practical when you need to ensure that the view is in sync before doing something.
 
 ##### commit from websocket
+
 ```imba
 socket.addEventListener('message',imba.commit)
 ```
+
 Calling `imba.commit` after every message from socket will ensure that your views are up-to-date when your state changes as a result of some socket message.
 
 ##### commit after fetching data
+
 ```imba
 def load
     let res = await window.fetch("/items")
     state.items = await res.json!
     imba.commit!
 ```
-
 
 ## Dynamic Element Type [advanced]
 
@@ -241,7 +265,7 @@ Fragments can be created using empty tag literals `<>`.
 
 ## Defining Components
 
-Components are reusable elements with functionality and children attached to them. Components are *just like regular classes* and uses all the same syntax to declare properties, methods, getters and setters. To create a component, use the keyword `tag` followed by a component name.
+Components are reusable elements with functionality and children attached to them. Components are _just like regular classes_ and uses all the same syntax to declare properties, methods, getters and setters. To create a component, use the keyword `tag` followed by a component name.
 
 ### Global Components
 
@@ -250,8 +274,7 @@ tag app-component
     # add methods, properties, ...
 ```
 
-Components with lowercased names containing at least two words separated by a dash are compiled directly to global [native Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). As long as you have imported the component *somewhere in your code*, you can create instances of the component anywhere.
-
+Components with lowercased names containing at least two words separated by a dash are compiled directly to global [native Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). As long as you have imported the component _somewhere in your code_, you can create instances of the component anywhere.
 
 ### Local Components
 
@@ -259,6 +282,7 @@ Components with lowercased names containing at least two words separated by a da
 export tag App
     # add methods, properties, ...
 ```
+
 Components whose name begins with an uppercase letter are considered local components. They act just like web components, but are not registered globally, and must be exported + imported from other files to be used in your project. Very useful when you want to define custom components that are local to a subsystem of your application.
 
 ```imba app.imba
@@ -271,10 +295,12 @@ tag App
         <Sidebar>
         <main> "Application"
 ```
+
 ```imba sidebar.imba
 export tag Sidebar
     <self[d:inline-block p:2]> "Sidebar here"
 ```
+
 ```imba header.imba
 export tag Header
     <self[d:inline-block p:2]> "Header"
@@ -341,6 +367,7 @@ imba.mount <app-example>
 ### Named Slots [preview=md]
 
 You can also add named slots using `<slot name=...>` and render into them using `<el for=slotname>` in the outer rendering.
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -380,6 +407,7 @@ tag app-panel
 
 imba.mount <app-panel>
 ```
+
 In the code above, `$name` is available everywhere inside `app-panel` component, but also from outside the app-panel as a property of the component.
 
 ### Quick tip [tip]
@@ -436,6 +464,7 @@ const handler = console.log.bind(console)
 ### Trigger Event from method
 
 To trigger a custom event you call `emit` on the element you want to trigger an event from.
+
 ```imba
 tag App
     def lateTrigger
@@ -445,7 +474,6 @@ tag App
     def render
         <div> <button @click=lateTrigger> 'click me'
 ```
-
 
 ### Trigger event via event listener
 
@@ -458,6 +486,7 @@ Inspired by vue.js, Imba supports event modifiers. More often than not, event ha
 ### Core Modifiers
 
 ##### prevent [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -466,9 +495,11 @@ import 'util/styles'
 imba.mount do
 	<a href='https://google.com' @click.prevent.log('prevented')> 'Link'
 ```
+
 > Calls preventDefault on event
 
 ##### stop [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -478,9 +509,11 @@ imba.mount do <div.group @click.log('clicked div')>
 	<button @click.stop.log('stopped')> 'stop'
 	<button @click.log('bubble')> 'bubble'
 ```
+
 > Calls stopPropagation on event
 
 ##### once [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -488,7 +521,8 @@ import 'util/styles'
 imba.mount do
     <button @click.once.log('once!')> 'Click me'
 ```
-> The click event will be triggered at most once 
+
+> The click event will be triggered at most once
 
 ##### capture [event-modifier] [snippet]
 
@@ -551,12 +585,12 @@ imba.mount do <div.group>
 import 'util/styles'
 
 # ---
-# disable handler for duration after triggered 
+# disable handler for duration after triggered
 imba.mount do
 	<button @click.throttle(1000).log('clicked')> 'click me'
 ```
 
-##### emit-*name* ( detail = {} ) [event-modifier] [snippet]
+##### emit-_name_ ( detail = {} ) [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -570,7 +604,7 @@ imba.mount do
 		<button @click.emit-select(a:1,b:2)> 'with data'
 ```
 
-##### flag-*name* ( target ) [event-modifier] [snippet]
+##### flag-_name_ ( target ) [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -585,8 +619,8 @@ imba.mount do
 # Optionally supply a selector / element to flag
 ```
 
-
 ##### silence [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -602,22 +636,23 @@ imba.mount do <section>
 # In the few cases you want to suppress this, add the `silence` modifier.
 ```
 
-
 ### Guard Modifiers
 
 ##### self [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
 # ---
 # only trigger handler if event.target is the element itself
-imba.mount do 
+imba.mount do
 	<button @click.self.log('clicked self')>
 		"Button"
 		<b> "Nested"
 ```
 
 ##### sel ( selector ) [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -631,6 +666,7 @@ imba.mount do <div.group>
 ```
 
 ##### if ( expr ) [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -644,12 +680,13 @@ imba.mount do <div.group>
 ```
 
 ##### keys [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
 
 # ---
-imba.mount do 
+imba.mount do
 	<header> <input placeholder='Text..'
 		@keydown.enter.log('pressed enter')
 		@keydown.left.log('pressed left')
@@ -668,6 +705,7 @@ imba.mount do
 System modifier keys are different from regular keys and when used with @keyup events, they have to be pressed when the event is emitted. In other words, @keyup.ctrl will only trigger if you release a key while holding down ctrl. It won’t trigger if you release the ctrl key alone. You can use the following modifiers to trigger event listeners only when the corresponding modifier key is pressed:
 
 ##### ctrl [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -683,6 +721,7 @@ imba.mount do <div.group>
 ```
 
 ##### alt [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -694,6 +733,7 @@ imba.mount do
 ```
 
 ##### shift [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -705,6 +745,7 @@ imba.mount do
 ```
 
 ##### meta [event-modifier] [snippet]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -721,6 +762,7 @@ imba.mount do <button @click.meta.log('meta+click')> 'meta+click'
 Modifiers available for all pointer events – pointerover, pointerenter, pointerdown, pointermove, pointerup, pointercancel, pointerout & pointerleave.
 
 ##### mouse [event-modifier] [pointer-modifier] [snippet]
+
 ```imba
 # ~preview=small
 import 'util/styles'
@@ -731,6 +773,7 @@ imba.mount do
 ```
 
 ##### pen [event-modifier] [pointer-modifier] [snippet]
+
 ```imba
 # ~preview=small
 import 'util/styles'
@@ -741,6 +784,7 @@ imba.mount do
 ```
 
 ##### touch [event-modifier] [pointer-modifier] [snippet]
+
 ```imba
 # ~preview=small
 import 'util/styles'
@@ -751,6 +795,7 @@ imba.mount do
 ```
 
 ##### pressure ( threshold = 0.5 ) [event-modifier] [pointer-modifier] [snippet]
+
 ```imba
 # ~preview=small
 import 'util/styles'
@@ -781,9 +826,8 @@ imba.mount do <Example.rect>
 
 Will break the chain until the touch has moved more than `threshold`. The element will also activate the `@move` pseudostate during touch - after threshold is reached.
 
+##### moved-_direction_ ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
 
-
-##### moved-*direction* ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
 ```imba
 # ~preview=lg
 import 'util/styles'
@@ -795,6 +839,7 @@ tag Example
 # ---
 imba.mount do <Example.rect>
 ```
+
 Direction can be `up`, `down`, `left`, `right`, `x`, and `y`
 
 ##### sync ( data, xname = 'x', yname = 'y' ) [event-modifier] [touch-modifier] [snippet]
@@ -818,24 +863,27 @@ A convenient touch modifier that takes care of updating the x,y values of some d
 ### Intersection Modifiers
 
 ##### in [event-modifier] [intersection-modifier] [snippet]
+
 ```imba
 <div @intersect.in=handler>
 ```
+
 Break unless intersection ratio has increased.
 
 ##### out [event-modifier] [intersection-modifier] [snippet]
+
 ```imba
 <div @intersect.out=handler>
 ```
+
 Break unless intersection ratio has decreased.
 
 # State Management
 
-
 # Form Input Bindings
 
-
 ##### text [preview=md]
+
 ```imba
 # ~preview=md
 import 'util/styles'
@@ -849,6 +897,7 @@ imba.mount do <section>
 ```
 
 ##### textarea [preview=md]
+
 ```imba
 # ~preview=md
 import 'util/styles'
@@ -862,6 +911,7 @@ imba.mount do <section>
 ```
 
 ##### range [preview=md]
+
 ```imba
 # ~preview=md
 import 'util/styles'
@@ -876,6 +926,7 @@ imba.mount do <section[gap:2]>
 ```
 
 ##### number [preview=md]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -890,6 +941,7 @@ imba.mount do <div.group>
 ```
 
 ##### checkbox [preview=md]
+
 ```imba
 # ~preview
 import 'util/styles'
@@ -901,7 +953,9 @@ imba.mount do <section>
         <input[mr:1] type='checkbox' bind=bool />
         <span> "Enabled: {bool}"
 ```
+
 ##### checkbox with array [preview=md]
+
 ```imba
 # ~preview
 import {genres} from 'imdb'
@@ -922,6 +976,7 @@ imba.mount do <section>
 ```
 
 ##### radio
+
 ```imba
 # ~preview
 import {genres} from 'imdb'
@@ -942,6 +997,7 @@ imba.mount do <section>
 ```
 
 ##### select
+
 ```imba
 # ~preview=md
 import {genres} from 'imdb'
@@ -960,6 +1016,7 @@ imba.mount do <section>
 ```
 
 ##### multiselect
+
 ```imba
 # ~preview=lg
 import {genres} from 'imdb'
@@ -981,6 +1038,7 @@ imba.mount do <section>
 ```
 
 ##### button
+
 ```imba
 # ~preview=md
 import {genres} from 'imdb'
@@ -996,9 +1054,11 @@ imba.mount do <section>
         <button bind=state value='two'> "two"
     <label> "State is {state}"
 ```
+
 Buttons bound to data behave just like checkboxes. A `checked` class indicates when their value matches the bound data. Clicking a button multiple times will toggle just like a checkbox.
 
 ##### custom elements
+
 ```imba
 # ~preview=lg
 import 'util/styles'
@@ -1026,6 +1086,7 @@ imba.mount do <section>
 ```
 
 ##### combination
+
 ```imba
 # ~preview=xl
 import {genres} from 'imdb'
@@ -1058,42 +1119,41 @@ imba.mount do <main>
             <button[mr:1].chip bind=person.interests value=item> item
 ```
 
-
 # Component Lifecycle
 
 ## Lifecycle Hooks
 
 These methods are meant to be defined in your components. In most cases you will only define a `render` method, and possibly `awaken` if you want to do some additional initialization when the element is first attached to the document.
 
-| table  |  | |
-| --- | --- | --- |
-| `build` | Called before any properties etc are set | |
-| `setup` | Called the first time element is rendered in template  | |
-| `hydrate` | Called before awaken if element is not hydrated | |
-| `dehydrate` | Called before serializing when rendering on server | |
-| `awaken` | Called the first time the component is mounted | |
-| `mount` | Called when the component is attached to the document | |
-| `unmount` | Called when the component is detached from the document | |
-| `render` | Called by both visit and tick | |
-| `rendered` | Called after every `render` | |
-| `tick` | Called on every imba.commit when component is scheduled |
-| `visit` | Called when parent element is rendered |
-| `commit` | Called by both visit and tick |
+| table       |                                                         |     |
+| ----------- | ------------------------------------------------------- | --- |
+| `build`     | Called before any properties etc are set                |     |
+| `setup`     | Called the first time element is rendered in template   |     |
+| `hydrate`   | Called before awaken if element is not hydrated         |     |
+| `dehydrate` | Called before serializing when rendering on server      |     |
+| `awaken`    | Called the first time the component is mounted          |     |
+| `mount`     | Called when the component is attached to the document   |     |
+| `unmount`   | Called when the component is detached from the document |     |
+| `render`    | Called by both visit and tick                           |     |
+| `rendered`  | Called after every `render`                             |     |
+| `tick`      | Called on every imba.commit when component is scheduled |
+| `visit`     | Called when parent element is rendered                  |
+| `commit`    | Called by both visit and tick                           |
 
 ## Lifecycle States
 
 Components also has a bunch of methods that you can call to inspect where in the lifecycle a component is:
 
-| table  |  |
-| --- | --- |
-| `hydrated?` | Is this element created on the client (by imba) or has it been rehydrated? |
-| `awakened?` | Called the first time the tag is mounted |
-| `mounting?` | Is component in the process of being mounted? |
-| `mounted?` | Is component attached to the document? |
-| `render?` | Should component render? |
-| `rendered?` | Has component been rendered? |
-| `scheduled?` | Is component scheduled? |
+| table        |                                                                            |
+| ------------ | -------------------------------------------------------------------------- |
+| `hydrated?`  | Is this element created on the client (by imba) or has it been rehydrated? |
+| `awakened?`  | Called the first time the tag is mounted                                   |
+| `mounting?`  | Is component in the process of being mounted?                              |
+| `mounted?`   | Is component attached to the document?                                     |
+| `render?`    | Should component render?                                                   |
+| `rendered?`  | Has component been rendered?                                               |
+| `scheduled?` | Is component scheduled?                                                    |
 
 # Server-side Rendering [wip]
 
-Documentation coming.  See [ssr-app-imba](https://github.com/imba/ssr-app-imba) repository as an example.
+Documentation coming. See [ssr-app-imba](https://github.com/imba/ssr-app-imba) repository as an example.
