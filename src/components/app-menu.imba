@@ -17,7 +17,7 @@ tag app-menu-item
 		# &.l3 fs:4/1.2 fw:400
 
 		&.wip @after
-			pos:relative d:inline ai:center bg:yellow3 content:'wip'
+			pos:relative d:inline ai:center bg:yellow3 content:'wip' rd:sm
 			c:yellow7 fs:xxs/12px tt:uppercase px:1 py:0.5 rd:1 ml:1 va:middle fw:bold
 		
 	css .children pl:3
