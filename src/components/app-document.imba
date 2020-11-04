@@ -257,7 +257,7 @@ tag doc-section
 					<span.title innerHTML=data.head>
 
 
-			elif data.options.wip
+			if data.options.wip
 				# <.wip[bg:yellow3 rd:md px:4 py:2 c:yellow9 fs:sm mb:4 bdb:yellow4]>
 				<.wip [mb:6 c:gray8/80 bg:yellow3 d:inline]>
 					"Can you help document this topic? Reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}"
