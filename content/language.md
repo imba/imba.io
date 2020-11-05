@@ -262,7 +262,7 @@ Like css and html, dashes inside identifiers are perfectly valid in Imba. Variab
 
 Identifiers starting with an uppercase letter is treated somewhat differently than other identiers...
 
-### Predicate Identifiers
+### Predicate Identifiers [wip]
 
 ### Symbol Identifiers
 
@@ -274,7 +274,7 @@ obj.name
 obj.#clearance
 ```
 
-Lone symbol identi
+<!-- Lone symbol identi -->
 
 ### Using reserved keywords
 
@@ -397,9 +397,9 @@ class Line
 
 Self always refers to the closest _selfish_ scope, and lone identifiers not declared in the lexical scope are treated as properties on self. **Uppercased identifiers are not treated as accessors**. So `Array`, `Map`, or `SomeIdentifier` will always resolve the same way they do in JavaScript.
 
-### Global variables
+### Global variables [wip]
 
-Mention the globals.
+<!-- Mention the globals. -->
 
 ### Variable hoisting
 
