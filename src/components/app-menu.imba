@@ -27,12 +27,27 @@ tag app-menu-item
 	# children's natural height is calculated
 	# and stored upon mount so that it can be animated to
 	# could height change after mount?
-	childrenHeight = 0
+	###
+	childrenHeightValue = 0
 	def mount
-		const oldHeightStyle = $children.style.height
-		$children.style.height = 'auto'
-		childrenHeight = $children.offsetHeight
-		$children.style.height = oldHeightStyle
+		if $children
+			const oldHeightStyle = $children.style.height
+			$children.style.height = 'auto'
+			childrenHeightValue = $children.offsetHeight
+			$children.style.height = oldHeightStyle
+	
+	get childrenHeight
+		if active?
+			if childrenHeightValue == null
+				'auto'
+			else
+				childrenHeightValue
+		else
+			0
+	
+	def handleExpandSection
+		childrenHeightValue = null
+	###
 
 	css
 		.item c:gray6 fw:normal pos:relative d:block
@@ -46,6 +61,7 @@ tag app-menu-item
 		&.wip .item-title @after
 			pos:relative d:inline ai:center bg:yellow3 content:'wip' rd:sm
 			c:yellow7 fs:xxs/12px tt:uppercase px:1 py:0.5 rd:1 ml:1 va:middle fw:bold
+	
 
 	def render
 		<self .{data.flagstr}>
@@ -55,7 +71,7 @@ tag app-menu-item
 				<div.item-title> data.title
 
 			if renderChildren?
-				<div$children.children [h:{active? ? childrenHeight : 0}px]>
+				<div$children.children [h:{active? ? 'auto' : 0}px]>
 					for child in data.children
 						continue if child.level >= levelCutoff
 						<app-menu-item.child data=child>
