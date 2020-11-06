@@ -41,7 +41,7 @@ tag app-menu-item
 				fw:500 c:gray9
 
 		.item-title
-			py:2px 
+			py:2px of:hidden text-overflow:ellipsis ws:nowrap
 			@hover c:gray9
 		
 		.triangle
