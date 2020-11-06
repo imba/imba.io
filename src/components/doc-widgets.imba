@@ -57,7 +57,7 @@ css .defs
 
 css .defbar 
 	border-bottom:1px solid gray3 pb:2
-	button mr:2 fw:500 fs:8 c:gray6 c@hover:gray7 c.checked:gray9 outline@focus:none
+	button mr:3 fw:500 fs:8 c:blue6 c@hover:gray7 c.checked:gray9 outline@focus:none 
 		bbw:2px bc:clear bc.checked:teal6
 	# input@checked ~ .tab c:gray9
 

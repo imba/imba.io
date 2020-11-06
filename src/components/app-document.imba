@@ -258,9 +258,9 @@ tag doc-section
 
 
 			if data.options.wip
-				<.wip>
+				<.wip[my:10px]>
 					<span.marktext>
-						"Can you help document this topic? Reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}"
+						"This topic is incomplete. Can you help document this topic? Reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}"
 
 			if data.options.sheet
 				<doc-section-filters data=data bind:selection=filters>
