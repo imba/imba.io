@@ -9,14 +9,16 @@ multipage: true
 
 Imba is a programming language for building web applications with amazing performance. It replaces and works with Javascript. You can use it both for the server and client.
 
-In Imba DOM elements *and* CSS are treated as first-class citizens. DOM elements are compiled to a [memoized DOM](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than today's virtual DOM implementations. 
+In Imba DOM elements _and_ CSS are treated as first-class citizens. DOM elements are compiled to a [memoized DOM](/guides/advanced/performance), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than today's virtual DOM implementations.
 
 This opens up a new way of developing web applications.
 
 ### Basic Syntax
+
 Imba's minimal syntax makes it quick and flexible. Learn all the details in the [Language](/language/introduction) section.
 
 ##### Literals
+
 ```imba
 let number = 42
 let bool = yes
@@ -39,6 +41,7 @@ let details =
 ```
 
 ##### Methods
+
 ```imba
 def method param
     console.log param
@@ -51,16 +54,18 @@ def method name, {title, desc = 'no description'}
 ```
 
 ##### Functions & Callbacks
+
 ```imba
 [1,2,3,4].map do(item) item * 2
 ```
 
 ##### Class Declarations
+
 ```imba
 class Todo
     prop title
     prop completed = no
-    
+
     def complete
         completed = yes
 
@@ -69,6 +74,7 @@ let todo = new Todo 'Read introduction'
 ```
 
 ##### Loops & Iteration
+
 ```imba
 # looping over arrays
 for num,i in [1,2,3]
@@ -82,7 +88,9 @@ for num in array when num != 2
 ```
 
 ##### Elements
+
 > Elements are a native part of Imba just like strings, numbers, and other types.
+
 ```imba
 # elements are first class citizens
 const list = <ul title="reminders">
@@ -98,7 +106,8 @@ const list = <ul title="reminders">
 ```
 
 ##### Components
-> Tags are compiled down to *extremely optimized* native web components.
+
+> Tags are compiled down to _extremely optimized_ native web components.
 
 ```imba
 import {todos} from './data.imba'
@@ -119,6 +128,7 @@ imba.mount <todo-app data=todos>
 ```
 
 ##### Inline styles
+
 ```imba
 import {todos} from './data.imba'
 
@@ -133,19 +143,21 @@ import {todos} from './data.imba'
 ```
 
 ##### Scoped Styles
+
 ```imba
 import {todos} from './data.imba'
 
 tag todo-app
     css .item color:gray8 bg@hover:gray1
     css .item.done color:green8 text-decoration: line-through
-    
+
     def render
         <self> for todo in data
             <div.item .done=data.completed> <span> data.title
 ```
 
 ##### Global Styles
+
 ```imba
 global css .button
     padding: 1rem 2rem
@@ -176,6 +188,7 @@ class Reminder
 ##### Type annotations
 
 > Type annotations in Imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in Visual Studio Code.
+
 ```imba
 let item\string = window.title
 
@@ -183,12 +196,11 @@ def multiply a\number, b\number
     a * b
 ```
 
-# Installation [wip]
+# Installation
 
 The easiest way to get started using Imba is to clone the [webpack-app-imba](https://github.com/imba/webpack-app-imba) template on GitHub and use it to start your project.
 
 Installation guide and decent starter templates coming soon. Until then, you can run `npm install imba@pre` and start exploring.
-
 
 # Community
 
@@ -196,7 +208,6 @@ Installation guide and decent starter templates coming soon. Until then, you can
 
 For questions and support please use our community chat on
 [Discord](https://discord.gg/mkcbkRw) or our [discourse](https://users.imba.io/).
-
 
 ## Bi-Weekly Meeting
 
@@ -207,4 +218,3 @@ For the exact meeting times please use the Meetup group [Imba Oslo Meetup](https
 You can join us remotely via [Zoom](https://us04web.zoom.us/j/230170873).
 
 Did you miss a meeting? No worries, catch up via the [meeting notes](https://docs.google.com/document/d/1ABGjOJut9eXrajYjdN4G4-UGGU4gvKznLk5CAaXYjso/edit?usp=sharing) or [video recordings](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
-

@@ -1,44 +1,66 @@
 import {fs,files,ls} from '../store'
 
+const triangleSVG =	`
+	<svg width="5" height="6" viewBox="0 0 5 6" xmlns="http://www.w3.org/2000/svg">
+		<path d="M5 3L0.5 5.59808L0.5 0.401924L5 3Z" fill="currentColor" />
+	</svg>
+`
+
+
 tag app-menu-item
-	css transition:all 150ms cubic-in-out
-		$height:26px .l1:30px
 
-	css .item
-		p:1 2 d:block rd:1
-		c:gray6 @hover:gray9 .active:teal6
-		transition:all 150ms cubic-in-out tt.folder:capitalize
-		of:hidden text-overflow:ellipsis ws:nowrap
-		fs:sm/1.2 fw:400
-		# &.l1 fw:500 py:1.5
-		&.doc.l2 fw:400
-		&.active fw:500 c:gray9
-		&.section pl:4
-		# &.l3 fs:4/1.2 fw:400
+	levelCutoff = 40
 
-		&.wip @after
+	get hasChildren?
+		# only children below level cutoff are shown as child sections in the menu
+		const result = data.children.filter(do |c| c.level < levelCutoff)
+		result.length > 0
+	
+	get renderChildren?
+		hasChildren? && !data.reference?
+	
+	get active?
+		# this is a hacky way to find out if this is the active section
+		# but I don't know how the imba router works 
+		$item.className.split(/\b/).includes('active')
+	
+	# children's natural height is calculated
+	# and stored upon mount so that it can be animated to
+	# could height change after mount?
+	childrenHeight = 0
+	def mount
+		const oldHeightStyle = $children.style.height
+		$children.style.height = 'auto'
+		childrenHeight = $children.offsetHeight
+		$children.style.height = oldHeightStyle
+
+	css
+		.item c:gray6 fw:normal pos:relative d:block
+		.item	.item-title
+			py:2px of:hidden text-overflow:ellipsis ws:nowrap
+			@hover c:gray9
+		item.active fw:500 c:gray9
+		.triangle c:gray5 pos:absolute t:calc(50% - 3px) l:-10px tween:transform 150ms ease-in-out
+		.active .triangle rotate:90deg
+		.children pl:15px of:hidden tween:height 200ms ease-out
+		&.wip .item-title @after
 			pos:relative d:inline ai:center bg:yellow3 content:'wip' rd:sm
 			c:yellow7 fs:xxs/12px tt:uppercase px:1 py:0.5 rd:1 ml:1 va:middle fw:bold
-		
-	css .children pl:3
-	css .children > * mt:calc($height * -1) o:0 pointer-events:none
-	css .active + .children > * o:1 my:0 pointer-events:auto
 
-	prop level = 0
+	def render
+		<self .{data.flagstr}>
 
-	def jumpTo section, ev
-		console.log 'jump to',ev,section
-		self
+			<a$item.item route-to=data.href>
+				<div.triangle innerHTML=triangleSVG> if hasChildren?
+				<div.item-title> data.title
 
-	<self[d:block].l{level} .{data.flagstr}>
-		<a.item .l{level} .{data.type} data=data .{data.flagstr} route-to=data.href> data.title
-		if data.children.length and !data.reference? # and !data.options.tabbed and data.type != 'section'
-			<div.children[d@empty:none]>
-				# for sub in data.sections when !sub.hidden
-				#	<a.segment.item.l{level + 1} data=sub .wip=sub.meta.wip href="{data.href}#{sub.slug}" @click.stop=jumpTo(sub,e)> sub.title
-				for sub in data.children
-					continue if sub.level >= 40
-					<app-menu-item.sub data=sub level=(level + 1)>
+			if renderChildren?
+				<div$children.children [h:{active? ? childrenHeight : 0}px]>
+					for child in data.children
+						continue if child.level >= levelCutoff
+						<app-menu-item.child data=child>
+
+
 	
 tag app-menu-section
 
