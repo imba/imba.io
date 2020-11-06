@@ -35,30 +35,22 @@ tag app-menu-item
 		$children.style.height = oldHeightStyle
 
 	css
-		.item
-			c:gray6 fw:normal pos:relative d:block
-			&.active
-				fw:500 c:gray9
-
-		.item-title
+		.item c:gray6 fw:normal pos:relative d:block
+		.item	.item-title
 			py:2px of:hidden text-overflow:ellipsis ws:nowrap
 			@hover c:gray9
-		
-		.triangle
-			c:gray5 pos:absolute t:calc(50% - 3px) l:-10px tween:transform 150ms ease-in-out
-
-		.active .triangle
-			rotate:90deg
-		
-
-
-		.children
-			pl:15px of:hidden tween:height 200ms ease-out
+		item.active fw:500 c:gray9
+		.triangle c:gray5 pos:absolute t:calc(50% - 3px) l:-10px tween:transform 150ms ease-in-out
+		.active .triangle rotate:90deg
+		.children pl:15px of:hidden tween:height 200ms ease-out
+		&.wip .item-title @after
+			pos:relative d:inline ai:center bg:yellow3 content:'wip' rd:sm
+			c:yellow7 fs:xxs/12px tt:uppercase px:1 py:0.5 rd:1 ml:1 va:middle fw:bold
 
 	def render
-		<self>
+		<self .{data.flagstr}>
 
-			<a$item.item route-to=data.href @click=(console.log(data))>
+			<a$item.item route-to=data.href>
 				<div.triangle innerHTML=triangleSVG> if hasChildren?
 				<div.item-title> data.title
 
