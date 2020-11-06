@@ -259,7 +259,7 @@ If you create an element without a node name it will always be created as a `div
 
 ## Fragments [advanced]
 
-Fragments can be created using empty tag literals `<>`.
+Fragments allow grouping elements together in a parent tag, without actually adding the parent tag to the DOM. Fragments can be created using empty tag literals `<>`.
 
 # Custom Components
 
@@ -480,7 +480,6 @@ tag App
 
 imba.mount <App>
 ```
-
 
 ### Trigger event via event listener [preview]
 
