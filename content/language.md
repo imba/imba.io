@@ -2,12 +2,25 @@
 
 ## Comments
 
-Comments in Imba are any text following `# ` on the same line.
+Single-line comments in Imba are any text following `# ` on the same line.
 
 ```imba
 # This is a comment
 
 var color = "blue" # my favorite color
+```
+
+Multi-line comments are any text in between `###` and `###`
+
+```imba
+
+###
+This color is my favorite
+I need several lines to really
+emphasize this fact.
+###
+
+var color = "blue"
 ```
 
 ## Literals
@@ -201,7 +214,12 @@ The global `undefined` property represents the primitive value `undefined`. A va
 
 #### Strict equality
 
-Example
+Strict equality syntax in Imba is the same as in Javascript.
+
+```
+0 == '0'  # true
+0 === '0' # false
+```
 
 ### Regular Expressions
 
