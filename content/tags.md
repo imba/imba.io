@@ -459,15 +459,16 @@ const handler = console.log.bind(console)
 	<li @click=handler(e.type,item,i)> item.title
 ```
 
-## Triggering Events
+## Triggering events
 
-### Trigger Event from method [preview]
+### Trigger Event from method
 
 To trigger a custom event you call `element.emit(name,data = {})`
 
 To trigger a custom event you call `emit` on the element you want to trigger an event from.
 
 ```imba
+# [preview=md]
 import 'util/styles'
 # ---
 tag App
@@ -501,67 +502,87 @@ tag App
 imba.mount <App>
 ```
 
-## Event Modifiers
+
+# Event Modifiers
 
 Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
 
-### Core Modifiers
+## Core Modifiers
 
-##### prevent [event-modifier] [snippet]
+#### prevent [event-modifier] [snippet]
 
+Tells the browser that the default action should not be taken. The event will still continue to propagate up the tree. See [Event.preventDefault()](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault)
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
 imba.mount do
-	<a href='https://google.com' @click.prevent.log('prevented')> 'Link'
+	<a href='https://google.com' @click.prevent.log('prevented')> 'Link to google.com'
 ```
 
-> Calls preventDefault on event
 
-##### stop [event-modifier] [snippet]
+#### stop [event-modifier] [snippet]
+
+Stops the event from propagating up the tree. Event listeners for the same event on nodes further up the tree will not be triggered. See [Event.stopPropagation()](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation)
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
 imba.mount do <div.group @click.log('clicked div')>
-	<button @click.stop.log('stopped')> 'stop'
-	<button @click.log('bubble')> 'bubble'
+	<button @click.stop.log('stopped')> 'click.stop'
+	<button @click.log('bubble')> 'click'
 ```
 
-> Calls stopPropagation on event
 
-##### once [event-modifier] [snippet]
+#### once [event-modifier] [snippet]
+
+Indicates that the listeners should be invoked at most once. The listener will automatically be removed when invoked.
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 # ---
 imba.mount do
     <button @click.once.log('once!')> 'Click me'
 ```
 
-> The click event will be triggered at most once
-
-##### capture [event-modifier] [snippet]
+Remember that modifiers can be chained, and that the order of chaining matters. If you have conditional modifiers etc before the `once` - the listener will only be removed if the `once` modifier is reached.
 
 ```imba
-# ~preview
+# [preview=md]
+import 'util/styles'
+# ---
+imba.mount do <fieldset>
+	<legend> "Try to click buttons without holding shift first"
+	<button @click.shift.once.log('yes!')> "shift-once"
+	<button @click.once.shift.log('yes!')> "once-shift"
+```
+
+You can click the first button as many times you want without shift, but once you've clicked it while holding down shift it the handler will be invoked, and then removed. On the second button the `once` modifier appears before shift, so the listener will be removed after the first click, no matter if shift was pressed or not.
+
+
+#### capture [event-modifier] [snippet]
+
+Indicating that events of this type should be dispatched to the registered listener before being dispatched to tags deeper in the DOM tree. 
+
+```imba
+# [preview=sm]
 import 'util/styles'
 
 # ---
-imba.mount do
+imba.mount do <fieldset>
 	<div @click.capture.stop.log('captured!')>
 		<button @click.log('button')> 'Click me'
 ```
+When clicking the button you will see that the click listener on the parent div will actually be triggered first.
 
-##### passive [event-modifier] [snippet]
+#### passive [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=md]
 import 'util/styles'
 
 # ---
@@ -572,12 +593,56 @@ imba.mount do
 		<article> "Three"
 ```
 
-### Utility Modifiers
+#### silence [event-modifier] [snippet]
 
-##### log ( ...params ) [event-modifier] [snippet]
+By default, Imba will re-render all scheduled tags after any *handled* event. So, Imba won't re-render your application if you click an element that has no attached handlers, but if you've added a `@click` listener somewhere in the chain of elements, `imba.commit` will automatically be called after the event has been handled. 
 
 ```imba
-# ~preview=small
+# [preview=md]
+import 'util/styles'
+
+# ---
+let counter = 0
+imba.mount do <section>
+	<div.group>
+		<button @click.silence.log('silenced')> "Silenced"
+		<button @click.log('clicked')> "Not silenced"
+	<label> "Rendered {++counter} times"
+```
+
+This is usually what you want, but it is useful to be able to override this, especially when dealing with `@scroll` and other events that might fire rapidly.
+
+```imba
+# [preview=md]
+import 'util/styles'
+
+tag Filter
+	counter = 0
+	<self>
+		<div> "Filter rendered {counter++} times"
+		<input value="Default" @selection.log('!')>
+		<input value="Silent" @selection.silence.log('!')>
+
+tag App
+	counter = 0
+	<self[ta:center]>
+		<b> "App rendered {counter++} times"
+		<Filter>
+
+imba.mount <App>
+```
+If you try to select the "Default" text you will see that both the `App` and the `Filter` elements re-render. This happens because `App` is mounted via `imba.mount` which automatically schedules the element to render after events, and the Filter is rendered when `App` is rendered since it is a descendant of `App`. Now if you select text in the "Silent" input, it too has an event handler for the same event, but we've added a `.silence` modifier. This prevents the handler from automatically re-rendering scheduled elements after the event.
+
+
+
+## Utility Modifiers
+
+#### log ( ...params ) [event-modifier] [snippet]
+
+Basic modifier that simply logs to the console. Mostly useful for testing and development.
+
+```imba
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -586,33 +651,38 @@ imba.mount do
 	<button @click.log('logged!')> 'test'
 ```
 
-##### wait ( duration = 250ms ) [event-modifier] [snippet]
+#### wait ( duration = 250ms ) [event-modifier] [snippet]
+
+The `wait` modifier delays the execution of subsequent modifiers and callback. It defaults to wait for 250ms, which can be overridden by passing a number as the first/only argument.
 
 ```imba
-# ~preview=small
+# [preview=sm]
 import 'util/styles'
 
 # ---
 # delay subsequent modifiers by duration
 imba.mount do <div.group>
-	<button @click.wait.log('logged!')> 'default'
-	<button @click.wait(100).log('logged!')> 'fast'
-	<button @click.log('!').wait(500).log('!!')> 'chained'
+	<button @click.wait.log('!')> 'wait'
+	<button @click.wait(100).log('!')> 'wait 100ms'
+	<button @click.log('!').wait(500).log('!!')> 'waith 500ms'
 ```
 
-##### throttle ( ms ) [event-modifier] [snippet]
+In isolation the `wait` modifier might not seem very useful, but in combination with throttling and chained listeners it becomes quite powerful.
+
+#### throttle ( ms ) [event-modifier] [snippet]
 
 ```imba
-# ~preview=small
+# [preview=sm]
 import 'util/styles'
 
 # ---
 # disable handler for duration after triggered
-imba.mount do
+imba.mount do <fieldset>
 	<button @click.throttle(1000).log('clicked')> 'click me'
+	<div> "Not clickable within 1 second of previous invocation."
 ```
 
-##### emit-_name_ ( detail = {} ) [event-modifier] [snippet]
+#### emit-_name_ ( detail = {} ) [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -626,7 +696,7 @@ imba.mount do
 		<button @click.emit-select(a:1,b:2)> 'with data'
 ```
 
-##### flag-_name_ ( target ) [event-modifier] [snippet]
+#### flag-_name_ ( target ) [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -641,26 +711,10 @@ imba.mount do
 # Optionally supply a selector / element to flag
 ```
 
-##### silence [event-modifier] [snippet]
 
-```imba
-# ~preview
-import 'util/styles'
+## Guard Modifiers
 
-# ---
-let counter = 0
-imba.mount do <section>
-	<div.group>
-		<button @click.silence.log('silenced')> "Silenced"
-		<button @click.log('clicked')> "Not silenced"
-	<label> "Rendered {++counter} times"
-# By default, Imba will commit after all handled events.
-# In the few cases you want to suppress this, add the `silence` modifier.
-```
-
-### Guard Modifiers
-
-##### self [event-modifier] [snippet]
+#### self [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -673,7 +727,7 @@ imba.mount do
 		<b> "Nested"
 ```
 
-##### sel ( selector ) [event-modifier] [snippet]
+#### sel ( selector ) [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -687,7 +741,7 @@ imba.mount do <div.group>
 	<button.pri @click.sel('.pri').log('!!!')> 'Button'
 ```
 
-##### if ( expr ) [event-modifier] [snippet]
+#### if ( expr ) [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -701,7 +755,7 @@ imba.mount do <div.group>
 	<button @click.if(age > 16).log('drive')> 'drive'
 ```
 
-##### keys [snippet]
+#### keys [snippet]
 
 ```imba
 # ~preview
@@ -722,11 +776,11 @@ imba.mount do
 	>
 ```
 
-### System Key Modifiers
+## System Key Modifiers
 
 System modifier keys are different from regular keys and when used with @keyup events, they have to be pressed when the event is emitted. In other words, @keyup.ctrl will only trigger if you release a key while holding down ctrl. It won’t trigger if you release the ctrl key alone. You can use the following modifiers to trigger event listeners only when the corresponding modifier key is pressed:
 
-##### ctrl [event-modifier] [snippet]
+#### ctrl [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -742,7 +796,7 @@ imba.mount do <div.group>
 	<button @contextmenu.prevent.ctrl.log('ctrlish+click')> 'ctrlish+click'
 ```
 
-##### alt [event-modifier] [snippet]
+#### alt [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -754,7 +808,7 @@ imba.mount do
 	<button @click.alt.log('alt+click')> 'alt+click'
 ```
 
-##### shift [event-modifier] [snippet]
+#### shift [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -766,7 +820,7 @@ imba.mount do
 	<button @click.shift.log('shift+click')> 'shift+click'
 ```
 
-##### meta [event-modifier] [snippet]
+#### meta [event-modifier] [snippet]
 
 ```imba
 # ~preview
@@ -779,11 +833,11 @@ import 'util/styles'
 imba.mount do <button @click.meta.log('meta+click')> 'meta+click'
 ```
 
-### Pointer Modifiers
+## Pointer Modifiers
 
 Modifiers available for all pointer events – pointerover, pointerenter, pointerdown, pointermove, pointerup, pointercancel, pointerout & pointerleave.
 
-##### mouse [event-modifier] [pointer-modifier] [snippet]
+#### mouse [event-modifier] [pointer-modifier] [snippet]
 
 ```imba
 # ~preview=small
@@ -794,7 +848,7 @@ imba.mount do
 	<button @pointerdown.mouse.log('only mouse!')> 'Mouse Only'
 ```
 
-##### pen [event-modifier] [pointer-modifier] [snippet]
+#### pen [event-modifier] [pointer-modifier] [snippet]
 
 ```imba
 # ~preview=small
@@ -805,7 +859,7 @@ imba.mount do
 	<button @pointerdown.pen.log('only pen!')> 'Pen Only'
 ```
 
-##### touch [event-modifier] [pointer-modifier] [snippet]
+#### touch [event-modifier] [pointer-modifier] [snippet]
 
 ```imba
 # ~preview=small
@@ -816,7 +870,7 @@ imba.mount do
 	<button @pointerdown.touch.log('only touch!')> 'Touch Only'
 ```
 
-##### pressure ( threshold = 0.5 ) [event-modifier] [pointer-modifier] [snippet]
+#### pressure ( threshold = 0.5 ) [event-modifier] [pointer-modifier] [snippet]
 
 ```imba
 # ~preview=small
@@ -827,11 +881,11 @@ imba.mount do
 	<button @pointerdown.pressure.log('pressured?')> 'Button'
 ```
 
-### Touch Modifiers
+## Touch Modifiers
 
 The following modifiers are available for the special `touch` event. More in depth examples of these modifiers can be seen in the [Touch](/docs/events/touch) docs.
 
-##### moved ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
+#### moved ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
 
 ```imba
 # ~preview=lg
@@ -848,7 +902,7 @@ imba.mount do <Example.rect>
 
 Will break the chain until the touch has moved more than `threshold`. The element will also activate the `@move` pseudostate during touch - after threshold is reached.
 
-##### moved-_direction_ ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
+#### moved-_direction_ ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
 
 ```imba
 # ~preview=lg
@@ -864,7 +918,7 @@ imba.mount do <Example.rect>
 
 Direction can be `up`, `down`, `left`, `right`, `x`, and `y`
 
-##### sync ( data, xname = 'x', yname = 'y' ) [event-modifier] [touch-modifier] [snippet]
+#### sync ( data, xname = 'x', yname = 'y' ) [event-modifier] [touch-modifier] [snippet]
 
 ```imba
 # ~preview=lg
@@ -880,11 +934,11 @@ imba.mount do <Draggable>
 
 A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.
 
-### Resize Modifiers [wip]
+## Resize Modifiers [wip]
 
-### Intersection Modifiers [wip]
+## Intersection Modifiers [wip]
 
-##### in [event-modifier] [intersection-modifier] [snippet]
+#### in [event-modifier] [intersection-modifier] [snippet]
 
 ```imba
 <div @intersect.in=handler>
@@ -892,13 +946,14 @@ A convenient touch modifier that takes care of updating the x,y values of some d
 
 Break unless intersection ratio has increased.
 
-##### out [event-modifier] [intersection-modifier] [snippet]
+#### out [event-modifier] [intersection-modifier] [snippet]
 
 ```imba
 <div @intersect.out=handler>
 ```
 
 Break unless intersection ratio has decreased.
+
 
 # State Management [wip]
 

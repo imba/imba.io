@@ -146,11 +146,21 @@ def renderer.code code, lang, opts = {}
 		let dir = this.toc.path.replace(/\.md$/g,'')
 		let nr = ++this.toc.counter
 		let path = dir + "_{nr}.imba"
-		let meta = ""
-		if last and last.hlevel
-			meta = JSON.stringify(last.options)
+		let meta = {}
+		let flags = []
 
-		<app-code-block.code.code-block data-meta=meta data-path="{dir}/{nr}">
+		if last and last.hlevel
+			meta = JSON.parse(JSON.stringify(last.options))
+
+		try
+			let main = files[0].code
+			let line = main.split('\n').find(do $1.match(/^# \[/)) or ''
+			line = line.replace(/\[([\w\-]+)(?:\=([^\]]+))?\]\s*/g) do(m,key,value)
+				let flag = key.toLowerCase!
+				meta[flag] = value or yes
+				flags.push(flag)
+
+		<app-code-block.code.code-block data-meta=JSON.stringify(meta) data-path="{dir}/{nr}">
 			for file in files
 				<code data-name=file.name data-lang=file.lang> file.code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 		# else

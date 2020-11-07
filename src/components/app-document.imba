@@ -103,7 +103,7 @@ tag doc-section
 		> mt@first:0 mb@last:0
 
 	css my:1em d:block
-		mt:4 .h1:12 .h2:12 .h3:8 @first:8
+		mt:8 .h1:12 .h2:12 .h3:8 @first:8
 
 	css &.hide d:none
 	css &.collapsed > .body d:none
@@ -150,6 +150,10 @@ tag doc-section
 			&.op-unary .title prefix:"" suffix:"a"
 			&.op-post .title prefix:"a" suffix:""
 			&.op-unary.op-keyword .title suffix:" a"
+
+		&.event-modifier
+			c:blue7 bdb:2px solid currentColor
+			.title prefix: "@event." c:blue7 
 
 		.tab mr:3 fw:500 td:none @hover:none
 			outline@focus:none

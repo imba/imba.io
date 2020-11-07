@@ -353,8 +353,10 @@ tag app-code-block < app-code
 	
 	def render
 		return unless code or file
+		let name = (files[0] && files[0].name or '')
+		let fflags = name.replace(/\.+/g,' ')
 
-		<self.{options.preview} .multi=(files.length > 1) @pointerover.silence=pointerover>
+		<self.{options.preview}.{fflags} .multi=(files.length > 1) @pointerover.silence=pointerover>
 			<main>
 				<div$editor.code[min-height:{editorHeight}px] @resize=editorResized>
 					<$header .collapsed=(files.length < 2)>
@@ -364,7 +366,7 @@ tag app-code-block < app-code
 							<div.item @click=openInEditor> 'open'
 					if file
 						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
-				if options.preview or (files[0].name == 'main.imba')
+				if options.preview or (name == 'main.imba') or name.match(/^example/)
 					<app-repl-preview$preview file=files[0] dir=dir mode=options.preview>
 
 tag app-code-inline < app-code
