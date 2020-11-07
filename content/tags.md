@@ -259,7 +259,7 @@ If you create an element without a node name it will always be created as a `div
 
 ## Fragments [advanced]
 
-Fragments can be created using empty tag literals `<>`.
+Fragments allow grouping elements together in a parent tag, without actually adding the parent tag to the DOM. Fragments can be created using empty tag literals `<>`.
 
 # Custom Components
 
@@ -306,7 +306,7 @@ export tag Header
     <self[d:inline-block p:2]> "Header"
 ```
 
-## Self & Rendering
+## Self & Rendering [wip]
 
 ## Nesting Components
 
@@ -414,7 +414,7 @@ In the code above, `$name` is available everywhere inside `app-panel` component,
 
 Elements with a reference automatically get a flag with the same name as the reference.
 
-## Declaring Attributes
+## Declaring Attributes [wip]
 
 # Handling Events
 
@@ -480,7 +480,6 @@ tag App
 
 imba.mount <App>
 ```
-
 
 ### Trigger event via event listener [preview]
 
@@ -881,9 +880,9 @@ imba.mount do <Draggable>
 
 A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.
 
-### Resize Modifiers
+### Resize Modifiers [wip]
 
-### Intersection Modifiers
+### Intersection Modifiers [wip]
 
 ##### in [event-modifier] [intersection-modifier] [snippet]
 
@@ -901,7 +900,7 @@ Break unless intersection ratio has increased.
 
 Break unless intersection ratio has decreased.
 
-# State Management
+# State Management [wip]
 
 # Form Input Bindings
 
@@ -1179,4 +1178,4 @@ Components also has a bunch of methods that you can call to inspect where in the
 
 # Server-side Rendering [wip]
 
-Documentation coming. See [ssr-app-imba](https://github.com/imba/ssr-app-imba) repository as an example.
+See [ssr-app-imba](https://github.com/imba/ssr-app-imba) repository as an example.

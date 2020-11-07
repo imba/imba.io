@@ -216,7 +216,7 @@ The global `undefined` property represents the primitive value `undefined`. A va
 
 Strict equality syntax in Imba is the same as in Javascript.
 
-```
+```imba
 0 == '0'  # true
 0 === '0' # false
 ```
@@ -258,11 +258,15 @@ for i in [1...5]
 result # => 1, 2, 3, 4
 ```
 
-### Elements
+## Tags
 
-One of the most unique features of Imba is that DOM elements are true first-class citizens of the language.
+One of the most unique features of Imba is that DOM elements are true first-class citizens of the language. Read the [Rendering](/tags/basic-syntax) section to learn all about it.
 
-## Identifiers
+```imba
+let myElement = <div.foo title="Greetings"> "Hello World"
+```
+
+## Identifiers [wip]
 
 ### Names vs Identifiers
 
@@ -898,12 +902,12 @@ When we talk about functions in Imba, we refer to anonymous / inline functions d
 
 ```imba
 # defining a function
-const square = do(num) num * num
+const square = do |num| num * num
 
 # inside an object
 const util =
-    upcase: do(str) str.toUpperCase!
-    downcase: do(str) str.toLowerCase!
+    upcase: do |str| str.toUpperCase!
+    downcase: do |str| str.toLowerCase!
 ```
 
 Function scopes are selfless, meaning that `self` inside their function bodies will refer to the closest lexical _selfish_ scope. See more about this in the section on Scoping.
@@ -911,7 +915,7 @@ Function scopes are selfless, meaning that `self` inside their function bodies w
 ### Default parameters
 
 ```imba
-const multiply = do(a, b = 1)
+const multiply = do |a, b = 1|
     a * b
 ```
 
@@ -962,7 +966,7 @@ Many functions expect another function as an argument. These are often referred 
 Since this is a common pattern, inline anonymous functions can be passed in
 
 ```imba
-[1,2,3].map do(item)
+[1,2,3].map do |item|
     item * 2 # [2,4,6]
 ```
 
@@ -971,7 +975,7 @@ The convention is usually to take the callback as the last argument, but not alw
 ```imba
 setTimeout((do
     console.log 'waited!'
-    [1,2,3].reduce((do(sum,value)
+    [1,2,3].reduce((do |sum,value|
         sum + value
     ),0)
 ),1500) # looks pretty messy
@@ -982,7 +986,7 @@ When functions expect callbacks as their first (or not-last) argument, you can u
 ```imba
 setTimeout(&,1500) do
     console.log 'waited!'
-    [1,2,3].reduce(&,0) do(sum,value)
+    [1,2,3].reduce(&,0) do |sum, value|
         sum + value
 ```
 
@@ -1413,8 +1417,6 @@ class Rect
 You can define setters which are to be called whenever there is an attempt to set that property.
 
 ## Lazy Getters [wip]
-
-Work in progress - not currently available.
 
 ## Computed Names
 

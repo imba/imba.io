@@ -19,6 +19,7 @@ css .btn
 css .btn@hover
     background: #81e6d9
 ```
+
 Styles are declared using the `css` keyword. Besides using indentation instead of `{}`, making `;` optional, and using `@pseudo` instead of `:pseudo` it looks like regular css. Line breaks are also optional. The following few snippets might look messy at first glance, but bear with us.
 
 ```imba
@@ -27,30 +28,38 @@ css .btn
 css .btn@hover
     background: #81e6d9
 ```
+
 We firmly believe that less code is better code, so we have strived to make the styling syntax as concise yet readable as possible. There is a case to be made against short variable names in programming, but css properties are never-changing. Imba provides intuitive abbreviations for oft-used css properties, as well as additional properties covering common usecases:
+
 ```imba
 css .btn
     d:block pl:4px pr:4px bg:#b2f5ea
 css .btn@hover
     bg:#81e6d9
 ```
+
 We also want to make it easy to follow a consistent design system throughout your project while not enforcing a predefined look and feel. Imba provides default (but configurable) colors, fonts, size units and more to help enforce consistency:
+
 ```imba
 css .btn
     d:block px:1 bg:teal2
 css .btn@hover
     bg:teal3
 ```
+
 Rules can also be written on a single line
+
 ```imba
 css .btn d:block px:1 bg:teal2
 css .btn@hover bg:teal3
 ```
 
 There are also some patterns that come up again and again in css. Changing a few properties on `hover` or other states, or setting certain dimensions for specific screen sizes etc. Imba got you covered with property modifiers that we will get into later. But to round up, the first block of css here would usually be written like this in Imba:
+
 ```imba
 css .btn d:block px:1 bg:teal2 bg@hover:teal3
 ```
+
 This conciseness comes especially handy when declaring inline styles, which we will come back to later.
 
 ## Nested Selectors
@@ -83,6 +92,7 @@ css button
 ```
 
 ## Global Styles
+
 If you prefix your css declaration with the `global` keyword - the styles will apply globally, and in this example affect all `button` elements in your application. The styles will be included as long as they are required somewhere.
 
 ```imba
@@ -123,7 +133,7 @@ global css @keyframes blink
 global css a
 	d:block bg:gray2 rd:md m:2 p:2
 	@hover animation: blink 2s
-	
+
 # Override blink animation just inside #header .item
 css #header a
 	@keyframes blink
@@ -215,13 +225,14 @@ tag app-root
         <div> <p> "Bold"
         <div innerHTML='<p>Normal<p>'>
         <div> <app-item>
-        
+
 # ---
 imba.mount do <app-root[d:grid gap:4 p:4]>
 ```
-As you can see in the example above, the literal `<p>` inside `app-root` is styled by the scoped rule, while the `<p>` inside the nested `<app-item>`, and the `<p>` generated via innerHTML are *not* styled. There are some cases where you don't want this strict scoping though. Imagine a component that renders markdown or really need to override styles for nested components.
 
-The `>>>` operator *escapes* the literal confines of the tag.
+As you can see in the example above, the literal `<p>` inside `app-root` is styled by the scoped rule, while the `<p>` inside the nested `<app-item>`, and the `<p>` generated via innerHTML are _not_ styled. There are some cases where you don't want this strict scoping though. Imagine a component that renders markdown or really need to override styles for nested components.
+
+The `>>>` operator _escapes_ the literal confines of the tag.
 
 ```imba
 # ~preview=lg
@@ -231,7 +242,7 @@ tag app-item
 # ---
 tag app-root
     css div p fw:600
-    css div >>> p c:blue6 
+    css div >>> p c:blue6
 
     <self>
         <div> <p> "Literal"
@@ -251,7 +262,7 @@ tag app-item
 # ---
 tag app-root
     css div p fw:600
-    css div >> p c:blue6 
+    css div >> p c:blue6
 
     <self>
         <div> <p> "Literal"
@@ -261,14 +272,16 @@ tag app-root
 imba.mount do <app-root[d:grid gap:4 p:4]>
 ```
 
-
 # Inline Styles
 
 You can add inline styles on any element using `[style-properties]` syntax. Think of this as an inlined anonymous class with a bunch of css properties. Instead of coming up with an arbitrary class name and adding styles somewhere else, you can simply add them to elements directly:
+
 ```imba
 <div[position:relative display:flex flex-direction:row padding:2rem]>
 ```
+
 This might look like regular inline styles, but with abbreviations and modifiers they become much more powerful and expressive:
+
 ```imba
 # More padding on large screens:
 <div[pos:relative d:flex fld:row p:2 @lg:3]>
@@ -277,12 +290,13 @@ This might look like regular inline styles, but with abbreviations and modifiers
 # Set text color when input is focused:
 <input[color@focus:blue7]>
 ```
+
 Since inline styles are essentially anonymous classes, they can also be applied conditionally:
+
 ```imba
 # line-through and lighter color if item is done
 <div[p:2 color:green9] [td:s c:gray4]=item.done>
 ```
-
 
 ### Interpolation
 
@@ -300,12 +314,13 @@ imba.mount do
     <section @pointermove=(ptr = e) @click=(num++)>
         <div[bg:teal2 x:{ptr.x} y:{ptr.y} rotate:{ptr.x / 360}]> "Full"
         <div[bg:purple2 x:{ptr.x / 2} y:{ptr.y / 2} rotate:{num / 45}]> "Half"
-        
+
 ```
 
 #### Specifying units
 
 When you want to interpolate values with units you can include units after `{expr}` like `{expr}px`,`{expr}%` etc.
+
 ```imba
 # ~preview
 css div p:2 m:2 overflow:hidden min-width:80px
@@ -316,10 +331,11 @@ imba.mount do
     <section[d:block pos:absolute inset:0] @pointermove=(ptr = e)>
         <div[bg:indigo2 w:{20 + ptr.x / 5}%]> "% width"
         <div[bg:green2 w:{ptr.x}px]> "px width"
-        
+
 ```
 
-### Tip! Set properties directly [tip]
+#### Tip! Set properties directly [tip]
+
 You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
 
 # Style Modifiers
@@ -329,24 +345,28 @@ Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/
 ## Syntax
 
 ##### in selectors
+
 ```imba
 css button@hover
     bg:blue
 ```
 
 ##### in properties
+
 ```imba
 css button
     bg@hover:blue
 ```
 
 ##### after properties
+
 ```imba
 css button
     bg:white @hover:whitesmoke @focus:blue
 ```
 
 ##### class modifiers
+
 ```imba
 css button
     bg:white .primary:blue ..busy:gray
@@ -403,12 +423,15 @@ We firmly believe that less code is better code, so we have strived to make the 
 <doc-style-aliases data-include='w,h,t,l,b,r,size'></doc-style-aliases>
 
 ### typography
+
 <doc-style-aliases data-regex='text|font' data-neg='decoration|emphasis'  data-include='c,lh,ta,va,ls,fs,ff,fw,ws' data-exclude='t'></doc-style-aliases>
 
 ### text-decoration
+
 <doc-style-aliases data-regex='text-decoration'></doc-style-aliases>
 
 ### text-emphasis
+
 <doc-style-aliases data-regex='text-emphasis'></doc-style-aliases>
 
 ### background
@@ -451,12 +474,12 @@ The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`te
 
 <doc-colors></doc-colors>
 
-
 ## Grids [linked]
 
 The `grid` property gets special treatment in Imba. If you supply a single word to the `grid` property like `grid:cols`, Imba will compile that down to `grid:var(--grid-cols)` in css. This allows us to predeclare grids for our project and concisely reuse them across our styles.
 
 #### Custom named grid [preview=xl]
+
 ```imba
 css body p:2
 css div bg:blue2 p:3
@@ -477,7 +500,7 @@ imba.mount do
 
 #### Custom responsive grid [preview=xl]
 
-In combination with css modifiers, especially breakpoints for different screen sizes, we can then create reusable responsive grids very easily. 
+In combination with css modifiers, especially breakpoints for different screen sizes, we can then create reusable responsive grids very easily.
 
 ```imba
 css body p:2
@@ -506,6 +529,7 @@ imba.mount do
 <doc-style-aliases data-keyrule='^rd.*$'></doc-style-aliases>
 
 #### Property Aliases [preview=lg]
+
 ```imba
 import 'util/styles'
 css body bg:gray1
@@ -524,8 +548,8 @@ imba.mount do  <section.group>
     <div[rdl:50%]> "rdl" # top-left and bottom-left
 ```
 
-
 #### Value Aliases [preview=lg]
+
 ```imba
 import 'util/styles'
 css body bg:gray1
@@ -542,7 +566,9 @@ imba.mount do  <section.group>
 ```
 
 #### Custom Value Aliases [preview=lg]
+
 To override the default shadows or add new ones simply specify `--border-radius-{name}` in your styles
+
 ```imba
 import 'util/styles'
 css body bg:gray1
@@ -550,8 +576,8 @@ css div c:gray6 fs:sm size:14 bg:white rd:2 d:grid ja:center border:1px solid gr
 css section.group px:6 jc:center gap:3
 # ---
 global css @root
-    --border-radius-bubble: 5px 20px 15px 
-    
+    --border-radius-bubble: 5px 20px 15px
+
 
 imba.mount do  <section.group>
     <div[rd:xl]> "xl"
@@ -559,7 +585,6 @@ imba.mount do  <section.group>
 ```
 
 ## Shadows [linked]
-
 
 #### Predefined shadows [preview=lg]
 
@@ -580,7 +605,6 @@ imba.mount do <section.group>
     <div[bxs:xl]> "xl"
     <div[bxs:xxl]> "xxl"
 ```
-
 
 #### Declare custom shadows [preview=lg]
 
@@ -606,7 +630,8 @@ imba.mount do  <section.group>
 
 <doc-style-ff></doc-style-ff>
 
-### Predeclared fonts  [preview=lg]
+### Predeclared fonts [preview=lg]
+
 ```imba
 import 'util/styles'
 # ---
@@ -617,6 +642,7 @@ imba.mount do <section[fs:lg]>
 ```
 
 ### Declare custom fonts [preview=lg]
+
 ```imba
 import 'util/styles'
 # ---
@@ -636,16 +662,9 @@ imba.mount do <section[fs:lg]>
 
 ### Tips
 
-- It is currently not possible to override or create your own named font-sizes. If needed, consider using css variables or just plain font values instead.
-
-
-
-
-
-
+-   It is currently not possible to override or create your own named font-sizes. If needed, consider using css variables or just plain font values instead.
 
 ## Typography [linked]
-
 
 ## Transitions [linked]
 
@@ -654,6 +673,7 @@ imba.mount do <section[fs:lg]>
 <doc-style-easings></doc-style-easings>
 
 #### Using easings [preview=lg]
+
 ```imba
 css button
     transition: opacity quint-out 1s
