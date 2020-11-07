@@ -22,15 +22,20 @@ global css
 
 	article
 		d:grid gaf:row ac:start gap:2 p:2
-		radius:2
+		rd:2
 		border:1px dashed gray3
 		min-height:60px
 
 	figure
 		d:grid gaf:row ja:center gap:2
 
-	body > figure@only
-		pos:absolute inset:0
+	body > fieldset
+		d:hflex flw:wrap ja:center
+		> * m:1
+		> h1,h2,h3,h4,h5,h6,p,legend w:100% fls:0 ta:center
+		legend c:gray6 fs:sm
+
+
 
 	group,cell,box
 		d:grid pos:relative gtc:100% ai:center
@@ -63,13 +68,13 @@ global css
 
 	mark
 		d:grid gaf:column ja:center gap:2
-		bw:1 bc:yellow4 radius:1 py:1 px:2 fs:smaller
+		bw:1 bc:yellow4 rd:1 py:1 px:2 fs:smaller
 		bg:yellow3 c:yellow8
 
 	button
 		d:grid gaf:column ja:center gap:2
 		py:1 px:3 fw:400 min-width:6 min-height:8
-		bw:1 bc:gray4 radius:2
+		bw:1 bc:gray4 rd:2
 		fs:md/1.2
 		c:gray8 @hover:gray9
 		bg:gray1 @hover:gray2 @active:gray3
@@ -84,12 +89,12 @@ global css
 	.chip
 		px:2 py:1 fs:sm
 
-	.pill radius:2 bg:teal2 fs:xs c:teal7 py:1 px:2
+	.pill rd:2 bg:teal2 fs:xs c:teal7 py:1 px:2
 
 	.rect
 		cursor:pointer
 		fs:sm c:black/70
-		d:flex jc:center ai:center radius:sm min-width:8 min-height:8
+		d:flex jc:center ai:center rd:sm min-width:8 min-height:8
 		bg:purple3/60 @hover:purple3/90
 
 	.tags
