@@ -209,7 +209,9 @@ class Worker
 				# console.log 'responding',Date.now! - t0
 				resolve(resp)
 			else
-				resolve(null)
+				let resp = new Response("Resource not found",status: 404,headers: {'Content-Type': 'text/html;charset=utf-8'})
+				resolve(resp)
+
 		return e.respondWith(responder)
 
 const worker = new Worker
