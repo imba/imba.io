@@ -502,7 +502,7 @@ tag App
 imba.mount <App>
 ```
 
-## Touch handling [linked]
+## Touch Event [linked]
 
 To make it easier and more fun to work with touches, Imba includes a custom `touch` event that combines `pointerdown` -> `pointermove` -> `pointerup/pointercancel` in one convenient handler, with modifiers for commonly needed functionality.
 
@@ -846,6 +846,78 @@ tag app-paint
 
 imba.mount <app-paint>
 ```
+
+## Intersection Event [linked]
+
+[IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) is a [well-supported](https://caniuse.com/#feat=intersectionobserver) API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document's viewport. Imba adds a simplified abstraction on top of this via the custom `intersection` event.
+
+| Properties  |  |
+| --- | --- |
+| `event.entry` | Returns the [IntersectionObserverEntry](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry) |
+| `event.ratio` | Returns the ratio of the intersectionRect to the boundingClientRect |
+| `event.delta` | Difference in ratio since previous event |
+
+### Examples
+
+```imba
+# [preview=xl]
+css body p:6
+css .grid d:grid g:3
+css .box d:grid gap:4 p:4 radius:2 bw:1 bc:black/5
+css .field p:1 px:2 radius:2 bw:1 bc:gray4 c:gray8
+css .box bg:white .teal:teal3 .blue:blue3
+
+# ---
+import {genres} from 'imdb'
+
+tag Genre
+	ratio = 0
+
+	def intersected e
+		ratio = e.ratio
+
+	<self[o:{ratio}] @intersect(10)=intersected> <slot>
+
+imba.mount do
+	<div.box> for genre in genres
+		<Genre[p:4 bg:blue2 h:120px]> genre
+```
+
+##### intersect(n)
+```imba
+# n 0-1 adds single threshold at n visibility
+<div @intersect(0)=handler> # On 0%
+<div @intersect(0.5)=handler> # On 50%
+<div @intersect(1)=handler> # On 100%
+
+# n > 1 will add n thresholds - spread evenly
+<div @intersect(2)=handler> # Trigger [0%,100%]
+<div @intersect(3)=handler> # Trigger [0%,50%,100%]
+<div @intersect(5)=handler> # Trigger [0%,25%,50%,75%,100%]
+# ... and so forth
+```
+
+##### intersect.in
+```imba
+# Will only trigger when intersection ratio increases
+<div @intersect.in=handler>
+# Will only trigger when element is more than 50% visible
+<div @intersect(0.5).in=handler>
+```
+> The `in` modifier tells the intersection event to only trigger whenever the visibility has *increased*.
+
+##### intersect.out
+```imba
+# Will only trigger when element starts intersecting
+<div @intersect.out=handler>
+# Will trigger whenever any part of the div is hidden
+<div @intersect(1).out=handler>
+```
+> The `in` modifier tells the intersection event to only trigger whenever the visibility has *decreased*.
+
+## Resize Event [wip]
+
+## Selection Event [wip]
 
 # Event Modifiers
 
