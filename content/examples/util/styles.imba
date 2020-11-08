@@ -94,6 +94,7 @@ global css
 	.rect
 		cursor:pointer
 		fs:sm c:black/70
+		touch-action:none
 		d:flex jc:center ai:center rd:sm min-width:8 min-height:8
 		bg:purple3/60 @hover:purple3/90
 

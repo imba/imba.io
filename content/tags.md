@@ -539,6 +539,7 @@ You can add arbitrary properties to the touch object if you need to keep track o
 # [preview=lg]
 import 'util/styles'
 css .rect pos:absolute inset:0
+
 # ---
 tag Example
 	css bg:gray2 @touch:gray3 @move:green3
@@ -633,17 +634,18 @@ A convenient touch modifier that takes care of updating the x,y values of some d
 
 ##### sync ( data )
 
+Sync will update the x and y properties of whatever object you decide to supply as an argument.
 
 ```imba
 # [preview=md]
 import 'util/styles'
-
+css .rect pos:absolute inset:0
 # ---
 tag Draggable
-	prop pos = {x:0,y:0}
-	<self[w:80px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)>
+	pos = {x:0,y:0}
+	<self[w:80px x:{pos.x} y:{pos.y}] @touch.sync(pos)>
 # ---
-imba.mount do <Draggable>
+imba.mount do <Draggable.rect>
 ```
 
 ```imba
@@ -657,7 +659,7 @@ imba.mount do <>
 	<div[w:60px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)> 'drag'
 	<div[w:60px x:{pos.y} y:{pos.x}].rect> 'flipped'
 ```
-Sync will update the x and y properties of whatever object you decide to supply as an argument.
+
 
 ##### sync ( data, alias-x, alias-y )
 ```imba
