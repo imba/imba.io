@@ -685,11 +685,10 @@ imba.mount do <fieldset>
 #### emit-_name_ ( detail = {} ) [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
-# Shorthand for emitting events
 imba.mount do
 	<div.group @select=console.log(e.type,e.detail)>
 		<button @click.emit-select> 'emit'
@@ -699,7 +698,7 @@ imba.mount do
 #### flag-_name_ ( target ) [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -717,7 +716,7 @@ imba.mount do
 #### self [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 # ---
 # only trigger handler if event.target is the element itself
@@ -730,7 +729,7 @@ imba.mount do
 #### sel ( selector ) [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -744,7 +743,7 @@ imba.mount do <div.group>
 #### if ( expr ) [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 # ---
 let age = 20
@@ -758,7 +757,7 @@ imba.mount do <div.group>
 #### keys [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -783,7 +782,7 @@ System modifier keys are different from regular keys and when used with @keyup e
 #### ctrl [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -799,7 +798,7 @@ imba.mount do <div.group>
 #### alt [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -811,7 +810,7 @@ imba.mount do
 #### shift [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -823,7 +822,7 @@ imba.mount do
 #### meta [event-modifier] [snippet]
 
 ```imba
-# ~preview
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -840,7 +839,7 @@ Modifiers available for all pointer events – pointerover, pointerenter, pointe
 #### mouse [event-modifier] [pointer-modifier] [snippet]
 
 ```imba
-# ~preview=small
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -851,7 +850,7 @@ imba.mount do
 #### pen [event-modifier] [pointer-modifier] [snippet]
 
 ```imba
-# ~preview=small
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -862,7 +861,7 @@ imba.mount do
 #### touch [event-modifier] [pointer-modifier] [snippet]
 
 ```imba
-# ~preview=small
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -873,7 +872,7 @@ imba.mount do
 #### pressure ( threshold = 0.5 ) [event-modifier] [pointer-modifier] [snippet]
 
 ```imba
-# ~preview=small
+# [preview=sm]
 import 'util/styles'
 
 # ---
@@ -888,7 +887,7 @@ The following modifiers are available for the special `touch` event. More in dep
 #### moved ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
 
 ```imba
-# ~preview=lg
+# [preview=lg]
 import 'util/styles'
 css .rect pos:absolute inset:4
 # ---
@@ -905,7 +904,7 @@ Will break the chain until the touch has moved more than `threshold`. The elemen
 #### moved-_direction_ ( threshold = 4px ) [event-modifier] [touch-modifier] [snippet]
 
 ```imba
-# ~preview=lg
+# [preview=lg]
 import 'util/styles'
 css .rect pos:absolute inset:4
 # ---
@@ -921,7 +920,7 @@ Direction can be `up`, `down`, `left`, `right`, `x`, and `y`
 #### sync ( data, xname = 'x', yname = 'y' ) [event-modifier] [touch-modifier] [snippet]
 
 ```imba
-# ~preview=lg
+# [preview=lg]
 import 'util/styles'
 
 # ---

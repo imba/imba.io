@@ -366,7 +366,7 @@ tag app-code-block < app-code
 							<div.item @click=openInEditor> 'open'
 					if file
 						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
-				if options.preview or (name == 'main.imba') or name.match(/^example/)
+				if options.preview or (name == 'main.imba')
 					<app-repl-preview$preview file=files[0] dir=dir mode=options.preview>
 
 tag app-code-inline < app-code

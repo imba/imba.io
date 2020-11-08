@@ -154,6 +154,10 @@ tag doc-section
 		&.event-modifier
 			c:blue7 bdb:2px solid currentColor
 			.title prefix: "@event." c:blue7 
+		&.pointer-modifier
+			.title prefix: "@pointerevent."
+		&.touch-modifier
+			.title prefix: "@touch."
 
 		.tab mr:3 fw:500 td:none @hover:none
 			outline@focus:none
