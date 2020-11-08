@@ -65,6 +65,9 @@ tag log-tag
 
 tag repl-console-item
 
+	ts = Date.now!
+	repeats = 0
+
 	css d:block c:gray6 fw:500
 		transition: all 250ms cubic-out
 
@@ -88,13 +91,22 @@ tag repl-console-item
 			content@after:' }'
 			.key + .value content@before: ': '
 			.pair + .pair content@before: ', '
+		
+		&[data-count] @before
+			content: attr(data-count)
+			d:inline-block
+			bg:blue6 c:white rd:full ta:center w:5 fs:xs/1.2 mr:1
+			pos:relative t:-1px
+		&[data-count=1] @before d:none
+
 
 	prop duration
 
 	def render
-		<self.item> <.body>
-			for item in data
-				<span.arg> any(item,context,1)
+		<self.item>
+			<.body data-count=String(repeats + 1)>
+				for item in data
+					<span.arg> any(item,context,1)
 
 	def show
 		let h = offsetHeight
@@ -145,10 +157,27 @@ tag repl-console
 	def autoclear
 		$autoclear = yes
 
+	def checkDataEquality a,b
+		let i = 0
+		let len = Math.max(a.length,b.length)
+		while i < len
+			return false if a[i] != b[i]
+			i++
+		return true
+
 	def log ...params
 		clear! if $autoclear
 		# $body.appendChild <div.item> any(params,context,0)
-		let item = <repl-console-item.item context=context data=params>
+		let prev = #lastItem
+
+		if prev and (Date.now! - prev.ts) < 300 and checkDataEquality(prev.data,params)
+			console.log 'should just increment the previous item!'
+			prev.repeats++
+			prev.render!
+			return
+
+		let item = #lastItem = <repl-console-item.item context=context data=params repeats=0>
+
 		if isTransient
 			let stack = $transientItems ||= []
 			let count = $snackbars.children.length

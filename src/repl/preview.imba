@@ -247,7 +247,6 @@ tag app-repl-preview
 	set dir data
 		if $dir = data
 			let file = $dir.files[0]
-			# console.log 'start with file',file,$dir.replUrl
 			url = $dir.replUrl
 		self
 
@@ -257,7 +256,7 @@ tag app-repl-preview
 	def refresh
 		return unless url
 		$refreshed = yes
-		let src = `/repl{url}`
+		let src = `/repl{url}?123`
 		try
 			$iframe.src = src
 			return

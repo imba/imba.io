@@ -1083,7 +1083,7 @@ for value of iterable
 ### Iterating over a `String` [snippet] [preview=console]
 
 ```imba
-let iterable = 'foo'
+let iterable = 'imba'
 for value of iterable
     console.log value
 ```
@@ -1125,7 +1125,9 @@ def fn
 console.log fn(1,2,3) # => [2,4,6]
 ```
 
-### Iterating with `index`
+### Iterating with index parameter
+
+In Imba you can supply a second parameter to `for ... of`. This will be populated with the current iteration number (starting at 0), just like the second argument in `Array#map` and `Array#forEach`.
 
 ```imba
 let iterable = new Map([['a',1],['b',2],['c',3]])
@@ -1135,7 +1137,6 @@ for [key,value],idx of iterable
     console.log key,value,idx
 ```
 
-> In Imba you can supply a second parameter to `for ... of`. This will be populated with the current iteration number (starting at 0), just like the second argument in `Array#map` and `Array#forEach`.
 
 ### For-Own-Of
 
