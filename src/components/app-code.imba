@@ -222,7 +222,11 @@ tag app-code-block < app-code
 		&.has-hide >>> span.hide d:none
 		&.has-hl@hover >> span@not(.hl)@not(._style) opacity: 0.7
 
-	css code d:block ofx:auto ff:mono ws:pre p:3 4 p@md:5 6
+	css code
+		d:block ofx:auto ff:mono ws:pre p:3 4 p@md:5 6
+		&.ind1 >>> .t0 d:none
+		&.ind2 >>> .t1 d:none
+
 	# what should this style?
 	css label bg:gray7 rd:md pos:absolute d:flex ai:center p:1
 

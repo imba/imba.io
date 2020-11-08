@@ -112,6 +112,7 @@ export def highlight str,lang
 	let head = null
 	let foot = null
 	let ids = []
+	let indent = 0
 
 	for token,i in tokens
 		let next = tokens[i + 1]
@@ -168,17 +169,43 @@ export def highlight str,lang
 			parts.push("</b>")
 			continue
 
+		if typ == 'br'
+			indent = 0
+
 		if typ != 'white' and typ != 'line'
-			value = "<span class='{classify types} o{token.offset}'>{escape(value or '')}</span>"
+			value = "<span class='{classify types} o{token.offset}' data-rawtypes='{token.type}'>{escape(value or '')}</span>"
 			# value = "<span class='{types.join(' ')}' data-offset={token.offset}>{escape(value)}</span>"
+		elif typ == 'white'
+			let val = ""
+			let k = 0
+			let ind = 0
+			while value[k]
+				let chr = value[k++]
+				if chr == '\t'
+					ind++
+					val += "<span class='tab t{k - 1}'>{chr}</span>"
+				else
+					val += chr
+			
+			if ind
+				indent = ind
+
+			value = val
+			# value = "<span data-offset={token.offset}>{value}</span>"
+
 		# else
 		#	value = "<span data-offset={token.offset}>{value}</span>"
 
 		if typ == 'comment' and token.value == '# ---\n'
 			if !head
-				parts.unshift('<div class="code-head">')
+				let prev = tokens[i - 1]
+				let ind = indent
+				parts.unshift("<div class='code-head ind{ind}'>")
 				parts.push('</div>')
 				head = token
+				while ind > 0
+					flags["ind{ind--}"] = yes
+
 			elif !foot
 				parts.push('<div class="code-foot">')
 				foot = token
