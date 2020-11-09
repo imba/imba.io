@@ -103,10 +103,13 @@ tag app-repl
 			run!
 
 	def url-did-set url
+		let src = `/repl{url}?swid={sw.id}`
 		try
-			$iframe.contentWindow.location.replace(`/repl{url}`)
+			console.log 'did set url',url
+			$iframe.src = src
+			# $iframe.contentWindow.location.replace(src)
 		catch e
-			sw.load!.then do $iframe.src = `/repl{url}`
+			sw.load!.then do $iframe.src = src
 
 	def relayout
 		let h = $editor.offsetHeight

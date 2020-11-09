@@ -256,7 +256,7 @@ tag app-repl-preview
 	def refresh
 		return unless url
 		$refreshed = yes
-		let src = `/repl{url}?123`
+		let src = `/repl{url}?swid={sw.id}`
 		try
 			$iframe.src = src
 			return

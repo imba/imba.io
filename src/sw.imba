@@ -27,6 +27,7 @@ const indexTemplate = "
 </html>"
 
 const clientServiceMap = {}
+const clientIdMap = {}
 const services = {}
 global.services = services
 
@@ -145,7 +146,7 @@ class Worker
 
 	def oninstall e
 		log e
-		global.skipWaiting!
+		e.waitUntil global.skipWaiting!
 		return
 	
 	def onactivate e
@@ -157,9 +158,18 @@ class Worker
 		
 		let url = new URL(e.request.url)
 		let clientId = e.resultingClientId or e.clientId or e.targetClientId
+		let swId = url.searchParams.get('swid')
+
+		if url.pathname.indexOf('/repl/register') >= 0
+			log "register now!!!",e,url,swId
+			clientIdMap[swId] = clientId
+			let resp = new Response("Ok",status: 200,headers: {'Content-Type': 'text/html;charset=utf-8'})
+			e.respondWith(resp)
+			return
 	
 		if url.pathname.indexOf('/repl/') == -1
 			return
+
 
 		let path = url.pathname.replace(/^\/repl/,'') 
 		let name = path.split('/').pop!
@@ -174,9 +184,22 @@ class Worker
 
 			#  find closest visible top-level window
 			unless service
+				# Try to lookup via url?
+				# on safari we can use the format of the sw id to find a matching client
+				log 'service not found',clientId,swId,url,e
 				let clients = await global.clients.matchAll(includeUncontrolled: true)
-				let source = clients.find do $1.frameType == 'top-level' and $1.visibilityState == 'visible'
+				clients = clients.filter do $1.frameType == 'top-level'
+
+				let source = clients.find do $1.id == swId
+				
+				if clientId.match(/^\d+\-\d+$/)
+					log 'special safari lookup for worker'
+					source = clients.find do $1.id.split('-')[0] == clientId.split('-')[0]
+				source ||= clients.find do $1.frameType == 'top-level' and $1.visibilityState == 'visible'
 				source ||= clients.find do $1.frameType == 'top-level'
+
+				log 'clients',clients,source
+
 				service = clientServiceMap[clientId] = Service.forClient(source)
 
 			if name.match(/\.imba\.html/)
