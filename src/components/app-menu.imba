@@ -27,6 +27,7 @@ tag app-menu-item
 	# children's natural height is calculated
 	# and stored upon mount so that it can be animated to
 	# could height change after mount?
+
 	###
 	childrenHeightValue = 0
 	def mount
@@ -51,10 +52,10 @@ tag app-menu-item
 
 	css
 		.item c:gray6 fw:normal pos:relative d:block
+		.item.active fw:500 c:gray9
 		.item	.item-title
 			py:2px of:hidden text-overflow:ellipsis ws:nowrap
 			@hover c:gray9
-		item.active fw:500 c:gray9
 		.triangle c:gray5 pos:absolute t:calc(50% - 3px) l:-10px tween:transform 150ms ease-in-out
 		.active .triangle rotate:90deg
 		.children pl:15px of:hidden tween:height 200ms ease-out
