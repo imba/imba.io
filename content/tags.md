@@ -57,6 +57,12 @@ These interpolated classes can also be toggled by a condition:
 <div.item .theme-{user.theme}=app.loggedIn> "Hello"
 ```
 
+Classes are set and updated in an optimised way which means that updating the raw `el.className` or `el.classList` directly will yield unexpected results. When you want to add and remove classes directly from the elements outside of rendering trees you need to use `el.flags` which works just like [Element.classList](https://developer.mozilla.org/en-US/docs/Web/API/Element/classList).
+
+```imba
+# add example for el.flags here
+```
+
 ### Properties
 
 As you've already seen you can add properties to the elements just like you would in HTML. Beware that imba compiles to setting actual properties on the dom nodes instead of using setAttribute.
