@@ -197,23 +197,11 @@ export class DiagnosticsAdapter < Adapter
 		
 
 	def validate uri
-		var model = editor.getModel(uri)
-		var worker = await worker(uri)
-		var semantics = await worker.getSemanticTokens(uri)
+		let model = editor.getModel(uri)
+		let worker = await worker(uri)
+		let semantics = await worker.getSemanticTokens(uri)
+		console.log 'got semantic tokens',semantics
 		updateSemanticTokens(model,semantics)
-		var meta = await worker.getDiagnostics(uri)
+		let meta = await worker.getDiagnostics(uri)
 		# console.log "returned from worker?",meta,semantics
 		return updateDiagnostics(model,meta)
-
-		var decorations = []
-		var markers = []
-
-		model.imbaEntities = meta
-
-		for warn in meta.warnings
-			# var loc = locToRange(model, warn:loc)
-			decorations.push(warningToDecoration(model,warn))
-			markers.push(warningToMarker(model, warn))
-
-		editor.setModelMarkers(model,selector,markers)
-		return []

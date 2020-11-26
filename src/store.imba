@@ -18,9 +18,8 @@ const extToLanguage =
 	html: 'html'
 
 class Entry
-	
-	@commit prop dirty
-	@commit prop hasErrors
+	prop dirty @set imba.commit!
+	prop hasErrors @set imba.commit!
 
 	static def create data, parent
 		let typ = types[data.type] or Entry
@@ -325,7 +324,7 @@ root = new Root(raw)
 export const fs = root
 
 
-window.FS = fs
+global.FS = fs
 
 const hits = {}
 

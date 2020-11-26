@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --mode none",
-    "build": "webpack --colors --display-modules",
+    "build": "webpack --colors --display-modules --mode none",
     "build-netlify": "yarn run build && yarn run build build-content",
     "watch-content": "imba scripts/bundle-content.imba",
     "build-content": "RUN_ONCE=1 imba scripts/bundle-content.imba",
@@ -37,7 +37,7 @@
     "url": "git://github.com/somebee/imba.io.git"
   },
   "devDependencies": {
-    "webpack": "^4.43.0",
+    "webpack": "^5.6.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
   },
@@ -45,7 +45,9 @@
     "@types/node": "^13.11.1",
     "body-parser": "^1.19.0",
     "chokidar": "^3.3.1",
-    "imba": "^2.0.0-alpha.99",
+    "express": "^4.17.1",
+    "express-history-api-fallback": "^2.2.1",
+    "imba": "^2.0.0-alpha.100",
     "marked": "^0.7.0"
   }
 }

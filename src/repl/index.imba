@@ -39,9 +39,29 @@ tag app-divider
 
 tag app-repl
 	prop fs
-	@watch prop project
-	@watch prop currentFile
-	@watch prop url
+
+	prop project @set
+		if e.value
+			if (!currentFile or currentFile.parent != e.value)
+				currentFile = e.value.files[0]
+			run!
+	
+	prop currentFile @set
+		if monaco and e.value
+			monaco.setModel(e.value.model)
+
+		project = e.value.parent
+
+		if !project.childByName('index.html') and !project.childByName('app.imba')
+			run!
+
+	prop url @set
+		let src = `/repl{e.value}?swid={sw.id}`
+		try
+			console.log 'did set url',e.value
+			$iframe.src = src
+		catch e
+			sw.load!.then do $iframe.src = src
 
 	get monaco
 		return $monaco if !global.monaco or $monaco or !$editor

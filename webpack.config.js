@@ -2,7 +2,7 @@ var path = require('path');
 var fs = require('fs');
 
 var server = function(app, server) {
-	return;
+	// return;
 	var bodyParser = require('body-parser');    
     app.use(bodyParser.json());
 	app.post('/save', bodyParser.json(), function(req, res) {
@@ -47,7 +47,10 @@ module.exports = [{
 		},
 		compress: true,
 		port: 9000,
-		https: true
+		https: {
+			key: fs.readFileSync(path.resolve(__dirname, 'tmp/localhost-key.pem')),
+			cert: fs.readFileSync(path.resolve(__dirname, 'tmp/localhost.pem')),
+		}
 	},
 
 	output: {
@@ -80,7 +83,10 @@ module.exports = [{
 		}]
 	},
 	resolve: {
-		extensions: [".imba",".js",".json"]
+		extensions: [".imba",".js",".json"],
+		alias: {
+			imba: path.resolve(__dirname,'node_modules','imba')
+		}
 	},
 	output: {
 		path: path.resolve(__dirname, 'public'),

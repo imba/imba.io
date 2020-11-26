@@ -1,4 +1,5 @@
-const imbac = require 'imba/dist/compiler'
+
+import imbac from 'imba/dist/compiler.mjs'
 global.imbac = imbac
 
 const mimeTypeMap = {

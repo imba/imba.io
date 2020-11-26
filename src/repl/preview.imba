@@ -6,8 +6,7 @@ import {fs} from '../store'
 import './console'
 
 tag app-repl-preview
-	@watch prop url
-
+	prop url @set refresh! if $entered
 	prop w = 2000
 	prop scale = 1
 	prop size = 'auto-auto'

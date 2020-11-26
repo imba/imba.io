@@ -1,4 +1,4 @@
-var imbac = require 'imba/dist/compiler'
+import imbac from 'imba/dist/compiler.mjs'
 
 import {ImbaDocument} from 'imba/program'
 
