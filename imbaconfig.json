@@ -1,24 +1,26 @@
 {
 	"entries": {
 		"./src/index.imba": {
-			"outdir": "./public",
-			"file": "./public/index2.js",
+			"outdir": "./public/assets",
+			"loader": {".png": "dataurl",".svg": "file"},
+			"publicPath": "/assets",
 			"format": "esm"
 		},
 		"./src/sw.imba": {
-			"outdir": "./public",
+			"outdir": "./public/assets",
 			"platform": "worker",
 			"format": "esm"
 		},
 		"./src/repl/workers/imba/worker.imba": {
 			"platform": "worker",
 			"format": "iife",
-			"outfile": "./public/worker.imba2.js",
+			"outfile": "./public/assets/worker.imba.js",
 			"globalName": "WorkerEntry",
 			"banner": "define(()=>{",
 			"footer": "return WorkerEntry; })"
 		}
 	},
+	
 	"theme": {
 		"fonts": {
 			"mono": ["Source Code Pro", "Consolas", "Menlo", "Monaco", "Courier", "monospace"]

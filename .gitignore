@@ -1,18 +1,15 @@
 .DS_Store
 node_modules
 tmp
-test/perf
 npm-debug.log
+
 www/client.js
 www/sandbox.js
-docs/gists/
-# Local Netlify folder
-.netlify
-
 www/index.html
 www/dist
 
 public/index.js
 public/sw.js
+public/dist
 public/content.json.js
 public/worker.imba.js

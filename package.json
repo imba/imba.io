@@ -36,6 +36,29 @@
     "type": "git",
     "url": "git://github.com/somebee/imba.io.git"
   },
+  "imba":{
+    "publicPath": "/dist",
+    "client": {
+      "entries": ["./src/index.imba"],
+      "outdir": "./public/dist"
+    },
+    "entries": {
+      "./src/sw.imba": {
+        "outdir": "./public/dist",
+        "platform": "worker",
+        "format": "esm"
+      },
+      "./src/repl/workers/imba/worker.imba": {
+        "platform": "worker",
+        "format": "iife",
+        "outdir": "./public/dist",
+        "outbase": "./src",
+        "globalName": "WorkerEntry",
+        "banner": "define(()=>{",
+        "footer": "return WorkerEntry; })"
+      }
+    }
+  },
   "devDependencies": {
     "webpack": "^5.6.0",
     "webpack-cli": "^3.3.11",
@@ -48,6 +71,7 @@
     "express": "^4.17.1",
     "express-history-api-fallback": "^2.2.1",
     "imba": "^2.0.0-alpha.100",
-    "marked": "^0.7.0"
+    "marked": "^0.7.0",
+    "tippy.js": "^6.2.7"
   }
 }
