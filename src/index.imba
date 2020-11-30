@@ -75,7 +75,8 @@ tag app-root
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
 		# redirect home somehow?
 		if path == '/' or path == '/index.html'
-			doc = ls('/intro/overview')
+			doc = ls('/intro')
+			console.log(doc)
 		elif path.indexOf('/examples') != 0
 			doc = ls(path) or ls('/404')
 
