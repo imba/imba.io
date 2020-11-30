@@ -51,10 +51,10 @@ tag app-root
 
 	css .open-ide-button
 		bottom:0 right:0 m:5 border:gray2 py:3 px:4 rd:3
-		cursor:pointer bg:teal3/90 c:teal8 fw:bold border:teal4/20 bxs:md
-		tween:100ms cubic-out
+		cursor:pointer bg:teal6 c:white fw:bold border:teal8/20 bxs:md
+		tween:150ms ease-out
 		pos:fixed d:block @not-md:none
-		@hover y:-2px bxs:lg bg:teal3
+		@hover y:-2px bxs:lg bg:teal5
 		@after o:0.7 fs:xs content: " " $shortcut
 
 	css .header
@@ -64,7 +64,7 @@ tag app-root
 		zi:300 fs:15px 
 
 		.handle d:flex @md:none ai:center size:9 rd:2 bg:white o:0.9 c:teal5 fs:2xl
-		.tab l:flex mx:2 py:1 c:teal5 fw:500 bb:2px solid teal6/0
+		.tab l:flex mx:2 py:1 c:teal6 fw:500 bb:2px solid teal6/0
 			&.active c:teal7 bbc:teal6
 		
 
@@ -91,7 +91,7 @@ tag app-root
 
 		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show!>
 			<div.header>
-				<app-logo[d:flex h:8 c:teal4] route-to='/'>
+				<app-logo[d:flex h:8 c:teal6] route-to='/'>
 				<div[flex: 1]>
 				<div[d:flex cursor:pointer]>
 					<a.tab @click.emit('showide')> "Examples"
