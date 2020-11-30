@@ -38,8 +38,15 @@
   },
   "imba":{
     "publicPath": "/dist",
+    "serve": {
+      "contentBase": "./public",
+      "historyApiFallback": true
+		},
+    "manifest": {
+      "path": "./public/dist/manifest.json"
+    },
     "client": {
-      "entries": ["./src/index.imba"],
+      "entries": ["./src/index.imba","./src/apis/imdb.js"],
       "outdir": "./public/dist"
     },
     "entries": {

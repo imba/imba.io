@@ -130,7 +130,7 @@ tag doc-section
 
 	css .head pos:relative c:#3A4652 bc:gray3/75 d:block
 		&.l0 fs:30px/1.4 fw:500 pb:2
-		&.l1 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
+		&.l1 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3 bdb:4px solid currentColor
 		&.h2.l2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
 		&.l2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
 		&.l3 fs:18px/1.2 fw:500 pb:3 bwb:0px mb:3
