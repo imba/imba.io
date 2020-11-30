@@ -76,7 +76,6 @@ tag app-root
 		# redirect home somehow?
 		if path == '/' or path == '/index.html'
 			doc = ls('/intro')
-			console.log(doc)
 		elif path.indexOf('/examples') != 0
 			doc = ls(path) or ls('/404')
 
