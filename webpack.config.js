@@ -15,7 +15,7 @@ var server = function (app, server) {
 	});
 }
 
-module.exports = [{
+module.exports = env => [{
 	entry: {
 		index: "./src/index.imba"
 	},
@@ -32,7 +32,21 @@ module.exports = [{
 		rules: [{
 			test: /\.imba$/,
 			loader: 'imba/loader'
-		}]
+		},
+		{
+			test: /\.css$/i,
+			use: ["style-loader", "css-loader"]
+		},
+		{
+			test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+			use: [
+				{
+					loader: 'file-loader',
+					options: { name: '[name].[ext]', outputPath: 'fonts/' }
+				}
+			]
+		}
+		]
 	},
 
 	devServer: {
@@ -47,7 +61,7 @@ module.exports = [{
 		},
 		compress: true,
 		port: 9000,
-		https: true
+		https: env && env.disableHttps ? false : true
 	},
 
 	output: {
