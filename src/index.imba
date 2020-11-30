@@ -84,6 +84,7 @@ tag app-root
 		self
 
 	def render
+
 		if path != router.url.pathname
 			go(router.url.pathname)
 
@@ -100,7 +101,7 @@ tag app-root
 				<div.handle @click=($menu.focus!)> "☰"
 
 			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
-			<app-menu$menu data=doc>
+			<app-menu$menu>
 			<app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			<div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 			

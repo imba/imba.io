@@ -9,7 +9,8 @@ const triangleSVG =	`
 
 tag app-menu-item
 
-	levelCutoff = 40
+	prop data
+	prop levelCutoff = 40
 
 	get hasChildren?
 		# only children below level cutoff are shown as child sections in the menu
@@ -24,31 +25,6 @@ tag app-menu-item
 		# but I don't know how the imba router works 
 		$item.className.split(/\b/).includes('active')
 	
-	# children's natural height is calculated
-	# and stored upon mount so that it can be animated to
-	# could height change after mount?
-	###
-	childrenHeightValue = 0
-	def mount
-		if $children
-			const oldHeightStyle = $children.style.height
-			$children.style.height = 'auto'
-			childrenHeightValue = $children.offsetHeight
-			$children.style.height = oldHeightStyle
-	
-	get childrenHeight
-		if active?
-			if childrenHeightValue == null
-				'auto'
-			else
-				childrenHeightValue
-		else
-			0
-	
-	def handleExpandSection
-		childrenHeightValue = null
-	###
-
 	css
 		.item c:gray6 fw:normal pos:relative d:block
 		.item	.item-title
@@ -80,7 +56,6 @@ tag app-menu-item
 	
 tag app-menu-section
 
-	# css .content d:none
 	css a cursor:pointer
 	css .section.active + .content d:block
 
@@ -95,28 +70,9 @@ tag app-menu
 		@after content:' ' bg:linear-gradient(white/0,white/100) l:vflex abs w:90% h:80px bottom:0
 
 	def render
-		# console.log 'app-menu for data',data
-		let root = data.root
-		let guides = ls('/guides')
-		let ref = ls('/reference')
-		let main = data.path.indexOf('essentials') >= 0 ? ls('/essentials') : ls('/manual')
 		<self tabIndex=-1>
 			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 flex:1]>
-				# for item in docs.children
 				<app-menu-section[c:pink6] data=ls('/intro')>
 				<app-menu-section[c:blue6] data=ls('/language')>
 				<app-menu-section[c:purple6] data=ls('/tags')>
 				<app-menu-section[c:indigo6] data=ls('/styling')>
-				# <app-menu-section data=main>
-				# <app-menu-section data=ls('/tags')>
-				# <app-menu-section data=ls('/styling')>
-				# <app-menu-section data=guides>
-				# <app-menu-section data=ref>
-				# <app-menu-section data=ls('/reference')>
-				# <app-menu-section data=ls('/tags')>
-				# <app-menu-section data=ls('/views')>
-				# <app-menu-section data=ls('/events')>
-				# <app-menu-section data=ls('/styling')>
-				# <app-menu-section data=guides>
-				# for child in guides.children
-				#	<app-menu-section data=child>
