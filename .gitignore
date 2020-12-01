@@ -2,6 +2,7 @@
 node_modules
 tmp
 npm-debug.log
+build
 
 www/client.js
 www/sandbox.js
