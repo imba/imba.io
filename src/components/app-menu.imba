@@ -25,12 +25,38 @@ tag app-menu-item
 		# but I don't know how the imba router works 
 		$item.className.split(/\b/).includes('active')
 	
+	# children's natural height is calculated
+	# and stored upon mount so that it can be animated to
+	# could height change after mount?
+
+	###
+	childrenHeightValue = 0
+	def mount
+		if $children
+			const oldHeightStyle = $children.style.height
+			$children.style.height = 'auto'
+			childrenHeightValue = $children.offsetHeight
+			$children.style.height = oldHeightStyle
+	
+	get childrenHeight
+		if active?
+			if childrenHeightValue == null
+				'auto'
+			else
+				childrenHeightValue
+		else
+			0
+	
+	def handleExpandSection
+		childrenHeightValue = null
+	###
+
 	css
 		.item c:gray6 fw:normal pos:relative d:block
+		.item.active fw:500 c:gray9
 		.item	.item-title
 			py:2px of:hidden text-overflow:ellipsis ws:nowrap
 			@hover c:gray9
-		item.active fw:500 c:gray9
 		.triangle c:gray5 pos:absolute t:calc(50% - 3px) l:-10px tween:transform 150ms ease-in-out
 		.active .triangle rotate:90deg
 		.children pl:15px of:hidden tween:height 200ms ease-out
