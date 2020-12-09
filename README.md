@@ -31,7 +31,7 @@ Now visit https://localhost:9000/ in that browser.
 
 ## Having trouble with https?
 
-https is required to be able to run the examples and snippets. You can still run the rest of the site and work on documentation without this. So, if you're having trouble setting up https simply change `https: true` to `https: false` in webpack.config.js
+https is required to be able to run the examples and snippets. You can still run the rest of the site and work on documentation without this. So, if you're having trouble setting up https use the `npm start-without-https` command instead of the normal `npm start`, this will disable https while you work.
 
 
 ## Looking for projects using Imba?

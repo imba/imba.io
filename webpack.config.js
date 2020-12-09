@@ -1,30 +1,30 @@
 var path = require('path');
 var fs = require('fs');
 
-var server = function(app, server) {
+var server = function (app, server) {
 	return;
-	var bodyParser = require('body-parser');    
-    app.use(bodyParser.json());
-	app.post('/save', bodyParser.json(), function(req, res) {
+	var bodyParser = require('body-parser');
+	app.use(bodyParser.json());
+	app.post('/save', bodyParser.json(), function (req, res) {
 		let payload = req.body;
-		console.log('returned from post save',req.body);
-		if(payload.path && payload.body){
-			fs.writeFileSync(payload.path,payload.body);
+		console.log('returned from post save', req.body);
+		if (payload.path && payload.body) {
+			fs.writeFileSync(payload.path, payload.body);
 		}
 		res.json({ custom: 'response' });
 	});
 }
 
-module.exports = [{
+module.exports = env => [{
 	entry: {
 		index: "./src/index.imba"
 	},
 	plugins: [
 	],
 	resolve: {
-		extensions: [".imba",".mjs",".js",".json"],
+		extensions: [".imba", ".mjs", ".js", ".json"],
 		alias: {
-			imba: path.resolve(__dirname,'node_modules','imba')
+			imba: path.resolve(__dirname, 'node_modules', 'imba')
 		}
 	},
 
@@ -32,7 +32,21 @@ module.exports = [{
 		rules: [{
 			test: /\.imba$/,
 			loader: 'imba/loader'
-		}]
+		},
+		{
+			test: /\.css$/i,
+			use: ["style-loader", "css-loader"]
+		},
+		{
+			test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+			use: [
+				{
+					loader: 'file-loader',
+					options: { name: '[name].[ext]', outputPath: 'fonts/' }
+				}
+			]
+		}
+		]
 	},
 
 	devServer: {
@@ -47,14 +61,14 @@ module.exports = [{
 		},
 		compress: true,
 		port: 9000,
-		https: true
+		https: env && env.disableHttps ? false : true
 	},
 
 	output: {
 		path: path.resolve(__dirname, 'public'),
 		filename: '[name].js'
 	}
-},{
+}, {
 	entry: "./src/sw.imba",
 	target: 'webworker',
 	module: {
@@ -64,13 +78,13 @@ module.exports = [{
 		}]
 	},
 	resolve: {
-		extensions: [".imba",".js",".json"]
+		extensions: [".imba", ".js", ".json"]
 	},
 	output: {
 		path: path.resolve(__dirname, 'public'),
 		filename: 'sw.js'
 	}
-},{
+}, {
 	entry: "./src/repl/workers/imba/worker.imba",
 	target: 'webworker',
 	module: {
@@ -80,7 +94,7 @@ module.exports = [{
 		}]
 	},
 	resolve: {
-		extensions: [".imba",".js",".json"]
+		extensions: [".imba", ".js", ".json"]
 	},
 	output: {
 		path: path.resolve(__dirname, 'public'),

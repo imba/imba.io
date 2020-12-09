@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --mode none",
+    "start-without-https": "webpack-dev-server --mode none --env.disableHttps=true",
     "build": "webpack --colors --display-modules",
     "build-netlify": "yarn run build && yarn run build build-content",
     "watch-content": "imba scripts/bundle-content.imba",
