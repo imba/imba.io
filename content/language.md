@@ -532,15 +532,13 @@ Also, identifiers `$0`, `$1`, `$2` and so forth are not valid variables names â€
 
 ### Declaring variables
 
-Variables are declared using `let` and `const` keywords. `let` variables can be changed through reassignment, while `const` variables are readonly after the initial declaration.
+Variables are declared using `let` and `const` keywords. `let` variables can be changed through reassignment, while `const` variables are readonly after the initial declaration. Unlike javascript multiple declarations per line is not allowed.
 
 ```imba
 # readonly constant
 const one = 123
 # single declaration
 let a = 123
-# multiple declarations
-let b = 10, c = 20, d = 30
 # array destructuring
 let [e,f,...rest] = [1,2,3,4,5]
 # object destructuring
@@ -1512,11 +1510,20 @@ else
 
 ## Error Handling [wip]
 
+Error handling is done with try .. catch. Adding a try without a catch block will silently swallow the error.
+
 ```imba app.imba
 def run
     # adding a try without a catch block will silently swallow an error
     let test = try Math.rendom!
     return test
+
+def parse input
+    try
+        return JSON.parse input
+    catch e
+        console.error "Invalid json passed to parser: ", e.message
+
 ```
 
 # Classes
