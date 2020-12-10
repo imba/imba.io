@@ -1630,6 +1630,14 @@ You can define setters which are to be called whenever there is an attempt to se
 
 ## Lazy Getters [wip]
 
+Any getter is bound only when first accessed. A lazy getter will in addition only determine its value the first time it is accessed and from then on return the initial value which can be memoized. This is done with a falsy assignment `||=`.
+
+```imba
+class Component
+    get ref
+        #ref ||= utils.uuid! # The symbol #ref is only set the first time Component.ref is accessed
+```
+
 ## Computed Names
 
 You can define methods, getters and setters with computed names using `[]`.
