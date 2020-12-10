@@ -450,29 +450,49 @@ One of the most unique features of Imba is that DOM elements are true first-clas
 let myElement = <div.foo title="Greetings"> "Hello World"
 ```
 
-## Identifiers [wip]
+## Identifiers
 
-### Names vs Identifiers
+### Names vs Identifiers [wip]
 
 When we talk about identifiers, or sometimes "lone identifiers" we mean identifiers that...
 
 ### Basic Identifiers
 
-The convention in Imba is actually to use...
+In imba, identifiers are case-sensitive and can contain Unicode letters, $, _, -, and digits (0-9), but may not start with a digit. An identifier can end with `?` to make it a predicate identifier.
+
+$0 .. $n are reserved identifiers used as shorthands for function arguments with $0 refering to the set of arguments.
 
 ### Kebab-case Identifiers
 
-Like css and html, dashes inside identifiers are perfectly valid in Imba. Variables and properties can also end with a `?`
+Like css and html, dashes inside identifiers are perfectly valid in Imba and is often prefered for readability and that it allows to easily skip to each segment of the idenfifier. They are compiled to the equivalent camelCase version. 
 
-### PascalCased Identifiers
+
+> A result of this is that you always need spaces around subtraction operators.
+
+> A caveat when refering to object keys you need to access the variable with bracket notation instead of dot notation.
+
+### PascalCased Identifiers [wip]
 
 Identifiers starting with an uppercase letter is treated somewhat differently than other identiers...
 
-### Predicate Identifiers [wip]
+### Predicate Identifiers
+Imba also allows `?` at the end of identifiers for methods, properties, and variables. These are predicate identifiers  and should represent a boolean value. They are used to represent a checkable state and provides improved readability over other approaches like predicate prefixes like `isEmpty`.
 
-### Symbol Identifiers
+```imba
+tag sized-list
+    prop items = []
+    prop size = 10
 
-Symbol identifiers start with one or more `#` in the beginning of the identifier. So `#name` is a type of identifier representing a symbol. Symbol identifiers are not allowed as variable names, and are always scoped to the closest strong scope.
+    get empty? do
+        items.length > 0
+
+```
+
+> Behind the scenes, a `dirty?` property will compile to `isDirty` in JavaScript.
+
+### Symbol Identifiers [wip]
+
+[Symbols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) are values that programs can create and use as property keys without risking name collisions. In Imba symbol identifiers start with one or more `#` in the beginning of the identifier. So `#name` is a type of identifier representing a symbol. Symbol identifiers are not allowed as variable names, and are always scoped to the closest strong scope.
 
 ```imba
 const obj = {name: 'Jane', #clearance: 'high'}
