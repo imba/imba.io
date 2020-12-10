@@ -1530,20 +1530,29 @@ load("/some/url").then do(data)
 
 > async/await is already supported in every major browser. If you are targeting IE11 users you need to babelify the compiled code.
 
+## Error Handling
+
+For error handling you can throw exceptions using the `throw` statement and handle them using the `try` and `catch` statements. Adding a `try` without a `catch` block will silently swallow the error.
 
 ```imba app.imba
 def run
     # adding a try without a catch block will silently swallow an error
-    let test = try Math.rendom!
-    return test
+    let test = try Math.rEndom!
+    return test # returns undefined as Math.rEndom! is not a function
+console.log run!
+```
+> undefined
 
+```imba parse.imba
 def parse input
     try
         return JSON.parse input
     catch e
         console.error "Invalid json passed to parser: ", e.message
 
+parse('<invalid json, error here we come!>')
 ```
+> Invalid json passed to parser:  Unexpected token < in JSON at position 0
 
 # Classes
 
