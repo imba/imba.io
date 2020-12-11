@@ -267,6 +267,28 @@ If you create an element without a node name it will always be created as a `div
 
 Fragments allow grouping elements together in a parent tag, without actually adding the parent tag to the DOM. Fragments can be created using empty tag literals `<>`.
 
+
+```imba fragment.imba
+tag app-dialog
+	def render
+		<self>
+			<header> "Dialog header"
+			<.body> body!
+
+
+	def  body
+		<> # Returns all elements without any wrapping element
+			<h3> "Body text"
+			<p> "With some adjecent content"
+
+	# Because imba returns the last statement this function would only return the <p> element
+	def bad-body
+		<h3> "Body text"
+		<p> "With some adjecent content"
+
+```
+
+The construct
 # Custom Components
 
 ## Defining Components
