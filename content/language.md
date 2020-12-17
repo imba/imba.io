@@ -450,29 +450,49 @@ One of the most unique features of Imba is that DOM elements are true first-clas
 let myElement = <div.foo title="Greetings"> "Hello World"
 ```
 
-## Identifiers [wip]
+## Identifiers
 
-### Names vs Identifiers
+### Names vs Identifiers [wip]
 
 When we talk about identifiers, or sometimes "lone identifiers" we mean identifiers that...
 
 ### Basic Identifiers
 
-The convention in Imba is actually to use...
+In imba, identifiers are case-sensitive and can contain Unicode letters, $, _, -, and digits (0-9), but may not start with a digit. An identifier can end with `?` to make it a predicate identifier.
+
+$0 .. $n are reserved identifiers used as shorthands for function arguments with $0 refering to the set of arguments.
 
 ### Kebab-case Identifiers
 
-Like css and html, dashes inside identifiers are perfectly valid in Imba. Variables and properties can also end with a `?`
+Like css and html, dashes inside identifiers are perfectly valid in Imba and is often prefered for readability and that it allows to easily skip to each segment of the idenfifier. They are compiled to the equivalent camelCase version. 
 
-### PascalCased Identifiers
+
+> A result of this is that you always need spaces around subtraction operators.
+
+> A caveat when refering to object keys you need to access the variable with bracket notation instead of dot notation.
+
+### PascalCased Identifiers [wip]
 
 Identifiers starting with an uppercase letter is treated somewhat differently than other identiers...
 
-### Predicate Identifiers [wip]
+### Predicate Identifiers
+Imba also allows `?` at the end of identifiers for methods, properties, and variables. These are predicate identifiers  and should represent a boolean value. They are used to represent a checkable state and provides improved readability over other approaches like predicate prefixes like `isEmpty`.
 
-### Symbol Identifiers
+```imba
+tag sized-list
+    prop items = []
+    prop size = 10
 
-Symbol identifiers start with one or more `#` in the beginning of the identifier. So `#name` is a type of identifier representing a symbol. Symbol identifiers are not allowed as variable names, and are always scoped to the closest strong scope.
+    get empty? do
+        items.length > 0
+
+```
+
+> Behind the scenes, a `dirty?` property will compile to `isDirty` in JavaScript.
+
+### Symbol Identifiers [wip]
+
+[Symbols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) are values that programs can create and use as property keys without risking name collisions. In Imba symbol identifiers start with one or more `#` in the beginning of the identifier. So `#name` is a type of identifier representing a symbol. Symbol identifiers are not allowed as variable names, and are always scoped to the closest strong scope.
 
 ```imba
 const obj = {name: 'Jane', #clearance: 'high'}
@@ -512,15 +532,13 @@ Also, identifiers `$0`, `$1`, `$2` and so forth are not valid variables names â€
 
 ### Declaring variables
 
-Variables are declared using `let` and `const` keywords. `let` variables can be changed through reassignment, while `const` variables are readonly after the initial declaration.
+Variables are declared using `let` and `const` keywords. `let` variables can be changed through reassignment, while `const` variables are readonly after the initial declaration. Unlike javascript multiple declarations per line is not allowed.
 
 ```imba
 # readonly constant
 const one = 123
 # single declaration
 let a = 123
-# multiple declarations
-let b = 10, c = 20, d = 30
 # array destructuring
 let [e,f,...rest] = [1,2,3,4,5]
 # object destructuring
@@ -1488,16 +1506,53 @@ else
     throw 'nope'
 ```
 
-## Await [wip]
+## Await
 
-## Error Handling [wip]
+Imba supports the `await` keyword, which compiles directly to async/await in JavaScript. The only difference is that you do not need to mark your functions as async. Any function that contains an await will automatically be compiled to an async function.
+
+```imba await.imba
+def load url
+    var res = await window.fetch url
+    return res.json
+
+var data = await load "/some/url"
+```
+
+#### Without await using promises
+```imba
+def load url
+    window.fetch(url).then do(res)
+        return res.json
+
+load("/some/url").then do(data)
+    # do something with data
+```
+
+> async/await is already supported in every major browser. If you are targeting IE11 users you need to babelify the compiled code.
+
+## Error Handling
+
+For error handling you can throw exceptions using the `throw` statement and handle them using the `try` and `catch` statements. Adding a `try` without a `catch` block will silently swallow the error.
 
 ```imba app.imba
 def run
     # adding a try without a catch block will silently swallow an error
-    let test = try Math.rendom!
-    return test
+    let test = try Math.rEndom!
+    return test # returns undefined as Math.rEndom! is not a function
+console.log run!
 ```
+> undefined
+
+```imba parse.imba
+def parse input
+    try
+        return JSON.parse input
+    catch e
+        console.error "Invalid json passed to parser: ", e.message
+
+parse('<invalid json, error here we come!>')
+```
+> Invalid json passed to parser:  Unexpected token < in JSON at position 0
 
 # Classes
 
@@ -1602,6 +1657,14 @@ class Rect
 You can define setters which are to be called whenever there is an attempt to set that property.
 
 ## Lazy Getters [wip]
+
+Any getter is bound only when first accessed. A lazy getter will in addition only determine its value the first time it is accessed and from then on return the initial value which can be memoized. This is done with a falsy assignment `||=`.
+
+```imba
+class Component
+    get ref
+        #ref ||= utils.uuid! # The symbol #ref is only set the first time Component.ref is accessed
+```
 
 ## Computed Names
 

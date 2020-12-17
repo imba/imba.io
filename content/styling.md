@@ -375,6 +375,20 @@ css button
 ## Class Modifiers [wip]
 
 ## Breakpoints [wip]
+Imba comes with some default breakpoints that can be used as modifiers like this:
+
+```imba
+css button font-size:8px @xs:10px @sm:11px @md:12px @lg:13px @2xl:14px
+```
+
+The default breakpoints are:
+
+| @modifier | size |
+| @xs | 480px |
+| @sm | 640px |
+| @md | 768px |
+| @lg | 1024px |
+| @xl | 1280px |
 
 ## Custom Modifiers [wip]
 
