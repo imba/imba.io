@@ -145,7 +145,20 @@ imba.mount do <div[pos:absolute inset:0 d:flex ja:center]>
 	<div#header> <a> "fading"
 ```
 
-## Custom Units [wip]
+## Custom Units
+You can define your own unit that can be used for styling and calculations. The unit can have modifiers like break points and you can use the units in the same way as other css units. The syntax to define a custom unit is `<measure><name>: <value>` e.g. `1col: calc(100vw / 12)`.
+
+```imba custom-unit.imba
+global css @root
+    1pad: 25px
+    1col: calc(100vw / 12)
+
+tag app-dialog
+    css 
+        width: 12col @md: 6col lg: 3col # span 12 columns by default, 6 colums at >768px viewports and 3 columns on >1280px viewports.
+        p: 1pad
+```
+
 
 # Styling Components [preview=lg]
 
