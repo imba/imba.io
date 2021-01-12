@@ -17,5 +17,6 @@ jobs:
         script: |
           git -C /home/imba/imba.io stash
           git -C /home/imba/imba.io pull origin master
-          /usr/bin/yarn --cwd /home/imba/imba.io install
-          sudo systemctl restart imba.io
+          cd /home/imba/imba.io && npm install
+          cd /home/imba/imba.io && npm run build-content
+          cd /home/imba/imba.io && npm run build
