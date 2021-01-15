@@ -189,7 +189,7 @@ global css .code
 		content: " "
 		pos:absolute d:block
 		size:16px
-		bg: url('/images/arrow.svg')
+		bg: url(../assets/arrow.svg)
 		background-size: contain
 		bottom:100% right:50% mr:-2px mb:-2px
 
