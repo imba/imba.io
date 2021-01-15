@@ -20,7 +20,7 @@ app.get(/\.*/) do(req,res)
 	# console.log 'handling',req.url,req.accepts(['image/*', 'html'])
 	# only render the html for requests that prefer an html response
 	unless req.accepts(['image/*', 'html']) == 'html'
-		return res.send(404)
+		return res.sendStatus(404)
 
 	res.send String <html>
 		<head>
