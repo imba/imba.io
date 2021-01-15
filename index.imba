@@ -58,27 +58,27 @@ app.get(/\.*/) do(req,res)
 
 			# <!-- <link rel="manifest" href="/manifest.json"> -->
 			<meta name="msapplication-TileColor" content="#ffffff">
-			<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+			<meta name="msapplication-TileImage" content="/images/ms-icon-144x144.png">
 			<meta name="theme-color" content="#ffffff">
 
 
 			# <!-- Google / Search Engine Tags -->
 			<meta itemprop="name" content="Imba - The friendly full-stack language">
 			<meta itemprop="description" content="Imba is a programming language for building web applications with insane performance. You can use it both for the server and client.">
-			<meta itemprop="image" content="https://v2.imba.io/images/social-card-preview.jpg">
+			<meta itemprop="image" content="/images/social-card-preview.jpg">
 
 			# <!-- Facebook Meta Tags -->
-			<meta property="og:url" content="https://v2.imba.io">
+			<meta property="og:url" content="https://imba.io">
 			<meta property="og:type" content="website">
 			<meta property="og:title" content="Imba - The friendly full-stack language">
 			<meta property="og:description" content="Imba is a programming language for building web applications with insane performance. You can use it both for the server and client.">
-			<meta property="og:image" content="https://v2.imba.io/images/social-card-preview.jpg">
+			<meta property="og:image" content="/images/social-card-preview.jpg">
 
 			# <!-- Twitter Meta Tags -->
 			<meta name="twitter:card" content="summary_large_image">
 			<meta name="twitter:title" content="Imba - The friendly full-stack language">
 			<meta name="twitter:description" content="Imba is a programming language for building web applications with insane performance. You can use it both for the server and client.">
-			<meta name="twitter:image" content="https://v2.imba.io/images/social-card-preview.jpg">
+			<meta name="twitter:image" content="/images/social-card-preview.jpg">
 
 		<body tabindex='-1'>
 			<script type="module" src="./src/index.imba">
