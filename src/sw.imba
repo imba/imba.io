@@ -1,10 +1,12 @@
 const imbac = require 'imba/compiler'
 global.imbac = imbac
 
+#  TODO - do the same live import for imdb and future libraryes
 const ResolveMap = {
-	'imba': '/imba.js'
+	'imba': import('./imba.imba?as=web,module').url
 	'imdb': '/imdb.js'
 }
+
 
 const mimeTypeMap = {
 	'html': 'text/html;charset=utf-8'
@@ -239,7 +241,7 @@ class Worker
 					body = "<script>window.ServiceSessionID = '{clientId}'; window.ImbaFiles = \{\}; {js}</script>" + body
 				elif ext == 'imba'
 					body = file.js or compileImba(file)
-					body = "import '/imba.js';\nImbaFiles['{file.path}']=1;\n" + body
+					body = "ImbaFiles['{file.path}']=1;\n" + body
 
 				let resp = new Response(body,status: status,headers: {'Content-Type': mime})
 				# console.log 'responding',Date.now! - t0

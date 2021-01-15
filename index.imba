@@ -8,11 +8,6 @@ app.get('/sw.js') do(req,res)
 	const asset = import('./src/sw.imba?as=webworker')
 	res.sendFile asset.absPath
 
-app.get('/imba.js') do(req,res)
-	# bundling a standalone full imba runtime to use in sw demos
-	const asset = import('./src/imba.imba?as=web,module')
-	res.sendFile asset.absPath
-
 app.use(express.static('public'))
 
 # catch-all should always render the index
