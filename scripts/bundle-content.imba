@@ -116,13 +116,5 @@ watcher.on('all') do
 
 watcher.on 'ready' do
 	save!
-	if process.env.RUN_ONCE
+	unless process.argv[2] == '-w'
 		process.exit(0)
-
-
-unless process.env.RUN_ONCE
-	chokidar.watch(imbasrc).on('change') do
-		let from = path.resolve(imbasrc,'imba.js')
-		let to =  path.resolve(dest,'imba.js')
-		console.log 'imba runtime changed?!?',from,to
-		fs.copyFileSync(from,to)

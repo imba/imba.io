@@ -8,11 +8,8 @@ www/sandbox.js
 docs/gists/
 # Local Netlify folder
 .netlify
-
+dist/
 www/index.html
 www/dist
 
-public/index.js
-public/sw.js
 public/content.json.js
-public/worker.imba.js

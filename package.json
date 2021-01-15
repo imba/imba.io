@@ -18,30 +18,23 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode none",
-    "start-without-https": "webpack-dev-server --mode none --env.disableHttps=true",
-    "build": "webpack --colors --display-modules",
-    "build-netlify": "yarn run build && yarn run build build-content",
-    "watch-content": "imba scripts/bundle-content.imba",
-    "build-content": "RUN_ONCE=1 imba scripts/bundle-content.imba",
+    "start": "imba -m index.imba",
+    "dev": "imba -w index.imba",
+    "build": "imba scripts/bundle-content.imba",
+    "watch": "imba scripts/bundle-content.imba -- -w",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",
     "docker-deploy": "docker push imba.io:`git log --pretty=format:'%h' HEAD -n1`",
-    "docker-run": "docker run -p3011:3011 -t -i imba.io:`git log --pretty=format:'%h' HEAD -n1`",
-    "lint": "imba src/data/guide.imba"
+    "docker-run": "docker run -p3011:3011 -t -i imba.io:`git log --pretty=format:'%h' HEAD -n1`"
   },
   "files": [],
   "directories": {},
-  "main": "./index.js",
+  "main": "./index.imba",
   "homepage": "http://imba.io",
   "repository": {
     "type": "git",
     "url": "git://github.com/somebee/imba.io.git"
   },
-  "devDependencies": {
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@types/node": "^13.11.1",
     "body-parser": "^1.19.0",
