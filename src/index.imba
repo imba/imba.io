@@ -5,9 +5,7 @@ import './assets/preflight.css'
 
 import './util/shortcuts'
 
-import './components/app-logo'
 import './components/app-document'
-import './components/app-header'
 import './components/app-menu'
 import './components/app-code'
 import './components/doc-widgets'
@@ -95,7 +93,8 @@ tag app-root
 
 		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show!>
 			<div.header>
-				<app-logo[d:flex h:8 c:teal6] route-to='/'>
+				<.logo[d:flex h:9 c:teal5] route-to='/'>
+					<svg[h:100%] src='./assets/logo.svg'>
 				<div[flex: 1]>
 				<div[d:flex cursor:pointer]>
 					<a.tab @click.emit('showide')> "Examples"
