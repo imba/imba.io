@@ -1,5 +1,10 @@
-const imbac = require 'imba/dist/compiler'
+const imbac = require 'imba/compiler'
 global.imbac = imbac
+
+const ResolveMap = {
+	'imba': '/imba.js'
+	'imdb': '/imdb.js'
+}
 
 const mimeTypeMap = {
 	'html': 'text/html;charset=utf-8'
@@ -22,7 +27,7 @@ const indexTemplate = "
     </head>
     <body>
 		<script type='module' src='/repl/examples/helpers.imba'></script>
-        <script type='module' src='index.imba'></script>
+        <script type='module' src='./index.imba'></script>
     </body>
 </html>"
 
@@ -42,7 +47,12 @@ def compileImba file
 			# console.log 'rewrite',path,'to',"/repl/examples/{path}"
 			start + "/repl/examples/{path}"
 
-		let result = imbac.compile(body,{target: 'web', sourcePath: file.path, imbaPath: null})
+		let result = imbac.compile(body,{
+			platform: 'web',
+			sourcePath: file.path,
+			format: 'esm',
+			resolve: ResolveMap
+		})
 		file.js = result.toString!
 	catch e
 		console.log 'error compiling',e
@@ -146,7 +156,8 @@ class Worker
 
 	def oninstall e
 		log e
-		e.waitUntil global.skipWaiting!
+		global.skipWaiting!
+		e.waitUntil
 		return
 	
 	def onactivate e
@@ -160,6 +171,8 @@ class Worker
 		let clientId = e.resultingClientId or e.clientId or e.targetClientId
 		let swId = url.searchParams.get('swid')
 
+		# console.log 'sw onfetch',String(url)
+
 		if url.pathname.indexOf('/repl/register') >= 0
 			log "register now!!!",e,url,swId
 			clientIdMap[swId] = clientId
@@ -167,7 +180,7 @@ class Worker
 			e.respondWith(resp)
 			return
 	
-		if url.pathname.indexOf('/repl/') == -1
+		if url.pathname.indexOf('/repl/') != 0
 			return
 
 

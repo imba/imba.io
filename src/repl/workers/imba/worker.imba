@@ -1,9 +1,9 @@
-var imbac = require 'imba/dist/compiler'
+const imbac = require 'imba/compiler'
 
 import {ImbaDocument} from 'imba/program'
 
 # this should talk to the languageservice
-export class ImbaWorker
+class ImbaWorker
 
 	prop ctx
 
@@ -35,14 +35,14 @@ export class ImbaWorker
 		# return results
 
 	def getDiagnostics uri
-		var model = getModel(uri)
-		var code = model.getValue!
+		let model = getModel(uri)
+		let code = model.getValue!
 		return Promise.resolve({}) unless (/\S/).test(code)
 
-		var out = {errors: []}
+		let out = {errors: []}
 
 		try
-			var res = imbac.compile(code,{sourcePath: uri})
+			let res = imbac.compile(code,{sourcePath: uri})
 			# console.log 'did compile',res
 			out.js = res.js
 			return Promise.resolve(out)
@@ -53,15 +53,20 @@ export class ImbaWorker
 			return Promise.resolve(out)
 
 	def getCompiledCode uri
-		var model = getModel(uri)
-		var code = model.getValue
+		let model = getModel(uri)
+		let code = model.getValue
 		
 		if (/\S/).test(code)
-			var out = imbac.compile(code,{})
+			let out = imbac.compile(code,{})
 			return Promise.resolve(String(out))
 		else
 			return Promise.resolve({})
 
-export def create ctx, data
-	console.log 'creating worker!'
-	return new ImbaWorker(ctx, data)
+# export def create ctx, data
+#	console.log 'creating worker!'
+#	return new ImbaWorker(ctx, data)
+
+global.define do
+	return {
+		create: do(ctx,data) return new ImbaWorker(ctx, data)
+	}

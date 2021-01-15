@@ -1,4 +1,7 @@
-import 'imba/router'
+# import 'imba/router'
+
+# importing preflight css directly into the client bundle
+import './assets/preflight.css'
 
 import './util/shortcuts'
 

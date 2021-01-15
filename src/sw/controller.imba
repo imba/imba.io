@@ -17,7 +17,7 @@ export def load
 			
 			if reg
 				reg = await reg.update!
-				console.log 'update service worker'
+				console.log 'update service worker',reg
 			else
 				# console.log 'register service worker'
 				reg = await sw.register('/sw.js')
