@@ -3,6 +3,9 @@
 		"name": "imba.io",
 		"log_date_format": "DD-MM-YYYY HH:mm:ss.SSS",
 		"script": "./dist/index.loader.js",
-		"watch": ["./dist/index.js.manifest"]
+		"watch": ["./dist/index.js.manifest"],
+		"env": {
+			"PORT": 5000
+		}
 	}]
 }
