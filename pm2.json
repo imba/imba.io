@@ -1,7 +1,11 @@
 {
 	"apps": [{
 		"name": "imba.io",
-		"script": "./index.js",
-		"watch": ["src","docs","guide"]
+		"log_date_format": "DD-MM-YYYY HH:mm:ss.SSS",
+		"script": "./dist/index.loader.js",
+		"watch": ["./dist/index.js.manifest"],
+		"env": {
+			"PORT": 5000
+		}
 	}]
 }

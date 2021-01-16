@@ -15,46 +15,30 @@
     }
   ],
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=12.0.0"
   },
   "scripts": {
-    "start": "imba ./src/server.imba",
-    "build": "webpack --colors --display-modules",
-    "build-netlify": "yarn run build && imba src/netlify.imba",
-    "watch": "webpack --devtool inline-source-map --watch --progress --colors --display-modules --debug",
-    "dev": "imba ./src/server.imba",
+    "start": "imba -m index.imba",
+    "dev": "imba -w index.imba",
+    "build": "imba scripts/bundle-content.imba && imba build index.imba",
+    "watch": "imba scripts/bundle-content.imba -- -w",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",
     "docker-deploy": "docker push imba.io:`git log --pretty=format:'%h' HEAD -n1`",
-    "docker-run": "docker run -p3011:3011 -t -i imba.io:`git log --pretty=format:'%h' HEAD -n1`",
-    "lint": "imba src/data/guide.imba"
+    "docker-run": "docker run -p3011:3011 -t -i imba.io:`git log --pretty=format:'%h' HEAD -n1`"
   },
   "files": [],
   "directories": {},
-  "main": "./index.js",
+  "main": "./index.imba",
   "homepage": "http://imba.io",
   "repository": {
     "type": "git",
     "url": "git://github.com/somebee/imba.io.git"
   },
-  "devDependencies": {},
   "dependencies": {
-    "css-loader": "^3.2.0",
-    "express": "^4.13.2",
-    "extract-text-webpack-plugin": "^3.0.2",
-    "highlight.js": "^8.8.0",
-    "imba": "^1.4.0",
-    "imba-router": "^0.1.1",
-    "less": "^2.5.1",
-    "less-loader": "^4.0.5",
-    "less-plugin-autoprefix": "^1.5.1",
-    "less-plugin-clean-css": "^1.5.1",
-    "marked": "^0.7.0",
-    "octonode": "^0.9.5",
-    "source-map": "^0.5.3",
-    "style-loader": "^0.20.1",
-    "uglifyjs-webpack-plugin": "^1.2.2",
-    "webpack": "^3.10.0",
-    "webpack-assets-manifest": "^1.0.0",
-    "write-good": "^1.0.2"
+    "@types/node": "^13.11.1",
+    "chokidar": "^3.3.1",
+    "express": "^4.17.1",
+    "imba": "^2.0.0-alpha.104",
+    "marked": "^0.7.0"
   }
 }

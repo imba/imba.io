@@ -9,16 +9,30 @@ git clone https://github.com/imba/imba.io
 cd imba.io
 
 # install dependencies
-yarn
+npm install
 
-# compile (continously)
-npm run watch
+# package content from content/ (continously)
+npm run watch-content
 
 # run server
 npm start
-
-# visit localhost:3011 in your browser
 ```
+
+Because the site uses service workers it requires https: with a trusted certificate.
+To test things in development you need to do it via Chrome launched with specific args:
+
+```bash
+open -na Google\ Chrome --args --ignore-certificate-errors --allow-insecure-localhost --unsafely-treat-insecure-origin-as-secure=https://localhost:9000
+# if this does not work - try
+# /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-insecure-localhost --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost:9000
+```
+
+Now visit https://localhost:9000/ in that browser.
+
+## Having trouble with https?
+
+https is required to be able to run the examples and snippets. You can still run the rest of the site and work on documentation without this. So, if you're having trouble setting up https use the `npm start-without-https` command instead of the normal `npm start`, this will disable https while you work.
+
 
 ## Looking for projects using Imba?
 

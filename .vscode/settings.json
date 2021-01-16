@@ -1,0 +1,9 @@
+{
+    "workbench.colorCustomizations": {
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/public/monaco": true
+    },
+    "peacock.color": "#1857a4"
+}
