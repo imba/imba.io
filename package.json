@@ -20,7 +20,7 @@
   "scripts": {
     "start": "imba -m index.imba",
     "dev": "imba -w index.imba",
-    "build": "imba scripts/bundle-content.imba",
+    "build": "imba scripts/bundle-content.imba && imba build index.imba",
     "watch": "imba scripts/bundle-content.imba -- -w",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",
     "docker-deploy": "docker push imba.io:`git log --pretty=format:'%h' HEAD -n1`",
@@ -34,12 +34,11 @@
     "type": "git",
     "url": "git://github.com/somebee/imba.io.git"
   },
-  "devDependencies": {},
   "dependencies": {
     "@types/node": "^13.11.1",
     "chokidar": "^3.3.1",
     "express": "^4.17.1",
-    "imba": "^2.0.0-alpha.103",
+    "imba": "^2.0.0-alpha.104",
     "marked": "^0.7.0"
   }
 }

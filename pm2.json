@@ -2,8 +2,7 @@
 	"apps": [{
 		"name": "imba.io",
 		"log_date_format": "DD-MM-YYYY HH:mm:ss.SSS",
-		"script": "./index.imba",
-		"interpreter": "./node_modules/.bin/imba",
-		"exec_mode"  : "fork_mode"
+		"script": "./dist/index.loader.js",
+		"watch": ["./dist/index.js.manifest"],
 	}]
 }
