@@ -50,7 +50,7 @@ tag app-root
 
 	css .open-ide-button
 		bottom:0 right:0 m:5 border:gray2 py:3 px:4 rd:3
-		cursor:pointer bg:teal6 c:white fw:bold border:teal8/20 bxs:md
+		cursor:pointer bg:teal5 c:white fw:bold border:teal8/20 bxs:md
 		tween:150ms ease-out
 		pos:fixed d:block @not-md:none
 		@hover y:-2px bxs:lg bg:teal5
