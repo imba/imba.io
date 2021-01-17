@@ -200,10 +200,6 @@ tag app-code
 	def awaken
 		self
 
-	def render
-		<self>
-
-
 tag app-code-block < app-code
 
 	css pos:relative rd:sm fs:12px @md:13px d:block .shared:none
@@ -307,7 +303,6 @@ tag app-code-block < app-code
 			files.push(file)
 
 		file = files[0]
-		innerHTML = ''
 		render!
 
 	def mount
