@@ -55,6 +55,7 @@ watcher.on('all') do
 			type: 'dir'
 			name: name
 			children: []
+			sorted: sorter != name
 			# path: '/' + src
 		}
 

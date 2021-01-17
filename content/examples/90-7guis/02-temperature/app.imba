@@ -13,7 +13,7 @@ tag app-temperature
 		c = +(5 / 9 * (f - 32)).toFixed(1)
 	
 	<self>
-		<input type='number' value=c :input.{celsius = e.target.value}/> " °c = "
-		<input type='number' value=f :input.{fahrenheit = e.target.value}/> " °f"
+		<input type='number' value=c @input=(celsius = e.target.value)/> " °c = "
+		<input type='number' value=f @input=(fahrenheit = e.target.value)/> " °f"
 
 imba.mount <app-temperature>

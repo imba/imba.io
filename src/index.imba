@@ -27,7 +27,7 @@ tag app-root
 		if data.example
 			router.go(data.example.path)
 		elif data.code	
-			let file = ls('/examples/essentials/playground/app.imba')
+			let file = ls('/examples/apps/playground/app.imba')
 			let code = data.code.replace(/^(?=\<\w)/gm,'imba.mount do ')
 			code = code.replace(/^# ---\n/gm,'')
 			file.overwrite code

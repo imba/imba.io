@@ -137,7 +137,7 @@ tag app-repl
 				render!
 
 	def show
-		router.go(currentFile ? currentFile.path : '/examples/essentials/playground/app.imba')
+		router.go(currentFile ? currentFile.path : '/examples/apps/playground/app.imba')
 
 
 	css bg:var(--code-bg) overscroll-behavior: contain
@@ -211,7 +211,7 @@ tag app-repl
 			<div$sidebar tabIndex=-1>
 				<.scroller[pt:3 l:abs scroll-y inset:0 pb:5]>
 					<div$back[d:none @lg:block px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline] @click=leave> "⇦ back to site"
-					<div.items> for child in examples.folders
+					<div.items> for child in examples.folders when child.data.sorted
 						<h5[p:1 7 fs:xs c:gray6 fw:bold tt:uppercase]> child.title
 						<div[pb:5]> for item in child.folders
 							<a.item route-to.sticky=item.path> item.title
