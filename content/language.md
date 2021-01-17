@@ -191,7 +191,7 @@ Single-line comments in Imba are any text following `# ` on the same line.
 ```imba
 # This is a comment
 
-var color = "blue" # my favorite color
+let color = "blue" # my favorite color
 ```
 
 Multi-line comments are any text in between `###` and `###`
@@ -204,7 +204,7 @@ I need several lines to really
 emphasize this fact.
 ###
 
-var color = "blue"
+let color = "blue"
 ```
 
 ## Literals
@@ -928,7 +928,8 @@ a-- # Decrement assignment, returns original value
 #### =? [op=assign+change+advanced]
 
 ```imba
-let object = {}, input = 200
+let object = {}
+let input = 200
 # ---
 if object.value =? input
     yes
@@ -937,7 +938,8 @@ if object.value =? input
 Regular assignment that returns true or false depending on whether the left-hand was changed or not. More concise way of doing. The reassignment may seem unnecessary at first, but since memoization is an oft-used pattern in Imba, this is a very convenient addition.
 
 ```imba
-let object = {}, input = 200
+let object = {}
+let input = 200
 # ---
 if object.value != input
     object.value = input
@@ -1391,7 +1393,7 @@ console.log res # [2,4,8,10]
 ```
 
 ```imba
-var res = for num in [1,2,3,4,5]
+let res = for num in [1,2,3,4,5]
     break if num == 3
     num * 2
 # [2,4]
@@ -1402,7 +1404,7 @@ var res = for num in [1,2,3,4,5]
 When supplying an argument to continue, this value will be added to the resulting array, essentially like an early return would do in an `Array#map` function.
 
 ```imba
-var res = for num in [1,2,3,4,5]
+let res = for num in [1,2,3,4,5]
     continue -1 if num == 3
     num * 2
 # continue with an argument acts like early return within Array#map
@@ -1414,7 +1416,7 @@ var res = for num in [1,2,3,4,5]
 `break` is supported in all loop types (`for in`, `for of` and `for own of`)
 
 ```imba
-var res = for num in [1,2,3,4,5]
+let res = for num in [1,2,3,4,5]
     break if num == 3
     num * 2
 # [2,4]
@@ -1425,7 +1427,7 @@ var res = for num in [1,2,3,4,5]
 You can also supply an argument to break. When supplying an argument to break, this value will be added to the resulting array. This is especially useful when you want to return until some condition is met, but also want to include the item at which condition was met.
 
 ```imba
-var res = for num in [1,2,3,4,5]
+let res = for num in [1,2,3,4,5]
     break -1 if num == 3
     num * 2
 ```
@@ -1512,10 +1514,10 @@ Imba supports the `await` keyword, which compiles directly to async/await in Jav
 
 ```imba await.imba
 def load url
-    var res = await window.fetch url
+    let res = await window.fetch url
     return res.json
 
-var data = await load "/some/url"
+let data = await load "/some/url"
 ```
 
 #### Without await using promises
