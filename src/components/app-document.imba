@@ -304,7 +304,9 @@ tag app-document
 		let doc = data
 		while doc && doc.parent.options.tabbed
 			doc.parent.$currentTab = doc
-			doc = doc.parent			
+			doc = doc.parent
+
+		return unless doc	
 
 		<self.markdown[d:block pb:24]>
 			<div$content[max-width:768px px:6]>
