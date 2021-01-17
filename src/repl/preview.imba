@@ -60,7 +60,6 @@ tag app-repl-preview
 	def reflow e
 		ow = $bounds.offsetWidth
 		oh = $bounds.offsetHeight
-		# console.log 'reflow',ow,oh,iw,ih
 		recalc!
 		self
 
@@ -194,6 +193,7 @@ tag app-repl-preview
 		r:-1em .y:0
 		cursor: nwse-resize .x:ew-resize .y:ns-resize
 		bg:clear @hover:gray5/10
+		d:none
 	
 	css $console
 		pos:relative
@@ -224,7 +224,6 @@ tag app-repl-preview
 						$iframe
 						<div.resizer.x @touch=resize(e,'x')>
 						<div.resizer.y @touch=resize(e,'y')>
-						<div.resizer @touch=resize>
 						<div.resizer @touch=resize>
 						<div$cover @click=toggle>
 						<div[pos:absolute transform-origin:100% 100% b:0 r:0 p:2 fs:sm/1 c:gray5 d:none ..resizing:block scale:{1 / scale}]> "{iw - 2} x {ih - 2}"

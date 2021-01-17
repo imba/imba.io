@@ -258,8 +258,18 @@ tag app-code-block < app-code
 		w:$doc-margin
 		pl:4
 		>>> .frame shadow:xs rd:inherit
-		>>> .controls d@lt-xl:none
-		@lt-xl pos:relative l:0 h:$preview-size m:0 mt:2 w:100% p:0 max-width:initial
+		>>> .controls d:none
+
+		pos:relative
+		l:0
+		h:$preview-size
+		m:0
+		mt:2
+		w:100%
+		p:0
+		max-width:initial
+		rd:sm
+		content: "hello"
 
 		>>> $console $header d:none
 
