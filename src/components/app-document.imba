@@ -47,9 +47,7 @@ tag app-document-nav
 		<self[max-width:768px px:4 d:flex jc:space-between fs.top:sm d@md.top:none]>
 			if prev
 				<a.card.prev href=prev.href hotkey='left'>
-					<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<line x1="19" y1="12" x2="5" y2="12">
-						<polyline points="12 19 5 12 12 5">
+					<span> <svg src='icons/arrow-left.svg'>
 					<span[flex:1 px:1]>
 						<span.parent[prefix:"(" $shortcut ") "]> " Prev - {prev.parent.title}"
 						<span.chapter> prev.title
@@ -58,9 +56,7 @@ tag app-document-nav
 					<span[flex:1 px:1]>
 						<span.parent[suffix:" (" $shortcut ")"]> "Next - {next.parent.title}"
 						<span.chapter> next.title
-					<span> <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<line x1="5" y1="12" x2="19" y2="12">
-						<polyline points="12 5 19 12 12 19">
+					<span> <svg src='icons/arrow-right.svg'>
 
 
 tag doc-section-link
