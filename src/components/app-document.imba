@@ -122,11 +122,15 @@ tag doc-section
 	css .neutral $bg:gray2 $hbg:gray4 $hc:gray8
 
 	css .head pos:relative c:#3A4652 bc:gray3/75 d:block
-		&.l0 fs:30px/1.4 fw:500 pb:2
-		&.l1 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
-		&.h2.l2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
-		&.l2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
-		&.l3 fs:18px/1.2 fw:500 pb:3 bwb:0px mb:3
+		&.h1 fs:34px/1.4 fw:600 pb:2
+		&.h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0
+		&.h3 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:0
+		&.h4 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:0
+
+		&.zl1 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
+		&.zh2.zl2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
+		&.zl2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
+		&.zl3 fs:18px/1.2 fw:500 pb:3 bwb:0px mb:3
 		&.tip fs:16px/1.2 fw:500 pb:3 bwb:0 mb:0
 
 		&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:-1 bwb:0 mb.tip:-3 mb.op:-3
@@ -145,10 +149,12 @@ tag doc-section
 			&.op-unary.op-keyword .title suffix:" a"
 
 		&.event-modifier
-			c:blue7 bdb:2px solid currentColor
-			.title prefix: "@event." c:blue7 
+			c:blue7 bdb:2px solid currentColor mb:2
+			.title prefix: "@event." c:blue7
+
 		&.pointer-modifier
 			.title prefix: "@pointerevent."
+			
 		&.touch-modifier
 			.title prefix: "@touch."
 
@@ -259,10 +265,6 @@ tag doc-section
 				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} id=data.hash>
 					<a[pos:absolute l:-20px c:gray5 o:0] href=data.href> '#'
 					<span.html.title innerHTML=data.head>
-
-			if level == 0
-				<.wip.l{level} [mb:5 c:gray8/80 fs:lg]>
-					<span.marktext> "This documentation is a work-in-progress. We are actively looking for contributors. If you have can help, have feedback, or want to ask questions, please reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}."
 
 			if data.options.wip
 				<.wip[my:10px]>
@@ -388,6 +390,8 @@ tag app-document-toc
 		<.children> for item in data.parts
 			<TocItem data=item level=1>
 
+		<.wip[mt:4 w: <240px ml:2 fs:sm- c:gray6 bdl:2px solid yellow4 pl:3 py:1]>
+			<div[my:-2]> "Documentation is a work-in-progress. We are actively looking for contributors. If you have can help, have feedback, or want to ask questions, please reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}."
 	
 tag embedded-app-document
 	def hydrate
