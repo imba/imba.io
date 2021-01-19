@@ -347,9 +347,9 @@ tag app-document
 					unless doc.options.tabbed
 						<.toc> for item in doc.docs
 				<app-document-nav data=doc>
-			<.aside[fl:1 0 240px d@!1120:none max-width:360px]>
+			<.aside[fl:1 0 240px d@!1120:none]>
 				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 -webkit-overflow-scrolling:touch]>
-					<app-document-toc[d:block] data=doc>
+					<app-document-toc[d:block max-width:360px] data=doc>
 
 
 tag TocItem
