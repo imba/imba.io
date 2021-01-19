@@ -628,7 +628,7 @@ let myElement = <div.foo title="Greetings"> "Hello World"
 
 # Operators
 
-## Arithmethic Operators
+## Arithmethic Operators [toc-pills]
 
 ### + [op=math]
 
@@ -678,7 +678,7 @@ let myElement = <div.foo title="Greetings"> "Hello World"
 +i # Unary plus
 ```
 
-## Logical Operators
+## Logical Operators [toc-pills]
 
 ### && [op=logical]
 
@@ -739,7 +739,7 @@ let a = true
 !0 # true
 ```
 
-## Comparison Operators
+## Comparison Operators [toc-pills]
 
 ### == [op=compare]
 
@@ -821,7 +821,7 @@ princess !isa Car
 typeof item
 ```
 
-## Assignment Operators [op-assign]
+## Assignment Operators [op-assign] [toc-pills]
 
 ### = [op=assign]
 
@@ -929,7 +929,7 @@ if object.value != input
 ```
 
 
-## Bitwise Operators
+## Bitwise Operators [toc-pills]
 
 ### & [op=bitwise]
 

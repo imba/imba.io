@@ -154,9 +154,12 @@ tag doc-section
 
 		&.pointer-modifier
 			.title prefix: "@pointerevent."
-			
+
 		&.touch-modifier
 			.title prefix: "@touch."
+		
+		&.intersect-modifier
+			.title prefix: "@intersect."
 
 		.tab mr:3 fw:500 td:none @hover:none
 			outline@focus:none
@@ -367,12 +370,21 @@ tag TocItem
 	css &.in-focus
 		> a c:gray9
 
+	css &.toc-pills > .children
+		pl:1.5
+		> .child
+			d:inline-block m:0.5 ff:mono fs:xs va:top
+			> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
+			&.in-focus > a c:blue9 bg:blue3
+	
+	css &.toc-hide d@force:none
+
 	css &.op
 		d:inline-block m:0.5 ff:mono fs:xs va:top
 		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
 		&.in-focus > a c:blue9 bg:blue3
 	
-	css &.event-modifier
+	css &.event-modifierz
 		d:inline-block m:0.5 ff:mono fs:xs va:top
 		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
 		&.in-focus > a c:blue9 bg:blue3
@@ -381,7 +393,7 @@ tag TocItem
 		<a.menu-link[c@hover:gray8] href=data.href data=data innerHTML=data.tocTitle>
 		if level < 2
 			<.children[pl:2 lh:0]> for item in data.parts when item.level < 45
-				<TocItem data=item level=(level + 1)>
+				<TocItem.child data=item level=(level + 1)>
 
 
 tag app-document-toc
