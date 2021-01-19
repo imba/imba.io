@@ -10,18 +10,33 @@ marked.setOptions({
 	smartypants: false
 })
 
-var state = {headings: [],last: null}
+let state = {headings: [],last: null}
 
-var slugify = do(str)
+let slugmap = {
+	'|': 'pipe'
+	'=': 'eq'
+	'&': 'and'
+	'!': 'n'
+	'?': 'q'
+	'>': 'gt'
+	'<': 'lt'
+}
+
+let slugify = do(str)
 	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
-	var from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
-	var to   = "aaaaaeeeeiiiioooouuuunc------"
+
+
+	let from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
+	let to   = "aaaaaeeeeiiiioooouuuunc------"
+	str = str.replace(/[\|\=\&\?\!\>\<]+/g) do
+		$1.split('').map(do slugmap[$1]).join('-')
+		# slugmap[$1] or '' # remove invalid chars
 	str = str.replace(/[^a-z0-9 -]/g, '') # remove invalid chars
 	str = str.replace(/\s+/g, '-') # collapse whitespace and replace by -
 	str = str.replace(/-+/g, '-') # collapse dashes
 	return str
 
-var unescape = do(code)
+let unescape = do(code)
 	code = code.replace(/\&#39;/g,"'")
 	code = code.replace(/\&quot;/g,'"')
 	code = code.replace(/\&lt;/g,"<")
@@ -29,7 +44,7 @@ var unescape = do(code)
 	code = code.replace(/\&amp;/g,"&")
 	return code
 
-var renderer = new marked.Renderer
+let renderer = new marked.Renderer
  
 def renderer.link href, title, text
 	if href.match(/^\/.*\.md/)
@@ -53,9 +68,9 @@ def renderer.paragraph text
 
 def renderer.heading text, level
 	let typ = "h{level}"
-	var flags = [typ]
-	var meta = {type: 'section', hlevel: level, flags: flags, level: level * 10, children: [], meta: {},options: {}}
-	var m 
+	let flags = [typ]
+	let meta = {type: 'section', hlevel: level, flags: flags, level: level * 10, children: [], meta: {},options: {}}
+	let m 
 
 	state.last = meta
 
@@ -92,7 +107,7 @@ def renderer.heading text, level
 		meta.type = 'doc'
 		text = text.slice(n[0].length)
 
-	var plain = text.replace(/\<[^\>]+\>/g,'')
+	let plain = text.replace(/\<[^\>]+\>/g,'')
 
 	meta.slug = meta.options.slug or slugify(plain)
 	meta.title = unescape(text)
@@ -178,7 +193,7 @@ def renderer.table header, body
 	return out.toString().replace('$HEADER$',header).replace('$BODY$',body)
 
 export def render content, o = {}
-	var object = {toString: (do this.body), toc: [],meta: {}}
+	let object = {toString: (do this.body), toc: [],meta: {}}
 
 	content = content.replace(/^---\n([^]+)\n---/m) do(m,inside)
 		inside.split('\n').map do |line|
@@ -192,7 +207,7 @@ export def render content, o = {}
 		headings: []
 	}
 
-	var opts = {
+	let opts = {
 		gfm: true
 		tables: true
 		breaks: false
@@ -211,8 +226,8 @@ export def render content, o = {}
 	# console.log 'sent path',o
 
 	# if object:title
-	var tokens = marked.lexer(content)
-	var parser = new marked.Parser(opts, renderer)
+	let tokens = marked.lexer(content)
+	let parser = new marked.Parser(opts, renderer)
 	renderer.parser = parser
 	renderer.toc = object.toc
 	opts.parser = parser
