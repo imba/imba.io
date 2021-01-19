@@ -103,4 +103,5 @@ tag app-menu
 				<app-menu-section[c:pink6] data=ls('/intro')>
 				<app-menu-section[c:blue6] data=ls('/language')>
 				<app-menu-section[c:purple6] data=ls('/tags')>
+				<app-menu-section[c:purple6] data=ls('/events')>
 				<app-menu-section[c:indigo6] data=ls('/styling')>

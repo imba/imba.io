@@ -100,7 +100,9 @@ tag app-root
 
 			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
 			<app-menu$menu>
-			<app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
+			if doc
+				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl>
+			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			<div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 			
 

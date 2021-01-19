@@ -290,12 +290,8 @@ tag app-document
 
 	css .embed w:100% bd:0px h:500px
 
-	set data value
-		#data = value
+	def mount
 		document.scrollingElement.scrollTop = 0
-
-	get data
-		#data
 
 	def refocus
 		let inview = querySelectorAll('.in-view')
@@ -303,7 +299,7 @@ tag app-document
 
 		# focalpoint = current.data if current
 
-		let cleanup = new Set(document.getElementsByClassName('in-focus'))
+		let cleanup = new Set(getElementsByClassName('in-focus'))
 		let map = new Map
 		for item in querySelectorAll('.in-view')
 			map.set(item.data,true)
@@ -323,7 +319,7 @@ tag app-document
 		let map = new Map
 		let from = e.oldValue
 		let to = e.value
-		let cleanup = new Set(document.getElementsByClassName('in-focus'))
+		let cleanup = new Set(getElementsByClassName('in-focus'))
 
 
 		while from
