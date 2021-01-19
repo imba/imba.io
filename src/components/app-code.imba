@@ -359,6 +359,9 @@ tag app-code-block < app-code
 	def openInEditor
 		router.go(file.path)
 		self
+
+	css code d:flex
+		> pre w:100px
 	
 	def render
 		return unless code or file
@@ -374,7 +377,7 @@ tag app-code-block < app-code
 						<div.actions>
 							<div.item @click=openInEditor> 'open'
 					if file
-						<code.code.{file.highlighted.flags} innerHTML=file.highlighted.html>
+						<code.code.{file.highlighted.flags}> <pre$pre innerHTML=file.highlighted.html>
 				if options.preview or (name == 'main.imba')
 					<app-repl-preview$preview file=files[0] dir=dir mode=options.preview>
 

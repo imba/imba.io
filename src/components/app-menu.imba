@@ -88,7 +88,7 @@ tag app-menu-section
 	css .section.active + .content d:block
 
 	<self>
-		<a.l0.section.menu-heading[c:teal6] route-to=data.href> data.title
+		<a.l0.section.menu-heading[c:teal6]> data.title
 		<div[pb:4 pl:2].content.{data.slug}> for item in data.children
 			<app-menu-item data=item level=1>
 

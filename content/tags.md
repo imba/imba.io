@@ -530,352 +530,6 @@ tag App
 imba.mount <App>
 ```
 
-## Touch Event [linked]
-
-To make it easier and more fun to work with touches, Imba includes a custom `touch` event that combines `pointerdown` -> `pointermove` -> `pointerup/pointercancel` in one convenient handler, with modifiers for commonly needed functionality.
-
-```imba
-# [preview=lg]
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	<self @touch=(x=e.x,y=e.y)> "x={x} y={y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-The `event` emitted by this handler is not an event, but a `Touch` object, that remains the same across the whole touch. 
-
-| Properties  |  |
-| --- | --- |
-| `e.event` | The last/current event in this touch |
-| `e.target` | The element that initiated this touch |
-| `e.events` | Array of all the events that are part of this touch |
-| `e.x` | Normalized x coordinate for the pointer |
-| `e.y` | Normalized y coordinate for the pointer |
-| `e.elapsed` | The time elapsed since pointerdown started (in milliseconds) |
-
-
-You can add arbitrary properties to the touch object if you need to keep track of things across the many events that will be triggered during this touch.
-
-### Thresholds
-
-##### moved ( threshold = 4px ) [preview=lg]
-
-```imba
-# [preview=lg]
-import 'util/styles'
-css .rect pos:absolute inset:0
-
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	# won't trigger until moved 30px from start
-	<self @touch.moved(30)=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-This guard will break the chain unless the touch has moved more than `threshold`. Once this threshold has been reached, all subsequent updates of touch will pass through. The element will also activate the `@move` pseudostate during touch - after threshold is reached.
-
-
-
-##### moved-up ( threshold = 4px ) [preview=lg]
-```imba
-# [preview=sm]
-import 'util/styles'
-css .rect pos:absolute inset:0
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-up=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-##### moved-down ( threshold = 4px )
-```imba
-# [preview=sm]
-import 'util/styles'
-css .rect pos:absolute inset:0
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-down=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-##### moved-left ( threshold = 4px )
-```imba
-# [preview=sm]
-import 'util/styles'
-css .rect pos:absolute inset:0
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-left=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-##### moved-right ( threshold = 4px )
-```imba
-# [preview=sm]
-import 'util/styles'
-css .rect pos:absolute inset:0
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-right=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-##### moved-x ( threshold = 4px )
-```imba
-# [preview=sm]
-import 'util/styles'
-css .rect pos:absolute inset:0
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-x=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-##### moved-y ( threshold = 4px )
-```imba
-# [preview=sm]
-import 'util/styles'
-css .rect pos:absolute inset:0
-# ---
-tag Example
-	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved-y=(x=e.x,y=e.y)> "x {x} | y {y}"
-# ---
-imba.mount do <Example.rect>
-```
-
-### Syncing
-
-A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.
-
-##### sync ( data )
-
-Sync will update the x and y properties of whatever object you decide to supply as an argument.
-
-```imba
-# [preview=md]
-import 'util/styles'
-css .rect pos:absolute inset:0
-# ---
-tag Draggable
-	pos = {x:0,y:0}
-	<self[w:80px x:{pos.x} y:{pos.y}] @touch.sync(pos)>
-# ---
-imba.mount do <Draggable.rect>
-```
-
-```imba
-# [preview=md]
-import 'util/styles'
-
-# ---
-const pos = {x:0,y:0}
-# mounting two draggables - tracing the same one
-imba.mount do <>
-	<div[w:60px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)> 'drag'
-	<div[w:60px x:{pos.y} y:{pos.x}].rect> 'flipped'
-```
-
-
-##### sync ( data, alias-x, alias-y )
-```imba
-# [preview=md]
-import 'util/styles'
-
-# ---
-const data = {a:0,b:0}
-# mounting two draggables - tracing the same one
-imba.mount do <>
-	<div[w:80px x:{data.a} top:{data.b}px].rect @touch.sync(data,'a','b')> 'drag'
-	<label> "a:{data.a} b:{data.b}"
-```
-You can also include the property names you want to sync x and y to/from.
-
-
-### Interpolating
-
-A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you'd want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.
-
-##### fit ( box, snap = 1 )
-
-```imba
-# [preview=lg]
-import 'util/styles'
-css .rect w:80vw
-# ---
-tag Unfitted
-	<self @touch=(x=e.x)> "window.x {x}"
-tag Fitted
-	<self @touch.fit(self)=(x=e.x)> "box.x {x}"
-tag Snapped
-	<self @touch.fit(self,2)=(x=e.x)> "box.x {x}"
-# ---
-imba.mount do <>
-	<Unfitted.rect>
-	<Fitted.rect>
-	<Snapped.rect>
-```
-The first argument of fit is the box you want to fit to. If box is a string it will be treated as a selector and try to look up an element matching the selector
-
-##### fit ( box, start, end, snap = 1)
-
-```imba
-# [preview=lg]
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	# convert x,y to go from 0 in top left corner to 100 in bottom right
-	<self @touch.fit(self,0,100)=(x=e.x,y=e.y)> "x:{x} y:{y}"
-# ---
-imba.mount <Example.rect>
-```
-By passing `start` and `end` values, you can very easily convert the coordinate space of the touch. Imba will use linear interpolation to convert x,y relative to the box, to the interpolated values between start and end.
-You can use negative values on `start` and `end` as well.
-```imba
-# [preview=lg]
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	# convert x,y to go from -50 to +50 with 0.1 increments
-	<self @touch.fit(self,-50,50,0.1)=(x=e.x,y=e.y)> "x:{x} y:{y}"
-# ---
-imba.mount <Example.rect>
-```
-
-
-You can also use percentages in start and end to reference the width and height of the box we're mapping to.
-```imba
-# [preview=lg]
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	# this will essentially flip the origin from top left to bottom right
-	<self @touch.fit(self,100%,0)=(x=e.x,y=e.y)> "x:{x} y:{y}"
-# ---
-imba.mount <Example.rect>
-```
-You can also use arrays to fit the x and y axis to different values.
-```imba
-# [preview=lg]
-import 'util/styles'
-css .rect pos:absolute inset:4
-# ---
-tag Example
-	# will flip and center the y axis
-	<self @touch.fit(self,[0,50%],[100%,-50%])=(x=e.x,y=e.y)> "x:{x} y:{y}"
-# ---
-imba.mount <Example.rect>
-```
-
-### Pinning
-
-### Examples
-
-##### Custom slider
-```imba
-# [preview=lg]
-import 'util/styles'
-
-css body > * w:50vw m:2 h:4 bg:blue3 pos:relative rd:sm
-# css .track h:4 w:100% bg:blue3 pos:relative rd:sm
-css .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% rd:sm
-css .thumb b x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6
-
-# ---
-tag Slider
-	prop min = -50
-	prop max = 50
-	prop step = 1
-	prop value = 0
-
-	<self @touch.fit(min,max,step)=(value = e.x)>
-		<.thumb[l:{100 * (value - min) / (max - min)}%]> <b> value
-
-imba.mount do <>
-	<Slider min=0 max=1 step=0.25>
-	<Slider min=-100 max=100 step=1>
-	<Slider min=10 max=-10 step=0.5>
-```
-
-##### Pane with divider
-```imba
-# [preview=md]
-import 'util/styles'
-
-# ---
-tag Panel
-	prop split = 70
-
-	<self[d:flex pos:absolute inset:0]>
-		<div[bg:teal2 flex-basis:{split}%]>
-		<div[fls:0 w:2 bg:teal3 @touch:teal5]
-			@touch.pin.fit(self,0,100,2)=(split=e.x)>
-		<div[bg:teal1 flex:1]>
-
-imba.mount do <Panel>
-```
-
-##### Simple draggable [app]
-```imba
-# [preview=xl]
-import 'util/styles'
-# css body bg:gray1
-# ---
-tag drag-me
-	css d:block pos:relative p:3 m:1
-		bg:white bxs:sm rd:sm cursor:default
-		@touch scale:1.02
-		@move scale:1.05 rotate:2deg zi:2 bxs:lg
-
-	def build
-		x = y = 0
-
-	def render
-		<self[x:{x} y:{y}] @touch.moved.sync(self)> 'drag me'
-
-imba.mount do <div.grid>
-	<drag-me>
-	<drag-me>
-	<drag-me>
-```
-
-##### Paint [app]
-
-```imba
-# [preview=xl]
-# ---
-const dpr = window.devicePixelRatio
-
-tag app-paint
-	prop size = 500
-	
-	def draw e
-		let path = e.$path ||= new Path2D
-		path.lineTo(e.x * dpr,e.y * dpr)
-		$canvas.getContext('2d').stroke(path)
-
-	def render
-		<self[d:block overflow:hidden bg:blue1]>
-			<canvas$canvas[size:{size}px]
-				width=size*dpr height=size*dpr @touch.fit(self)=draw>
-
-imba.mount <app-paint>
-```
 
 ## Intersection Event [linked]
 
@@ -948,6 +602,354 @@ imba.mount do
 ## Resize Event [wip]
 
 ## Selection Event [wip]
+
+# Handling Touches [linked]
+
+To make it easier and more fun to work with touches, Imba includes a custom `touch` event that combines `pointerdown` -> `pointermove` -> `pointerup/pointercancel` in one convenient handler, with modifiers for commonly needed functionality.
+
+```imba
+# [preview=lg]
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	<self @touch=(x=e.x,y=e.y)> "x={x} y={y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+The `event` emitted by this handler is not an event, but a `Touch` object, that remains the same across the whole touch. 
+
+| Properties  |  |
+| --- | --- |
+| `e.event` | The last/current event in this touch |
+| `e.target` | The element that initiated this touch |
+| `e.events` | Array of all the events that are part of this touch |
+| `e.x` | Normalized x coordinate for the pointer |
+| `e.y` | Normalized y coordinate for the pointer |
+| `e.elapsed` | The time elapsed since pointerdown started (in milliseconds) |
+
+
+You can add arbitrary properties to the touch object if you need to keep track of things across the many events that will be triggered during this touch.
+
+## Thresholds
+
+#### moved ( threshold = 4px ) [preview=lg]
+
+```imba
+# [preview=lg]
+import 'util/styles'
+css .rect pos:absolute inset:0
+
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	# won't trigger until moved 30px from start
+	<self @touch.moved(30)=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+This guard will break the chain unless the touch has moved more than `threshold`. Once this threshold has been reached, all subsequent updates of touch will pass through. The element will also activate the `@move` pseudostate during touch - after threshold is reached.
+
+
+
+#### moved-up ( threshold = 4px ) [preview=lg]
+```imba
+# [preview=sm]
+import 'util/styles'
+css .rect pos:absolute inset:0
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-up=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+#### moved-down ( threshold = 4px )
+```imba
+# [preview=sm]
+import 'util/styles'
+css .rect pos:absolute inset:0
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-down=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+#### moved-left ( threshold = 4px )
+```imba
+# [preview=sm]
+import 'util/styles'
+css .rect pos:absolute inset:0
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-left=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+#### moved-right ( threshold = 4px )
+```imba
+# [preview=sm]
+import 'util/styles'
+css .rect pos:absolute inset:0
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-right=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+#### moved-x ( threshold = 4px )
+```imba
+# [preview=sm]
+import 'util/styles'
+css .rect pos:absolute inset:0
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-x=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+#### moved-y ( threshold = 4px )
+```imba
+# [preview=sm]
+import 'util/styles'
+css .rect pos:absolute inset:0
+# ---
+tag Example
+	css bg:gray2 @touch:gray3 @move:green3
+	<self @touch.moved-y=(x=e.x,y=e.y)> "x {x} | y {y}"
+# ---
+imba.mount do <Example.rect>
+```
+
+## Syncing
+
+A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.
+
+#### sync ( data )
+
+Sync will update the x and y properties of whatever object you decide to supply as an argument.
+
+```imba
+# [preview=md]
+import 'util/styles'
+css .rect pos:absolute inset:0
+# ---
+tag Draggable
+	pos = {x:0,y:0}
+	<self[w:80px x:{pos.x} y:{pos.y}] @touch.sync(pos)>
+# ---
+imba.mount do <Draggable.rect>
+```
+
+```imba
+# [preview=md]
+import 'util/styles'
+
+# ---
+const pos = {x:0,y:0}
+# mounting two draggables - tracing the same one
+imba.mount do <>
+	<div[w:60px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)> 'drag'
+	<div[w:60px x:{pos.y} y:{pos.x}].rect> 'flipped'
+```
+
+
+#### sync ( data, alias-x, alias-y )
+```imba
+# [preview=md]
+import 'util/styles'
+
+# ---
+const data = {a:0,b:0}
+# mounting two draggables - tracing the same one
+imba.mount do <>
+	<div[w:80px x:{data.a} top:{data.b}px].rect @touch.sync(data,'a','b')> 'drag'
+	<label> "a:{data.a} b:{data.b}"
+```
+You can also include the property names you want to sync x and y to/from.
+
+
+## Interpolating
+
+A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you'd want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.
+
+#### fit ( box, snap = 1 )
+
+```imba
+# [preview=lg]
+import 'util/styles'
+css .rect w:80vw
+# ---
+tag Unfitted
+	<self @touch=(x=e.x)> "window.x {x}"
+tag Fitted
+	<self @touch.fit(self)=(x=e.x)> "box.x {x}"
+tag Snapped
+	<self @touch.fit(self,2)=(x=e.x)> "box.x {x}"
+# ---
+imba.mount do <>
+	<Unfitted.rect>
+	<Fitted.rect>
+	<Snapped.rect>
+```
+The first argument of fit is the box you want to fit to. If box is a string it will be treated as a selector and try to look up an element matching the selector
+
+#### fit ( box, start, end, snap = 1)
+
+```imba
+# [preview=lg]
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	# convert x,y to go from 0 in top left corner to 100 in bottom right
+	<self @touch.fit(self,0,100)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+# ---
+imba.mount <Example.rect>
+```
+By passing `start` and `end` values, you can very easily convert the coordinate space of the touch. Imba will use linear interpolation to convert x,y relative to the box, to the interpolated values between start and end.
+You can use negative values on `start` and `end` as well.
+```imba
+# [preview=lg]
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	# convert x,y to go from -50 to +50 with 0.1 increments
+	<self @touch.fit(self,-50,50,0.1)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+# ---
+imba.mount <Example.rect>
+```
+
+
+You can also use percentages in start and end to reference the width and height of the box we're mapping to.
+```imba
+# [preview=lg]
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	# this will essentially flip the origin from top left to bottom right
+	<self @touch.fit(self,100%,0)=(x=e.x,y=e.y)> "x:{x} y:{y}"
+# ---
+imba.mount <Example.rect>
+```
+You can also use arrays to fit the x and y axis to different values.
+```imba
+# [preview=lg]
+import 'util/styles'
+css .rect pos:absolute inset:4
+# ---
+tag Example
+	# will flip and center the y axis
+	<self @touch.fit(self,[0,50%],[100%,-50%])=(x=e.x,y=e.y)> "x:{x} y:{y}"
+# ---
+imba.mount <Example.rect>
+```
+
+## Pinning
+
+## Examples
+
+#### Custom slider
+```imba
+# [preview=lg]
+import 'util/styles'
+
+css body > * w:50vw m:2 h:4 bg:blue3 pos:relative rd:sm
+# css .track h:4 w:100% bg:blue3 pos:relative rd:sm
+css .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% rd:sm
+css .thumb b x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6
+
+# ---
+tag Slider
+	prop min = -50
+	prop max = 50
+	prop step = 1
+	prop value = 0
+
+	<self @touch.fit(min,max,step)=(value = e.x)>
+		<.thumb[l:{100 * (value - min) / (max - min)}%]> <b> value
+
+imba.mount do <>
+	<Slider min=0 max=1 step=0.25>
+	<Slider min=-100 max=100 step=1>
+	<Slider min=10 max=-10 step=0.5>
+```
+
+#### Pane with divider
+```imba
+# [preview=md]
+import 'util/styles'
+
+# ---
+tag Panel
+	prop split = 70
+
+	<self[d:flex pos:absolute inset:0]>
+		<div[bg:teal2 flex-basis:{split}%]>
+		<div[fls:0 w:2 bg:teal3 @touch:teal5]
+			@touch.pin.fit(self,0,100,2)=(split=e.x)>
+		<div[bg:teal1 flex:1]>
+
+imba.mount do <Panel>
+```
+
+#### Simple draggable [app]
+```imba
+# [preview=xl]
+import 'util/styles'
+# css body bg:gray1
+# ---
+tag drag-me
+	css d:block pos:relative p:3 m:1
+		bg:white bxs:sm rd:sm cursor:default
+		@touch scale:1.02
+		@move scale:1.05 rotate:2deg zi:2 bxs:lg
+
+	def build
+		x = y = 0
+
+	def render
+		<self[x:{x} y:{y}] @touch.moved.sync(self)> 'drag me'
+
+imba.mount do <div.grid>
+	<drag-me>
+	<drag-me>
+	<drag-me>
+```
+
+#### Paint [app]
+
+```imba
+# [preview=xl]
+# ---
+const dpr = window.devicePixelRatio
+
+tag app-paint
+	prop size = 500
+	
+	def draw e
+		let path = e.$path ||= new Path2D
+		path.lineTo(e.x * dpr,e.y * dpr)
+		$canvas.getContext('2d').stroke(path)
+
+	def render
+		<self[d:block overflow:hidden bg:blue1]>
+			<canvas$canvas[size:{size}px]
+				width=size*dpr height=size*dpr @touch.fit(self)=draw>
+
+imba.mount <app-paint>
+```
+
 
 # Event Modifiers
 
@@ -1242,7 +1244,9 @@ imba.mount do <div.group>
 	# On mac there is no way to detect a `control+click` event.
 	# Instead you will have to intercept the `contextmenu` event,
 	# which is triggered by `control+click` and right mouse.
-	<button @contextmenu.prevent.ctrl.log('ctrlish+click')> 'ctrlish+click'
+	<button
+		@contextmenu.prevent.ctrl.log('ctrlish+click')
+	> 'ctrlish+click'
 ```
 
 #### alt [event-modifier] [snippet]
@@ -1407,6 +1411,8 @@ Break unless intersection ratio has decreased.
 # State Management [wip]
 
 # Form Input Bindings
+
+## Examples
 
 ##### text [preview=md]
 
