@@ -442,7 +442,7 @@ for i in [1...5]
 result # => 1, 2, 3, 4
 ```
 
-## Tags
+### Tags
 
 One of the most unique features of Imba is that DOM elements are true first-class citizens of the language. Read the [Rendering](/tags/basic-syntax) section to learn all about it.
 
@@ -749,7 +749,7 @@ let a = true
 !0 # true
 ```
 
-## Comparisons
+## Comparison Operators
 
 ### == [op=compare]
 
@@ -831,101 +831,93 @@ princess !isa Car
 typeof item
 ```
 
-## Assignment
+## Assignment Operators [op-assign]
 
-### Basic Assignment [op-assign]
-
-#### = [op=assign]
+### = [op=assign]
 
 ```imba
 a = b
 ```
 
-### Conditional Assignment [op-assign]
-
-#### ||= [op=assign]
+### ||= [op=assign]
 
 ```imba
 a ||= b # If falsy assignment
 ```
 
-#### &&= [op=assign]
+### &&= [op=assign]
 
 ```imba
 a &&= b # If truthy assignment
 ```
 
-#### ??= [op=assign]
+### ??= [op=assign]
 
 ```imba
 a ??= b # If null assignment
 ```
 
-### Compound Assignment [op-assign]
-
-#### += [op=math+assign]
+### += [op=math+assign]
 
 ```imba
 a += b # Addition assignment
 ```
 
-#### -= [op=math+assign]
+### -= [op=math+assign]
 
 ```imba
 a -= b # Decrement assignment
 ```
 
-#### \*= [op=math+assign]
+### \*= [op=math+assign]
 
 ```imba
 a *= b # Multiplication assignment
 ```
 
-#### /= [op=math+assign]
+### /= [op=math+assign]
 
 ```imba
 a /= b # Division assignment
 ```
 
-#### %= [op=math+assign]
+### %= [op=math+assign]
 
 ```imba
 a %= b # Remainder assignment
 ```
 
-#### \*\*= [op=math+assign]
+### \*\*= [op=math+assign]
 
 ```imba
 a **= b # Exponential assignment
 ```
 
-#### ++ [op=math+assign+unary+post]
+### ++ [op=math+assign+unary+post]
 
 ```imba
 a++ # Increment assignment, returns original value
 ```
 
-#### -- [op=math+assign+unary+post]
+### -- [op=math+assign+unary+post]
 
 ```imba
 a-- # Decrement assignment, returns original value
 ```
 
-#### ++ [op=math+assign+unary]
+### ++ [op=math+assign+unary]
 
 ```imba
 ++a # Increment assignment, returns incremented value
 ```
 
-#### -- [op=math+assign+unary]
+### -- [op=math+assign+unary]
 
 ```imba
 --a # Decrement assignment, returns decremented value
 ```
 
-### Reassignment [op-change]
-
-#### =? [op=assign+change+advanced]
+### =? [op=assign+change+advanced]
 
 ```imba
 let object = {}
@@ -946,17 +938,16 @@ if object.value != input
     yes
 ```
 
+
 ## Bitwise Operators
 
-### Bitwise Comparisons
-
-#### & [op=bitwise]
+### & [op=bitwise]
 
 ```imba
 a & b # Bitwise AND
 ```
 
-#### !& [op=bitwise]
+### !& [op=bitwise]
 
 ```imba
 a !& b # Bitwise NOT AND
@@ -964,89 +955,85 @@ a !& b # Bitwise NOT AND
 
 > Essentially the same as `(a & b) == 0`
 
-#### | [op=bitwise]
+### | [op=bitwise]
 
 ```imba
 a | b # Bitwise OR
 ```
 
-#### ^ [op=bitwise]
+### ^ [op=bitwise]
 
 ```imba
 a ^ b # Bitwise XOR
 ```
 
-#### ~ [op=bitwise+unary]
+### ~ [op=bitwise+unary]
 
 ```imba
 ~ a # Bitwise NOT
 ```
 
-#### << [op=bitwise]
+### << [op=bitwise]
 
 ```imba
 a << b # Left shift
 ```
 
-#### >> [op=bitwise]
+### >> [op=bitwise]
 
 ```imba
 a >> b # Sign-propagating right shift
 ```
 
-#### >>> [op=bitwise]
+### >>> [op=bitwise]
 
 ```imba
 a >>> b # Zero-fill right shift
 ```
 
-### Bitwise Assignment
-
-#### <<= [op=bitwise+assign]
+### <<= [op=bitwise+assign]
 
 ```imba
 a <<= 1 # Left shift assignment
 ```
 
-#### >>= [op=bitwise+assign]
+### >>= [op=bitwise+assign]
 
 ```imba
 a >>= 1 # Right shift assignment
 ```
 
-#### >>>= [op=bitwise+assign]
+### >>>= [op=bitwise+assign]
 
 ```imba
 a >>>= 1 # Unsigned right shift assignment
 ```
 
-#### &= [op=bitwise+assign]
+### &= [op=bitwise+assign]
 
 ```imba
 a &= 1 # Bitwise AND assignment
 ```
 
-#### |= [op=bitwise+assign]
+### |= [op=bitwise+assign]
 
 ```imba
 a |= 1 # Bitwise OR assignment
 ```
 
-#### ~= [op=bitwise+assign]
+### ~= [op=bitwise+assign]
 
 ```imba
 a ~= 1 # Bitwise NOT assignment (unassignment)
 ```
 
-#### ^= [op=bitwise+assign]
+### ^= [op=bitwise+assign]
 
 ```imba
 a ^= 1 # Bitwise XOR assignment
 ```
 
-### Bitwise Reassignment
-
-#### |=? [op=bitwise+assign+change+advanced]
+### |=? [op=bitwise+assign+change+advanced]
 
 ```imba
 const STATES = {LOADED: 2}
@@ -1069,7 +1056,7 @@ if (data.state & STATES.LOADED) == 0
     # do something here...
 ```
 
-#### ~=? [op=bitwise+assign+change+advanced]
+### ~=? [op=bitwise+assign+change+advanced]
 
 ```imba
 const STATES = {LOADED: 2}
@@ -1092,11 +1079,12 @@ if (data.state & STATES.LOADED) == 0
     # do something here...
 ```
 
-#### ^=? [op=bitwise+assign+change+advanced]
+### ^=? [op=bitwise+assign+change+advanced]
 
 ```imba
 a ^=? 1 # Bitwise XOR assignment
 ```
+
 
 # Functions
 
