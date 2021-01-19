@@ -1,9 +1,9 @@
 ---
-title: Getting Started
+title: Imba
 multipage: true
 ---
 
-# Imba
+# Overview
 
 ## Build Fast, Fast.
 
@@ -18,7 +18,17 @@ In Imba DOM elements _and_ CSS are treated as first-class citizens. DOM elements
 - Built-in Tags & Styles
 - Amazing Performance
 
-## Installation
+## Get started
+
+```
+npm install -g imba@pre
+```
+
+```
+git clone --bare https://github.com/imba/imba-starter-app
+cd imba-starter-app
+imba -w server.imba
+```
 
 The easiest way to get started using Imba is to clone the [webpack-app-imba](https://github.com/imba/webpack-app-imba) template on GitHub and use it to start your project.
 
@@ -40,3 +50,9 @@ For the exact meeting times please use the Meetup group [Imba Oslo Meetup](https
 You can join us remotely via [Zoom](https://us04web.zoom.us/j/230170873).
 
 Did you miss a meeting? No worries, catch up via the [meeting notes](https://docs.google.com/document/d/1ABGjOJut9eXrajYjdN4G4-UGGU4gvKznLk5CAaXYjso/edit?usp=sharing) or [video recordings](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
+
+
+# Installation
+
+# Tooling
+
