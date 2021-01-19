@@ -172,9 +172,7 @@ tag doc-section
 
 
 	css .body
-		# &.snippet,&.h5,&.op pl:4 mt:-2 pb:1
-		#	>>> p my:3
-		
+
 		&.tip mt:-2 pb:1 ml:0 rd:md p:4 bg:$bg
 			>>> p fs:md- c:gray9/70
 
@@ -310,7 +308,6 @@ tag app-document
 		focalpoint = current.data if current
 
 	prop focalpoint @set
-		# console.log 'focalpoint did set',e.oldValue,e.value
 		let map = new Map
 		let from = e.oldValue
 		let to = e.value
@@ -350,25 +347,28 @@ tag app-document
 					unless doc.options.tabbed
 						<.toc> for item in doc.docs
 				<app-document-nav data=doc>
-			<.aside[fl:1 1 100px]>
-				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10]>
+			<.aside[fl:1 0 240px d@!1120:none max-width:360px]>
+				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 -webkit-overflow-scrolling:touch]>
 					<app-document-toc[d:block] data=doc>
 
 
 tag TocItem
 	level = 1
 
+	css .menu-link tween:colors 0.2s cubic-in-out
+
 	css &.in-focus
 		> a c:gray9
 
 	css &.op
-		d:inline
-		> a d:inline bg:blue2 rd:sm mr:0.5
+		d:inline-block m:0.5 ff:mono fs:xs va:top
+		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
+		&.in-focus > a c:blue9 bg:blue3
 
 	<self[c:gray6] .{data.flagstr}>
 		<a.menu-link[c@hover:gray8] href=data.href data=data innerHTML=data.title> 
 		if level < 2
-			<.children[pl:4]> for item in data.parts when item.level < 40
+			<.children[pl:2 lh:0]> for item in data.parts when item.level < 40
 				<TocItem data=item level=(level + 1)>
 
 
