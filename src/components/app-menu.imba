@@ -10,6 +10,7 @@ const triangleSVG =	`
 tag app-menu-item
 
 	prop data
+	prop level = 0
 	prop levelCutoff = 40
 
 	get hasChildren?
@@ -18,7 +19,7 @@ tag app-menu-item
 		result.length > 0
 	
 	get renderChildren?
-		hasChildren? && !data.reference?
+		hasChildren? && !data.reference? and level < 1
 	
 	get active?
 		# this is a hacky way to find out if this is the active section
@@ -52,15 +53,16 @@ tag app-menu-item
 	###
 
 	css
-		.item c:gray6 fw:normal pos:relative d:block
+		.item d:block c:gray6 fw:normal pos:relative d:block fw:500 py:1
 		.item.active fw:500 c:gray9
-		.item	.item-title
-			py:2px of:hidden text-overflow:ellipsis ws:nowrap
+		.item span
+			of:hidden text-overflow:ellipsis ws:nowrap
 			@hover c:gray9
+
 		.triangle c:gray5 pos:absolute t:calc(50% - 3px) l:-10px tween:transform 150ms ease-in-out
 		.active .triangle rotate:90deg
 		.children pl:15px of:hidden tween:height 200ms ease-out
-		&.wip .item-title @after
+		&.wip > .item @after
 			pos:relative d:inline ai:center bg:yellow3 content:'wip' rd:sm
 			c:yellow7 fs:xxs/12px tt:uppercase px:1 py:0.5 rd:1 ml:1 va:middle fw:bold
 	
@@ -69,11 +71,11 @@ tag app-menu-item
 		<self .{data.flagstr}>
 
 			<a$item.item route-to=data.href>
-				<div.triangle innerHTML=triangleSVG> if hasChildren?
-				<div.item-title> data.title
+				# <div.triangle innerHTML=triangleSVG> if hasChildren?
+				<span> data.title
 
-			if renderChildren?
-				<div$children.children [h:{active? ? 'auto' : 0}px]>
+			if renderChildren? 
+				<div$children.children>
 					for child in data.children
 						continue if child.level >= levelCutoff
 						<app-menu-item.child data=child>
@@ -86,7 +88,7 @@ tag app-menu-section
 	css .section.active + .content d:block
 
 	<self>
-		<a.l0.section[d:block p:1 2 fs:sm- fw:600 tt:uppercase cursor:default c:teal6] route-to=data.href> data.title
+		<a.l0.section.menu-heading[c:teal6] route-to=data.href> data.title
 		<div[pb:4 pl:2].content.{data.slug}> for item in data.children
 			<app-menu-item data=item level=1>
 

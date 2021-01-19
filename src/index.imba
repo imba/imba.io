@@ -1,7 +1,5 @@
-# importing preflight css directly into the client bundle
-import './assets/preflight.css'
-
 import './util/shortcuts'
+import './styles'
 
 import './components/app-document'
 import './components/app-menu'
@@ -95,7 +93,7 @@ tag app-root
 					<svg[h:100%] src='./assets/logo.svg'>
 				<div[flex: 1]>
 				<div[d:flex cursor:pointer]>
-					<a.tab @click.emit('showide')> "Examples"
+					<a.tab @click.emit('showide')> "Try"
 					<a.tab href='https://github.com/imba/imba'> "GitHub"
 					<a.tab href='https://discord.gg/mkcbkRw'> "Chat"
 				<div.handle @click=($menu.focus!)> "☰"

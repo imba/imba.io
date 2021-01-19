@@ -44,7 +44,7 @@ class Entry
 		head = data.head
 		desc = data.desc
 		options = data.options or {}
-		flags = data.flags || []
+		flags = (data.flags || []).concat("entry-{id}")
 		flagstr = flags.join(' ')
 
 		groups[type] ||= []
@@ -57,6 +57,9 @@ class Entry
 				return item
 		else
 			self.children = []
+
+	get elements
+		document.getElementsByClassName("entry-{id}")
 	
 	get path
 		parent ? (parent.path + '/' + name) : ''
@@ -193,7 +196,10 @@ export class Guide < Entry
 export class Section < Entry
 	
 	get href
-		path
+		#href ||= parent isa Section ? "{parent.href}-{name}" : "{parent.href}#{name}"
+
+	get hash
+		#hash ||= href.split('#')[1]
 
 	# get href
 	#	"{parent.href}#{name}"

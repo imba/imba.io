@@ -88,9 +88,6 @@ tag doc-section-filters
 				<button bind=selection value=item> item.name
 
 tag doc-section
-	def toggle
-		# flags.toggle('collapsed')
-		self
 
 	css >>> li
 		fs:md/1.3 py:3px pl:6 pos:relative
@@ -231,6 +228,8 @@ tag doc-section
 		cursor:pointer
 		.title @before content: "➤ " fw:600
 
+	css &.debug bd:1px solid gray3 rd:sm p:4 .in-focus:green6
+
 	prop query
 
 	set filters value
@@ -239,6 +238,11 @@ tag doc-section
 
 	get filters
 		$filters
+
+	def intersecting e
+		# if e.entry.isIntersecting
+		flags.toggle('in-view',e.entry.isIntersecting)
+		emit('refocus')
 	
 	def render
 		return unless data
@@ -250,16 +254,21 @@ tag doc-section
 		let level = level
 		let linked = level > 0 and data.options.linked
 
-		<self .{data.flagstr} .as-link=(linked) .hide=(query and !data.match(query))>
+		<self
+			.{data.flagstr}
+			.as-link=(linked)
+			.hide=(query and !data.match(query))
+			@intersect("0% 0% -50% 0%")=intersecting
+		>
+
+			if data.head and !data.tab?
+				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} id=data.hash>
+					<a[pos:absolute l:-20px c:gray5 o:0] href=data.href> '#'
+					<span.html.title innerHTML=data.head>
 
 			if level == 0
 				<.wip.l{level} [mb:5 c:gray8/80 fs:lg]>
 					<span.marktext> "This documentation is a work-in-progress. We are actively looking for contributors. If you have can help, have feedback, or want to ask questions, please reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}."
-
-			if data.head and !data.tab?
-				<a.head.html .{data.flagstr} .l{level} @click=toggle href=data.href>
-					<span.title innerHTML=data.head>
-
 
 			if data.options.wip
 				<.wip[my:10px]>
@@ -283,7 +292,7 @@ tag doc-section
 
 tag app-document
 
-	css color: #4a5568 lh: 1.625 pt:4
+	css color: #4a5568 lh: 1.625
 	css $content > mb@last:0 mt@first:0
 
 	css .embed w:100% bd:0px h:500px
@@ -292,9 +301,39 @@ tag app-document
 		#data = value
 		document.scrollingElement.scrollTop = 0
 
-
 	get data
 		#data
+
+	def refocus
+		let inview = querySelectorAll('.in-view')
+		let current = Array.from(inview).pop!
+		focalpoint = current.data if current
+
+	prop focalpoint @set
+		# console.log 'focalpoint did set',e.oldValue,e.value
+		let map = new Map
+		let from = e.oldValue
+		let to = e.value
+		let cleanup = new Set(document.getElementsByClassName('in-focus'))
+
+		while from
+			map.set(from,false)
+			from = from.parent
+		
+		while to
+			map.set(to,true)
+			to = to.parent
+		
+		for [section,value] of map
+			let items = section.elements
+			for el in items
+				el.flags.toggle('in-focus',value)
+				cleanup.delete(el)
+		
+		for el of cleanup
+			el.flags.remove('in-focus')
+		return
+
 
 	def render
 		let doc = data
@@ -304,13 +343,44 @@ tag app-document
 
 		return unless doc	
 
-		<self.markdown[d:block pb:24]>
-			<div$content[max-width:768px px:6]>
-				<doc-section $key=doc.id data=doc level=0>
-				unless doc.options.tabbed
-					<.toc> for item in doc.docs
+		<self.markdown[d:block pb:24 d:hflex] @refocus=refocus>
+			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
+				<div$content>
+					<doc-section $key=doc.id data=doc level=0>
+					unless doc.options.tabbed
+						<.toc> for item in doc.docs
+				<app-document-nav data=doc>
+			<.aside[fl:1 1 100px]>
+				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10]>
+					<app-document-toc[d:block] data=doc>
 
-			<app-document-nav data=doc>
+
+tag TocItem
+	level = 1
+
+	css &.in-focus
+		> a c:gray9
+
+	css &.op
+		d:inline
+		> a d:inline bg:blue2 rd:sm mr:0.5
+
+	<self[c:gray6] .{data.flagstr}>
+		<a.menu-link[c@hover:gray8] href=data.href data=data innerHTML=data.title> 
+		if level < 2
+			<.children[pl:4]> for item in data.parts when item.level < 40
+				<TocItem data=item level=(level + 1)>
+
+
+tag app-document-toc
+	<self[pr:10]>
+		<div.menu-heading[c:gray5]> "On this page"
+		<.children> for item in data.parts
+			<TocItem data=item level=1>
+		# <a.l0.section[d:block p:1 2 fs:sm- fw:600 tt:uppercase cursor:default c:teal6] route-to=data.href> data.title
+		# <div[pb:4 pl:2].content.{data.slug}> for item in data.children
+		#	<app-menu-item data=item level=1>
+
 	
 tag embedded-app-document
 	def hydrate
