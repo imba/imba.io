@@ -955,7 +955,7 @@ imba.mount <app-paint>
 
 Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
 
-## Core Modifiers
+## Common Modifiers
 
 #### prevent [event-modifier] [snippet]
 
@@ -1085,23 +1085,7 @@ imba.mount <App>
 ```
 If you try to select the "Default" text you will see that both the `App` and the `Filter` elements re-render. This happens because `App` is mounted via `imba.mount` which automatically schedules the element to render after events, and the Filter is rendered when `App` is rendered since it is a descendant of `App`. Now if you select text in the "Silent" input, it too has an event handler for the same event, but we've added a `.silence` modifier. This prevents the handler from automatically re-rendering scheduled elements after the event.
 
-
-
 ## Utility Modifiers
-
-#### log ( ...params ) [event-modifier] [snippet]
-
-Basic modifier that simply logs to the console. Mostly useful for testing and development.
-
-```imba
-# [preview=sm]
-import 'util/styles'
-
-# log to the console
-imba.mount do
-	# ---
-	<button @click.log('logged!')> 'test'
-```
 
 #### wait ( duration = 250ms ) [event-modifier] [snippet]
 
@@ -1134,36 +1118,7 @@ imba.mount do <fieldset>
 	<div> "Not clickable within 1 second of previous invocation."
 ```
 
-#### emit-_name_ ( detail = {} ) [event-modifier] [snippet]
 
-```imba
-# [preview=sm]
-import 'util/styles'
-
-# ---
-imba.mount do
-	<div.group @select=console.log(e.type,e.detail)>
-		<button @click.emit-select> 'emit'
-		<button @click.emit-select(a:1,b:2)> 'with data'
-```
-
-#### flag-_name_ ( target ) [event-modifier] [snippet]
-
-```imba
-# [preview=sm]
-import 'util/styles'
-
-# ---
-# Add flag while event is being handled
-imba.mount do
-	<div.group>
-		<button @click.flag-busy> 'flag self'
-		<button @click.flag-busy('div').wait(1000)> 'flag div'
-# Optionally supply a selector / element to flag
-```
-
-
-## Guard Modifiers
 
 #### self [event-modifier] [snippet]
 
@@ -1206,32 +1161,10 @@ imba.mount do <div.group>
 	<button @click.if(age > 16).log('drive')> 'drive'
 ```
 
-#### keys [snippet]
-
-```imba
-# [preview=sm]
-import 'util/styles'
-
-# ---
-imba.mount do
-	<header> <input placeholder='Text..'
-		@keydown.enter.log('pressed enter')
-		@keydown.left.log('pressed left')
-		@keydown.right.log('pressed right')
-		@keydown.up.log('pressed up')
-		@keydown.down.log('pressed down')
-		@keydown.tab.log('pressed tab')
-		@keydown.esc.log('pressed esc')
-		@keydown.space.log('pressed space')
-		@keydown.del.log('pressed del')
-	>
-```
-
-## System Key Modifiers
-
-System modifier keys are different from regular keys and when used with @keyup events, they have to be pressed when the event is emitted. In other words, @keyup.ctrl will only trigger if you release a key while holding down ctrl. It won’t trigger if you release the ctrl key alone. You can use the following modifiers to trigger event listeners only when the corresponding modifier key is pressed:
 
 #### ctrl [event-modifier] [snippet]
+
+System modifier keys are different from regular keys and when used with @keyup events, they have to be pressed when the event is emitted. In other words, @keyup.ctrl will only trigger if you release a key while holding down ctrl. It won’t trigger if you release the ctrl key alone. You can use the following modifiers to trigger event listeners only when the corresponding modifier key is pressed:
 
 ```imba
 # [preview=sm]
@@ -1285,6 +1218,151 @@ import 'util/styles'
 # On windows keyboards, meta is the Windows key (⊞)
 imba.mount do <button @click.meta.log('meta+click')> 'meta+click'
 ```
+
+#### log ( ...params ) [event-modifier] [snippet]
+
+Basic modifier that simply logs to the console. Mostly useful for testing and development.
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+# log to the console
+imba.mount do
+	# ---
+	<button @click.log('logged!')> 'test'
+```
+
+
+#### emit-_name_ ( detail = {} ) [event-modifier] [snippet]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+# ---
+imba.mount do
+	<div.group @select=console.log(e.type,e.detail)>
+		<button @click.emit-select> 'emit'
+		<button @click.emit-select(a:1,b:2)> 'with data'
+```
+#### flag-_name_ ( target ) [event-modifier] [snippet]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+# ---
+# Add flag while event is being handled
+imba.mount do
+	<div.group>
+		<button @click.flag-busy> 'flag self'
+		<button @click.flag-busy('div').wait(1000)> 'flag div'
+# Optionally supply a selector / element to flag
+```
+
+
+## Key Modifiers
+
+#### enter [event-modifier]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <header>
+	# ---
+	<input placeholder="Press enter.." @keydown.enter.log('enter!')>
+```
+
+#### left [event-modifier]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <header>
+	# ---
+	<input placeholder="Press left.." @keydown.left.log('left!')>
+```
+
+#### right [event-modifier]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <header>
+	# ---
+	<input placeholder="Press right.." @keydown.right.log('right!')>
+```
+
+#### up [event-modifier]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <header>
+	# ---
+	<input placeholder="Press up.." @keydown.up.log('up!')>
+```
+
+#### down [event-modifier]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <header>
+	# ---
+	<input placeholder="Press down.." @keydown.down.log('down!')>
+```
+
+#### tab [event-modifier]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <header>
+	# ---
+	<input placeholder="Press tab.." @keydown.tab.log('tab!')>
+```
+
+#### esc [event-modifier]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <header>
+	# ---
+	<input placeholder="Press esc.." @keydown.esc.log('esc!')>
+```
+
+#### space [event-modifier]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <header>
+	# ---
+	<input placeholder="Press space.." @keydown.space.log('space!')>
+```
+
+#### del [event-modifier]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <header>
+	# ---
+	<input placeholder="Press del.." @keydown.del.log('del!')>
+```
+
 
 ## Pointer Modifiers
 
