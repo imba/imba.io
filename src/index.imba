@@ -19,7 +19,7 @@ tag app-root
 		return
 	
 	get page
-		ls(document.location.pathname) or ls('/guides/introduction/overview')
+		ls(document.location.pathname) or ls('/intro/overview')
 
 	def runCodeBlock data
 		if data.example
@@ -72,7 +72,7 @@ tag app-root
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
 		# redirect home somehow?
 		if path == '/' or path == '/index.html'
-			doc = ls('/intro')
+			doc = ls('/intro/overview')
 		elif path.indexOf('/examples') != 0
 			doc = ls(path) or ls('/404')
 
