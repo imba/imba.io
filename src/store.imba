@@ -102,9 +102,6 @@ class Entry
 
 	get tocTitle
 		#tocTitle ||= data.title.replace(/\s*\(.*\)/g,'')
-
-	get tab?
-		parent and parent.options.tabbed and type == 'doc'
 		
 	get reference?
 		parent and parent.name == 'reference'

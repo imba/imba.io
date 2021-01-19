@@ -274,11 +274,11 @@ export def render content, o = {}
 		if up == object
 			section.type = 'doc'
 
-		if up.options.tabbed
-			if (level - up.level) < 11
-				section.type = 'doc'
-			else
-				console.log 'not tab??',level,up.level,section.name
+		# if up.options.tabbed
+		# 	if (level - up.level) < 11
+		# 		section.type = 'doc'
+		# 	else
+		# 		console.log 'not tab??',level,up.level,section.name
 
 		up.children.push(section)
 		prev = section

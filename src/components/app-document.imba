@@ -206,9 +206,6 @@ tag doc-section
 
 			.code-inline@only fs:xs/1.4 px:1 py:0 m:0 va:top
 
-		&.tabbed > .content@not(@empty) ~ .head.tabs mt:6
-		&.tabbed mb:6
-
 	css .more d@empty:none my:8
 		@before
 			content: "Table of Contents" d:block
@@ -248,7 +245,6 @@ tag doc-section
 		# let filter = data.filtering..regex
 		let par = data.parent
 		let filter = query or $filters..regex
-		let tabbed = data.options.tabbed
 		let level = level
 		let linked = false and level > 0 and data.options.linked
 
@@ -259,7 +255,7 @@ tag doc-section
 			@intersect("-70px 0% -20% 0%")=intersecting
 		>
 
-			if data.head and !data.tab?
+			if data.head
 				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} id=data.hash>
 					<a[pos:absolute l:-20px c:gray5 o:0] href=data.href> '#'
 					<span.html.title innerHTML=data.head>
@@ -276,18 +272,12 @@ tag doc-section
 			if data.options.sheet
 				<doc-section-filters data=data bind:selection=filters>
 
-			if (data isa Section or level == 0 or par.options.tabbed) and !linked
+			if (data isa Section or level == 0) and !linked
 				<.body.{data.flagstr}>
 					<.content.html innerHTML=(data.html or '')>
 					<.sections>
 						for item in data.sections
 							<doc-section query=filter data=item level=(level+1)>
-					if tabbed
-						<.head.tabs .l{level+1}> for item in data.docs
-							<a.tab.title .active=(data.currentTab == item) href=item.href> item.title
-						<.section.html>
-							<doc-section data=data.currentTab level=(level+1)>
-
 tag app-document
 
 	css color: #4a5568 lh: 1.625
@@ -355,18 +345,12 @@ tag app-document
 
 	def render
 		let doc = data
-		while doc && doc.parent.options.tabbed
-			doc.parent.$currentTab = doc
-			doc = doc.parent
-
 		return unless doc	
 
 		<self.markdown[d:block pb:24 d:hflex] @refocus=refocus>
 			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
 				<div$content>
 					<doc-section $key=doc.id data=doc level=0>
-					unless doc.options.tabbed
-						<.toc> for item in doc.docs
 				<app-document-nav data=doc>
 			<.aside[fl:1 0 240px d@!1120:none]>
 				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 -webkit-overflow-scrolling:touch]>
@@ -403,9 +387,6 @@ tag app-document-toc
 		<div.menu-heading[c:gray5]> "On this page"
 		<.children> for item in data.parts
 			<TocItem data=item level=1>
-		# <a.l0.section[d:block p:1 2 fs:sm- fw:600 tt:uppercase cursor:default c:teal6] route-to=data.href> data.title
-		# <div[pb:4 pl:2].content.{data.slug}> for item in data.children
-		#	<app-menu-item data=item level=1>
 
 	
 tag embedded-app-document
