@@ -100,6 +100,9 @@ class Entry
 		return null unless parent
 		nextSibling or parent.next
 
+	get tocTitle
+		#tocTitle ||= data.title.replace(/\s*\(.*\)/g,'')
+
 	get tab?
 		parent and parent.options.tabbed and type == 'doc'
 		

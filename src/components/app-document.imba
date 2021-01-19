@@ -256,7 +256,7 @@ tag doc-section
 			.{data.flagstr}
 			.as-link=(linked)
 			.hide=(query and !data.match(query))
-			@intersect("0% 0% -50% 0%")=intersecting
+			@intersect("-70px 0% -20% 0%")=intersecting
 		>
 
 			if data.head and !data.tab?
@@ -305,7 +305,24 @@ tag app-document
 	def refocus
 		let inview = querySelectorAll('.in-view')
 		let current = Array.from(inview).pop!
-		focalpoint = current.data if current
+
+		# focalpoint = current.data if current
+
+		let cleanup = new Set(document.getElementsByClassName('in-focus'))
+		let map = new Map
+		for item in querySelectorAll('.in-view')
+			map.set(item.data,true)
+		
+		for [section,value] of map
+			let items = section.elements
+			for el in items
+				el.flags.toggle('in-focus',value)
+				cleanup.delete(el)
+
+		for el of cleanup
+			el.flags.remove('in-focus')
+		
+		return
 
 	prop focalpoint @set
 		let map = new Map
@@ -313,9 +330,13 @@ tag app-document
 		let to = e.value
 		let cleanup = new Set(document.getElementsByClassName('in-focus'))
 
+
 		while from
 			map.set(from,false)
 			from = from.parent
+
+		for item in querySelectorAll('.in-view')
+			map.set(item.data,true)
 		
 		while to
 			map.set(to,true)
@@ -364,11 +385,16 @@ tag TocItem
 		d:inline-block m:0.5 ff:mono fs:xs va:top
 		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
 		&.in-focus > a c:blue9 bg:blue3
+	
+	css &.event-modifier
+		d:inline-block m:0.5 ff:mono fs:xs va:top
+		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
+		&.in-focus > a c:blue9 bg:blue3
 
 	<self[c:gray6] .{data.flagstr}>
-		<a.menu-link[c@hover:gray8] href=data.href data=data innerHTML=data.title> 
+		<a.menu-link[c@hover:gray8] href=data.href data=data innerHTML=data.tocTitle>
 		if level < 2
-			<.children[pl:2 lh:0]> for item in data.parts when item.level < 40
+			<.children[pl:2 lh:0]> for item in data.parts when item.level < 45
 				<TocItem data=item level=(level + 1)>
 
 

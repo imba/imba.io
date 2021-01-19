@@ -20,6 +20,11 @@ let slugmap = {
 	'?': 'q'
 	'>': 'gt'
 	'<': 'lt'
+	'%': 'mod'
+	'*': 'star'
+	'/': 'slash'
+	'^': 'up'
+	'~': 'tilde'
 }
 
 let slugify = do(str)
@@ -28,7 +33,9 @@ let slugify = do(str)
 
 	let from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
 	let to   = "aaaaaeeeeiiiioooouuuunc------"
-	str = str.replace(/[\|\=\&\?\!\>\<]+/g) do
+
+
+	str = str.replace(/[\|\=\&\?\!\>\<\~\/\*\^\%]+/g) do
 		$1.split('').map(do slugmap[$1]).join('-')
 		# slugmap[$1] or '' # remove invalid chars
 	str = str.replace(/[^a-z0-9 -]/g, '') # remove invalid chars
