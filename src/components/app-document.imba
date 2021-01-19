@@ -250,7 +250,7 @@ tag doc-section
 		let filter = query or $filters..regex
 		let tabbed = data.options.tabbed
 		let level = level
-		let linked = level > 0 and data.options.linked
+		let linked = false and level > 0 and data.options.linked
 
 		<self
 			.{data.flagstr}
