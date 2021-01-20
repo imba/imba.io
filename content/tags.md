@@ -725,7 +725,7 @@ Components also has a bunch of methods that you can call to inspect where in the
 
 Images, stylesheets and other assets are an important part of any web application. These things are integrated right into imba without any need for external bundlers like webpack or rollup. 
 
-### Importing stylesheets
+## Importing stylesheets
 
 Even though you can style all of your app using the imba css syntax you might want to import external stylesheets as well. Import these just like you would import any other file.
 
@@ -759,7 +759,7 @@ export tag App
 		<div[fw:bold]> "Welcome"
 ```
 
-### Importing images
+## Importing images
 
 Any relative url reference you have in your styles will be extracted, hashed, and included with your bundled code.
 
@@ -830,7 +830,7 @@ const states = {
 		<.title> issue.title
 ```
 
-### Importing svgs
+## Importing svgs
 
 SVGs can be imported and used just like other image assets described in the previous section. It does include some nice additional things though. You can use SVG images via css and the img-tag, but they really shine when you inline them in your html. Ie, if you want to use SVG images for icons you have to inline them to be able to change their color, stroke-width etc.
 
@@ -852,7 +852,7 @@ This also allows us to style the contents directly:
 	<svg[stroke-width:4px] src='./icons/check.svg'>
 ```
 
-### Importing scripts
+## Importing scripts
 
 Imba will analyze the `src` attribute of `script` elements and automatically package these files for you. So a typical project with server *and* client code will follow this pattern:
 
@@ -872,7 +872,7 @@ app.on(/.*/) do(req,res)
 
 When you run `imba server.imba` in the above example, imba will discover the reference to client.imba and create a bundle for the `client.imba` entrypoint. Using [esbuild](https://esbuild.github.io/) in the background, bundling is so fast that it literally happens every time you start your server – *there is no need for a separate build step*.
 
-### Importing workers
+## Importing workers
 
 Imba aims for zero-configuration bundling even with large projects. You can import scripts as separate assets via a special import syntax.
 
@@ -886,7 +886,7 @@ script.body # node only - actual contents of the bundle
 const worker = new Worker(script.url)
 ```
 
-### Custom imports
+## Custom imports
 
 The `import.worker` syntax shown in the previous section is not a special syntax just for workers. In fact, the `import.anything(...)` is a general way to import something using a specific configuration. You can create such configurations in your `imbaconfig.json`. Imba comes with a few presets:
 
@@ -922,9 +922,9 @@ export const presets =
 
 Most of the properties map directly to [esbuild options](https://esbuild.github.io/api/#simple-options), with some additions for imba specific things. Configuration options will be explained in more detail before final 2.0 release. In most projects you will not need to think about or tweak these configs.
 
-### Future plans
+## Future plans
 
-#### Glob imports
+### Glob imports
 
 We are working on smart glob imports for a future release.
 
@@ -946,7 +946,7 @@ This will also work directly in src paths, like:
 		<div.title> issue.title
 ```
 
-#### Importing wasm
+### Importing wasm
 
 Will be part of a future release.
 
