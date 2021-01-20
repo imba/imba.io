@@ -44,7 +44,7 @@ tag app-document-nav
 		let prev = data.prev
 		let next = data.next
 
-		<self[max-width:768px px:4 d:flex jc:space-between fs.top:sm d@md.top:none]>
+		<self[d:flex jc:space-between fs.top:sm d@md.top:none]>
 			if prev
 				<a.card.prev href=prev.href hotkey='left'>
 					<span> <svg src='icons/arrow-left.svg'>
