@@ -86,7 +86,7 @@ app.get(/\.*/) do(req,res)
 			<meta name="twitter:description" content="Imba is a programming language for building web applications with insane performance. You can use it both for the server and client.">
 			<meta name="twitter:image" content="/images/social-card-preview.jpg">
 
-		<body tabindex='-1'>
+		<body tabIndex='-1'>
 			<script type="module" src="./src/index.imba">
 			<app-root>
 
