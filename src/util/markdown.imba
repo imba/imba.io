@@ -159,7 +159,7 @@ def renderer.code code, lang, opts = {}
 			let [lang,name] = start.split(' ')
 			let code = lines.join('\n')
 			files.push(start: start, name: name, lang: lang, code: code)
-		console.log "FOUND MULTIPLE FILES!!!",files
+		# console.log "FOUND MULTIPLE FILES!!!",files
 
 	if opts.inline
 		<app-code-inline.code.code-inline.light data-lang=lang> escaped
@@ -207,7 +207,7 @@ export def render content, o = {}
 			var [k,v] = line.split(/\s*\:\s*/)
 			object[k] = (/^\d+$/).test(v) ? parseFloat(v) : v
 
-	content = content.replace(/\`\`\`\n\`\`\`/g,'~~~~')
+	content = content.replace(/\`\`\`(\n+)\`\`\`(?=\w+\s\w+\.)/g,'~~~~')
 
 	state = {
 		toc: object.toc
