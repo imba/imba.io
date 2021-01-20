@@ -34,6 +34,24 @@ The easiest way to get started using Imba is to clone the [webpack-app-imba](htt
 
 Installation guide and decent starter templates coming soon. Until then, you can run `npm install imba@pre` and start exploring.
 
+## Community
+
+#### Discord Server
+
+For questions and support please use our community chat on
+[Discord](https://discord.gg/mkcbkRw) or our [discourse](https://users.imba.io/).
+
+#### Bi-Weekly Meeting
+
+Everyone is welcome! The developer meetings are usually on Monday's every 2 weeks. This is a great place to report your issues, hangout and talk about your project using Imba. If you have an open pull request which has not seen attention, you can mention it during the meeting.
+
+For the exact meeting times please use the Meetup group [Imba Oslo Meetup](https://www.meetup.com/Imba-Oslo-Meetup), this is where you can see the timezone, cancellations, etc.
+
+You can join us remotely via [Zoom](https://us04web.zoom.us/j/230170873).
+
+Did you miss a meeting? No worries, catch up via the [meeting notes](https://docs.google.com/document/d/1ABGjOJut9eXrajYjdN4G4-UGGU4gvKznLk5CAaXYjso/edit?usp=sharing) or [video recordings](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
+
+
 ## Basic Syntax
 
 Imba's minimal syntax makes it quick and flexible. Learn all the details in the [Language](/language/introduction) section.
@@ -216,27 +234,3 @@ let item\string = window.title
 def multiply a\number, b\number
     a * b
 ```
-
-
-# Installation [wip]
-
-# Tooling [wip]
-
-# Changelog
-
-# Community
-
-#### Discord Server
-
-For questions and support please use our community chat on
-[Discord](https://discord.gg/mkcbkRw) or our [discourse](https://users.imba.io/).
-
-#### Bi-Weekly Meeting
-
-Everyone is welcome! The developer meetings are usually on Monday's every 2 weeks. This is a great place to report your issues, hangout and talk about your project using Imba. If you have an open pull request which has not seen attention, you can mention it during the meeting.
-
-For the exact meeting times please use the Meetup group [Imba Oslo Meetup](https://www.meetup.com/Imba-Oslo-Meetup), this is where you can see the timezone, cancellations, etc.
-
-You can join us remotely via [Zoom](https://us04web.zoom.us/j/230170873).
-
-Did you miss a meeting? No worries, catch up via the [meeting notes](https://docs.google.com/document/d/1ABGjOJut9eXrajYjdN4G4-UGGU4gvKznLk5CAaXYjso/edit?usp=sharing) or [video recordings](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).

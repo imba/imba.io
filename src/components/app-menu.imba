@@ -100,7 +100,7 @@ tag app-menu
 	def render
 		<self tabIndex=-1>
 			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 flex:1]>
-				<app-menu-section[c:pink6] data=ls('/intro')>
+				# <app-menu-section[c:pink6] data=ls('/intro')>
 				<app-menu-section[c:blue6] data=ls('/language')>
 				<app-menu-section[c:purple6] data=ls('/tags')>
 				<app-menu-section[c:purple6] data=ls('/events')>
