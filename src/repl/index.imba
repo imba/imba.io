@@ -103,9 +103,8 @@ tag app-repl
 			run!
 
 	def url-did-set url
-		let src = `/repl{url}?swid={sw.id}`
+		let src = `{sw.scope}{url}`
 		try
-			console.log 'did set url',url
 			$iframe.src = src
 			# $iframe.contentWindow.location.replace(src)
 		catch e

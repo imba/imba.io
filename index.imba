@@ -4,12 +4,23 @@ import fs from 'fs'
 
 const app = express!
 
-app.get('/sw.js') do(req,res)
-	const asset = import('./src/sw.imba?as=webworker')
+app.get(/__sw(_\d+)?__\.js/) do(req,res)
+	const asset = import('./src/sw/worker.imba?as=webworker')
 	res.sendFile asset.absPath
 
 app.use(express.static('public'))
 
+app.get(/__blank__\.html/) do(req,res)
+	res.send String <div>
+
+app.get(/^\/repl-\d+\//) do(req,res)
+	return res.sendStatus(404)
+
+# app.get('/__sw__.html') do(req,res)
+# 	let js = assets['__sw__bridge.js']
+# 	let html = <div>
+# 		<script type='text/javascript' innerHTML=js.body>
+# 	res.send html.toString!
 # catch-all should always render the index
 app.get(/\.*/) do(req,res)
 	# console.log 'handling',req.url,req.accepts(['image/*', 'html'])

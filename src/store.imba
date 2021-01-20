@@ -247,19 +247,16 @@ export class Dir < Entry
 
 export class Root < Dir
 	service = null
-	constructor
-		super
 
 	def connectToWorker sw
 		service = sw
 		await service.ready
 		service.addEventListener('message') do(e)
-			if e.data isa Array
+			if e.data.length
 				let [action,params] = e.data
 				let result = null
 				if self[action]
 					result = await self[action](...params)
-
 				e.ports[0].postMessage(result)
 
 	def rpc action, ...params
@@ -286,7 +283,6 @@ export class Root < Dir
 				
 
 	def resolvePath path
-		console.log 'Root.readFile',path
 		let alternatives = [path,path + '.imba',path + '/index.imba']
 		for alt in alternatives
 			let entry = find(alt)
