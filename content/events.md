@@ -846,32 +846,39 @@ imba.mount <app-paint>
 | `event.ratio` | Returns the ratio of the intersectionRect to the boundingClientRect |
 | `event.delta` | Difference in ratio since previous event |
 
-## Examples
+### Parameters
+
+The `@intersect` events accepts several arguments. You can pass in an object with the same [root](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root), [rootMargin](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin), and [threshold](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold)  properties supported by [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver). 
 
 ```imba
-# [preview=xl]
-css body p:6
-css .grid d:grid g:3
-css .box d:grid gap:4 p:4 radius:2 bw:1 bc:black/5
-css .field p:1 px:2 radius:2 bw:1 bc:gray4 c:gray8
-css .box bg:white .teal:teal3 .blue:blue3
-
-# ---
-import {genres} from 'imdb'
-
-tag Genre
-	ratio = 0
-
-	def intersected e
-		ratio = e.ratio
-
-	<self[o:{ratio}] @intersect(10)=intersected> <slot>
-
-imba.mount do
-	<div.box> for genre in genres
-		<Genre[p:4 bg:blue2 h:120px]> genre
+<div @intersect=handler> # default options
+<div @intersect(root: frame, rootMargin: '20px')=handler>
+<div @intersect(threshold: [0,0.5,1])=handler>
 ```
 
+For convenience, imba will convert certain arguments into options. A single number between 0 and 1 will map to the [threshold](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold) option:
+```imba
+# n 0-1 adds single threshold at n visibility
+<div @intersect(0)=handler> # {threshold: 0}
+<div @intersect(0.5)=handler> # {threshold: 0.5}
+<div @intersect(1)=handler> # {threshold: 1.0}
+```
+Any number above 1 will add n thresholds, spread evenly:
+```imba
+<div @intersect(2)=handler> # {threshold: [0,1]}
+<div @intersect(3)=handler> # {threshold: [0,0.5,1]}
+<div @intersect(5)=handler> # {threshold: [0,0.25,0.5,0.75,1]}
+# ... and so forth
+```
+An element will map to the [root](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root) option:
+```imba
+<div @intersect(frame)=handler> # {root: frame}
+<div @intersect(frame,3)=handler> # {root: frame, threshold: [0,0.5,1]}
+```
+A string will map to the [rootMargin](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin) option:
+```imba
+<div @intersect("20px 10px")=handler> # {rootMargin: "20px 10px"}
+```
 
 
 ## Modifiers [toc-pills]
@@ -897,6 +904,32 @@ The `out` modifier tells the intersection event to only trigger whenever the vis
 <div @intersect.out=handler>
 # Will trigger whenever any part of the div is hidden
 <div @intersect(1).out=handler>
+```
+
+## Examples
+
+```imba
+# [preview=xl]
+css body p:6
+css .grid d:grid g:3
+css .box d:grid gap:4 p:4 radius:2 bw:1 bc:black/5
+css .field p:1 px:2 radius:2 bw:1 bc:gray4 c:gray8
+css .box bg:white .teal:teal3 .blue:blue3
+
+# ---
+import {genres} from 'imdb'
+
+tag Genre
+	ratio = 0
+
+	def intersected e
+		ratio = e.ratio
+
+	<self[o:{ratio}] @intersect(10)=intersected> <slot>
+
+imba.mount do
+	<div.box> for genre in genres
+		<Genre[p:4 bg:blue2 h:120px]> genre
 ```
 
 
