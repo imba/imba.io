@@ -840,11 +840,14 @@ imba.mount <app-paint>
 
 [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) is a [well-supported](https://caniuse.com/#feat=intersectionobserver) API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document's viewport. Imba adds a simplified abstraction on top of this via the custom `intersect` event.
 
-| Properties  |  |
+### Properties
+
+| table  |  |
 | --- | --- |
 | `event.entry` | Returns the [IntersectionObserverEntry](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry) |
 | `event.ratio` | Returns the ratio of the intersectionRect to the boundingClientRect |
 | `event.delta` | Difference in ratio since previous event |
+
 
 ### Parameters
 
@@ -881,7 +884,9 @@ A string will map to the [rootMargin](https://developer.mozilla.org/en-US/docs/W
 ```
 
 
-## Modifiers [toc-pills]
+
+
+### Modifiers [toc-pills]
 
 #### in [event-modifier] [intersect-modifier]
 
@@ -906,33 +911,79 @@ The `out` modifier tells the intersection event to only trigger whenever the vis
 <div @intersect(1).out=handler>
 ```
 
-## Examples
+#### css [event-modifier] [intersect-modifier]
+
+The css modifier sets a css variable `--ratio` on the event target with the current ratio. Use `.css-somevar` to use a different variable name.
 
 ```imba
-# [preview=xl]
-css body p:6
-css .grid d:grid g:3
-css .box d:grid gap:4 p:4 radius:2 bw:1 bc:black/5
-css .field p:1 px:2 radius:2 bw:1 bc:gray4 c:gray8
-css .box bg:white .teal:teal3 .blue:blue3
-
-# ---
-import {genres} from 'imdb'
-
-tag Genre
-	ratio = 0
-
-	def intersected e
-		ratio = e.ratio
-
-	<self[o:{ratio}] @intersect(10)=intersected> <slot>
-
-imba.mount do
-	<div.box> for genre in genres
-		<Genre[p:4 bg:blue2 h:120px]> genre
+# Div will have a --ratio variable set to the current intersectionRatio
+<div @intersect(10).css> # div will have
+# Div will have a --shown variable set to the current intersectionRatio
+<div @intersect(1).css-shown>
 ```
 
+### Examples
 
+#### Carousel
+
+```imba
+# [preview=lg]
+# ---
+import {categories} from 'imdb'
+
+tag Card
+	prop shown = 1
+	css bg:gray3 d:vflex ja:center c:white rd:md pos:relative
+
+	<self[o:{shown}] @intersect(20)=(shown = e.ratio)>
+		<div[fs:xl c:gray8]> data.title
+		<div[bg:{data.color} p:1 2 rd:lg]> shown.toFixed(2)
+
+tag App
+	css self
+		d:hgrid pos:absolute inset:0 gap:4px py:6
+		ofx:scroll scroll-snap-type:x mandatory
+		.item scroll-snap-align:start w:200px
+		@before,@after content:" " d:block w:6
+
+	<self> for item in categories
+		<Card.item data=item>
+# ---
+let app = <App>
+imba.mount app
+```
+
+#### Using event.ratio
+
+```imba
+# [preview=lg]
+
+import {Box} from 'controls'
+# ---
+tag App
+	prop num = 0
+	<self[o:{num}]>
+		<Box @intersect(self,20)=(num = e.ratio)> "drag"
+		<Box[rotate:{num}turn]> "watch"
+# ---
+imba.mount <App.frame>
+```
+
+#### Various thresholds
+
+```imba
+# [preview=lg]
+import {Box} from 'controls'
+# ---
+tag App
+	<self>	
+		<Box @intersect.out.log('outside of viewport')> 'drag'
+		<Box @intersect(self).out.log('outside of App')> 'drag'
+		<Box @intersect(self,0.5).out.log('halfway')> 'drag'
+		<Box @intersect(self,1).out.log('covered')> 'drag'
+# ---
+imba.mount <App.frame>
+```
 
 # Resize Events
 

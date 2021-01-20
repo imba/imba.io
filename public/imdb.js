@@ -19,6 +19,27 @@ export const genres = [
 	"Western"
 ]
 
+export const categories = [
+	{title:"Action",color: '#1c5568' },
+	{title:"Adventure",color: '#093229' },
+	{title:"Animation",color: '#f2dea7' },
+	{title:"Biography",color: '#af3c51' },
+	{title:"Comedy",color: '#de836b' },
+	{title:"Crime",color: '#71638c' },
+	{title:"Drama",color: '#680b12' },
+	{title:"Family",color: '#e5c865' },
+	{title:"Fantasy",color: '#d1e15f' },
+	{title:"History",color: '#cc4534' },
+	{title:"Music",color: '#2b8656' },
+	{title:"Musical",color: '#296e5f' },
+	{title:"Mystery",color: '#2e2440' },
+	{title:"Romance",color: '#b01534' },
+	{title:"SciFi",color: '#97cb5c' },
+	{title:"Thriller",color: '#1b396c' },
+	{title:"War",color: '#42192a' },
+	{title:"Western",color: '#436467' }
+]
+
 export const movies = [
 	{
 		"title": "The Shawshank Redemption",

@@ -42,7 +42,7 @@ tag app-root
 		transition:all 250ms cubic-in-out
 	
 	css $repl
-		pos:fixed of:hidden inset:0 zi:2000 rd:0 bxs:xl
+		of:hidden inset:0 pos:fixed zi:2000 rd:0 bxs:xl
 		transition:transform 250ms quint-out
 		y:110% .routed:0
 

@@ -111,6 +111,9 @@ global css
 		header,footer flex:0
 		section,main flex:1
 
+	.frame
+		pos:absolute inset:10 bd:1px dashed gray4 bg:gray1 rd:md d:flex ja:center
+
 	samp,var
 		d:grid ja:center min-width:60px p:1
 		bs:dashed bw:1 bc:gray4 rd:2
