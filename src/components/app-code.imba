@@ -9,7 +9,7 @@ global css @root
 	--code-bg: #202732;
 	--code-background: #282c34;
 	--code-bg-lighter: #29313f;
-
+	--code-bracket: #92a3b1;
 	--code-comment: #718096;
 	--code-keyword: #ff9a8d; # #e88376;
 	--code-operator: #ff9a8d;
@@ -28,13 +28,14 @@ global css @root
 	--code-tag-event: #fff9c3;
 	--code-tag-reference: #ffae86;
 	--code-tag-angle: #9d9755;
-	--code-type: #839fc7;
-	--code-type-delimiter:#303F52;
+	--code-type: #8097b2; # #839fc7;
+	--code-type-delimiter:#5e6c7d;
 	--code-property: #F7FAFC;
 	--code-decorator: #63b3ed;
 	--code-variable: #e8e6cb;
-	--code-global-variable: #ecd5f1; # #dcb9e4 # #ffc3c3;
+	--code-global-variable: #faffb2; # #ecd5f1; # #dcb9e4 # #ffc3c3;
 	--code-root-variable: #d7bbeb;
+	--code-import-variable: #e0ade3;
 
 	--code-font: "Source Code Pro", Consolas, Menlo, Monaco, Courier, monospace;
 	--code-rule-mixin: #ff9292;
@@ -79,6 +80,7 @@ global css .code
 	.tag color: var(--code-tag)
 	.type color: var(--code-type)
 	.type.start color: var(--code-type-delimiter)
+	.delimiter.type color: var(--code-type-delimiter)
 	.entity.name.type color: var(--code-entity)
 	.keyword color: var(--code-keyword)
 	.argparam color: var(--code-keyword)
@@ -97,6 +99,10 @@ global css .code
 	.variable color: var(--code-variable)
 	.string color: var(--code-string)
 	.propname color: var(--code-entity)
+
+	span.curly c:var(--code-bracket)
+	span.square c:var(--code-bracket)
+	span.paren c:var(--code-bracket)
 	
 	.this color: var(--code-this)
 	.self color: var(--code-this)
@@ -144,6 +150,7 @@ global css .code
 	.parameter_ c:var(--code-variable)
 	.variable_ c:var(--code-variable)
 	.variable_.global_ c:var(--code-global-variable)
+	.variable_.import_ c:var(--code-import-variable)
 	.special_,.special c:#fffab4
 	.entity.name.constructor c:var(--code-keyword)
 	
