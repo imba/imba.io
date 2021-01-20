@@ -45,11 +45,19 @@ You can join us remotely via [Zoom](https://us04web.zoom.us/j/230170873).
 Did you miss a meeting? No worries, catch up via the [meeting notes](https://docs.google.com/document/d/1ABGjOJut9eXrajYjdN4G4-UGGU4gvKznLk5CAaXYjso/edit?usp=sharing) or [video recordings](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
 
 
-## Basic Syntax
+# Basic Syntax
 
 Imba's minimal syntax makes it quick and flexible. Learn all the details in the [Language](/language/introduction) section.
 
-##### Literals
+## Variables
+```imba
+const name = 'imba'
+let version = '2.0.0'
+let [one,two,three] = [1,2,3]
+let {width,height} = window.screen
+```
+
+## Literals
 
 ```imba
 let number = 42
@@ -70,9 +78,15 @@ let details =
     version: 2.0
     repository: 'https://github.com/imba/imba'
     inspiration: ['ruby','python','react','coffeescript']
+
+# anonymous functions
+let func = do(a,b) a * b
+
+# callbacks
+[1,2,3].map do(item) item * 2
 ```
 
-##### Methods
+## Methods
 
 ```imba
 def method param
@@ -85,43 +99,46 @@ def method name, {title, desc = 'no description'}
     console.log name,title,desc
 ```
 
-##### Functions & Callbacks
-
-```imba
-[1,2,3,4].map do(item) item * 2
-```
-
-##### Class Declarations
+## Classes
 
 ```imba
 class Todo
+    # properties
     prop title
     prop completed = no
+    prop due = null
 
+    # methods
     def complete
         completed = yes
 
+    # getters
+    get overdue
+        due and due < new Date
 
-let todo = new Todo 'Read introduction'
+let todo = new Todo title: 'Read introduction'
 ```
 
-##### Loops & Iteration
+## Loops & Iteration
 
 ```imba
-# looping over arrays
-for num,i in [1,2,3]
-    num * 2
 # looping over iterables
-for chr of 'string'
-    chr
-# filtering
-for num in array when num != 2
-    num
+for member,index of iterable
+    member.name
+
+# looping over Object.keys/values pairs
+for own key,value of object
+    [key,value]
+
+# fast looping over arrays
+for member,index in array
+    member
 ```
 
-##### Elements
 
-> Elements are a native part of Imba just like strings, numbers, and other types.
+## Elements
+
+Elements are a native part of Imba just like strings, numbers, and other types.
 
 ```imba
 # elements are first class citizens
@@ -137,9 +154,9 @@ const list = <ul title="reminders">
 <div.panel @click.prevent=handler> "Panel"
 ```
 
-##### Components
+## Components
 
-> Tags are compiled down to _extremely optimized_ native web components.
+Tags are compiled down to _extremely optimized_ native web components.
 
 ```imba
 import {todos} from './data.imba'
@@ -153,20 +170,24 @@ tag todo-item
         <button @click.stop.emit('remove')> 'x'
 
 tag todo-app
-    <self> for todo in data
+    <self> for todo in todos
         <todo-item data=todo>
 
 imba.mount <todo-app data=todos>
 ```
 
-##### Inline styles
+## Styles
+
+### Inline styles
 
 ```imba
 import {todos} from './data.imba'
 
 # ---
 # inline styles
-<div[position:relative display:flex flex-direction:row]>
+<div[display:flex flex-direction:row color:blue]>
+# property shorthands/aliases
+<div[d:flex fld:row c:blue]>
 # conditional styles based on pseudostates
 <div[opacity:0.5 @hover:1]>
 # conditional styles based on media queries
@@ -174,21 +195,31 @@ import {todos} from './data.imba'
 
 ```
 
-##### Scoped Styles
+### Component Styles
 
 ```imba
 import {todos} from './data.imba'
 
 tag todo-app
     css .item color:gray8 bg@hover:gray1
-    css .item.done color:green8 text-decoration: line-through
+    css .item.done color:green8 text-decoration:line-through
 
     def render
-        <self> for todo in data
-            <div.item .done=data.completed> <span> data.title
+        <self> for todo in todos
+            <div.item .done=todo.completed> <span> todo.title
 ```
 
-##### Global Styles
+### File Styles
+```imba
+# Styles are scoped to elements in the same file by default.
+css p
+    padding: 1rem 2rem
+    color:blue7
+
+<div> <p> "My blue paragraph"
+```
+
+### Global Styles
 
 ```imba
 global css .button
@@ -204,20 +235,25 @@ global css .button
     <div.button.teal> "Teal button"
 ```
 
-##### Decorators
+## Comments
 
 ```imba
-import {watch} from './decorators.imba'
+# This is a comment
+let name = "imba" # my favorite language
 
-# ---
-class Reminder
-    @watch prop completed
+###
+This color is my favorite
+I need several lines to really
+emphasize this fact.
+###
 
-    def completedDidSet value
-        console.log('completedDidSet', value)
+let color = "blue"
 ```
 
-##### Type annotations
+Single-line comments in Imba are any text following `# ` on the same line. Multi-line comments are any text in between `###` and `###`
+
+
+## Type annotations
 
 > Type annotations in Imba are compiled to jsdoc comments and are used for intelligent auto-completions and analysis in Visual Studio Code.
 
@@ -229,30 +265,6 @@ def multiply a\number, b\number
 ```
 
 # Grammar
-
-## Comments
-
-Single-line comments in Imba are any text following `# ` on the same line.
-
-```imba
-# This is a comment
-
-let color = "blue" # my favorite color
-```
-
-Multi-line comments are any text in between `###` and `###`
-
-```imba
-
-###
-This color is my favorite
-I need several lines to really
-emphasize this fact.
-###
-
-let color = "blue"
-```
-
 
 ## Identifiers
 
