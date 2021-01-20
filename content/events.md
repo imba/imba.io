@@ -517,7 +517,7 @@ imba.mount do
 
 To make it easier and more fun to work with touches, Imba includes a custom `touch` event that combines `pointerdown` -> `pointermove` -> `pointerup/pointercancel` in one convenient handler, with modifiers for commonly needed functionality.
 
-## Modifiers
+## Modifiers [toc-pills]
 
 ### moved ( threshold = 4px ) [event-modifier] [touch-modifier] [preview=lg]
 

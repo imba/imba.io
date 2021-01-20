@@ -168,7 +168,7 @@ The fact that tag literals generate real dom nodes means that we can add/remove/
 ##### [preview=lg]
 
 ```imba
-# ~preview=xl
+# [preview=lg]
 import 'util/styles'
 
 # ---
@@ -295,67 +295,59 @@ tag app-dialog
 
 ```
 
-The construct
-# Custom Components
 
-## Defining Components
+# Custom Components
 
 Components are reusable elements with functionality and children attached to them. Components are _just like regular classes_ and uses all the same syntax to declare properties, methods, getters and setters. To create a component, use the keyword `tag` followed by a component name.
 
-### Global Components
-
 ```imba
+# lowercased tags are registered globally and are available
+# anywhere in your project.
 tag app-component
     # add methods, properties, ...
+
+# uppercased tags are not registered globally and must be
+# exported/imported explicitly to be used in your project
+export tag AppComponent
+	# methods, properties, ...
 ```
 
 Components with lowercased names containing at least two words separated by a dash are compiled directly to global [native Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). As long as you have imported the component _somewhere in your code_, you can create instances of the component anywhere.
 
-### Local Components
-
-```imba
-export tag App
-    # add methods, properties, ...
-```
-
 Components whose name begins with an uppercase letter are considered local components. They act just like web components, but are not registered globally, and must be exported + imported from other files to be used in your project. Very useful when you want to define custom components that are local to a subsystem of your application.
 
 ```imba app.imba
+# [preview=md]
+import './controls'
 import {Sidebar} from './sidebar'
 import {Header} from './header'
 
 tag App
     <self>
         <Header>
-        <Sidebar>
+        <Sidebar> <app-button> "Launch"
         <main> "Application"
+
+imba.mount <App>
+```
+
+```imba controls.imba
+# as long as this file is imported somewhere in your project
+# <app-button> will be available anywhere
+tag app-button
+    <self[d:contents]> <button @click.emit-exec> <slot> "Button"
 ```
 
 ```imba sidebar.imba
 export tag Sidebar
-    <self[d:inline-block p:2]> "Sidebar here"
+    <self[d:inline-block p:2]>
+    	"Sidebar here"
+    	<slot>
 ```
 
 ```imba header.imba
 export tag Header
     <self[d:inline-block p:2]> "Header"
-```
-
-## Self & Rendering [wip]
-
-## Nesting Components
-
-You may have multiple tags in one document, and render them within the other tags in the document.
-
-```imba
-tag app-header
-	def render
-		<self>
-			<h1> "Hello World!"
-tag app-root
-	def render
-		<self>
-			<app-header>
 ```
 
 ## Using Slots
@@ -452,7 +444,6 @@ Elements with a reference automatically get a flag with the same name as the ref
 ## Declaring Attributes [wip]
 
 
-# State Management [wip]
 
 # Form Input Bindings
 
@@ -730,7 +721,217 @@ Components also has a bunch of methods that you can call to inspect where in the
 | `rendered?`  | Has component been rendered?                                               |
 | `scheduled?` | Is component scheduled?                                                    |
 
-# Server-side Rendering [wip]
+# Importing Assets
+
+Images, stylesheets and other assets are an important part of any web application. These things are integrated right into imba without any need for external bundlers like webpack or rollup. 
+
+### Importing stylesheets
+
+Even though you can style all of your app using the imba css syntax you might want to import external stylesheets as well. Import these just like you would import any other file.
+
+```imba app.imba
+import './assets/normalize.css'
+
+tag App
+	# ...
+```
+
+In the example above, the content of the normalize.css file will automagically be imported and bundled alongside your other styles.
+
+### Importing images
+
+Any relative url reference you have in your styles will be extracted, hashed, and included with your bundled code.
+
+```imba app.imba
+tag App
+	<self> <div[ bg:url(./logo.png) ]>
+```
+
+Also, relative src attributes on `<img>` elements will automatically be handled as assets
+
+```imba app.imba
+tag App
+	<self> <img src='./logo.png'>
+```
+
+If you want to reference and use these images from your code as well, you can import them:
+
+```imba app.imba
+import logo from './logo.png'
+
+tag App
+	<self> <img src=logo>
+```
+
+These imported assets even have valuable metadata added to them:
+
+```imba app.imba
+import logo from './logo.png'
+
+logo.url # the unique hashed url for this image
+logo.size # size of assets - in bytes
+logo.hash # unique hash of the contents of the asset
+logo.body # the actual contents of the asset - only available on server
+logo.width # width of the imported image
+logo.height # height of the imported image
+
+tag App
+	<self> <img src=logo width=logo.width>
+```
+
+You can also use the dynamic import syntax for assets:
+
+```imba app.imba
+const states = {
+	open: import('./icons/alert-circle.svg')
+	closed: import('./icons/check-circle.svg')
+	archived: import('./icons/package.svg')
+}
+
+<div> for issue in issues
+	<div>
+		<img.icon src=states[issue.state]>
+		<span> issue.title
+```
+
+You can even interpolate these dynamic asset imports in css:
+
+```imba app.imba
+const states = {
+	open: import('./icons/alert-circle.svg')
+	closed: import('./icons/check-circle.svg')
+	archived: import('./icons/package.svg')
+}
+
+<div> for issue in issues
+	<div>
+		<.icon[ bg:{states[issue.state]} ]>
+		<.title> issue.title
+```
+
+### Importing svgs
+
+SVGs can be imported and used just like other image assets described in the previous section. It does include some nice additional things though. You can use SVG images via css and the img-tag, but they really shine when you inline them in your html. Ie, if you want to use SVG images for icons you have to inline them to be able to change their color, stroke-width etc.
+
+So, Imba adds a non-standard `src` attribute to `svg` elements, that magically inlines the actual content of the svg directly in your html.
+
+```imba app.imba
+<div>
+	# the package.svg will now be inlined in this tag
+	<svg src='./icons/package.svg'>
+```
+
+This also allows us to style the contents directly:
+
+```imba app.imba
+<div>
+	# change color on hover
+	<svg[c:gray6 @hover:blue7] src='./icons/package.svg'>
+	# override stroke-width 
+	<svg[stroke-width:4px] src='./icons/check.svg'>
+```
+
+### Importing scripts
+
+Imba will analyze the `src` attribute of `script` elements and automatically package these files for you. So a typical project with server *and* client code will follow this pattern:
+
+```imba server.imba
+# some express server ...
+app.on(/.*/) do(req,res)
+	res.send String <html>
+		<head>
+			<title> "Gobias Industries"
+		<body>
+			<script type="module" src="./client">
+```
+
+```imba client.imba
+# some client code here
+```
+
+When you run `imba server.imba` in the above example, imba will discover the reference to client.imba and create a bundle for the `client.imba` entrypoint. Using [esbuild](https://esbuild.github.io/) in the background, bundling is so fast that it literally happens every time you start your server – *there is no need for a separate build step*.
+
+### Importing workers
+
+Imba aims for zero-configuration bundling even with large projects. You can import scripts as separate assets via a special import syntax.
+
+```imba app.imba
+
+const script = import.worker './compiler'
+# script is now an asset reference to the bundled compiler entrypoint.
+script.url # reference to the unique/hashed url of this script
+script.body # node only - actual contents of the bundle
+
+const worker = new Worker(script.url)
+```
+
+### Custom imports
+
+The `import.worker` syntax shown in the previous section is not a special syntax just for workers. In fact, the `import.anything(...)` is a general way to import something using a specific configuration. You can create such configurations in your `imbaconfig.json`. Imba comes with a few presets:
+
+```imba presets.imba
+export const presets = 
+	node:
+		platform: 'node'
+		format: 'cjs'
+		sourcemap: true
+		target: ['node12.19.0']
+		external: ['dependencies','!imba']
+		
+	web:
+		platform: 'browser'
+		target: ['es2020','chrome58','firefox57','safari11','edge16']
+		sourcemap: true
+		format: 'esm'
+		
+	iife:
+		extends: 'web'
+		format: 'iife'
+		
+	client:
+		extends: 'web'
+		splitting: true
+		
+	worker:
+		format: 'esm'
+		platform: 'worker'
+		splitting: false
+
+```
+
+Most of the properties map directly to [esbuild options](https://esbuild.github.io/api/#simple-options), with some additions for imba specific things. Configuration options will be explained in more detail before final 2.0 release. In most projects you will not need to think about or tweak these configs.
+
+### Future plans
+
+#### Glob imports
+
+We are working on smart glob imports for a future release.
+
+```imba app.imba
+import icons from './feather/*.svg'
+
+# contains all matching assets:
+icons.check
+icons.circle
+...
+```
+
+This will also work directly in src paths, like:
+
+```imba app.imba
+<div> for issue in issues
+	<div>
+		<svg src="./icons/{issue.state}.svg">
+		<div.title> issue.title
+```
+
+#### Importing wasm
+
+Will be part of a future release.
+
+# Server-Side Rendering [wip]
 
 See [ssr-app-imba](https://github.com/imba/ssr-app-imba) repository as an example.
+
+# State Management [wip]
 
