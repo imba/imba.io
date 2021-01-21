@@ -2,6 +2,9 @@
 	"paths": {
 		"icons/*": ["src/assets/icons/*"]
 	},
+	"node": {
+		"external": ["dependencies","imba/compiler"]
+	},
 	"theme": {
 		"fonts": {
 			"mono": ["Source Code Pro", "Consolas", "Menlo", "Monaco", "Courier", "monospace"]
