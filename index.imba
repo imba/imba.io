@@ -1,8 +1,12 @@
 import express from 'express'
-import path from 'path'
-import fs from 'fs'
+import np from 'path'
+import nfs from 'fs'
 
 const app = express!
+
+const imbac = require 'imba/compiler'
+
+import examples from './public/examples.json'
 
 app.get(/__sw(_\d+)?__\.js/) do(req,res)
 	const asset = import('./src/sw/worker.imba?as=webworker')
@@ -15,6 +19,84 @@ app.get(/__blank__\.html/) do(req,res)
 
 app.get(/^\/repl-\d+\//) do(req,res)
 	return res.sendStatus(404)
+
+const indexTemplate = "
+<html>
+	<head>
+		<meta charset='UTF-8'>
+		<title>Playground</title>
+		<script>try \{ window.frameElement.replify(this) \} catch(e)\{\}</script>
+		<link href='/preflight.css' rel='stylesheet'>
+	</head>
+	<body>
+		<script type='module' src='/examples/helpers.imba'></script>
+		<script type='module' src='./index.imba'></script>
+	</body>
+</html>"
+
+const ResolveMap = {
+	'imba': import('./src/imba.imba?as=web,module').url
+	'imdb': '/imdb.js'
+}
+
+def compileImba file
+	try
+		let body = file.body
+		# enforce tabs
+		body = body.replace(/[ ]{4}/g,'\t')
+		# rewrite certain special things
+		body = body.replace(/# @(show|log)( .*)?\n(\t*)/g) do(m,typ,text,tabs)
+			m + "${typ} '{(text or '').trim!}', "
+		body = body.replace(/from 'imdb'/g,'from "/imdb.js"')
+		body = body.replace(/(import [^\n]*')(\w[^']*)(?=')/g) do(m,start,path)
+			# console.log 'rewrite',path,'to',"/repl/examples/{path}"
+			start + "/examples/{path}"
+
+		let result = imbac.compile(body,{
+			platform: 'web',
+			sourcePath: file.path,
+			format: 'esm',
+			resolve: ResolveMap
+		})
+		file.js = result.toString!
+	catch e
+		console.log 'error compiling',e,file.path
+		return
+	return file.js
+
+
+# responding to the code
+app.get('/examples/*') do(req,res)
+	let path = req.url
+	let file = examples[path]
+	let nohtml = path.replace(/\.html$/,'')
+	let ext = np.extname(path)
+	console.log "responding to",req.url,path,!!file
+
+	if !file and examples[nohtml]
+		res.type('html')
+		return res.send indexTemplate.replace("index.imba",np.basename(nohtml))
+
+	if !file and examples[path + '.imba']
+		file = examples[path = (path + (ext = '.imba'))]
+
+	if file
+		let body = file.body
+		
+		if ext == '.imba'
+			# console.log 'compile imba file',path
+			unless file.js
+				file.path ||= path
+				compileImba(file)
+			
+			body = file.js
+			res.type('js')
+
+		return res.send(body)
+	
+	return res.sendStatus(404)
+
+
 
 # app.get('/__sw__.html') do(req,res)
 # 	let js = assets['__sw__bridge.js']

@@ -241,8 +241,8 @@ tag app-repl-preview
 		
 	set file data
 		return unless data
-		sw.load!.then do
-			url = data.path.replace('.imba','.imba.html')
+		# sw.load!.then do
+		url = data.path.replace('.imba','.imba.html')
 
 	set dir data
 		if $dir = data
@@ -256,8 +256,4 @@ tag app-repl-preview
 	def refresh
 		return unless url
 		$refreshed = yes
-		let src = `{sw.scope}{url}`
-		try
-			$iframe.src = src
-		catch e
-			sw.load!.then do $iframe.src = src
+		$iframe.src = url

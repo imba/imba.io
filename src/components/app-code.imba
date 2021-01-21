@@ -3,6 +3,7 @@ import * as sw from '../sw/controller'
 import {ls,fs} from '../store'
 
 global css @root
+	
 	--code-color: #e3e3e3;
 	--code-identifier: #9dcbeb;
 	--code-constant: #8ab9ff # #d7bbeb;
@@ -312,7 +313,7 @@ tag app-code-block < app-code
 		let parts = getElementsByTagName('code')
 		for part,i in parts
 			let data = {
-				name: part.dataset.name or "example.{part.dataset.lang}"
+				name: part.dataset.name or "index.{part.dataset.lang}"
 				lang: part.dataset.lang
 				body: clean(part.textContent)
 			}

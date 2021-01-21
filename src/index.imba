@@ -103,7 +103,7 @@ tag app-root
 			if doc
 				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
-			<div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
+			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 			
 
 # Should add the colors etc to the root css here

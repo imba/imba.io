@@ -15,6 +15,10 @@ const data = {
 	children: []
 }
 
+const examples = {
+
+}
+
 const models = { }
 const map = {'.': data}
 const watcher = chokidar.watch(root)
@@ -32,6 +36,10 @@ def save
 	let js = "globalThis['{bundle}.json'] = {json}"
 	# fs.writeFileSync(path.resolve(dest,"{bundle}.json"),json)
 	fs.writeFileSync(path.resolve(dest,"{bundle}.json.js"),js)
+
+	let examples-json = JSON.stringify(examples,null,2)
+	# let js = "globalThis['{bundle}.json'] = {json}"
+	fs.writeFileSync(path.resolve(dest,"examples.json"),examples-json)
 	
 
 watcher.on('all') do
@@ -87,6 +95,9 @@ watcher.on('all') do
 			Object.assign(item,md)
 			item.name = name
 
+			if md.#files
+				Object.assign(examples,md.#files)
+
 			if item.hidden
 				return
 
@@ -103,6 +114,12 @@ watcher.on('all') do
 				for own k,v of md
 					up[k] = v
 				return
+		
+		else
+			console.log 'file',rel
+			examples["/" + src] = {
+				body: item.body
+			}
 	
 	if item
 		# item.path = '/' + src

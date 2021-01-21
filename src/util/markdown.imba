@@ -105,9 +105,6 @@ def renderer.heading text, level
 		
 		return ''
 
-	if level == 1
-		console.log 'heading',text
-
 	if let n = text.match(/^-+\s/)
 		meta.nesting = n[0].length
 		meta.level += meta.nesting
@@ -171,6 +168,11 @@ def renderer.code code, lang, opts = {}
 		let meta = {}
 		let flags = []
 
+		for file in files
+			let path = "/examples{dir}/{nr}/{file.name or "index.{file.lang or 'imba'}"}"
+			state.files[path] = {body: file.code, lang: file.lang}
+
+
 		if last and last.hlevel
 			meta = JSON.parse(JSON.stringify(last.options))
 
@@ -212,6 +214,8 @@ export def render content, o = {}
 	state = {
 		toc: object.toc
 		headings: []
+		snippets: []
+		files: {}
 	}
 
 	let opts = {
@@ -254,6 +258,9 @@ export def render content, o = {}
 	object.type
 	let prev = object
 	let intro = segments[0]
+
+	console.log 'snippets',state.snippets.length,Object.keys(state.files)
+	object.#files = state.files
 
 	for html,i in segments.slice(1)
 		let up = prev

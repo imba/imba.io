@@ -13,3 +13,4 @@ www/index.html
 www/dist
 
 public/content.json.js
+public/examples.json
