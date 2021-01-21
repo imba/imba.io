@@ -499,7 +499,8 @@ imba.mount do <section[gap:2]>
 import 'util/styles'
 
 # ---
-let a=1, b=2
+let a=1
+let b=2
 
 imba.mount do <div.group>
     <input type='number' min=0 max=100 bind=a/> " + "
@@ -510,7 +511,7 @@ imba.mount do <div.group>
 ##### checkbox [preview=md]
 
 ```imba
-# ~preview
+# [preview=md]
 import 'util/styles'
 # ---
 let bool=no
@@ -524,7 +525,7 @@ imba.mount do <section>
 ##### checkbox with array [preview=md]
 
 ```imba
-# ~preview
+# [preview=md]
 import {genres} from 'imdb'
 import 'util/styles'
 
@@ -545,7 +546,7 @@ imba.mount do <section>
 ##### radio
 
 ```imba
-# ~preview
+# [preview=md]
 import {genres} from 'imdb'
 import 'util/styles'
 
@@ -566,7 +567,7 @@ imba.mount do <section>
 ##### select
 
 ```imba
-# ~preview=md
+# [preview=md]
 import {genres} from 'imdb'
 import 'util/styles'
 
@@ -585,7 +586,7 @@ imba.mount do <section>
 ##### multiselect
 
 ```imba
-# ~preview=lg
+# [preview=lg]
 import {genres} from 'imdb'
 import 'util/styles'
 
@@ -607,7 +608,7 @@ imba.mount do <section>
 ##### button
 
 ```imba
-# ~preview=md
+# [preview=md]
 import {genres} from 'imdb'
 import 'util/styles'
 
@@ -627,7 +628,7 @@ Buttons bound to data behave just like checkboxes. A `checked` class indicates w
 ##### custom elements
 
 ```imba
-# ~preview=lg
+# [preview=lg]
 import 'util/styles'
 
 # ---
@@ -655,7 +656,7 @@ imba.mount do <section>
 ##### combination
 
 ```imba
-# ~preview=xl
+# [preview=xl]
 import {genres} from 'imdb'
 import 'util/styles'
 
