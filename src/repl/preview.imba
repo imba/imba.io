@@ -26,11 +26,13 @@ tag app-repl-preview
 			$doc = $win.document
 
 			win.expose = do(example)
+				
 				let items = []
 				for own key,value of (example.actions or example)
 					if value isa win.Function
 						items.push(name: key, exec: value)
 				commands = items
+				render!
 
 			let {log,info} = win.console.log
 			if $console
