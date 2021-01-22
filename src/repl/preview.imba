@@ -12,16 +12,25 @@ tag app-repl-preview
 	prop scale = 1
 	prop size = 'auto-auto'
 	prop mode
+	prop options = {}
 
 	def build
 		t0 = Date.now!
 		$iframe = <iframe[pos:absolute width:100% height:100% min-width:200px]>
 		$iframe.src = 'about:blank'
+		commands = []
 
 		$iframe.replify = do(win)
 			# console.log 'replify',win.ServiceSessionID,win.navigator.serviceWorker.controller
 			$win = win # $iframe.contentWindow
 			$doc = $win.document
+
+			win.expose = do(example)
+				let items = []
+				for own key,value of (example.actions or example)
+					if value isa win.Function
+						items.push(name: key, exec: value)
+				commands = items
 
 			let {log,info} = win.console.log
 			if $console
@@ -215,10 +224,43 @@ tag app-repl-preview
 	def unmount
 		$entered = $refreshed = no
 
+	css .tools
+		pos:absolute t:0 r:0 zi:100 bg:blue5 rd:md
+		svg m:1 w:4 h:4 c:white
+	
+	css .body rd:inherit
+
+	css .titlebar
+		pos:relative rdt:md bg:gray3 d:hflex a:center p:2 px:1 j:flex-end
+		& + .body rdt:0
+		.tool c:gray6 p:1 fw:500 us:none fs:sm
+			svg w:3 h:3 c:gray5 stroke-width:3px
+			@hover c:blue5 cursor:pointer
+				svg c:blue5
+		.cmd
+			rd:md bg:gray1 px:1.5 py:0 c:gray7 tween:all 0.1s mx:1 bxs:xs
+			@before content:"run " o:0.8 fw:400
+			suffix:"()"
+			@hover bg:white c:blue7 
+			@active bg:gray1 bxs:outline
+			
+
+	def execCommand command
+		if command.exec
+			command.exec!
+		return
+
 	def render
 		recalc!
 		<self @intersect.silence.in=entered>
-			<div$body[flex:1 rd:inherit] @click=toggle>
+			if options.window or options.rerun
+				<.titlebar>
+					# <.tools[pos:abs]>
+					for command in commands
+						<.tool.cmd @click=execCommand(command)> command.name
+					<div[fl:1]>
+					<.tool .on=(options.rerun) @click=rerun> <svg src='icons/refresh-cw.svg'>
+			<div$body[flex:1] @click=toggle>
 				<div$bounds[rd:inherit] @resize=reflow>
 					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px rd:inherit] @click.stop>
 						$iframe
@@ -252,6 +294,9 @@ tag app-repl-preview
 
 	def urlDidSet url, prev
 		refresh! if $entered
+
+	def rerun
+		refresh!
 
 	def refresh
 		return unless url

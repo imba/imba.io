@@ -309,6 +309,7 @@ tag app-code-block < app-code
 		let path = "/examples{dataset.path}"
 
 		Object.assign(options,meta)
+		
 
 		let parts = getElementsByTagName('code')
 		for part,i in parts
@@ -321,6 +322,10 @@ tag app-code-block < app-code
 			files.push(file)
 
 		file = files[0]
+
+		if file.name == 'main.imba'
+			options.preview ||= 'md'
+
 		render!
 
 	def mount
@@ -387,6 +392,6 @@ tag app-code-block < app-code
 					if file
 						<code.code.{file.highlighted.flags}> <pre$pre innerHTML=file.highlighted.html>
 				if options.preview or (name == 'main.imba')
-					<app-repl-preview$preview file=files[0] dir=dir mode=options.preview>
+					<app-repl-preview$preview file=files[0] dir=dir options=options mode=options.preview>
 
 tag app-code-inline < app-code

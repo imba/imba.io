@@ -30,7 +30,10 @@ const indexTemplate = "
 	</head>
 	<body>
 		<script type='module' src='/examples/helpers.imba'></script>
-		<script type='module' src='./index.imba'></script>
+		<script type='module'>
+			import * as example from './index.imba';
+			try \{ window.expose(example || \{\});\} catch(e)\{\}
+		</script>
 	</body>
 </html>"
 
@@ -174,4 +177,5 @@ app.get(/\.*/) do(req,res)
 
 # pass through imba serve to automatically
 # serve assets in an optimised manner
+
 imba.serve app.listen(process.env.PORT or 5000)

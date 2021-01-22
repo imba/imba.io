@@ -125,7 +125,7 @@ tag doc-section
 		&.h1 fs:34px/1.4 fw:600 pb:2
 		&.h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0
 		&.h3 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:0
-		&.h4 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:0
+		&.h4 fs:20px/1.2 fw:500 pb:2 bwb:0px mb:0
 
 		&.zl1 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
 		&.zh2.zl2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
