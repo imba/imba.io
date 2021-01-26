@@ -18,7 +18,7 @@
     "node": ">=13.10.0"
   },
   "scripts": {
-    "start": "imba -m index.imba",
+    "start": "imba -w index.imba",
     "dev": "imba -w index.imba",
     "build": "imba scripts/bundle-content.imba && imba build index.imba",
     "watch": "imba scripts/bundle-content.imba -- -w",
@@ -38,7 +38,7 @@
     "@types/node": "^13.11.1",
     "chokidar": "^3.3.1",
     "express": "^4.17.1",
-    "imba": "^2.0.0-alpha.112",
+    "imba": "^2.0.0-alpha.113",
     "marked": "^0.7.0"
   }
 }
