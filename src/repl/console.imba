@@ -171,7 +171,6 @@ tag repl-console
 		let prev = #lastItem
 
 		if prev and (Date.now! - prev.ts) < 300 and checkDataEquality(prev.data,params)
-			console.log 'should just increment the previous item!'
 			prev.repeats++
 			prev.render!
 			return
