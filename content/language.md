@@ -20,7 +20,7 @@ In Imba DOM elements _and_ CSS are treated as first-class citizens. DOM elements
 
 ## Installation
 
-```
+```sh
 npm install -g imba@pre
 git clone --bare https://github.com/imba/imba-starter-app
 cd imba-starter-app
@@ -49,14 +49,6 @@ Did you miss a meeting? No worries, catch up via the [meeting notes](https://doc
 
 Imba's minimal syntax makes it quick and flexible. Learn all the details in the [Language](/language/introduction) section.
 
-## Variables
-```imba
-const name = 'imba'
-let version = '2.0.0'
-let [one,two,three] = [1,2,3]
-let {width,height} = window.screen
-```
-
 ## Literals
 
 ```imba
@@ -67,6 +59,10 @@ let bool = yes
 let string = 'the answer is 42'
 let dynamic = "the answer is {number}"
 let template = `the answer is {number}`
+
+# dimensions
+let length = 20px
+let duration = 150ms
 
 let regex = /answer is (\d+)/
 let array = [1,2,3]
@@ -84,6 +80,14 @@ let func = do(a,b) a * b
 
 # callbacks
 [1,2,3].map do(item) item * 2
+```
+
+## Variables
+```imba
+const name = 'imba'
+let version = '2.0.0'
+let [one,two,three] = [1,2,3]
+let {width,height} = window.screen
 ```
 
 ## Methods
@@ -207,6 +211,25 @@ tag todo-app
     def render
         <self> for todo in todos
             <div.item .done=todo.completed> <span> todo.title
+```
+
+### Inline Selectors
+```imba
+import {todos} from './data.imba'
+
+tag todo-app
+    css .item color:gray8 bg@hover:gray1
+    css .item.done color:green8 text-decoration:line-through
+
+    def render
+        <self>
+            <div.header>
+				css .tab # scoped to tags inside header
+                    l:flex mx:2 py:1 c:teal6 fw:500 bb:2px solid teal6/0
+					&.active c:teal7 bbc:teal6
+                <a.tab @click.emit('showide')> "Try"
+                <a.tab href='https://github.com/imba/imba'> "GitHub"
+                <a.tab href='https://discord.gg/mkcbkRw'> "Chat"
 ```
 
 ### File Styles
@@ -502,6 +525,17 @@ method`string text {expression} string text`
 
 Tagged templates from JavaScript are on the roadmap, but not currently supported.
 
+### Dimension Strings
+
+```imba
+let length = 100px
+let progress = 87%
+let delay = 150ms
+let took = 1.4s
+let dynamic = (window.innerWidth)px
+```
+Dimensions are numbers with a unit attached to it. They are compiled and treated as regular strings. When dealing with styles it is nice to be able to write `offset = (point.x)px` instead of `offset = "{point.x}px"`.
+
 ## Numbers
 
 ```imba
@@ -533,6 +567,9 @@ const infiniteNum    = Number.POSITIVE_INFINITY
 const negInfiniteNum = Number.NEGATIVE_INFINITY
 const notANum        = Number.NaN
 ```
+
+
+
 
 ## Arrays
 
