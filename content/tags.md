@@ -640,7 +640,23 @@ imba.mount do
         <span> "Rendered on click {Math.random!}"
         <Clock>
 ```
-As you can see, the clock is actually updating every second. It is a little cumbersome to setup and teardown the intervals though, and since this is a pretty common pattern, Imba has a better way to do this. Let's create a proper clock:
+As you can see, the clock is actually updating every second. It is a little cumbersome to setup and teardown the intervals though, and since this is a pretty common pattern, Imba has a better way to do this, using the `autorender` property.
+
+```imba
+# [preview=md]
+import 'util/styles'
+# ---
+tag Clock
+    css d:block p:2 bd:1px solid gray4 m:2 ta:center
+    <self> <span> (new Date).toLocaleString!
+
+imba.mount do
+    <div @click.log('clicked')>
+        <span> "Rendered on click {Math.random!}"
+        <Clock autorender=1s>
+```
+
+Let's create some proper clocks, and show a few autorender values:
 
 ```imba
 # [preview=xl]
@@ -649,9 +665,6 @@ global css body d:block
 # ---
 tag app-clock
 	prop utc
-
-	def mount do #interval = setInterval(render.bind(self),1000)
-	def unmount do clearInterval(#interval)
 	
 	def render
 		let ts = Date.now! / 60000 + utc * 60
@@ -662,13 +675,11 @@ tag app-clock
 
 imba.mount do
     <div.clocks>
-        <app-clock title='New York' utc=-5>
-        <app-clock title='San Fran' utc=-8>
-        <app-clock title='London' utc=0>
-        <app-clock title='Tokyo' utc=9>
+        <app-clock autorender=1s title='New York' utc=-5>
+        <app-clock autorender=500ms title='San Fran' utc=-8>
+        <app-clock autorender=10fps title='London' utc=0>
+        <app-clock autorender=60fps title='Tokyo' utc=9>
 ```
-
-> Example will be updated together with the new autoscheduling API coming soon.
 
 # Form Input Bindings
 
