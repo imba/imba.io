@@ -530,11 +530,18 @@ Tagged templates from JavaScript are on the roadmap, but not currently supported
 ```imba
 let length = 100px
 let progress = 87%
-let delay = 150ms
-let took = 1.4s
 let dynamic = (window.innerWidth)px
 ```
 Dimensions are numbers with a unit attached to it. They are compiled and treated as regular strings. When dealing with styles it is nice to be able to write `offset = (point.x)px` instead of `offset = "{point.x}px"`.
+
+Time-based units `ms`, `s`, and `fps` are compiled to millisecond-based numbers.
+
+```imba
+10s # 10000
+250ms # 250
+5s - 150ms # 4850
+60fps # 16.66666
+```
 
 ## Numbers
 
@@ -568,8 +575,16 @@ const negInfiniteNum = Number.NEGATIVE_INFINITY
 const notANum        = Number.NaN
 ```
 
+#### Durations
 
+Numbers with time units `ms`, `s`, and `fps` are normalised to milliseconds.
 
+```imba
+10s # 10000
+250ms # 250
+5s - 150ms # 4850
+60fps # 16.66666
+```
 
 ## Arrays
 
