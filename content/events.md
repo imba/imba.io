@@ -1012,7 +1012,30 @@ imba.mount <App.frame>
 
 # Resize Events
 
-## Modifiers
+The [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) interface reports changes to the dimensions of an Element's content or border box. It has [good browser support](https://caniuse.com/#feat=resizeobserver) and is very useful in a wide variety of usecases. ResizeObserver avoids infinite callback loops and cyclic dependencies that are often created when resizing via a callback function. It does this by only processing elements deeper in the DOM in subsequent frames.
+
+## Properties
+
+| table  |  |
+| --- | --- |
+| `event.entry` | Returns the [ResizeObserverEntry](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry) |
+| `event.rect` | A DOMRectReadOnly object containing the new size of the observed element when the callback is run. |
+
+## Examples
+
+```imba
+# [preview=md]
+import 'util/styles'
+# ---
+tag App
+	prop box = {}
+
+	<self[d:block inset:0 ta:center]>
+		<div[fs:sm]> "Size is {box.width} - {box.height}"
+		<textarea[w:100px h:40px resize:both] @resize=(box=e.rect)>
+
+imba.mount <App>
+```
 
 # Selection Events
 
