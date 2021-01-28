@@ -43,7 +43,7 @@ const handler = console.log.bind(console)
 
 Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
 
-## Core Modifiers [toc-pills]
+## Core Modifiers [toc-pills] [slug=core]
 
 ### prevent [event-modifier] [snippet]
 
@@ -174,7 +174,7 @@ imba.mount <App>
 If you try to select the "Default" text you will see that both the `App` and the `Filter` elements re-render. This happens because `App` is mounted via `imba.mount` which automatically schedules the element to render after events, and the Filter is rendered when `App` is rendered since it is a descendant of `App`. Now if you select text in the "Silent" input, it too has an event handler for the same event, but we've added a `.silence` modifier. This prevents the handler from automatically re-rendering scheduled elements after the event.
 
 
-## Utility Modifiers [toc-pills]
+## Utility Modifiers [toc-pills] [slug=util]
 
 #### wait ( duration = 250ms ) [event-modifier] [snippet]
 

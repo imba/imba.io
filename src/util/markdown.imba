@@ -28,12 +28,12 @@ let slugmap = {
 }
 
 let slugify = do(str)
+	str = (str.split('(')[0] or str)
 	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
 
 
 	let from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
 	let to   = "aaaaaeeeeiiiioooouuuunc------"
-
 
 	str = str.replace(/[\|\=\&\?\!\>\<\~\/\*\^\%]+/g) do
 		$1.split('').map(do slugmap[$1]).join('-')
@@ -41,6 +41,8 @@ let slugify = do(str)
 	str = str.replace(/[^a-z0-9 -]/g, '') # remove invalid chars
 	str = str.replace(/\s+/g, '-') # collapse whitespace and replace by -
 	str = str.replace(/-+/g, '-') # collapse dashes
+
+	
 	return str
 
 let unescape = do(code)
