@@ -210,7 +210,7 @@ imba.mount do <fieldset>
 
 #### debounce ( duration = 250ms ) [event-modifier] [snippet]
 
-The `deboounce` modfiier ensures that a minimum amount of time has elapsed after the user stops interacting and before calling the handler. This is especially useful, for example, when querying an API and not wanting to perform a request on every keystroke.
+The `debounce` modifier ensures that a minimum amount of time has elapsed after the user stops interacting and before calling the handler. This is especially useful, for example, when querying an API and not wanting to perform a request on every keystroke.
 
 In this example, the fetch will only occur 250ms after the user stops typing.
 
