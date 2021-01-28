@@ -178,7 +178,7 @@ If you try to select the "Default" text you will see that both the `App` and the
 
 #### wait ( duration = 250ms ) [event-modifier] [snippet]
 
-The `wait` modifier delays the execution of subsequent modifiers and callback. It defaults to wait for 250ms, which can be overridden by passing a number as the first/only argument.
+The `wait` modifier delays the execution of subsequent modifiers and callback. It defaults to wait for 250ms, which can be overridden by passing a number or time as the first/only argument.
 
 ```imba
 # [preview=sm]
@@ -188,8 +188,8 @@ import 'util/styles'
 # delay subsequent modifiers by duration
 imba.mount do <div.group>
 	<button @click.wait.log('!')> 'wait'
-	<button @click.wait(100).log('!')> 'wait 100ms'
-	<button @click.log('!').wait(500).log('!!')> 'waith 500ms'
+	<button @click.wait(100ms).log('!')> 'wait 100ms'
+	<button @click.log('!').wait(500ms).log('!!')> 'waith 500ms'
 ```
 
 In isolation the `wait` modifier might not seem very useful, but in combination with throttling and chained listeners it becomes quite powerful.
@@ -203,8 +203,33 @@ import 'util/styles'
 # ---
 # disable handler for duration after triggered
 imba.mount do <fieldset>
-	<button @click.throttle(1000).log('clicked')> 'click me'
+	<button @click.throttle(1s).log('clicked')> 'click me'
 	<div> "Not clickable within 1 second of previous invocation."
+```
+
+
+#### debounce ( duration = 250ms ) [event-modifier] [snippet]
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+imba.mount do <fieldset>
+	# ---
+	<input @input.debounce.log('fetch')>
+	# ---
+	<div> "Fire after no changes for 250ms"
+```
+
+The event will also include a `debounced` property which is an array consisting of all the events leading up to the final debounced event.
+
+```imba
+# [preview=sm]
+import 'util/styles'
+imba.mount do <fieldset>
+	# ---
+	let handler = do(e) console.log('debounced',e.debounced.length)
+	<button @mousemove.debounce(250ms)=handler> 'Move mouse here'
 ```
 
 
@@ -346,7 +371,7 @@ import 'util/styles'
 imba.mount do
 	<div.group>
 		<button @click.flag-busy> 'flag self'
-		<button @click.flag-busy('div').wait(1000)> 'flag div'
+		<button @click.flag-busy('div').wait(1s)> 'flag div'
 # Optionally supply a selector / element to flag
 ```
 
