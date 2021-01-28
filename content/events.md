@@ -542,6 +542,34 @@ imba.mount do
 
 To make it easier and more fun to work with touches, Imba includes a custom `touch` event that combines `pointerdown` -> `pointermove` -> `pointerup/pointercancel` in one convenient handler, with modifiers for commonly needed functionality.
 
+```imba
+# [preview=md]
+import 'util/styles'
+css .rect pos:absolute inset:4
+tag Example
+	<self>
+		# ---
+		<div.rect @touch=(x=e.x,y=e.y)> "x={x} y={y}"
+		# ---
+imba.mount do <Example[d:contents]>
+```
+
+The `event` emitted by this handler is not an event, but a `Touch` object, that remains the same across the whole touch. 
+
+## Properties
+
+| table  |  |
+| --- | --- |
+| `e.event` | The last/current event in this touch |
+| `e.target` | The element that initiated this touch |
+| `e.events` | Array of all the events that are part of this touch |
+| `e.x` | Normalized x coordinate for the pointer |
+| `e.y` | Normalized y coordinate for the pointer |
+| `e.elapsed` | The time elapsed since pointerdown started (in milliseconds) |
+
+
+You can add arbitrary properties to the touch object if you need to keep track of things across the many events that will be triggered during this touch.
+
 ## Modifiers [toc-pills]
 
 ### moved ( threshold = 4px ) [event-modifier] [touch-modifier] [preview=lg]
