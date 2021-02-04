@@ -261,7 +261,7 @@ tag doc-section
 			.{data.flagstr}
 			.as-link=(linked)
 			.hide=(query and !data.match(query))
-			@intersect("-70px 0% -20% 0%")=intersecting
+			@intersect("-70px 0% -20% 0%").silent=intersecting
 		>
 
 			if data.head
@@ -348,7 +348,7 @@ tag app-document
 		let doc = data
 		return unless doc	
 
-		<self.markdown[d:block pb:24 d:hflex] @refocus=refocus>
+		<self.markdown[d:block pb:24 d:hflex] @refocus.silent=refocus>
 			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
 				<div$content>
 					<doc-section $key=doc.id data=doc level=0>

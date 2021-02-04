@@ -14,6 +14,10 @@ import * as sw from './sw/controller'
 tag app-root
 	prop doc
 
+	def setup
+		yes
+		# console.log 'setting up app-root'
+
 	def mount
 		await sw.load!
 		return
@@ -81,11 +85,10 @@ tag app-root
 		self
 
 	def render
-
 		if path != router.url.pathname
 			go(router.url.pathname)
 
-		let repl = router.match('/examples')
+		let repl = router.match('/try')
 
 		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show!>
 			<div.header>
@@ -93,18 +96,19 @@ tag app-root
 					<svg[h:100%] src='./assets/logo.svg'>
 				<div[flex: 1]>
 				<div[d:flex cursor:pointer]>
-					<a.tab @click.emit('showide')> "Try"
+					<a.tab @click.emit-showide> "Try"
 					<a.tab href='https://github.com/imba/imba'> "GitHub"
 					<a.tab href='https://discord.gg/mkcbkRw'> "Chat"
 				<div.handle @click=($menu.focus!)> "☰"
 
-			<app-repl$repl id='repl' fs=fs route='/examples' .nokeys=!repl>
+			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl>
 			<app-menu$menu>
 			if doc
 				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
-			
+
+imba.mount <app-root>
 
 # Should add the colors etc to the root css here
 global css

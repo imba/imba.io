@@ -45,6 +45,9 @@ export def highlight str,lang
 	# console.log 'lines',lines
 	if lines[0].indexOf('# ~') == 0
 		lines.shift!.replace(/~(\w+)(?:\=([^\s]+))?/g) do(m,flag,val) flags[flag] = val or yes
+	
+	if lines[0].indexOf('# [') == 0
+		lines.shift! # .replace(/~(\w+)(?:\=([^\s]+))?/g) do(m,flag,val) flags[flag] = val or yes
 
 	for line,i in lines
 		# if line[0] == '~'

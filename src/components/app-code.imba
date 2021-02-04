@@ -265,7 +265,7 @@ tag app-code-block < app-code
 		h:100%
 		w:$doc-margin
 		pl:4
-		>>> .frame shadow:xs rd:inherit
+		>>> .frame rd:inherit
 		>>> .controls d:none
 
 		pos:relative
@@ -278,7 +278,6 @@ tag app-code-block < app-code
 		max-width:initial
 		rd:sm
 		content: "hello"
-
 		>>> $console $header d:none
 
 	css &.console
@@ -370,12 +369,9 @@ tag app-code-block < app-code
 		render!
 
 	def openInEditor
-		router.go(file.path)
+		router.go(ide: file.path)
 		self
 
-	css code d:flex
-		> pre w:100px
-	
 	def render
 		return unless code or file
 		let name = (files[0] && files[0].name or '')
@@ -384,14 +380,20 @@ tag app-code-block < app-code
 		<self.{options.preview}.{fflags} .multi=(files.length > 1) @pointerover.silence=pointerover>
 			<main>
 				<div$editor.code[min-height:{editorHeight}px] @resize=editorResized>
-					<$header .collapsed=(files.length < 2)>
-						<div.tabs> for item in files
+					<div .collapsed=(files.length < 2)>
+						css pos:relative zi:2 bg:#3d4253
+							c:gray6 fs:sm fw:500 rdt:inherit d:hflex
+							.item d:block c:gray6 c.on:blue3 py:0.25 mx:1 td:none
+						<div[d:hflex ..collapsed:none px:2 py:1].tabs> for item in files
 							<a.tab.item .on=(file==item) @click.stop.silence=openFile(item)> item.name
-						<div.actions>
+						<div[ml:auto px:2 py:1 zi:2].actions>
 							<div.item @click=openInEditor> 'open'
+						css	&.collapsed .actions pos:abs t:0 r:0
 					if file
-						<code.code.{file.highlighted.flags}> <pre$pre innerHTML=file.highlighted.html>
+						<code[d:flex].code.{file.highlighted.flags}>
+							<pre$pre[w:100px] innerHTML=file.highlighted.html>
 				if options.preview or (name == 'main.imba')
 					<app-repl-preview$preview file=files[0] dir=dir options=options mode=options.preview>
+				
 
 tag app-code-inline < app-code

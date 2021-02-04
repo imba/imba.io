@@ -1,4 +1,4 @@
-export const genres = [
+export const genres2 = [
 	"Action",
 	"Adventure",
 	"Animation",
@@ -19,7 +19,13 @@ export const genres = [
 	"Western"
 ]
 
-export const categories = [
+const idmap = {}
+
+export function get(id){
+    return idmap[id];
+}
+
+export const genres = [
 	{title:"Action",color: '#1c5568' },
 	{title:"Adventure",color: '#093229' },
 	{title:"Animation",color: '#f2dea7' },
@@ -30,15 +36,29 @@ export const categories = [
 	{title:"Family",color: '#e5c865' },
 	{title:"Fantasy",color: '#d1e15f' },
 	{title:"History",color: '#cc4534' },
+    {title:"Horror",color: '#cc4534' },
 	{title:"Music",color: '#2b8656' },
 	{title:"Musical",color: '#296e5f' },
 	{title:"Mystery",color: '#2e2440' },
 	{title:"Romance",color: '#b01534' },
-	{title:"SciFi",color: '#97cb5c' },
+	{title:"Sci-Fi",color: '#97cb5c' },
 	{title:"Thriller",color: '#1b396c' },
+    {title:"Film-Noir",color: '#1b396c' },
+    {title:"Sport",color: '#1b396c' },
 	{title:"War",color: '#42192a' },
 	{title:"Western",color: '#436467' }
 ]
+
+for(let item of genres) {
+    item.id = item.title.toLowerCase();
+    item.movies = [];
+    genres[item.id] = item;
+}
+
+genres.fetch = async function(id){
+    await new Promise(v=> setTimeout(v,500));
+    return genres[id];
+}
 
 export const movies = [
 	{
@@ -8007,3 +8027,21 @@ export const movies = [
 		"rating": 8.3
 	}
 ]
+
+let movienr = 0;
+
+for(let item of movies) {
+    item.genres = item.genres.map((v)=>{
+        let key = v.toLowerCase();
+        if(!genres[key]) console.log('category not found',key);
+        return genres[key];
+    });
+    for(let cat of item.genres){
+        cat.movies.push(item);
+    }
+	item.ref = item.title.toLowerCase();
+    item.movies = [];
+    item.id = movienr++;
+};
+
+genres.top = genres.slice().sort((a,b)=> b.movies.length - a.movies.length).slice(0,5);

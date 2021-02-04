@@ -1,4 +1,3 @@
-import { @commit } from './decorators'
 import {highlight} from './util/highlight'
 
 export const raw = global['content.json']
@@ -7,8 +6,8 @@ export const paths = {}
 export const groups = {}
 export const types = {}
 
-window.paths = paths
-window.files = files
+global.paths = paths
+global.files = files
 
 let root = null
 let counter = 1
@@ -18,9 +17,8 @@ const extToLanguage =
 	html: 'html'
 
 class Entry
-	
-	@commit prop dirty
-	@commit prop hasErrors
+	prop dirty @set imba.commit!
+	prop hasErrors @set imba.commit!
 
 	static def create data, parent
 		let typ = types[data.type] or Entry

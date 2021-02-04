@@ -39,9 +39,29 @@ tag app-divider
 
 tag app-repl
 	prop fs
-	@watch prop project
-	@watch prop currentFile
-	@watch prop url
+	
+	prop project @set
+		if e.value
+			if (!currentFile or currentFile.parent != e.value)
+				currentFile = e.value.files[0]
+			run!
+		
+	prop currentFile @set
+		console.log 'current file did set',e
+
+		if monaco and e.value
+			monaco.setModel(e.value.model)
+
+		project = e.value.parent
+		if !project.childByName('index.html') and !project.childByName('app.imba')
+			run!
+	
+	prop url @set
+		let src = `{sw.scope}{e.value}`
+		try
+			$iframe.src = src
+		catch e
+			sw.load!.then do $iframe.src = src
 
 	get monaco
 		return $monaco if !global.monaco or $monaco or !$editor
@@ -53,7 +73,8 @@ tag app-repl
 	
 	def build
 		examples = ls('/examples')
-		$placeholder = self # for the router
+		#placeholder__ = self
+		# $placeholder = self # for the router
 		$options = {lineNumbers: true}
 
 		$iframe = <iframe.(position:absolute width:100% height:100%)>
@@ -126,18 +147,22 @@ tag app-repl
 		document.body.focus!
 		router.go(#parent.doc ? #parent.doc.href : "/")
 
-	def routeDidResolve match, prev,last
-		let item = ls(match.url)
+	def routeDidResolve route,match
+		let src = router.pathname.slice(4)
+		console.log 'routeDidResolve',match,src
+		let item = ls(src)
 		if item isa File
 			currentFile = item
 		elif item isa Dir
 			if item.files[0]
-				router.go(item.files[0].path)
+				router.go("/try" + item.files[0].path)
 				render!
 
 	def show
-		router.go(currentFile ? currentFile.path : '/examples/apps/playground/app.imba')
-
+		let param = currentFile ? currentFile.path : '/examples/apps/playground/app.imba'
+		# how can we make it not replace - but instead go to new url?
+		router.go("/try{param}")
+		# router.go(currentFile ? currentFile.path : '/examples/apps/playground/app.imba')
 
 	css bg:var(--code-bg) overscroll-behavior: contain
 		$sidebar-width:200px
@@ -167,27 +192,6 @@ tag app-repl
 		flex-grow..empty-preview:1
 		@not-lg pos:absolute inset:0 transition:all 250ms cubic-in-out
 			y:calc(100% - 46px) .expanded:0px ..empty-preview:0
-
-	css $sidebar
-		w:$sidebar-width cursor:default pos:absolute d:block c:gray5
-		top:0 left:0 height:100% zi:100
-		transition: all 250ms cubic-in-out
-		bg:gray8/95 @md:gray8
-		x:-100% @md:0 @focus-within:0
-
-		@after
-			content: ' '
-			bg: linear-gradient(gray8/0,gray8)
-			d:block pos:absolute width:90% height:80px bottom: 0
-
-		.scroller
-			# -webkit-overflow-scrolling: touch
-			pos:absolute ofy:auto inset:0 pb:5
-
-		.item
-			fs:sm/1.3 fw:500 tt:capitalize c:gray6/70 @hover:gray5
-			p:1 7 d:block bg@hover:gray9/10
-			&.active bg:gray9/20 c:white fw:bold
 	
 	css $editor
 		span.variable.variable color: var(--code-variable)
@@ -208,12 +212,31 @@ tag app-repl
 	def render
 		<self>
 			<div$sidebar tabIndex=-1>
+				css	& w:$sidebar-width cursor:default pos:absolute d:block c:gray5
+					top:0 left:0 height:100% zi:100
+					transition: all 250ms cubic-in-out
+					bg:gray8/95 @md:gray8
+					x:-100% @md:0 @focus-within:0
+
+					@after
+						content: ' '
+						bg: linear-gradient(gray8/0,gray8)
+						d:block pos:absolute width:90% height:80px bottom: 0
+
+					.scroller
+						# -webkit-overflow-scrolling: touch
+						pos:absolute ofy:auto inset:0 pb:5
+
+					.item
+						fs:sm/1.3 fw:500 tt:capitalize c:gray6/70 @hover:gray5
+						p:1 7 d:block bg@hover:gray9/10
+						&.active bg:gray9/20 c:white fw:bold
 				<.scroller[pt:3 l:abs scroll-y inset:0 pb:5]>
 					<div$back[d:none @lg:block px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline] @click=leave> "⇦ back to site"
 					<div.items> for child in examples.folders when child.data.sorted
 						<h5[p:1 7 fs:xs c:gray6 fw:bold tt:uppercase]> child.title
 						<div[pb:5]> for item in child.folders
-							<a.item route-to.sticky=item.path> item.title
+							<a.item route-to.sticky="/try{item.path}"> item.title
 
 			<div.dark[pos:relative d:flex fld:column flex:70% bg:var(--code-bg)] @resize=relayout>
 				<header[c:gray6]>
@@ -222,7 +245,7 @@ tag app-repl
 					<span hotkey='right' @click=goNext>
 					<span hotkey='esc' @click=leave>
 					<div[d:flex flw:wrap cursor:default]> for file in project..children
-						<a.tab route-to.replace=file.path .dirty=file.dirty .errors=file.hasErrors>
+						<a.tab route-to.replace="/try{file.path}" .dirty=file.dirty .errors=file.hasErrors>
 							<span.circ>
 							<span.name> file.basename
 							<span[d.imba:none].ext.{file.ext}> "." + file.ext

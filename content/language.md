@@ -351,10 +351,6 @@ Also, identifiers `$0`, `$1`, `$2` and so forth are not valid variables names â€
 ['a','b','c','d'].map do(item) item.toUpperCase!
 ```
 
-```javascript
-[1, 2, 3, 4];
-```
-
 ## Variables
 
 ### Declaring variables

@@ -6,7 +6,8 @@ import {fs} from '../store'
 import './console'
 
 tag app-repl-preview
-	@watch prop url
+	prop url @set
+		refresh! if $entered
 
 	prop w = 2000
 	prop scale = 1
@@ -24,6 +25,17 @@ tag app-repl-preview
 			# console.log 'replify',win.ServiceSessionID,win.navigator.serviceWorker.controller
 			$win = win # $iframe.contentWindow
 			$doc = $win.document
+
+			# connect with the url as well
+			win.addEventListener('routerinit') do(e)
+				let r = #framerouter = e.detail
+
+				r.on('change') do(e)
+					if $address
+						$address.value = r.path
+
+				if options.route
+					r.replace(options.route)
 
 			win.expose = do(example)
 				
@@ -255,13 +267,24 @@ tag app-repl-preview
 	def render
 		recalc!
 		<self @intersect.silence.in=entered>
-			if options.window or options.rerun
+			css .cmd
+				rd:md bg:gray1 px:1.5 py:0 c:gray7 tween:all 0.1s mx:1 bxs:xs suffix:"()"
+				@before content:"run " o:0.8 fw:400
+				@hover bg:white c:blue7 
+				@active bg:gray1 bxs:outline
+
+			if options.titlebar
 				<.titlebar>
-					# <.tools[pos:abs]>
-					for command in commands
-						<.tool.cmd @click=execCommand(command)> command.name
-					<div[fl:1]>
+					css pos:relative rdt:md bg:gray3 d:hflex a:center p:2 px:1 j:flex-end
+						bd:gray3 bdb:gray3
+					css & + .body rdt:0
+					css input bg:white rd:md bd:gray3 px:2 fs:sm mx:1 fl:1 fw:400
+						@focus bd:blue4 bxs:ring
+					<.tool @click=rerun> <svg src='icons/arrow-left.svg'>
+					<.tool @click=rerun> <svg src='icons/arrow-right.svg'>
 					<.tool .on=(options.rerun) @click=rerun> <svg src='icons/refresh-cw.svg'>
+					<input$address type='text' placeholder='/'>
+					
 			<div$body[flex:1] @click=toggle>
 				<div$bounds[rd:inherit] @resize=reflow>
 					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px rd:inherit] @click.stop>
@@ -281,6 +304,15 @@ tag app-repl-preview
 					# <button%btn bind=size value='768x1024'> 'tablet'
 					# <button%btn bind=size value='1280x1024'> 'desktop'
 					<button.btn @click=maximize> '⤢'
+			if commands..length or options.footer
+				<.footer>
+					css pos:relative d:hflex a:center py:2 mx:-1 j:flex-start
+					css .cmd c:gray6 px:2 py:1 fw:500 us:none fs:sm bg:gray1 bd:gray4
+					# <.tools[pos:abs]>
+					for command in commands
+						<.tool.cmd @click=execCommand(command)> command.name
+					# <div[fl:1]>
+					# <.tool .on=(options.rerun) @click=rerun> <svg src='icons/refresh-cw.svg'>
 			<repl-console$console mode=(mode == 'console' ? mode : 'transient')>
 		
 	set file data
@@ -293,9 +325,6 @@ tag app-repl-preview
 			let file = $dir.files[0]
 			url = $dir.replUrl
 		self
-
-	def urlDidSet url, prev
-		refresh! if $entered
 
 	def rerun
 		refresh!

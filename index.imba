@@ -173,7 +173,6 @@ app.get(/\.*/) do(req,res)
 
 		<body tabIndex='-1'>
 			<script type="module" src="./src/index.imba">
-			<app-root>
 
 # pass through imba serve to automatically
 # serve assets in an optimised manner

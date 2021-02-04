@@ -185,3 +185,14 @@ global css .clocks
 		i,b pos:absolute d:block t:100% bg:inherit l:50% x:-50%
 		i h:10px ..s:20px w:75% o:0.7
 		b size:10px rd:100 y:-50%
+
+global css .app
+	d:vflex pos:absolute inset:0 p:2
+	> nav d:hflex ja:center p:1 bdb:1px solid gray3
+		a mx:1
+	> main fl:1 d:vflex ja:center
+	.page  fl:1 d:hflex ja:center
+	a.active td:none c:gray8
+	aside fl:0 0 120px d:vflex j:flex-start px:2 bdr:gray3 fs:sm
+	main d:hflex ac:stretch  p:2
+	section fl:1
