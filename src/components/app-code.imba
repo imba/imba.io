@@ -369,7 +369,7 @@ tag app-code-block < app-code
 		render!
 
 	def openInEditor
-		router.go(ide: file.path)
+		router.go("/try{file.path}")
 		self
 
 	def render
