@@ -437,7 +437,7 @@ The color CSS data-type represents a color in the sRGB color space. Colors can b
 
 Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, these named colors can be used anywhere in your styles where a color value is expected.
 
-## border-radius [is=css-property] [mdn=/CSS/color_value]
+## border-radius [is=css-property] [mdn=/CSS/border-radius]
 
 Imba includes a bunch of practical property aliases for setting border-radius:
 ```imba
@@ -459,6 +459,27 @@ imba.mount do <.inline-demo.demo-options[d:contents]>
     # ---
     <div.filled>
         <div.target[pos:absolute inset:8 bg:teal3/30 bd:teal3].{vars.flag}> ''
+```
+
+## box-shadow [is=css-property] [mdn=/CSS/box-shadow]
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-xxs'}
+
+imba.mount do <.inline-demo.demo-options[d:contents]>
+    # ---
+    css .demo-xxs bxs:xxs
+    css .demo-xs bxs:xs
+    css .demo-sm bxs:sm
+    css .demo-md bxs:md
+    css .demo-lg bxs:lg
+    css .demo-xl bxs:xl
+    css .demo-xxl bxs:xxl
+    # ---
+    <div.filled[bg:gray1 inset:0]>
+        <div.target[pos:absolute inset:8 bg:white].{vars.flag}>
 ```
 
 # Property Aliases
