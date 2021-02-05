@@ -212,15 +212,15 @@ tag app-repl
 	def render
 		<self>
 			<div$sidebar tabIndex=-1>
-				css	& w:$sidebar-width cursor:default pos:absolute d:block c:cold4
+				css	& w:$sidebar-width cursor:default pos:absolute d:block c:cooler4
 					top:0 left:0 height:100% zi:100
 					transition: all 250ms cubic-in-out
-					bg:cold7/95 @md:cold7
+					bg:cooler7/95 @md:cooler7
 					x:-100% @md:0 @focus-within:0
 
 					@after
 						content: ' '
-						bg: linear-gradient(gray8/0,gray8)
+						bg: linear-gradient(cooler7/0,cooler7)
 						d:block pos:absolute width:90% height:80px bottom: 0
 
 					.scroller
@@ -228,14 +228,14 @@ tag app-repl
 						pos:absolute ofy:auto inset:0 pb:5
 
 					.item
-						fs:sm/1.3 fw:500 tt:capitalize c:cold4/70 @hover:cold5
+						fs:sm/1.3 fw:500 tt:capitalize c:cooler4/70 @hover:cooler5
 						p:1 7 d:block bg@hover:gray9/10
 						&.active bg:gray9/20 c:white fw:bold
 
 				<.scroller[pt:3 l:abs scroll-y inset:0 pb:5]>
 					<div$back[d:none @lg:block px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline] @click=leave> "⇦ back to site"
 					<div.items> for child in examples.folders when child.data.sorted
-						<h5[p:1 7 fs:xs c:cold5 fw:bold tt:uppercase]> child.title
+						<h5[p:1 7 fs:xs c:cooler5 fw:bold tt:uppercase]> child.title
 						<div[pb:5]> for item in child.folders
 							<a.item route-to.sticky="/try{item.path}"> item.title
 
