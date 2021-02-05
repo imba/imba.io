@@ -258,7 +258,7 @@ imba.mount do
 import 'util/styles'
 
 # ---
-# only trigger if event.target.closest(selector) is true
+# only trigger if event.target.matches(selector) is true
 imba.mount do <div.group>
 	<button @click.log('!')> 'Button'
 	<button @click.sel('.pri').log('!!')> 'Button'

@@ -5,6 +5,13 @@ import {fs} from '../store'
 
 import './console'
 
+class Demo
+	constructor win
+		win = win
+	
+	def commit
+		win.$commit!
+
 tag app-repl-preview
 	prop url @set
 		refresh! if $entered
@@ -25,6 +32,8 @@ tag app-repl-preview
 			# console.log 'replify',win.ServiceSessionID,win.navigator.serviceWorker.controller
 			$win = win # $iframe.contentWindow
 			$doc = $win.document
+			demo = new Demo(win)
+			emit('loading',demo)
 
 			# connect with the url as well
 			win.addEventListener('routerinit') do(e)
@@ -38,13 +47,22 @@ tag app-repl-preview
 					r.replace(options.route)
 
 			win.expose = do(example)
-				
+				let keys = Object.keys(example)
+				if keys.length
+					self.exports = example
+
+				demo.state = example.state
+				demo.vars = example.vars
+				emit('loaded',demo)
+
 				let items = []
 				for own key,value of (example.actions or example)
 					if value isa win.Function
 						items.push(name: key, exec: value)
 				commands = items
 				render!
+				
+				
 
 			let {log,info} = win.console.log
 			if $console
@@ -275,8 +293,8 @@ tag app-repl-preview
 
 			if options.titlebar
 				<.titlebar>
-					css pos:relative rdt:md bg:gray3 d:hflex a:center p:2 px:1 j:flex-end
-						bd:gray3 bdb:gray3
+					css pos:relative rdt:md bg:gray2 d:hflex a:center p:2 px:1 j:flex-end
+						bd:gray3 bdb:gray2
 					css & + .body rdt:0
 					css input bg:white rd:md bd:gray3 px:2 fs:sm mx:1 fl:1 fw:400
 						@focus bd:blue4 bxs:ring
@@ -287,7 +305,8 @@ tag app-repl-preview
 					
 			<div$body[flex:1] @click=toggle>
 				<div$bounds[rd:inherit] @resize=reflow>
-					<div$frame.frame[scale:{scale} w:{iw}px h:{ih}px rd:inherit] @click.stop>
+					# scale:{scale} w:{iw}px h:{ih}px 
+					<div$frame.frame[rd:inherit] @click.stop>
 						$iframe
 						<div.resizer.x @touch=resize(e,'x')>
 						<div.resizer.y @touch=resize(e,'y')>

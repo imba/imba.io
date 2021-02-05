@@ -301,15 +301,17 @@ tag doc-colors
 	css .pink8 bg:pink8 c:pink1
 	css .pink9 bg:pink9 c:pink1
 
-	css .palette my:2 fs:sm fw:bold cursor:default rd:sm of:hidden d:flex
-	css .color rd:0 flex:1 p:1 h:12 d:flex ai:center jc:center w:5 
-		span o:0 tween:30ms ease-in-out 
-		@first span o:0.3
+	css .palette my:1 ff:mono fs:xs fw:500 cursor:default rd:sm of:hidden d:flex
+	css .color rd:0 flex:1 p:1 h:8 d:flex ai:center jc:center w:5 ls:-0.5px
+		span o:0 tween:30ms ease-in-out
+		@first span o:0.5
+		@last span o:0.5
 		@hover span o:1
 
 	def render
+		let texttint = [7,6,6,6,7,1,1,1,1,0]
 		<self> <div>
-			for color in ['gray','red','orange','yellow','green','teal','blue','indigo','purple','pink']
+			for color in imba.colors
 				<div.palette.{color}>
-					for tint in [1,2,3,4,5,6,7,8,9]
-						<div.color.{color + tint}.t{tint}> <span> "{color}{tint}"
+					for tint,i in [0,1,2,3,4,5,6,7,8,9]
+						<div.color[bg:{color+tint} c:{color+texttint[i]}]> <span> "{color}{tint}"

@@ -1,5 +1,12 @@
 {
     "workbench.colorCustomizations": {
+        "editorIndentGuide.background":  "#ffffff0e",
+        "editorIndentGuide.activeBackground": "#cfe8ff2c"
+    },
+    "[imba]": {
+        "editor.insertSpaces": false,
+        "editor.tabSize": 4,
+        "editor.autoIndent": "advanced"
     },
     "search.exclude": {
         "**/node_modules": true,

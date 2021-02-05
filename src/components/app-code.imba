@@ -2,6 +2,11 @@ import {highlight,clean} from '../util/highlight'
 import * as sw from '../sw/controller'
 import {ls,fs} from '../store'
 
+def getVisibleLineCount code
+	let parts = code.split('# ---\n')
+	# console.log 'get visible lines',parts
+	(parts[1] or parts[0]).split('\n').length
+
 global css @root
 	
 	--code-color: #e3e3e3;
@@ -210,10 +215,6 @@ tag app-code
 
 tag app-code-block < app-code
 
-	css pos:relative rd:sm fs:12px @md:13px d:block .shared:none
-		$bg:$code-bg-lighter
-		$preview-size:72px .md:120px .lg:180px .xl:240px
-
 	css main
 		pos:relative rd:inherit c:$code-color
 
@@ -225,11 +226,6 @@ tag app-code-block < app-code
 		&.has-focus >> span@not(.focus)@not(._style) opacity: 0.6
 		&.has-hide >>> span.hide d:none
 		&.has-hl@hover >> span@not(.hl)@not(._style) opacity: 0.7
-
-	css code
-		d:block ofx:auto ff:mono ws:pre p:3 4 p@md:5 6
-		&.ind1 >>> .t0 d:none
-		&.ind2 >>> .t1 d:none
 
 	# what should this style?
 	css label bg:gray7 rd:md pos:absolute d:flex ai:center p:1
@@ -300,6 +296,7 @@ tag app-code-block < app-code
 	def hydrate
 		files = []
 		file = null
+		demo = {}
 		# manual style fixing
 		flags.add(_ns_)
 		flags.add(_ns_ + "_")
@@ -309,7 +306,7 @@ tag app-code-block < app-code
 
 		Object.assign(options,meta)
 		
-
+		let lineCounts = []
 		let parts = getElementsByTagName('code')
 		for part,i in parts
 			let data = {
@@ -317,13 +314,19 @@ tag app-code-block < app-code
 				lang: part.dataset.lang
 				body: clean(part.textContent)
 			}
+			lineCounts.push(getVisibleLineCount(data.body))
 			let file = fs.register(path + '/' + data.name,data)
 			files.push(file)
 
 		file = files[0]
 
+		
+
+
 		if file.name == 'main.imba'
 			options.preview ||= 'md'
+
+		maxLines = Math.max(...lineCounts)
 
 		render!
 
@@ -359,10 +362,6 @@ tag app-code-block < app-code
 			if vref
 				el.classList.add('highlight') for el in getElementsByClassName(vref)
 			hlvar = vref
-
-	def editorResized e
-		# editorHeight = Math.max(editorHeight or 0,e.rect.height)
-		self
 	
 	def openFile file
 		self.file = file
@@ -372,28 +371,111 @@ tag app-code-block < app-code
 		router.go("/try{file.path}")
 		self
 
+	def bindExports exports
+		console.log 'bind exports',exports
+		example = exports
+
+
+	def setStateFlag e
+		let value = e.target.textContent.slice(1)
+		console.log 'setStateFlag',e,e.target,value
+		if demo.vars..flag
+			demo.vars.flag = value
+			demo.commit!
+
+	def focusStyleRule e
+		# console.log 'clicked selector',e.target
+		let rule = e.target.closest('.scope-rule')
+		let sel = rule.firstElementChild.textContent.trim!
+		# console.log 'clicked selector',sel
+		if sel.match(/^\.demo-/)
+			focusedRule = rule
+			if demo.vars..flag
+				demo.vars.flag = sel.slice(1)
+				demo.commit!
+	
+	prop focusedRule @set
+		if e.oldValue
+			e.oldValue.flags.remove('_selected_')
+		if e.value
+			e.value.flags.add('_selected_')
+
+
+	def demoLoaded e
+		# console.log 'demo loaded',e
+		demo = e.detail
+
 	def render
 		return unless code or file
 		let name = (files[0] && files[0].name or '')
 		let fflags = name.replace(/\.+/g,' ')
 
-		<self.{options.preview}.{fflags} .multi=(files.length > 1) @pointerover.silence=pointerover>
-			<main>
-				<div$editor.code[min-height:{editorHeight}px] @resize=editorResized>
+		<self.{options.preview}.{fflags} .multi=(files.length > 1)
+			@click.sel('.scope-rule *,.scope-rule')=focusStyleRule
+			@pointerover.silence=pointerover>
+
+			css pos:relative rd:sm d:block .shared:none
+				fs:12px/1.5 @md:13px/1.5
+				$bg:$code-bg-lighter
+				$preview-size:72px .md:120px .lg:180px .xl:240px
+				$minLines: {Math.min(maxLines + 2,14)}
+				code
+					h:calc($minLines * 1lh)
+					d:block of:auto ff:mono ws:pre px:5
+					pre w:100px pt:1lh pb:1lh
+					&.ind1 >>> .t0 d:none
+					&.ind2 >>> .t1 d:none
+
+			css &.style-options
+				main d:hflex bg:$bg p:1.5
+				code d:contents
+				$editor d:block fl:1 1 65% m:2
+				$preview
+					h:auto m:2.5
+					fl:0 0 auto # fl:1 1 35% 
+					w:280px
+					>>> .frame bg:clear bd:none
+				.actions d:none
+
+				# p:1lh of:visible h:auto pr:40%
+				code >>>
+					pre,b d:contents
+					span d:none
+					.keyword.css d:none
+					.tab d:none
+					ws:pre-line
+					.scope-rule my:1px d:block rd:sm p:0.5 px:2
+						bg:blue4/1 @hover:blue4/15
+						span,b d:inline
+						.tab d:none
+						.group-sel d:none
+						&._selected_ bg:blue4/25
+						.comment fs:11px ff:sans
+
+			<main @exports=bindExports(e.detail)>
+				<div$editor.code>
+					css .actions o:0
+					css @hover .actions o:1
 					<div .collapsed=(files.length < 2)>
 						css pos:relative zi:2 bg:#3d4253
 							c:gray6 fs:sm fw:500 rdt:inherit d:hflex
-							.item d:block c:gray6 c.on:blue3 py:0.25 mx:1 td:none
+							.item d:block c:gray4 c.on:blue3 py:0.25 mx:1 td:none
 						<div[d:hflex ..collapsed:none px:2 py:1].tabs> for item in files
 							<a.tab.item .on=(file==item) @click.stop.silence=openFile(item)> item.name
 						<div[ml:auto px:2 py:1 zi:2].actions>
-							<div.item @click=openInEditor> 'open'
+							<div.item @click=openInEditor> "open"
 						css	&.collapsed .actions pos:abs t:0 r:0
 					if file
-						<code[d:flex].code.{file.highlighted.flags}>
-							<pre$pre[w:100px] innerHTML=file.highlighted.html>
-				if options.preview or (name == 'main.imba')
-					<app-repl-preview$preview file=files[0] dir=dir options=options mode=options.preview>
+						<code.code.{file.highlighted.flags}>
+							<pre$pre[w:100px pt:1lh pb:1lh] innerHTML=file.highlighted.html>
+				if options.preview
+					<app-repl-preview$preview
+						file=files[0]
+						dir=dir
+						options=options
+						mode=options.preview
+						@loaded=demoLoaded
+					>
 				
 
 tag app-code-inline < app-code

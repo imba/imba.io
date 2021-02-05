@@ -35,6 +35,7 @@ export def highlight str,lang
 	# find flags at the top
 	let out = {
 		flags: {}
+		specials: []
 	}
 	
 	str = str.replace(/^(~\w*[\[\|]?)?\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
@@ -166,7 +167,16 @@ export def highlight str,lang
 		if typ == 'push'
 			let kind = subtyp.indexOf('_') >= 0 ? 'group' : 'scope'
 			let end = token.scope && token.scope.end
-			parts.push("<b class='{kind}-{subtyp.split('_').pop!} _{subtyp} o{token.offset} e{end && end.offset}'>")
+			let attrs = {}
+			let flags = ''
+
+			if subtyp == 'rule'
+				let ruleval = token.scope.value
+				if let m = ruleval.match(/^\.(demo-options|demo-[\w\-]+)/)
+					flags += ' ' + m[1] # .slice(5)
+					out.flags['has-' + m[1]] = yes
+
+			parts.push("<b class='{kind}-{subtyp.split('_').pop!} _{subtyp} o{token.offset} e{end && end.offset}{flags}' typ='{subtyp}'>")
 			continue
 		elif typ == 'pop'
 			parts.push("</b>")

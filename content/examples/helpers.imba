@@ -6,3 +6,6 @@ global.$show = do(text,item)
 global.$log = do(desc,value)
 	console.info(desc)
 	console.log(value)
+
+global.$commit = do(flag)
+	imba.commit!

@@ -76,7 +76,7 @@ global css
 		py:1 px:3 fw:400 min-width:6 min-height:8
 		bw:1 bc:gray4 rd:2
 		fs:md/1.2
-		c:gray8 @hover:gray9
+		c:gray7 @hover:gray8
 		bg:gray1 @hover:gray2 @active:gray3
 		bxs:xs
 		us:none
@@ -123,7 +123,7 @@ global css
 		bw:1 rd:2
 		fs:md/1.2
 		c:gray8 @hover:gray9
-		bc:gray4 @hover:gray5/80
+		bc:gray3 @hover:gray4/80
 		bg:white @focus:white
 		@focus bxs:0 0 0 3px blue3/35 bc:blue4
 		@disabled c:gray5
@@ -196,3 +196,12 @@ global css .app
 	aside fl:0 0 120px d:vflex j:flex-start px:2 bdr:gray3 fs:sm
 	main d:hflex ac:stretch  p:2
 	section fl:1
+
+global css .colors
+	div m:1 w:16 h:8 rd:md d:flex ja:center
+
+global css .inline-demo
+	d:contents
+	.filled
+		pos:absolute inset:0 d:flex ja:center rd:sm
+		transition:all 0.1s ease-in-out

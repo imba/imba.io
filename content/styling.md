@@ -409,6 +409,45 @@ The default breakpoints are:
 
 <doc-style-modifiers></doc-style-modifiers>
 
+# Types & Properties
+
+## color [is=css-value] [mdn=/CSS/color_value]
+
+The color CSS data-type represents a color in the sRGB color space. Colors can be defined in all the same ways as in plain css. In addition, imba as built-in support for named colors hand-crafted by the great people behind [Tailwind](https://tailwindcss.com). All named colors come in 10 different shades, named from `color0` up to `color9`. You can hover over each color below to see their name:
+
+<doc-colors></doc-colors>
+
+Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, these named colors can be used anywhere in your styles where a color value is expected.
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+css .demo
+    pos:absolute inset:0 d:flex ja:center
+    transition:all 0.1s ease-in-out
+
+const item = {
+    tint: 'sky3'
+}
+
+export const vars = {
+    flag: 'demo-1'
+}
+
+imba.mount do <.inline-demo.demo-options[d:contents]>
+    # ---
+    css .demo-hex bg:#7A4ACF
+    css .demo-hsl bg:hsl(120,90%,45%)
+    css .demo-rgba bg:rgba(120,255,176)
+    css .demo-1 bg:blue3 @hover:blue5
+    css .demo-2
+        bg:indigo5/80% # with transparency
+    css .demo-interpolation
+        bg:{item.tint} # works with interpolated values
+    # ---
+    <div.filled.{vars.flag}> 'Lipsum'
+```
+
 # Property Aliases
 
 We firmly believe that less code is better code, so we have strived to make the styling syntax as concise yet readable as possible. There is a case to be made against short variable names in programming, but css properties are never-changing. Imba provides intuitive abbreviations for oft-used css properties. Like everything else, using these shorthands is completely optional, but they are incredibly convenient, especially for inline styles.
@@ -495,12 +534,6 @@ Imba has a goal of making it as easy as possible to be consistent with regards t
 
 <doc-style-aliases data-regex='padding|^p[tblrxy]$'></doc-style-aliases>
 
-## Colors [linked]
-
-The predefined colors are 9 shades of `gray`,`red`,`orange`,`yellow`,`green`,`teal`,`blue`,`indigo`,`purple` and `pink`, hand-crafted by the great people behind [Tailwind](https://tailwindcss.com). You can hover over the colors below to see their name.
-
-<doc-colors></doc-colors>
-
 ## Grids [linked]
 
 The `grid` property gets special treatment in Imba. If you supply a single word to the `grid` property like `grid:cols`, Imba will compile that down to `grid:var(--grid-cols)` in css. This allows us to predeclare grids for our project and concisely reuse them across our styles.
@@ -522,7 +555,7 @@ imba.mount do
     # use grid:cols anywhere in your project
     <section[display:grid grid:cols p:4]>
         for genre in genres
-            <div> genre
+            <div> genre.title
 ```
 
 #### Custom responsive grid [preview=xl]
@@ -546,7 +579,7 @@ global css @root
 imba.mount do
     <section[display:grid grid:cols p:4]>
         for genre in genres
-            <div> genre
+            <div> genre.title
 ```
 
 ## Borders [linked]

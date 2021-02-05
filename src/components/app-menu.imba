@@ -53,7 +53,7 @@ tag app-menu-item
 	###
 
 	css
-		.item d:block c:gray6 fw:normal pos:relative d:block fw:500 py:1
+		.item d:block c:gray5 fw:normal pos:relative d:block fw:500 py:1
 		.item.active fw:500 c:gray9
 		.item span
 			of:hidden text-overflow:ellipsis ws:nowrap
@@ -76,6 +76,7 @@ tag app-menu-item
 
 			if renderChildren? 
 				<div$children.children>
+					css pl:15px of:hidden tween:height 200ms ease-out
 					for child in data.children
 						continue if child.level >= levelCutoff
 						<app-menu-item.child data=child>

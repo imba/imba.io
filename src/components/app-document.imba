@@ -266,8 +266,13 @@ tag doc-section
 
 			if data.head
 				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} id=data.hash>
+					css svg d:inline size:5
 					<a[pos:absolute l:-20px c:gray5 o:0] href=data.href> '#'
 					<span.html.title innerHTML=data.head>
+					if data.options.mdn
+						<a[ml:1] target="_blank" href="https://developer.mozilla.org/en-US/docs/Web{data.options.mdn}">
+							css o:0.3 @hover:0.8 c@hover:violet4
+							<svg src='../assets/mdn.svg'>
 
 			if data.options.wip
 				<.wip[my:10px]>
