@@ -433,9 +433,13 @@ tag app-code-block < app-code
 				$preview
 					h:auto m:2.5
 					fl:0 0 auto # fl:1 1 35% 
-					w:280px
+					w:280px @!900:35%
 					>>> .frame bg:clear bd:none
 				.actions d:none
+
+				@!580
+					main d:vflex
+					$preview h:100px w:auto
 
 				# p:1lh of:visible h:auto pr:40%
 				code >>>
