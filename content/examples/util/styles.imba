@@ -202,6 +202,20 @@ global css .colors
 
 global css .inline-demo
 	d:contents
+	div d:flex ja:center
+
 	.filled
 		pos:absolute inset:0 d:flex ja:center rd:sm
 		transition:all 0.1s ease-in-out
+
+	.target
+		d:flex ja:center
+		transition:all 0.1s ease-in-out
+
+	.dashed
+		pos:absolute inset:4 d:flex ja:center rd:0
+		bd:1px dashed white bg:white/25
+
+	.border-radius
+		pos:absolute inset:4 d:flex ja:center rd:0
+		bg:white/25
