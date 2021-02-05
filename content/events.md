@@ -986,7 +986,7 @@ The css modifier sets a css variable `--ratio` on the event target with the curr
 ```imba
 # [preview=lg]
 # ---
-import {categories} from 'imdb'
+import {genres} from 'imdb'
 
 tag Card
 	prop shown = 1
@@ -1003,7 +1003,7 @@ tag App
 		.item scroll-snap-align:start w:200px
 		@before,@after content:" " d:block w:6
 
-	<self> for item in categories
+	<self> for item in genres
 		<Card.item data=item>
 # ---
 let app = <App>
