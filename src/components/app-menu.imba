@@ -103,15 +103,16 @@ tag app-menu-section
 		css d:block
 			$bodyheight:{bodyheight}
 			$count:{data.children.length}
-			> a c:teal6 us:none py:2
+			> a c:teal6 us:none py:2 fs:sm
+			> a .chevron rotate:0deg o:0 ml:-4 mr:0 tween:all 0.2s
 			> .content h:$bodyheight o:1 tween:all 0.2s mt:-1
 			
 		css &.collapsed
-			> a .chevron rotate:-90deg
+			> a .chevron rotate:-90deg o:1 ml:-1
 			> .content of:hidden h:0px o:0.4
-		<a.l0.section.menu-heading[c:teal6 us:none] @click=toggle>
+		<a.l0.section.menu-heading @click=toggle>
 			css d:hflex a:center
-			<svg[ml:-5 size:4 mr:0.5 o:0.4 tween:styles 0.2s].chevron src='../assets/icons/chevron-down.svg'>
+			<svg[size:4].chevron src='../assets/icons/chevron-down.svg'>
 			<span> data.title
 		<div.content.{data.slug}>
 			<.children[pb:4 pl:2] @resize=resized> for item in data.children
