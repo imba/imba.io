@@ -104,16 +104,18 @@ tag app-menu-section
 			$bodyheight:{bodyheight}
 			$count:{data.children.length}
 			> a c:teal6 us:none py:2 fs:sm
-			> a .chevron rotate:0deg o:0 ml:-4 mr:0 tween:all 0.2s
+			> a .chevron tween:all 0.2s # o:0 ml:-4 mr:0 
 			> .content h:$bodyheight o:1 tween:all 0.2s mt:-1
 			
 		css &.collapsed
+			> a c:teal6
 			> a .chevron rotate:-90deg o:1 ml:-1
 			> .content of:hidden h:0px o:0.4
 		<a.l0.section.menu-heading @click=toggle>
 			css d:hflex a:center
-			<svg[size:4].chevron src='../assets/icons/chevron-down.svg'>
+			
 			<span> data.title
+			<svg[size:4 ml:0.5].chevron src='../assets/icons/chevron-down.svg'>
 		<div.content.{data.slug}>
 			<.children[pb:4 pl:2] @resize=resized> for item in data.children
 				<app-menu-item data=item level=1>
