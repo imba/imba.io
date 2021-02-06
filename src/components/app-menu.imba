@@ -68,7 +68,7 @@ tag app-menu-item
 	
 
 	def render
-		<self .{data.flagstr}>
+		<self[d:block] .{data.flagstr}>
 
 			<a$item.item route-to=data.href>
 				# <div.triangle innerHTML=triangleSVG> if hasChildren?
@@ -88,10 +88,34 @@ tag app-menu-section
 	css a cursor:pointer
 	css .section.active + .content d:block
 
-	<self>
-		<a.l0.section.menu-heading[c:teal6]> data.title
-		<div[pb:4 pl:2].content.{data.slug}> for item in data.children
-			<app-menu-item data=item level=1>
+	prop bodyheight = 'auto'
+
+	def toggle
+		data.locals.collapsed = !data.locals.collapsed
+
+	def resized e
+		try
+			let height = e.entry.borderBoxSize[0].blockSize
+			# log 'resized',e.rect,height
+			bodyheight = (height)px
+
+	<self .collapsed=data.locals.collapsed>
+		css d:block
+			$bodyheight:{bodyheight}
+			$count:{data.children.length}
+			> a c:teal6 us:none py:2
+			> .content h:$bodyheight o:1 tween:all 0.2s mt:-1
+			
+		css &.collapsed
+			> a .chevron rotate:-90deg
+			> .content of:hidden h:0px o:0.4
+		<a.l0.section.menu-heading[c:teal6 us:none] @click=toggle>
+			css d:hflex a:center
+			<svg[ml:-5 size:4 mr:0.5 o:0.4 tween:styles 0.2s].chevron src='../assets/icons/chevron-down.svg'>
+			<span> data.title
+		<div.content.{data.slug}>
+			<.children[pb:4 pl:2] @resize=resized> for item in data.children
+				<app-menu-item data=item level=1>
 
 tag app-menu
 
