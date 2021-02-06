@@ -409,7 +409,7 @@ The default breakpoints are:
 
 <doc-style-modifiers></doc-style-modifiers>
 
-# Types & Properties
+# Types & Properties [slug=ref]
 
 ## color [is=css-value] [mdn=/CSS/color_value]
 
@@ -419,7 +419,7 @@ import 'util/styles'
 const item = {tint: 'sky3'}
 export const vars = {flag: 'demo-1'}
 
-imba.mount do <.inline-demo.demo-options[d:contents]>
+imba.mount do <.inline-demo>
     # ---
     css .demo-hex bg:#7A4ACF
     css .demo-hsl bg:hsl(120,90%,45%)
@@ -445,7 +445,7 @@ Imba includes a bunch of practical property aliases for setting border-radius:
 import 'util/styles'
 export const vars = {flag: 'demo-rd'}
 
-imba.mount do <.inline-demo.demo-options[d:contents]>
+imba.mount do <.inline-demo>
     # ---
     css .demo-rd rd:16px # all
     css .demo-rdtl rdtl:16px # top-left
@@ -461,14 +461,14 @@ imba.mount do <.inline-demo.demo-options[d:contents]>
         <div.target[pos:absolute inset:8 bg:teal3/30 bd:teal3].{vars.flag}> ''
 ```
 
-## box-shadow [is=css-property] [mdn=/CSS/box-shadow]
+## box-shadow [is=css-property] [alias=bxs] [mdn=/CSS/box-shadow]
 
 ```imba
 # [preview=style-options]
 import 'util/styles'
 export const vars = {flag: 'demo-xxs'}
 
-imba.mount do <.inline-demo.demo-options[d:contents]>
+imba.mount do <.inline-demo>
     # ---
     css .demo-xxs bxs:xxs
     css .demo-xs bxs:xs
@@ -481,6 +481,191 @@ imba.mount do <.inline-demo.demo-options[d:contents]>
     <div.filled[bg:gray1 inset:0]>
         <div.target[pos:absolute inset:8 bg:white].{vars.flag}>
 ```
+
+## font-family / ff [is=css-property] [alias=ff] [mdn=/CSS/font-family]
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-sans'}
+
+# ---
+css .demo-sans ff:sans # all
+css .demo-serif ff:serif # top-left
+css .demo-mono ff:mono # top-right
+css .demo-georgia ff:Georgia, serif
+css .demo-gill ff:"Gill Sans", sans-serif
+# ---
+
+imba.mount do <.inline-demo.typography>
+    <div.{vars.flag}> 'This is my text'
+```
+
+## font-weight / fw [is=css-property] [mdn=/CSS/font-weight]
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-normal'}
+
+# ---
+css .demo-100 fw:100
+css .demo-900 fw:900
+css .demo-normal fw:normal
+css .demo-bold fw:bold
+css .demo-lighter fw:lighter
+css .demo-bolder fw:bolder
+# ---
+
+imba.mount do <.inline-demo.typography>
+    <div.{vars.flag}> 'Text'
+```
+
+## font-size / fs [is=css-property] [mdn=/CSS/font-size]
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-md'}
+
+# ---
+css .demo-xxs fs:xxs # 10px
+css .demo-xs fs:xs  # 12px
+css .demo-sm fs:sm # 14px
+css .demo-md fs:md # 16px
+css .demo-lg fs:lg # 18px
+css .demo-xl fs:xl # 20px
+css .demo-2xl fs:2xl # 24px
+css .demo-3xl fs:3xl # 30px
+css .demo-4xl fs:4xl # 36px
+css .demo-5xl fs:5xl # 48px
+css .demo-6xl fs:6xl # 64px
+# ---
+
+imba.mount do <.inline-demo.typography>
+    <div.{vars.flag}> 'Text'
+```
+
+## transform [is=css-property] [mdn=/CSS/transform]
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-1'}
+# ---
+css .demo-1 transform: translate(30px,50%)
+css .demo-2 transform: rotate(0.5turn)
+css .demo-3 transform: skew(30deg,20deg)
+css .demo-4 transform: scale(0.7) translate(-50%,-50%)
+css .demo-5 transform: rotate(3deg) scale(0.8)
+css .demo-6 transform@hover: scale(1.1)
+css .demo-7 transform: skewY(20deg)
+# ---
+
+imba.mount do <.inline-demo.transforms>
+    <div.base> <div.target.{vars.flag}>
+```
+<!-- TODO add examples of individual properties -->
+In imba, the transform properties can be set individually via the following aliases:
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-1'}
+# ---
+css .demo-1 x:16px
+css .demo-2 y:16px
+css .demo-3 z:16px
+css .demo-4 scale:1.1
+css .demo-5 scale-x:1.1
+css .demo-6 scale-y:1.1
+css .demo-7 rotate:30deg
+css .demo-8 skew-x:30deg
+css .demo-9 skew-y:30deg
+# ---
+
+imba.mount do <.inline-demo.transforms> 
+    <div.base> <div.target.{vars.flag}>
+```
+
+## margin [is=css-property] [mdn=/CSS/margin]
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-1'}
+
+# ---
+css .demo-1 margin:1em
+css .demo-2 margin:5% 0
+css .demo-3 margin:5px 15px 10px
+css .demo-4 margin:5px 15px 10px 0
+css .demo-5 margin:0
+# ---
+
+imba.mount do <.inline-demo.margins>
+    <div.base.striped[c:orange5/60 bgc:orange5/20]>
+        <div[bg:orange5].target.{vars.flag}>
+```
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-1'}
+
+# ---
+css .demo-1 m: 16px # margin
+css .demo-2 mt:16px # margin-top
+css .demo-3 mr:16px # margin-right
+css .demo-4 mb:16px # margin-bottom
+css .demo-5 ml:16px # margin-left
+css .demo-6 mx:16px # margin-left + margin-right
+css .demo-7 my:16px # margin-top + margin-bottom
+# ---
+
+imba.mount do <.inline-demo.margins>
+    <.base> <div.target.{vars.flag}>
+```
+
+
+## padding [is=css-property] [mdn=/CSS/padding]
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-1'}
+
+# ---
+css .demo-1 padding:1em
+css .demo-2 padding:5% 0
+css .demo-3 padding:5px 15px 10px
+css .demo-4 padding:5px 15px 10px 0
+css .demo-5 padding:0
+# ---
+
+imba.mount do <.inline-demo.paddings>
+    <div.target.{vars.flag}>
+```
+
+```imba
+# [preview=style-options]
+import 'util/styles'
+export const vars = {flag: 'demo-1'}
+
+# ---
+css .demo-1 p: 16px # padding
+css .demo-2 pt:16px # padding-top
+css .demo-3 pr:16px # padding-right
+css .demo-4 pb:16px # padding-bottom
+css .demo-5 pl:16px # padding-left
+css .demo-6 px:16px # padding-left + padding-right
+css .demo-7 py:16px # padding-top + padding-bottom
+# ---
+
+imba.mount do <.inline-demo.paddings>
+    <div.target.{vars.flag}>
+```
+
 
 # Property Aliases
 

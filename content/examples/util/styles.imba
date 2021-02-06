@@ -200,8 +200,14 @@ global css .app
 global css .colors
 	div m:1 w:16 h:8 rd:md d:flex ja:center
 
+global css .striped
+	background-size: auto auto
+	background-color: rgba(255, 255, 255, 1)
+	# background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, currentColor 3px, currentColor 6px )
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, currentColor 3px, currentColor 4px )
+
 global css .inline-demo
-	d:contents
+	d:hflex pos:absolute inset:0 ja:center
 	div d:flex ja:center
 
 	.filled
@@ -214,8 +220,41 @@ global css .inline-demo
 
 	.dashed
 		pos:absolute inset:4 d:flex ja:center rd:0
-		bd:1px dashed white bg:white/25
+		bd:1px dashed white bgc:white/25
 
 	.border-radius
 		pos:absolute inset:4 d:flex ja:center rd:0
-		bg:white/25
+		bgc:white/25
+
+	.base bgc:yellow2 size:80px
+
+	&.typography
+		c:white fs:xl
+
+	&.transforms
+		c:white fs:xl
+		.target transition:all 0.25s ease-out
+		.base bgc:yellow2 size:80px rd:sm
+		.base > div pos:absolute inset:0 bgc:blue3/90 rd:sm
+
+	&.margins
+		c:white
+		.base > div.target pos:absolute inset:0 bgc:white rd:sm
+	
+	&.paddings
+		c:white
+		.target
+			size:100px
+			bgi:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAH0lEQVQYV2NkQAUzGZH4MxkYGNJhAmAOSBIkAOeABABpLgOeuZzTDQAAAABJRU5ErkJggg==')
+			d:flex
+			bgc:gray1
+			rd:sm
+			@after
+				content:" "
+				d:block
+				as:stretch
+				fl:1
+				bgc:white
+				o:0.8
+				rd:xs
+		.base > div.target pos:absolute inset:0 bgc:white rd:sm

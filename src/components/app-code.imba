@@ -427,11 +427,11 @@ tag app-code-block < app-code
 					&.ind2 >>> .t1 d:none
 
 			css &.style-options
-				main d:hflex bg:$bg p:1.5
+				main d:hflex bg:$bg p:0
 				code d:contents
 				$editor d:block fl:1 1 65% m:2
 				$preview
-					h:auto m:2.5
+					h:auto m:0
 					fl:0 0 auto # fl:1 1 35% 
 					w:280px @!900:35%
 					>>> .frame bg:clear bd:none
@@ -449,7 +449,7 @@ tag app-code-block < app-code
 					.tab d:none
 					ws:pre-line
 					.scope-rule my:1px d:block rd:sm p:0.5 px:2
-						bg:blue4/1 @hover:blue4/15
+						bg:blue4/0 @hover:blue4/15
 						span,b d:inline
 						.tab d:none
 						.group-sel d:none
