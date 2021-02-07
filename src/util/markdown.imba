@@ -1,4 +1,5 @@
-var marked = require 'marked'
+const marked = require 'marked'
+import {aliases} from 'imba/src/compiler/styler'
 
 marked.setOptions({
 	gfm: true
@@ -301,7 +302,23 @@ export def render content, o = {}
 		section.children = section.children.filter do !$1.options.skip
 
 		for child in section.children
-			walk(child,pre + '  ')	
+			walk(child,pre + '  ')
+
+		if section.options.cssprop
+			console.log "SECTION HAS CSSPROP"
+			let name = section.name
+			let expanded = aliases[name]
+			section.concept = {
+				type: 'cssprop'
+				name: name
+				fullform: expanded
+			}
+			if expanded isa Array
+				section.legend = expanded.join(" + ")
+			elif expanded
+				section.legend = expanded
+
+	# walk to add metadata / identify concepts/references etc
 
 	walk(object)
 

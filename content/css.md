@@ -412,61 +412,70 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ## Sizing [toc-pills]
 
-### w
+### w [cssprop]
 
-### h
+### h [cssprop]
 
-### size
+### size [cssprop]
 
 ## Positioning [toc-pills]
 
-### pos
+### pos [cssprop]
 
-### t
+### t [cssprop]
 
-### r
+### r [cssprop]
 
-### b
+### b [cssprop]
 
-### l
+### l [cssprop]
 
 ### inset [custom]
 
 ## Margin [toc-pills]
 
-### m
+[demo](/examples/css/margin-aliases.imba?preview=styles)
 
-### mt
+### m [cssprop]
 
-### mr
+[demo](/examples/css/margin.imba?preview=styles)
 
-### mb
+### mt [cssprop]
 
-### ml
+### mr [cssprop]
 
-### mx
+### mb [cssprop]
 
-### my
+### ml [cssprop]
+
+### mx [cssprop]
+
+### my [cssprop]
 ## Padding [toc-pills]
 
+[demo](/examples/css/padding-aliases.imba?preview=styles)
 
-### p
+### p [cssprop]
 
-### pt
+[demo](/examples/css/padding.imba?preview=styles)
 
-### pr
+### pt [cssprop]
 
-### pb
+### pr [cssprop]
 
-### pl
+### pb [cssprop]
 
-### px
+### pl [cssprop]
 
-### py
+### px [cssprop]
+
+[demo](/examples/css/px.imba?preview=styles)
+
+### py [cssprop]
 
 ## Display [toc-pills]
 
-### d
+### d [cssprop]
 
 ### d:hflex
 
@@ -476,89 +485,91 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### d:vgrid
 
-## Flexbox [toc-pills]
+## Flexbox [toc-pills] [cssprops]
 
-### fl
+### fl [cssprop]
 
-### flf
+### flf [cssprop]
 
-### fld
+### fld [cssprop]
 
-### flb
+### flb [cssprop]
 
-### flg
+### flg [cssprop]
 
-### fls
+### fls [cssprop]
 
-### flw
+### flw [cssprop]
 
 
 ## Grid [toc-pills]
 
-#### g [css-prop=gap]
-#### rg [css-prop=row-gap]
-#### cg [css-prop=column-gap]
-#### gtr [css-prop=grid-template-rows]
-#### gtc [css-prop=grid-template-columns]
-#### gta [css-prop=grid-template-areas]
-#### gar [css-prop=grid-auto-rows]
-#### gac [css-prop=grid-auto-columns]
-#### gaf [css-prop=grid-auto-flow]
-#### gcg [css-prop=grid-column-gap]
-#### grg [css-prop=grid-row-gap]
-#### ga [css-prop=grid-area]
-#### gr [css-prop=grid-row]
-#### gc [css-prop=grid-column]
-#### gt [css-prop=grid-template]
-#### grs [css-prop=grid-row-start]
-#### gcs [css-prop=grid-column-start]
-#### gre [css-prop=grid-row-end]
-#### gce [css-prop=grid-column-end]
+#### g [cssprop]
+#### rg [cssprop]
+#### cg [cssprop]
+#### gtr [cssprop]
+#### gtc [cssprop]
+#### gta [cssprop]
+#### gar [cssprop]
+#### gac [cssprop]
+#### gaf [cssprop]
+#### gcg [cssprop]
+#### grg [cssprop]
+#### ga [cssprop]
+#### gr [cssprop]
+#### gc [cssprop]
+#### gt [cssprop]
+#### grs [cssprop]
+#### gcs [cssprop]
+#### gre [cssprop]
+#### gce [cssprop]
 
 # Alignment
 
-## Alignment [toc-pills]
+## Alignment [toc-pills] [toc=cssprop]
 
-### ji
+### ji [cssprop]
 
-### jc
+[demo](/examples/css/ji.imba?preview=styles)
 
-### js
+### jc [cssprop]
 
-### j
+### js [cssprop]
 
-### ai
+### j [cssprop]
 
-### ac
+### ai [cssprop]
 
-### as
+### ac [cssprop]
 
-### a
+### as [cssprop]
 
-### jai
+### a [cssprop]
 
-### jac
+### jai [cssprop]
 
-### jas
+### jac [cssprop]
 
-### ja
+### jas [cssprop]
+
+### ja [cssprop]
 
 
 # Typography
 
 ## Properties [toc-pills]
 
-### c
-### ff
-### fs
-### fw
-### ts
-### tt
-### ta
-### va
-### ls
-### lh
-### ws
+### c [cssprop]
+### ff [cssprop]
+### fs [cssprop]
+### fw [cssprop]
+### ts [cssprop]
+### tt [cssprop]
+### ta [cssprop]
+### va [cssprop]
+### ls [cssprop]
+### lh [cssprop]
+### ws [cssprop]
 
 ## Font Family [toc-pills]
 
@@ -580,65 +591,65 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ## Background [toc-pills]
 
-### bg
+### bg [cssprop]
 
-### bgc
+### bgc [cssprop]
 
-### bgi
+### bgi [cssprop]
 
-### bgr
+### bgr [cssprop]
 
-### bgi
+### bgi [cssprop]
 
-### bga
+### bga [cssprop]
 
-### bgs
+### bgs [cssprop]
 
 ### bgclip
 
 # Borders
 
 ## Border [toc-pills]
-### bd [border]
-### bdr [border-right]
-### bdl [border-left]
-### bdt [border-top]
-### bdb [border-bottom]
+### bd [cssprop]
+### bdr [cssprop]
+### bdl [cssprop]
+### bdt [cssprop]
+### bdb [cssprop]
 
 ## Border Style [toc-pills]
-### bs [border-style]
-### bsr [border-right-style]
-### bsl [border-left-style]
-### bst [border-top-style]
-### bsb [border-bottom-style]
+### bs [cssprop]
+### bsr [cssprop]
+### bsl [cssprop]
+### bst [cssprop]
+### bsb [cssprop]
 
 ## Border Width [toc-pills]
-### bw [border-width]
-### bwr [border-right-width]
-### bwl [border-left-width]
-### bwt [border-top-width]
-### bwb [border-bottom-width]
+### bw [cssprop]
+### bwr [cssprop]
+### bwl [cssprop]
+### bwt [cssprop]
+### bwb [cssprop]
 
 ## Border Color [toc-pills]
-### bc [border-color]
-### bcr [border-right-color]
-### bcl [border-left-color]
-### bct [border-top-color]
-### bcb [border-bottom-color]
+### bc [cssprop]
+### bcr [cssprop]
+### bcl [cssprop]
+### bct [cssprop]
+### bcb [cssprop]
 
 ## Border Radius [toc-pills]
 
 [demo](/examples/css/rd.imba?preview=styles)
 
-### rd [border-radius]
-### rdtl [border-top-left-radius]
-### rdtr [border-top-right-radius]
-### rdbl [border-bottom-left-radius]
-### rdbr [border-bottom-right-radius]
-### rdt [border-top-left-radius_border-top-right-radius]
-### rdb [border-bottom-left-radius_border-bottom-right-radius]
-### rdl [border-top-left-radius_border-bottom-left-radius]
-### rdr [border-top-right-radius_border-bottom-right-radius]
+### rd [cssprop]
+### rdtl [cssprop]
+### rdtr [cssprop]
+### rdbl [cssprop]
+### rdbr [cssprop]
+### rdt [cssprop]
+### rdb [cssprop]
+### rdl [cssprop]
+### rdr [cssprop]
 
 # Animations
 
@@ -648,23 +659,23 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 [demo](/examples/css/transform.imba?preview=styles)
 
-### x
+### x [cssprop]
 
-### y
+### y [cssprop]
 
-### z
+### z [cssprop]
 
-### scale
+### scale [cssprop]
 
-### scale-x
+### scale-x [cssprop]
 
-### scale-y
+### scale-y [cssprop]
 
-### rotate
+### rotate [cssprop]
 
-### skew-x
+### skew-x [cssprop]
 
-### skew-y
+### skew-y [cssprop]
 
 # Appearance
 

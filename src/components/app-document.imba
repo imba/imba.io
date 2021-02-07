@@ -267,8 +267,11 @@ tag doc-section
 			if data.head
 				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} id=data.hash>
 					css svg d:inline size:5
+					css .legend ml:1 c:gray5 fs:md
 					<a[pos:absolute l:-20px c:gray5 o:0] href=data.href> '#'
 					<span.html.title innerHTML=data.head>
+					if data.legend
+						<span.legend> data.legend
 					if data.options.mdn
 						<a[ml:1] target="_blank" href="https://developer.mozilla.org/en-US/docs/Web{data.options.mdn}">
 							css o:0.3 @hover:0.8 c@hover:violet4
@@ -278,9 +281,6 @@ tag doc-section
 				<.wip[my:10px]>
 					<span.marktext>
 						"This topic is incomplete. Can you help document this topic? Reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}"
-
-			if data.options.sheet
-				<doc-section-filters data=data bind:selection=filters>
 
 			if (data isa Section or level == 0) and !linked
 				<.body.{data.flagstr}>

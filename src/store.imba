@@ -103,6 +103,9 @@ class Entry
 	get locals
 		#locals ||= LocalsProxy.for(path)
 
+	get legend
+		data.legend
+
 	get elements
 		document.getElementsByClassName("entry-{id}")
 	
