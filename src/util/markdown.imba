@@ -63,6 +63,8 @@ def renderer.link href, title, text
 			return (<embedded-app-example data-path=href>)
 		elif (/Code/).test(text)
 			return (<app-code-block data-dir=href>)
+		elif text == 'demo'
+			return (<app-code-block data-href=href>)
 
 	if href.match(/scrimba\.com.*\/c/)
 		return (<a.scrimba href=href title=title target='_blank'> <span innerHTML=text>)

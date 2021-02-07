@@ -1,6 +1,6 @@
 import {highlight,clean} from '../util/highlight'
 import * as sw from '../sw/controller'
-import {ls,fs} from '../store'
+import {ls,fs,File,Dir} from '../store'
 
 def getVisibleLineCount code
 	let parts = code.split('# ---\n')
@@ -301,27 +301,41 @@ tag app-code-block < app-code
 		flags.add(_ns_)
 		flags.add(_ns_ + "_")
 
+		let lineCounts = []
 		let meta = JSON.parse(dataset.meta or '{}')
 		let path = "/examples{dataset.path}"
 
+		example = null
+
+		if dataset.href
+			let url = new URL(dataset.href,global.location.origin)
+			# console.log 'here???',dataset.href,url
+			for [key,value] of url.searchParams
+				options[key] = value
+
+			example = ls(url.pathname)
+			console.log example,url
+			
+
 		Object.assign(options,meta)
-		
-		let lineCounts = []
-		let parts = getElementsByTagName('code')
-		for part,i in parts
-			let data = {
-				name: part.dataset.name or "index.{part.dataset.lang}"
-				lang: part.dataset.lang
-				body: clean(part.textContent)
-			}
-			lineCounts.push(getVisibleLineCount(data.body))
-			let file = fs.register(path + '/' + data.name,data)
-			files.push(file)
+
+		if example isa File
+			files = [example]
+		else
+			let parts = getElementsByTagName('code')
+			for part,i in parts
+				let data = {
+					name: part.dataset.name or "index.{part.dataset.lang}"
+					lang: part.dataset.lang
+					body: clean(part.textContent)
+				}
+				let file = fs.register(path + '/' + data.name,data)
+				files.push(file)
+
+		for file in files
+			lineCounts.push(getVisibleLineCount(file.body))
 
 		file = files[0]
-
-		
-
 
 		if file.name == 'main.imba'
 			options.preview ||= 'md'
@@ -410,7 +424,7 @@ tag app-code-block < app-code
 		let name = (files[0] && files[0].name or '')
 		let fflags = name.replace(/\.+/g,' ')
 
-		<self.{options.preview}.{fflags} .multi=(files.length > 1)
+		<self.{options.preview}.{fflags} .preview-{options.preview} .multi=(files.length > 1)
 			@click.sel('.scope-rule *,.scope-rule')=focusStyleRule
 			@pointerover.silence=pointerover>
 
@@ -426,7 +440,7 @@ tag app-code-block < app-code
 					&.ind1 >>> .t0 d:none
 					&.ind2 >>> .t1 d:none
 
-			css &.style-options
+			css &.preview-styles
 				main d:hflex bg:$bg p:0
 				code d:contents
 				$editor d:block fl:1 1 65% m:2

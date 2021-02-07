@@ -129,7 +129,8 @@ tag app-menu
 		<self tabIndex=-1>
 			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 flex:1]>
 				# <app-menu-section[c:pink6] data=ls('/intro')>
-				<app-menu-section[c:blue6] data=ls('/language')>
-				<app-menu-section[c:purple6] data=ls('/tags')>
-				<app-menu-section[c:purple6] data=ls('/events')>
+				<app-menu-section[c:pink6] data=ls('/language')>
+				<app-menu-section[c:violet6] data=ls('/tags')>
+				<app-menu-section[c:sky6] data=ls('/events')>
 				<app-menu-section[c:indigo6] data=ls('/styling')>
+				<app-menu-section[c:amber6 min-height:65vh] data=ls('/css')>
