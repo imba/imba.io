@@ -408,7 +408,7 @@ The color CSS data-type represents a color in the sRGB color space. Colors can b
 
 Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, these named colors can be used anywhere in your styles where a color value is expected.
 
-# Layout
+# Dimensions
 
 ## Sizing [toc-pills]
 
@@ -451,6 +451,7 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 ### mx [cssprop]
 
 ### my [cssprop]
+
 ## Padding [toc-pills]
 
 [demo](/examples/css/padding-aliases.imba?preview=styles)
@@ -473,17 +474,24 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### py [cssprop]
 
+
+# Layout
+
+
+
+
+
 ## Display [toc-pills]
 
 ### d [cssprop]
 
-### d:hflex
+### d:hflex [cssvalue]
 
-### d:vflex
+### d:vflex [cssvalue]
 
-### d:hgrid
+### d:hgrid [cssvalue]
 
-### d:vgrid
+### d:vgrid [cssvalue]
 
 ## Flexbox [toc-pills] [cssprops]
 
@@ -528,6 +536,12 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ## Alignment [toc-pills] [toc=cssprop]
 
+### ja [cssprop]
+
+### j [cssprop]
+
+
+
 ### ji [cssprop]
 
 [demo](/examples/css/ji.imba?preview=styles)
@@ -536,7 +550,8 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### js [cssprop]
 
-### j [cssprop]
+### a [cssprop]
+
 
 ### ai [cssprop]
 
@@ -544,15 +559,12 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### as [cssprop]
 
-### a [cssprop]
 
 ### jai [cssprop]
 
 ### jac [cssprop]
 
 ### jas [cssprop]
-
-### ja [cssprop]
 
 
 # Typography
@@ -575,6 +587,8 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### ff
 
+[demo](/examples/css/ff.imba?preview=styles)
+
 ### ff:mono
 
 ### ff:sans
@@ -585,7 +599,11 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ## Font Size
 
+[demo](/examples/css/fs.imba?preview=styles)
+
 ## Font Weight
+
+[demo](/examples/css/fw.imba?preview=styles)
 
 # Backgrounds
 
@@ -679,3 +697,28 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 # Appearance
 
+### o [cssprop]
+
+### bxs [cssprop]
+
+[demo](/examples/css/bxs.imba?preview=styles)
+
+> TODO show how to define custom box shadows
+
+# Miscellaneous
+
+### prefix [cssprop]
+
+### suffix [cssprop]
+
+### zi [cssprop]
+
+### us [cssprop]
+
+### of [cssprop]
+
+### ofx [cssprop]
+
+### ofy [cssprop]
+
+### ofa [cssprop]

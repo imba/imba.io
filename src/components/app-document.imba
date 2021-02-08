@@ -377,6 +377,7 @@ tag TocItem
 			d:inline-block m:0.5 ff:mono fs:xs va:top
 			> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
 			&.in-focus > a c:blue9 bg:blue3
+			&.cssvalue > a bg:sky2 c:sky6
 	
 	css &.toc-hide d@force:none
 
@@ -384,6 +385,8 @@ tag TocItem
 		d:inline-block m:0.5 ff:mono fs:xs va:top
 		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
 		&.in-focus > a c:blue9 bg:blue3
+
+
 	
 	css &.event-modifierz
 		d:inline-block m:0.5 ff:mono fs:xs va:top

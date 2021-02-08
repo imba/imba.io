@@ -365,18 +365,6 @@ tag app-code-block < app-code
 
 		emit('run',{code: source})
 
-	def pointerover e
-		let vref = null
-		if let el = e.target.closest('.__ref')
-			vref = el.className.split(/\s+/g).find do (/symbol--\d+/).test($1)
-		
-		if vref != hlvar
-			if hlvar
-				el.classList.remove('highlight') for el in getElementsByClassName(hlvar)
-			if vref
-				el.classList.add('highlight') for el in getElementsByClassName(vref)
-			hlvar = vref
-	
 	def openFile file
 		self.file = file
 		render!
@@ -389,18 +377,42 @@ tag app-code-block < app-code
 		console.log 'bind exports',exports
 		example = exports
 
+	def pointerover e
+		let vref = null
+		if let el = e.target.closest('.__ref')
+			vref = el.className.split(/\s+/g).find do (/symbol--\d+/).test($1)
+		
+		if vref != hlvar
+			if hlvar
+				el.classList.remove('highlight') for el in getElementsByClassName(hlvar)
+			if vref
+				el.classList.add('highlight') for el in getElementsByClassName(vref)
+			hlvar = vref
 
+		
+		let rule = e.target.closest('.scope-rule')
+		if #hoveredRule =? rule
+			focusStyleRule(e) if rule and !#clickedRules
+	
 	def setStateFlag e
 		let value = e.target.textContent.slice(1)
 		console.log 'setStateFlag',e,e.target,value
 		if demo.vars..flag
 			demo.vars.flag = value
 			demo.commit!
+	
+
+	# the selectable items in a css preview
+
 
 	def focusStyleRule e
 		# console.log 'clicked selector',e.target
 		let rule = e.target.closest('.scope-rule')
 		let sel = rule.firstElementChild.textContent.trim!
+
+		if e.type == 'click'
+			#clickedRules = yes
+
 		# console.log 'clicked selector',sel
 		if sel.match(/^\.demo-/)
 			focusedRule = rule
@@ -425,7 +437,10 @@ tag app-code-block < app-code
 		let fflags = name.replace(/\.+/g,' ')
 
 		<self.{options.preview}.{fflags} .preview-{options.preview} .multi=(files.length > 1)
+			tabindex=-1
 			@click.sel('.scope-rule *,.scope-rule')=focusStyleRule
+			@keydown.esc.stop=(#clickedRules = no)
+
 			@pointerover.silence=pointerover>
 
 			css pos:relative rd:sm d:block .shared:none

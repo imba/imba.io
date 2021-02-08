@@ -298,14 +298,14 @@ export def render content, o = {}
 
 	let walk = do(section,pre = '')
 		# console.log "{pre}{section.title} ({section.type} {section.level} {section.flags}) - {section.desc}"
+		let o = section.options
 
 		section.children = section.children.filter do !$1.options.skip
 
 		for child in section.children
 			walk(child,pre + '  ')
 
-		if section.options.cssprop
-			console.log "SECTION HAS CSSPROP"
+		if o.cssprop
 			let name = section.name
 			let expanded = aliases[name]
 			section.concept = {
@@ -317,6 +317,8 @@ export def render content, o = {}
 				section.legend = expanded.join(" + ")
 			elif expanded
 				section.legend = expanded
+		elif o.cssvalue
+			section.legend = "value"
 
 	# walk to add metadata / identify concepts/references etc
 
