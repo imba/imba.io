@@ -243,8 +243,15 @@ export class Guide < Entry
 
 export class Markdown < Entry
 
+	get searchText
+		#searchText ||= if true
+			if meta.type == 'cssprop'
+				console.log 'yes!!'
+			(title + ' ' + legend or '').replace(/\-/g,'').toLowerCase!
+		
+
 	def match query
-		if name.indexOf(query) >= 0
+		if searchText.indexOf(query) >= 0
 			return yes
 		return no
 
@@ -394,7 +401,8 @@ const hits = {}
 
 export def find query, options = {}
 	let matches = []
-	for guide in groups.guide
+	let roots = options.roots or groups.guide
+	for guide in roots
 		for item in guide.descendants
 			# continue unless item isa Doc or item isa Section
 			if item.match(query,options)

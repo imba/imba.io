@@ -127,6 +127,11 @@ tag app-menu
 	def render
 		<self tabIndex=-1>
 			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 flex:1]>
+				# <.search hotkey='s' @hotkey.log('clicked s').prevent.wait(50ms).emit-showsearch>
+				# 	css p:1 mx:2 px:0.25 h:8 d:hflex c:cool4 bdb:gray2 a:center
+				# 	# <span[rd:md bd:gray2 fs:xs h:5 px:1 c:gray5 d:hflex ja:center]> 'S'
+				# 	<span[fl:1 font-style:italic]> "Search docs..."
+				# 	<span[rd:md bd:gray2 fs:xs h:5 px:1 c:gray5 d:hflex ja:center]> 'S'
 				# <app-menu-section[c:pink6] data=ls('/intro')>
 				<app-menu-section[c:pink6] data=ls('/language')>
 				<app-menu-section[c:violet6] data=ls('/tags')>

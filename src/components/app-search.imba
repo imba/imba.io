@@ -10,7 +10,7 @@ tag Item
 			for parent in data.parents
 				<.item>
 					css ws:nowrap d:hflex a:center
-					<span.title innerHTML=(parent.head or parent.name)>
+					<span.title innerHTML=(parent.head or parent.title)>
 					<svg[size:14px o:0.7 mt:2px mx:1] src='../assets/icons/chevron-right.svg'>
 		<span.html.title innerHTML=data.head>
 			css c:gray9 fw:500
@@ -25,8 +25,12 @@ tag app-search
 
 	def refresh
 		if #matchQuery =? query
-			hits = find(query)
-			# log 'search!!',query,hits
+			let o = {
+				query: query
+				roots: [ls('/language'),ls('/tags'),ls('/events'),ls('/css')]
+			}
+			let matcher = query.toLowerCase!.replace(/\-/g,'')
+			hits = find(matcher,o)
 			#focus = 0 # Math.max(0,Math.min(matches.length - 1,#focus))
 			#pointing = no
 
@@ -50,6 +54,9 @@ tag app-search
 	def show
 		focus!
 		$input.setSelectionRange(0,query.length)
+
+	def hide
+		blur!
 
 	def focus
 		$input.focus!
@@ -77,17 +84,25 @@ tag app-search
 				@focus-within bg:blue6/10
 					main y:0px scale:1 o:1 pe:auto
 
+			css &.sezarch bg:blue6/10
+				main y:0px scale:1 o:1 pe:auto
+
 			<main tabindex=-1>
 				css w:600px bg:white bxs:xxl px:4 ofy:auto rd:md
 					mt:20vh h:auto max-height:400px tween:styles 0.2s cubic-in-out
 				<header[pos:sticky t:0 bg:white/85 zi:10 pt:4]>
-					<input$input type='text' bind=query 
-						@input.debounce(50ms)=refresh
-						hotkey='meta+k'
-						@hotkey=show
-						placeholder="Search docs">
-						css p:2 w:100% bg:white rd:md bd:gray2 bxs:xs
-							@focus bxs:outline,xs bd:blue4
+					
+					<div[d:hflex ja:center]>
+						<input$input type='text' bind=query 
+							@input.debounce(50ms)=refresh
+							placeholder="Search docs">
+							css p:2 w:100% bg:white rd:md bd:gray2 bxs:xs
+								@focus bxs:outline,xs bd:blue4
+						<div hotkey='esc' @click=hide>
+							css pos:relative w:0 h:6
+							css @after d:block h:14px content:"esc" pos:absolute r:2
+								rd:md bd:gray2 fs:xs h:100% px:1.5 c:gray5 d:hflex ja:center 
+					# <.keycap[pos:abs r:4 t:2 ] hotkey='esc' @click=hide> 'esc'
 
 				<div$items[pos:rel mt:2 pb:4] @mousemove.silent=(#pointing = yes)>
 					<div$selection>

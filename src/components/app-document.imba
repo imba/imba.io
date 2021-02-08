@@ -247,6 +247,11 @@ tag doc-section
 		# if e.entry.isIntersecting
 		flags.toggle('in-view',e.entry.isIntersecting)
 		emit('refocus')
+
+	def scrollIntoView
+		let rect = getBoundingClientRect!
+		log 'scroll section into view!',rect
+
 	
 	def render
 		return unless data
@@ -295,8 +300,39 @@ tag app-document
 
 	css .embed w:100% bd:0px h:500px
 
+	get scroller
+		document.scrollingElement
+
+	prop hash @set
+		let section = getSectionForHash(e.value)
+		log 'hash did set!!!',e,section
+		reveal(section) if section
+
 	def mount
-		document.scrollingElement.scrollTop = 0
+		# document.scrollingElement.scrollTop = 0
+		let hash = document.location.hash.slice(1)
+		let subsection = getSectionForHash(hash)
+		if subsection
+			reveal(subsection)
+		else
+			window.scrollTo(0,restoreScrollTop or 0,{behavior: 'auto'})
+			scroller.scrollTop = restoreScrollTop or 0
+
+	def unmount
+		let val = scroller.scrollTop
+		log 'scrolled on unmount',val
+		restoreScrollTop = val < 200 ? 0 : val
+
+	def getSectionForHash hash
+		hash = hash.slice(1) if hash[0] == '#'
+		return hash and data and data.descendants.find do $1.hash == hash
+				
+
+	def reveal section
+		let view = querySelector ".entry-{section.id}.head"
+		console.log 'scroll into view',view
+		view..scrollIntoView!
+		self
 
 	def refocus
 		let inview = querySelectorAll('.in-view')
@@ -320,40 +356,12 @@ tag app-document
 		
 		return
 
-	prop focalpoint @set
-		let map = new Map
-		let from = e.oldValue
-		let to = e.value
-		let cleanup = new Set(getElementsByClassName('in-focus'))
-
-
-		while from
-			map.set(from,false)
-			from = from.parent
-
-		for item in querySelectorAll('.in-view')
-			map.set(item.data,true)
-		
-		while to
-			map.set(to,true)
-			to = to.parent
-		
-		for [section,value] of map
-			let items = section.elements
-			for el in items
-				el.flags.toggle('in-focus',value)
-				cleanup.delete(el)
-		
-		for el of cleanup
-			el.flags.remove('in-focus')
-		return
-
 
 	def render
 		let doc = data
 		return unless doc	
 
-		<self.markdown[d:block pb:24 d:hflex] @refocus.silent=refocus>
+		<self.markdown[d:block pb:24 pt:4 d:hflex] @refocus.silent=refocus>
 			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
 				<div$content>
 					<doc-section $key=doc.id data=doc level=0>

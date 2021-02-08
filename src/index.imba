@@ -12,6 +12,8 @@ import './repl/index'
 import {fs,files,ls} from './store'
 import * as sw from './sw/controller'
 
+global.flags = document.documentElement.flags
+
 tag app-root
 	prop doc
 
@@ -59,17 +61,6 @@ tag app-root
 		@hover y:-2px bxs:lg bg:teal5
 		@after o:0.7 fs:xs content: " " $shortcut
 
-	css .header
-		pos:fixed d:flex ai:center
-		p:3 w:100% h:$header-height top:0px
-		border-bottom:gray2 bg:white
-		zi:300 fs:15px 
-
-		.handle d:flex @md:none ai:center size:9 rd:2 bg:white o:0.9 c:teal5 fs:2xl
-		.tab l:flex mx:2 py:1 c:teal6 fw:500 bb:2px solid teal6/0
-			&.active c:teal7 bbc:teal6
-		
-
 	def go path
 		self.path = path
 		doc ||= ls('/language/introduction')
@@ -80,10 +71,20 @@ tag app-root
 			doc = ls('/language/introduction')
 		elif path.indexOf('/examples') != 0
 			doc = ls(path) or ls('/404')
+			console.log 'doc',doc
+
+		global.flags.incr('fastscroll')
+		setTimeout(&,500) do global.flags.decr('fastscroll')
+		document.body.offsetHeight
+
 
 		try
 			document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
 		self
+	
+	def search
+		let q = $query.value
+		console.log 'search now!!!',q
 
 	def render
 		if path != router.url.pathname
@@ -91,39 +92,51 @@ tag app-root
 
 		let repl = router.match('/try')
 
-		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show!>
+		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show! @showsearch=$search.show!>
 			<div.header>
-				<.logo[d:flex h:9 c:teal5] route-to='/'>
-					<svg[h:100%] src='./assets/logo.svg'>
+				css pos:fixed d:flex ai:center
+					px:2 w:100% h:$header-height top:0px
+					zi:300 fs:15px bg:cool8/98 c:white
+
+					.handle d:flex @md:none ai:center size:9 rd:2 bg:white o:0.9 c:teal5 fs:2xl
+					.tab d:hflex mx:2 py:1 c:sky3 fs:sm- fw:500 tt:uppercase ja:center
+						svg h:16px w:auto mx:0.5
+						@hover c:white
+							svg scale:1.15
+						&.active c:teal7 bbc:teal6
+						@!600 span d:none
+						.keycap bc:sky3/35 c:sky3/50 h:4.5 px:0.75 fw:bold ml:0.5
+
+
+				<.logo[d:contents] route-to='/'>
+					<svg[h:20px w:auto mr:2 pos:relative t:2px ml:1] src='./assets/wing.svg'>
+					<.logotype[c:white fw:700 fs:xl lh:30px]> "imba"
+				<.breadcrumb[mx:2 fs:sm c:blue4]>
+					css span + span @before content: "/" mx:1 o:0.3
 				<div[flex: 1]>
 				<div[d:flex cursor:pointer]>
-					<a.tab @click.emit-showide> "Try"
-					<a.tab href='https://github.com/imba/imba'> "GitHub"
-					<a.tab href='https://discord.gg/mkcbkRw'> "Chat"
+					<a.tab @click.emit-showsearch>
+						<svg src='./assets/icons/search.svg'>
+						<span[c:sky3/35 mx:0.5 tt:none]> "Search..."
+						<span.keycap hotkey='s' @hotkey.prevent.emit-showsearch> 'S'
+					<a.tab>
+						<svg src='./assets/icons/play.svg'>
+						<span> "Try"
+					<a.tab target='_blank' href='https://github.com/imba/imba'>
+						<svg src='./assets/icons/github.svg'>
+						<span> "GitHub"
+					<a.tab target='_blank' href='https://discord.gg/mkcbkRw'>
+						<svg src='./assets/icons/message-circle.svg'>
+						<span> "Chat"
+					
 				<div.handle @click=($menu.focus!)> "☰"
 
 			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl>
 			<app-menu$menu>
 			<app-search$search>
 			if doc
-				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl>
+				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl hash=document.location.hash>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 
 imba.mount <app-root>
-
-# Should add the colors etc to the root css here
-global css
-	@root
-		font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
-		-webkit-font-smoothing: antialiased
-		-moz-osx-font-smoothing: grayscale
-		$header-height: 56px @md:64px
-		$menu-width:80vw @md:220px
-		$doc-width: 768px
-		$doc-margin: calc(100vw - $doc-width - 20px) @md:calc(100vw - $doc-width - $menu-width - 20px)
-
-	html.noscroll body overflow: hidden
-	html,body p:0px m:0px
-	body pt: $header-height
-	* outline:none	

@@ -308,14 +308,16 @@ export def render content, o = {}
 		if o.cssprop
 			let name = section.name
 			let expanded = aliases[name]
+			section.meta.type = 'cssprop'
 			section.concept = {
 				type: 'cssprop'
 				name: name
 				fullform: expanded
 			}
+			# section.keywords = expanded.join(",")
 			if expanded isa Array
 				section.legend = expanded.join(" + ")
-			elif expanded
+			elif expanded != name
 				section.legend = expanded
 		elif o.cssvalue
 			section.legend = "value"

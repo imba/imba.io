@@ -103,9 +103,13 @@ class HotKeyManager
 
 			# what if there is a shortcut event?
 			# supposed to only emit for the items listening to specific keys, no?
-			let onhotkey = receiver.emit('hotkey',data)
+			let onhotkey = receiver.emit('hotkey',data, bubbles:true, cancelable: true)
+			console.log onhotkey.defaultPrevented,receiver
+			if onhotkey.defaultPrevented
+				e.preventDefault!
+				break if e.cancelBubble
 
-			if receiver.matches('input:not([type=button]),select,textarea')
+			elif receiver.matches('input:not([type=button]),select,textarea')
 				# should still check various rules?
 				e.preventDefault!
 				receiver.focus! if receiver.focus
