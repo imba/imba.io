@@ -628,7 +628,7 @@ let person =
 console.log(person.name) # => 'Bob Smith'
 ```
 
-##### Dot notation `.`
+##### Dot notation
 
 ```imba
 let person = {name: 'Bob Smith', age: 32, gender: 'male'}
@@ -637,7 +637,7 @@ person.name
 person.age = 33
 ```
 
-##### Bracket notation `[]`
+##### Bracket notation
 
 ```imba
 let person = {name: 'Bob Smith', age: 32, gender: 'male'}

@@ -1,3 +1,9 @@
+---
+title: Events
+multipage: true
+---
+
+
 # Listening to Events
 
 We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
