@@ -5,6 +5,7 @@ import './components/app-document'
 import './components/app-menu'
 import './components/app-code'
 import './components/doc-widgets'
+import './components/app-search'
 
 import './repl/index'
 
@@ -103,6 +104,7 @@ tag app-root
 
 			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl>
 			<app-menu$menu>
+			<app-search$search>
 			if doc
 				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>

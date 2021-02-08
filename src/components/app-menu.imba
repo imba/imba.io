@@ -113,7 +113,6 @@ tag app-menu-section
 			> .content of:hidden h:0px o:0.4
 		<a.l0.section.menu-heading @click=toggle>
 			css d:hflex a:center
-			
 			<span> data.title
 			<svg[size:4 ml:0.5].chevron src='../assets/icons/chevron-down.svg'>
 		<div.content.{data.slug}>
@@ -132,5 +131,5 @@ tag app-menu
 				<app-menu-section[c:pink6] data=ls('/language')>
 				<app-menu-section[c:violet6] data=ls('/tags')>
 				<app-menu-section[c:sky6] data=ls('/events')>
-				<app-menu-section[c:indigo6] data=ls('/styling')>
+				# <app-menu-section[c:indigo6] data=ls('/styling')>
 				<app-menu-section[c:amber6 min-height:65vh] data=ls('/css')>

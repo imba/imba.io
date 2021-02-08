@@ -139,6 +139,13 @@ class Entry
 	get categories
 		children.filter(do $1 isa Category)
 
+	get descendants
+		#descendants ||= children.reduce(&,[]) do
+			$1.concat([$2]).concat($2.descendants)
+
+	get parents
+		#parents ||= parent.parents.concat(parent)
+
 	get prev
 		return null unless parent
 		prevSibling or parent.prev
@@ -165,14 +172,6 @@ class Entry
 
 	def childByName name
 		children.find(do $1.name == name) #  and !($1 isa Section)
-
-	def match filter
-		if filter isa RegExp
-			if sections and sections.some(do $1.match(filter) )
-				return true
-
-			return filter.test(flagstr)
-		return true
 
 export class File < Entry
 	constructor data, parent
@@ -231,9 +230,10 @@ export class File < Entry
 	
 		dirty = no
 
-export class Doc < Entry
-
 export class Guide < Entry
+
+	get parents
+		#parents ||= []
 
 	get next
 		null
@@ -241,7 +241,16 @@ export class Guide < Entry
 	get prev
 		null
 
-export class Section < Entry
+export class Markdown < Entry
+
+	def match query
+		if name.indexOf(query) >= 0
+			return yes
+		return no
+
+export class Doc < Markdown
+
+export class Section < Markdown
 	
 	get href
 		#href ||= parent isa Section ? "{parent.href}-{name}" : "{parent.href}#{name}"
@@ -295,6 +304,9 @@ export class Dir < Entry
 
 export class Root < Dir
 	service = null
+	
+	get parents
+		#parents ||= []
 
 	def connectToWorker sw
 		service = sw
@@ -375,9 +387,19 @@ root = new Root(raw)
 export const fs = root
 
 
-window.FS = fs
+global.FS = fs
+global.gr = groups
 
 const hits = {}
+
+export def find query, options = {}
+	let matches = []
+	for guide in groups.guide
+		for item in guide.descendants
+			# continue unless item isa Doc or item isa Section
+			if item.match(query,options)
+				matches.push(item)
+	return matches
 
 export def ls path
 	unless hits[path]
