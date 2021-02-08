@@ -309,12 +309,10 @@ tag app-code-block < app-code
 
 		if dataset.href
 			let url = new URL(dataset.href,global.location.origin)
-			# console.log 'here???',dataset.href,url
 			for [key,value] of url.searchParams
 				options[key] = value
 
 			example = ls(url.pathname)
-			console.log example,url
 			
 
 		Object.assign(options,meta)
@@ -396,7 +394,6 @@ tag app-code-block < app-code
 	
 	def setStateFlag e
 		let value = e.target.textContent.slice(1)
-		console.log 'setStateFlag',e,e.target,value
 		if demo.vars..flag
 			demo.vars.flag = value
 			demo.commit!
