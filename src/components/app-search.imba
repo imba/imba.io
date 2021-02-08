@@ -1,7 +1,9 @@
 import {ls,fs,File,Dir,find} from '../store'
 
 tag Item
-	css cursor:pointer d:hflex px:4 a:center
+	css cursor:pointer d:hflex px:4 a:center pos:rel
+	css @lt-md pt:2
+		.path pos:abs fs:xxs t:0.5
 	
 
 	<self @mousedown.stop.prevent.emit-go(data) @pointerover.emit-hover(index)>
@@ -90,6 +92,8 @@ tag app-search
 			<main tabindex=-1>
 				css w:600px bg:white bxs:xxl px:4 ofy:auto rd:md
 					mt:20vh h:auto max-height:400px tween:styles 0.2s cubic-in-out
+
+					@lt-md w:90% mt:60px l:5%
 				<header[pos:sticky t:0 bg:white/85 zi:10 pt:4]>
 					
 					<div[d:hflex ja:center]>
