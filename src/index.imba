@@ -111,9 +111,7 @@ tag app-root
 							svg scale:1.15
 						@!600 span d:none
 						.keycap bc:sky3/35 c:sky3/50 h:4.5 px:0.75 fw:bold ml:0.5
-					
-					.handle d:flex @md:none ai:center size:9 rd:2 bg:white o:0.9 c:teal5 fs:2xl
-					.toggler mx:0
+					.toggler mx:0 d@md:none
 						svg tween:styles 0.1s
 						@hover c:sky3
 							svg scale:1

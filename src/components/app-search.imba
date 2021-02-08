@@ -81,10 +81,10 @@ tag app-search
 				
 				&.empty o:1
 
-				@focus-within bg:blue6/10
+				@focus-within bg:cool9/50
 					main y:0px scale:1 o:1 pe:auto
 
-			css &.sezarch bg:blue6/10
+			css &.search2 bg:cool9/50
 				main y:0px scale:1 o:1 pe:auto
 
 			<main tabindex=-1>
