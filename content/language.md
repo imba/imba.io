@@ -21,10 +21,9 @@ In Imba DOM elements _and_ CSS are treated as first-class citizens. DOM elements
 ## Installation
 
 ```sh
-npm install -g imba@pre
-git clone --bare https://github.com/imba/imba-starter-app
-cd imba-starter-app
-imba -w server.imba
+npx imba create hello-world
+cd hello-world
+npm start
 ```
 
 ## Community
