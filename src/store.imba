@@ -245,8 +245,6 @@ export class Markdown < Entry
 
 	get searchText
 		#searchText ||= if true
-			if meta.type == 'cssprop'
-				console.log 'yes!!'
 			(title + ' ' + legend or '').replace(/\-/g,'').toLowerCase!
 		
 

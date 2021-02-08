@@ -9,7 +9,7 @@ global css
 		--box-shadow-ring: 0 0 0 3px blue4/30
 		scroll-behavior:smooth
 		$header-height: 48px @md:48px
-		$menu-width:80vw @md:220px
+		$menu-width:240px @md:220px
 		$doc-width: 768px
 		$doc-margin: calc(100vw - $doc-width - 20px) @md:calc(100vw - $doc-width - $menu-width - 20px)
 

@@ -305,7 +305,6 @@ tag app-document
 
 	prop hash @set
 		let section = getSectionForHash(e.value)
-		log 'hash did set!!!',e,section
 		reveal(section) if section
 
 	def mount
@@ -320,7 +319,6 @@ tag app-document
 
 	def unmount
 		let val = scroller.scrollTop
-		log 'scrolled on unmount',val
 		restoreScrollTop = val < 200 ? 0 : val
 
 	def getSectionForHash hash
@@ -330,7 +328,6 @@ tag app-document
 
 	def reveal section
 		let view = querySelector ".entry-{section.id}.head"
-		console.log 'scroll into view',view
 		view..scrollIntoView!
 		self
 

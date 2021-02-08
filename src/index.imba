@@ -16,6 +16,7 @@ global.flags = document.documentElement.flags
 
 tag app-root
 	prop doc
+	prop show-menu
 
 	def setup
 		yes
@@ -44,6 +45,7 @@ tag app-root
 		fs:sm fw:500
 		bg:white
 		zi:150
+		max-width:80vw
 		x:-100% @md:0 @focin:0
 		border-right:gray3 @md:none
 		transition:all 250ms cubic-in-out
@@ -71,7 +73,6 @@ tag app-root
 			doc = ls('/language/introduction')
 		elif path.indexOf('/examples') != 0
 			doc = ls(path) or ls('/404')
-			console.log 'doc',doc
 
 		global.flags.incr('fastscroll')
 		setTimeout(&,500) do global.flags.decr('fastscroll')
@@ -92,21 +93,31 @@ tag app-root
 
 		let repl = router.match('/try')
 
-		<self[d:contents] @run=runCodeBlock(e.detail) @showide=$repl.show! @showsearch=$search.show!>
+		<self[d:contents]
+			@run=runCodeBlock(e.detail)
+			@showide=$repl.show!
+			@showsearch=$search.show!
+			.show-menu=($menu..focused?)
+			>
 			<div.header>
 				css pos:fixed d:flex ai:center
 					px:2 w:100% h:$header-height top:0px
-					zi:300 fs:15px bg:cool8/98 c:white
+					zi:300 fs:15px bg:cool8/98 c:white us:none
 
-					.handle d:flex @md:none ai:center size:9 rd:2 bg:white o:0.9 c:teal5 fs:2xl
+					
 					.tab d:hflex mx:2 py:1 c:sky3 fs:sm- fw:500 tt:uppercase ja:center
 						svg h:16px w:auto mx:0.5
 						@hover c:white
 							svg scale:1.15
-						&.active c:teal7 bbc:teal6
 						@!600 span d:none
 						.keycap bc:sky3/35 c:sky3/50 h:4.5 px:0.75 fw:bold ml:0.5
-
+					
+					.handle d:flex @md:none ai:center size:9 rd:2 bg:white o:0.9 c:teal5 fs:2xl
+					.toggler mx:0
+						svg tween:styles 0.1s
+						@hover c:sky3
+							svg scale:1
+						&.active svg rotate:-90deg
 
 				<.logo[d:contents] route-to='/'>
 					<svg[h:20px w:auto mr:2 pos:relative t:2px ml:1] src='./assets/wing.svg'>
@@ -114,12 +125,12 @@ tag app-root
 				<.breadcrumb[mx:2 fs:sm c:blue4]>
 					css span + span @before content: "/" mx:1 o:0.3
 				<div[flex: 1]>
-				<div[d:flex cursor:pointer]>
+				<div[d:flex cursor:pointer us:none]>
 					<a.tab @click.emit-showsearch>
 						<svg src='./assets/icons/search.svg'>
 						<span[c:sky3/35 mx:0.5 tt:none]> "Search..."
 						<span.keycap hotkey='s' @hotkey.prevent.emit-showsearch> 'S'
-					<a.tab>
+					<a.tab @click.emit-showide>
 						<svg src='./assets/icons/play.svg'>
 						<span> "Try"
 					<a.tab target='_blank' href='https://github.com/imba/imba'>
@@ -129,7 +140,10 @@ tag app-root
 						<svg src='./assets/icons/message-circle.svg'>
 						<span> "Chat"
 					
-				<div.handle @click=($menu.focus!)> "☰"
+					<a.tab.toggler
+						.active=($menu..focused?)
+						@mousedown.prevent=$menu.toggle!>
+						<svg[h:32px] src='./assets/icons/menu.svg'>
 
 			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl>
 			<app-menu$menu>

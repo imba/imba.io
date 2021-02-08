@@ -123,6 +123,12 @@ tag app-menu
 
 	css 
 		@after content:' ' bg:linear-gradient(white/0,white/100) l:vflex abs w:90% h:80px bottom:0
+	
+	get focused?
+		document.activeElement == self
+
+	def toggle
+		if focused? then document.body.focus! else focus!
 
 	def render
 		<self tabIndex=-1>
