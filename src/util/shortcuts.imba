@@ -104,7 +104,6 @@ class HotKeyManager
 			# what if there is a shortcut event?
 			# supposed to only emit for the items listening to specific keys, no?
 			let onhotkey = receiver.emit('hotkey',data, bubbles:true, cancelable: true)
-			console.log onhotkey.defaultPrevented,receiver
 			if onhotkey.defaultPrevented
 				e.preventDefault!
 				break if e.cancelBubble

@@ -49,7 +49,6 @@ tag app-search
 		go(hits[#focus])
 	
 	def go item
-		log 'go!!'
 		router.go(item.href)
 		blur!
 
