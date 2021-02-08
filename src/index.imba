@@ -71,7 +71,7 @@ tag app-root
 		# redirect home somehow?
 		if path == '/' or path == '/index.html'
 			doc = ls('/language/introduction')
-		elif path.indexOf('/examples') != 0
+		elif path.indexOf('/try') != 0
 			doc = ls(path) or ls('/404')
 
 		global.flags.incr('fastscroll')
