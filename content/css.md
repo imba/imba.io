@@ -595,6 +595,22 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### ff:serif
 
+### ff:custom
+
+You can declare custom font shorthands (or override the standard `mono`, `sans`, and `serif`) by declaring `--font-{name}` css variables in your styles:
+
+```imba
+import 'util/styles'
+# ---
+global css @root
+    --font-sans: Arial Narrow # override sans
+    --font-comic: Chalkboard, Comic Sans # add comic
+
+imba.mount do <section[fs:lg]>
+    <div[ff:serif]> "This is serif"
+    <div[ff:sans]> "This is sans"
+    <div[ff:comic]> "This is comic"
+```
 
 
 ## Font Size
