@@ -171,6 +171,10 @@ app.get(/\.*/) do(req,res)
 			<meta name="twitter:description" content="Imba is a programming language for building web applications with insane performance. You can use it both for the server and client.">
 			<meta name="twitter:image" content="/images/social-card-preview.jpg">
 
+			# <!-- Work Sans font -->
+			<link rel="preconnect" href="https://fonts.gstatic.com">
+			<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@900&display=swap" rel="stylesheet">
+
 		<body tabIndex='-1'>
 			<script type="module" src="./src/index.imba">
 

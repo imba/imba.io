@@ -3,6 +3,7 @@ import './assets/preflight.css'
 
 global css
 	@root
+		--font-brand: 'Work Sans', sans-serif;
 		# font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
 		-webkit-font-smoothing: antialiased
 		-moz-osx-font-smoothing: grayscale

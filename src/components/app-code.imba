@@ -445,16 +445,20 @@ tag app-code-block < app-code
 				$bg:$code-bg-lighter
 				$preview-size:72px .md:120px .lg:180px .xl:240px
 				$minLines: {Math.min(maxLines + 2,14)}
-				code
+				$code
 					h:calc($minLines * 1lh)
 					d:block of:auto ff:mono ws:pre px:5
 					pre w:100px pt:1lh pb:1lh
 					&.ind1 >>> .t0 d:none
 					&.ind2 >>> .t1 d:none
 
+				$pre w:100px pt:1lh pb:1lh
+
+			css &.inline-preview >>> $frame bd:none bg:clear
+
 			css &.preview-styles
 				main d:hflex bg:$bg p:0
-				code d:contents
+				$code d:contents
 				$editor d:block fl:1 1 65% m:2
 				$preview
 					h:auto m:0
@@ -468,7 +472,7 @@ tag app-code-block < app-code
 					$preview h:100px w:auto
 
 				# p:1lh of:visible h:auto pr:40%
-				code >>>
+				$code >>>
 					pre,b d:contents
 					span d:none
 					.keyword.css d:none
@@ -496,7 +500,7 @@ tag app-code-block < app-code
 							<div.item @click=openInEditor> "open"
 						css	&.collapsed .actions pos:abs t:0 r:0
 					if file
-						<code.code.{file.highlighted.flags}>
+						<code$code.{file.highlighted.flags}>
 							<pre$pre[w:100px pt:1lh pb:1lh] innerHTML=file.highlighted.html>
 				if options.preview
 					<app-repl-preview$preview
@@ -506,6 +510,36 @@ tag app-code-block < app-code
 						mode=options.preview
 						@loaded=demoLoaded
 					>
-				
+
+tag app-demo < app-code-block
+
+	def setup
+		files = []
+		file = null
+		example = null
+		demo = {}
+
+		let lineCounts = []
+		let meta = {}
+
+		if href
+			let url = new URL(href,global.location.origin)
+			for [key,value] of url.searchParams
+				options[key] = value
+
+			example = ls(url.pathname)
+			
+		Object.assign(options,meta)
+
+		if example isa File
+			files = [example]
+
+		for file in files
+			lineCounts.push(getVisibleLineCount(file.body))
+
+		file = files[0]
+		maxLines = Math.max(...lineCounts)
+		render!
+
 
 tag app-code-inline < app-code

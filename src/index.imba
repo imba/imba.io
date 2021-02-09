@@ -6,6 +6,7 @@ import './components/app-menu'
 import './components/app-code'
 import './components/doc-widgets'
 import './components/app-search'
+import './components/home-page'
 
 import './repl/index'
 
@@ -71,13 +72,12 @@ tag app-root
 		# redirect home somehow?
 		if path == '/' or path == '/index.html'
 			doc = ls('/language/introduction')
-		elif path.indexOf('/try') != 0
+		elif !path.match(/^\/(home|try)/)
 			doc = ls(path) or ls('/404')
 
 		global.flags.incr('fastscroll')
 		setTimeout(&,500) do global.flags.decr('fastscroll')
 		document.body.offsetHeight
-
 
 		try
 			document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
@@ -144,9 +144,11 @@ tag app-root
 						<svg[h:32px] src='./assets/icons/menu.svg'>
 
 			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl>
-			<app-menu$menu>
 			<app-search$search>
-			if doc
+			if router.match('/home')
+				<home-page>
+			elif doc
+				<app-menu$menu>
 				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl hash=document.location.hash>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
