@@ -50,7 +50,7 @@ global css @root
 	--code-style-scope: #fad8bf;
 	--code-style: #e0ade3;
 	--code-style-bracket:#e9e19b;
-	--code-style-unit: #ff9191;
+	--code-style-unit: #a49feb; # #ff9191;
 	--code-style-scope: #eb9fe5;
 	--code-style-delimiter: #8c7590;
 	--code-style-value: #a49feb;
