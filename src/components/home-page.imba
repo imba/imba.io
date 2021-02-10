@@ -29,8 +29,10 @@ tag home-page
 
 	css .windowed-demo w:1cw
 		>>> $editor rd:lg
-			$code h@force:auto
-			$pre p@force:8
+			$code h@force:calc($mainLines * 1lh) p@force:2lh
+			&.tabbed
+				$tabbar px:2 bg:clear pt:2
+				$code pt@force:0.5lh
 		>>> $preview
 			pos:abs w:0.5cw l:auto r:-1gw m:0
 			t:50% y:-50%
@@ -66,7 +68,6 @@ tag home-page
 		<figure.item> <app-demo.demo href=`/examples/css/{href}.imba?preview=styles`>
 
 	def render
-		log 'render'
 		<self>
 			# <app-demo.demo.full-width-demo.inline-preview href='/examples/clock/app.imba?preview=lg'>
 			<section[pt:40 pb:20 bg:linear-gradient(blue3,blue3/0)]>
@@ -83,7 +84,7 @@ tag home-page
 								<span> usp
 
 			<section[py:10]>
-				<app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
+				<app-demo[w:1cw].demo.windowed-demo href='/examples/simple-clock?preview=lg'>
 
 			<figure[pt:30]>
 				<h2.gradient> `Smart,\nBeautiful,\nMinimal`
@@ -94,12 +95,12 @@ tag home-page
 			<section[pt:30]>
 				<h2[c:pink6]> `Unbelievable\nPerformance`
 				<h3[mb:6]> <div[max-width:560px]> `Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM approaches.`
-				<figure> <app-demo[w:1cw].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe/app.imba?preview=lg'>
+				<figure> <app-demo[w:1cw 1dw:300px].demo.windowed-demo.left-aligned href='/examples/performance/app.imba?preview=lg'>
 				<article.text[columns:1 my:4 cg:30px]>
 					<p> `Imba uses a novel way to update the dom, opening up for a new way of writing web applications. Without having to worry about the cost of re-rendering you can break away from State Management libraries.`
 				
 			<section[py:20]>
-				<h2.gradient[ta:center]> `Code in Style`
+				<h2.gradient[ta:center]> `Styles Evolved`
 				<p> `Inspired by Tailwindcss, Imba features a rich syntax for styling components`
 				<app-carousel renderer=carousel-item> for item in ['transform','colors','appearance','transform','colors','appearance','transform','colors','appearance']
 					<figure[px:4]>
@@ -120,3 +121,6 @@ tag home-page
 			<section[py:30]>
 				<h2.gradient> `Incredible Tooling`
 				<h3> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is fully powered by Imba, both frontend & backend.`
+			
+			<section[py:10]>
+				<app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>

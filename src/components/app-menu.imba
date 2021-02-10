@@ -103,12 +103,12 @@ tag app-menu-section
 		css d:block
 			$bodyheight:{bodyheight}
 			$count:{data.children.length}
-			> a c:teal6 us:none py:2 fs:sm
+			> a c:blue6 us:none py:2 fs:sm fw:bold
 			> a .chevron tween:all 0.2s # o:0 ml:-4 mr:0 
 			> .content h:$bodyheight o:1 tween:all 0.2s mt:-1
 			
 		css &.collapsed
-			> a c:teal6
+			> a c:blue5
 			> a .chevron rotate:-90deg o:1 ml:-1
 			> .content of:hidden h:0px o:0.4
 		<a.l0.section.menu-heading @click=toggle>

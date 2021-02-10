@@ -24,7 +24,6 @@ tag app-carousel
 		#offset = 0
 		scrollLeft = iw * 3
 		recenter!
-		console.log 'mount carousel?',self
 
 	def scrolldone e
 		let prev = #offset
@@ -43,7 +42,7 @@ tag app-carousel
 		let moved = scrollLeft - #scrollAnchor
 		#offset += moved
 		let pageOffset = ((#offset / iw) % 9 + 9) % 9
-		log 'offset is now',#offset,pageOffset
+		# log 'offset is now',#offset,pageOffset
 		# page is now a reference to the index that was previously offset at 4
 		#centering = yes
 		scrollLeft = #scrollAnchor
@@ -56,9 +55,6 @@ tag app-carousel
 			yes
 
 		setTimeout(&,100) do #centering = no
-
-	def renderer2 data
-		<div> "hello"
 
 	def render
 		# return unless renderer

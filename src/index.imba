@@ -105,20 +105,20 @@ tag app-root
 					zi:300 fs:15px bg:cool8/98 c:white us:none
 
 					
-					.tab d:hflex mx:2 py:1 c:sky3 fs:sm- fw:500 tt:uppercase ja:center
+					.tab d:hflex mx:2 py:1 c:blue4 fs:sm- fw:500 tt:uppercase ja:center
 						svg h:16px w:auto mx:0.5
 						@hover c:white
 							svg scale:1.15
 						@!600 span d:none
-						.keycap bc:sky3/35 c:sky3/50 h:4.5 px:0.75 fw:bold ml:0.5
+						.keycap bc:blue4/70 c:blue4/80 h:4.5 px:0.75 fw:bold ml:0.5
 					.toggler mx:0 d@md:none
 						svg tween:styles 0.1s
-						@hover c:sky3
+						@hover c:blue4
 							svg scale:1
 						&.active svg rotate:-90deg
 
 				<.logo[d:contents] route-to='/'>
-					<svg[h:20px w:auto mr:2 pos:relative t:2px ml:1] src='./assets/wing.svg'>
+					<svg[h:20px w:auto mr:2 pos:relative t:2px ml:1 c:blue4] src='./assets/wing.svg'>
 					<.logotype[c:white fw:700 fs:xl lh:30px]> "imba"
 				<.breadcrumb[mx:2 fs:sm c:blue4]>
 					css span + span @before content: "/" mx:1 o:0.3
@@ -126,7 +126,7 @@ tag app-root
 				<div[d:flex cursor:pointer us:none]>
 					<a.tab @click.emit-showsearch>
 						<svg src='./assets/icons/search.svg'>
-						<span[c:sky3/35 mx:0.5 tt:none]> "Search..."
+						<span[c:blue4/50 mx:0.5 tt:none]> "Search..."
 						<span.keycap hotkey='s' @hotkey.prevent.emit-showsearch> 'S'
 					<a.tab @click.emit-showide>
 						<svg src='./assets/icons/play.svg'>

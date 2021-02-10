@@ -261,6 +261,7 @@ tag app-code-block < app-code
 		h:100%
 		w:$doc-margin
 		pl:4
+		zi:4
 		>>> .frame rd:inherit
 		>>> .controls d:none
 
@@ -338,7 +339,9 @@ tag app-code-block < app-code
 		if file.name == 'main.imba'
 			options.preview ||= 'md'
 
+		mainLines = lineCounts[0]
 		maxLines = Math.max(...lineCounts)
+		minLines = Math.min(...lineCounts)
 
 		render!
 
@@ -444,15 +447,17 @@ tag app-code-block < app-code
 				fs:12px/1.5 @md:13px/1.5
 				$bg:$code-bg-lighter
 				$preview-size:72px .md:120px .lg:180px .xl:240px
-				$minLines: {Math.min(maxLines + 2,14)}
+				$mainLines: {mainLines}
+				$minLines: {Math.min(maxLines,14)}
 				$code
+					box-sizing:content-box
 					h:calc($minLines * 1lh)
-					d:block of:auto ff:mono ws:pre px:5
-					pre w:100px pt:1lh pb:1lh
+					d:block of:auto ff:mono ws:pre px:5 py:1lh
+					pre w:100px
 					&.ind1 >>> .t0 d:none
 					&.ind2 >>> .t1 d:none
 
-				$pre w:100px pt:1lh pb:1lh
+				$pre w:100px
 
 			css &.inline-preview >>> $frame bd:none bg:clear
 
@@ -473,11 +478,11 @@ tag app-code-block < app-code
 
 				# p:1lh of:visible h:auto pr:40%
 				$code >>>
+					pre ws:pre-line
 					pre,b d:contents
 					span d:none
 					.keyword.css d:none
 					.tab d:none
-					ws:pre-line
 					.scope-rule my:1px d:block rd:sm p:0.5 px:2
 						bg:blue4/0 @hover:blue4/15
 						span,b d:inline
@@ -485,23 +490,32 @@ tag app-code-block < app-code
 						.group-sel d:none
 						&._selected_ bg:blue4/25
 						.comment fs:11px ff:sans
+						.group-props
+							prefix: "css"
+							# suffix: "]>"
+							ws:nowrap
+							@before,@after c:var(--code-keyword)
+							> .white@last d:none
 
 			<main @exports=bindExports(e.detail)>
-				<div$editor.code>
+				<div$editor.code .tabbed=(files.length >= 2)>
 					css .actions o:0
 					css @hover .actions o:1
-					<div .collapsed=(files.length < 2)>
+					<div$tabbar .collapsed=(files.length < 2)>
 						css pos:relative zi:2 bg:#3d4253
 							c:gray6 fs:sm fw:500 rdt:inherit d:hflex
-							.item d:block c:gray4 c.on:blue3 py:0.25 mx:1 td:none
-						<div[d:hflex ..collapsed:none px:2 py:1].tabs> for item in files
+							.item d:block c:cooler4/90 c.on:blue3 py:0.25 px:1.5 td:none fw:600 rd:lg mx:0
+								tween:styles 0.1s ease-in-out
+								c@hover:blue4
+								&.on bg:#354153
+						<div[d:hflex ..collapsed:none px:1 py:1].tabs> for item in files
 							<a.tab.item .on=(file==item) @click.stop.silence=openFile(item)> item.name
 						<div[ml:auto px:2 py:1 zi:2].actions>
 							<div.item @click=openInEditor> "open"
 						css	&.collapsed .actions pos:abs t:0 r:0
 					if file
 						<code$code.{file.highlighted.flags}>
-							<pre$pre[w:100px pt:1lh pb:1lh] innerHTML=file.highlighted.html>
+							<pre$pre innerHTML=file.highlighted.html>
 				if options.preview
 					<app-repl-preview$preview
 						file=files[0]
@@ -540,7 +554,9 @@ tag app-demo < app-code-block
 			lineCounts.push(getVisibleLineCount(file.body))
 
 		file = files[0]
+		mainLines = lineCounts[0]
 		maxLines = Math.max(...lineCounts)
+		minLines = Math.min(...lineCounts)
 		render!
 
 
