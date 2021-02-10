@@ -136,7 +136,7 @@ tag app-root
 						<span> "GitHub"
 					<a.tab target='_blank' href='https://discord.gg/mkcbkRw'>
 						<svg src='./assets/icons/message-circle.svg'>
-						<span> "Chat"
+						<span> "Community"
 					
 					<a.tab.toggler
 						.active=($menu..focused?)

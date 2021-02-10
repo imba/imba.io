@@ -44,6 +44,11 @@ tag home-page
 			$preview r:auto l:-1gw
 			$pre pl@force:calc(1dw - 1gw)
 
+		&.inlined >>>
+			1dw:300px
+			$preview pos:abs w:1dw l:auto r:30px m:0
+			$pre pr@force:calc(1dw)
+
 	css .full-width-demo w:100%
 		>>> $editor rd:0px
 			$code @force h:auto
@@ -52,6 +57,8 @@ tag home-page
 			pos:abs w:0.5cw l:auto r:10% m:0
 			t:50% y:-50%
 			h:1dw w:1dw
+
+	
 
 	css .card-demo w:100% rd:xl
 		>>> $editor
@@ -84,12 +91,14 @@ tag home-page
 								<span> usp
 
 			<section[py:10]>
-				<app-demo[w:1cw].demo.windowed-demo href='/examples/simple-clock?preview=lg'>
+				# <app-demo[w:1cw].demo.windowed-demo href='/examples/simple-clock?preview=lg'>
+				<app-demo.demo.full-width-demo.inline-preview href='/examples/clock/app.imba?preview=lg'>
 
 			<figure[pt:30]>
 				<h2.gradient> `Smart,\nBeautiful,\nMinimal`
 				<h3[mb:16]> <div[max-width:560px]> `Imba's syntax is optimized for getting things done with less typing. It's packed with smart features.`
-				<app-demo.demo.full-width-demo.inline-preview href='/examples/clock/app.imba?preview=lg'>
+				# <app-demo.demo.full-width-demo.inline-preview href='/examples/clock/app.imba?preview=lg'>
+				<app-demo[w:1cw].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>
 				# <figcaption> "There are no hidden styles or scripts in this example. This is the whole example."
 
 			<section[pt:30]>
@@ -116,7 +125,7 @@ tag home-page
 
 			<figure[py:30]>
 				<h2.gradient> `Game Changing`
-				<app-demo[w:1cw].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe/app.imba?preview=lg'>
+				<app-demo[w:1cw].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>
 
 			<section[py:30]>
 				<h2.gradient> `Incredible Tooling`
@@ -124,3 +133,6 @@ tag home-page
 			
 			<section[py:10]>
 				<app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
+
+			<figure[py:30]>
+				<app-demo[w:1cw].demo.windowed-demo.inlined href='/examples/tic-tac-toe?preview=lg'>
