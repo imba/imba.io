@@ -533,6 +533,8 @@ tag app-demo < app-code-block
 
 		if example isa File
 			files = [example]
+		elif example isa Dir
+			files = example.files
 
 		for file in files
 			lineCounts.push(getVisibleLineCount(file.body))
