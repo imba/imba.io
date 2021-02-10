@@ -6,10 +6,14 @@ const usps = [
 	`Amazing Performance`
 ]
 
+import './app-carousel'
+
 tag home-page
 	css 1cw:90vw @lg:980px # custom container-width unit
 		1dw:420px # custom demo-width unit
 		1gw:3vw @lg:5vw @xl:8vw # custom gutter-width unit
+		ofx:hidden d:vflex a:center
+
 		section,figure d:vflex ja:center as:stretch
 		h1,h2,h3,nav,article w:1cw	
 		h1,h2 ff:brand ws:pre-line pb:6
@@ -47,26 +51,24 @@ tag home-page
 			t:50% y:-50%
 			h:1dw w:1dw
 
+	css .card-demo w:100% rd:xl
+		>>> $editor
+			p@force:3
+		
+
 	css figure.card
 		p:4 w:800px fl:0
 		.demo rd:xl
 		.demo >>> $editor
 			p@force:3
 
-	css .carousel
-		d:hgrid pos:rel py:6 w:100%
-		ofx:scroll scroll-snap-type:x mandatory ofy:hidden
-		.item scroll-snap-align:center w:700px p:4
-		.demo w:100% h:100% rd:xl
-		.demo >>> $editor
-			p@force:3
-		@before,@after content:" " d:block w:10vw scroll-snap-align:center
-
+	def caroseul-item href
+		<figure.item> <app-demo.demo href=`/examples/css/{href}.imba?preview=styles`>
 
 	def render
-		<self[d:vflex a:center]>
+		log 'render'
+		<self>
 			# <app-demo.demo.full-width-demo.inline-preview href='/examples/clock/app.imba?preview=lg'>
-
 			<section[pt:40 pb:20 bg:linear-gradient(blue3,blue3/0)]>
 				<h1[py:5 pb].gradient> `Build Fast, Fast`
 				<div[w:1cw d:block @md:hgrid mt:10]>
@@ -99,9 +101,13 @@ tag home-page
 			<section[py:20]>
 				<h2.gradient[ta:center]> `Code in Style`
 				<p> `Inspired by Tailwindcss, Imba features a rich syntax for styling components`
-				<div.carousel scrollLeft=700>
-					for item in ['transform','colors','appearance']
-						<figure.item> <app-demo.demo href=`/examples/css/{item}.imba?preview=styles`>
+				<app-carousel renderer=carousel-item> for item in ['transform','colors','appearance','transform','colors','appearance','transform','colors','appearance']
+					<figure[px:4]>
+						<app-demo[w:100%].card-demo href=`/examples/css/{item}.imba?preview=styles`>
+						<p[mt:4]> `Some text about this card here`
+				# <div.carousel scrollLeft=700>
+				#	for item in ['transform','colors','appearance']
+				#		<figure.item> <app-demo.demo href=`/examples/css/{item}.imba?preview=styles`>
 					
 			<section[pt:30]>
 				<h2.gradient> `From Prototype to Production`
