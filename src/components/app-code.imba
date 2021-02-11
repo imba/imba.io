@@ -3,7 +3,7 @@ import * as sw from '../sw/controller'
 import {ls,fs,File,Dir} from '../store'
 
 def getVisibleLineCount code
-	let parts = code.split('# ---\n')
+	let parts = code.replace(/^# \[.+\n/g,'').replace(/\n+$/,'').split('# ---\n')
 	# console.log 'get visible lines',parts
 	(parts[1] or parts[0]).split('\n').length
 
@@ -80,7 +80,7 @@ global css .code
 
 	b,i fw:inherit font-style:normal
 
-	* @selection bg:blue5/40 o:1
+	* @selection bg:blue5/40
 
 	.invalid color: red
 	.entity.other.inherited-tag color: var(--code-entity)
@@ -458,7 +458,7 @@ tag app-code-block < app-code
 				$code
 					box-sizing:content-box
 					h:calc($mainLines * 1lh)
-					d:block of:auto ff:mono ws:pre px:5 py:1lh
+					d:block of:auto ff:mono ws:pre px:5 py:0.75lh
 					pre w:100px
 					&.ind1 >>> .t0 d:none
 					&.ind2 >>> .t1 d:none
