@@ -18,14 +18,6 @@ In Imba DOM elements _and_ CSS are treated as first-class citizens. DOM elements
 - Built-in Tags & Styles
 - Amazing Performance
 
-## Installation
-
-```sh
-npx imba create hello-world
-cd hello-world
-npm start
-```
-
 ## Community
 
 #### Discord Server
@@ -44,9 +36,9 @@ You can join us remotely via [Zoom](https://us04web.zoom.us/j/230170873).
 Did you miss a meeting? No worries, catch up via the [meeting notes](https://docs.google.com/document/d/1ABGjOJut9eXrajYjdN4G4-UGGU4gvKznLk5CAaXYjso/edit?usp=sharing) or [video recordings](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
 
 
-# Quickstart
+# Getting Started
 
-### Getting started
+### Quickstart
 
 The best way to get started with Imba is to use `npx` to get a brand-new project up and running.
 
