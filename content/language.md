@@ -1189,43 +1189,237 @@ let object = {one: 1, two: 2}
 delete object.one
 ```
 
-### class [keyword] [wip]
+### class [keyword]
 
-### switch [keyword] [wip]
+```imba
+class Game
+  prop turn
+	prop tiles
+	prop moves
+	prop winner
+	
+	def constructor
+		moves = []
+		tiles = new Array(9)
+		turn = 0
+```
 
-### for [keyword] [wip]
+### switch [keyword]
 
-### do [keyword] [wip]
+```imba
+switch status
+when "completed"
+  console.log "This project has been completed"
+when "archived"
+  console.log "This project has been archived"
+else
+  console.log "This project is active"
+```
 
-### get [keyword] [wip]
+### for [keyword]
 
-### set [keyword] [wip]
+```imba
+for num in [1,2,3]
+	num * 2
+```
 
-### def [keyword] [wip]
+```imba
+for item in items
+	<li> item.name
+```
 
-### prop [keyword] [wip]
+```imba
+for item, i in items
+	<li> "{i+1}: {item.name}"
+```
 
-### attr [keyword] [wip]
+### do [keyword]
 
-### tag [keyword] [wip]
+```imba
+  def setup do game = new Game
+```
 
-### if [keyword] [wip]
+### get [keyword]
 
-### elif [keyword] [wip]
+```imba
+  prop price = 100
+  prop taxRate = 20
+  
+  get totalPrice
+    price * (1 + taxRate / 100)
+  
+  def render
+    <self>
+      <input bind=price>
+      <input bind=taxRate>
+      <p> "Total: {totalPrice}" # 120
 
-### else [keyword] [wip]
+```
 
-### when [keyword] [wip]
+### set [keyword]
 
-### try [keyword] [wip]
+```imba
+  set name value
+    console.log "The name has been set to", value
+```
 
-### catch [keyword] [wip]
+### def [keyword]
 
-### continue [keyword] [wip]
+```imba
+  def multiply a, b
+    a * b
+  
+  # default values
+  def method name = 'imba'
+    console.log param
+  
+  # destructuring parameters
+  def method name, {title, desc = 'no description'}
+    console.log name,title,desc
+```
 
-### break [keyword] [wip]
+### prop [keyword]
 
-### return [keyword] [wip]
+A prop allows a tag property to be set from the outside
+
+```imba
+  prop name
+  
+  # With default value
+  prop name = "John Smith"
+
+  # With VS Code type annotations
+  prop name\string = "Guest user"
+```
+
+### attr [keyword]
+
+```imba
+<form attr:id="product-form">
+```
+
+### tag [keyword]
+
+```imba
+# Define a new global tag component
+tag page-header
+  ...
+```
+
+```imba
+# Define a new local tag component
+tag Header
+  ...
+```
+
+### if [keyword]
+
+```imba
+  if condition
+	  console.log 'yes!'
+```
+
+### elif [keyword]
+```imba
+if expr > 10
+	console.log 'over 10'
+elif expr > 5
+	console.log 'over 5'
+elif expr
+	console.log 'not falsy'
+```
+
+### else [keyword]
+
+```imba
+if condition
+	console.log 'yes!'
+else
+	console.log 'no!'
+```
+
+### when [keyword]
+
+```imba
+  tag app-counter
+    
+    prop count = 0
+
+    def render
+      <self>
+        <button @click=count++> "Increment"
+        when count >= 10
+          <p> "High score!"
+
+```
+
+### try [keyword]
+
+```imba
+  def fetch
+    # adding a try without a catch block will silently swallow an erro
+    try
+      const result = await axios.get('my-api.com')
+
+```
+
+### catch [keyword]
+
+```imba
+  def fetch
+    try
+      const result = await axios.get('my-api.com')
+    catch e
+      console.error "There was an error", e
+```
+
+### continue [keyword]
+
+```imba
+let res = for num in [1,2,3,4,5]
+	continue if num == 3
+	num * 2
+console.log res # [2,4,8,10]
+```
+
+```imba
+# continue with an argument acts like early return within Array#map
+let res = for num in [1,2,3,4,5]
+	continue -1 if num == 3
+	num * 2
+# res => [2,4,-1,8,10]
+```
+
+### break [keyword]
+
+```imba
+let res = for num in [1,2,3,4,5]
+	break if num == 3
+	num * 2
+# res => [2,4]
+```
+
+```imba
+# When supplying an argument to break, this value will be added to the resulting array
+let res = for num in [1,2,3,4,5]
+	break -1 if num == 3
+	num * 2
+```
+
+### return [keyword]
+
+```imba
+ # In Imba the last statement is returned automatically
+ def add a, b
+   a + b
+```
+
+```imba
+# But it can be useful for returning other values or early
+def add a, b
+  return 0 unless a && b
+  a + b
+```
 
 # Functions
 
