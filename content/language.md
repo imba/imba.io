@@ -288,83 +288,25 @@ def multiply a\number, b\number
 
 # Grammar
 
-## Identifiers
-
-In imba, identifiers are case-sensitive and can contain Unicode letters, $, _, -, and digits (0-9), but may not start with a digit. An identifier can end with `?` to make it a predicate identifier.
-
-$0 .. $n are reserved identifiers used as shorthands for function arguments with $0 refering to the set of arguments.
-
-Like css and html, dashes inside identifiers are perfectly valid in Imba and is often preferred for readability and that it allows to easily skip to each segment of the identifier. They are compiled to the equivalent camelCase version. 
-
-### Global Identifiers
-
-Identifiers starting with an uppercase letter are global-first, meaning that they will not be implicitly scoped.
-
-> Example showing global identifiers vs local identifiers
-
-### Symbol Identifiers [wip]
-
-[Symbols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) are values that programs can create and use as property keys without risking name collisions. In Imba symbol identifiers start with one or more `#` in the beginning of the identifier. So `#name` is a type of identifier representing a symbol. Symbol identifiers are not allowed as variable names, and are always scoped to the closest strong scope.
-
-```imba
-const obj = {name: 'Jane', #clearance: 'high'}
-obj.name
-obj.#clearance
-```
-
-### Predicate Identifiers
-Imba also allows `?` at the end of identifiers for methods, properties, and variables. These are predicate identifiers  and should represent a boolean value. They are used to represent a checkable state and provides improved readability over other approaches like predicate prefixes like `isEmpty`.
-
-```imba
-tag sized-list
-    prop items = []
-    prop size = 10
-
-    get empty? do
-        items.length > 0
-
-```
-
-> Behind the scenes, a `dirty?` property will compile to `isDirty` in JavaScript.
-
-
-### Using reserved keywords
-
-Essentially all reserved keywords can still be used as properties.
-
-```imba
-a.import
-a['import']
-a = { import: 'test' }
-```
-
-### Identifiers with special meanings
-
-There are a few identifiers that are reserved as keywords in certain contexts. `get`, `set` and `attr` are perfectly valid to use as variables, arguments, and properties, but in class definitions they have a special meaning.
-
-Also, identifiers `$0`, `$1`, `$2` and so forth are not valid variables names – as they refer to the nth argument in the current function. `$0` is an alias for `arguments` from js, and refers to all the arguments passed into a function.
-
-```imba
-# $(n) is a shorter way to reference known arguments
-['a','b','c','d'].map do $1.toUpperCase!
-['a','b','c','d'].map do(item) item.toUpperCase!
-```
-
 ## Variables
 
 ### Declaring variables
 
-Variables are declared using `let` and `const` keywords. `let` variables can be changed through reassignment, while `const` variables are readonly after the initial declaration. Unlike javascript multiple declarations per line is not allowed.
+Variables are declared, as in modern javascript, using the `let` and `const` keywords. `let` variables can be changed through reassignment, while `const` variables are readonly after the initial declaration. Unlike javascript, multiple declarations per line is not allowed.
 
 ```imba
 # readonly constant
 const one = 123
+
 # single declaration
 let a = 123
+
 # array destructuring
 let [e,f,...rest] = [1,2,3,4,5]
+
 # object destructuring
 let {g,h,data:i} = {g:1,h:2,data:3}
+
 # in conditionals
 if let user = array.find(do $1 isa Person)
 	yes
@@ -418,7 +360,7 @@ If this looks confusing, fear not – `this` is something you will practically n
 
 ### Implicit Self
 
-To understand Imba, you have to understand the concept of implicit self. A lone (lowercase) identifier will always be treated as an accessor on `self` unless a variable of the same name exists in the current scope or any of the outer scopes.
+Imba uses the concept of implicit self. A lone, lowercase identifier will always be treated as an accessor on `self` unless a variable of the same name exists in the current scope or any of the outer scopes.
 
 ```imba
 const scale = 1
@@ -456,6 +398,67 @@ def method
 	data # not in scope - same as self.data
 	let data = {a:1,b:2}
 	data # in scope
+```
+
+## Identifiers
+
+In imba, identifiers are case-sensitive and can contain Unicode letters, `$`, `_`, `-`, and digits (`0-9`), but may *not* start with a digit. 
+
+An identifier can end with `?` to make it a predicate identifier, thus helping make clear that the value should resolve to a boolean `get empty? do !array.length`. See [Predicate filters](#identifiers-predicate-identifiers)
+
+`$0 .. $n` are reserved identifiers used as shorthands for function arguments with $0 refering to the set of arguments. See [Identifiers with special meanings](#identifiers-identifiers-with-special-meanings)
+
+Like css and html, dashes inside identifiers are perfectly valid in Imba and is often preferred for readability and that it allows to easily skip to each segment of the identifier. They are compiled to the equivalent camelCase version. 
+
+### Predicate Identifiers
+Imba also allows `?` at the end of identifiers for methods, properties, and variables. These are predicate identifiers  and should represent a boolean value. They are used to represent a checkable state and provides improved readability over other approaches like predicate prefixes like `isEmpty`.
+
+```imba
+tag sized-list
+    prop items = []
+    prop size = 10
+
+    get empty? do !items.length
+```
+
+> Behind the scenes, a `dirty?` property will compile to `isDirty` in JavaScript.
+
+### Identifiers with special meanings
+
+There are a few identifiers that are reserved as keywords in certain contexts. `get`, `set` and `attr` are perfectly valid to use as variables, arguments, and properties, but in class definitions they have a special meaning.
+
+Also, identifiers `$0`, `$1`, `$2` and so forth are not valid variables names – as they refer to the nth argument in the current function. `$0` is an alias for `arguments` from js, and refers to all the arguments passed into a function.
+
+```imba
+# $(n) is a shorter way to reference known arguments
+['a','b','c','d'].map do $1.toUpperCase!
+['a','b','c','d'].map do(item) item.toUpperCase!
+```
+
+### Global Identifiers
+
+Identifiers starting with an uppercase letter are global-first, meaning that they will not be implicitly scoped.
+
+> Example showing global identifiers vs local identifiers
+
+### Symbol Identifiers [wip]
+
+[Symbols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) are values that programs can create and use as property keys without risking name collisions. In Imba symbol identifiers start with one or more `#` in the beginning of the identifier. So `#name` is a type of identifier representing a symbol. Symbol identifiers are not allowed as variable names, and are always scoped to the closest strong scope.
+
+```imba
+const obj = {name: 'Jane', #clearance: 'high'}
+obj.name
+obj.#clearance
+```
+
+### Using reserved keywords
+
+Essentially all reserved keywords can still be used as properties.
+
+```imba
+a.import
+a['import']
+a = { import: 'test' }
 ```
 
 # Literal Types
