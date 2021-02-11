@@ -237,9 +237,24 @@ global css .inline-demo
 		.base bgc:yellow2 size:80px rd:sm
 		.base > div pos:absolute inset:0 bgc:blue3/90 rd:sm
 
+	&.sizes
+		c:white
+		.base bgc:white size:80px
+		.base > div pos:absolute inset:0 bgc:blue3
+
 	&.margins
 		c:white
 		.base > div.target pos:absolute inset:0 bgc:white rd:sm
+
+	&.positions
+		c:white
+		.base bgc:yellow2 size:80px pos:relative
+		.base > div size:40px bgc:blue2 t:0 l:0
+	
+	&.positioning
+		c:white
+		.base bgc:yellow2 size:80px pos:relative
+		.base > div size:40px bgc:blue2 pos:absolute
 	
 	&.paddings
 		c:white
