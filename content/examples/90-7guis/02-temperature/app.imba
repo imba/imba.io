@@ -1,19 +1,19 @@
 import 'util/styles'
-# https://github.com/eugenkiss/7guis/wiki#counter
-tag app-temperature
-	prop c = 0
-	prop f = 32
 
-	set celsius value
-		c = +value
+# https://github.com/eugenkiss/7guis/wiki#counter
+
+tag app-temperature
+	
+	prop c = 0 @set
 		f = +(32 + (9 / 5 * c)).toFixed(1)
 	
-	set fahrenheit value
-		f = +value
+	prop f = 32 @set
 		c = +(5 / 9 * (f - 32)).toFixed(1)
-	
+
+	css input w:5rem
+
 	<self>
-		<input type='number' value=c @input=(celsius = e.target.value)/> " °c = "
-		<input type='number' value=f @input=(fahrenheit = e.target.value)/> " °f"
+		<input type='number' bind=c /> " °c = "
+		<input type='number' bind=f /> " °f"
 
 imba.mount <app-temperature>
