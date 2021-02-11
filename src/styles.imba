@@ -1,9 +1,11 @@
 # importing preflight css directly into the client bundle
 import './assets/preflight.css'
+import './assets/dankmono.css'
 
 global css
 	@root
-		--font-brand: 'Work Sans', sans-serif;
+		--font-brand: 'Work Sans', sans-serif
+		--font-mono: dm, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace
 		# font-family: Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
 		-webkit-font-smoothing: antialiased
 		-moz-osx-font-smoothing: grayscale
@@ -13,6 +15,8 @@ global css
 		$menu-width:240px @md:220px
 		$doc-width: 768px
 		$doc-margin: calc(100vw - $doc-width - 20px) @md:calc(100vw - $doc-width - $menu-width - 20px)
+
+	code,pre ff:mono fw:bold
 
 	html.noscroll body overflow: hidden
 	html,body p:0px m:0px

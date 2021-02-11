@@ -16,5 +16,5 @@ tag app
 		<app-clock utc=0> 'London'
 		<app-clock utc=9> 'Tokyo'
 
-imba.mount do <app.grid autorender=10fps>
+imba.mount <app.grid autorender=10fps>
 	

@@ -14,7 +14,8 @@ global css @root
 	--code-constant: #8ab9ff # #d7bbeb;
 	--code-bg: #202732;
 	--code-background: #282c34;
-	--code-bg-lighter: #29313f;
+	--code-bg-lighter: #222b39; # #29313f;
+	--code-selection-bg: red;
 	--code-bracket: #92a3b1;
 	--code-comment: #718096;
 	--code-keyword: #ff9a8d; # #e88376;
@@ -33,7 +34,7 @@ global css @root
 	--code-tag: #e9e19b;
 	--code-tag-event: #fff9c3;
 	--code-tag-reference: #ffae86;
-	--code-tag-angle: #9d9755;
+	--code-tag-angle: #9d9755/50; # #9d9755
 	--code-type: #8097b2; # #839fc7;
 	--code-type-delimiter:#5e6c7d;
 	--code-property: #F7FAFC;
@@ -75,13 +76,17 @@ global css @root
 global css .code
 	tab-size: 4
 	cursor:default
-	b,i fw:500 font-style:normal
+	fw:bold
+
+	b,i fw:inherit font-style:normal
+
+	* @selection bg:blue5/40 o:1
 
 	.invalid color: red
 	.entity.other.inherited-tag color: var(--code-entity)
 	.entity.other.inherited-class color: var(--code-entity)
 	.invalid color: red
-	.comment color: var(--code-comment)
+	.comment color: var(--code-comment) font-style:italic fw:500
 	.regexp color: var(--code-regexp)
 	.tag color: var(--code-tag)
 	.type color: var(--code-type)
@@ -115,8 +120,8 @@ global css .code
 	.constant color: var(--code-constant)
 	
 	.tag.reference color: var(--code-tag-reference)
-	.tag.open color: var(--code-tag-angle)
-	.tag.close color: var(--code-tag-angle)
+	.tag.open color: var(--code-tag-angle) o:0.5
+	.tag.close color: var(--code-tag-angle) o:0.5
 	.tag.event color: var(--code-tag-event)
 	.tag.event-modifier color: var(--code-tag-event)
 	.tag.mixin color: var(--code-mixin) fw:bold
@@ -235,7 +240,7 @@ tag app-code-block < app-code
 		@is-active bg:blue6 c:white
 
 	css $editor
-		bg:$bg rd:sm
+		bg:$bg rd:inherit
 
 	css	$header pos:relative zi:2 bg:#3d4253
 		d:hflex @empty:none
@@ -444,14 +449,15 @@ tag app-code-block < app-code
 			@pointerover.silence=pointerover>
 
 			css pos:relative rd:sm d:block .shared:none
-				fs:12px/1.5 @md:13px/1.5
+				fs:13px/1.5 @md:15px/1.4
+				ls:-0.1px
 				$bg:$code-bg-lighter
 				$preview-size:72px .md:120px .lg:180px .xl:240px
 				$mainLines: {mainLines}
 				$minLines: {Math.min(maxLines,14)}
 				$code
 					box-sizing:content-box
-					h:calc($minLines * 1lh)
+					h:calc($mainLines * 1lh)
 					d:block of:auto ff:mono ws:pre px:5 py:1lh
 					pre w:100px
 					&.ind1 >>> .t0 d:none
@@ -503,14 +509,14 @@ tag app-code-block < app-code
 					css @hover .actions o:1
 					<div$tabbar .collapsed=(files.length < 2)>
 						css pos:relative zi:2 bg:#3d4253
-							c:gray6 fs:sm fw:500 rdt:inherit d:hflex
+							c:gray6 fs:sm fw:500 rdt:inherit d:hflex j:space-between
 							.item d:block c:cooler4/90 c.on:blue3 py:0.25 px:1.5 td:none fw:600 rd:lg mx:0
 								tween:styles 0.1s ease-in-out
 								c@hover:blue4
 								&.on bg:#354153
 						<div[d:hflex ..collapsed:none px:1 py:1].tabs> for item in files
 							<a.tab.item .on=(file==item) @click.stop.silence=openFile(item)> item.name
-						<div[ml:auto px:2 py:1 zi:2].actions>
+						<div[px:2 py:1 zi:2].actions>
 							<div.item @click=openInEditor> "open"
 						css	&.collapsed .actions pos:abs t:0 r:0
 					if file

@@ -26,6 +26,11 @@ tag home-page
 		bg: linear-gradient(to right,indigo7,blue6,pink6)
 		-webkit-background-clip:text
 		-webkit-text-fill-color:transparent
+	
+	css app-demo
+		>>> main
+			$tabbar bg:clear px:2 pt:2 d.collapsed:none
+	
 
 	css .windowed-demo w:1cw
 		>>> $editor rd:lg
@@ -50,9 +55,10 @@ tag home-page
 			$pre pr@force:calc(1dw)
 
 	css .full-width-demo w:100%
+		>>> $tabbar j:center py:4
 		>>> $editor rd:0px
-			$code @force h:auto
-			$pre @force w:1cw d:block mx:auto py:16
+			$code @force pb:20 pt:10
+			$pre @force w:1cw d:block mx:auto
 		>>> $preview
 			pos:abs w:0.5cw l:auto r:10% m:0
 			t:50% y:-50%
@@ -61,8 +67,13 @@ tag home-page
 	
 
 	css .card-demo w:100% rd:xl
+		>>> main d:hflex bg:$bg p:0
+			# $code p@force:3
 		>>> $editor
-			p@force:3
+			fl:1
+		>>> $preview @force
+			pos:abs w:0.5cw l:auto r:0 m:0 h:100% w:260px
+			$frame bd:none rd:0px bdl:1px dashed white/30 bg:black/15
 		
 
 	css figure.card
@@ -92,7 +103,7 @@ tag home-page
 
 			<section[py:10]>
 				# <app-demo[w:1cw].demo.windowed-demo href='/examples/simple-clock?preview=lg'>
-				<app-demo.demo.full-width-demo.inline-preview href='/examples/clock/app.imba?preview=lg'>
+				<app-demo.demo.full-width-demo.inline-preview href='/examples/simple-clock?preview=lg'>
 
 			<figure[pt:30]>
 				<h2.gradient> `Smart,\nBeautiful,\nMinimal`
@@ -111,9 +122,10 @@ tag home-page
 			<section[py:20]>
 				<h2.gradient[ta:center]> `Styles Evolved`
 				<p> `Inspired by Tailwindcss, Imba features a rich syntax for styling components`
-				<app-carousel renderer=carousel-item> for item in ['transform','colors','appearance','transform','colors','appearance','transform','colors','appearance']
+				<app-carousel renderer=carousel-item> for item in ['sizing','layouts','appearance','transform','colors','appearance','transform','colors','appearance']
 					<figure[px:4]>
-						<app-demo[w:100%].card-demo href=`/examples/css/{item}.imba?preview=styles`>
+						let preview = item == 'layouts' ? 'inline' : 'styles'
+						<app-demo[w:100%].card-demo href=`/examples/css/{item}.imba?preview={preview}`>
 						<p[mt:4]> `Some text about this card here`
 				# <div.carousel scrollLeft=700>
 				#	for item in ['transform','colors','appearance']
