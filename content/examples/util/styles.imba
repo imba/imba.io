@@ -259,5 +259,5 @@ global css .inline-demo
 				rd:xs
 		.base > div.target pos:absolute inset:0 bgc:white rd:sm
 
-global css .modal-wrapper pos:absolute t:0 l:0 w:100% h:100% d:flex jc:center ai:center bg:black/80
-	main bg:white w:80% h:10rem p:6 d:flex jc:center ai:center
+global css .modal-wrapper pos:absolute t:0 l:0 w:100% h:100% d:flex jc:center ai:center bg:gray3
+	main bg:white w:80% h:10rem p:6 d:flex jc:center ai:center rd:xl
