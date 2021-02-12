@@ -12,7 +12,7 @@ cd imba.io
 npm install
 
 # package content from content/ (continously)
-npm run watch-content
+npm run watch
 
 # run server
 npm start

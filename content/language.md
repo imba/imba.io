@@ -18,14 +18,6 @@ In Imba DOM elements _and_ CSS are treated as first-class citizens. DOM elements
 - Built-in Tags & Styles
 - Amazing Performance
 
-## Installation
-
-```sh
-npx imba create hello-world
-cd hello-world
-npm start
-```
-
 ## Community
 
 #### Discord Server
@@ -43,6 +35,48 @@ You can join us remotely via [Zoom](https://us04web.zoom.us/j/230170873).
 
 Did you miss a meeting? No worries, catch up via the [meeting notes](https://docs.google.com/document/d/1ABGjOJut9eXrajYjdN4G4-UGGU4gvKznLk5CAaXYjso/edit?usp=sharing) or [video recordings](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
 
+
+# Getting Started
+
+### Quickstart
+
+The best way to get started with Imba is to use `npx` to get a brand-new project up and running.
+
+```sh
+npx imba create my-app
+```
+
+Follow the instructions to complete the fresh install.
+
+### Full example
+
+```sh
+npx imba create my-app
+cd my-app
+npm install
+npm start
+```
+
+This will create a brand new app using the latest version of Imba and run it with hot reloading.
+
+To create a build version of the app for deployment, simply run
+
+```sh
+npm build
+```
+
+### Useful tools
+
+We thoroughly recommend using our Visual Studio Code integration which has fantastic tooling when using Imba - including autocomplete for css shortcuts.
+
+- [VSCode plugin](https://marketplace.visualstudio.com/items?itemName=scrimba.vsimba)
+
+### Getting help
+
+If you run into any issues, you can check out the GitHub repository or come and join us in our friendly Discord chat group.
+
+- [GitHub](https://github.com/imba/imba)
+- [Discord](https://discord.gg/mkcbkRw)
 
 # Basic Syntax
 
