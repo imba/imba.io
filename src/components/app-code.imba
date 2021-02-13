@@ -380,7 +380,7 @@ tag app-code-highlight
 	def render
 		<self[d:block c:green6 x:{x}px y:{y}px]>
 			<div$anchor>
-			<div$box @touch.prevent.silent.sync(self)=refresh> data.text
+			<div$box @touchstart.prevent @touch.prevent.silent.sync(self)=refresh> data.text
 
 global css app-code-file
 
