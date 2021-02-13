@@ -1,222 +1,48 @@
 import {highlight,clean} from '../util/highlight'
 import * as sw from '../sw/controller'
 import {ls,fs,File,Dir} from '../store'
+import { getArrow,getBoxToBoxArrow } from "perfect-arrows"
+
+import './app-arrow'
 
 def getVisibleLineCount code
-	let parts = code.replace(/^# \[.+\n/g,'').replace(/\n+$/,'').split('# ---\n')
-	# console.log 'get visible lines',parts
+	let parts = code.replace(/# [\[\~].+(\n|$)/g,'').replace(/\n+$/,'').split('# ---\n')
+	if code.indexOf('~d:hgrid~') > 0
+		console.log 'get visible lines',parts
 	(parts[1] or parts[0]).split('\n').length
-
-global css @root
-	
-	--code-color: #e3e3e3;
-	--code-identifier: #9dcbeb;
-	--code-constant: #8ab9ff # #d7bbeb;
-	--code-bg: #202732;
-	--code-background: #282c34;
-	--code-bg-lighter: #222b39; # #29313f;
-	--code-selection-bg: red;
-	--code-bracket: #92a3b1;
-	--code-comment: #718096;
-	--code-keyword: #ff9a8d; # #e88376;
-	--code-operator: #ff9a8d;
-	--code-delimiter-operator:#6d829b;
-	--code-numeric: #63b3ed;
-	--code-boolean: #4299e1;
-	--code-null: #4299e1;
-	--code-entity: #8ab9ff;
-	--code-string: #77b3d1;
-	--code-entity: #8ab9ff;
-	--code-regexp: #e9e19b;
-	--code-mixin:#ffc87c;
-	--code-mixin:#e9e19b;
-	--code-this: #63b3ed;
-	--code-tag: #e9e19b;
-	--code-tag-event: #fff9c3;
-	--code-tag-reference: #ffae86;
-	--code-tag-angle: #9d9755/50; # #9d9755
-	--code-type: #8097b2; # #839fc7;
-	--code-type-delimiter:#5e6c7d;
-	--code-property: #F7FAFC;
-	--code-decorator: #63b3ed;
-	--code-variable: #e8e6cb;
-	--code-global-variable: #faffb2; # #ecd5f1; # #dcb9e4 # #ffc3c3;
-	--code-root-variable: #d7bbeb;
-	--code-import-variable: #e0ade3;
-
-	--code-font: "Source Code Pro", Consolas, Menlo, Monaco, Courier, monospace;
-	--code-rule-mixin: #ff9292;
-	--code-rule: #ffb8b8;
-	--code-style: #c8c9b6;
-	--code-style-scope: #fad8bf;
-	--code-style: #e0ade3;
-	--code-style-bracket:#e9e19b;
-	--code-style-unit: #a49feb; # #ff9191;
-	--code-style-scope: #eb9fe5;
-	--code-style-delimiter: #8c7590;
-	--code-style-value: #a49feb;
-	--code-style-value-scope: #eec49d;
-	--code-style-value-size: #ff8c8c;
-	--code-style-property: #e0ade3;
-	--code-style-property-scope: #df8de4; # #e9e19b;
-	--code-css-property-modifier: #df8de4;
-
-	--code-style-var: #ff93d0;
-	--code-keyword-css: #fff7b6;
-	--code-selector: #e9e19b;
-	--code-selector-pseudostate: var(--code-selector);
-	--code-selector-context: #eec49d;
-	--code-selector-operator: #ff9a8d;
-	--code-selector-placeholder:hsl(321, 100%, 79%) # hsl(36, 100%, 72%);
-	--code-key: #9dcbeb;
-	--code-delimiter: #e3e3e3
-	--code-delimiter-operator:#889cd6
-	--code-special: #fffab4
-
-global css .code
-	tab-size: 4
-	cursor:default
-	fw:bold
-
-	b,i fw:inherit font-style:normal
-
-	* @selection bg:blue5/40
-
-	.invalid color: red
-	.entity.other.inherited-tag color: var(--code-entity)
-	.entity.other.inherited-class color: var(--code-entity)
-	.invalid color: red
-	.comment color: var(--code-comment) font-style:italic fw:500
-	.regexp color: var(--code-regexp)
-	.tag color: var(--code-tag)
-	.type color: var(--code-type)
-	.type.start color: var(--code-type-delimiter)
-	.delimiter.type color: var(--code-type-delimiter)
-	.entity.name.type color: var(--code-entity)
-	.keyword color: var(--code-keyword)
-	.argparam color: var(--code-keyword)
-	.delimiter color: var(--code-delimiter)
-	.operator color: var(--code-operator)
-	.property color: var(--code-property)
-	.numeric color: var(--code-numeric)
-	.number color: var(--code-numeric)
-	.boolean color: var(--code-boolean)
-	.null color: var(--code-null)
-	.identifier color: var(--code-identifier)
-	.uppercase color: var(--code-constant)
-	.accessor color: #f3f3f3
-	.key color: var(--code-key)
-	.key + .operator color: var(--code-key)
-	.variable color: var(--code-variable)
-	.string color: var(--code-string)
-	.propname color: var(--code-entity)
-
-	span.curly c:var(--code-bracket)
-	span.square c:var(--code-bracket)
-	span.paren c:var(--code-bracket)
-	
-	.this color: var(--code-this)
-	.self color: var(--code-this)
-	.constant color: var(--code-constant)
-	
-	.tag.reference color: var(--code-tag-reference)
-	.tag.open color: var(--code-tag-angle) o:0.5
-	.tag.close color: var(--code-tag-angle) o:0.5
-	.tag.event color: var(--code-tag-event)
-	.tag.event-modifier color: var(--code-tag-event)
-	.tag.mixin color: var(--code-mixin) fw:bold
-	.tag.rule-modifier color: var(--code-rule-mixin)
-	.tag.rule-modifier.start opacity: 0.43
-	.tag.rule color: var(--code-rule)
-
-	.constant.variable color: var(--code-constant)
-	.variable.global color: var(--code-global-variable)
-	.variable.imports color: var(--code-global-variable)
-	.decorator color: var(--code-decorator)
-	
-	.style.open color: var(--code-style-bracket)
-	.style.close color: var(--code-style-bracket)
-	.style.args.open color: var(--code-style)
-	.style.args.close color: var(--code-style)
-	.style color: var(--code-style)
-	.style.scope color: var(--code-style-scope)
-	.selector color: var(--code-selector)
-	.unit color: var(--code-style-unit)
-	.style.delimiter color: var(--code-style-delimiter)
-	.style.property color: var(--code-style-property)
-	.style.property.modifier color: var(--code-style-property-scope)
-	.style.value color: var(--code-style-value)
-	.style.value.var color: var(--code-style-var)
-	.style.value.size color: var(--code-style-value-size)
-	.style.value.scope color: var(--code-style-value-scope)
-	.style.modifier color: var(--code-style-value-scope)
-	.selector.pseudostate color: var(--code-selector-pseudostate)
-	.selector.operator color: var(--code-selector-operator)
-	.selector.context color: var(--code-selector-context) 
-	.selector.mixin color: var(--code-mixin) fw:bold
-	.style.start-operator color: var(--code-delimiter-operator)
-	span.operator.dot color:var(--code-identifier)
-	span.region.more d:none d@md:contents
-
-	.parameter_ c:var(--code-variable)
-	.variable_ c:var(--code-variable)
-	.variable_.global_ c:var(--code-global-variable)
-	.variable_.import_ c:var(--code-import-variable)
-	.special_,.special c:#fffab4
-	.entity.name.constructor c:var(--code-keyword)
-	
-	.blockparam c:var(--code-operator)
-
-	._do > .paren@first >
-		c@first:var(--code-keyword)
-		c@last:var(--code-keyword)
-
-	.parameter_ + .paren >
-		c@first:var(--code-variable)
-		c@last:var(--code-variable)
-	
-	.variable_ + .paren >
-		c@first:var(--code-variable)
-		c@last:var(--code-variable)
-
-	.global_ + .paren >
-		c@first:var(--code-global-variable)
-		c@last:var(--code-global-variable)
-
-	
-
-
-	.path c:var(--code-string)
-	.entity,.field c:var(--code-entity)
-
-	.__ref.highlight
-		bg:rgba(255, 253, 227, 0.11)
-		box-shadow:0px 0px 0px 2px rgba(255, 253, 227, 0.11)
-		border-radius:3px
-		transition: all 0.15s
-
-	.region.hl2
-		bg:rgba(0, 0, 0, 0.11)
-		box-shadow:0px 0px 0px 2px rgba(0, 0, 0, 0.11)
-		border-radius:3px
-		transition: all 0.15s
-
-	.region pos:relative
-
-	& .region.arrow@before
-		content: " "
-		pos:absolute d:block
-		size:16px
-		bg: url(../assets/arrow.svg)
-		background-size: contain
-		bottom:100% right:50% mr:-2px mb:-2px
-
-	.css.attribute.name color:var(--code-style-property)
-	.css.attribute.value color:var(--code-style-value)
 
 tag app-code
 	def awaken
 		self
+
+
+tag app-hl-target
+
+	get body
+		dataset.text
+	
+	def mount
+		snippet = closest('.snippet')
+		let pin = previousElementSibling
+		if let q = dataset.target
+			# console.warn "TARGET",dataset.target,target.querySelectorAll(dataset.target)
+			let els = pin.querySelectorAll(q)
+			pin = els[0] or pin
+		elif dataset.cite
+			pin = closest('code').querySelectorAll('.region')[parseInt(dataset.cite) - 1]
+		target = pin
+		brim = snippet.brim
+		brim.add(self)
+
+tag app-code-comment
+	get body
+		dataset.body
+	
+	def mount
+		log 'mounting code-comment'
+		snippet = closest('.snippet')
+		target = parentNode
+		snippet.brim.add(self)
 
 tag app-code-block < app-code
 
@@ -409,9 +235,8 @@ tag app-code-block < app-code
 
 	# the selectable items in a css preview
 
-
 	def focusStyleRule e
-		# console.log 'clicked selector',e.target
+		console.log 'clicked selector',e.target
 		let rule = e.target.closest('.scope-rule')
 		let sel = rule.firstElementChild.textContent.trim!
 
@@ -424,7 +249,7 @@ tag app-code-block < app-code
 			if demo.vars..flag
 				demo.vars.flag = sel.slice(1)
 				demo.commit!
-	
+
 	prop focusedRule @set
 		if e.oldValue
 			e.oldValue.flags.remove('_selected_')
@@ -436,12 +261,17 @@ tag app-code-block < app-code
 		# console.log 'demo loaded',e
 		demo = e.detail
 
+	get brim
+		return #brim if #brim
+		appendChild #brim = <app-code-brim.brim>
+
 	def render
 		return unless code or file
 		let name = (files[0] && files[0].name or '')
 		let fflags = name.replace(/\.+/g,' ')
+		let hl = file and file.highlighted
 
-		<self.{options.preview}.{fflags} .preview-{options.preview} .multi=(files.length > 1)
+		<self.snippet.{options.preview}.{fflags} .preview-{options.preview} .multi=(files.length > 1)
 			tabindex=-1
 			@click.sel('.scope-rule *,.scope-rule')=focusStyleRule
 			@keydown.esc.stop=(#clickedRules = no)
@@ -455,17 +285,23 @@ tag app-code-block < app-code
 				$preview-size:72px .md:120px .lg:180px .xl:240px
 				$mainLines: {mainLines}
 				$minLines: {Math.min(maxLines,14)}
-				$code
+				>>> $code
 					box-sizing:content-box
 					h:calc($mainLines * 1lh)
 					d:block of:auto ff:mono ws:pre px:5 py:0.75lh
 					pre w:100px
-					&.ind1 >>> .t0 d:none
-					&.ind2 >>> .t1 d:none
-
-				$pre w:100px
+					&.ind1 .t0 d:none
+					&.ind2 .t1 d:none
 
 			css &.inline-preview >>> $frame bd:none bg:clear
+
+			css &.preview-inline
+				main d:hflex bg:$bg p:0
+				$editor fl:1
+				$preview
+					w:260px as:stretch m:0 h:auto bg:black/15
+					>>> $frame bd:none bg:clear rdr:inherit
+
 
 			css &.preview-styles
 				main d:hflex bg:$bg p:0
@@ -483,7 +319,7 @@ tag app-code-block < app-code
 					$preview h:100px w:auto
 
 				# p:1lh of:visible h:auto pr:40%
-				$code >>>
+				>>> $code
 					pre ws:pre-line
 					pre,b d:contents
 					span d:none
@@ -503,7 +339,7 @@ tag app-code-block < app-code
 							@before,@after c:var(--code-keyword)
 							> .white@last d:none
 
-			<main @exports=bindExports(e.detail)>
+			<main.snippet-body @exports=bindExports(e.detail)>
 				<div$editor.code .tabbed=(files.length >= 2)>
 					css .actions o:0
 					css @hover .actions o:1
@@ -520,8 +356,9 @@ tag app-code-block < app-code
 							<div.item @click=openInEditor> "open"
 						css	&.collapsed .actions pos:abs t:0 r:0
 					if file
-						<code$code.{file.highlighted.flags}>
-							<pre$pre innerHTML=file.highlighted.html>
+						<app-code-file $key=file.id file=file data=hl>
+						# <code$code.{hl.flags}>
+						#	<pre$pre.code innerHTML=hl.html>
 				if options.preview
 					<app-repl-preview$preview
 						file=files[0]
@@ -530,6 +367,96 @@ tag app-code-block < app-code
 						mode=options.preview
 						@loaded=demoLoaded
 					>
+
+css app-arrow c:green5
+	>>>
+		path stroke:currentColor stroke-linecap:round stroke-dasharray:3px 3px
+		polygon fill:currentColor stroke-linejoin:round
+		$end d:none
+		$start stroke:currentColor stroke-width:2px
+
+tag app-code-highlight
+	prop x = 0
+	prop y = 0
+
+	css .anchor pos:abs inset:0 pe:none
+	
+	css &.line .anchor l:100% b:60% t:10%
+
+	css app-arrow >>>
+		path stroke:currentColor stroke-linecap:round
+		polygon fill:currentColor stroke-linejoin:round
+		$end d:none
+		$start stroke:currentColor stroke-width:2px
+
+	def setup
+		from = frame.querySelector(data.sel)
+	
+	def mount
+		unless $arrow
+			$arrow = <app-arrow frame=frame from=from to=$anchor>
+			frame.appendChild($arrow)
+		self
+
+	def refresh
+		console.log 'refresh!!!'
+		$arrow..render!
+		render!
+
+	def render
+		<self[d:block c:green6 x:{x}px y:{y}px]>
+			<div$anchor>
+			<div$box @touch.silent.sync(self)=refresh> data.text
+
+global css app-code-file
+
+	.item mx:2 pos:relative pe:auto
+		ff:notes fw:400 c:green6 fs:lg/0.9 ta:center
+		.box tween:styles 0.2s ease-in-out pe:auto
+	.item@even t:-10px
+
+	.highlights pos:abs p:6 b:100% l:0 zi:5 pe:none d:hflex ai:center ta:center
+	.left-highlights pos:abs t:0 r:100% w:200px zi:5 pe:none d:vflex ai:flex-end jc:center
+	.bottom-highlights pos:abs t:100% l:0 w:100% zi:5 pe:none d:hflex ai:flex-start jc:center
+
+	app-arrow
+		tween:opacity 0.2s ease-in-out
+		svg tween:transform 0.2s ease-in-out		
+
+	&.leaving
+		.item .box y:10px o:0
+		app-arrow $scale:0.85 o:0
+
+tag app-code-file
+
+	def draw
+		redraw!
+
+	def intersect e
+		redraw!
+	
+	def redraw
+		for item in $hl.children
+			item.$arrow..render!
+		self
+
+	def toggleHighlights
+		flags.toggle('leaving')
+
+	def setup
+		self
+
+	css &.debug @hover
+		$hl outline:1px dashed red4
+		.item outline:1px dashed blue4
+
+	<self[d:block pos:relative] .debug @resize.silent=draw @intersect.in.once.silent=intersect>
+		<code$code.{data.flags}>
+			<pre$pre[w:100px].code innerHTML=data.html>
+
+		<div$hl.highlights @resize.silent=redraw>
+			for hl in data.highlights when hl.j == 'top'
+				<app-code-highlight[$col:{hl.col}].item frame=self data=hl>
 
 tag app-demo < app-code-block
 

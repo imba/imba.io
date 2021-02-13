@@ -36,12 +36,14 @@ export def highlight str,lang
 	let out = {
 		flags: {}
 		specials: []
+		highlights: []
 	}
 	
 	str = str.replace(/^(~\w*[\[\|]?)?\t*[ ]+/gm) do(m) m.replace(/[ ]{4}/g,'\t')
 	
 	let flags = out.flags
 	let lines = str.split('\n')
+	let cites = {}
 
 	# console.log 'lines',lines
 	if lines[0].indexOf('# ~') == 0
@@ -61,7 +63,6 @@ export def highlight str,lang
 	let next
 	while next = str.match(/~(\w*)\[|\]~/)
 		let offset = str.indexOf(next[0])
-		# let offset = next[1].length
 		let open = next[0][0] == '~'
 		let typ = next[1] or 'focus'
 
@@ -118,10 +119,66 @@ export def highlight str,lang
 	let ids = []
 	let indent = 0
 
+	if true
+		let i = tokens.length
+		while --i >= 0
+			let token = tokens[i]
+			if token.type == 'comment' and token.value[2] == '~'
+				let [m,m1,body] = token.value.match(/# ~([^\~]+)~ (.+)/)
+				let [pat,opts] = m1.split('|')
+				let idx = str.indexOf(pat)
+				let region = {pattern: pat, offset: idx, text:body, j:'top'}
+				let col = 0
+				if opts
+					for item in opts.split('&')
+						let [k,v] = item.split('=')
+						region[k] = v or true
+				
+				out.highlights.unshift(region)
+				cites[idx] ||= []
+				cites[idx].push(region)
+				token.skip = true
+				# token.type = 'highlight'
+				token.type = 'br'
+				token.value = '\n'
+
+				while idx and str[--idx] != '\n'
+					col++
+
+				region.col = col
+				# tokens.splice(i,1) # remove from list
+
+	let idrefs = 1
 	for token,i in tokens
 		let next = tokens[i + 1]
 		if inject[token.offset]
-			# console.log 'injecting now',token.offset,token.type,token.value,inject[token.offset]
+			parts.push(inject[token.offset])
+			delete inject[token.offset]
+
+		if cites[token.offset]
+			let val = token.value
+			let fullVal = (token.scope && token.scope.value)
+			for region in cites[token.offset]
+				if !region.#token
+					let pat = region.pattern
+					let match = fullVal and fullVal.indexOf(pat) == 0 and pat.length >= (fullVal.length - 1)
+					match ||= val and val == pat
+					if match
+						token.idRef ||= idrefs++
+						region.sel = ".region-{token.idRef}"
+						region.#token = token
+			# MAP!
+
+	let len = tokens.length
+
+	while len > 0 and tokens[len - 1].type == 'br'
+		# console.log 'dropped br!!',
+		tokens.pop!
+		len--
+
+	for token,i in tokens
+		let next = tokens[i + 1]
+		if inject[token.offset]
 			parts.push(inject[token.offset])
 			delete inject[token.offset]
 
@@ -131,9 +188,13 @@ export def highlight str,lang
 		let value = token.value or ''
 		let end  = token.offset + value.length
 		let types = token.type.split('.')
+		let classNames = ''
 		let [typ,subtyp] = types
 		if typenames[typ]
 			[typ,subtyp] = typenames[typ].split(' ')
+
+		if token.idRef
+			classNames += " region-{token.idRef}"
 
 		let mods = token.mods
 		let sym = token.symbol
@@ -154,10 +215,9 @@ export def highlight str,lang
 			for own k,v of M
 				if k.match(/^[a-z]/) and mods & v
 					types.push(k+'_')
-					
 
 		if subtyp == 'start' or subtyp == 'open'
-			parts.push("<b class='{typ}'>")
+			parts.push("<b class='{typ}{classNames}'>")
 			continue unless value
 
 		if (subtyp == 'end' or subtyp == 'close') and !value
@@ -168,15 +228,14 @@ export def highlight str,lang
 			let kind = subtyp.indexOf('_') >= 0 ? 'group' : 'scope'
 			let end = token.scope && token.scope.end
 			let attrs = {}
-			let flags = ''
 
 			if subtyp == 'rule'
 				let ruleval = token.scope.value
 				if let m = ruleval.match(/^\.(demo-options|demo-[\w\-]+)/)
-					flags += ' ' + m[1] # .slice(5)
+					classNames += ' ' + m[1] # .slice(5)
 					out.flags['has-' + m[1]] = yes
 
-			parts.push("<b class='{kind}-{subtyp.split('_').pop!} _{subtyp} o{token.offset} e{end && end.offset}{flags}' typ='{subtyp}'>")
+			parts.push("<b class='{kind}-{subtyp.split('_').pop!} _{subtyp} o{token.offset} e{end && end.offset}{classNames}' typ='{subtyp}'>")
 			continue
 		elif typ == 'pop'
 			parts.push("</b>")
@@ -185,9 +244,15 @@ export def highlight str,lang
 		if typ == 'br'
 			indent = 0
 
+		if typ == 'comment'
+			if value.match(/^\# ~/)
+				continue
+
 		if typ != 'white' and typ != 'line'
-			value = "<span class='{classify types} o{token.offset}' data-rawtypes='{token.type}'>{escape(value or '')}</span>"
-			# value = "<span class='{types.join(' ')}' data-offset={token.offset}>{escape(value)}</span>"
+			let inner = escape(value or '')
+			value = "<span class='{classify types} o{token.offset}{classNames}' data-rawtypes='{token.type}'>"
+			value += inner
+			value += '</span>'
 		elif typ == 'white'
 			let val = ""
 			let k = 0
@@ -204,10 +269,6 @@ export def highlight str,lang
 				indent = ind
 
 			value = val
-			# value = "<span data-offset={token.offset}>{value}</span>"
-
-		# else
-		#	value = "<span data-offset={token.offset}>{value}</span>"
 
 		if typ == 'comment' and token.value == '# ---\n'
 			if !head

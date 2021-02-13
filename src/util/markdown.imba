@@ -54,6 +54,11 @@ let unescape = do(code)
 	code = code.replace(/\&amp;/g,"&")
 	return code
 
+let sanitizeCode = do(code)
+	code = code.replace(/~\[/g,'')
+	code = code.replace(/\]~/g,'')
+	return code
+
 let renderer = new marked.Renderer
  
 def renderer.link href, title, text
@@ -175,8 +180,7 @@ def renderer.code code, lang, opts = {}
 
 		for file in files
 			let path = "/examples{dir}/{nr}/{file.name or "index.{file.lang or 'imba'}"}"
-			state.files[path] = {body: file.code, lang: file.lang}
-
+			state.files[path] = {body: sanitizeCode(file.code), lang: file.lang}
 
 		if last and last.hlevel
 			meta = JSON.parse(JSON.stringify(last.options))
@@ -264,7 +268,7 @@ export def render content, o = {}
 	let prev = object
 	let intro = segments[0]
 
-	console.log 'snippets',state.snippets.length,Object.keys(state.files)
+	console.log 'snippets',Object.keys(state.files)
 	object.#files = state.files
 
 	for html,i in segments.slice(1)

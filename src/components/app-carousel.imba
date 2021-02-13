@@ -15,7 +15,7 @@ tag app-carousel
 		>> * pos:abs w:100% h:100% t:0 l:0
 		.abs-item w:100% h:100% bg:gray8/30 d:inline-block pos:abs bg:pink3 @odd:blue3
 
-	iw = 700
+	iw = 800
 	page = 0
 
 	def mount
