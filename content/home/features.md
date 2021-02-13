@@ -67,7 +67,7 @@ tag Panel
 	<self[d:flex pos:abs inset:6 rd:md of:hidden]>
 		<div[bg:teal2 flex-basis:{split}%]>
 		<div[fls:0 w:2 bg:teal3 @touch:teal5]
-			@touch.pin.fit(self,0,100,2)=(split=e.x)>
+			@touch.prevent.pin.fit(self,0,100,2)=(split=e.x)>
 		<div[bg:teal1 flex:1]>
 
 imba.mount <Panel>
@@ -85,7 +85,7 @@ css drag-me
 yes
 # ---
 tag drag-me
-	<self @touch.moved.sync(self)>
+	<self @touch.prevent.moved.sync(self)>
 		css bg:white @touch:blue4
 			scale:1 @touch:1.2
 			x:{x} y:{y} rotate:{x}deg

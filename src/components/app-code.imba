@@ -7,39 +7,17 @@ import './app-arrow'
 
 def getVisibleLineCount code
 	let parts = code.replace(/# [\[\~].+(\n|$)/g,'').replace(/\n+$/,'').split('# ---\n')
-	if code.indexOf('~d:hgrid~') > 0
-		console.log 'get visible lines',parts
 	(parts[1] or parts[0]).split('\n').length
 
 tag app-code
 	def awaken
 		self
 
-
-tag app-hl-target
-
-	get body
-		dataset.text
-	
-	def mount
-		snippet = closest('.snippet')
-		let pin = previousElementSibling
-		if let q = dataset.target
-			# console.warn "TARGET",dataset.target,target.querySelectorAll(dataset.target)
-			let els = pin.querySelectorAll(q)
-			pin = els[0] or pin
-		elif dataset.cite
-			pin = closest('code').querySelectorAll('.region')[parseInt(dataset.cite) - 1]
-		target = pin
-		brim = snippet.brim
-		brim.add(self)
-
 tag app-code-comment
 	get body
 		dataset.body
 	
 	def mount
-		log 'mounting code-comment'
 		snippet = closest('.snippet')
 		target = parentNode
 		snippet.brim.add(self)
@@ -236,7 +214,6 @@ tag app-code-block < app-code
 	# the selectable items in a css preview
 
 	def focusStyleRule e
-		console.log 'clicked selector',e.target
 		let rule = e.target.closest('.scope-rule')
 		let sel = rule.firstElementChild.textContent.trim!
 
@@ -357,8 +334,6 @@ tag app-code-block < app-code
 						css	&.collapsed .actions pos:abs t:0 r:0
 					if file
 						<app-code-file $key=file.id file=file data=hl>
-						# <code$code.{hl.flags}>
-						#	<pre$pre.code innerHTML=hl.html>
 				if options.preview
 					<app-repl-preview$preview
 						file=files[0]
@@ -399,19 +374,20 @@ tag app-code-highlight
 		self
 
 	def refresh
-		console.log 'refresh!!!'
 		$arrow..render!
 		render!
 
 	def render
 		<self[d:block c:green6 x:{x}px y:{y}px]>
 			<div$anchor>
-			<div$box @touch.silent.sync(self)=refresh> data.text
+			<div$box @touch.prevent.silent.sync(self)=refresh> data.text
 
 global css app-code-file
 
 	.item mx:2 pos:relative pe:auto
-		ff:notes fw:400 c:green6 fs:lg/0.9 ta:center
+		ff:notes fw:400 c:green6 ta:center
+		min-width:60px @md:100px
+		fs:sm/0.9 @md:lg/0.9 
 		.box tween:styles 0.2s ease-in-out pe:auto
 	.item@even t:-10px
 
@@ -450,7 +426,7 @@ tag app-code-file
 		$hl outline:1px dashed red4
 		.item outline:1px dashed blue4
 
-	<self[d:block pos:relative] .debug @resize.silent=draw @intersect.in.once.silent=intersect>
+	<self[d:block pos:relative] @resize.silent=draw @intersect.in.once.silent=intersect>
 		<code$code.{data.flags}>
 			<pre$pre[w:100px].code innerHTML=data.html>
 

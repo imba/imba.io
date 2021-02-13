@@ -23,7 +23,9 @@ css app-demo rd@force:lg
 		$tabbar bg:clear px:2 pt:2 d.collapsed:none
 
 css .windowed-demo w:1cw
-	>>> $editor rd:0 @md:lg
+	1dw:100% @660:40vw @940:420px
+
+	>>> $editor rd:lg
 		$code h@force:calc($mainLines * 1lh) p@force:2lh
 		&.tabbed
 			$tabbar px:2 bg:clear pt:2
@@ -45,12 +47,16 @@ css .windowed-demo w:1cw
 		$preview pos:abs w:1dw l:auto r:30px m:0
 		$pre pr@force:calc(1dw)
 
+	&.tic-tac-toe 1dw:300
+
 	@!800
 		1cw:100%
-		>>> $editor rd:0 @md:lg
+		>>> $editor rd:0
 			$code pb@force:14
 		>>> $preview
-			pos:rel w:calc(100% - 40px) r:auto l:auto t:0 y:0% mt:-10 mx:auto
+			pos:rel r:auto l:auto t:0 y:0% mt:-10 mx:auto
+			# if we are in landscape we should be much smaller
+			w:calc(100vw - 40px) h:calc(100vw - 40px)
 			$frame bxs:xl
 
 css .full-width-demo w:100%
@@ -100,7 +106,6 @@ global css .centered-snippet
 	app-code-block mb:4
 	app-code-file
 		.highlights ml:0px @900:-100px
-		.item min-width:100px
 	@!740 w:90vw
 	@!700
 		.snippet-body@important d:block
