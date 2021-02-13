@@ -91,7 +91,8 @@ tag app-root
 		if path != router.url.pathname
 			go(router.url.pathname)
 
-		let repl = router.match('/try')
+		let repl? = router.match('/try')
+		let home? = router.match('/home')
 
 		<self[d:contents]
 			@run=runCodeBlock(e.detail)
@@ -124,32 +125,38 @@ tag app-root
 					css span + span @before content: "/" mx:1 o:0.3
 				<div[flex: 1]>
 				<div[d:flex cursor:pointer us:none]>
-					<a.tab @click.emit-showsearch>
+					<a.tab[mr:4] @click.emit-showsearch>
 						<svg src='./assets/icons/search.svg'>
 						<span[c:blue4/50 mx:0.5 tt:none]> "Search..."
 						<span.keycap hotkey='s' @hotkey.prevent.emit-showsearch> 'S'
+					if home?
+						<a.tab @click.emit-showide href='/language/introduction'>
+							<svg src='./assets/icons/book.svg'>
+							<span> "Learn"
 					<a.tab @click.emit-showide>
 						<svg src='./assets/icons/play.svg'>
 						<span> "Try"
-					<a.tab target='_blank' href='https://github.com/imba/imba'>
-						<svg src='./assets/icons/github.svg'>
-						<span> "GitHub"
 					<a.tab target='_blank' href='https://discord.gg/mkcbkRw'>
 						<svg src='./assets/icons/message-circle.svg'>
-						<span> "Community"
-					
-					<a.tab.toggler
-						.active=($menu..focused?)
-						@mousedown.prevent=$menu.toggle!>
-						<svg[h:32px] src='./assets/icons/menu.svg'>
+						<span> "Chat"
+					<a.tab[ml:4] target='_blank' href='https://github.com/imba/imba'>
+						<svg src='./assets/icons/github.svg'>
+					<a.tab target='_blank' href='https://twitter.com/imbajs'>
+						<svg src='./assets/icons/twitter.svg'>
+					if !home?
+						<a.tab.toggler
+							.active=($menu..focused?)
+							@mousedown.prevent=$menu.toggle!>
+							<svg[h:32px] src='./assets/icons/menu.svg'>
 
-			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl>
+			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl?>
 			<app-search$search>
+			
 			if router.match('/home')
 				<home-page>
 			elif doc
 				<app-menu$menu>
-				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl hash=document.location.hash>
+				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl? hash=document.location.hash>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 
