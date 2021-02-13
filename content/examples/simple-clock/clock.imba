@@ -1,5 +1,5 @@
 import './styles'
-# ---
+
 tag app-clock
 	<self> # render dials++
 		let ts = Date.now! / 60000 + utc * 60
@@ -17,4 +17,3 @@ tag app
 		<app-clock utc=9> 'Tokyo'
 
 imba.mount <app.grid autorender=10fps>
-	
