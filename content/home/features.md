@@ -3,10 +3,7 @@
 ```imba
 # [preview=inline]
 import 'util/styles'
-css section div
-	d:block rd:sm bg:sky3 w:auto h:auto
-	tween:all 0.1s ease-in-out
-yes
+
 const api = new class
 	def login user,pass
 		await new Promise do setTimeout($1,800)
@@ -14,9 +11,12 @@ const api = new class
 
 # ---
 tag Login < form
+
 	def handler
 		log 'logging in'
 		await api.login(name,secret)
+
+	css pos:abs inset:0 d:grid ja:center
 
 	<self @submit.prevent.flag-busy=handler>
 		<input type='text' bind=name>
@@ -24,10 +24,13 @@ tag Login < form
 		<button disabled=(!name or !secret)> 'Login'
 # ---
 imba.mount <Login[pos:abs inset:0 d:grid ja:center]>
-# ~my-widget~ define web components
-# ~form~ inherit from native tags
+# ~Login~ define web components
+# ~css ~ integrated styling
 # ~.prevent~ convenient event modifiers
 # ~bind~ two-way data-binding
+css section div
+	d:block rd:sm bg:sky3 w:auto h:auto
+	tween:all 0.1s ease-in-out
 ```
 
 This is some text right here about this awesome thing
