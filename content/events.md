@@ -726,7 +726,7 @@ A very common need for touches is to convert the coordinates of the touch to som
 ```imba
 # [preview=lg]
 import 'util/styles'
-css .rect w:80vw
+css .rect w:calc(100vw - 80px)
 # ---
 tag Unfitted
 	<self @touch=(x=e.x)> "window.x {x}"
@@ -801,6 +801,25 @@ imba.mount <Example.rect>
 
 ### pin [event-modifier] [touch-modifier] [wip]
 
+### round [event-modifier] [touch-modifier]
+
+```imba
+# [preview=lg]
+import 'util/styles'
+css .rect w:calc(100vw - 80px)
+# ---
+tag Unfitted
+	<self @touch.round=(x=e.x)> "box.x {x}"
+tag Fitted
+	<self @touch.round(2)=(x=e.x)> "box.x {x}"
+tag Snapped
+	<self @touch.round(0.5)=(x=e.x)> "box.x {x}"
+# ---
+imba.mount do <>
+	<Unfitted.rect>
+	<Fitted.rect>
+	<Snapped.rect>
+```
 
 ## Examples
 
