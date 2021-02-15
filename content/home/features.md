@@ -12,28 +12,83 @@ const api = new class
 # ---
 tag Login < form
 
-	def handler
-		log 'logging in'
+	def handler e
 		await api.login(name,secret)
 
 	css pos:abs inset:0 d:grid ja:center
 
 	<self @submit.prevent.flag-busy=handler>
+		# <svg src='./logo.svg'>
 		<input type='text' bind=name>
 		<input type='password' bind=secret>
-		<button disabled=(!name or !secret)> 'Login'
+		<button disabled=(!name or !secret)>
+			<span> `Login as {name}`
 # ---
 imba.mount <Login[pos:abs inset:0 d:grid ja:center]>
 # ~Login~ define web components
 # ~css ~ integrated styling
-# ~.prevent~ convenient event modifiers
+# ~submit~ powerful event handling
+# ~./logo.svg~ auto-inlining svg assets
+
 # ~bind~ two-way data-binding
 css section div
 	d:block rd:sm bg:sky3 w:auto h:auto
 	tween:all 0.1s ease-in-out
 ```
 
-This is some text right here about this awesome thing
+Imba has been built over years striving to remove all friction from developing web apps. Tags, web components, styles and assets are all first-class citizens of the Imba programming language.
+
+
+# Ecosystem
+
+```imba
+import express from 'express'
+import passport from 'passport'
+import services from './services.ts'
+
+const app = express()
+
+app.get '/404' do(req,res)
+	res.send String <div>
+		<img src='./confused-cat.png'>
+		<h1> "We could not find this page!"
+
+app.get '/' do(req,res)
+	let page = import('./index.html')
+	res.send page.body
+# ~express~ whole js ecosystem
+# ~div~ server-side rendering
+# ~./services.ts~ import typescript directly
+# ~./index.html~ automatic parsing + bundling of imba,js,ts,html,css,svg++
+```
+Imba works just as well on the server as on the client. In fact, the *whole stack* of [scrimba.com](https://scrimba.com) is written in Imba. Forget config files and separate build steps – Imba bundles all your assets at blazing speeds – utilizing esbuild under the hood.
+
+# Pane with divider
+```imba
+# [preview=inline]
+import 'util/styles'
+global css body > * pos:abs inset:6 rd:md of:hidden
+# ---
+import {genres} from 'imdb'
+
+tag Panel
+	prop split = 30
+
+	<self[d:flex fs:xs bg:teal0]>
+		<div[p:2 bg:teal1 flb:{split}%]> "Menu"
+		<div[w:2 fls:0 bg:teal3 bg@touch:teal5]
+			@touch.pin.fit(self,0,100)=(split=e.x)>
+		<div[p:2 fl:1]>
+			<ul> for genre in genres.top
+				<li> genre.title
+
+imba.mount <Panel>
+# ~d:flex~ Tailwind inspired inline styles
+# ~touch(?:.pin)~ Rich touch handling
+# ~.pin~ Useful event modifiers
+# ~@touch~ Style property variants
+# ~%~ Inline style interpolation
+```
 
 # Grids
 
@@ -55,25 +110,6 @@ imba.mount do <div[pos:abs inset:0 d:grid ja:center]>
 # ~bg:teal2~ color presets
 # ~6px~ style individual transform properties
 # ~@hover~ inline state variants
-```
-
-# Pane with divider
-```imba
-# [preview=inline]
-import 'util/styles'
-
-
-# ---
-tag Panel
-	prop split = 70
-
-	<self[d:flex pos:abs inset:6 rd:md of:hidden]>
-		<div[bg:teal2 flex-basis:{split}%]>
-		<div[fls:0 w:2 bg:teal3 @touch:teal5]
-			@touch.prevent.pin.fit(self,0,100,2)=(split=e.x)>
-		<div[bg:teal1 flex:1]>
-
-imba.mount <Panel>
 ```
 
 # Event Modifiers
@@ -124,3 +160,4 @@ imba.mount do <>
 	<slider min=-100 max=100 step=1>
 	<slider min=10 max=-10 step=0.5>
 ```
+
