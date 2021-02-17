@@ -4,6 +4,7 @@ import {ls,fs,File,Dir} from '../store'
 import { getArrow,getBoxToBoxArrow } from "perfect-arrows"
 
 import './app-arrow'
+import './app-popover'
 
 def getVisibleLineCount code
 	let parts = code.replace(/# [\[\~].+(\n|$)/g,'').replace(/\n+$/,'').split('# ---\n')
@@ -44,7 +45,7 @@ tag app-code-block < app-code
 		@is-active bg:blue6 c:white
 
 	css $editor
-		bg:$bg rd:inherit
+		bg:#222b39 rd:inherit
 
 	css	$header pos:relative zi:2 bg:#3d4253
 		d:hflex @empty:none
@@ -56,8 +57,6 @@ tag app-code-block < app-code
 		&.collapsed
 			.tabs d:none
 			.actions pos:absolute t:0 r:0
-			
-		
 
 	css $preview
 		min-height:$preview-size
@@ -248,7 +247,7 @@ tag app-code-block < app-code
 		let fflags = name.replace(/\.+/g,' ')
 		let hl = file and file.highlighted
 
-		<self.snippet.{options.preview}.{fflags} .preview-{options.preview} .multi=(files.length > 1)
+		<self.p3d.snippet.{options.preview}.{fflags} .preview-{options.preview} .multi=(files.length > 1)
 			tabindex=-1
 			@click.sel('.scope-rule *,.scope-rule')=focusStyleRule
 			@keydown.esc.stop=(#clickedRules = no)
@@ -258,7 +257,7 @@ tag app-code-block < app-code
 			css pos:relative rd:sm d:block .shared:none
 				fs:13px/1.5 @md:15px/1.4
 				ls:-0.1px
-				$bg:$code-bg-lighter
+				$bg:#222b39
 				$preview-size:72px .md:120px .lg:180px .xl:240px
 				$mainLines: {mainLines}
 				$minLines: {Math.min(maxLines,14)}
@@ -316,8 +315,8 @@ tag app-code-block < app-code
 							@before,@after c:var(--code-keyword)
 							> .white@last d:none
 
-			<main.snippet-body @exports=bindExports(e.detail)>
-				<div$editor.code .tabbed=(files.length >= 2)>
+			<main.p3d.snippet-body @exports=bindExports(e.detail)>
+				<div$editor.code.p3d .tabbed=(files.length >= 2)>
 					css .actions o:0
 					css @hover .actions o:1
 					<div$tabbar .collapsed=(files.length < 2)>
@@ -333,7 +332,7 @@ tag app-code-block < app-code
 							<div.item @click=openInEditor> "open"
 						css	&.collapsed .actions pos:abs t:0 r:0
 					if file
-						<app-code-file $key=file.id file=file data=hl>
+						<app-code-file.p3d $key=file.id file=file data=hl>
 				if options.preview
 					<app-repl-preview$preview
 						file=files[0]
@@ -350,10 +349,28 @@ css app-arrow c:green5
 		$end d:none
 		$start stroke:currentColor stroke-width:2px
 
+tag app-code-annotation
+
+	def hydrate
+		options = JSON.parse(dataset.options or '{}')
+		# body = dataset.body
+		log "hydrating!!!",options
+	
+	def render
+		log 'rendering app-code-annotation'
+		<self>
+			<span> options.pre
+			css pos:abs y:-100%
+			# css div pos:abs t:{options[3] * 120}% l:{options[4]}ex
+			css .mark d:inline-block bdb:1px solid yellow3
+			<span.mark> options.marked
+			css .box pos:abs ml:3ex mt:-4ex
+			<span.box> <span[ff:notes fw:400 c:yellow2 fs:md]> options.comment
+
 tag app-code-highlight
 	prop x = 0
 	prop y = 0
-
+	css transform-style:preserve-3d
 	css .anchor pos:abs inset:0 pe:none
 	
 	css &.line .anchor l:100% b:60% t:10%
@@ -369,35 +386,54 @@ tag app-code-highlight
 	
 	def mount
 		unless $arrow
-			$arrow = <app-arrow frame=frame from=from to=$anchor>
-			frame.appendChild($arrow)
+			$arrow = <app-arrow frame=frame from=from to=$anchor data=data>
+			frame.$arrows.appendChild($arrow)
+			style.top = (data.oy * 100)%
+			style.left = (data.ox * 100)%
+			$tip = <app-popover data=data target=from frame=frame>
+			frame.appendChild($tip)
+
+
 		self
+
+	def toggleFlag flag, bool
+		flags.toggle(flag,bool)
+		$arrow..flags.toggle(flag,bool)
 
 	def refresh
 		$arrow..render!
 		render!
 
+	def serialize
+		"# ~{data.pattern}|{$arrow.serialize!}~ {data.text}"
+		
 	def render
-		<self[d:block c:green6 x:{x}px y:{y}px]>
+		<self[d:block x:{x}px y:{y}px z:{data.oz}px pos:absolute]>
 			<div$anchor>
-			<div$box @touchstart.prevent @touch.prevent.silent.sync(self)=refresh> data.text
+			<div$box @touch.silent.sync(self)=refresh> data.text
+			<div$line[w:100px h:2px bg:green4 pos:abs]>
 
 global css app-code-file
 
 	.item mx:2 pos:relative pe:auto
 		ff:notes fw:400 c:green6 ta:center
 		min-width:60px @md:100px
-		fs:sm/0.9 @md:lg/0.9 
+		fs:sm/0.9 @md:md/0.9 z:100px
 		.box tween:styles 0.2s ease-in-out pe:auto
+		# &.inlined 
+		c:green3 ts:0px 3px 3px black/15 fs:md/0.95
 	.item@even t:-10px
 
-	.highlights pos:abs p:6 b:100% l:0 zi:5 pe:none d:hflex ai:center ta:center
+	.highlights pos:abs p:0 t:0 l:0 zi:5 pe:none # d:hflex ai:center ta:center
 	.left-highlights pos:abs t:0 r:100% w:200px zi:5 pe:none d:vflex ai:flex-end jc:center
 	.bottom-highlights pos:abs t:100% l:0 w:100% zi:5 pe:none d:hflex ai:flex-start jc:center
 
 	app-arrow
 		tween:opacity 0.2s ease-in-out
-		svg tween:transform 0.2s ease-in-out		
+		c:green3
+		svg tween:transform 0.2s ease-in-out
+		# &.inlined
+		c:green3
 
 	&.leaving
 		.item .box y:10px o:0
@@ -405,13 +441,20 @@ global css app-code-file
 
 tag app-code-file
 
+	def setup
+		hlpos = {x: 0, y: 0}
+		pt = pl = 0
+		self
+
 	def draw
 		redraw!
 
 	def intersect e
+		relayout!
 		redraw!
 	
 	def redraw
+		return unless $hl
 		for item in $hl.children
 			item.$arrow..render!
 		self
@@ -419,20 +462,41 @@ tag app-code-file
 	def toggleHighlights
 		flags.toggle('leaving')
 
-	def setup
-		self
+	def intersectBox e
+		return
+		e.target.toggleFlag('inlined',e.isIntersecting)
+
+	def dragAll
+		render!
+		redraw!
+
+	def printAnnotations
+		# return unless $hl
+		let out = for item in querySelectorAll('app-popover')
+			item.serialize!
+		log out.join('\n')
+
+	def relayout
+		return unless $code and $hl
+		# let style = window.getComputedStyle($code)
+		pt = $pre.offsetTop
+		pl = $pre.offsetLeft
+		style.setProperty('--u_pt',(pt)px)
+		style.setProperty('--u_pl',(pl)px)
+		$hl.style.top = (pt)px
+		$hl.style.left = (pl)px
 
 	css &.debug @hover
 		$hl outline:1px dashed red4
 		.item outline:1px dashed blue4
 
-	<self[d:block pos:relative] @resize.silent=draw @intersect.in.once.silent=intersect>
-		<code$code.{data.flags}>
+	<self[d:block pos:relative]  @resize.silent=draw @intersect.in.once.silent=intersect @click.meta=printAnnotations>
+		<code$code[ff:mono].{data.flags}>
+			<span$anchor[pos:abs]> " "
 			<pre$pre[w:100px].code innerHTML=data.html>
-
-		<div$hl.highlights @resize.silent=redraw>
-			for hl in data.highlights when hl.j == 'top'
-				<app-code-highlight[$col:{hl.col}].item frame=self data=hl>
+		<$overlays[pos:abs t:0 l:0]>
+			for hl in data.highlights
+				<app-popover frame=self data=hl>
 
 tag app-demo < app-code-block
 

@@ -52,10 +52,32 @@ export def highlight str,lang
 	if lines[0].indexOf('# [') == 0
 		lines.shift! # .replace(/~(\w+)(?:\=([^\s]+))?/g) do(m,flag,val) flags[flag] = val or yes
 
+	let loc = 0
+	let annotations = {}
 	for line,i in lines
 		# if line[0] == '~'
 		#	console.log line,line.replace(/^(~\w*)\|(.*)$/,'$1[$2]~')
 		lines[i] = line.replace(/^(~\w*)\|(.*)$/,'$1[$2]~')
+
+		if let m = line.match(/^((\t*)#(\s+))(\^+) (.+)/)
+			let cmloc = loc + m[2].length
+			let col = m[1].length
+			let ln = i - 1
+			let tgtloc = annotations[cmloc] = {
+				anchor: [i - 1,col,m[4].length]
+				tabs: m[2].length
+				marked: m[4].replace(/\^/g,' ')
+				comment: m[5]
+				pre: m[1].replace(/#/,' ')
+			}
+
+			let pos = [i - 1,col,m[4].length]
+			console.log 'found!!!!',m,loc + m[2].length,pos
+
+			# skip the tabs before 
+			# let off = 
+			# find the previous line without any comment like this
+		loc += line.length + 1
 		
 	str = lines.join('\n')
 
@@ -123,21 +145,66 @@ export def highlight str,lang
 		let i = tokens.length
 		while --i >= 0
 			let token = tokens[i]
+			if token.type == 'comment'
+				if let an = annotations[token.offset]
+					# console.log 'FOUND ANNOTATION ALREADY!!!'
+					let k = an.tabs
+					while k-- > 0
+						tokens[--i].skip = true
+					token.#body = "<app-code-annotation data-options='{JSON.stringify(an)}'></app-code-annotation>\n"
+					continue
+
+				# let val = token.value
+				# if let m = val.match(/#(\s+)(\^+) (.+)/)
+
 			if token.type == 'comment' and token.value[2] == '~'
 				let [m,m1,body] = token.value.match(/# ~([^\~]+)~ (.+)/)
-				let [pat,opts] = m1.split('|')
+				let [pat,opts,...rest] = m1.split('|')
 				let idx = str.indexOf(pat)
+				let end = token.offset + token.value.length
 				let region = {pattern: pat, offset: idx, text:body, j:'top'}
+				let idxAfter = str.indexOf(pat,end)
+				let idxBefore = str.slice(0,token.offset).lastIndexOf(pat)
+
+				let lo = 0
+				let co = 0
+
+				if idxAfter > -1
+					let after = str.slice(end,idxAfter)
+					let lines = after.split('\n')
+					lo = lines.length
+
+					# find the next 
+				if idxBefore > -1
+					let before = str.slice(idxBefore,token.offset)
+					let lines = before.split('\n')
+					let lo = lines.length - 1
+					let co = lines.pop!.length * -1
+
+				# get the closest match
+				if rest.length
+					console.log token
+					token.#body = "<app-code-annotation data-options='{JSON.stringify(opts)}' data-body='{m[2]}'></app-code-annotation>\n"
+					continue
+
+				let [flags,ox,oy,oz] = (opts or "0,200,-140,50").split(',')
+				region.mask = parseInt(flags or 0)
+				region.ox = parseInt(ox or 200)
+				region.oy = parseInt(oy or -140)
+				region.oz = parseInt(oz or 50)
+				
 				let col = 0
 				if opts
 					for item in opts.split('&')
 						let [k,v] = item.split('=')
 						region[k] = v or true
+
+				
 				
 				out.highlights.unshift(region)
 				cites[idx] ||= []
 				cites[idx].push(region)
-				token.skip = true
+				# token.skip = true
 				# token.type = 'highlight'
 				token.type = 'br'
 				token.value = '\n'
@@ -147,6 +214,18 @@ export def highlight str,lang
 
 				region.col = col
 				# tokens.splice(i,1) # remove from list
+			elif token.type == 'comment' and token.value[2] == '!'
+				if let m = token.value.match(/# !(\[.*\]) (.+)/)
+					let opts = JSON.parse(m[1])
+					
+					if typeof opts[0] == 'string'
+						let idxAfter = str.indexOf(opts[0],token.offset)
+						let idxBefore = str.slice(0,token.offset).lastIndexOf(opts[0])
+						let idx = str.indexOf(opts[0])
+						console.log 'found index of',idxAfter,idxBefore
+
+
+					token.#body = "<app-code-annotation data-options='{JSON.stringify(opts)}' data-body='{m[2]}'></app-code-annotation>\n"
 
 	let idrefs = 1
 	for token,i in tokens
@@ -159,14 +238,18 @@ export def highlight str,lang
 			let val = token.value
 			let fullVal = (token.scope && token.scope.value)
 			for region in cites[token.offset]
-				if !region.#token
-					let pat = region.pattern
-					let match = fullVal and fullVal.indexOf(pat) == 0 and pat.length >= (fullVal.length - 1)
-					match ||= val and val == pat
-					if match
-						token.idRef ||= idrefs++
-						region.sel = ".region-{token.idRef}"
-						region.#token = token
+				token.idRef ||= idrefs++
+				region.sel = ".region-{token.idRef}"
+				region.#token = token
+				# if !region.#token
+				# 
+				# 	let pat = region.pattern
+				# 	let match = fullVal and fullVal.indexOf(pat) == 0 and pat.length >= (fullVal.length - 1)
+				# 	match ||= val and val == pat
+				# 	if match or true
+				# 		token.idRef ||= idrefs++
+				# 		region.sel = ".region-{token.idRef}"
+				# 		region.#token = token
 			# MAP!
 
 	let len = tokens.length
@@ -181,7 +264,7 @@ export def highlight str,lang
 		if inject[token.offset]
 			parts.push(inject[token.offset])
 			delete inject[token.offset]
-
+		continue if token.skip
 		# unless token.value
 		#	console.log 'no value??',token
 
@@ -245,7 +328,11 @@ export def highlight str,lang
 			indent = 0
 
 		if typ == 'comment'
+
 			if value.match(/^\# ~/)
+				continue
+			if token.#body
+				parts.push(token.#body)
 				continue
 
 		if typ != 'white' and typ != 'line'

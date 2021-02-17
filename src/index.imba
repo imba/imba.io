@@ -1,3 +1,4 @@
+import './util/layout'
 import './util/shortcuts'
 import './styles'
 
@@ -159,5 +160,6 @@ tag app-root
 				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl? hash=document.location.hash>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
-
+			
 imba.mount <app-root>
+document.scrollingElement.scrollLeft = 0

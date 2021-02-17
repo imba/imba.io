@@ -99,9 +99,8 @@ css figure.card
 		p@force:3
 
 global css .centered-snippet
-	width:720px my:4 mb:30 mx:auto
-	max-width:90vw
-	# @1000 ml@odd:80px @even:-80px
+	width:780px my:4 mb:30 mx:auto
+	max-width:calc(100vw - 100px)
 	p fs:lg ta:center
 	app-code-block mb:4
 	app-code-file
@@ -113,17 +112,74 @@ global css .centered-snippet
 			pos:absolute b:20px r:20px scale:0.6 origin:100% 100%
 			l:auto
 
+tag home-section
+	def intersecting e
+		# log 'intersecting',e.isIntersecting,e.ratio
+		if #visible =? e.isIntersecting
+			relayout!
+
+	def resizing
+		log 'resizing'
+		#top = offsetTop
+		#height = offsetHeight
+		#middle = #top + #height * 0.5
+		#rect = getBoundingClientRect!
+
+	def relayout
+		return unless #visible
+		let page = parentNode
+		let scrollY = page.#cache.scrollY
+		let vh = window.innerHeight
+		# distance from top of screen
+		let top = #top - scrollY
+		#smy = #middle - scrollY - vh * 0.5
+		for el in querySelectorAll('.perspective')
+			let r = el.pageRect # getBoundingClientRect!
+			let y = (r.top + r.height * 0.5) - scrollY
+			let x = (r.left + r.width * 0.5) - scrollY
+			let poy = y - vh * 0.5
+			el.#poy = -poy
+			let ptrx = page.#ptrx
+			let ptry = page.#ptry
+			el.style.perspectiveOrigin = "{ptrx}% calc({-poy}px + {ptry}% * 0.8)"
+		yes
+
+	<self.p3d @intersect.silent=intersecting @resize.silent=resizing>
+		# css $smy:{#smy}
+		# css .mark pos:abs size:4 bg:yellow4 l:10px
+		# <div$totop.mark> #smy
+		<slot>
+
+tag rotating-shapes
+	prop size = 300
+	def setup
+		<self.p3d>
+			css d:block pos:abs z:-10px w:100vw h:300px
+				tween:styles 1s ease-in-out
+				@hover transform:rotateY(160deg)
+			css div bg:yellow2 w:620px h:300px m:2 pos:abs origin:50% 50% 0px t:50% l:50%
+				backface-visibility:hidden
+				-webkit-backface-visibility:hidden
+			for item,i in [1,2,3,4,5,6,7,8,9]
+				<div css:transform="translate(-50%,-50%) rotateY({i / -9}turn) translateZ(-900px)">
 
 tag home-page
+	#cache = {scrollY: 0}
+
 	css 1cw:90vw @lg:980px # custom container-width unit
 		1dw:420px # custom demo-width unit
 		1gw:3vw @lg:5vw @xl:8vw # custom gutter-width unit
-		ofx:hidden d:vflex a:center
+		d:vflex a:center
+		transform-style:preserve-3d
+		perspective:1000px
+		perspective-origin:50% 200px
+		$smx:50%
 
-		section,figure d:vflex ja:center as:stretch
+		home-section pos:relative
+		home-section,figure d:vflex ja:center as:stretch
 		h1,h2,h3,nav,article w:1cw	
 		h1,h2 ff:brand ws:pre-line pb:6
-			fs:60px/0.9 @md:90px/0.9 @lg:127px/0.9
+			fs:34px/0.9 @xs:50px/0.9 @sm:60px/0.9 @md:90px/0.9 @lg:122px/0.9
 		h3 c:cool8
 			fs:xl/1.5 @md:2xl/1.5
 		article p fs:lg/1.4
@@ -133,72 +189,136 @@ tag home-page
 	def caroseul-item href
 		<figure.item> <app-demo.demo href=`/examples/css/{href}.imba?preview=styles`>
 
+	def mount
+		#onscroll ||= scrolled.bind(self)
+		#onpoint ||= pointing.bind(self)
+		window.addEventListener('scroll',#onscroll,{passive: yes})
+		window.addEventListener('mousemove',#onpoint,{passive: yes})
+
+	def unmount
+		window.removeEventListener('scroll',#onscroll,{passive: yes})
+		window.removeEventListener('mousemove',#onpoint,{passive: yes})
+
+	def pointing e
+		let x = Math.round(e.x * 100 / window.innerWidth)
+		let y = Math.round(e.y * 100 / window.innerHeight)
+		# on animation frame?!
+		# log 'pointing!',e.x,x
+		let dirty = no
+		if #ptrx =? x
+			dirty = yes
+			# style.setProperty('--ptrx',x + '%')
+		if #ptry =? y
+			dirty = yes
+			# style.setProperty('--ptry',y + '%')
+
+		if dirty
+			relayout!
+
+	def relayout
+		for el in querySelectorAll('home-section')
+			el.relayout!
+		self
+
+	def scrolled e
+		# log 'scrolled',window.scrollY
+		# could alternate / spread them out
+		
+		let sy = #cache.scrollY = window.scrollY
+		let poy = Math.round(sy + window.innerHeight * 0.5)
+		# relayout!
+		# style.perspective = "800px"
+		style.perspectiveOrigin = "50% {poy}px"
+		return
+		# $origo.style.top = (poy)px
+		#	el.relayout!
+		self
+
+
 	def render
-		<self>
-			# <app-demo.demo.full-width-demo.inline-preview href='/examples/clock/app.imba?preview=lg'>
-			<section[pt:40 pb:20 bg:linear-gradient(blue3,blue3/0)]>
-				<h1[py:5 pb].gradient> `Build Fast, Fast`
-				<div[w:1cw d:block @md:hgrid mt:10]>
+		<self @resize.silent>
+			<div$origo[pos:abs size:2 bg:green3 l:50%]>
+			<rotating-shapes>
+			<home-section[pt:40 pb:10 bg:linear-gradient(blue3/10,blue3/0)]>
+				<h1[py:5].gradient> `Build Fast, Fast.`
+				<div[w:1cw d:block @870:hgrid mt:10]>
 					<div[w:2cols max-width:590px ml:2 fs:xl/1.8 mr:4]>
 						<p[c:cool8]> `Imba is a Web programming language that's fast in two ways: Imba's time-saving syntax with built-in tags and styles results in less typing and switching files so you can {<u> 'build things fast.'} Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM libraries, so you can {<u> 'build fast things.'}`
-						<a> `Start Learning Imba`
+						<div[d:block @480:hflex fs:md @580:lg  mx:-2 my:4]>
+							css a rd:xl m:2 p:2 bg:green3 bd:green3-5 bcb:green5 px:4 c:green8 fw:bold d:block ta:center
+								@hover bg:green3-3
+							<a href="/language/getting-started"> "Get started"
+							css div rd:xl bd:gray2 bg:gray1 m:2 p:2 pr:4 c:gray6 ff:mono bs:solid fw:bold
+								fs:sm @580:17px ls:-0.3px d:hflex ja:center
+								@before content: '>' c:gray3  px:1
+							<div> "npx imba create hello-world"
 					<ul>
-						css d:block rd:lg bxs:xxs,lg p:6 fs:lg bg:white/70
+						css d:block rd:lg p:6 fs:lg bxs:xxs,lg bg:white/70 h:auto as:start
+							@!1024 p:4 fs:md
+							@!870 d:none
 						for usp in usps
 							<li[py:1 d:hflex a:center px:2 pr:6]>
 								<svg[mr:3 size:16px c:purple7] src='icons/arrow-right.svg'>
 								<span> usp
-
-			<section[py:10]>
+			
+			<home-section[py:10]>
+				
+				<.bg[pos:abs inset:0 z:-40px t:30% b:-40px scale-x:1.3 rotate:2deg bg:cool2]>
 				# <app-demo[w:1cw].demo.windowed-demo href='/examples/simple-clock?preview=lg'>
-				<app-demo.demo.full-width-demo.inline-preview.clock href='/examples/simple-clock?preview=lg'>
+				<app-demo[w:1cw].demo.windowed-demo href='/examples/tic-tac-toe?preview=lg'>
 
-			<figure[pt:30]>
-				<h2.gradient> `Smart,\nBeautiful,\nMinimal`
+				# <app-demo[w:1cw mt:10].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>
+				# <app-demo.demo.full-width-demo.inline-preview.clock href='/examples/simple-clock?preview=lg'>
+
+			<home-section[pt:30]>
+				
+				<h2.gradient[ws:pre]> `Smart,\nBeautiful,\nMinimal`
 				<h3[mb:16]> <div[max-width:560px]> `Imba's syntax is optimized for getting things done with less typing. It's packed with smart features.`
 
-				<div[w:1cw]> for item in ls('/home/features').children
-					<div.centered-snippet>
+				<div[w:1cw].p3d> for item in ls('/home/features').children
+					<div.centered-snippet.p3d>
 						# <div[ta:center my:4 fw:600 c:gray6]> item.head
-						<div innerHTML=item.html>
+						<div.p3d innerHTML=item.html>
+				# <app-demo[w:1cw].demo.windowed-demo href='/examples/tic-tac-toe?preview=lg'>
 
-				# <app-demo.demo.full-width-demo.inline-preview href='/examples/clock/app.imba?preview=lg'>
-				<app-demo[w:1cw].demo.windowed-demo href='/examples/tic-tac-toe?preview=lg'>
-				# <figcaption> "There are no hidden styles or scripts in this example. This is the whole example."
-
-			<section[pt:30]>
+			<home-section[pt:30]>
+				
 				<h2[c:pink6]> `Unbelievable\nPerformance`
 				<h3[mb:6]> <div[max-width:560px]> `Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM approaches.`
 				<figure> <app-demo[w:1cw 1dw:300px].demo.windowed-demo.left-aligned href='/examples/performance/app.imba?preview=lg'>
 				<article.text[columns:1 my:4 cg:30px]>
 					<p> `Imba uses a novel way to update the dom, opening up for a new way of writing web applications. Without having to worry about the cost of re-rendering you can break away from State Management libraries.`
-				
-			# <section[py:20]>
-			# 	<h2.gradient[ta:center]> `Styles Evolved`
-			# 	<p> `Inspired by Tailwindcss, Imba features a rich syntax for styling components`
-			# 	<app-carousel renderer=carousel-item> for item in ['sizing','layouts','appearance','transform','colors',	'appearance','transform','colors','appearance']
-			# 		<figure[px:4]>
-			# 			let preview = item == 'layouts' ? 'inline' : 'styles'
-			# 			<app-demo[w:100%].card-demo href=`/examples/css/{item}.imba?preview={preview}`>
-			# 			<p[mt:4]> `Some text about this card here`
-			# 	# <div.carousel scrollLeft=700>
-			# 	#	for item in ['transform','colors','appearance']
-			# 	#		<figure.item> <app-demo.demo href=`/examples/css/{item}.imba?preview=styles`>
+			
+			if true
+				<home-section[py:20]>
+					<h2.gradient[ta:center]> `Styles Evolved`
+					<p> `Inspired by Tailwindcss, Imba features a rich syntax for styling components`
+					<app-carousel renderer=carousel-item> for item in ['sizing','layouts','appearance','transform','colors',	'appearance','transform','colors','appearance']
+						<figure[px:4]>
+							let preview = item == 'layouts' ? 'inline' : 'styles'
+							<app-demo[w:100%].card-demo href=`/examples/css/{item}.imba?preview={preview}`>
+							<p[mt:4]> `Some text about this card here`
+					# <div.carousel scrollLeft=700>
+					#	for item in ['transform','colors','appearance']
+					#		<figure.item> <app-demo.demo href=`/examples/css/{item}.imba?preview=styles`>
+
+			<home-section[py:10]>
+				<app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
+				# <app-demo.demo.full-width-demo.inline-preview.clock href='/examples/simple-clock?preview=lg'>
 					
-			<section[pt:30]>
+			<home-section[pt:30]>
 				<h2.gradient> `From Prototype to Production`
 				<h3> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is fully powered by Imba, both frontend & backend.`
+				# <app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
 
 			# <figure[py:30]>
 			# 	<h2.gradient> `Game Changing`
 			# 	<app-demo[w:1cw].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>
 
-			<section[py:30]>
+			<home-section[py:30]>
 				<h2.gradient> `Incredible Tooling`
 				<h3> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is fully powered by Imba, both frontend & backend.`
 			
-			<section[py:10]>
-				<app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
-
+			
 			# <figure[py:30]>
 			# 	<app-demo[w:1cw].demo.windowed-demo.inlined href='/examples/tic-tac-toe?preview=lg'>

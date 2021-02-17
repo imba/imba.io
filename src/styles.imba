@@ -19,9 +19,11 @@ global css
 
 	code,pre ff:mono fw:bold
 
+	.p3d transform-style: preserve-3d
+	html ofx:hidden
 	html.noscroll body overflow: hidden
 	html,body p:0px m:0px
-	body pt: $header-height
+	body pt: $header-height ofx:hidden w:100%
 	* outline:none
 
 	html.fastscroll scroll-behavior:auto
@@ -187,6 +189,7 @@ global css .code
 	.variable_ c:var(--code-variable)
 	.variable_.global_ c:var(--code-global-variable)
 	.variable_.import_ c:var(--code-import-variable)
+	.variable_.root_ c:var(--code-root-variable)
 	.special_,.special c:#fffab4
 	.entity.name.constructor c:var(--code-keyword)
 	
@@ -207,6 +210,9 @@ global css .code
 	.global_ + .paren >
 		c@first:var(--code-global-variable)
 		c@last:var(--code-global-variable)
+
+	.keyword.import + .paren > .paren
+		c:var(--code-keyword)
 
 	.path c:var(--code-string)
 	.entity,.field c:var(--code-entity)

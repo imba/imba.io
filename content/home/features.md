@@ -18,19 +18,19 @@ tag Login < form
 	css pos:abs inset:0 d:grid ja:center
 
 	<self @submit.prevent.flag-busy=handler>
-		# <svg src='./logo.svg'>
+		<svg srcz='./logo.svg'>
 		<input type='text' bind=name>
 		<input type='password' bind=secret>
 		<button disabled=(!name or !secret)>
 			<span> `Login as {name}`
 # ---
 imba.mount <Login[pos:abs inset:0 d:grid ja:center]>
-# ~Login~ define web components
-# ~css ~ integrated styling
-# ~submit~ powerful event handling
-# ~./logo.svg~ auto-inlining svg assets
+# ~Login|1,24.3,-38.6,50.0~ define web components
+# ~css |1,-84.8,-58.9,50.0~ integrated styling
+# ~submit|0,102.4,-122.7,50.0~ powerful event handling
+# ~./logo.svg|0,151.5,-92.3,50.0~ auto-inlining svg assets
+# ~bind|0,109.7,78.1,50.0~ two-way data-binding
 
-# ~bind~ two-way data-binding
 css section div
 	d:block rd:sm bg:sky3 w:auto h:auto
 	tween:all 0.1s ease-in-out
@@ -49,21 +49,21 @@ import services from './services.ts'
 const app = express()
 
 app.get '/404' do(req,res)
-	res.send String <div>
+	res.send String <html> <body>
 		<img src='./confused-cat.png'>
 		<h1> "We could not find this page!"
 
 app.get '/' do(req,res)
 	let page = import('./index.html')
 	res.send page.body
-# ~express~ whole js ecosystem
-# ~div~ server-side rendering
-# ~./services.ts~ import typescript directly
-# ~./index.html~ automatic parsing + bundling of imba,js,ts,html,css,svg++
+# ~express|1,-13.6,-42.0,50.0~ whole js ecosystem
+# ~body|0,93.4,-67.4,50.0~ server-side rendering
+# ~./services.ts|1,27.3,-90.5,50.0~ import typescript directly
+# ~./index.html|0,23.9,20.5,50.0~ zero-config bundling
 ```
 Imba works just as well on the server as on the client. In fact, the *whole stack* of [scrimba.com](https://scrimba.com) is written in Imba. Forget config files and separate build steps – Imba bundles all your assets at blazing speeds – utilizing esbuild under the hood.
 
-# Pane with divider
+# Pane with divider [skip]
 ```imba
 # [preview=inline]
 import 'util/styles'
@@ -83,14 +83,16 @@ tag Panel
 				<li> genre.title
 
 imba.mount <Panel>
-# ~d:flex~ Tailwind inspired inline styles
-# ~touch(?:.pin)~ Rich touch handling
-# ~.pin~ Useful event modifiers
-# ~@touch~ Style property variants
-# ~%~ Inline style interpolation
+# ~d:flex|1,28.0,-145.9,50.0~ Tailwind inspired inline styles
+# ~@touch.pin|1,137.8,-235.9,50.0~ Rich touch handling
+# ~.pin|0,21.0,-88.0,50.0~ Useful event modifiers
+# ~@touch|0,10.3,111.7,50.0~ Style property variants
+# ~%|1,41.5,-167.2,50.0~ Inline style interpolation
 ```
 
-# Grids
+# Test
+
+## Grids
 
 ```imba
 # [preview=xl]
@@ -112,7 +114,7 @@ imba.mount do <div[pos:abs inset:0 d:grid ja:center]>
 # ~@hover~ inline state variants
 ```
 
-# Event Modifiers
+## Event Modifiers
 
 ```imba
 # [preview=xl]
@@ -135,7 +137,7 @@ imba.mount <drag-me>
 # ~.sync~ update x,y coordinates of target
 ```
 
-# Test
+
 
 ## Custom slider
 ```imba
