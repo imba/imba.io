@@ -202,9 +202,8 @@ tag app-repl-preview
 	css $body pos:relative
 	css $bounds pos:absolute w:100% h:100% r:0 b:0 min-width:120px
 	css $frame
-		pos:absolute top:0 l:50% bg:white w:100% h:100% x:-50% y:0
+		pos:absolute top:0 l:0 bg:white w:100% h:100%
 		border:1px solid gray3
-		transform-origin:50% 0%
 
 	css $cover pos:absolute inset:0 cursor:zoom-in d:none
 
@@ -312,7 +311,7 @@ tag app-repl-preview
 						<div.resizer.y @touch=resize(e,'y')>
 						<div.resizer @touch=resize>
 						<div$cover @click=toggle>
-						<div[pos:absolute transform-origin:100% 100% b:0 r:0 p:2 fs:sm/1 c:gray5 d:none ..resizing:block scale:{1 / scale}]> "{iw - 2} x {ih - 2}"
+						# <div[pos:absolute transform-origin:100% 100% b:0 r:0 p:2 fs:sm/1 c:gray5 d:none ..resizing:block scale:{1 / scale}]> "{iw - 2} x {ih - 2}"
 				<div$controls @click.stop>
 					<button.btn bind=size value='auto-auto'> 'auto'
 					<button.btn bind=size value='482-auto'> 'xs'

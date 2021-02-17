@@ -109,6 +109,8 @@ global css home-section app-code-block
 	rd@force:lg
 	main
 		$tabbar bg:clear px:2 pt:2 d.collapsed:none
+	$preview z:10px
+		$address d@force:none
 
 global css .centered-snippetz
 	width:780px my:4 mb:30 mx:auto
@@ -324,12 +326,12 @@ tag home-page
 				
 				<h2.gradient[ws:pre]> `Smart,\nBeautiful,\nMinimal`
 				<h3[mb:16]> <div[max-width:560px]> `Imba's syntax is optimized for getting things done with less typing. It's packed with smart features.`
-				
-				# <app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
-				
-				if true
-					<div.p3d.windowed-demo> for item in ls('/home/features').children
-						<div[w:1cw mb:18].p3d innerHTML=item.html>
+				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href='/examples/paint/app.imba?preview=md&titlebar=1'>
+				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href='/examples/express/app.imba?dir=1&preview=md&titlebar=1'>
+
+				# if true
+				#	<div.p3d.windowed-demo> for item in ls('/home/features').children
+				#		<div[w:1cw mb:18].p3d innerHTML=item.html>
 				# <app-demo[w:1cw].demo.windowed-demo href='/examples/tic-tac-toe?preview=lg'>
 			
 			<home-section[pt:30 d:none]>	
