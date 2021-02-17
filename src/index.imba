@@ -16,6 +16,8 @@ import * as sw from './sw/controller'
 
 global.flags = document.documentElement.flags
 
+global.debug = yes if document.location.hash.indexOf('debug') >= 0
+
 tag app-root
 	prop doc
 	prop show-menu
@@ -125,6 +127,8 @@ tag app-root
 				<.breadcrumb[mx:2 fs:sm c:blue4]>
 					css span + span @before content: "/" mx:1 o:0.3
 				<div[flex: 1]>
+					if window.debug
+						<div @resize.silent=render> "{window.innerWidth}px"
 				<div[d:flex cursor:pointer us:none]>
 					<a.tab[mr:4] @click.emit-showsearch>
 						<svg src='./assets/icons/search.svg'>
@@ -160,6 +164,6 @@ tag app-root
 				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl? hash=document.location.hash>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
-			
+
 imba.mount <app-root>
 document.scrollingElement.scrollLeft = 0

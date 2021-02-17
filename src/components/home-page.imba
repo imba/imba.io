@@ -18,7 +18,7 @@ css .gradient
 	-webkit-background-clip:text
 	-webkit-text-fill-color:transparent
 
-css app-demo rd@force:lg
+css app-code-block rd@force:lg
 	>>> main
 		$tabbar bg:clear px:2 pt:2 d.collapsed:none
 
@@ -32,10 +32,12 @@ css .windowed-demo w:1cw
 			$code pt@force:0.5lh
 
 	>>> $preview
-		pos:abs w:0.5cw l:auto r:-1gw m:0
-		t:50% y:-50%
+		pos:abs l:auto r:0 m:0
 		h:1dw w:1dw
-		rd:lg 
+		t:calc(50% - 0.5dw)
+		max-width:420px
+		max-height:420px
+		rd:xl
 		$frame bxs:xxl bd:none
 	
 	&.left-aligned @800 >>>
@@ -46,6 +48,14 @@ css .windowed-demo w:1cw
 		1dw:300px
 		$preview pos:abs w:1dw l:auto r:30px m:0
 		$pre pr@force:calc(1dw)
+
+	>>> .preview-md
+		1dw:100% @660:40vw @940:320px
+		$editor  mx:auto
+		@800 $editor w:640px
+		@1000 $editor w:700px
+		@1200 $editor w:780px
+		@1380 $editor w:840px mx:0
 
 	&.tic-tac-toe 1dw:300
 
@@ -68,6 +78,7 @@ css .full-width-demo w:100%
 			@940 pb:20 pt:10
 			
 		$pre @force w:1cw d:block mx:auto
+
 	>>> $preview
 		pos:abs w:0.5cw l:auto r:10% m:0
 		t:50% y:-50%
@@ -78,9 +89,7 @@ css .full-width-demo w:100%
 		>>> $preview
 			r:0px @660:4vw @940:10%
 			@!660 pos:rel y:0 t:0
-		
 
-	
 
 css .card-demo w:100% rd:xl
 	>>> main d:hflex bg:$bg p:0
@@ -98,9 +107,15 @@ css figure.card
 	.demo >>> $editor
 		p@force:3
 
+global css home-setion app-code-block
+	rd@force:lg
+	main
+		$tabbar bg:clear px:2 pt:2 d.collapsed:none
+
 global css .centered-snippet
 	width:780px my:4 mb:30 mx:auto
 	max-width:calc(100vw - 100px)
+
 	p fs:lg ta:center
 	app-code-block mb:4
 	app-code-file
@@ -163,12 +178,50 @@ tag rotating-shapes
 			for item,i in [1,2,3,4,5,6,7,8,9]
 				<div css:transform="translate(-50%,-50%) rotateY({i / -9}turn) translateZ(-900px)">
 
+
+import {aliases} from 'imba/src/compiler/styler'
+
+tag styles-bg
+	def setup
+		<self> for own k,v of aliases
+			<div> k
+
+tag bench-graph
+	def setup
+		results = [
+			name: 'Vue'
+			score: 7915
+			-
+			name: 'React'
+			score: 8811
+			-
+			name: 'Imba'
+			score: 237462
+		]
+
+
+		<self.p3d>
+			css z:-2px $pxpi:0.01px # pixels per iteration / score
+			<.p3d.items[d:hflex c:gray5]> for item in results
+				<.p3d.item[fl:1 $score:{item.score} w:100px] .{item.name}>
+					css pos:rel d:vflex ja:center
+					css .bar bg:gray4
+					css &.Imba
+						c:blue6
+						.bar bg:blue6
+					<.name> item.name
+					<.bar.p3d>
+						css pos:abs b:30px h:calc($score * $pxpi) w:6px rd:md x:0 z:1
+						<.score[ff:notes  l:50% t:-30px pos:abs x:-50%]> item.score
+
+
 tag home-page
 	#cache = {scrollY: 0}
 
 	css 1cw:90vw @lg:980px # custom container-width unit
 		1dw:420px # custom demo-width unit
 		1gw:3vw @lg:5vw @xl:8vw # custom gutter-width unit
+		1yp:1px @md:3px @lg:4px
 		d:vflex a:center
 		transform-style:preserve-3d
 		perspective:1000px
@@ -180,6 +233,8 @@ tag home-page
 		h1,h2,h3,nav,article w:1cw	
 		h1,h2 ff:brand ws:pre-line pb:6
 			fs:34px/0.9 @xs:50px/0.9 @sm:60px/0.9 @md:90px/0.9 @lg:122px/0.9
+		h2.small
+			fs:34px/0.9 @xs:40px/0.9 @sm:50px/0.9 @md:80px/0.9 @lg:90px/0.9
 		h3 c:cool8
 			fs:xl/1.5 @md:2xl/1.5
 		article p fs:lg/1.4
@@ -187,13 +242,14 @@ tag home-page
 		>>> app-code-block@force rd:lg
 
 	def caroseul-item href
-		<figure.item> <app-demo.demo href=`/examples/css/{href}.imba?preview=styles`>
+		<figure.item> <app-code-block.demo href=`/examples/css/{href}.imba?preview=styles`>
 
 	def mount
 		#onscroll ||= scrolled.bind(self)
 		#onpoint ||= pointing.bind(self)
 		window.addEventListener('scroll',#onscroll,{passive: yes})
 		window.addEventListener('mousemove',#onpoint,{passive: yes})
+		scrolled!
 
 	def unmount
 		window.removeEventListener('scroll',#onscroll,{passive: yes})
@@ -234,12 +290,17 @@ tag home-page
 		#	el.relayout!
 		self
 
+	def resizing e
+		log 'resizing'
+		if #cache.width =? window.innerWidth
+			for el in querySelectorAll('app-popover')
+				el.relayout!
+		return
 
 	def render
-		<self @resize.silent>
-			<div$origo[pos:abs size:2 bg:green3 l:50%]>
-			<rotating-shapes>
-			<home-section[pt:40 pb:10 bg:linear-gradient(blue3/10,blue3/0)]>
+		<self @resize.silent.debounce(100ms)=resizing>
+			# <rotating-shapes>
+			<home-section[pt:40yp pb:10yp bg:linear-gradient(blue3/10,blue3/0)]>
 				<h1[py:5].gradient> `Build Fast, Fast.`
 				<div[w:1cw d:block @870:hgrid mt:10]>
 					<div[w:2cols max-width:590px ml:2 fs:xl/1.8 mr:4]>
@@ -264,8 +325,7 @@ tag home-page
 			<home-section[py:10]>
 				
 				<.bg[pos:abs inset:0 z:-40px t:30% b:-40px scale-x:1.3 rotate:2deg bg:cool2]>
-				# <app-demo[w:1cw].demo.windowed-demo href='/examples/simple-clock?preview=lg'>
-				<app-demo[w:1cw].demo.windowed-demo href='/examples/tic-tac-toe?preview=lg'>
+				<div.windowed-demo> <app-code-block[w:1cw].demo href='/examples/tic-tac-toe?preview=md'>
 
 				# <app-demo[w:1cw mt:10].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>
 				# <app-demo.demo.full-width-demo.inline-preview.clock href='/examples/simple-clock?preview=lg'>
@@ -274,42 +334,53 @@ tag home-page
 				
 				<h2.gradient[ws:pre]> `Smart,\nBeautiful,\nMinimal`
 				<h3[mb:16]> <div[max-width:560px]> `Imba's syntax is optimized for getting things done with less typing. It's packed with smart features.`
-
-				<div[w:1cw].p3d> for item in ls('/home/features').children
-					<div.centered-snippet.p3d>
-						# <div[ta:center my:4 fw:600 c:gray6]> item.head
-						<div.p3d innerHTML=item.html>
+				
+				# <app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
+				
+				if true
+					<div[w:1cw].p3d> for item in ls('/home/features').children
+						<div.centered-snippet.p3d.windowed-demo>
+							# <div[ta:center my:4 fw:600 c:gray6]> item.head
+							<div.p3d innerHTML=item.html>
 				# <app-demo[w:1cw].demo.windowed-demo href='/examples/tic-tac-toe?preview=lg'>
+			
+			<home-section[pt:30 d:none]>	
+				# <h2.gradient[ws:pre].small> `One Language,\nZero Configuration`
+				<h2.gradient[ws:pre]> `Full-stack`
+				<h3[mb:16]> <div[max-width:560px]> `Imba works just as well on the server as on the client. In fact, the whole stack of scrimba.com is written in Imba. `
 
 			<home-section[pt:30]>
 				
 				<h2[c:pink6]> `Unbelievable\nPerformance`
 				<h3[mb:6]> <div[max-width:560px]> `Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM approaches.`
-				<figure> <app-demo[w:1cw 1dw:300px].demo.windowed-demo.left-aligned href='/examples/performance/app.imba?preview=lg'>
-				<article.text[columns:1 my:4 cg:30px]>
-					<p> `Imba uses a novel way to update the dom, opening up for a new way of writing web applications. Without having to worry about the cost of re-rendering you can break away from State Management libraries.`
+				# <figure> <app-demo[w:1cw 1dw:300px].demo.windowed-demo.left-aligned href='/examples/performance/app.imba?preview=lg'>
+				<.box.p3d[pos:rel]>
+					css w:1cw fs:lg d:hflex p:8 px:10
+					<div[pos:abs inset:0 bg:warmer2 rd:lg z:-3px]>
+					<div.body[w: <460px]> `A benchmark was conducted by comparing a Todo MVC implementation across frameworks. The benchmark steps through a deterministic sequence of state alterations measuring the time taken to reconcile the whole application view after: Toggling an item, removing an item, inserting an item, renaming an item, and doing nothing.`
+					<bench-graph[ml:auto as:flex-end]>
+				<.windowed-demo[my:8]> <app-code-block[w:1cw].demo href='/examples/simple-clock?preview=md'>
+				# <article.text[columns:1 my:4 cg:30px]>
+				#	<p> `Imba uses a novel way to update the dom, opening up for a new way of writing web applications. Without having to worry about the cost of re-rendering you can break away from State Management libraries.`
 			
-			if true
+			if false
 				<home-section[py:20]>
 					<h2.gradient[ta:center]> `Styles Evolved`
 					<p> `Inspired by Tailwindcss, Imba features a rich syntax for styling components`
 					<app-carousel renderer=carousel-item> for item in ['sizing','layouts','appearance','transform','colors',	'appearance','transform','colors','appearance']
 						<figure[px:4]>
 							let preview = item == 'layouts' ? 'inline' : 'styles'
-							<app-demo[w:100%].card-demo href=`/examples/css/{item}.imba?preview={preview}`>
+							<app-code-block[w:100%].card-demo href=`/examples/css/{item}.imba?preview={preview}`>
 							<p[mt:4]> `Some text about this card here`
-					# <div.carousel scrollLeft=700>
-					#	for item in ['transform','colors','appearance']
-					#		<figure.item> <app-demo.demo href=`/examples/css/{item}.imba?preview=styles`>
 
-			<home-section[py:10]>
-				<app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
-				# <app-demo.demo.full-width-demo.inline-preview.clock href='/examples/simple-clock?preview=lg'>
-					
-			<home-section[pt:30]>
-				<h2.gradient> `From Prototype to Production`
-				<h3> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is fully powered by Imba, both frontend & backend.`
-				# <app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
+			# <home-section[py:10]>
+			# 	<app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
+			# 	# <app-demo.demo.full-width-demo.inline-preview.clock href='/examples/simple-clock?preview=lg'>
+			if false
+				<home-section[pt:30]>
+					<h2.gradient> `From Prototype to Production`
+					<h3> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is fully powered by Imba, both frontend & backend.`
+					<div.windowed-demo[my:8]> <app-code-block[w:1cw].demo href='/examples/express/server.imba'>
 
 			# <figure[py:30]>
 			# 	<h2.gradient> `Game Changing`
@@ -318,7 +389,3 @@ tag home-page
 			<home-section[py:30]>
 				<h2.gradient> `Incredible Tooling`
 				<h3> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is fully powered by Imba, both frontend & backend.`
-			
-			
-			# <figure[py:30]>
-			# 	<app-demo[w:1cw].demo.windowed-demo.inlined href='/examples/tic-tac-toe?preview=lg'>

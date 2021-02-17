@@ -1,7 +1,7 @@
-# Tags
+# Tags [skip]
 
 ```imba
-# [preview=inline]
+# [preview=md]
 import 'util/styles'
 
 const api = new class
@@ -18,18 +18,16 @@ tag Login < form
 	css pos:abs inset:0 d:grid ja:center
 
 	<self @submit.prevent.flag-busy=handler>
-		<svg srcz='./logo.svg'>
 		<input type='text' bind=name>
 		<input type='password' bind=secret>
 		<button disabled=(!name or !secret)>
 			<span> `Login as {name}`
 # ---
 imba.mount <Login[pos:abs inset:0 d:grid ja:center]>
-# ~Login|1,24.3,-38.6,50.0~ define web components
-# ~css |1,-84.8,-58.9,50.0~ integrated styling
-# ~submit|0,102.4,-122.7,50.0~ powerful event handling
-# ~./logo.svg|0,151.5,-92.3,50.0~ auto-inlining svg assets
-# ~bind|0,109.7,78.1,50.0~ two-way data-binding
+# ~tag|2,-9,23,61,13,93,53~ define web components
+# ~css |2,7,153,99,,82,57~ integrated styling
+# ~submit|0,-35,106,27,19,61,16~ powerful event handling
+# ~bind|0,45,-155,50,,48,75~ two-way data-binding
 
 css section div
 	d:block rd:sm bg:sky3 w:auto h:auto
@@ -38,8 +36,15 @@ css section div
 
 Imba has been built over years striving to remove all friction from developing web apps. Tags, web components, styles and assets are all first-class citizens of the Imba programming language.
 
+# Paint
 
-# Ecosystem
+[demo](/examples/paint/app.imba?preview=md)
+
+# Full-stack
+
+[demo](/examples/express/app.imba?dir=1&preview=md&titlebar=1)
+
+# Ecosystem [skip]
 
 ```imba
 import express from 'express'
@@ -90,7 +95,7 @@ imba.mount <Panel>
 # ~%|1,41.5,-167.2,50.0~ Inline style interpolation
 ```
 
-# Test
+# Test [skip]
 
 ## Grids
 

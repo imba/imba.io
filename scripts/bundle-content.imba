@@ -50,7 +50,11 @@ watcher.on('all') do
 	let src = rel.replace(/\b\d+\-/g,'')
 	let name = path.basename(src)
 	let dirname = path.dirname(src)
-
+	
+	# dont include files from any dist directory
+	return if rel.indexOf('/dist/') >= 0
+	return if rel.match(/\.(png|jpg|gif)$/)
+	
 	return if name == '.DS_Store' or src == '' or name.match(/\-(\.\w+)?$/)
 	# console.log 'watcher',$1,src,dirname
 

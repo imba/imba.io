@@ -191,6 +191,12 @@ export class File < Entry
 	get last
 		children[children.length - 1] ? children[children.length - 1].last : self
 
+	get replUrl
+		if ext == 'imba'
+			`{path}.html`
+		else
+			`{path}`
+
 	get model
 		if global.monaco and !_model
 			_model = global.monaco.editor.createModel(body,extToLanguage[ext] or ext,uri)
@@ -304,7 +310,18 @@ export class Dir < Entry
 
 	get replUrl
 		let index = childByName('index.html')
-		let app = childByName('app.imba') or files[0]
+		let app = childByName('app.imba') or self.files[0]
+
+		if app and app.body
+			if let m = app.body.match(/\.listen\((\d+)\)/)
+				let src = new URL(global.location.href)
+				src.port = m[1]
+				src.pathname = '/'
+				src.hash = ''
+				return String(src)
+		if !index and app
+			return app.replUrl
+
 		return `{path}/{index ? index.name : app.basename + '.html'}`
 
 export class Root < Dir

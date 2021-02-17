@@ -40,6 +40,7 @@
     "express": "^4.17.1",
     "imba": "^2.0.0-alpha.127",
     "marked": "^0.7.0",
+    "passport": "^0.4.1",
     "perfect-arrows": "^0.3.3",
     "svgpath": "^2.3.0"
   }

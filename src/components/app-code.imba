@@ -102,6 +102,45 @@ tag app-code-block < app-code
 	prop hlvar
 	prop editorHeight = 0
 
+	set href href
+		return unless #href =? href
+		console.log 'setting href!!',href
+		files = []
+		file = null
+		example = null
+		demo = {}
+
+		let lineCounts = []
+		let meta = {}
+
+		if href
+			let url = new URL(href,global.location.origin)
+			for [key,value] of url.searchParams
+				console.log 'param',key,value
+				options[key] = value
+
+			example = ls(url.pathname)
+			# log 'found example?!?',example,url.pathname,options
+			if options.dir
+				file = example
+				example = example.parent
+			
+		Object.assign(options,meta)
+
+		if example isa File
+			files = [example]
+		elif example isa Dir
+			files = example.files
+
+		for file in files
+			lineCounts.push(getVisibleLineCount(file.body))
+
+		file ||= files[0]
+		mainLines = lineCounts[0]
+		maxLines = Math.max(...lineCounts)
+		minLines = Math.min(...lineCounts)
+		render!
+
 	def hydrate
 		files = []
 		file = null
@@ -120,14 +159,18 @@ tag app-code-block < app-code
 			let url = new URL(dataset.href,global.location.origin)
 			for [key,value] of url.searchParams
 				options[key] = value
-
 			example = ls(url.pathname)
+			if options.dir
+				file = example
+				example = example.parent
 			
 
 		Object.assign(options,meta)
 
 		if example isa File
 			files = [example]
+		elif example isa Dir
+			files = example.files
 		else
 			let parts = getElementsByTagName('code')
 			for part,i in parts
@@ -138,16 +181,18 @@ tag app-code-block < app-code
 				}
 				let file = fs.register(path + '/' + data.name,data)
 				files.push(file)
+			example = files[0]
+
 
 		for file in files
 			lineCounts.push(getVisibleLineCount(file.body))
 
-		file = files[0]
+		file ||= files[0]
 
 		if file.name == 'main.imba'
 			options.preview ||= 'md'
 
-		mainLines = lineCounts[0]
+		mainLines = lineCounts[files.indexOf(file)]
 		maxLines = Math.max(...lineCounts)
 		minLines = Math.min(...lineCounts)
 
@@ -335,6 +380,7 @@ tag app-code-block < app-code
 						<app-code-file.p3d $key=file.id file=file data=hl>
 				if options.preview
 					<app-repl-preview$preview
+						root=example
 						file=files[0]
 						dir=dir
 						options=options
@@ -446,55 +492,29 @@ tag app-code-file
 		pt = pl = 0
 		self
 
-	def draw
-		redraw!
-
 	def intersect e
 		relayout!
-		redraw!
-	
-	def redraw
-		return unless $hl
-		for item in $hl.children
-			item.$arrow..render!
-		self
-
-	def toggleHighlights
-		flags.toggle('leaving')
-
-	def intersectBox e
-		return
-		e.target.toggleFlag('inlined',e.isIntersecting)
-
-	def dragAll
-		render!
-		redraw!
 
 	def printAnnotations
-		# return unless $hl
 		let out = for item in querySelectorAll('app-popover')
 			item.serialize!
+
+		await global.navigator.clipboard.writeText(out.join('\n'))
 		log out.join('\n')
 
 	def relayout
-		return unless $code and $hl
-		# let style = window.getComputedStyle($code)
-		pt = $pre.offsetTop
-		pl = $pre.offsetLeft
-		style.setProperty('--u_pt',(pt)px)
-		style.setProperty('--u_pl',(pl)px)
-		$hl.style.top = (pt)px
-		$hl.style.left = (pl)px
+		for item in $overlays.children
+			item.relayout!
 
 	css &.debug @hover
 		$hl outline:1px dashed red4
 		.item outline:1px dashed blue4
 
-	<self[d:block pos:relative]  @resize.silent=draw @intersect.in.once.silent=intersect @click.meta=printAnnotations>
+	<self[d:block pos:relative]  @resize.silent.debounce(50ms)=relayout @intersect.in.once.silent=intersect>
 		<code$code[ff:mono].{data.flags}>
 			<span$anchor[pos:abs]> " "
 			<pre$pre[w:100px].code innerHTML=data.html>
-		<$overlays[pos:abs t:0 l:0]>
+		<$overlays[pos:abs t:0 l:0 h:100% w:100% pe:none]>
 			for hl in data.highlights
 				<app-popover frame=self data=hl>
 

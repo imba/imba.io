@@ -333,17 +333,13 @@ tag app-repl-preview
 					# <div[fl:1]>
 					# <.tool .on=(options.rerun) @click=rerun> <svg src='icons/refresh-cw.svg'>
 			<repl-console$console mode=(mode == 'console' ? mode : 'transient')>
-		
-	set file data
-		return unless data
-		# sw.load!.then do
-		url = data.path.replace('.imba','.imba.html')
 
-	set dir data
-		if $dir = data
-			let file = $dir.files[0]
-			url = $dir.replUrl
-		self
+	set root data
+		if #root =? data
+			url = data.replUrl
+
+	get root
+		#root
 
 	def rerun
 		refresh!

@@ -187,11 +187,14 @@ export def highlight str,lang
 					token.#body = "<app-code-annotation data-options='{JSON.stringify(opts)}' data-body='{m[2]}'></app-code-annotation>\n"
 					continue
 
-				let [flags,ox,oy,oz] = (opts or "0,200,-140,50").split(',')
+				let [flags,ox,oy,oz,w,ax,ay] = (opts or "0,200,-140,50").split(',')
 				region.mask = parseInt(flags or 0)
 				region.ox = parseInt(ox or 200)
 				region.oy = parseInt(oy or -140)
 				region.oz = parseInt(oz or 50)
+				region.w = parseInt(w or 0)
+				region.ax = parseFloat(ax or 50)
+				region.ay = parseFloat(ay or 50)
 				
 				let col = 0
 				if opts
