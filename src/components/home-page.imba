@@ -211,7 +211,7 @@ tag bench-graph
 tag home-page
 	#cache = {scrollY: 0}
 
-	css 1cw:90vw @lg:960px # custom container-width unit
+	css 1cw:90vw @lg:940px @1100:980px # custom container-width unit
 		1dw:420px # custom demo-width unit
 		1gw:3vw @lg:5vw @xl:8vw # custom gutter-width unit
 		1yp:1px @md:3px @lg:4px
@@ -225,7 +225,7 @@ tag home-page
 		home-section,figure d:vflex ja:center as:stretch
 		h1,h2,h3,nav,article w:1cw	
 		h1,h2 ff:brand ws:pre-line pb:6
-			fs:34px/0.9 @xs:50px/0.9 @sm:60px/0.9 @md:90px/0.9 @lg:122px/0.9
+			fs:34px/0.9 @xs:50px/0.9 @sm:60px/0.9 @md:90px/0.9 @lg:116px/0.9 @1100:122px/0.9
 		h2.small
 			fs:34px/0.9 @xs:40px/0.9 @sm:50px/0.9 @md:80px/0.9 @lg:90px/0.9
 		h3 c:cool8
