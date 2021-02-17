@@ -51,23 +51,21 @@ css .windowed-demo w:1cw
 
 	>>> .preview-md
 		1dw:100% @660:40vw @940:320px
-		$editor  mx:auto
-		@800 $editor w:640px
+		@800 $editor w:640px mx:auto
 		@1000 $editor w:700px
 		@1200 $editor w:780px
 		@1380 $editor w:840px mx:0
-
-	&.tic-tac-toe 1dw:300
 
 	@!800
 		1cw:100%
 		>>> $editor rd:0
 			$code pb@force:14
-		>>> $preview
-			pos:rel r:auto l:auto t:0 y:0% mt:-10 mx:auto
-			# if we are in landscape we should be much smaller
-			w:calc(100vw - 40px) h:calc(100vw - 40px)
-			$frame bxs:xl
+		>>> .preview-md
+			$preview
+				pos:rel r:auto l:auto t:0 y:0% mt:-10 mx:auto
+				# if we are in landscape we should be much smaller
+				w:calc(100vw - 40px) h:calc(100vw - 40px)
+				$frame bxs:xl
 
 css .full-width-demo w:100%
 	>>> $tabbar j:center py:4
@@ -107,25 +105,16 @@ css figure.card
 	.demo >>> $editor
 		p@force:3
 
-global css home-setion app-code-block
+global css home-section app-code-block
 	rd@force:lg
 	main
 		$tabbar bg:clear px:2 pt:2 d.collapsed:none
 
-global css .centered-snippet
+global css .centered-snippetz
 	width:780px my:4 mb:30 mx:auto
 	max-width:calc(100vw - 100px)
-
 	p fs:lg ta:center
 	app-code-block mb:4
-	app-code-file
-		.highlights ml:0px @900:-100px
-	@!740 w:90vw
-	@!700
-		.snippet-body@important d:block
-		$preview
-			pos:absolute b:20px r:20px scale:0.6 origin:100% 100%
-			l:auto
 
 tag home-section
 	def intersecting e
@@ -134,7 +123,6 @@ tag home-section
 			relayout!
 
 	def resizing
-		log 'resizing'
 		#top = offsetTop
 		#height = offsetHeight
 		#middle = #top + #height * 0.5
@@ -199,16 +187,19 @@ tag bench-graph
 			score: 237462
 		]
 
+		def entered
+			flags.add('entered')
 
-		<self.p3d>
+		<self.p3d @intersect.in.once=entered>
 			css z:-2px $pxpi:0.01px # pixels per iteration / score
+			css .bar bg:gray2
+			css &.entered
+				.bar bg:gray4
+				.Imba .bar bg:blue6
 			<.p3d.items[d:hflex c:gray5]> for item in results
 				<.p3d.item[fl:1 $score:{item.score} w:100px] .{item.name}>
 					css pos:rel d:vflex ja:center
-					css .bar bg:gray4
-					css &.Imba
-						c:blue6
-						.bar bg:blue6
+					css &.Imba c:blue6
 					<.name> item.name
 					<.bar.p3d>
 						css pos:abs b:30px h:calc($score * $pxpi) w:6px rd:md x:0 z:1
@@ -218,7 +209,7 @@ tag bench-graph
 tag home-page
 	#cache = {scrollY: 0}
 
-	css 1cw:90vw @lg:980px # custom container-width unit
+	css 1cw:90vw @lg:960px # custom container-width unit
 		1dw:420px # custom demo-width unit
 		1gw:3vw @lg:5vw @xl:8vw # custom gutter-width unit
 		1yp:1px @md:3px @lg:4px
@@ -291,7 +282,6 @@ tag home-page
 		self
 
 	def resizing e
-		log 'resizing'
 		if #cache.width =? window.innerWidth
 			for el in querySelectorAll('app-popover')
 				el.relayout!
@@ -338,10 +328,8 @@ tag home-page
 				# <app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
 				
 				if true
-					<div[w:1cw].p3d> for item in ls('/home/features').children
-						<div.centered-snippet.p3d.windowed-demo>
-							# <div[ta:center my:4 fw:600 c:gray6]> item.head
-							<div.p3d innerHTML=item.html>
+					<div.p3d.windowed-demo> for item in ls('/home/features').children
+						<div[w:1cw mb:18].p3d innerHTML=item.html>
 				# <app-demo[w:1cw].demo.windowed-demo href='/examples/tic-tac-toe?preview=lg'>
 			
 			<home-section[pt:30 d:none]>	
@@ -356,10 +344,10 @@ tag home-page
 				# <figure> <app-demo[w:1cw 1dw:300px].demo.windowed-demo.left-aligned href='/examples/performance/app.imba?preview=lg'>
 				<.box.p3d[pos:rel]>
 					css w:1cw fs:lg d:hflex p:8 px:10
-					<div[pos:abs inset:0 bg:warmer2 rd:lg z:-3px]>
+					<div[pos:abs inset:0 bg:warmer2 rd:lg z:-4px]>
 					<div.body[w: <460px]> `A benchmark was conducted by comparing a Todo MVC implementation across frameworks. The benchmark steps through a deterministic sequence of state alterations measuring the time taken to reconcile the whole application view after: Toggling an item, removing an item, inserting an item, renaming an item, and doing nothing.`
-					<bench-graph[ml:auto as:flex-end]>
-				<.windowed-demo[my:8]> <app-code-block[w:1cw].demo href='/examples/simple-clock?preview=md'>
+					<bench-graph[ml:auto as:flex-end z:-3px]>
+				# <.windowed-demo[my:8]> <app-code-block[w:1cw].demo href='/examples/simple-clock?preview=md'>
 				# <article.text[columns:1 my:4 cg:30px]>
 				#	<p> `Imba uses a novel way to update the dom, opening up for a new way of writing web applications. Without having to worry about the cost of re-rendering you can break away from State Management libraries.`
 			

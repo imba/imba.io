@@ -104,7 +104,6 @@ tag app-code-block < app-code
 
 	set href href
 		return unless #href =? href
-		console.log 'setting href!!',href
 		files = []
 		file = null
 		example = null
@@ -116,7 +115,6 @@ tag app-code-block < app-code
 		if href
 			let url = new URL(href,global.location.origin)
 			for [key,value] of url.searchParams
-				console.log 'param',key,value
 				options[key] = value
 
 			example = ls(url.pathname)
@@ -136,7 +134,7 @@ tag app-code-block < app-code
 			lineCounts.push(getVisibleLineCount(file.body))
 
 		file ||= files[0]
-		mainLines = lineCounts[0]
+		mainLines = lineCounts[files.indexOf(file)]
 		maxLines = Math.max(...lineCounts)
 		minLines = Math.min(...lineCounts)
 		render!
@@ -228,7 +226,6 @@ tag app-code-block < app-code
 		self
 
 	def bindExports exports
-		console.log 'bind exports',exports
 		example = exports
 
 	def pointerover e
@@ -513,8 +510,8 @@ tag app-code-file
 	<self[d:block pos:relative]  @resize.silent.debounce(50ms)=relayout @intersect.in.once.silent=intersect>
 		<code$code[ff:mono].{data.flags}>
 			<span$anchor[pos:abs]> " "
-			<pre$pre[w:100px].code innerHTML=data.html>
-		<$overlays[pos:abs t:0 l:0 h:100% w:100% pe:none]>
+			<pre$pre[w:100px ta:left].code innerHTML=data.html>
+		<$overlays[pos:abs t:0 l:0 h:100% w:100% pe:none].p3d>
 			for hl in data.highlights
 				<app-popover frame=self data=hl>
 

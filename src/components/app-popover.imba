@@ -170,16 +170,17 @@ tag app-popover
 				# <div$lend.box
 				# 	@touch.meta.sync(rot)=relayout
 				# 	> '' # data.text
-			<div$end[pe:auto]
+			<div$end
 				>
-					<$box>
-						<span> data.text
+					<$box[pe:auto]>
 						if window.debug
-							<div$debug[pe:auto pos:abs mt:-1lh l:50% fs:9px/1.2 ff:sans fw:400 c:blue5 d:hflex ts:none x:-50%]>
+							<span @touch.round.sync(data,'ox','oy')=relayout> data.text
+							<div$debug[pe:auto pos:abs mt:-1lh l:50% fs:9px/1.2 ff:sans fw:400 c:blue5 d:hflex ts:none x:-50% z:10px]>
 								css span d:block ws:nowrap bg:blue4/1 @hover:blue3 px:0.5 rd:xs h:1lh
-								<span @touch.round.sync(data,'ox','oy')=relayout> "{data.ox},{data.oy}"
 								<span @touch.round.sync(data,'ox2','oz')=relayout> data.oz
 								<span @touch.round.sync(data,'ax','ay')=relayout> "a {data.ax},{data.ay}"
 								<span @touch.round.sync(data,'w')=relayout> "{data.w}ex"
+						else
+							<span> data.text
 
 			# add debug box showing details

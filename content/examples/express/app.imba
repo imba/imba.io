@@ -1,6 +1,5 @@
 import express from 'express'
 import passport from 'passport'
-import services from './services.ts'
 import index from './index.html'
 
 const app = express()
@@ -15,8 +14,8 @@ app.get '/' do(req,res)
 	res.send index.body
 
 imba.serve app.listen(8001)
-# ~import express|2,13,19,65,17,86,61~ import any javascript library
-# ~import se|2,-3,75,54,20,84,56~ ... typescript files
-# ~import in|2,-5,111,50,15,92,43~ ... html, css, images & more
-# ~body|0,60,-33,92,12,9,51~ server-side rendering
-# ~./services.ts|1,85,-32,50,-13,2,52~ import typescript directly
+# ~import express|2,13,19,65,17,83,40~ import any javascript library
+# ~import in|2,-3,124,80,15,92,43~ ... and typescript, html, css, images++
+# ~body|0,25,-52,39,12,9,51~ server-side rendering
+# ~./confused-cat.png|0,100,27,41,14,9,49~ images are resolved and bundled
+# ~imba.serve|2,7,308,26,19,86,63~ serve with live reloading, asset bundling++

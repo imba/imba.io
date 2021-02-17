@@ -14,7 +14,7 @@ tag Paint < canvas
 
 	<self @resize=refresh @touch=draw>
 
-imba.mount <Paint[pos:abs w:100% h:100% bg:pink3 rd:lg]>
+imba.mount <Paint[pos:abs w:100% h:100% bg:yellow1 rd:lg]>
 # ~resize|2,-21,246,50,14,88,48~ custom resize event for elements
 # ~tag|2,-7,71,28,18,93,58~ extend and override native tag types
 # ~canvas|1,36,-21,50,,50,50~ extend native elements
