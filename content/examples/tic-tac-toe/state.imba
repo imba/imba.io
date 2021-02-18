@@ -5,16 +5,11 @@ const combos = [
 ]
 
 export default class Game
-	prop turn
-	prop tiles
-	prop moves
+	prop turn = 0
+	prop tiles = new Array(9)
+	prop moves = []
 	prop winner
-	
-	def constructor
-		moves = []
-		tiles = new Array(9)
-		turn = 0
-	
+
 	def place index
 		return if tiles[index] or winner
 		moves.length = turn

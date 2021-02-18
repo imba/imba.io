@@ -6,6 +6,8 @@ const usps = [
 	`Amazing Performance`
 ]
 
+
+
 import {ls,fs,File,Dir} from '../store'
 
 import './app-carousel'
@@ -331,13 +333,9 @@ tag home-page
 				
 				<h2.gradient[ws:pre]> `Smart,\nBeautiful,\nMinimal`
 				<h3[mb:16]> <div[max-width:560px]> `Imba's syntax is optimized for getting things done with less typing. It's packed with smart features.`
-				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.game>
-				# <div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.server>
-
-			<home-section[pt:30]>
-				<h2.gradient[ws:pre]> `Code,\nServe,\nDeploy`
-				<h3[mb:16]> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is powered by Imba both frontend & backend.`
 				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.server>
+				<h3[mb:16]> <div[max-width:560px]> `Imba works just as well on the server as on the client. In fact, the whole stack of scrimba.com is written in Imba. `
+				# <div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.server>
 				# if true
 				#	<div.p3d.windowed-demo> for item in ls('/home/features').children
 				#		<div[w:1cw mb:18].p3d innerHTML=item.html>
@@ -349,7 +347,6 @@ tag home-page
 				<h3[mb:16]> <div[max-width:560px]> `Imba works just as well on the server as on the client. In fact, the whole stack of scrimba.com is written in Imba. `
 
 			<home-section[pt:30]>
-				
 				<h2[c:pink6]> `Unbelievable\nPerformance`
 				<h3[mb:6]> <div[max-width:560px]> `Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM approaches.`
 				# <figure> <app-demo[w:1cw 1dw:300px].demo.windowed-demo.left-aligned href='/examples/performance/app.imba?preview=lg'>
@@ -358,6 +355,11 @@ tag home-page
 					<div[pos:abs inset:0 bg:warmer2 rd:lg z:-4px]>
 					<div.body[w: <460px]> `A benchmark was conducted by comparing a Todo MVC implementation across frameworks. The benchmark steps through a deterministic sequence of state alterations measuring the time taken to reconcile the whole application view after: Toggling an item, removing an item, inserting an item, renaming an item, and doing nothing.`
 					<bench-graph[ml:auto as:flex-end z:-3px]>
+
+			<home-section[pt:30]>
+				<h2.gradient> `From Prototype to Production`
+				<h3[mb:16]> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is powered by Imba both frontend & backend.`
+				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.game>
 				# <.windowed-demo[my:8]> <app-code-block[w:1cw].demo href='/examples/simple-clock?preview=md'>
 				# <article.text[columns:1 my:4 cg:30px]>
 				#	<p> `Imba uses a novel way to update the dom, opening up for a new way of writing web applications. Without having to worry about the cost of re-rendering you can break away from State Management libraries.`
