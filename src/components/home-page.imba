@@ -193,7 +193,7 @@ tag bench-graph
 			flags.add('entered')
 
 		<self.p3d @intersect.in.once=entered>
-			css z:-2px $pxpi:0.01px # pixels per iteration / score
+			css z:-2px $pxpi:0.0022px # pixels per iteration / score
 			css .bar bg:gray2
 			css &.entered
 				.bar bg:gray4
@@ -207,6 +207,11 @@ tag bench-graph
 						css pos:abs b:30px h:calc($score * $pxpi) w:6px rd:md x:0 z:1
 						<.score[ff:notes  l:50% t:-30px pos:abs x:-50%]> item.score
 
+const examples = {
+	paint: '/examples/paint/app.imba?preview=md&dir=1'
+	game: '/examples/tic-tac-toe?preview=md&titlebar=1'
+	server: '/examples/express/app.imba?dir=1&preview=md&titlebar=1'
+}
 
 tag home-page
 	#cache = {scrollY: 0}
@@ -317,7 +322,7 @@ tag home-page
 			<home-section[py:10]>
 				
 				<.bg[pos:abs inset:0 z:-40px t:30% b:-40px scale-x:1.3 rotate:2deg bg:cool2]>
-				<div.windowed-demo> <app-code-block[w:1cw].demo href='/examples/tic-tac-toe?preview=md'>
+				<div.windowed-demo> <app-code-block[w:1cw].demo href=examples.paint>
 
 				# <app-demo[w:1cw mt:10].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>
 				# <app-demo.demo.full-width-demo.inline-preview.clock href='/examples/simple-clock?preview=lg'>
@@ -326,9 +331,13 @@ tag home-page
 				
 				<h2.gradient[ws:pre]> `Smart,\nBeautiful,\nMinimal`
 				<h3[mb:16]> <div[max-width:560px]> `Imba's syntax is optimized for getting things done with less typing. It's packed with smart features.`
-				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href='/examples/paint/app.imba?preview=md&titlebar=1'>
-				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href='/examples/express/app.imba?dir=1&preview=md&titlebar=1'>
+				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.game>
+				# <div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.server>
 
+			<home-section[pt:30]>
+				<h2.gradient[ws:pre]> `Code,\nServe,\nDeploy`
+				<h3[mb:16]> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is powered by Imba both frontend & backend.`
+				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.server>
 				# if true
 				#	<div.p3d.windowed-demo> for item in ls('/home/features').children
 				#		<div[w:1cw mb:18].p3d innerHTML=item.html>

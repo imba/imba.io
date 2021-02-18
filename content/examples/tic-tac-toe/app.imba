@@ -18,4 +18,4 @@ document.body.appendChild <App autorender=yes>
 # ~.tiles|1,78,-26,50,,78,-26~ File-scoped css
 # ~inset:0|0,43,-39,70,,4,44~ Inline styles
 # ~document|2,-19,321,48,18,86,51~ Tag literals are real dom elements
-# ~blue1|2,407,-79,77,18,44,90~ Tailwind-like css shorthands
+# ~blue1|0,111,-49,77,18,17,58~ Tailwind-like css shorthands
