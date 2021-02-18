@@ -16,6 +16,7 @@ tag app-repl-preview
 	prop url @set
 		refresh! if $entered
 
+	prop root
 	prop w = 2000
 	prop scale = 1
 	prop size = 'auto-auto'
@@ -252,6 +253,9 @@ tag app-repl-preview
 		$intersects ||= []
 		$intersects.push(e)
 	
+	def mount
+		url = options.url or root.replUrl
+
 	def unmount
 		$entered = $refreshed = no
 
@@ -332,13 +336,6 @@ tag app-repl-preview
 					# <div[fl:1]>
 					# <.tool .on=(options.rerun) @click=rerun> <svg src='icons/refresh-cw.svg'>
 			<repl-console$console mode=(mode == 'console' ? mode : 'transient')>
-
-	set root data
-		if #root =? data
-			url = data.replUrl
-
-	get root
-		#root
 
 	def rerun
 		refresh!

@@ -377,10 +377,10 @@ tag app-code-block < app-code
 						<app-code-file.p3d $key=file.id file=file data=hl>
 				if options.preview
 					<app-repl-preview$preview
+						options=options
 						root=example
 						file=files[0]
 						dir=dir
-						options=options
 						mode=options.preview
 						@loaded=demoLoaded
 					>

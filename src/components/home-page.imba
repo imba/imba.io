@@ -212,7 +212,7 @@ tag bench-graph
 const examples = {
 	paint: '/examples/paint/app.imba?preview=md&dir=1'
 	game: '/examples/tic-tac-toe?preview=md&titlebar=1'
-	server: '/examples/express/app.imba?dir=1&preview=md&titlebar=1'
+	server: '/examples/express/app.imba?dir=1&preview=md&titlebar=1&url=https://simple-hn.imba.io/top'
 }
 
 tag home-page

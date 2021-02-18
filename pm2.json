@@ -7,5 +7,13 @@
 		"env": {
 			"PORT": 5000
 		}
+	},{
+		"name": "simple-hn",
+		"log_date_format": "DD-MM-YYYY HH:mm:ss.SSS",
+		"script": "./content/examples/express/dist/app.loader.js",
+		"watch": ["./content/examples/express/dist/app.js.manifest"],
+		"env": {
+			"PORT": 8001
+		}
 	}]
 }
