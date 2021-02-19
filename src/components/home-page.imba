@@ -1,8 +1,8 @@
 const usps = [
 	`Compiles to Javascript`
-	`Works with Javascript`
+	`Works with Node + npm`
 	`Smart, Minimal Syntax`
-	`Built-in Tags & Styles`
+	`Built-in DOM Tags & Styles`
 	`Amazing Performance`
 ]
 
