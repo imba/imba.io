@@ -53,8 +53,9 @@ css .windowed-demo w:1cw
 
 	>>> .preview-md
 		1dw:100% @660:40vw @940:320px
-		@800 $editor w:640px mx:auto
-		@1000 $editor w:700px
+		@800 $editor w:100% mx:0
+		# @1000 $editor w:700px
+		@1050 $editor w:700px mx:auto
 		@1200 $editor w:780px
 		@1380 $editor w:840px mx:0
 
@@ -114,11 +115,16 @@ global css home-section app-code-block
 	$preview z:10px
 		$address d@force:none
 
-global css .centered-snippetz
-	width:780px my:4 mb:30 mx:auto
-	max-width:calc(100vw - 100px)
-	p fs:lg ta:center
-	app-code-block mb:4
+	$snippet
+		# y:100px
+		transform:translate3d(0,0px,-50px) scale3d(1,1,2)
+		tween:transform 1s cubic-out
+
+	&.entered
+		$snippet
+			transform:translate3d(0,0px,0px) scale3d(1,1,1)
+			# y:0px
+
 
 tag home-section
 	def intersecting e
@@ -277,7 +283,7 @@ tag home-page
 		self
 
 	def scrolled e
-		# log 'scrolled',window.scrollY
+		log 'scrolled',window.scrollY
 		# could alternate / spread them out
 		
 		let sy = #cache.scrollY = window.scrollY
@@ -323,7 +329,7 @@ tag home-page
 			
 			<home-section[py:10]>
 				
-				<.bg[pos:abs inset:0 z:-40px t:30% b:-40px scale-x:1.3 rotate:2deg bg:cool2]>
+				<.bg[pos:abs inset:0 z:-60px t:30% b:-40px scale-x:1.3 rotate:2deg bg:cool2]>
 				<div.windowed-demo> <app-code-block[w:1cw].demo href=examples.paint>
 
 				# <app-demo[w:1cw mt:10].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>

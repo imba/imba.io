@@ -14,15 +14,6 @@ tag app-code
 	def awaken
 		self
 
-tag app-code-comment
-	get body
-		dataset.body
-	
-	def mount
-		snippet = closest('.snippet')
-		target = parentNode
-		snippet.brim.add(self)
-
 tag app-code-block < app-code
 
 	css main
@@ -279,9 +270,9 @@ tag app-code-block < app-code
 		# console.log 'demo loaded',e
 		demo = e.detail
 
-	get brim
-		return #brim if #brim
-		appendChild #brim = <app-code-brim.brim>
+	def intersecting e
+		# log 'snippet intersecting',e
+		flags.toggle('entered',e.isIntersecting)
 
 	def render
 		return unless code or file
@@ -293,8 +284,10 @@ tag app-code-block < app-code
 			tabindex=-1
 			@click.sel('.scope-rule *,.scope-rule')=focusStyleRule
 			@keydown.esc.stop=(#clickedRules = no)
-
-			@pointerover.silence=pointerover>
+			@pointerover.silence=pointerover
+			@intersect.silent=intersecting
+			>
+			
 
 			css pos:relative rd:sm d:block .shared:none
 				fs:13px/1.5 @md:15px/1.4
@@ -357,7 +350,7 @@ tag app-code-block < app-code
 							@before,@after c:var(--code-keyword)
 							> .white@last d:none
 
-			<main.p3d.snippet-body @exports=bindExports(e.detail)>
+			<main$snippet.p3d.snippet-body @exports=bindExports(e.detail)>
 				<div$editor.code.p3d .tabbed=(files.length >= 2)>
 					css .actions o:0
 					css @hover .actions o:1
@@ -487,6 +480,7 @@ tag app-code-file
 	def setup
 		hlpos = {x: 0, y: 0}
 		pt = pl = 0
+		tipMode = 'lg'
 		self
 
 	def intersect e
@@ -500,21 +494,32 @@ tag app-code-file
 		log out.join('\n')
 
 	def relayout
+		# let style = window.getComputedStyle($code)
+		let gutter = pageRect.left
+		if !window.debug
+			tipMode = gutter > 160 ? 'lg' : 'sm'
+		$overlays.style.width = $anchor.cachedWidth + 'px'
+		$overlays.style.height = $anchor.cachedHeight + 'px'
 		for item in $overlays.children
 			item.relayout!
+		yes
 
 	css &.debug @hover
 		$hl outline:1px dashed red4
 		.item outline:1px dashed blue4
 
-	<self[d:block pos:relative]  @resize.silent.debounce(50ms)=relayout @intersect.in.once.silent=intersect>
+	<self[d:block pos:relative] .debug=(window.debug)  @resize.silent.debounce(50ms)=relayout @intersect.in.once.silent=intersect>
 		<code$code[ff:mono].{data.flags}>
 			<span$anchor[pos:abs]> " "
 			<pre$pre[w:100px ta:left].code innerHTML=data.html>
 		<$overlays[pos:abs t:0 l:0 h:100% w:100% pe:none].p3d>
 			for hl in data.highlights
 				<app-popover frame=self data=hl>
-
+		if window.debug
+			<div[pos:abs t:-16 l:0 c:black fs:sm]>
+				for m in ['lg','sm']
+					<span[px:1] @click=([tipMode = m,relayout!]) [bg:green4]=(tipMode == m)> m
+				
 tag app-demo < app-code-block
 
 	def setup

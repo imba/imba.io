@@ -7,4 +7,4 @@ export tag Tile
 		let placed = data.moves.indexOf(nr)
 		let won = data.winner and data.winner.indexOf(nr) >= 0
 		<self .won=won> <span> <slot>
-# ~bg@odd|0,51.4,-32.4,40.0~ Style property modifiers
+# ~bg@odd|16,-3.6,-0.8,40,,45,80,2.8,0.3/-~ Style property modifiers

@@ -1,11 +1,23 @@
 import {relativeRect,rectAnchor} from './app-arrow'
 
+###
+Annotation comments work with the following format
+
+# ~ PATTERN | FLAGS , TX,TY,TZ,BX,BY,BW,FX,FY / ... ~ comment
+
+All x coordinates 1 = 1ex
+All t coordinates 1 = 1lh
+###
+
 const FLAGS = {
 	INLINE: 1
 	MARGIN: 2
 	ABOVE: 4
-	BELOW: 8 
+	BELOW: 8
+	RELUNIT: 16
 }
+
+const modes = ['lg','sm']
 
 tag app-popover
 
@@ -14,7 +26,7 @@ tag app-popover
 		transform-style: preserve-3d
 		transform-origin: 0% 0%
 
-		$base size:4 rd:full bg:green3/15 mt:-2 ml:-2 d:none
+		$base size:4 rd:full bg:green3/15 d:none
 		div transform-style: preserve-3d pos:abs t:0 l:0
 
 		$line h:0px w:100px pos:abs t:0 l:0
@@ -34,22 +46,13 @@ tag app-popover
 		.box rd:lg pos:abs
 			t:0 l:0 p:2 d:flex ja:center
 			transform: translate3d(-50%,-50%,0px)
-			ff:notes fw:400 fs:md/1 ta:center ws:nowrap
+			ff:notes fw:400 fs:sm/1 ta:center ws:nowrap
 			# ts:0px 0px 4px black
 			# bg:cooler7/60
 			# bg:green4/20 
 
-		&.inline .box
-			x:0% y:-50%
-		
-		&.margin
-			.box ws:normal ts:none c:green7 min-width:100px
-			$p2 stroke:green5
-		&.left
-			.box ta:center x:-100% y:-50%
-
 		&.outside
-			.box ts:none
+			.box ws:normal ts:none c:green7 fs:md/1
 			c:green7
 			$p2 stroke:green5
 
@@ -57,48 +60,64 @@ tag app-popover
 			visibility:hidden pe:none
 			.box visibility:hidden pe:none
 	
+	css .debug &
+		.box @hover outline:1px dashed red
+	
 	def setup
 		target = frame.querySelector(data.sel)
 		rot = {x: 0, y: 0}
 		bow = (Math.random! * 0.8 + 0.2)
+		mode = null
 		# flags.toggle('outside',data.mask & FLAGS.OUTSIDE)
 		# rot = Math.random! * 360
 
 	def serialize
-		let r = do Math.round($1)
-		"# ~{data.pattern}|{data.mask},{r data.ox},{r data.oy},{r data.oz},{data.w or ''},{r data.ax},{r data.ay}~ {data.text}"
+		let r = do $1.toFixed(1).replace('.0','') # Math.round($1.toFixed(1).replace('.0',''))
+		let layouts = modes.map do(m)
+			let d = data[m]
+			d ? "{d.mask},{r d.tx},{r d.ty},{r d.tz},{d.bw or ''},{r d.bax},{r d.bay},{r d.fx},{r d.fy}" : "-"
 
+		"# ~{data.pattern}|{layouts.join('/')}~ {data.text}"
+
+	get dims
+		data[mode or frame.tipMode] or data.lg
 
 	def relayout e
 		# log 'relayout',target,e..type
-		if target and data.oy != undefined
+		let dims = dims
+		if target and dims.ty != undefined
 			try
+				let unitBox = self.frame..$anchor
+				let xunit = unitBox ? unitBox.cachedWidth : 1
+				let yunit = unitBox ? unitBox.cachedHeight : 1
+
 				let frame = offsetParent.getBoundingClientRect!
 				let rel = relativeRect(frame,target.getBoundingClientRect!)
 				let lgutter = frame.left
 				let active = yes
+				unless dims.mask & FLAGS.RELUNIT
+					dims.tx = dims.tx / xunit
+					dims.ty = dims.ty / xunit
+					dims.mask |= FLAGS.RELUNIT
 
-				let fax = 0.5
-				let fay = 0.5
+				let tax = (dims.bax / 100)
+				let tay = (dims.bay / 100)
 
-				let tax = (data.ax / 100)
-				let tay = (data.ay / 100)
+				let x = dims.tx * xunit
+				let y = dims.ty * yunit
+				let z = dims.tz
 
-				let x = data.ox
-				let y = data.oy
-				let z = data.oz
 
-				if data.mask & FLAGS.MARGIN
-					x = x * (Math.min(lgutter,200) / 200) if x < 0
-					x -= rel.left
-					y -= rel.top
-					fax = 0
+				let ft = target.offsetTop
+				let fl = target.offsetLeft
 
-					if frame.left < 160
-						active = no
+				let fromX = fl + dims.fx * xunit
+				let fromY = ft + dims.fy * xunit
 
-				if data.mask & FLAGS.INLINE and frame.left >= 160
-					active = no
+				let absToX = fromX + x
+				let absToY = fromY + y
+
+				flags.toggle('outside',absToX < 20)
 
 				let xylen = Math.sqrt(x * x + y * y)
 				let h = Math.ceil(Math.sqrt(xylen * xylen + z * z))
@@ -120,7 +139,7 @@ tag app-popover
 				$p2.setAttribute('d',d)
 				$base.style.width = (rel.width)px
 
-				style.transform = "translate3d({rel.left + rel.width * fax}px,{rel.top + rel.height * fay}px,0px)"
+				style.transform = "translate3d({fromX}px,{fromY}px,0px)"
 
 				$line.style.transform = "rotate({rot}deg) rotateY({-yrot}deg)"
 				$box.style.transform = "translate({tax * -100}%,{tay * -100}%)"
@@ -130,27 +149,25 @@ tag app-popover
 
 				$line.style.width = h + 'px'
 
-				let margin? = data.mask & FLAGS.MARGIN
+				let margin? = dims.mask & FLAGS.MARGIN
 				let left? = rel.left + x < 0
 				let above? = rel.top + y < 0
 				let below? = rel.top + y > frame.height
 
 				# log rel.top,y,frame.height
-
-				if data.w
-					$box.style.width = data.w + 'ex'
+				if dims.bw
+					$box.style.width = dims.bw + 'ex'
 					$box.style.whiteSpace = 'initial'
 
-				flags.toggle('left',left?)
-				flags.toggle('above',y )
-				flags.toggle('below',above?)
-				flags.toggle('margin',margin?)
-				flags.toggle('inline',!(left? or above? or below? or margin?))
-
-				flags.toggle('off',!active)
+				# flags.toggle('left',left?)
+				# flags.toggle('above',y )
+				# flags.toggle('below',above?)
+				# flags.toggle('margin',margin?)
+				# flags.toggle('inline',dims.mask & FLAGS.INLINE)
+				flags.toggle('off',!active and !window.debug)
 
 			catch e
-				log 'error in relayout?!?'
+				log 'error in relayout?!?',e
 		
 		if e..type == 'pointerup'
 			frame.printAnnotations!
@@ -158,6 +175,16 @@ tag app-popover
 
 	def mount
 		relayout!
+
+	def removeMode m
+		delete data[m]
+		log serialize!
+	
+	def setMode m
+		log 'setMode',m
+		unless data[m]
+			data[m] = JSON.parse(JSON.stringify(dims))
+		mode = m
 
 	def render
 		<self>
@@ -174,12 +201,26 @@ tag app-popover
 				>
 					<$box[pe:auto]>
 						if window.debug
-							<span @touch.round.sync(data,'ox','oy')=relayout> data.text
-							<div$debug[pe:auto pos:abs mt:-1lh l:50% fs:9px/1.2 ff:sans fw:400 c:blue5 d:hflex ts:none x:-50% z:10px]>
-								css span d:block ws:nowrap bg:blue4/1 @hover:blue3 px:0.5 rd:xs h:1lh
-								<span @touch.round.sync(data,'ox2','oz')=relayout> data.oz
-								<span @touch.round.sync(data,'ax','ay')=relayout> "a {data.ax},{data.ay}"
-								<span @touch.round.sync(data,'w')=relayout> "{data.w}ex"
+							<span
+								@touch.meta.stop.reframe('.overlays',0,1,0.25).sync(dims,'fx','fy')=relayout
+								@touch.alt.stop.reframe($box,100,0,1).sync(dims,'bax','bay')=relayout
+								@touch.reframe('.overlays',0,1,0.25).sync(dims,'tx','ty')=relayout
+								> data.text
+							<div$debug[pe:auto pos:abs mt:-1lh l:50% fs:9px/1.2 ff:sans fw:400 c:white d:hflex ts:none x:-50% z:10px bg:black/70]>
+								css span d:block ws:nowrap c@hover:blue3 px:0.5 rd:xs h:1lh
+								<span[ws:nowrap d:flex]> for m in modes
+									<span 
+										@click.meta.stop=removeMode(m) 
+										@click.stop=setMode(m) 
+										[o:0.3]=(!data[m])
+										[bg:green4]=(mode == m)
+										> m
+								<span @touch.round.sync(dims,'ox2','tz')=relayout> "{dims.tz}"
+								<span @touch.round.sync(dims,'bw')=relayout> "{dims.bw}ex"
+								# <span @touch.round.sync(dims,'ox2','tz')=relayout> "{dims.tx},{dims.ty},{dims.tz}"
+								# <span @touch.round.sync(dims,'bax','bay')=relayout> "a {dims.bax},{dims.bay}"
+								# <span @touch.reframe('.overlays',0,1,0.25).sync(dims,'fx','fy')=relayout> "{dims.fx},{dims.fy}"
+								
 						else
 							<span> data.text
 

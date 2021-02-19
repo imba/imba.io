@@ -10,6 +10,12 @@ extend tag element
 		let val = layoutCache.rect ||= getBoundingClientRect!
 		return val
 
+	get cachedWidth
+		layoutCache.width ||= offsetWidth
+
+	get cachedHeight
+		layoutCache.height ||= offsetHeight
+
 	get pageRect
 		let val = layoutCache.pageRect
 		return val if val

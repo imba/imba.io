@@ -13,9 +13,8 @@ tag App
 			<Tile data=game nr=i @click=game.place(i)> tile
 
 document.body.appendChild <App autorender=yes>
-# ~css |2,-21,20,35,15,84,55~ Concise syntax for styling
-# ~tag |2,-16,187,81,18,84,62~ Web components as first-class citizens
-# ~.tiles|1,78,-26,50,,78,-26~ File-scoped css
-# ~inset:0|0,43,-39,70,,4,44~ Inline styles
-# ~document|2,-19,321,48,18,86,51~ Tag literals are real dom elements
-# ~blue1|0,111,-49,77,18,17,58~ Tailwind-like css shorthands
+# ~css |18,-9,-2,35,15,84,55,0.3,1.3/18,7.3,0,35,16,6,47,6.6,-0.2~ Concise syntax for styling
+# ~tag |18,-5,0,81,16,84,62,0.5,1.3/18,7.8,-0.3,37,36,4,47,7,1.1~ Web components as first-class citizens
+# ~inset:0|16,3.5,-1.5,70,,4,44,2,0/-~ Inline styles
+# ~document|18,-6.8,-1.8,48,18,86,51,0,1/18,7.4,0.7,26,31,3,50,23,2.5~ Tag literals are real dom elements
+# ~blue1|16,14,-1.8,77,15,10,45,0.8,-0.3/16,13.3,-1.1,23,15,10,45,0.8,-0.3~ Tailwind-like css shorthands

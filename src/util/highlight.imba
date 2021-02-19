@@ -186,15 +186,24 @@ export def highlight str,lang
 					console.log token
 					token.#body = "<app-code-annotation data-options='{JSON.stringify(opts)}' data-body='{m[2]}'></app-code-annotation>\n"
 					continue
-
-				let [flags,ox,oy,oz,w,ax,ay] = (opts or "0,200,-140,50").split(',')
-				region.mask = parseInt(flags or 0)
-				region.ox = parseInt(ox or 200)
-				region.oy = parseInt(oy or -140)
-				region.oz = parseInt(oz or 50)
-				region.w = parseInt(w or 0)
-				region.ax = parseFloat(ax or 50)
-				region.ay = parseFloat(ay or 50)
+				
+				for pair,i in opts.split('/')
+					let key = i ? 'sm' : 'lg'
+					continue if pair == '-'
+					let [flags,tx,ty,tz,bw,bax,bay,fx,fy] = (pair or '').split(',')
+					let pos = {
+						mask: parseInt(flags or 0)
+						tx: parseFloat(tx or 200)
+						ty: parseFloat(ty or -140)
+						tz: parseInt(tz or 50)
+						bw: parseInt(bw or 0)
+						bax: parseFloat(bax or 50)
+						bay: parseFloat(bay or 50)
+						fx: parseFloat(fx or 0)
+						fy: parseFloat(fy or 0)
+					}
+					region[key] = pos
+					
 				
 				let col = 0
 				if opts
