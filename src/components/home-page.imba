@@ -128,6 +128,7 @@ global css home-section app-code-block
 
 tag home-section
 	def intersecting e
+		return
 		# log 'intersecting',e.isIntersecting,e.ratio
 		if #visible =? e.isIntersecting
 			relayout!
@@ -250,6 +251,9 @@ tag home-page
 	def caroseul-item href
 		<figure.item> <app-code-block.demo href=`/examples/css/{href}.imba?preview=styles`>
 
+	def setup
+		#ptrx = #ptry = 50
+
 	def mount
 		#onscroll ||= scrolled.bind(self)
 		#onpoint ||= pointing.bind(self)
@@ -275,16 +279,21 @@ tag home-page
 			relayout!
 
 	def relayout
-		for el in querySelectorAll('home-section')
-			el.relayout!
+		# for el in querySelectorAll('home-section')
+		# 	el.relayout!
+		let poy = #scry + (#ptry - 50) * 0.7
+		let pox = 50 + (#ptrx - 50) * 0.4
+		style.perspectiveOrigin = "{pox}% {poy}px"
 		self
 
 	def scrolled e
 		# log 'scrolled',window.scrollY
 		# could alternate / spread them out
 		let sy = #cache.scrollY = window.scrollY
-		let poy = Math.round(sy + window.innerHeight * 0.5)
-		style.perspectiveOrigin = "50% {poy}px"
+		# let poy = Math.round(sy + window.innerHeight * 0.5)
+		#scry = Math.round(sy + window.innerHeight * 0.5)
+		relayout!
+		# style.perspectiveOrigin = "50% {poy}px"
 		return
 
 	def resizing e
