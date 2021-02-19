@@ -61,6 +61,7 @@ tag app-popover
 			.box visibility:hidden pe:none
 	
 	css .debug &
+		.box pe:auto
 		.box @hover outline:1px dashed red
 	
 	def setup
@@ -199,7 +200,7 @@ tag app-popover
 				# 	> '' # data.text
 			<div$end
 				>
-					<$box[pe:auto]>
+					<$box>
 						if window.debug
 							<span
 								@touch.meta.stop.reframe('.overlays',0,1,0.25).sync(dims,'fx','fy')=relayout
