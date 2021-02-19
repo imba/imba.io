@@ -22,5 +22,5 @@ imba.mount <App[pos:abs inset:0]>
 # ~state.color|16,-2,2,42,25,45,35,0,0.8/-~ two-way databinding
 # ~global css|18,-6,-0.3,31,12,92,62,0.3,0.5/18,7,-0.6,31,12,10,43,8.1,0~ built-in css
 # ~color-picker|18,-19.5,0.5,50,10,86,51,-0.3,0.5/18,2.5,2.3,50,24,4,53,7,1.8~ Custom web components
-# ~tag|18,-6.5,-1,75,13,90,54,0,0.5/18,8.8,-0.8,75,22,4,50,7.5,0.8~ define web components
+# ~tag|18,-6.5,-1,75,13,90,54,0,0.5/18,8.8,-0.8,15,22,4,50,7.5,0.8~ define web components
 # ~<div|18,-12.8,1,48,18,84,55,-1.5,0.3/18,-0.9,2.3,48,18,52,0,-1.5,0.3~ indentation-based syntax

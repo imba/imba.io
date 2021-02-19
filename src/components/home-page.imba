@@ -60,15 +60,17 @@ css .windowed-demo w:1cw
 		@1380 $editor w:840px mx:0
 
 	@!800
-		1cw:100%
-		>>> $editor rd:0
-			$code pb@force:14
+		>>> $editor
+			$code pb@force:24
 		>>> .preview-md
 			$preview
-				pos:rel r:auto l:auto t:0 y:0% mt:-10 mx:auto
+				pos:rel r:auto l:auto t:0 y:0% mt:-14 mx:auto
 				# if we are in landscape we should be much smaller
 				w:calc(100vw - 40px) h:calc(100vw - 40px)
 				$frame bxs:xl
+	
+	@!680 1cw:100%
+		>>> $editor rd:0
 
 css .full-width-demo w:100%
 	>>> $tabbar j:center py:4
@@ -118,11 +120,13 @@ global css home-section app-code-block
 	$snippet
 		# y:100px
 		transform:translate3d(0,0px,-50px) scale3d(1,1,2)
+		transform@!680:translate3d(0,0px,0px) scale3d(1,1,3)
 		tween:transform 1s cubic-out
 
 	&.entered
 		$snippet
 			transform:translate3d(0,0px,0px) scale3d(1,1,1)
+
 			# y:0px
 
 
@@ -269,14 +273,27 @@ tag home-page
 		let x = Math.round(e.x * 100 / window.innerWidth)
 		let y = Math.round(e.y * 100 / window.innerHeight)
 
-		let dirty = no
-		if #ptrx =? x
-			dirty = yes
-		if #ptry =? y
-			dirty = yes
+		let oldx = #ptrx
+		let oldy = #ptry
 
-		if dirty
+		let dx = x - #ptrx 
+		let dy = y - #ptry
+
+		if Math.abs(dx) > 3 and !#ptrxsnapped
+			x = #ptrx = #ptrx + (dx * 0.01)
+		else
+			#ptrxsnapped = yes
+			#ptrx = x
+
+		if Math.abs(dy) > 3 and !#ptrysnapped
+			y = #ptry = #ptry + (dy * 0.01)
+		else
+			#ptrysnapped = yes
+			#ptry = y
+
+		if x != oldx or y != oldy
 			relayout!
+		return
 
 	def relayout
 		# for el in querySelectorAll('home-section')
