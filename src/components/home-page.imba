@@ -322,7 +322,7 @@ tag home-page
 	def render
 		<self @resize.silent.debounce(100ms)=resizing>
 			# <rotating-shapes>
-			<home-section[pt:40yp pb:10yp bg:linear-gradient(blue3/10,blue3/0)]>
+			<home-section[pt:40yp pb:10yp]>
 				<h1[py:5].gradient> `Build Fast, Fast.`
 				<div[w:1cw d:block @870:hgrid mt:10]>
 					<div[w:2cols max-width:590px ml:2 fs:xl/1.8 mr:4]>
@@ -346,7 +346,7 @@ tag home-page
 			
 			<home-section[py:10]>
 				
-				<.bg[pos:abs inset:0 z:-60px t:30% b:-40px scale-x:1.3 rotate:2deg bg:cool2]>
+				<.bg[pos:abs inset:0 z:-60px t:30% b:-40px scale-x:1.3 rotate:2deg bg:blue1]>
 				<div.windowed-demo> <app-code-block[w:1cw].demo href=examples.paint>
 
 				# <app-demo[w:1cw mt:10].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>
