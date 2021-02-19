@@ -264,15 +264,12 @@ tag home-page
 	def pointing e
 		let x = Math.round(e.x * 100 / window.innerWidth)
 		let y = Math.round(e.y * 100 / window.innerHeight)
-		# on animation frame?!
-		# log 'pointing!',e.x,x
+
 		let dirty = no
 		if #ptrx =? x
 			dirty = yes
-			# style.setProperty('--ptrx',x + '%')
 		if #ptry =? y
 			dirty = yes
-			# style.setProperty('--ptry',y + '%')
 
 		if dirty
 			relayout!
@@ -283,18 +280,12 @@ tag home-page
 		self
 
 	def scrolled e
-		log 'scrolled',window.scrollY
+		# log 'scrolled',window.scrollY
 		# could alternate / spread them out
-		
 		let sy = #cache.scrollY = window.scrollY
 		let poy = Math.round(sy + window.innerHeight * 0.5)
-		# relayout!
-		# style.perspective = "800px"
 		style.perspectiveOrigin = "50% {poy}px"
 		return
-		# $origo.style.top = (poy)px
-		#	el.relayout!
-		self
 
 	def resizing e
 		if #cache.width =? window.innerWidth

@@ -493,8 +493,12 @@ tag app-code-file
 		await global.navigator.clipboard.writeText(out.join('\n'))
 		log out.join('\n')
 
+	def mount
+		relayout!
+
 	def relayout
 		# let style = window.getComputedStyle($code)
+		return unless offsetParent
 		let gutter = pageRect.left
 		if !window.debug
 			tipMode = gutter > 160 ? 'lg' : 'sm'
