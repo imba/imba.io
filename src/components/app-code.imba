@@ -483,8 +483,7 @@ tag app-code-file
 		tipMode = 'lg'
 		self
 
-	def intersect e
-		relayout!
+	
 
 	def printAnnotations
 		let out = for item in querySelectorAll('app-popover')
@@ -495,6 +494,15 @@ tag app-code-file
 
 	def mount
 		relayout!
+
+	def intersect e
+		relayout!
+
+	def scrolled e
+		let sx = $code.scrollLeft
+		let sy = $code.scrollTop
+		$overlays.style.transform = "translate3d({-sx}px,{-sy}px,0px)"
+		
 
 	def relayout
 		# let style = window.getComputedStyle($code)
@@ -513,7 +521,7 @@ tag app-code-file
 		.item outline:1px dashed blue4
 
 	<self[d:block pos:relative] .debug=(window.debug)  @resize.silent.debounce(50ms)=relayout @intersect.in.once.silent=intersect>
-		<code$code[ff:mono].{data.flags}>
+		<code$code[ff:mono].{data.flags} @scroll.passive=scrolled>
 			<span$anchor[pos:abs]> " "
 			<pre$pre[w:100px ta:left].code innerHTML=data.html>
 		<$overlays[pos:abs t:0 l:0 h:100% w:100% pe:none].p3d>
