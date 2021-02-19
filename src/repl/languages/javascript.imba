@@ -192,4 +192,4 @@ export const language = {
 	}
 }
 
-export var tokenizer = Monarch.createTokenizer('javascript',language)
+export const tokenizer = Monarch.createTokenizer('javascript',language)

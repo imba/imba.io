@@ -72,11 +72,7 @@ export def highlight str,lang
 			}
 
 			let pos = [i - 1,col,m[4].length]
-			console.log 'found!!!!',m,loc + m[2].length,pos
 
-			# skip the tabs before 
-			# let off = 
-			# find the previous line without any comment like this
 		loc += line.length + 1
 		
 	str = lines.join('\n')
