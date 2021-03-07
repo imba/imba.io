@@ -54,7 +54,6 @@ css .windowed-demo w:1cw
 	>>> .preview-md
 		1dw:100% @660:40vw @940:320px
 		@800 $editor w:100% mx:0
-		# @1000 $editor w:700px
 		@1050 $editor w:700px mx:auto
 		@1200 $editor w:780px
 		@1380 $editor w:840px mx:0
@@ -110,12 +109,29 @@ css figure.card
 	.demo >>> $editor
 		p@force:3
 
+
 global css home-section app-code-block
 	rd@force:lg
+
 	main
 		$tabbar bg:clear px:2 pt:2 d.collapsed:none
 	$preview z:10px
 		$address d@force:none
+
+	.browser-bounds
+		pos:abs l:auto r:0 m:0
+		h:1dw w:1dw
+		t:calc(50% - 0.5dw)
+		max-width:420px
+		max-height:420px
+
+	@!800
+		$editor
+			$code pb@force:24
+		.browser-bounds
+			pos:rel r:auto l:auto t:0 y:0% mt:-14 mx:auto
+			# if we are in landscape we should be much smaller
+			w:calc(100vw - 40px) h:calc(100vw - 40px)
 
 	$snippet
 		# y:100px
@@ -221,9 +237,9 @@ tag bench-graph
 						<.score[ff:notes  l:50% t:-30px pos:abs x:-50%]> item.score
 
 const examples = {
-	paint: '/examples/paint/app.imba?preview=md&dir=1'
-	game: '/examples/tic-tac-toe?preview=md&titlebar=1'
-	server: '/examples/express/app.imba?dir=1&preview=md&titlebar=1&url=https://simple-hn.imba.io/top'
+	paint: '/examples/paint/app.imba?preview=md&dir=1&titlebar=1&windowed=1&title=Paint Demo'
+	game: '/examples/tic-tac-toe?preview=md&windowed=1&title=Tic-tac-toe'
+	server: '/examples/express/app.imba?dir=1&preview=md&windowed=1&title=HN Clone&url=https://simple-hn.imba.io/top'
 }
 
 tag home-page
@@ -357,17 +373,17 @@ tag home-page
 				<h2.gradient[ws:pre]> `Smart,\nBeautiful,\nMinimal`
 				<h3[mb:16]> <div[max-width:560px]> `Imba's syntax is optimized for getting things done with less typing. It's packed with smart features.`
 				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.server>
-				<h3[mb:16]> <div[max-width:560px]> `Imba works just as well on the server as on the client. In fact, the whole stack of scrimba.com is written in Imba. `
+				# <h3[mb:16]> <div[max-width:560px]> `Imba works just as well on the server as on the client. In fact, the whole stack of scrimba.com is written in Imba.`
+				# <div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.game>
+				# <p[mb:16]> `Imba works just as well on the server as on the client. In fact, the whole stack of scrimba.com is written in Imba. `
 				# <div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.server>
 				# if true
 				#	<div.p3d.windowed-demo> for item in ls('/home/features').children
 				#		<div[w:1cw mb:18].p3d innerHTML=item.html>
 				# <app-demo[w:1cw].demo.windowed-demo href='/examples/tic-tac-toe?preview=lg'>
-			
-			<home-section[pt:30 d:none]>	
-				# <h2.gradient[ws:pre].small> `One Language,\nZero Configuration`
-				<h2.gradient[ws:pre]> `Full-stack`
-				<h3[mb:16]> <div[max-width:560px]> `Imba works just as well on the server as on the client. In fact, the whole stack of scrimba.com is written in Imba. `
+			# <home-section>
+			#	for item in ls('/home/about').children
+			#		<doc-section data=item level=0>
 
 			<home-section[pt:30]>
 				<h2[c:pink6]> `Unbelievable\nPerformance`
@@ -381,11 +397,13 @@ tag home-page
 
 			<home-section[pt:30]>
 				<h2.gradient> `From Prototype to Production`
-				<h3[mb:16]> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is powered by Imba both frontend & backend.`
+				<h3[mb:16]> <div[max-width:860px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is powered by Imba both frontend & backend.`
 				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.game>
 				# <.windowed-demo[my:8]> <app-code-block[w:1cw].demo href='/examples/simple-clock?preview=md'>
 				# <article.text[columns:1 my:4 cg:30px]>
 				#	<p> `Imba uses a novel way to update the dom, opening up for a new way of writing web applications. Without having to worry about the cost of re-rendering you can break away from State Management libraries.`
+				#	<div.p3d.windowed-demo> for item in ls('/home/features').children
+				#		<div[w:1cw mb:18].p3d innerHTML=item.html>
 			
 			if false
 				<home-section[py:20]>
@@ -412,4 +430,4 @@ tag home-page
 
 			<home-section[py:30]>
 				<h2.gradient> `Incredible Tooling`
-				<h3> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is fully powered by Imba, both frontend & backend.`
+				<h3> <div[max-width:560px]> `Imba comes with a vscode plugin that features intelligent auto-completions, goto definitions, and much more.`

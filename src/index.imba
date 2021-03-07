@@ -23,6 +23,7 @@ tag app-root
 	prop show-menu
 
 	def setup
+		global.site = self
 		yes
 		# console.log 'setting up app-root'
 

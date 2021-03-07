@@ -86,7 +86,8 @@ tag app-popover
 	def relayout e
 		# log 'relayout',target,e..type
 		let dims = dims
-		if target and dims.ty != undefined
+		let op = offsetParent
+		if target and dims.ty != undefined and op
 			try
 				let unitBox = self.frame..$anchor
 				let xunit = unitBox ? unitBox.cachedWidth : 1

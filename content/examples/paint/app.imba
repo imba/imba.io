@@ -9,7 +9,7 @@ const state = {stroke: 5, color: '#3B82F6'}
 
 tag App
 	<self>
-		<div[ta:center p:6 o:0.2 fs:xl]> 'draw here'
+		<div[ta:center pt:20 o:0.2 fs:xl]> 'draw here'
 		<app-canvas[pos:abs inset:0] state=state>
 		<div.tools[pos:abs b:0 w:100% d:hgrid ja:center]>
 			<stroke-picker[mx:2] data=strokes bind:value=state.stroke>

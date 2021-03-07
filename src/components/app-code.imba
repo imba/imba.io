@@ -5,6 +5,7 @@ import { getArrow,getBoxToBoxArrow } from "perfect-arrows"
 
 import './app-arrow'
 import './app-popover'
+import '../repl/browser'
 
 def getVisibleLineCount code
 	let parts = code.replace(/# [\[\~].+(\n|$)/g,'').replace(/\n+$/,'').split('# ---\n')
@@ -368,7 +369,16 @@ tag app-code-block < app-code
 						css	&.collapsed .actions pos:abs t:0 r:0
 					if file
 						<app-code-file.p3d $key=file.id file=file data=hl>
-				if options.preview
+				if options.windowed
+					<repl-browser$browser.browser-bounds
+						options=options
+						root=example
+						file=files[0]
+						dir=dir
+						mode=options.preview
+						@loaded=demoLoaded
+					>
+				elif options.preview
 					<app-repl-preview$preview
 						options=options
 						root=example
