@@ -23,7 +23,7 @@ global css
 	html ofx:hidden
 	html.noscroll body overflow: hidden
 	html,body p:0px m:0px
-	body pt: $header-height ofx:hidden w:100%
+	body pt: $header-height w:100%
 	* outline:none
 
 	html.fastscroll scroll-behavior:auto
@@ -101,7 +101,8 @@ global css @root
 	--code-special: #fffab4
 
 global css .code
-	tab-size: 4
+	tab-size:4
+	-moz-tab-size:4
 	cursor:default
 	fw:bold
 

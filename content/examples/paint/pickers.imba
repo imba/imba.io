@@ -1,14 +1,14 @@
 tag value-picker
 	css w:100px h:40px pos:rel
 		d:hgrid ji:center ai:center
-		.item h:100% pos:rel tween:styles 0.1s ease-out
+	css .item h:100% pos:rel tween:styles 0.1s ease-out
 
 	def update e
-		value = data[e.x]
+		data = options[e.x]
 
-	<self @touch.stop.fit(0,data.length - 1,1)=update>
-		for item in data
-			<div.item[$value:{item}] .sel=(item==value)>
+	<self @touch.stop.fit(0,options.length - 1,1)=update>
+		for item in options
+			<div.item[$value:{item}] .sel=(item==data)>
 
 tag stroke-picker < value-picker
 	css .item bg:black w:calc($value*1px) h:40% rd:sm

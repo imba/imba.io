@@ -119,7 +119,7 @@ tag app-popover
 				let absToX = fromX + x
 				let absToY = fromY + y
 
-				flags.toggle('outside',absToX < 20)
+				flags.toggle('outside',absToX < 20 or absToY < 20)
 
 				let xylen = Math.sqrt(x * x + y * y)
 				let h = Math.ceil(Math.sqrt(xylen * xylen + z * z))

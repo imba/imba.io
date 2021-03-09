@@ -6,144 +6,35 @@ const usps = [
 	`Amazing Performance`
 ]
 
-
+const examples = {
+	paint: '/examples/paint/app.imba?preview=md&dir=1&titlebar=1&windowed=1&title=Paint Demo'
+	game: '/examples/tic-tac-toe?preview=md&windowed=1&title=Tic-tac-toe'
+	server: '/examples/express/app.imba?dir=1&preview=md&windowed=1&title=HN Clone&url=https://simple-hn.imba.io/top'
+	clocks: '/examples/clock?preview=md&windowed=1&title=Clocks'
+}
 
 import {ls,fs,File,Dir} from '../store'
 
 import './app-carousel'
-
-css app-code-block
-	>>> divs o:1
 
 css .gradient
 	bg: linear-gradient(to right,indigo7,blue6,pink6)
 	-webkit-background-clip:text
 	-webkit-text-fill-color:transparent
 
-css app-code-block rd@force:lg
-	>>> main
-		$tabbar bg:clear px:2 pt:2 d.collapsed:none
-
-css .windowed-demo w:1cw
-	1dw:100% @660:40vw @940:420px
-
-	>>> $editor rd:lg
-		$code h@force:calc($mainLines * 1lh) p@force:2lh
-		&.tabbed
-			$tabbar px:2 bg:clear pt:2
-			$code pt@force:0.5lh
-
-	>>> $preview
-		pos:abs l:auto r:0 m:0
-		h:1dw w:1dw
-		t:calc(50% - 0.5dw)
-		max-width:420px
-		max-height:420px
-		rd:xl
-		$frame bxs:xxl bd:none
-	
-	&.left-aligned @800 >>>
-		$preview r:auto l:-1gw
-		$pre pl@force:calc(1dw - 1gw)
-
-	&.inlined >>>
-		1dw:300px
-		$preview pos:abs w:1dw l:auto r:30px m:0
-		$pre pr@force:calc(1dw)
-
-	>>> .preview-md
-		1dw:100% @660:40vw @940:320px
-		@800 $editor w:100% mx:0
-		@1050 $editor w:700px mx:auto
-		@1200 $editor w:780px
-		@1380 $editor w:840px mx:0
-
-	@!800
-		>>> $editor
-			$code pb@force:24
-		>>> .preview-md
-			$preview
-				pos:rel r:auto l:auto t:0 y:0% mt:-14 mx:auto
-				# if we are in landscape we should be much smaller
-				w:calc(100vw - 40px) h:calc(100vw - 40px)
-				$frame bxs:xl
-	
-	@!680 1cw:100%
-		>>> $editor rd:0
-
-css .full-width-demo w:100%
-	>>> $tabbar j:center py:4
-	>>> $editor rd:0px
-		$code @force
-			pb:6 pt:0
-			@700 pb:12 pt:4
-			@940 pb:20 pt:10
-			
-		$pre @force w:1cw d:block mx:auto
-
-	>>> $preview
-		pos:abs w:0.5cw l:auto r:10% m:0
-		t:50% y:-50%
-		h:1dw w:1dw
-	
-	&.clock
-		1dw:100% @660:40vw @940:420px
-		>>> $preview
-			r:0px @660:4vw @940:10%
-			@!660 pos:rel y:0 t:0
-
-
 css .card-demo w:100% rd:xl
 	>>> main d:hflex bg:$bg p:0
-		# $code p@force:3
 	>>> $editor
 		fl:1
 	>>> $preview @force
 		pos:abs w:0.5cw l:auto r:0 m:0 h:100% w:260px
 		$frame bd:none rd:0px bdl:1px dashed white/30 bg:black/15
 	
-
 css figure.card
 	p:4 w:800px fl:0
 	.demo rd:xl
 	.demo >>> $editor
 		p@force:3
-
-
-global css home-section app-code-block
-	rd@force:lg
-
-	main
-		$tabbar bg:clear px:2 pt:2 d.collapsed:none
-	$preview z:10px
-		$address d@force:none
-
-	.browser-bounds
-		pos:abs l:auto r:0 m:0
-		h:1dw w:1dw
-		t:calc(50% - 0.5dw)
-		max-width:420px
-		max-height:420px
-
-	@!800
-		$editor
-			$code pb@force:24
-		.browser-bounds
-			pos:rel r:auto l:auto t:0 y:0% mt:-14 mx:auto
-			# if we are in landscape we should be much smaller
-			w:calc(100vw - 40px) h:calc(100vw - 40px)
-
-	$snippet
-		# y:100px
-		transform:translate3d(0,0px,-50px) scale3d(1,1,2)
-		transform@!680:translate3d(0,0px,0px) scale3d(1,1,3)
-		tween:transform 1s cubic-out
-
-	&.entered
-		$snippet
-			transform:translate3d(0,0px,0px) scale3d(1,1,1)
-
-			# y:0px
 
 
 tag home-section
@@ -222,7 +113,9 @@ tag bench-graph
 			flags.add('entered')
 
 		<self.p3d @intersect.in.once=entered>
-			css z:-2px $pxpi:0.0022px # pixels per iteration / score
+			css z:-2px
+				# $pxpi:0.0152px @md:0.0112px @lg:0.0122px # pixels per iteration / score
+				$pxpi:0.0013px
 			css .bar bg:gray2
 			css &.entered
 				.bar bg:gray4
@@ -236,12 +129,6 @@ tag bench-graph
 						css pos:abs b:30px h:calc($score * $pxpi) w:6px rd:md x:0 z:1
 						<.score[ff:notes  l:50% t:-30px pos:abs x:-50%]> item.score
 
-const examples = {
-	paint: '/examples/paint/app.imba?preview=md&dir=1&titlebar=1&windowed=1&title=Paint Demo'
-	game: '/examples/tic-tac-toe?preview=md&windowed=1&title=Tic-tac-toe'
-	server: '/examples/express/app.imba?dir=1&preview=md&windowed=1&title=HN Clone&url=https://simple-hn.imba.io/top'
-}
-
 tag home-page
 	#cache = {scrollY: 0}
 
@@ -249,7 +136,7 @@ tag home-page
 		1dw:420px # custom demo-width unit
 		1gw:3vw @lg:5vw @xl:8vw # custom gutter-width unit
 		1yp:1px @md:3px @lg:4px
-		d:vflex a:center
+		d:vflex a:center of:hidden
 		transform-style:preserve-3d
 		perspective:1000px
 		perspective-origin:50% 200px
@@ -257,16 +144,114 @@ tag home-page
 
 		home-section pos:relative
 		home-section,figure d:vflex ja:center as:stretch
-		h1,h2,h3,nav,article w:1cw	
-		h1,h2 ff:brand ws:pre-line pb:6
+		h1,h2,h3,nav,article w:1cw
+		h1,h22 ff:brand ws:pre-line pb:6
 			fs:34px/0.9 @xs:50px/0.9 @sm:60px/0.9 @md:90px/0.9 @lg:116px/0.9 @1100:122px/0.9
 		h2.small
 			fs:34px/0.9 @xs:40px/0.9 @sm:50px/0.9 @md:80px/0.9 @lg:90px/0.9
 		h3 c:cool8
 			fs:xl/1.5 @md:2xl/1.5
+		h4 pb:6 fw:500 ta:left
+			fs:24px/0.9 @xs:30px/0.9 @md:32px/0.9 @lg:32px/0.9
 		article p fs:lg/1.4
 
-		>>> app-code-block@force rd:lg
+	css self >>> app-code-block
+		main
+			$tabbar bg:clear px:2 pt:2 d.collapsed:none
+		rd@force:lg
+
+		main
+			$tabbar bg:clear px:2 pt:2 d.collapsed:none
+
+		$editor rd:lg
+			$code h@force:calc($mainLines * 1lh) p@force:2lh
+			&.tabbed
+				$tabbar px:2 bg:clear pt:2
+				$code pt@force:0.5lh
+
+		$preview z:10px
+			$address d@force:none
+
+		.browser-bounds
+			$ar:0.8
+			pos:abs l:auto r:-20px m:0 t:40px
+			w:320px h:440px
+			h:calc($mainLines * 1lh)
+			max-width:initial
+			max-height:initial
+
+		.tabbed + .browser-bounds t:40px
+		
+		# shrinking browser window with viewport
+		@!936
+			.browser-bounds
+				w:35%
+
+		@!800
+			$editor rd@force:0
+			$editor
+				$code pb@force:24
+			.browser-bounds
+				pos:rel r:auto l:auto t:0 y:0% mt:-14 mx:auto
+				w:calc(100vw - 40px) h:calc(50vh - 40px)
+				min-height:240px
+				max-width:calc(100vw - 40px)
+
+
+		$snippet
+			# y:100px
+			$entered:0
+			transform:translate3d(0px,0px,0px) scale3d(1,1,2.5)
+			transform@!680:translate3d(0,0px,0px) scale3d(1,1,3)
+			tween:transform 1s cubic-out
+
+		&.entered
+			$snippet
+				$entered:1
+				transform:translate3d(0,0px,0px) scale3d(1,1,1)
+
+				# y:0px
+	css self >>> .markdown
+			d:contents
+			.content d:contents
+			.h2 fw:700 fs:44px/1 pb:6
+			.content > p@first fs:2xl
+			p my:3 fs:xl
+				a td:underline c:blue7
+			blockquote ta:center
+			# 1cw:calc(100vw - 80px) @1000:760px @1300:860px
+			1cw:calc(100vw - 80px) @1000:860px
+			
+			.h2,p,app-code-block
+				w:1cw
+
+			app-code-block + blockquote mt:-6
+				p fs:md c:cooler5
+
+			app-code-block my:10
+
+			@!800
+				app-code-block w:100% rd:0
+
+	css self >>> home-section
+		& > .bg pe:none
+		&.s0 > .bg pos:abs inset:0 z:-40px t:10px b:0px scale-x:1.3 rotate:1deg bg:blue1
+		&.s2 > .bg pos:abs inset:0 z:-38px t:-30px b:-20px scale-x:1.3 rotate:-1deg bg:indigo1
+		&.s4 > .bg pos:abs inset:0 z:-36px t:-30px b:-20px scale-x:1.3 rotate:-1deg bg:sky1
+		&.s6 > .bg pos:abs inset:0 z:-34px t:-30px b:-20px scale-x:1.3 rotate:-0.5deg bg:warmer1
+
+		&.quick-tour @important
+			py:0
+			.h2 d:none
+			> .bg pos:abs inset:0 z:-35px t:-30px b:-20px scale-x:1.3 rotate:0.5deg bg:#222c39
+
+			.content d:grid gtc: 1fr 1fr
+				w:900px pb:80px
+				app-code-block w:auto my:8 pl:8
+				code$code d:contents
+
+				@!1000 gtc:1fr w:90vw max-width:450px pb:80px
+				app-code-block my:4
 
 	def caroseul-item href
 		<figure.item> <app-code-block.demo href=`/examples/css/{href}.imba?preview=styles`>
@@ -278,12 +263,12 @@ tag home-page
 		#onscroll ||= scrolled.bind(self)
 		#onpoint ||= pointing.bind(self)
 		window.addEventListener('scroll',#onscroll,{passive: yes})
-		window.addEventListener('mousemove',#onpoint,{passive: yes})
+		# window.addEventListener('mousemove',#onpoint,{passive: yes})
 		scrolled!
 
 	def unmount
 		window.removeEventListener('scroll',#onscroll,{passive: yes})
-		window.removeEventListener('mousemove',#onpoint,{passive: yes})
+		# window.removeEventListener('mousemove',#onpoint,{passive: yes})
 
 	def pointing e
 		let x = Math.round(e.x * 100 / window.innerWidth)
@@ -320,6 +305,8 @@ tag home-page
 		self
 
 	def scrolled e
+		# return
+
 		# log 'scrolled',window.scrollY
 		# could alternate / spread them out
 		let sy = #cache.scrollY = window.scrollY
@@ -346,7 +333,7 @@ tag home-page
 						<div[d:block @480:hflex fs:md @580:lg  mx:-2 my:4]>
 							css a rd:xl m:2 p:2 bg:green3 bd:green3-5 bcb:green5 px:4 c:green8 fw:bold d:block ta:center
 								@hover bg:green3-3
-							<a href="/language/getting-started"> "Get started"
+							<a href="/language/introduction"> "Get started"
 							css div rd:xl bd:gray2 bg:gray1 m:2 p:2 pr:4 c:gray6 ff:mono bs:solid fw:bold
 								fs:sm @580:17px ls:-0.3px d:hflex ja:center
 								@before content: '>' c:gray3  px:1
@@ -359,75 +346,30 @@ tag home-page
 							<li[py:1 d:hflex a:center px:2 pr:6]>
 								<svg[mr:3 size:16px c:purple7] src='icons/arrow-right.svg'>
 								<span> usp
-			
-			<home-section[py:10]>
-				
-				<.bg[pos:abs inset:0 z:-60px t:30% b:-40px scale-x:1.3 rotate:2deg bg:blue1]>
-				<div.windowed-demo> <app-code-block[w:1cw].demo href=examples.paint>
+	
+			for item,i in ls('/home/examples').children
+				<home-section[py:20] .s{i} .{item.flagstr}>
+					<.bg>
+					<.markdown>
+						<.h2.html.title.gradient innerHTML=item.head>
+						<.content.html innerHTML=(item.html or '')>
 
-				# <app-demo[w:1cw mt:10].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>
-				# <app-demo.demo.full-width-demo.inline-preview.clock href='/examples/simple-clock?preview=lg'>
+			if false
+				<home-section[pt:30]>
+					<h2[c:pink6]> `Unbelievable\nPerformance`
+					<h3[mb:6]> <div[max-width:560px]> `Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM approaches.`
+					<.box.p3d[pos:rel]>
+						css w:1cw fs:lg d:hflex p:8 px:10
+						<div[pos:abs inset:0 bg:warmer2 rd:lg z:-4px]>
+						<div.body[w: <460px]> `A benchmark was conducted by comparing a Todo MVC implementation across frameworks. The benchmark steps through a deterministic sequence of state alterations measuring the time taken to reconcile the whole application view after: Toggling an item, removing an item, inserting an item, renaming an item, and doing nothing.`
+						<bench-graph[ml:auto as:flex-end z:-3px]>
 
-			<home-section[pt:30]>
-				
-				<h2.gradient[ws:pre]> `Smart,\nBeautiful,\nMinimal`
-				<h3[mb:16]> <div[max-width:560px]> `Imba's syntax is optimized for getting things done with less typing. It's packed with smart features.`
-				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.server>
-				# <h3[mb:16]> <div[max-width:560px]> `Imba works just as well on the server as on the client. In fact, the whole stack of scrimba.com is written in Imba.`
-				# <div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.game>
-				# <p[mb:16]> `Imba works just as well on the server as on the client. In fact, the whole stack of scrimba.com is written in Imba. `
-				# <div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.server>
-				# if true
-				#	<div.p3d.windowed-demo> for item in ls('/home/features').children
-				#		<div[w:1cw mb:18].p3d innerHTML=item.html>
-				# <app-demo[w:1cw].demo.windowed-demo href='/examples/tic-tac-toe?preview=lg'>
-			# <home-section>
-			#	for item in ls('/home/about').children
-			#		<doc-section data=item level=0>
-
-			<home-section[pt:30]>
-				<h2[c:pink6]> `Unbelievable\nPerformance`
-				<h3[mb:6]> <div[max-width:560px]> `Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM approaches.`
-				# <figure> <app-demo[w:1cw 1dw:300px].demo.windowed-demo.left-aligned href='/examples/performance/app.imba?preview=lg'>
-				<.box.p3d[pos:rel]>
-					css w:1cw fs:lg d:hflex p:8 px:10
-					<div[pos:abs inset:0 bg:warmer2 rd:lg z:-4px]>
-					<div.body[w: <460px]> `A benchmark was conducted by comparing a Todo MVC implementation across frameworks. The benchmark steps through a deterministic sequence of state alterations measuring the time taken to reconcile the whole application view after: Toggling an item, removing an item, inserting an item, renaming an item, and doing nothing.`
-					<bench-graph[ml:auto as:flex-end z:-3px]>
-
-			<home-section[pt:30]>
-				<h2.gradient> `From Prototype to Production`
-				<h3[mb:16]> <div[max-width:860px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is powered by Imba both frontend & backend.`
-				<div.p3d.windowed-demo[mb:16]> <app-code-block[w:1cw].demo href=examples.game>
-				# <.windowed-demo[my:8]> <app-code-block[w:1cw].demo href='/examples/simple-clock?preview=md'>
-				# <article.text[columns:1 my:4 cg:30px]>
-				#	<p> `Imba uses a novel way to update the dom, opening up for a new way of writing web applications. Without having to worry about the cost of re-rendering you can break away from State Management libraries.`
-				#	<div.p3d.windowed-demo> for item in ls('/home/features').children
-				#		<div[w:1cw mb:18].p3d innerHTML=item.html>
-			
 			if false
 				<home-section[py:20]>
-					<h2.gradient[ta:center]> `Styles Evolved`
+					<h2.gradient[ta:center]> `Imba Syntax`
 					<p> `Inspired by Tailwindcss, Imba features a rich syntax for styling components`
 					<app-carousel renderer=carousel-item> for item in ['sizing','layouts','appearance','transform','colors',	'appearance','transform','colors','appearance']
 						<figure[px:4]>
 							let preview = item == 'layouts' ? 'inline' : 'styles'
 							<app-code-block[w:100%].card-demo href=`/examples/css/{item}.imba?preview={preview}`>
 							<p[mt:4]> `Some text about this card here`
-
-			# <home-section[py:10]>
-			# 	<app-demo[w:1cw].demo.windowed-demo href='/examples/clock/app.imba?preview=lg'>
-			# 	# <app-demo.demo.full-width-demo.inline-preview.clock href='/examples/simple-clock?preview=lg'>
-			if false
-				<home-section[pt:30]>
-					<h2.gradient> `From Prototype to Production`
-					<h3> <div[max-width:560px]> `Imba scales all the way from quick prototypes to complex applications. Scrimba.com is fully powered by Imba, both frontend & backend.`
-					<div.windowed-demo[my:8]> <app-code-block[w:1cw].demo href='/examples/express/server.imba'>
-
-			# <figure[py:30]>
-			# 	<h2.gradient> `Game Changing`
-			# 	<app-demo[w:1cw].demo.windowed-demo.left-aligned href='/examples/tic-tac-toe?preview=lg'>
-
-			<home-section[py:30]>
-				<h2.gradient> `Incredible Tooling`
-				<h3> <div[max-width:560px]> `Imba comes with a vscode plugin that features intelligent auto-completions, goto definitions, and much more.`

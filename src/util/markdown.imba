@@ -81,6 +81,9 @@ def renderer.blockquote quote
 
 def renderer.paragraph text
 	# state.last = text
+	if text.indexOf("<app-code-block") == 0
+		return text
+
 	return String(<p innerHTML=text>)
 
 def renderer.heading text, level

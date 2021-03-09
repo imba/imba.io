@@ -1,8 +1,7 @@
 global css body bg:white
 
 global css .grid
-	d:grid gtc: 1fr 1fr gap:4 pos:abs w:100% h:100% p:4
-	@landscape gtc: 1fr 1fr 1fr 1fr
+	d:grid gtc:1fr 1fr gap:4 pos:abs w:100% h:100% p:4
 
 global css app-clock
 	pos:rel w:100% h:100% rd:2 d:block
@@ -11,5 +10,4 @@ global css app-clock
 	.hour bg:gray8 h:30% w:5px
 	.minute bg:gray6 h:42% w:4px
 	.second bg:red5 h:45% w:2px
-	.ms bg:gray4 h:50% w:2px
 	.circle pos:abs t:50% l:50% m:-5px size:10px bg:red5 rd:full

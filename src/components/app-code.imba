@@ -490,7 +490,7 @@ tag app-code-file
 	def setup
 		hlpos = {x: 0, y: 0}
 		pt = pl = 0
-		tipMode = 'lg'
+		tipMode = 'sm'
 		self
 
 	
@@ -519,7 +519,8 @@ tag app-code-file
 		return unless offsetParent
 		let gutter = pageRect.left
 		if !window.debug
-			tipMode = gutter > 160 ? 'lg' : 'sm'
+			tipMode = gutter > 200 ? 'lg' : 'sm'
+
 		$overlays.style.width = $anchor.cachedWidth + 'px'
 		$overlays.style.height = $anchor.cachedHeight + 'px'
 		for item in $overlays.children
@@ -530,7 +531,8 @@ tag app-code-file
 		$hl outline:1px dashed red4
 		.item outline:1px dashed blue4
 
-	<self[d:block pos:relative] .debug=(window.debug)  @resize.silent.debounce(50ms)=relayout @intersect.in.once.silent=intersect>
+	<self[d:block pos:relative] .debug=(window.debug) @intersect.in.once.silent=intersect>
+		<div$sizer[pos:abs t:0 l:0 w:2vw h:2vh pe:none] @resize.silent.debounce(50ms)=relayout>
 		<code$code[ff:mono].{data.flags} @scroll.passive=scrolled>
 			<span$anchor[pos:abs]> " "
 			<pre$pre[w:100px ta:left].code innerHTML=data.html>

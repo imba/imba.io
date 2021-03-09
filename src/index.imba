@@ -25,7 +25,6 @@ tag app-root
 	def setup
 		global.site = self
 		yes
-		# console.log 'setting up app-root'
 
 	def mount
 		await sw.load!
@@ -86,17 +85,14 @@ tag app-root
 		try
 			document.documentElement.classList.toggle('noscroll',path.indexOf('/examples/') == 0)
 		self
-	
-	def search
-		let q = $query.value
-		console.log 'search now!!!',q
 
 	def render
 		if path != router.url.pathname
 			go(router.url.pathname)
 
+		let home? = router.match('/$')
 		let repl? = router.match('/try')
-		let home? = router.match('/home')
+		
 
 		<self[d:contents]
 			@run=runCodeBlock(e.detail)
@@ -158,7 +154,7 @@ tag app-root
 			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl?>
 			<app-search$search>
 			
-			if router.match('/home')
+			if home?
 				<home-page>
 			elif doc
 				<app-menu$menu>

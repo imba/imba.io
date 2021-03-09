@@ -46,7 +46,7 @@ class Rect
 tag repl-browser
 	dims = new Rect(50,50,300,240)
 
-	css d:block
+	css d:block pe:none
 
 	def build
 		t0 = Date.now!
@@ -111,7 +111,6 @@ tag repl-browser
 		$window.parentNode.removeChild($window)
 
 	def resizing e
-		log 'resizing!!',e
 		reset!
 
 	def reset
@@ -123,7 +122,7 @@ tag repl-browser
 		render!
 
 	<self @resize.silent=resizing>
-		<div$sizer[pos:abs t:0 l:0 w:10vw h:10vh pe:none] @resize.silent=resizing>
+		<div$sizer[pos:abs t:0 l:0 w:10vw h:10vh pe:none] @resize.silent.debounce(10ms)=resizing>
 		<div$window.browser-window>
 			css pos:abs l:{dims.left}px t:{dims.top}px w:{dims.width}px h:{dims.height}px
 				box-sizing:border-box us:none bg:white rd:lg d:vflex
