@@ -37,6 +37,7 @@ tag app-search
 			#pointing = no
 
 	def mount
+		flags.add('hidden')
 		refresh!
 
 	def moveUp
@@ -53,17 +54,24 @@ tag app-search
 		blur!
 
 	def show
+		flags.remove('hidden')
+		clearTimeout(#hider)
 		focus!
 		$input.setSelectionRange(0,query.length)
 
 	def hide
+		# flags.remove('entered')
 		blur!
+		#hider = setTimeout(&,1000) do flags.add('hidden')
 
 	def focus
 		$input.focus!
 
 	def blur
 		$input.blur!
+
+	def focusout
+		hide!
 	
 	def render
 		<self
@@ -72,16 +80,16 @@ tag app-search
 			@keydown.down.prevent=moveDown
 			@keydown.enter.prevent=goToFocus
 			@keydown.esc=blur
+			@focusout=focusout
 			@hover.if(#pointing)=(#focus = e.detail)
 			.empty=!hits.length
 			>
 			css inset:0 pos:fixed pe:none d:vflex ja:center zi:1000 j:flex-start
 				1rh:40px $selIndex:{#focus} $matches:{matches.length}
-				bg:blue6/0
+				bg:cool9/0
 				main y:-5px scale:0.95 o:0 pe:none
-				
 				&.empty o:1
-
+				&.hidden d:none
 				@focus-within bg:cool9/50
 					main y:0px scale:1 o:1 pe:auto
 
@@ -101,7 +109,7 @@ tag app-search
 							placeholder="Search docs">
 							css p:2 w:100% bg:white rd:md bd:gray2 bxs:xs
 								@focus bxs:outline,xs bd:blue4
-						<div hotkey='esc' @click=hide>
+						<div hotkey='esc' @click=blur>
 							css pos:relative w:0 h:6
 							css @after d:block h:14px content:"esc" pos:absolute r:2
 								rd:md bd:gray2 fs:xs h:100% px:1.5 c:gray5 d:hflex ja:center 
