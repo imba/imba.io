@@ -10,6 +10,8 @@ const root = path.resolve(__dirname,'..','content')
 const dest = path.resolve(__dirname,'..','public')
 const imbasrc = path.resolve(__dirname,'..','node_modules','imba','dist')
 
+console.log __dirname,__realname
+
 const data = {
 	path: ''
 	children: []
@@ -45,7 +47,7 @@ def save
 watcher.on('all') do
 	let abs = $2
 	let is-dir = $1.indexOf('Dir') >= 0
-	let rel = path.relative(root,abs)
+	let rel = path.relative(root,abs).split(path.sep).join('/')
 	let sorter = path.basename(rel)
 	let src = rel.replace(/\b\d+\-/g,'')
 	let name = path.basename(src)
@@ -78,6 +80,7 @@ watcher.on('all') do
 			name: name
 			body: fs.readFileSync(abs,'utf8')
 			ext: name.split('.').pop()
+			hidden: no
 			# path: '/' + src
 			fullPath: abs
 		}

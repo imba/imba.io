@@ -76,6 +76,7 @@ class Entry
 		dirty = no
 		parent = parent
 		data = data
+		body = ''
 		# Object.assign(self,data)
 		name = data.name
 		type = data.type
@@ -166,9 +167,6 @@ class Entry
 
 	get nextSibling
 		parent ? parent.children[parent.children.indexOf(self) + 1] : null
-	
-	get currentTab
-		$currentTab or docs[0]
 
 	def childByName name
 		children.find(do $1.name == name) #  and !($1 isa Section)
@@ -176,6 +174,7 @@ class Entry
 export class File < Entry
 	constructor data, parent
 		super
+		$send = null
 		body = originalBody = savedBody = data.body
 		ext = data.ext or name.split('.').pop!
 		uri = "file://{path}"

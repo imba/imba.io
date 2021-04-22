@@ -286,7 +286,7 @@ tag app-code-block < app-code
 			@click.sel('.scope-rule *,.scope-rule')=focusStyleRule
 			@keydown.esc.stop=(#clickedRules = no)
 			@pointerover.silence=pointerover
-			@intersect.silent=intersecting
+			@intersect.silence=intersecting
 			>
 			
 

@@ -1,6 +1,6 @@
 tag MarkdownEditor
 	value = 'Hello, **world**!'
-	md = new Remarkable
+	md = new global.Remarkable
 
 	<self.MarkdownEditor>
 		<h3> 'Input'

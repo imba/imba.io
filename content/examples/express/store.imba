@@ -12,6 +12,7 @@ export class Item
 		id = id
 		db = db
 		loaded = no
+		kids\Item[] = []
 		#depth = -1
 
 	def load depth = 0

@@ -38,7 +38,7 @@ export def load
 			let reg = await sw.getRegistration(scope + "/")
 			
 			if reg
-				reg = await reg.update!
+				await reg.update!
 			else
 				# console.log 'register service worker'
 				reg = await sw.register(scope + "/__sw_{clid.split("-")[1]}__.js", scope: scope + "/")
@@ -50,7 +50,7 @@ export def load
 				let win = frame.contentWindow
 				let replserver = win..navigator..serviceWorker
 				await fs.connectToWorker(replserver)
-				window.replsw = replserver
+				global.replsw = replserver
 				resolve(resolved = replserver)
 
 			document.body.appendChild(frame)

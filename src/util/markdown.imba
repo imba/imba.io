@@ -228,6 +228,7 @@ export def render content, o = {}
 		headings: []
 		snippets: []
 		files: {}
+		last: null
 	}
 
 	let opts = {

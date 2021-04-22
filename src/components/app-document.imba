@@ -251,6 +251,7 @@ tag doc-section
 	def scrollIntoView
 		let rect = getBoundingClientRect!
 		log 'scroll section into view!',rect
+		return rect
 
 	
 	def render
@@ -314,7 +315,7 @@ tag app-document
 		if subsection
 			reveal(subsection)
 		else
-			window.scrollTo(0,restoreScrollTop or 0,{behavior: 'auto'})
+			window.scrollTo({left: 0,top: restoreScrollTop or 0,behavior: 'auto'})
 			scroller.scrollTop = restoreScrollTop or 0
 
 	def unmount
@@ -337,7 +338,7 @@ tag app-document
 
 		# focalpoint = current.data if current
 
-		let cleanup = new Set(getElementsByClassName('in-focus'))
+		let cleanup = new Set(Array.from(getElementsByClassName('in-focus')))
 		let map = new Map
 		for item in querySelectorAll('.in-view')
 			map.set(item.data,true)
@@ -432,4 +433,4 @@ tag embedded-app-example
 		self
 
 	def render
-		<self[d:contents] @click.run> <a href=dataset.path> "TRY"
+		<self[d:contents] @click.emit-run> <a href=dataset.path> "TRY"

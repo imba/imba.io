@@ -106,7 +106,7 @@ tag app-repl-preview
 		self
 
 	def recalc
-		let [w,h] = size.split('-')
+		let [w\any,h\any] = size.split('-')
 
 		if w == 'auto' and h == 'auto'
 			scale = sx = sy = 1
@@ -117,6 +117,7 @@ tag app-repl-preview
 		oh ||= ($bounds && $bounds.offsetHeight)
 
 		let gap = 0
+		
 		if ow < 240
 			gap = 0
 			w = 240
