@@ -105,7 +105,7 @@ for member,index in array
 
 # Join us!
 
-We are a small but active community of early Imba users. Jump on our [Discord](https://discord.gg/mkcbkRw) to say hi! Recordings of all our bi-weekly community meetings can be found [here](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
+We are a small but active community of early Imba users. Jump on our [Discord](https://discord.gg/mkcbkRw) to say hi! Recordings of all our community meetings can be found [here](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
 
 Imba has been under active development for 6+ years now, and activity is only ramping up. We're looking for contributors who would like to help improve documentation and the ecosystem around Imba.
 
