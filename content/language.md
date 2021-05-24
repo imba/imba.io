@@ -80,7 +80,7 @@ If you run into any issues, you can check out the GitHub repository or come and 
 
 # Basic Syntax
 
-Imba's minimal syntax makes it quick and flexible. Learn all the details in the [Language](/language/introduction) section.
+Imba's minimal syntax makes it quick and flexible. Here is a preview of Imba's syntax. For a more detailed walkthrough, you can jump to the [grammar](/language/grammar) section.
 
 ## Literals
 
