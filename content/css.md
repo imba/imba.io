@@ -396,7 +396,76 @@ css button
 <doc-style-modifiers></doc-style-modifiers>
 
 
-# Breakpoints
+# Breakpoint Media Queries
+In imba you don't need to handle your breakpoints inside a media query at the bottom of your style sheet. You can apply breakpoint values, inline with your regular styles, and it will compiiled into media queries at build time.
+
+## Predefined Breakpoints
+Imba has 10 predefined breakpoint modifiers
+```imba
+@xs # -> @media (min-width: 480px){ sel {...} }
+@sm # -> @media (min-width: 640px){ sel {...} }
+@md # -> @media (min-width: 768px){ sel {...} }
+@lg # -> @media (min-width: 1024px){ sel {...} }
+@xl # -> @media (min-width: 1280px){ sel {...} }
+@lt-xs # -> @media (max-width: 479px){ sel {...} }
+@lt-sm # -> @media (max-width: 639px){ sel {...} }
+@lt-md # -> @media (max-width: 767px){ sel {...} }
+@lt-lg # -> @media (max-width: 1023px){ sel {...} }
+@lt-xl # -> @media (max-width: 1279px){ sel {...} }
+```
+## Defined Breakpoints
+You can set your custom breakpoints with the following syntax. It can literally be any number you want.
+```imba
+@700 # -> @media (min-width: 700px)
+@!650 # -> @media (max-width: 650px)
+```
+## How to use breakpoint modifiers
+You may use these media queries in a few different ways.
+### property breakpoint modifier
+If you will not declare another value to that same property, you may use a breakpoint modifier connected to a css property.
+```imba
+css .card
+	pl@md:1em 
+```
+```imba
+<div.card[pl@md:1em]> # inline with element
+```
+### value breakpoint modifier
+If you would like to add multiple breakpoints to that same property you may do multiple modifiers inline that apply only to the value
+```imba
+tag App
+	css .card
+		pl: 0.8em @md:1em @lg: 1.2em
+	def render
+		<self>
+			<.card>
+<div.card[pl: 0.8em @md:1em @lg: 1.2em]>
+```
+### breakpoint modifier block
+If you would rather organize your styles by breakpoints rather than properties, you may nest properties within breakpoint modifiers.
+```imba
+css .card
+	pl: 0.8em
+	@md pl: 1em c:red4 # in one line
+	@lg	
+		pl: 1.2em # in multiple lines
+		c:purple4 # in multiple lines
+```
+The above syntax cannot be used inline in an element, but you could nest the entire declaration within an element inside your render method.
+```imba
+tag App
+	def render
+		<self>
+			<.card>
+				css 
+					pl: 0.8em # default value below medium.
+					@md pl: 1em # above medium (768px)
+					@lg pl: 1.2em # above large (1024px)
+				<h2> "..."
+				<p> "..."
+				
+```
+Breakpoint blocks are not as succint as inline breakpoint modifiers, but it makes some of us happier.
 
 # Colors
 
