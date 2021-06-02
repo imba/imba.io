@@ -397,32 +397,50 @@ css button
 
 
 # Breakpoint Media Queries
-In imba you don't need to handle your breakpoints inside a media query at the bottom of your style sheet. You can apply breakpoint values, inline with your regular styles, and it will compiiled into media queries at build time.
+
+With Imba, you don't need to handle your breakpoints inside a media query at the bottom of your style sheet. You can apply breakpoint values *inline* with your other styles, and they will be compiled into media queries at build time.
 
 ## Predefined Breakpoints
-Imba has 10 predefined breakpoint modifiers
+
+Imba has 10 predefined breakpoint modifiers. Five for min-width breakpoints and five for max-width breakpoints.
 ```imba
 @xs # -> @media (min-width: 480px){ sel {...} }
 @sm # -> @media (min-width: 640px){ sel {...} }
 @md # -> @media (min-width: 768px){ sel {...} }
 @lg # -> @media (min-width: 1024px){ sel {...} }
 @xl # -> @media (min-width: 1280px){ sel {...} }
+```
+The max-width modifiers use the `lt-` prefix, which stands for "less than."
+```imba
 @lt-xs # -> @media (max-width: 479px){ sel {...} }
 @lt-sm # -> @media (max-width: 639px){ sel {...} }
 @lt-md # -> @media (max-width: 767px){ sel {...} }
 @lt-lg # -> @media (max-width: 1023px){ sel {...} }
 @lt-xl # -> @media (max-width: 1279px){ sel {...} }
 ```
+
 ## Defined Breakpoints
-You can set your custom breakpoints with the following syntax. It can literally be any number you want.
+
+You can set your own custom pixel breakpoints by specifying any number you want after the `@` or `@!` symbols.
+`@` for min-width, and `@!` for max-width.
+
+
 ```imba
 @700 # -> @media (min-width: 700px)
 @!650 # -> @media (max-width: 650px)
 ```
+
+### Tagged templates [tip]
+
+At the moment, the _defined breakpoint modifier_ does not support other unit types nor specifying the `px` unit type. Any number provided will be assumed to be a pixel value.
+
 ## How to use breakpoint modifiers
-You may use these media queries in a few different ways.
-### property breakpoint modifier
-If you will not declare another value to that same property, you may use a breakpoint modifier connected to a css property.
+
+You may use these breakpoint modifiers in a few different ways.
+
+### Property Breakpoint Modifier
+
+If you will only use a property for a breakpoint, you may modify the property directly with the modifier.
 ```imba
 css .card
 	pl@md:1em 
@@ -430,8 +448,10 @@ css .card
 ```imba
 <div.card[pl@md:1em]> # inline with element
 ```
-### value breakpoint modifier
-If you would like to add multiple breakpoints to that same property you may do multiple modifiers inline that apply only to the value
+
+### Value Breakpoint Modifier
+
+If you will use a single property across multiple breakpoints, you may use multiple breakpoint modifiers in the same line followed by the desired breakpoint value.
 ```imba
 tag App
 	css .card
@@ -441,8 +461,9 @@ tag App
 			<.card>
 <div.card[pl: 0.8em @md:1em @lg: 1.2em]>
 ```
-### breakpoint modifier block
-If you would rather organize your styles by breakpoints rather than properties, you may nest properties within breakpoint modifiers.
+### Breakpoint Modifier Block
+
+Suppose you would instead organize your responsive styles by breakpoints rather than properties. In that case, you may place properties within the breakpoint modifier either in single-line or multi-line form.
 ```imba
 css .card
 	pl: 0.8em
@@ -451,7 +472,8 @@ css .card
 		pl: 1.2em # in multiple lines
 		c:purple4 # in multiple lines
 ```
-The above syntax cannot be used inline in an element, but you could nest the entire declaration within an element inside your render method.
+
+The above syntax cannot be used in inline styles, but you could nest the entire declaration within an element inside your render method, and it will be compiled as an inline style, and it will support dynamic values.
 ```imba
 tag App
 	def render
@@ -465,7 +487,7 @@ tag App
 				<p> "..."
 				
 ```
-Breakpoint blocks are not as succint as inline breakpoint modifiers, but it makes some of us happier.
+Breakpoint blocks are not as succint as inline breakpoint modifiers, but it might add maintenance value for some.
 
 # Colors
 
