@@ -396,7 +396,7 @@ css button
 <doc-style-modifiers></doc-style-modifiers>
 
 
-# Breakpoint Media Queries
+# Breakpoints
 
 With Imba, you don't need to handle your breakpoints inside a media query at the bottom of your style sheet. You can apply breakpoint values *inline* with your other styles, and they will be compiled into media queries at build time.
 
