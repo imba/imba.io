@@ -140,8 +140,7 @@ tag app-menu
 				# 	<span[rd:md bd:gray2 fs:xs h:5 px:1 c:gray5 d:hflex ja:center]> 'S'
 				# <app-menu-section[c:pink6] data=ls('/intro')>
 				<app-menu-section[c:pink6] data=ls('/language')>
-				<app-menu-section[c:purple6] data=ls('/grammar')>
-				<app-menu-section[c:sky6] data=ls('/tags')>
-				<app-menu-section[c:emerald6] data=ls('/events')>
+				<app-menu-section[c:violet6] data=ls('/tags')>
+				<app-menu-section[c:sky6] data=ls('/events')>
 				# <app-menu-section[c:indigo6] data=ls('/styling')>
 				<app-menu-section[c:amber6 min-height:65vh] data=ls('/css')>
