@@ -1569,7 +1569,7 @@ If you include a second parameter in the source it will automatically refer to t
 ```imba
 for num,index in [1,2,3]
     console.log num * index
-# [1,4,9]
+# => [1,4,9]
 ```
 
 ### Stepping with `by`
@@ -1598,14 +1598,14 @@ for num,i in [1,2,3] when i % 2
 # from 0 up to (including) 3
 for num in [0 .. 3]
     num
-# [0,1,2,3]
+# => [0,1,2,3]
 ```
 
 ```imba
 # from 0 up to (excluding) 3
 for num in [0 ... 3]
     num
-# [0,1,2]
+# => [0,1,2]
 ```
 
 > Ranges **must include spaces** around `..` and `...`
@@ -1753,7 +1753,7 @@ console.log res # [2,4,8,10]
 let res = for num in [1,2,3,4,5]
     break if num == 3
     num * 2
-# [2,4]
+# => [2,4]
 ```
 
 ### Continue with value
@@ -1765,7 +1765,7 @@ let res = for num in [1,2,3,4,5]
     continue -1 if num == 3
     num * 2
 # continue with an argument acts like early return within Array#map
-# res => [2,4,-1,8,10]
+# => [2,4,-1,8,10]
 ```
 
 ## Break
@@ -1776,7 +1776,7 @@ let res = for num in [1,2,3,4,5]
 let res = for num in [1,2,3,4,5]
     break if num == 3
     num * 2
-# [2,4]
+# => [2,4]
 ```
 
 ### Break with value
