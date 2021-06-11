@@ -2,8 +2,10 @@
 	"paths": {
 		"icons/*": ["src/assets/icons/*"]
 	},
-	"node": {
-		"external": ["dependencies","imba/compiler"]
+	"options": {
+		"node": {
+			"external": ["dependencies","imba/compiler"]
+		}	
 	},
 	"theme": {
 		"fonts": {
