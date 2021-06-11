@@ -398,6 +398,97 @@ css button
 
 # Breakpoints
 
+With Imba, you don't need to handle your breakpoints inside a media query at the bottom of your style sheet. You can apply breakpoint values *inline* with your other styles, and they will be compiled into media queries at build time.
+
+## Predefined Breakpoints
+
+Imba has 10 predefined breakpoint modifiers. Five for min-width breakpoints and five for max-width breakpoints.
+```imba
+@xs # -> @media (min-width: 480px){ sel {...} }
+@sm # -> @media (min-width: 640px){ sel {...} }
+@md # -> @media (min-width: 768px){ sel {...} }
+@lg # -> @media (min-width: 1024px){ sel {...} }
+@xl # -> @media (min-width: 1280px){ sel {...} }
+```
+The max-width modifiers use the `lt-` prefix, which stands for "less than."
+```imba
+@lt-xs # -> @media (max-width: 479px){ sel {...} }
+@lt-sm # -> @media (max-width: 639px){ sel {...} }
+@lt-md # -> @media (max-width: 767px){ sel {...} }
+@lt-lg # -> @media (max-width: 1023px){ sel {...} }
+@lt-xl # -> @media (max-width: 1279px){ sel {...} }
+```
+
+## Defined Breakpoints
+
+You can set your own custom pixel breakpoints by specifying any number you want after the `@` or `@!` symbols.
+`@` for min-width, and `@!` for max-width.
+
+
+```imba
+@700 # -> @media (min-width: 700px)
+@!650 # -> @media (max-width: 650px)
+```
+
+### Tagged templates [tip]
+
+At the moment, the _defined breakpoint modifier_ does not support other unit types nor specifying the `px` unit type. Any number provided will be assumed to be a pixel value.
+
+## How to use breakpoint modifiers
+
+You may use these breakpoint modifiers in a few different ways.
+
+### Property Breakpoint Modifier
+
+If you will only use a property for a breakpoint, you may modify the property directly with the modifier.
+```imba
+css .card
+	pl@md:1em 
+```
+```imba
+<div.card[pl@md:1em]> # inline with element
+```
+
+### Value Breakpoint Modifier
+
+If you will use a single property across multiple breakpoints, you may use multiple breakpoint modifiers in the same line followed by the desired breakpoint value.
+```imba
+tag App
+	css .card
+		pl: 0.8em @md:1em @lg: 1.2em
+	def render
+		<self>
+			<.card>
+<div.card[pl: 0.8em @md:1em @lg: 1.2em]>
+```
+### Breakpoint Modifier Block
+
+Suppose you would instead organize your responsive styles by breakpoints rather than properties. In that case, you may place properties within the breakpoint modifier either in single-line or multi-line form.
+```imba
+css .card
+	pl: 0.8em
+	@md pl: 1em c:red4 # in one line
+	@lg	
+		pl: 1.2em # in multiple lines
+		c:purple4 # in multiple lines
+```
+
+The above syntax cannot be used in inline styles, but you could nest the entire declaration within an element inside your render method, and it will be compiled as an inline style, and it will support dynamic values.
+```imba
+tag App
+	def render
+		<self>
+			<.card>
+				css 
+					pl: 0.8em # default value below medium.
+					@md pl: 1em # above medium (768px)
+					@lg pl: 1.2em # above large (1024px)
+				<h2> "..."
+				<p> "..."
+				
+```
+Breakpoint blocks are not as succint as inline breakpoint modifiers, but it might add maintenance value for some.
+
 # Colors
 
 [demo](/examples/css/colors.imba?preview=styles)

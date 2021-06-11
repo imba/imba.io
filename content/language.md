@@ -25,9 +25,9 @@ In Imba DOM elements _and_ CSS are treated as first-class citizens. DOM elements
 For questions and support please use our community chat on
 [Discord](https://discord.gg/mkcbkRw) or our [discourse](https://users.imba.io/).
 
-#### Bi-Weekly Meeting
+#### Community Meeting
 
-Everyone is welcome! The developer meetings are usually on Monday's every 2 weeks. This is a great place to report your issues, hangout and talk about your project using Imba. If you have an open pull request which has not seen attention, you can mention it during the meeting.
+Everyone is welcome! This is a great place to report your issues, hangout and talk about your project using Imba. If you have an open pull request which has not seen attention, you can mention it during the meeting.
 
 For the exact meeting times please use the Meetup group [Imba Oslo Meetup](https://www.meetup.com/Imba-Oslo-Meetup), this is where you can see the timezone, cancellations, etc.
 
@@ -80,7 +80,7 @@ If you run into any issues, you can check out the GitHub repository or come and 
 
 # Basic Syntax
 
-Imba's minimal syntax makes it quick and flexible. Learn all the details in the [Language](/language/introduction) section.
+Imba's minimal syntax makes it quick and flexible. Here is a preview of Imba's syntax. For a more detailed walkthrough, you can jump to the [grammar](/language/grammar) section.
 
 ## Literals
 
