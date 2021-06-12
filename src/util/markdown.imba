@@ -217,7 +217,7 @@ export def render content, o = {}
 	let object = {toString: (do this.body), toc: [],meta: {}}
 
 	content = content.replace(/^---\n([^]+)\n---/m) do(m,inside)
-		inside.split('\n').map do |line|
+		inside.split('\n').map do(line)
 			var [k,v] = line.split(/\s*\:\s*/)
 			object[k] = (/^\d+$/).test(v) ? parseFloat(v) : v
 

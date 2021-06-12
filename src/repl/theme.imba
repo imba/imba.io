@@ -55,7 +55,7 @@ export const theme =
 	toMonaco: do
 		var json = JSON.stringify(this)
 		var named = this.named
-		json = json.replace(/@(\w+)/g) do |m,key|
+		json = json.replace(/@(\w+)/g) do(m,key)
 			named[key] or m
 		return JSON.parse(json)
 

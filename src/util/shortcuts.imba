@@ -37,7 +37,7 @@ try isMac = global.navigator.platform == 'MacIntel'
 
 import Mousetrap from './mousetrap'
 
-const stopCallback = do |e,el,combo|	
+const stopCallback = do(e,el,combo)
 	if (' ' + el.className + ' ').indexOf(' mousetrap ') > -1
 		return false
 		

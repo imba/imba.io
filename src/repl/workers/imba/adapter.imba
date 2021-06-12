@@ -32,13 +32,13 @@ export class DiagnosticsAdapter < Adapter
 	constructor defaults, selector, worker
 		super
 
-		var onModelAdd = do |model|
+		var onModelAdd = do(model)
 			if model.getModeId! != selector
 				return
 
 			addModel(model)
 
-		var onModelRemoved = do |model|
+		var onModelRemoved = do(model)
 			removeModel(model)
 
 		disposables.push editor.onDidCreateModel(onModelAdd)

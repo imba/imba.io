@@ -21,7 +21,7 @@ tag app-crud
 	get selected do people[index]
 	
 	get filteredPeople
-		people.filter do |p| p.last.toLowerCase!.startsWith(query.toLowerCase!)
+		people.filter do(p) p.last.toLowerCase!.startsWith(query.toLowerCase!)
 
 	def createPerson
 		people = people.concat({ first, last })
@@ -31,7 +31,7 @@ tag app-crud
 		people[index] = { first, last }
 	
 	def deletePerson
-		people = people.filter do |p, i| i != index
+		people = people.filter do(p, i) i != index
 		index = people.length ? people.length - 1 : 0
 	
 	css .container d:block max-width:60rem m:6rem auto

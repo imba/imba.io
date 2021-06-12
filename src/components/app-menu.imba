@@ -15,7 +15,7 @@ tag app-menu-item
 
 	get hasChildren?
 		# only children below level cutoff are shown as child sections in the menu
-		const result = data.children.filter(do |c| c.level < levelCutoff)
+		const result = data.children.filter(do(c) c.level < levelCutoff)
 		result.length > 0
 	
 	get renderChildren?
