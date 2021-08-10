@@ -123,6 +123,9 @@ tag app-root
 					<.logotype[c:white fw:700 fs:xl lh:30px]> "imba"
 				<.breadcrumb[mx:2 fs:sm c:blue4]>
 					css span + span @before content: "/" mx:1 o:0.3
+					<a[p:1 2 ml:10px rd:12px bgc:hsla(213.12, 93.90%, 67.84%, 1) c:hsla(215.00, 27.91%, 16.86%, 98%)] href="https://jobs.scrimba.com" title="well, actually Scrimba is hiring - but learn to code in Imba with pay! "> "We are hiring!"
+						
+						
 				<div[flex: 1]>
 					if window.debug
 						<div @resize.silent=render> "{window.innerWidth}px"

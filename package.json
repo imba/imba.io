@@ -40,7 +40,7 @@
     "@types/node": "^13.11.1",
     "chokidar": "^3.3.1",
     "express": "^4.17.1",
-    "imba": "^2.0.0-alpha.141",
+    "imba": "^2.0.0-alpha.155",
     "marked": "^0.7.0",
     "passport": "^0.4.1",
     "perfect-arrows": "^0.3.3",
