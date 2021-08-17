@@ -1023,19 +1023,18 @@ tag app
 		<test route="/test"> # this will renderon /test and /test/inner
 		<inner route="/test/inner"> # this will render on /test/inner
 ```
-If you want these to be _exact matches_ only, then you should use `$` at the end of the path, as shown below:
+If you want these to be _exact matches_ only, then you should use `$` at the end of the path, as shown below. This is true for both the `route-to` and `route` calls:
 ```imba exact-matching.imba
 tag app
 	<self>
 		<nav>
-			<a route-to="/"> "Home Page"
-			<a route-to="/test"> "Test Page"
-			<a route-to="/test/inner"> "Inner Page"
+			<a route-to="/$"> "Home Page"
+			<a route-to="/test$"> "Test Page"
+			<a route-to="/test/inner$"> "Inner Page"
 		
 		<home route="/$"> # this will render on /, /test, and /test/inner
 		<test route="/test$"> # this will renderon /test and /test/inner
 		<inner route="/test/inner$"> # this will render on /test/inner
-```
 
 ## Nested Routes
 
