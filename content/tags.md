@@ -183,7 +183,7 @@ let view = <main>
 document.body.appendChild view
 ```
 
-Even tough we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
+Even though we rendered a dynamic list of items, it won't update if new items are added to the array or if members of the array change. Clicking the button will actually add items, but our view is clearly not keeping up. What to do?
 
 ### imba.mount
 
