@@ -1007,6 +1007,36 @@ global css @root
 
 As you can see with the `More` link, regular links with `href` attributes will also be intercepted by the router. The difference is that `route-to` adds some powerful features like nested routes (see below), and `route-to` will automatically add an `active` class to the element whenever the route it links to is matching.
 
+## Route matching
+
+When using `route` to determine when components should render, the string you pass to route is a regex pattern which will be tested against the current route. Thus if you have multiple components that match part of the request path, they will all render, as shown in this example:
+
+```imba matching.imba
+tag app
+	<self>
+		<nav>
+			<a route-to="/"> "Home Page"
+			<a route-to="/test"> "Test Page"
+			<a route-to="/test/inner"> "Inner Page"
+		
+		<home route="/"> # this will render on /, /test, and /test/inner
+		<test route="/test"> # this will renderon /test and /test/inner
+		<inner route="/test/inner"> # this will render on /test/inner
+```
+If you want these to be _exact matches_ only, then you should use `$` at the end of the path, as shown below:
+```imba exact-matching.imba
+tag app
+	<self>
+		<nav>
+			<a route-to="/"> "Home Page"
+			<a route-to="/test"> "Test Page"
+			<a route-to="/test/inner"> "Inner Page"
+		
+		<home route="/$"> # this will render on /, /test, and /test/inner
+		<test route="/test$"> # this will renderon /test and /test/inner
+		<inner route="/test/inner$"> # this will render on /test/inner
+```
+
 ## Nested Routes
 
 Routes that do not start with `/` will be treated as nested routes, and resolve relative to the closest parent route. This works for both `route` and `route-to`.
