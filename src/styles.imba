@@ -104,7 +104,7 @@ global css .code
 	tab-size:4
 	-moz-tab-size:4
 	cursor:default
-	fw:bold
+	fw:500
 
 	b,i fw:inherit font-style:normal
 
