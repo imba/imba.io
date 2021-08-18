@@ -3,13 +3,14 @@ import 'util/styles'
 # https://github.com/eugenkiss/7guis/wiki#counter
 
 tag app-temperature
-	
-	prop c = 0 @set
-		f = +(32 + (9 / 5 * c)).toFixed(1)
-	
-	prop f = 32 @set
-		c = +(5 / 9 * (f - 32)).toFixed(1)
+	prop f = 32
 
+	get c
+		(5 / 9 * (f - 32)).toFixed(1)
+
+	set c tmp\number
+		f = +(32 + (9 / 5 * tmp)).toFixed(1)
+	
 	css input w:5rem
 
 	<self>
