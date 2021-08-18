@@ -1,20 +1,12 @@
-let count = 0
+import 'util/styles'
 
-imba.mount do
-	<div>
-		<input type='number' bind=count>
-		<button @click=(count++)> 'count'
-
-
-### as a reusable component
+# https://github.com/eugenkiss/7guis/wiki#counter
 
 tag app-counter
 	prop count = 0
 
-	<self>
-		<input[count] type='number'>
-		<button :click.{count++}> count
+	<self[d:hflex cg:2]>
+		<input[w:10rem] type='number' bind=count>
+		<button @click=count++> "count"
 
-###
-
-# https://github.com/eugenkiss/7guis/wiki#counter
+imba.mount <app-counter>
