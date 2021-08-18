@@ -408,7 +408,7 @@ An identifier can end with `?` to make it a predicate identifier, thus helping m
 
 `$0 .. $n` are reserved identifiers used as shorthands for function arguments with $0 refering to the set of arguments. See [Identifiers with special meanings](#identifiers-identifiers-with-special-meanings)
 
-Like css and html, dashes inside identifiers are perfectly valid in Imba and is often preferred for readability and that it allows to easily skip to each segment of the identifier. They are compiled to the equivalent camelCase version. 
+Like css and html, dashes inside identifiers are perfectly valid in Imba and is often preferred for readability and that it allows to easily skip to each segment of the identifier. They are compiled to use the greek symbol Ksi `Ξ` in javascript to be valid but avoid conflict. 
 
 ### Predicate Identifiers
 Imba also allows `?` at the end of identifiers for methods, properties, and variables. These are predicate identifiers  and should represent a boolean value. They are used to represent a checkable state and provides improved readability over other approaches like predicate prefixes like `isEmpty`.
