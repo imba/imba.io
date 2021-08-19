@@ -73,8 +73,9 @@ def renderer.link href, title, text
 			return (<app-code-block data-href=href>)
 
 	if href.match(/scrimba\.com.*\/c/)
-		return (<a.scrimba href=href title=title target='_blank'> <span innerHTML=text>)
-	return (<a href=href title=title> <span innerHTML=text>)
+		return (<a.scrimba href=href title=(title or '') target='_blank'> <span innerHTML=text>)
+		
+	return (<a href=href title=(title or '')> <span innerHTML=text>)
 
 def renderer.blockquote quote
 	return String(<blockquote innerHTML=quote>)
