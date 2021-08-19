@@ -505,21 +505,38 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### w [cssprop]
 
+[demo](/examples/css/width.imba?preview=styles)
+
 ### h [cssprop]
 
+[demo](/examples/css/height.imba?preview=styles)
+
 ### size [cssprop]
+
+[demo](/examples/css/size.imba?preview=styles)
+
 
 ## Positioning [toc-pills]
 
 ### pos [cssprop]
 
+[demo](/examples/css/positioning.imba?preview=styles)
+
 ### t [cssprop]
+
+[demo](/examples/css/top.imba?preview=styles)
 
 ### r [cssprop]
 
+[demo](/examples/css/right.imba?preview=styles)
+
 ### b [cssprop]
 
+[demo](/examples/css/bottom.imba?preview=styles)
+
 ### l [cssprop]
+
+[demo](/examples/css/left.imba?preview=styles)
 
 ### inset [custom]
 
@@ -533,15 +550,27 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### mt [cssprop]
 
+[demo](/examples/css/margin-top.imba?preview=styles)
+
 ### mr [cssprop]
+
+[demo](/examples/css/margin-right.imba?preview=styles)
 
 ### mb [cssprop]
 
+[demo](/examples/css/margin-bottom.imba?preview=styles)
+
 ### ml [cssprop]
+
+[demo](/examples/css/margin-left.imba?preview=styles)
 
 ### mx [cssprop]
 
+[demo](/examples/css/mx.imba?preview=styles)
+
 ### my [cssprop]
+
+[demo](/examples/css/my.imba?preview=styles)
 
 ## Padding [toc-pills]
 
@@ -553,11 +582,19 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### pt [cssprop]
 
+[demo](/examples/css/padding-top.imba?preview=styles)
+
 ### pr [cssprop]
+
+[demo](/examples/css/padding-right.imba?preview=styles)
 
 ### pb [cssprop]
 
+[demo](/examples/css/padding-bottom.imba?preview=styles)
+
 ### pl [cssprop]
+
+[demo](/examples/css/padding-left.imba?preview=styles)
 
 ### px [cssprop]
 
@@ -565,12 +602,9 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### py [cssprop]
 
+[demo](/examples/css/py.imba?preview=styles)
 
 # Layout
-
-
-
-
 
 ## Display [toc-pills]
 

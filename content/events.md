@@ -202,6 +202,8 @@ In isolation the `wait` modifier might not seem very useful, but in combination 
 
 #### throttle ( ms ) [event-modifier] [snippet]
 
+The `throttle` modifier ensures the handler is called at most every `n` milliseconds. Please note that there is no default value so if you don't pass in a value in `ms` then the event will not throttle. This can be useful in preventing multiple clicks/calls on the same property.
+
 ```imba
 # [preview=sm]
 import 'util/styles'
@@ -209,7 +211,7 @@ import 'util/styles'
 # ---
 # disable handler for duration after triggered
 imba.mount do <fieldset>
-	<button @click.throttle(1s).log('clicked')> 'click me'
+	<button @click.throttle(1000).log('clicked')> 'click me'
 	<div> "Not clickable within 1 second of previous invocation."
 ```
 
@@ -246,6 +248,8 @@ imba.mount do <fieldset>
 
 #### self [event-modifier] [snippet]
 
+The `self` event modifier is a handy way of reacting to events only when they are clicked on the actual element you are interacting with and not, for example, a child element. This can be useful for things like modal wrappers when you only want to react when clicking directly.
+
 ```imba
 # [preview=sm]
 import 'util/styles'
@@ -255,6 +259,16 @@ imba.mount do
 	<button @click.self.log('clicked self')>
 		"Button"
 		<b> "Nested"
+```
+
+```imba
+# [preview=xl]
+import 'util/styles'
+# ---
+# Modal will only close when clicking on wrapper itself, not on the modal content
+imba.mount do
+	<div.modal-wrapper @click.self.log("Close modal")>
+		<main> "Modal content"
 ```
 
 #### sel ( selector ) [event-modifier] [snippet]
@@ -360,6 +374,8 @@ imba.mount do
 
 #### emit-_name_ ( detail = {} ) [event-modifier] [snippet]
 
+Emitting events is a powerful way to react to events inside child tag/components. This would replace patterns in other frameworks where you would typically have to pass through callbacks. Any arguments supplied will be available inside the `e.detail` property.
+
 ```imba
 # [preview=sm]
 import 'util/styles'
@@ -371,6 +387,8 @@ imba.mount do
 		<button @click.emit-select(a:1,b:2)> 'with data'
 ```
 #### flag-_name_ ( target ) [event-modifier] [snippet]
+
+Flags are a convenient way of briefly adding a class to the element which is currently being triggered. Useful for adding effects to show "active" states.
 
 ```imba
 # [preview=sm]
