@@ -1217,6 +1217,16 @@ if (data.state & STATES.LOADED) == 0
 a ^=? 1 # Bitwise XOR assignment
 ```
 
+## Optional chaining [toc-pills]
+
+Imba uses `..` for [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining). If the optional reference is nullish it will return undefined.
+
+```imba
+let object = {one: {value: 1})}
+console.log object..two..value # => undefined
+console.log object.two.value # => TypeError: Cannot read property 'value' of undefined
+```
+
 ## Keywords [toc-pills]
 
 ### delete [op=keyword+delete+unary]
