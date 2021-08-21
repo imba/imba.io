@@ -141,7 +141,7 @@ tag doc-section
 			.title bg:#364765 fs:13px ff:mono fw:700 prefix: "a " suffix: " b" c:$code-keyword
 				@before,@after fw:400 c:$code-variable
 			
-			.title bg:blue5 fs:13px ff:mono fw:700 prefix: "a " suffix: " b" c:blue9
+			.title bg:blue5 fs:13px ff:mono fw:700 prefix: "a " suffix: " b" c:black
 				@before,@after fw:400 c:white
 
 			&.op-unary .title prefix:"" suffix:"a"
