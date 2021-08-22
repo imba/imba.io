@@ -102,12 +102,12 @@ console.log 'no' unless condition
 
 ```imba
 switch value
-when 10
-    yes
-when 5
-    no
-else
-    throw 'nope'
+    when 10
+        yes
+    when 5
+        no
+    else
+        throw 'nope'
 ```
 
 ## Loops and Iteration

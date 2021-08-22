@@ -1245,12 +1245,12 @@ class Game
 
 ```imba
 switch status
-when "completed"
-  console.log "This project has been completed"
-when "archived"
-  console.log "This project has been archived"
-else
-  console.log "This project is active"
+    when "completed"
+    console.log "This project has been completed"
+    when "archived"
+    console.log "This project has been archived"
+    else
+    console.log "This project is active"
 ```
 
 ### for [keyword]
@@ -1860,12 +1860,12 @@ condition ? console.log('yes!') : console.log('no!')
 
 ```imba
 switch value
-when 10
-    yes
-when 5
-    no
-else
-    throw 'nope'
+    when 10
+        yes
+    when 5
+        no
+    else
+        throw 'nope'
 ```
 
 ## Await
