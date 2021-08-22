@@ -1246,11 +1246,11 @@ class Game
 ```imba
 switch status
     when "completed"
-    console.log "This project has been completed"
+        console.log "This project has been completed"
     when "archived"
-    console.log "This project has been archived"
+        console.log "This project has been archived"
     else
-    console.log "This project is active"
+        console.log "This project is active"
 ```
 
 ### for [keyword]
