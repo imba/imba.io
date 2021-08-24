@@ -283,7 +283,7 @@ tag app-dialog
 			<.body> body!
 
 
-	def  body
+	def body
 		<> # Returns all elements without any wrapping element
 			<h3> "Body text"
 			<p> "With some adjecent content"
