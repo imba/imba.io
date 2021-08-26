@@ -217,7 +217,9 @@ css mark pos:absolute
 css li d:inline-block px:1 m:1 rd:2 fs:xs bg:gray1 @hover:blue2
 
 # ---
-let x = 20, y = 20, title = "Hey"
+let x = 20
+let y = 20
+let title = "Hey"
 
 imba.mount do
     <main @mousemove=(x=e.x,y=e.y)>
