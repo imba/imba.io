@@ -2066,7 +2066,7 @@ Meta properties are implemented as symbols, They do not show up on an Object usi
 
 ### Storing values for getters and setters
 
-You may often find yourself defining setters because you want to do something when a property is set. The problem is that a property with a setter cannot also store an actual value with the same name. The ideomatic way to store underlying values in setters is to use a meta property with the same name:
+You may often find yourself defining setters because you want to do something when a property is set. The problem is that a property with a setter cannot also store an actual value with the same name. The idiomatic way to store underlying values in setters is to use a meta property with the same name:
 
 ```imba
 class Todo
