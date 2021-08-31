@@ -14,13 +14,17 @@ tag app-clock
 		b size:10px rd:100 y:-50%
 
 	def mount
+		# The next two lines needed to get it working in Firefox
+		let now = new Date(Date.now!)
+		#starttime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDay()).valueOf()
+
 		$interval = setInterval(render.bind(self),1000)
-	
+
 	def unmount
 		clearInterval($interval)
-	
+
 	def render
-		let ts = Date.now! / 60000 + utc * 60
+		let ts = (Date.now! - #starttime) / 60000 + utc * 60
 		<self>
 			<div.dial.h[rotate:{ts / 720}]> <i>
 			<div.dial.m[rotate:{ts / 60}]> <i>
