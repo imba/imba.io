@@ -1,19 +1,38 @@
 tag app-clock
-	<self>
-		css div pos:abs b:50% l:50% x:-50% origin:50% 100%
-		let ts = Date.now! / 60000 + utc * 60
-		<header[fs:xl fw:700 ta:center c:gray8/40 p:2]> name
-		<div[rd:1 bg:gray8 h:13vmin w:5px rotate:{ts / 720}]>
-		<div[rd:1 bg:gray6 h:18vmin w:4px rotate:{ts / 60}]>
-		<div[rd:1 bg:red5 h:21vmin w:2px rotate:{ts}]>
-		<div[rd:full bg:red5 size:10px y:50%]>
+	prop utc
 
-tag app
-	<self[d:grid gtc:1fr 1fr gap:4 pos:abs w:100% h:100% p:4]>
-		css app-clock pos:rel w:100% rd:2
-		<app-clock[bg:pink2] name='New York' utc=-5>
-		<app-clock[bg:purple2] name='San Fran' utc=-8>
-		<app-clock[bg:indigo2] name='London' utc=0>
-		<app-clock[bg:sky2] name='Tokyo' utc=9>
+	css pos:relative w:100% py:50% rd:2 bg:gray3
 
-imba.mount <app autorender=1fps>
+	css .dial
+		transform-origin: 50% 100% rd:1
+		pos:absolute b:50% l:50% x:-50%
+		bg:gray8 .m:gray7 .s:red
+		h:30% .m:42% .s:45%
+		w:5px .m:4px .s:3px
+		i,b pos:absolute d:block t:100% bg:inherit l:50% x:-50%
+		i h:10px ..s:20px w:75% o:0.7
+		b size:10px rd:100 y:-50%
+
+	def setup
+		# The next two lines needed to get it working in Firefox
+		let now = new Date(Date.now!)
+		#starttime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDay()).valueOf()
+
+	def mount
+		$interval = setInterval(render.bind(self),1000)
+	
+	def unmount
+		clearInterval($interval)
+	
+	def render
+		let ts = (Date.now! - #starttime) / 60000 + utc * 60
+		<self>
+			<div.dial.h[rotate:{ts / 720}]> <i>
+			<div.dial.m[rotate:{ts / 60}]> <i>
+			<div.dial.s[rotate:{ts}]> <i/> <b>
+
+imba.mount do <div[d:grid gtc: 1fr 1fr p:4 gap:4]>
+	<app-clock title='New York' utc=-5>
+	<app-clock title='San Fran' utc=-8>
+	<app-clock title='London' utc=0>
+	<app-clock title='Tokyo' utc=9>
