@@ -2169,7 +2169,7 @@ Rect.build(10)
 
 ## Class Inheritance
 
-An important feature of Classes is the ability to inherit from other classes. For example, an Athlete is also a person, so it makes sense to inherit the properties of a person so that if we ever update the person class, the Athlete's class will also be updated. It will also help us keep our code light.
+An important feature of Classes is the ability to inherit from other classes. For example, a Dog is also an Animal, so it makes sense to inherit the properties of an Animal so that if we ever update the Animal class, the Dog's class will also be updated. It will also help us keep our code light.
 
 ```imba
 class Animal
