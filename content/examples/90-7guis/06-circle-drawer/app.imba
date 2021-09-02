@@ -1,6 +1,11 @@
 import 'util/styles'
-# https://github.com/eugenkiss/7guis/wiki#circle
-# TODO: Undo/Redo
+
+# TODO (from https://eugenkiss.github.io/7guis/tasks):
+# * The task is to build a frame containing an undo and redo button [...]
+# * [..] Closing this frame will mark the last diameter as significant for the undo/redo history. Clicking undo will undo the last significant change (i.e. circle creation or diameter adjustment). Clicking redo will reapply the last undoed change unless new changes were made by the user in the meantime.
+# TODO: Right-clicking C will make a popup menu appear with one entry “Adjust diameter..”.
+# TODO: The circle nearest to the mouse pointer such that the distance from its center to the pointer is less than its radius, if it exists, is filled with the color gray.
+
 
 tag circle-drawer
 	circles = [] # Circles drawn on the SVG as {cx, cy, r}
@@ -22,6 +27,7 @@ tag circle-drawer
 
 	css svg bg:gray3 w:100% h:40rem
 	
+
 	css .circle-editor 
 		pos:absolute w:90% t:50% l:50% px:5 py:3 bg:white bd:gray1 
 		bxs:md transform: translate(-50%,-50%)
