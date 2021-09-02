@@ -174,7 +174,7 @@ app.get(/\.*/) do(req,res)
 			<link rel="preconnect" href="https://fonts.gstatic.com">
 			<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@900&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 			# <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet">
-
+			<style src='*'>
 		<body tabIndex='-1'>
 			<script src="./public/content.json.js?as=iife">
 			<script type="module" src="./src/index.imba">
