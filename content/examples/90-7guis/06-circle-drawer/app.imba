@@ -17,7 +17,7 @@ tag circle-drawer
 	def setSelection i
 		editing = yes
 		selection = circles[i]
-	
+
 	css d:block pos:relative
 
 	css svg bg:gray3 w:100% h:40rem
@@ -34,8 +34,8 @@ tag circle-drawer
 				<div.circle-editor>
 					<p> "Adjust diameter of circle at ({selection.cx}, {selection.cy})"
 					<input type="range" bind=selection.r>
-			
-			<svg @touch.fit=handleClick [d:block overflow:hidden bg:blue1] @contextmenu.prevent>
+
+			<svg @touch.fit=handleClick [d:block overflow:hidden bg:blue1] @contextmenu.sel('circle')>
 				for circle, i in circles
 					const selected = selection..cx === circle.cx && selection..cy === circle.cy
 					<circle r=circle.r cx=circle.cx cy=circle.cy
