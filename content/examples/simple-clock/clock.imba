@@ -6,7 +6,7 @@ tag app-clock
 		<div.location> <slot>
 		<div.dial.hour[rotate:{ts / 720}]>
 		<div.dial.minute[rotate:{ts / 60}]>
-		<div.dial.second[rotate:{ts}]>
+		<div.dial.second[rotate:{ts % 1000}]>
 		<div.circle>
 
 document.body.appendChild <div.grid>
