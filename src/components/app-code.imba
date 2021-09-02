@@ -332,6 +332,7 @@ tag app-code-block < app-code
 
 				# p:1lh of:visible h:auto pr:40%
 				>>> $code
+					py:10px px:10px h:auto
 					pre ws:pre-line
 					pre,b d:contents
 					span d:none
