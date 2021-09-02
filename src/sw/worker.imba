@@ -38,8 +38,6 @@ const services = {}
 const nr = Math.random!
 global.services = services
 
-console.log "starting worker!!!!",self
-
 def compileImba file
 	try
 		let body = file.body
