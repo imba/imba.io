@@ -90,6 +90,10 @@ global css
 		px:2 py:1 fs:sm
 
 	.pill rd:2 bg:teal2 fs:xs c:teal7 py:1 px:2
+	
+	.clickable
+		inset:0 bg:gray1 p:2 of:hidden d:hflex ja:center
+		@before content: "click anywhere" c:gray3 fs:xl fw:500
 
 	.rect
 		cursor:pointer
@@ -97,6 +101,9 @@ global css
 		touch-action:none
 		d:flex jc:center ai:center rd:sm min-width:8 min-height:8
 		bg:purple3/60 @hover:purple3/90
+		
+	.alert
+		bd:blue6 bg:blue5 d:hflex ja:center c:white rd:sm p:2 px:3 pos:absolute inset:24px
 
 	.tags
 		m: -4px

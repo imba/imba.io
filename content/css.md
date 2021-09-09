@@ -612,6 +612,7 @@ Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, 
 
 ### d:hflex [cssvalue]
 
+
 ### d:vflex [cssvalue]
 
 ### d:hgrid [cssvalue]
@@ -863,3 +864,89 @@ imba.mount do <section[fs:lg]>
 ### ofy [cssprop]
 
 ### ofa [cssprop]
+
+
+# Transitions
+
+Imba has **experimental support** for transitioning when elements are added to and removed from the document. If you set an `ease` attribute on a tag, ie. `<my-element ease>`, imba makes it possible to easily style the enter-state and exit-state of the element and its children, as well as the timing and easing of this transition.
+
+Imba does not ship with any prebuilt transitions. This might change in a later version, but the idea is that the syntax for styling is powerful enough to easily create your own transitions. Let's create a simple example where we ease a modal on and off the stage:
+
+##### no transitions [preview=md]
+
+```imba
+# ~preview=md
+import 'util/styles'
+
+css label d:hflex a:center us:none
+css input mx:1
+
+# ---
+tag App
+    alerted = no
+    <self @click=(alerted = !alerted)>
+        if alerted
+            <div.alert> "Important message"
+# ---
+let app = imba.mount <App.clickable>
+```
+
+
+
+Now, if we add an `ease` property to the `<div>`, we can use the `@off` style modifier to specify the appearance of the element when it is removed from the dom. Imba will transition the `@off` state smoothly, but all easings and durations can be customized. Imba takes care of keeping the element attached to the dom until all transitions have finished.
+
+##### ease [preview=md]
+
+```imba
+# ~preview=md
+# css div p:2 m:2 overflow:hidden min-width:80px
+import 'util/styles'
+# ---
+tag App
+    alerted = no
+    <self @click=(alerted = !alerted)>
+        if alerted
+            <div.alert[y@off:100px] ease> "Important message"
+# ---
+let app = imba.mount <App.clickable>
+```
+
+If you want to transition to a different state when leaving you can use the `@out` modifier.
+
+##### ease with @out [preview=md]
+
+```imba
+# ~preview=md
+# css div p:2 m:2 overflow:hidden min-width:80px
+import 'util/styles'
+
+# ---
+tag App
+    alerted = no
+    <self @click=(alerted = !alerted)>
+        if alerted
+            <div.alert[o@off:0 x@off:-100px x@out:100px] ease> "Important message"
+# ---
+let app = imba.mount <App.clickable>
+```
+Now you can see that it comes in from the left, but leaves to the right. If the element is re-attached while exiting or detached while still entering, the transition will gracefully revert. You can see this by clicking the checkbox rapidly.
+
+You can easily transition nested elements inside the eased element as well.
+
+##### nested easing [preview=md]
+
+```imba
+# ~preview=md
+# css div p:2 m:2 overflow:hidden min-width:80px
+import 'util/styles'
+# ---
+tag App
+    alerted = no
+    <self @click=(alerted = !alerted)>
+        if alerted
+            <div.alert[o@off:0 y@off:100px ease:1s] ease>
+                <div[scale@off:0]> "Important message"
+# ---
+let app = imba.mount <App.clickable>
+```
+Click to see the inner div scale during the transition. Also note that we did set the duration of the transition using the `ease` style property. You can specify the ease duration and timing function for each element, and also specify them individually for transforms, opacity and colors. See properties.
