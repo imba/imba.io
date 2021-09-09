@@ -7,7 +7,7 @@ multipage:true
 
 ## Build Fast, Fast.
 
-Imba is a Web programming language that's fast in two ways: Imba's time-saving syntax with built-in tags and styles results in less typing and switching files so you can build things fast. Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM libraries, so you can build fast things.
+Imba is a Web programming language that compiles to Javascript. Imba is fast in two ways: Time-saving syntax with built-in tags and styles results in less typing and switching files so you can build things fast. A groundbreaking memoized DOM is an order of magnitude faster than virtual DOM libraries, so you can build fast things.
 
 In Imba DOM elements _and_ CSS are treated as first-class citizens. DOM elements are compiled to a [memoized DOM](https://www.freecodecamp.org/news/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52/), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than today's virtual DOM implementations.
 
@@ -57,9 +57,9 @@ npm install
 npm start
 ```
 
-This will create a brand new app using the latest version of Imba and run it with hot reloading.
+This will create a brand new app using the latest version of Imba and run it with hot reloading. Edit the `/app/client.imba` file to get started.
 
-To create a build version of the app for deployment, simply run
+To create a build version of the app for deployment, simply run:
 
 ```sh
 npm build

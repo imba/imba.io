@@ -407,6 +407,10 @@ imba.mount do
 
 # Mouse Events [wip]
 
+```imba
+<button @click=(console.log("Button was clicked!"))> "Click Me"
+```
+
 # Keyboard Events [wip]
 
 
@@ -1113,6 +1117,28 @@ imba.mount <App>
 ```
 
 # Selection Events
+
+The `@selection` event is a custom event which allows listening for selection changes on a particular element such as a `<textarea>` or `<input>` the event object's `detail` property contains the start and end index of the selection.
+
+```imba
+# [preview=md]
+import 'util/styles'
+# ---
+tag App
+
+    start = 0
+    end = 0
+
+    def handleSelection e
+        start = e.detail.start
+        end = e.detail.end
+
+    <self[ta:center fs:sm]>
+        <input type="text" @selection=handleSelection value="Select some of this text">
+        <div> "Selection from {start} to {end}"
+
+imba.mount <App>
+```
 
 # Custom Events
 
