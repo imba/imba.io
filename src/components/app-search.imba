@@ -55,9 +55,11 @@ tag app-search
 
 	def show
 		flags.remove('hidden')
-		clearTimeout(#hider)
-		focus!
-		$input.setSelectionRange(0,query.length)
+		# setTimeout(&, 1) do # this also works...
+		imba.commit().then do
+			clearTimeout(#hider)
+			focus!
+			$input.setSelectionRange(0,query.length)
 
 	def hide
 		# flags.remove('entered')
