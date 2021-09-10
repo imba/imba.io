@@ -866,13 +866,12 @@ imba.mount do <section[fs:lg]>
 ### ofa [cssprop]
 
 
-# Transitions
+# Transitions [preview=md]
 
 Imba has **experimental support** for transitioning when elements are added to and removed from the document. If you set an `ease` attribute on a tag, ie. `<my-element ease>`, imba makes it possible to easily style the enter-state and exit-state of the element and its children, as well as the timing and easing of this transition.
 
-Imba does not ship with any prebuilt transitions. This might change in a later version, but the idea is that the syntax for styling is powerful enough to easily create your own transitions. Let's create a simple example where we ease a modal on and off the stage:
+Imba does not ship with any prebuilt transitions. This might change in a later version, but the idea is that the syntax for styling is powerful enough to easily create your own transitions. 
 
-##### no transitions [preview=md]
 
 ```imba
 # ~preview=md
@@ -891,11 +890,7 @@ tag App
 let app = imba.mount <App.clickable>
 ```
 
-
-
-Now, if we add an `ease` property to the `<div>`, we can use the `@off` style modifier to specify the appearance of the element when it is removed from the dom. Imba will transition the `@off` state smoothly, but all easings and durations can be customized. Imba takes care of keeping the element attached to the dom until all transitions have finished.
-
-##### ease [preview=md]
+In the above example, we attach the `<div>` to the dom only when `alerted` is true. In many cases you may want to smoothly transition the element in and out instead of abruptly removing it. To do this in imba, we simply add an `ease` property to the `<div>` in question.
 
 ```imba
 # ~preview=md
@@ -906,14 +901,16 @@ tag App
     alerted = no
     <self @click=(alerted = !alerted)>
         if alerted
-            <div.alert[y@off:100px] ease> "Important message"
+            <div.alert[opacity@off:0] ease> "Important message"
 # ---
 let app = imba.mount <App.clickable>
 ```
 
-If you want to transition to a different state when leaving you can use the `@out` modifier.
+Now that we have declared that this element should ease, we use the `@off` style modifier to specify the appearance of the element when it is detached from the dom. In this case, we set that the opacity should be set to 0. Imba will transition to/from `@off` state smoothly, but all easings and durations can be customized. Imba takes care of keeping the element attached to the dom until all transitions have finished.
 
-##### ease with @out [preview=md]
+If you want separate transitions depending on whether the element is being attached or detached, you can use the `@in` and `@out` modifiers:
+
+
 
 ```imba
 # ~preview=md
@@ -925,15 +922,13 @@ tag App
     alerted = no
     <self @click=(alerted = !alerted)>
         if alerted
-            <div.alert[o@off:0 x@off:-100px x@out:100px] ease> "Important message"
+            <div.alert[y@in:100px y@out:-100px] ease> "In from below, out above!"
 # ---
 let app = imba.mount <App.clickable>
 ```
 Now you can see that it comes in from the left, but leaves to the right. If the element is re-attached while exiting or detached while still entering, the transition will gracefully revert. You can see this by clicking the checkbox rapidly.
 
 You can easily transition nested elements inside the eased element as well.
-
-##### nested easing [preview=md]
 
 ```imba
 # ~preview=md
@@ -949,4 +944,5 @@ tag App
 # ---
 let app = imba.mount <App.clickable>
 ```
+
 Click to see the inner div scale during the transition. Also note that we did set the duration of the transition using the `ease` style property. You can specify the ease duration and timing function for each element, and also specify them individually for transforms, opacity and colors. See properties.
