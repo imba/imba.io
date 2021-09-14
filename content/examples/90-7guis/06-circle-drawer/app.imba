@@ -34,7 +34,7 @@ tag circle-drawer
 			<div.circle-editor>
 				<p[fs:sm- c:gray6 mb:2]>
 					"Adjust diameter of circle at ({state.selection.cx}, {state.selection.cy})"
-				<input[w:100%] type="range" bind=state.selection.r>
+				<input[w:100%] type="range" bind=state.selection.r @change.debounce=state.handleScale>
 				<global @click.capture.outside.stop=(state.editing=no)>
 
 		<svg[inset:0 size:100% bg:gray2] @click=state.handleClick>
