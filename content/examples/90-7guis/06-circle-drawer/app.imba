@@ -7,45 +7,39 @@ import 'util/styles'
 # TODO: The circle nearest to the mouse pointer such that the distance from its center to the pointer is less than its radius, if it exists, is filled with the color gray.
 
 
+global css html,body w:100% h:100% m:0 p:0
+
 tag circle-drawer
 	circles = [] # Circles drawn on the SVG as {cx, cy, r}
 	selection = null # Circle selected with right click for editing
 	editing = no
 
-	def handleClick e
-		return if e.phase !== 'ended' # Create on mouse up
-		return if e.events[-1].button !== 0 # Only left clicks
-		editing = no
-		circles.push({ cx: e..event..offsetX, cy: e..event..offsetY, r: 60 })
-		selection = circles[-1]
+	def add cx = 0, cy = 0, r = 20
+		circles.push(selection = { cx: cx, cy: cy, r: r })
 
-	def setSelection i
+	def edit circle
+		selection = circle
 		editing = yes
-		selection = circles[i]
 
-	css d:block pos:relative
-
-	css svg bg:gray3 w:100% h:40rem
-	
+	def select circle
+		selection = circle
 
 	css .circle-editor 
-		pos:absolute w:90% t:50% l:50% px:5 py:3 bg:white bd:gray1 
-		bxs:md transform: translate(-50%,-50%)
-		p fs:sm- c:gray6 mb:2
-		input w:100%
+		pos:absolute inset:10px px:5 py:3 bg:white bd:gray1 top:auto bxs:md
 
-	def render
-		<self>
-			if editing
-				<div.circle-editor>
-					<p> "Adjust diameter of circle at ({selection.cx}, {selection.cy})"
-					<input type="range" bind=selection.r>
+	<self[d:contents]>
+		if editing
+			<div.circle-editor>
+				<p[fs:sm- c:gray6 mb:2]>
+					"Adjust diameter of circle at ({selection.cx}, {selection.cy})"
+				<input[w:100%] type="range" bind=selection.r>
+				<global @click.capture.outside.stop=(editing=no)>
 
-			<svg @touch.fit=handleClick [d:block overflow:hidden bg:blue1] @contextmenu.sel('circle')>
-				for circle, i in circles
-					const selected = selection..cx === circle.cx && selection..cy === circle.cy
-					<circle r=circle.r cx=circle.cx cy=circle.cy
-						[fill:gray5]=selected
-						@contextmenu.prevent=setSelection(i)>
+		<svg[inset:0 size:100% bg:gray2] @click=add(e.offsetX,e.offsetY)>
+			for circle, i in circles
+				<circle[fill:gray3 stroke:gray5] r=circle.r cx=circle.cx cy=circle.cy
+					[fill:gray5]=(circle==selection)
+					@click.stop=select(circle)
+					@contextmenu.prevent=edit(circle)>
 
 imba.mount <circle-drawer>
