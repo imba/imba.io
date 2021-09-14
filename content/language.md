@@ -2066,7 +2066,7 @@ Meta properties are implemented as symbols, They do not show up on an Object usi
 
 ### Storing values for getters and setters
 
-You may often find yourself defining setters because you want to do something when a property is set. The problem is that a property with a setter cannot also store an actual value with the same name. The ideomatic way to store underlying values in setters is to use a meta property with the same name:
+You may often find yourself defining setters because you want to do something when a property is set. The problem is that a property with a setter cannot also store an actual value with the same name. The idiomatic way to store underlying values in setters is to use a meta property with the same name:
 
 ```imba
 class Todo
@@ -2169,7 +2169,7 @@ Rect.build(10)
 
 ## Class Inheritance
 
-An important feature of Classes is the ability to inherit from other classes. For example, an Athlete is also a person, so it makes sense to inherit the properties of a person so that if we ever update the person class, the Athlete's class will also be updated. It will also help us keep our code light.
+An important feature of Classes is the ability to inherit from other classes. For example, a Dog is also an Animal, so it makes sense to inherit the properties of an Animal so that if we ever update the Animal class, the Dog's class will also be updated. It will also help us keep our code light.
 
 ```imba
 class Animal
