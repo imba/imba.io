@@ -1,5 +1,5 @@
 import './util/layout'
-import './util/shortcuts'
+# import './util/shortcuts'
 import './styles'
 
 import './components/app-document'
@@ -130,10 +130,10 @@ tag app-root
 					if window.debug
 						<div @resize.silent=render> "{window.innerWidth}px"
 				<div[d:flex cursor:pointer us:none]>
-					<a.tab[mr:4] @click.emit-showsearch>
+					<a.tab[mr:4] @click.emit-showsearch @hotkey('mod+k|s')>
 						<svg src='./assets/icons/search.svg'>
 						<span[c:blue4/50 mx:0.5 tt:none]> "Search..."
-						<span.keycap hotkey='s' @hotkey.prevent.emit-showsearch> 'S'
+						<span.keycap> 'S'
 					if home?
 						<a.tab @click.emit-showide href='/language/introduction'>
 							<svg src='./assets/icons/book.svg'>

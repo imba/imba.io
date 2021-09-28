@@ -143,4 +143,4 @@ tag app-menu
 				<app-menu-section[c:violet6] data=ls('/tags')>
 				<app-menu-section[c:sky6] data=ls('/events')>
 				# <app-menu-section[c:indigo6] data=ls('/styling')>
-				<app-menu-section[c:amber6 min-height:65vh] data=ls('/css')>
+				<app-menu-section[c:amber6] data=ls('/css')>

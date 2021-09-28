@@ -71,7 +71,7 @@ tag app-repl-preview
 				$console.native = win.console
 				$console.autoclear!
 				win.console.log = $console.log.bind($console)
-				win.console.info = $console.info.bind($console)
+				win.console.info = $console.log.bind($console)
 				# $console.clear!
 
 		$iframe.onload = do
