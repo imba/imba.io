@@ -409,6 +409,7 @@ Imba has 10 predefined breakpoint modifiers. Five for min-width breakpoints and 
 @md # -> @media (min-width: 768px){ sel {...} }
 @lg # -> @media (min-width: 1024px){ sel {...} }
 @xl # -> @media (min-width: 1280px){ sel {...} }
+@2xl # -> @media (min-width: 1536px){ sel {...} }
 ```
 The max-width modifiers use the `lt-` prefix, which stands for "less than."
 ```imba
@@ -417,6 +418,7 @@ The max-width modifiers use the `lt-` prefix, which stands for "less than."
 @lt-md # -> @media (max-width: 767px){ sel {...} }
 @lt-lg # -> @media (max-width: 1023px){ sel {...} }
 @lt-xl # -> @media (max-width: 1279px){ sel {...} }
+@lt-2xl # -> @media (max-width: 1535px){ sel {...} }
 ```
 
 ## Defined Breakpoints
