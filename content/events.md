@@ -413,6 +413,13 @@ imba.mount do
 
 # Keyboard Events [wip]
 
+# Hotkey Events [wip]
+
+The special hotkey event is based on [Mousetrap](https://craig.is/killing/mice) it will listen for the hotkey globally.
+
+```imba
+<div @hotkey("mod+s")=(console.log('save'))>
+```
 
 ## Modifiers [toc-pills]
 
