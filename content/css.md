@@ -499,6 +499,28 @@ The color CSS data-type represents a color in the sRGB color space. Colors can b
 
 Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, these named colors can be used anywhere in your styles where a color value is expected.
 
+## Tints
+The tints feature can be used to replace a color throughout some CSS while maintaining the different tints of that color. Create the base styles using the word "tint" followed by a number corresponding to a tint strength instead of a color name (such as `background-color:tint3` or `color:tint8`). Then where the tag is used, style the custom `tint` property to specify the color that should be tinted, such as: `tint:red`
+
+A button with a light background and dark text could be easily colored differently like this:
+
+```imba
+# ~preview=sm
+# ---
+tag Button
+    css bgc:tint2 c:tint8
+    <self> <slot>
+
+tag App
+    <self>
+        <Button[tint:red]> "I'm tinted red"
+        <Button[tint:green]> "I'm tinted green"
+
+imba.mount <App>
+```
+
+
+
 # Dimensions
 
 ## Sizing [toc-pills]
