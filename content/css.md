@@ -98,6 +98,17 @@ global css button
     position: relative
     display: block
     background: #b2f5ea
+global css
+	.btn shadow:sm fw:500 cursor:pointer
+
+# rest of file ...
+```
+
+If you want to define a global class, it's the same concept.
+
+```imba
+global css
+	.btn shadow:sm fw:500 cursor:pointer
 
 # rest of file ...
 ```
