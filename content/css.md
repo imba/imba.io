@@ -499,6 +499,123 @@ The color CSS data-type represents a color in the sRGB color space. Colors can b
 
 Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, these named colors can be used anywhere in your styles where a color value is expected.
 
+# Theming
+## Color Theming
+
+Imba already contains color keywords, but you may also create aliases for color keywords, make your own keywords, or redefine the default keywords to new color values.
+
+## Create config file
+
+Create an `imbaconfig.json` at the root of your imba project. Right next to your package.json and readme.md files.
+
+and create a `"theme":{}` object with a `"colors":{}` object within it.
+
+```json
+{
+	"theme": {
+		"colors": {			
+		}
+	}
+}
+```
+
+> Any changes made to the imbaconfig.json file will require you to restart your localhost server to take effect.
+
+### Create Aliases
+
+We can create an alias for the `indigo` color called `primary` in this way.
+
+```json
+{
+	"theme": {
+		"colors": {			
+			"primary": "indigo"
+		}
+	}
+}
+```
+
+Now we can use `primary` instead of `indigo` to set the indigo color.
+
+```
+<h1[c:primary4]> "hello world!"
+```
+
+We can also override default color keywords. We can make `gray` an alias for `warmer` instead of the default gray colors.
+
+```json
+{
+	"theme": {
+		"colors": {			
+			"gray": "warmer"
+		}
+	}
+}
+```
+
+### Create Color Keywords
+
+We can create our own color keywords with specified tint values.
+
+```json
+{
+    "theme": {
+        "colors": {
+            "coral": {
+                "0": "hsl(40,33%,98%)",
+                "1": "hsl(28,61%,94%)",
+                "2": "hsl(12,62%,88%)",
+                "3": "hsl(10,54%,76%)",
+                "4": "hsl(6,56%,65%)",
+                "5": "hsl(5,49%,54%)",
+                "6": "hsl(4,49%,44%)",
+                "7": "hsl(4,50%,34%)",
+                "8": "hsl(4,50%,24%)",
+                "9": "hsl(6,52%,15%)"
+            }
+        }
+    }
+}
+```
+
+We will then be able to use our own color keyword as we would use the default color keywords.
+
+```
+<h1[c:coral7/70]> "hello world!"
+```
+
+Any unspecified tint will be interpolated automatically. So the configuration below will produce a similar result.
+
+```json
+{
+    "theme": {
+        "colors": {
+            "coral": {
+                "0": "hsl(40,33%,98%)",
+                "4": "hsl(6,56%,65%)",
+                "9": "hsl(6,52%,15%)"
+            }
+        }
+    }
+}
+```
+
+We could override one of the default keywords with these custom color values.
+
+```json
+{
+    "theme": {
+        "colors": {
+            "red": {
+                "0": "hsl(40,33%,98%)",
+                "4": "hsl(6,56%,65%)",
+                "9": "hsl(6,52%,15%)"
+            }
+        }
+    }
+}
+```
+
 # Tints [wip]
 The `tint` color value works as an argument for passing color values to a component dynamically. The benefit of it over a regular css variable, is that we can still apply Imba's zero to nine lightness values and an alpha value with the forward-slash syntax. 
 
