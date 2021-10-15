@@ -138,20 +138,20 @@ imba.mount do
 		<article> "Three"
 ```
 
-### silence [event-modifier] [snippet]
+### silent [event-modifier] [snippet]
 
 By default, Imba will re-render all scheduled tags after any *handled* event. So, Imba won't re-render your application if you click an element that has no attached handlers, but if you've added a `@click` listener somewhere in the chain of elements, `imba.commit` will automatically be called after the event has been handled. 
 
 ```imba
 # [preview=md]
 import 'util/styles'
-
+let log = console.log.bind(console)
 # ---
 let counter = 0
 imba.mount do <section>
 	<div.group>
-		<button @click.silence.log('silenced')> "Silenced"
-		<button @click.log('clicked')> "Not silenced"
+		<button @click.silent=log('silenced')> "Silenced"
+		<button @click=(do yes)> "Not silenced"
 	<label> "Rendered {++counter} times"
 ```
 
@@ -160,14 +160,14 @@ This is usually what you want, but it is useful to be able to override this, esp
 ```imba
 # [preview=md]
 import 'util/styles'
-
+let log = console.log.bind(console)
 # ---
 tag Filter
 	counter = 0
 	<self>
 		<div> "Filter rendered {counter++} times"
-		<input value="Default" @selection.log('!')>
-		<input value="Silent" @selection.silence.log('!')>
+		<input value="Default" @selection=(do yes)>
+		<input value="Silent" @selection.silent=(do yes)>
 
 tag App
 	counter = 0
@@ -177,7 +177,7 @@ tag App
 
 imba.mount <App>
 ```
-If you try to select the "Default" text you will see that both the `App` and the `Filter` elements re-render. This happens because `App` is mounted via `imba.mount` which automatically schedules the element to render after events, and the Filter is rendered when `App` is rendered since it is a descendant of `App`. Now if you select text in the "Silent" input, it too has an event handler for the same event, but we've added a `.silence` modifier. This prevents the handler from automatically re-rendering scheduled elements after the event.
+If you try to select the "Default" text you will see that both the `App` and the `Filter` elements re-render. This happens because `App` is mounted via `imba.mount` which automatically schedules the element to render after events, and the Filter is rendered when `App` is rendered since it is a descendant of `App`. Now if you select text in the "Silent" input, it too has an event handler for the same event, but we've added a `.silent` modifier. This prevents the handler from automatically re-rendering scheduled elements after the event.
 
 
 ## Utility Modifiers [toc-pills] [slug=util]
