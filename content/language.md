@@ -1447,7 +1447,8 @@ let res = for num in [1,2,3,4,5]
 ```
 
 ```imba
-# When supplying an argument to break, this value will be added to the resulting array
+# When supplying an argument to break
+# this value will be added to the resulting array
 let res = for num in [1,2,3,4,5]
 	break -1 if num == 3
 	num * 2
