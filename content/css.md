@@ -499,6 +499,160 @@ The color CSS data-type represents a color in the sRGB color space. Colors can b
 
 Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, these named colors can be used anywhere in your styles where a color value is expected.
 
+# Theming [wip]
+## Color Theming
+
+Imba already contains color keywords, but you may also create aliases for color keywords, make your own keywords, or redefine the default keywords to new color values.
+
+## Create config file
+
+Create an `imbaconfig.json` at the root of your imba project. Right next to your package.json and readme.md files.
+
+and create a `"theme":{}` object with a `"colors":{}` object within it.
+
+```json
+{
+	"theme": {
+		"colors": {			
+		}
+	}
+}
+```
+
+> Any changes made to the imbaconfig.json file will require you to restart your localhost server to take effect.
+
+### Create Aliases
+
+We can create an alias for the `indigo` color called `primary` in this way.
+
+```json
+{
+	"theme": {
+		"colors": {			
+			"primary": "indigo"
+		}
+	}
+}
+```
+
+Now we can use `primary` instead of `indigo` to set the indigo color.
+
+```
+<h1[c:primary4]> "hello world!"
+```
+
+We can also override default color keywords. We can make `gray` an alias for `warmer` instead of the default gray colors.
+
+```json
+{
+	"theme": {
+		"colors": {			
+			"gray": "warmer"
+		}
+	}
+}
+```
+
+### Create Color Keywords
+
+We can create our own color keywords with specified tint values.
+
+```json
+{
+    "theme": {
+        "colors": {
+            "coral": {
+                "0": "hsl(40,33%,98%)",
+                "1": "hsl(28,61%,94%)",
+                "2": "hsl(12,62%,88%)",
+                "3": "hsl(10,54%,76%)",
+                "4": "hsl(6,56%,65%)",
+                "5": "hsl(5,49%,54%)",
+                "6": "hsl(4,49%,44%)",
+                "7": "hsl(4,50%,34%)",
+                "8": "hsl(4,50%,24%)",
+                "9": "hsl(6,52%,15%)"
+            }
+        }
+    }
+}
+```
+
+We will then be able to use our own color keyword as we would use the default color keywords.
+
+```
+<h1[c:coral7/70]> "hello world!"
+```
+
+Any unspecified tint will be interpolated automatically. So the configuration below will produce a similar result.
+
+```json
+{
+    "theme": {
+        "colors": {
+            "coral": {
+                "0": "hsl(40,33%,98%)",
+                "4": "hsl(6,56%,65%)",
+                "9": "hsl(6,52%,15%)"
+            }
+        }
+    }
+}
+```
+
+We could override one of the default keywords with these custom color values.
+
+```json
+{
+    "theme": {
+        "colors": {
+            "red": {
+                "0": "hsl(40,33%,98%)",
+                "4": "hsl(6,56%,65%)",
+                "9": "hsl(6,52%,15%)"
+            }
+        }
+    }
+}
+```
+
+# Tints [wip]
+The `tint` color value works as an argument for passing color values to a component dynamically. The benefit of it over a regular css variable, is that we can still apply Imba's zero to nine lightness values and an alpha value with the forward-slash syntax. 
+
+Forexample `c:tint8/50` would give us any color we pass to the `tint:` proprety in a lightness value of 8, at 50% opacity.
+Below we have a Button component that is using `tint1`, `tint5`,  and `tint8/80`, we can then set the default tint value to cool  `tint:cool`, and the component will have the default color values of `cool1`, `cool5`, and `cool9/80`.
+```imba
+tag Button
+    css c:tint8/80
+        bg:tint1 @hover:tint3
+        bd:2px solid tint5
+        tint:cool # default tint color, will be overridden
+    <self>
+        <span> <slot>
+```
+We can then update the tint of a component instance, using a [color keyword](https://imba.io/css/colors) as a value for the `tint` property, as we did with `tint:cool`. We can add a tint value from any style scope, and the tint value will not affect the lightness and alpha values specified in the component's default styles.
+```imba
+tag App
+    prop alpha = 100
+    css .red tint:red # component scope style
+    <self>
+        <Button.global> "global"
+        <Button[tint:green]> "green" # inline style
+        <Button.red> "red"
+        <Button> "amber"
+            css tint:amber # nested inline style block
+        <Button> "default" # default "cool" color
+```
+### Dynamic Tint Values [tip]
+Value interpolation into tint values is not yet supported, but it will be supported in the near future.
+```imba
+tag Colors
+    items = [red,green,blue]
+    <self>
+        for item in items
+            <Button[tint:{item}]> item
+```
+
 # Dimensions
 
 ## Sizing [toc-pills]
