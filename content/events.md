@@ -299,6 +299,20 @@ imba.mount do <div.group>
 	<button @click.if(age > 16).log('drive')> 'drive'
 ```
 
+#### trusted [event-modifier] [snippet]
+
+Event will only be handled if it [isTrusted](https://developer.mozilla.org/en-US/docs/Web/API/Event/isTrusted).
+
+```imba
+# [preview=sm]
+import 'util/styles'
+
+# ---
+# only trigger if event.target.matches(selector) is true
+imba.mount do <div.group @click.trusted.log('trusted!')>
+	<div> 'Real click'
+	<button @click.stop.prevent=(e.target.parentNode.click!)> 'Fake click'
+```
 
 #### ctrl [event-modifier] [snippet]
 
