@@ -19,7 +19,7 @@ css
 	
 	api-link
 		d:inline-block
-		&.event,&.pill
+		&.event,&.eventmodifier,&.pill
 			a px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
 				@before c:tint9 fw:normal
 				@hover bg:tint2
@@ -191,9 +191,6 @@ tag api-entry
 			<api-props name='Properties' data=data.properties>
 				<p slot='head'> <api-link data=data.type>
 
-			
-			# <api-parents data=data.type members=data.modifiers> "This event supports the following modifiers: "
-			# <api-entry-modifiers[tint:purple] data=data>
 			<api-entry-examples data=data>
 		
 		elif data.kind == 'eventmodifier'
@@ -208,16 +205,27 @@ tag api-entry
 					<h3> "Syntax"
 					<app-code-block raw="<div @event.{data.displayName}=handler>">
 			
-			<div[my:4]> "See related modifiers: "
-				for item in data.siblings
-					<api-link[mr:4px].inherited .pill data=item>
-			
 			<api-entry-examples data=data>
 			
+			<api-section>
+				<h3> "See also"
+				<p> for item in data.siblings
+					<api-link[mr:4px].inherited .pill data=item>
+			
 		elif data.kind == 'method'
-			<h1> data.name
+			<h1>
+				<span[fw:normal]> <api-link data=data.owner>
+				<span> "." + data.displayName
 			<api-docs data=data>
 			<div> "Other methods on {<api-link data=data.owner>} include "
+				for item in data.siblings
+					<api-link[mr:4px].inherited .pill data=item>
+		elif data.kind == 'property'
+			<h1>
+				<span[fw:normal]> <api-link data=data.owner>
+				<span> "." + data.displayName
+			<api-docs data=data>
+			<div[my:4]> "Other properties on {<api-link data=data.owner>} include "
 				for item in data.siblings
 					<api-link[mr:4px].inherited .pill data=item>
 

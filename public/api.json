@@ -287,10 +287,23 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "detail": "(time = 500ms)"
+            "detail": "(time = 500ms)",
+            "summary": true
           },
           "docs": [
-            "<p>Hello there</p>\n"
+            "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">throttle</app-code-inline> modifier ensures the handler is called at most every <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link class=\"cfy-ah\">@scroll</api-link>, <api-link class=\"cfy-ah\">@pointermove</api-link> etc.</p>\n<p>See <api-link class=\"cfy-ah\">@event.cooldown</api-link> and <api-link class=\"cfy-ah\">@event.debounce</api-link>.</p>\n"
+          ]
+        },
+        {
+          "name": "@cooldown",
+          "meta": {},
+          "kind": "eventmodifier",
+          "tags": {
+            "detail": "(time = 500ms)",
+            "summary": "Yes"
+          },
+          "docs": [
+            "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">cooldown</app-code-inline> modifier ensures the handler is called at most every <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link class=\"cfy-ah\">@scroll</api-link>, <api-link class=\"cfy-ah\">@pointermove</api-link> etc.</p>\n<p>See <api-link class=\"cfy-ah\">@event.throttle</api-link> and <api-link class=\"cfy-ah\">@event.debounce</api-link>.</p>\n"
           ]
         },
         {
@@ -298,10 +311,11 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "detail": "(time = 500ms)"
+            "detail": "(time = 500ms)",
+            "summary": true
           },
           "docs": [
-            "<p>Hello there</p>\n"
+            "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">debounce</app-code-inline> modifier ensures that a minimum amount of time has elapsed after the user stops interacting and before calling the handler. This is especially useful, for example, when querying an API and not wanting to perform a request on every keystroke.\n<app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">See</app-code-inline>@event.cooldown<app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">and</app-code-inline>@event.throttle`.</p>\n"
           ]
         },
         {
@@ -1192,32 +1206,43 @@
       "kind": "eventinterface",
       "extends": "Event",
       "meta": {
-        "Syntax": true
+        "Syntax": true,
+        "Parameters": true
       },
       "members": [
         {
           "name": "@in",
-          "meta": {},
+          "meta": {
+            "Syntax": true
+          },
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "summary": "Stop handling unless intersectionRatio has increased."
+          },
           "docs": [
-            "<p>The in modifier tells the intersect event to only trigger whenever the visibility has increased.</p>\n"
+            "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">out</app-code-inline> modifier stops the handler unless intersectionRatio has <em>increased</em>.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"8.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @intersect.in=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block>"
           ]
         },
         {
           "name": "@out",
-          "meta": {},
+          "meta": {
+            "Syntax": true
+          },
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "summary": "Stop handling unless intersectionRatio has decreased."
+          },
           "docs": [
-            "<p>The out modifier tells the intersection event to only trigger whenever the visibility has decreased.</p>\n"
+            "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">out</app-code-inline> modifier stops the handler unless intersectionRatio has <em>decreased</em>.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"9.imba\" data-lang=\"imba\"># Will only trigger when element starts intersecting\n&lt;div @intersect.out=handler&gt;\n# Will trigger whenever any part of the div is hidden\n&lt;div @intersect(1).out=handler&gt;</code></app-code-block>"
           ]
         },
         {
           "name": "@css",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "summary": "Set css variable `--ratio` to the intersectionRatio."
+          },
           "docs": [
             "<p>The css modifier sets a css variable --ratio on the event target with the current ratio.</p>\n"
           ]
@@ -1233,16 +1258,7 @@
             }
           },
           "docs": [
-            "<p>Will add a class to the DOM element whenever it is intersecting</p>\n"
-          ]
-        },
-        {
-          "name": "@flag-name",
-          "meta": {},
-          "kind": "eventmodifier",
-          "tags": {},
-          "docs": [
-            "<p>Add an html class to target for at least 250ms\nIf the callback returns a promise, the class\nwill not be removed until said promise has resolved</p>\n"
+            "<p>Will add a class to the DOM element when intersecting</p>\n"
           ]
         },
         {
@@ -1256,7 +1272,7 @@
             }
           },
           "docs": [
-            "<p>Will add a class to the DOM element whenever it is intersecting</p>\n"
+            "<p>Configuring</p>\n"
           ]
         },
         {
@@ -1288,7 +1304,7 @@
         }
       ],
       "docs": [
-        "<p><a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API\">IntersectionObserver</a> is a <a href=\"https://caniuse.com/#feat=intersectionobserver\">well-supported</a> API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document&#39;s viewport. Imba adds a simplified abstraction on top of this via the custom <api-link class=\"cfy-ah\">@intersect</api-link> event.</p>\n<p>The <api-link class=\"cfy-ah\">@intersect</api-link> handler accepts several arguments. You can pass in an object with the same <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root\">root</a>, <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin\">rootMargin</a>, and <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold\">threshold</a>  properties supported by <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver\">IntersectionObserver</a>.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"2.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @intersect.in=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block>"
+        "<p><a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API\">IntersectionObserver</a> is a <a href=\"https://caniuse.com/#feat=intersectionobserver\">well-supported</a> API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document&#39;s viewport. Imba adds a simplified abstraction on top of this via the custom <api-link class=\"cfy-ah\">@intersect</api-link> event.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"2.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @intersect.in=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block><h4>Parameters</h4><p>The <api-link class=\"cfy-ah\">@intersect</api-link> events accepts several arguments. You can pass in an object with the same <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root\">root</a>, <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin\">rootMargin</a>, and <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold\">threshold</a>  properties supported by <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver\">IntersectionObserver</a>. </p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"3.imba\" data-lang=\"imba\">&lt;div @intersect=handler&gt; # default options\n&lt;div @intersect(root: frame, rootMargin: '20px')=handler&gt;\n&lt;div @intersect(threshold: [0,0.5,1])=handler&gt;</code></app-code-block><p>For convenience, imba will convert certain arguments into options. A single number between 0 and 1 will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold\">threshold</a> option:</p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"4.imba\" data-lang=\"imba\"># n 0-1 adds single threshold at n visibility\n&lt;div @intersect(0)=handler&gt; # {threshold: 0}\n&lt;div @intersect(0.5)=handler&gt; # {threshold: 0.5}\n&lt;div @intersect(1)=handler&gt; # {threshold: 1.0}</code></app-code-block><p>Any number above 1 will add n thresholds, spread evenly:</p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"5.imba\" data-lang=\"imba\">&lt;div @intersect(2)=handler&gt; # {threshold: [0,1]}\n&lt;div @intersect(3)=handler&gt; # {threshold: [0,0.5,1]}\n&lt;div @intersect(5)=handler&gt; # {threshold: [0,0.25,0.5,0.75,1]}\n# ... and so forth</code></app-code-block><p>An element will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root\">root</a> option:</p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"6.imba\" data-lang=\"imba\">&lt;div @intersect(frame)=handler&gt; # {root: frame}\n&lt;div @intersect(frame,3)=handler&gt; # {root: frame, threshold: [0,0.5,1]}</code></app-code-block><p>A string will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin\">rootMargin</a> option:</p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"7.imba\" data-lang=\"imba\">&lt;div @intersect(\"20px 10px\")=handler&gt; # {rootMargin: \"20px 10px\"}</code></app-code-block>"
       ],
       "tags": {}
     },
@@ -1347,7 +1363,7 @@
         }
       ],
       "docs": [
-        "<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver\">ResizeObserver</a> interface reports changes to the dimensions of an Element&#39;s content or border box. It has <a href=\"https://caniuse.com/#feat=resizeobserver\">good browser support</a> and is very useful in a wide variety of usecases. ResizeObserver avoids infinite callback loops and cyclic dependencies that are often created when resizing via a callback function. It does this by only processing elements deeper in the DOM in subsequent frames.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"3.imba\" data-lang=\"imba\">test</code></app-code-block>"
+        "<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver\">ResizeObserver</a> interface reports changes to the dimensions of an Element&#39;s content or border box. It has <a href=\"https://caniuse.com/#feat=resizeobserver\">good browser support</a> and is very useful in a wide variety of usecases. ResizeObserver avoids infinite callback loops and cyclic dependencies that are often created when resizing via a callback function. It does this by only processing elements deeper in the DOM in subsequent frames.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"10.imba\" data-lang=\"imba\">test</code></app-code-block>"
       ],
       "tags": {}
     },
