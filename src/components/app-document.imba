@@ -1,6 +1,7 @@
 import {ls,types,Section,Doc} from '../store'
 
 import '../repl/preview'
+import './api-entry'
 
 const Sheets = {}
 
@@ -294,6 +295,10 @@ tag doc-section
 					<.sections>
 						for item in data.sections
 							<doc-section query=filter data=item level=(level+1)>
+							
+
+
+
 tag app-document
 
 	css color: #4a5568 lh: 1.625
@@ -358,51 +363,76 @@ tag app-document
 	def render
 		let doc = data
 		return unless doc	
-
+		console.log 'now rendering',doc
 		<self.markdown[d:block pb:24 pt:4 d:hflex] @refocus.silent=refocus>
 			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
 				<div$content>
-					<doc-section $key=doc.id data=doc level=0>
+					if doc.api?
+						# may be a bug?
+						<api-entry $key=doc.href data=doc>
+					else
+						<doc-section $key=doc.id data=doc level=0>
 				<app-document-nav data=doc>
 			<.aside[fl:1 0 240px d@!1120:none]>
 				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 -webkit-overflow-scrolling:touch]>
-					<app-document-toc[d:block max-width:360px] data=doc>
+					if doc.api?
+						<api-{doc.kind}-toc data=doc>
+					else
+						<app-document-toc[d:block max-width:360px] data=doc>
 
+tag app-api-entry < app-document
+		
+	def render
+		<self.markdown[d:block pb:24 pt:4 d:hflex] @refocus.silent=refocus>
+			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
+				<div$content> "HELLO"
+			
 
 tag TocItem
 	level = 1
+	css pb:1
 
-	css .menu-link tween:colors 0.2s cubic-in-out
+	css .menu-link tween:colors 0.2s cubic-in-out px:0 pb:0
+		
+	css .children pl:2 lh:0
+		
+	css &.h3 > a fs:sm-
+	css &.h4 > a fs:sm-
 
 	css &.in-focus
 		> a c:gray9
-
+	
+	css &.toc-pills
+		> a py:0 px:0 fs:xxs fw:bold tt:uppercase c:gray5
+			
 	css &.toc-pills > .children
-		pl:1.5
-		> .child
-			d:inline-block m:0.5 ff:mono fs:xs va:top
-			> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
-			&.in-focus > a c:blue9 bg:blue3
-			&.cssvalue > a bg:sky2 c:sky6
+		pl:1.5 mb:1 px:0 ml:-0.5 pl:0
+		# > .child
+		# 	d:inline-block m:0.5 ff:mono fs:xs va:top
+		# 	> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
+		# 	&.in-focus > a c:blue9 bg:blue3
+		# 	&.cssvalue > a bg:sky2 c:sky6
 	
 	css &.toc-hide d@force:none
 
-	css &.op
+	css &.pill
+		tint:blue
 		d:inline-block m:0.5 ff:mono fs:xs va:top
-		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
-		&.in-focus > a c:blue9 bg:blue3
-
-
+		> a d:block bg:tint2 c:tint6 rd:sm fw:700 fs:xs va:top px:1.5 py:0.5
+		&.in-focus > a c:tint8 bg:tint3
+		
+		&.op tint:amber
+		&.keyword tint:amber
 	
-	css &.event-modifierz
-		d:inline-block m:0.5 ff:mono fs:xs va:top
-		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
-		&.in-focus > a c:blue9 bg:blue3
+	css &.event-modifier tint:indigo
+	# 	d:inline-block m:0.5 ff:mono fs:xs va:top p:0
+	# 	> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top px:1.5 py:0.5
+	# 	&.in-focus > a c:blue9 bg:blue3
 
-	<self[c:gray6] .{data.flagstr}>
+	<self[c:gray6] .{data.flagstr} .pill=data.pill?>
 		<a.menu-link[c@hover:gray8] href=data.href data=data innerHTML=data.tocTitle>
-		if level < 2
-			<.children[pl:2 lh:0]> for item in data.parts when item.level < 45
+		if level < 2 or data.toc?
+			<.children> for item in data.parts when item.level < 45
 				<TocItem.child data=item level=(level + 1)>
 
 

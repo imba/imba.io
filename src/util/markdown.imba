@@ -32,7 +32,6 @@ let slugify = do(str)
 	str = (str.split('(')[0] or str)
 	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
 
-
 	let from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
 	let to   = "aaaaaeeeeiiiioooouuuunc------"
 
@@ -214,6 +213,9 @@ def renderer.table header, body
 
 	return out.toString().replace('$HEADER$',header).replace('$BODY$',body)
 
+export def htmlify content, o = {}
+	marked(content)
+
 export def render content, o = {}
 	let object = {toString: (do this.body), toc: [],meta: {}}
 
@@ -345,6 +347,7 @@ export def render content, o = {}
 
 	if object.children.length == 1
 		# console.log 'children length is one!!',object.children[0]
+		object.children[0].#files = object.#files
 		return object.children[0]
 
 	return object

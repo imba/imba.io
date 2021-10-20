@@ -5,6 +5,7 @@ export const files = []
 export const paths = {}
 export const groups = {}
 export const types = {}
+import {api} from './api'
 
 global.paths = paths
 global.files = files
@@ -159,8 +160,14 @@ class Entry
 	get tocTitle
 		#tocTitle ||= data.title.replace(/\s*\(.*\)/g,'')
 		
+	get toc?
+		options.toc or options["toc-pills"]
+		
 	get reference?
 		parent and parent.name == 'reference'
+		
+	get pill?
+		options.keyword or options.op or options['event-modifier'] or options.cssprop or options.cssvalue
 
 	get prevSibling
 		parent ? parent.children[parent.children.indexOf(self) - 1] : null
@@ -172,6 +179,16 @@ class Entry
 		children.find(do $1.name == name) #  and !($1 isa Section)
 
 export class File < Entry
+	
+	static def temporary code,lang = 'imba'
+		let data = {
+			body: code
+			name: "{counter++}.{lang}"
+			children: []
+			meta: {}
+		}
+		return new self(data,null)
+		
 	constructor data, parent
 		super
 		$send = null
@@ -392,6 +409,36 @@ export class Root < Dir
 				entries[i] = Entry.create(data,prev)
 		# console.log 'entries!!',entries
 		return entries.pop!
+		
+	def findExamplesFor query
+		let cache = (#examples ||= {})
+		let key = String(query)
+		return cache[key] if cache[key]
+
+		let items = []
+		let dir = find('/examples/api')
+		for item in dir.children
+			if query isa RegExp
+				continue unless item.body.match(query)
+			else
+				continue if item.body.indexOf(query) == -1
+			items.push(item)
+
+		return cache[key] = items
+	
+	def crawlExamples
+		let dir = find('/examples/api')
+		for item in dir.children
+			for ref in item.meta.see
+				let m
+				if m = ref.match(/^(\@\w+)(?:\.([\w\-]+))?$/)
+					if let ev = api.paths["/api/Element/{m[1]}"]
+						ev.examples.add(item)
+						ev.type.examples.add(item)
+						
+						if let mod = m[2] and ev and ev.modifiers.get("@{m[2]}")
+							mod.examples.add(item)
+			yes
 
 	get path
 		''
@@ -406,7 +453,9 @@ types.guide = Guide
 raw.name = ''
 root = new Root(raw)
 export const fs = root
+export {api}
 
+root.crawlExamples!
 
 global.FS = fs
 global.gr = groups
@@ -428,6 +477,9 @@ export def ls path
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
 		let item = fs # fs[parts.shift()]
 		return null unless item
+		
+		if parts[0] == 'api'
+			return api.entryForPath(path)
 
 		for part,i in parts
 			let child = item.childByName(part)

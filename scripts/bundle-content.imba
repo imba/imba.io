@@ -1,4 +1,4 @@
-
+import Script from './lexer'
 
 const chokidar = require 'chokidar'
 const path = require 'path'
@@ -40,7 +40,6 @@ def save
 	fs.writeFileSync(path.resolve(dest,"{bundle}.json.js"),js)
 
 	let examples-json = JSON.stringify(examples,null,2)
-	# let js = "globalThis['{bundle}.json'] = {json}"
 	fs.writeFileSync(path.resolve(dest,"examples.json"),examples-json)
 	
 
@@ -84,6 +83,8 @@ watcher.on('all') do
 			# path: '/' + src
 			fullPath: abs
 		}
+		
+		# console.log abs
 
 		if name == 'meta.json'
 			let meta = JSON.parse(item.body)
@@ -123,7 +124,48 @@ watcher.on('all') do
 				return
 		
 		else
-			console.log 'file',rel
+			console.log 'file',src
+			
+			
+			if item.ext == 'imba'
+				item.meta ||= {}
+				# parse the first line arguments
+				let ln = item.body.slice(0,item.body.indexOf('\n'))
+
+				if ln.match(/^# \[/)
+					ln.replace(/\s*\[([\w\-]+)(?:\=([^\]]+))?\]\s*/g) do(m,key,value)
+						let flag = key.toLowerCase!
+						item.meta[flag] = value or yes
+						return ''
+						
+				let script = new Script(null,item.body)
+				
+				let last = script.tokens[-1]
+				
+				if last and last.value == '###'
+					let val = last.pops.contentValue
+					# console.warn "COMMENT IS LAST",val,last.start.startOffset,item.body.length,last.start.value,last.pops.span
+					# console.log last.start
+					item.meta.foot = marked.htmlify(val)
+					item.body = item.body.slice(0,last.start.offset)
+					# throw yes
+
+				if up and up.name == 'api'
+					let see = item.meta.see ||= []
+					let mods = script.tokens.filter do $1.match('tag.event-modifier.name')
+					
+					let events = script.tokens.filter do $1.match('tag.event.name')
+					for ev in events
+						see.push("@{ev.value}")
+
+					for mod in mods
+						let ev = mod.context.name
+						see.push("@{ev}.{mod.value}")
+						
+					
+					
+					console.log item.meta
+			
 			examples["/" + src] = {
 				body: item.body
 			}

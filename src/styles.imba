@@ -80,7 +80,7 @@ global css @root
 	--code-style-bracket:#e0ade3; # #e9e19b;
 	--code-style-unit: #a49feb; # #ff9191;
 	--code-style-scope: #eb9fe5;
-	--code-style-delimiter: #8c7590;
+	--code-style-delimiter: #8FFc7590;
 	--code-style-value: #a49feb;
 	--code-style-value-scope: #eec49d;
 	--code-style-value-size: #ff8c8c;
@@ -88,7 +88,7 @@ global css @root
 	--code-style-property-scope: #df8de4; # #e9e19b;
 	--code-css-property-modifier: #df8de4;
 
-	--code-style-var: #ff93d0;
+	--code-style-var: #ff93d0;F
 	--code-keyword-css: #fff7b6;
 	--code-selector: #e9e19b;
 	--code-selector-pseudostate: var(--code-selector);
@@ -99,6 +99,12 @@ global css @root
 	--code-delimiter: #e3e3e3
 	--code-delimiter-operator:#889cd6
 	--code-special: #fffab4
+
+global css .markdown
+	.mh1 fs:34px/1.4 fw:600 pb:2
+	.mh2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0
+	.mh3 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:0
+	.mh4 fs:20px/1.2 fw:500 pb:2 bwb:0px mb:0
 
 global css .code
 	tab-size:4

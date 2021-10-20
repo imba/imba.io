@@ -18,6 +18,8 @@ global.flags = document.documentElement.flags
 
 global.debug = yes if document.location.hash.indexOf('debug') >= 0
 
+css .tab tint:blue
+
 tag app-root
 	prop doc
 	prop show-menu
@@ -106,42 +108,65 @@ tag app-root
 					zi:300 fs:15px bg:cool8/98 c:white us:none
 
 					
-					.tab d:hflex mx:2 py:1 c:blue4 fs:sm- fw:500 tt:uppercase ja:center
-						svg h:16px w:auto mx:0.5
+					.tab d:hflex mx:2 py:1 c:tint4 fs:sm- fw:500 tt:uppercase ja:center
+						svg h:16px w:auto mx:0.5 
+						span c:white/100 lh:20px pos:relative
+							tween:all 0.2s quint-out
+							@after content:"" d:block
+								tween:all 0.2s quint-out
+								pos:absolute h:2px t:100% bg:tint4 r:0 rd:full o:0
+								x:-50% l:50% y:0px w:5px
+
 						@hover c:white
-							svg scale:1.15
+							svg scale:1.15 c:tint5
 						@!600 span d:none
-						.keycap bc:blue4/70 c:blue4/80 h:4.5 px:0.75 fw:bold ml:0.5
+						@600 svg d:none d@only:block
+						.keycap bc:tint4/40 c:tint4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none
+						
+						span c:tint3
+						
+						&.active span c:white
+							@after o:1 y:0px w:30px
+
 					.toggler mx:0 d@md:none
 						svg tween:styles 0.1s
-						@hover c:blue4
+						@hover c:tint4
 							svg scale:1
 						&.active svg rotate:-90deg
 
-				<.logo[d:contents] route-to='/'>
-					<svg[h:20px w:auto mr:2 pos:relative t:2px ml:1 c:blue4] src='./assets/wing.svg'>
+				<.logo[d:hflex cursor:pointer ja:center c:white] route-to='/'>
+					css svg c:blue4
+					css @hover svg c:blue5
+					<svg[h:20px w:auto mr:2 pos:relative t:2px ml:1] src='./assets/wing.svg'>
 					<.logotype[c:white fw:700 fs:xl lh:30px]> "imba"
-				<.breadcrumb[mx:2 fs:sm c:blue4]>
-					css span + span @before content: "/" mx:1 o:0.3
-					<a[p:1 2 fw:600 ml:10px rd:12px bgc:hsla(213.12, 93.90%, 67.84%, 1) c:hsla(215.00, 27.91%, 16.86%, 98%) @hover:white d@lt-md:none] href="https://jobs.scrimba.com" title="well, actually Scrimba is hiring - but learn to code in Imba with pay! "> "We are hiring!"
+					
+				# <.breadcrumb[mx:2 fs:sm c:blue4]>
+				# 	css span + span @before content: "/" mx:1 o:0.3
+				# 	<a[p:1 2 fw:600 ml:10px rd:12px bgc:hsla(213.12, 93.90%, 67.84%, 1) c:hsla(215.00, 27.91%, 16.86%, 98%) @hover:white d@lt-md:none] href="https://jobs.scrimba.com" title="well, actually Scrimba is hiring - but learn to code in Imba with pay! "> "We are hiring!"
 						
 						
 				<div[flex: 1]>
+					<a[mr:4 jc:flex-start d:inline-flex cursor:pointer fs:sm mx:1] @click.emit-showsearch @hotkey('mod+k|s')>
+						# <svg src='./assets/icons/search.svg'>
+						css c:blue4/80 @hover:blue3
+							# bd:1px solid black/80 rd:lg bg:black/30 px:2 py:1 pr:1
+						<span[ mx:1 tt:none fw:normal]> "Quick search for anything ..."
+						<span.keycap[bc:tint4/40 c:tint4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none]> 'Ctrl K'
 					if window.debug
 						<div @resize.silent=render> "{window.innerWidth}px"
 				<div[d:flex cursor:pointer us:none]>
-					<a.tab[mr:4] @click.emit-showsearch @hotkey('mod+k|s')>
-						<svg src='./assets/icons/search.svg'>
-						<span[c:blue4/50 mx:0.5 tt:none]> "Search..."
-						<span.keycap> 'S'
-					if home?
-						<a.tab @click.emit-showide href='/language/introduction'>
-							<svg src='./assets/icons/book.svg'>
-							<span> "Learn"
-					<a.tab @click.emit-showide>
+					
+					# if home?
+					<a.tab[tint:emerald] href='/language/introduction' .active=(doc and !doc.api?)>
+						<svg[mr:1] src='./assets/icons/map.svg'>
+						<span> "Guides"
+					<a.tab[tint:cyan] @click href='/api/MouseEvent' .active=(doc and doc.api?)>
+						<svg src='./assets/icons/book.svg'>
+						<span> "Reference"
+					<a.tab[tint:blue] @click.emit-showide>
 						<svg src='./assets/icons/play.svg'>
 						<span> "Try"
-					<a.tab target='_blank' href='https://discord.gg/mkcbkRw'>
+					<a.tab[tint:indigo] target='_blank' href='https://discord.gg/mkcbkRw'>
 						<svg src='./assets/icons/message-circle.svg'>
 						<span> "Chat"
 					<a.tab[ml:4] target='_blank' href='https://github.com/imba/imba'>
@@ -151,7 +176,8 @@ tag app-root
 					if !home?
 						<a.tab.toggler
 							.active=($menu..focused?)
-							@mousedown.prevent=$menu.toggle!>
+							@mousedown.prevent=$menu.toggle!
+						>
 							<svg[h:32px] src='./assets/icons/menu.svg'>
 
 			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl?>
@@ -160,7 +186,10 @@ tag app-root
 			if home?
 				<home-page>
 			elif doc
-				<app-menu$menu>
+				<app-menu$menu current=doc>
+				# if doc.api?
+				# 	<app-api-entry[ml@md:$menu-width]  $key=doc.id data=doc .nokeys=repl? hash=document.location.hash> "yes!"
+				# else
 				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl? hash=document.location.hash>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'

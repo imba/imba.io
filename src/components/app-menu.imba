@@ -1,4 +1,4 @@
-import {fs,files,ls} from '../store'
+import {fs,files,ls,api} from '../store'
 
 const triangleSVG =	`
 	<svg width="5" height="6" viewBox="0 0 5 6" xmlns="http://www.w3.org/2000/svg">
@@ -6,6 +6,20 @@ const triangleSVG =	`
 	</svg>
 `
 
+css
+	
+	.item d:block c:gray5 fw:normal pos:relative d:block fw:500 py:1
+	.item.active fw:500 c:gray9
+	.item span
+		of:hidden text-overflow:ellipsis ws:nowrap
+		@hover c:gray9
+
+	.triangle c:gray5 pos:absolute t:calc(50% - 3px) l:-10px tween:transform 150ms ease-in-out
+	.active .triangle rotate:90deg
+	.children pl:15px of:hidden tween:height 200ms ease-out
+	&.wip > .item @after
+		pos:relative d:inline ai:center bg:yellow3 content:'wip' rd:sm
+		c:yellow7 fs:xxs/12px tt:uppercase px:1 py:0.5 rd:1 ml:1 va:middle fw:bold
 
 tag app-menu-item
 
@@ -14,6 +28,7 @@ tag app-menu-item
 	prop levelCutoff = 40
 
 	get hasChildren?
+		return false if data.api?
 		# only children below level cutoff are shown as child sections in the menu
 		const result = data.children.filter(do(c) c.level < levelCutoff)
 		result.length > 0
@@ -69,7 +84,6 @@ tag app-menu-item
 
 	def render
 		<self[d:block] .{data.flagstr}>
-
 			<a$item.item route-to=data.href>
 				# <div.triangle innerHTML=triangleSVG> if hasChildren?
 				<span> data.title
@@ -89,6 +103,7 @@ tag app-menu-section
 	css .section.active + .content d:block
 
 	prop bodyheight = 'auto'
+	prop members
 
 	def toggle
 		data.locals.collapsed = !data.locals.collapsed
@@ -111,16 +126,18 @@ tag app-menu-section
 			> a c:blue5
 			> a .chevron rotate:-90deg o:1 ml:-1
 			> .content of:hidden h:0px o:0.4
+			
 		<a.l0.section.menu-heading @click=toggle>
 			css d:hflex a:center
-			<span> data.title
-			<svg[size:4 ml:0.5].chevron src='../assets/icons/chevron-down.svg'>
+			<span[c:tint6]> data.title
+			<svg[size:4 ml:0.5 c:tint6].chevron src='../assets/icons/chevron-down.svg'>
 		<div.content.{data.slug}>
-			<.children[pb:4 pl:2] @resize=resized> for item in data.children
+			<.children[pb:4 pl:2] @resize=resized> for item in (members or data.children)
 				<app-menu-item data=item level=1>
 
 tag app-menu
-
+	current = null
+	
 	css 
 		@after content:' ' bg:linear-gradient(white/0,white/100) l:vflex abs w:90% h:80px bottom:0
 	
@@ -139,8 +156,22 @@ tag app-menu
 				# 	<span[fl:1 font-style:italic]> "Search docs..."
 				# 	<span[rd:md bd:gray2 fs:xs h:5 px:1 c:gray5 d:hflex ja:center]> 'S'
 				# <app-menu-section[c:pink6] data=ls('/intro')>
-				<app-menu-section[c:pink6] data=ls('/language')>
-				<app-menu-section[c:violet6] data=ls('/tags')>
-				<app-menu-section[c:sky6] data=ls('/events')>
-				# <app-menu-section[c:indigo6] data=ls('/styling')>
-				<app-menu-section[c:amber6] data=ls('/css')>
+				if current and current.api?
+					<div>
+						let ev = {locals: {}, children: api.kinds.eventinterface, title: "Events"}
+						let styles = {locals: {}, children: api.kinds.eventinterface, title: "Styles"}
+						<app-menu-section[tint:cyan] data=ev>
+						<app-menu-section[tint:indigo] data=styles>
+						# <div.menu-heading> "Events"
+						# for item in api.kinds.eventinterface
+						#	<app-menu-item data=item>
+				# <div.triangle innerHTML=triangleSVG> if hasChildren?
+				# <span> data.title
+						
+				else
+					<div>
+						<app-menu-section[tint:blue] data=ls('/language')>
+						<app-menu-section[tint:blue] data=ls('/tags')>
+						<app-menu-section[tint:blue] data=ls('/events')>
+						# <app-menu-section[c:indigo6] data=ls('/styling')>
+						<app-menu-section[tint:blue] data=ls('/css')>

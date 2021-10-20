@@ -400,3 +400,4 @@ export def highlight str,lang
 	cache[str] = out
 	return out
 	# return (<code.{Object.keys(flags).join(' ')} innerHTML=html>).outerHTML
+	
