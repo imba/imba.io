@@ -399,6 +399,8 @@ tag app-code-block < app-code
 						mode=options.preview
 						@loaded=demoLoaded
 					>
+			if file and file.meta.foot
+				<div.markdown[my:2] innerHTML=file.meta.foot>
 
 css app-arrow c:green5
 	>>>

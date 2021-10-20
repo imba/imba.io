@@ -271,15 +271,14 @@
         },
         {
           "name": "@wait",
-          "meta": {
-            "Tester <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">hello</app-code-inline>": true
-          },
+          "meta": {},
           "kind": "eventmodifier",
           "tags": {
+            "summary": "pause handler for `n` duration (default 250ms)",
             "detail": "(time = 500ms)"
           },
           "docs": [
-            "<p>The wait modifier delays the execution of subsequent modifiers and callback. It defaults to wait for 250ms, which can be overridden by passing a number or time as the first/only argument. {@link αthrottle}</p>\n<h1>Tester <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">hello</app-code-inline></h1>"
+            "<p>The wait modifier delays the execution of subsequent modifiers and callback. It defaults to wait for 250ms, which can be overridden by passing a number or time as the first/only argument.</p>\n"
           ]
         },
         {
@@ -333,9 +332,11 @@
           "name": "@self",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "summary": "Only trigger handler if event.target is the element itself"
+          },
           "docs": [
-            "<p>Only trigger handler if event.target is the element itself</p>\n"
+            "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">self</app-code-inline> event modifier is a handy way of reacting to events only when they are clicked on the actual element you are interacting with and not, for example, a child element. This can be useful for things like modal wrappers when you only want to react when clicking directly.</p>\n"
           ]
         },
         {

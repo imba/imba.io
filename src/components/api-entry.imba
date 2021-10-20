@@ -144,8 +144,8 @@ tag api-entry-examples < api-section
 	<self[tint:blue d@empty:none]>
 		if data.examples.size > 0
 			<h3> "Examples"
-			<div[py:4]> for item of data.examples
-				<div[mb:10]> <app-code-block href=item.path>
+			<div> for item of data.examples
+				<div[mb:10 @last:4]> <app-code-block href=item.path>
 
 tag api-entry
 	css tint:blue

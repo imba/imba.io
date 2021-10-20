@@ -159,9 +159,9 @@ tag app-menu
 				if current and current.api?
 					<div>
 						let ev = {locals: {}, children: api.kinds.eventinterface, title: "Events"}
-						let styles = {locals: {}, children: api.kinds.eventinterface, title: "Styles"}
+						# let styles = {locals: {}, children: api.kinds.eventinterface, title: "Styles"}
 						<app-menu-section[tint:cyan] data=ev>
-						<app-menu-section[tint:indigo] data=styles>
+						# <app-menu-section[tint:indigo] data=styles>
 						# <div.menu-heading> "Events"
 						# for item in api.kinds.eventinterface
 						#	<app-menu-item data=item>
