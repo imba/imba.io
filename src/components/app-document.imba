@@ -312,9 +312,11 @@ tag app-document
 	prop hash @set
 		let section = getSectionForHash(e.value)
 		reveal(section) if section
-
-	def mount
-		# document.scrollingElement.scrollTop = 0
+		
+	prop data @set
+		syncScroll! if mounted?
+	
+	def syncScroll
 		let hash = document.location.hash.slice(1)
 		let subsection = getSectionForHash(hash)
 		if subsection
@@ -322,6 +324,9 @@ tag app-document
 		else
 			window.scrollTo({left: 0,top: restoreScrollTop or 0,behavior: 'auto'})
 			scroller.scrollTop = restoreScrollTop or 0
+
+	def mount
+		syncScroll!
 
 	def unmount
 		let val = scroller.scrollTop
@@ -363,7 +368,6 @@ tag app-document
 	def render
 		let doc = data
 		return unless doc	
-		console.log 'now rendering',doc
 		<self.markdown[d:block pb:24 pt:4 d:hflex] @refocus.silent=refocus>
 			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
 				<div$content>
@@ -372,7 +376,8 @@ tag app-document
 						<api-entry $key=doc.href data=doc>
 					else
 						<doc-section $key=doc.id data=doc level=0>
-				<app-document-nav data=doc>
+						<app-document-nav data=doc>
+
 			<.aside[fl:1 0 240px d@!1120:none]>
 				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 -webkit-overflow-scrolling:touch]>
 					if doc.api?
