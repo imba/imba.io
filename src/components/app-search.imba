@@ -1,4 +1,4 @@
-import {ls,fs,File,Dir,find} from '../store'
+import {ls,fs,File,Dir,find,api} from '../store'
 
 tag Item
 	css cursor:pointer d:hflex px:4 a:center pos:rel
@@ -7,17 +7,25 @@ tag Item
 	
 
 	<self @mousedown.stop.prevent.emit-go(data) @pointerover.emit-hover(index)>
-		<.path>
-			css d:hflex c:gray6
-			for parent in data.parents
-				<.item>
-					css ws:nowrap d:hflex a:center
-					<span.title innerHTML=(parent.head or parent.title)>
-					<svg[size:14px o:0.7 mt:2px mx:1] src='../assets/icons/chevron-right.svg'>
-		<span.html.title innerHTML=data.head>
-			css c:gray9 fw:500
-		if data.legend
-			<.legend[c:gray5 ml:1 fs:sm]> data.legend
+		if data.api?
+			<.path>
+				css d:hflex c:gray6 ws:nowrap d:hflex a:center
+					api-link
+						&.modifier suffix: "modifier"
+				for item in data.breadcrumb
+					<api-link[mr:3] data=item>
+		else
+			<.path>
+				css d:hflex c:gray6
+				for parent in data.breadcrumb
+					<.item>
+						css ws:nowrap d:hflex a:center
+						<span.title innerHTML=(parent.head or parent.title)>
+						<svg[size:14px o:0.7 mt:2px mx:1] src='../assets/icons/chevron-right.svg'>
+			<span.html.title innerHTML=data.head>
+				css c:gray9 fw:500
+			if data.legend
+				<.legend[c:gray5 ml:1 fs:sm]> data.legend
 
 
 tag app-search
@@ -29,7 +37,7 @@ tag app-search
 		if #matchQuery =? query
 			let o = {
 				query: query
-				roots: [ls('/language'),ls('/tags'),ls('/events'),ls('/css')]
+				roots: [ls('/language'),ls('/tags'),ls('/css'),api]
 			}
 			let matcher = query.toLowerCase!.replace(/\-/g,'')
 			hits = find(matcher,o)

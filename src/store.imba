@@ -147,6 +147,9 @@ class Entry
 
 	get parents
 		#parents ||= parent.parents.concat(parent)
+		
+	get breadcrumb
+		parents
 
 	get prev
 		return null unless parent

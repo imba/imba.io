@@ -25,6 +25,9 @@ const root = new class
 					return ev.modifiers.get("@{m[2]}")
 				return ev
 		return null
+		
+	get descendants
+		entities
 
 class Members < Array
 	
@@ -89,9 +92,17 @@ export class Entity
 			for item in desc.members
 				members.push(Entity.build(item,self))
 		
+		root.entities.push(self)
 		root.paths[href] = self
 		(root.kinds[kind] ||= []).push(self)
 		register!
+		
+	get searchText
+		#searchText ||= if true
+			(displayName).replace(/\-/g,'').toLowerCase!
+		
+	def match query, options
+		searchText.indexOf(query) >= 0
 		
 	get guide
 		global.FS.find(href)
@@ -119,11 +130,17 @@ export class Entity
 	get parents
 		[]
 		
+	get breadcrumb
+		[self]
+		
 	get summary
 		desc.tags and desc.tags.summary or docs[0]
 		
 	# get events
 	# 	members.events
+	
+	get head
+		displayName
 
 	get modifier?
 		kind == 'eventmodifier'
@@ -155,6 +172,9 @@ class InterfaceEntity < Entity
 		
 	get parents
 		#parents ||= up ? [up].concat(up.parents) : []
+	
+	get breadcrumb
+		[self]
 
 class EventInterfaceEntity < InterfaceEntity
 	
@@ -182,8 +202,14 @@ class EventEntity < Entity
 	get modifiers
 		type.modifiers
 		
+	get parents
+		typechain
+		
 	get typechain
-		#typechain ||= [type].concat(type.parents)
+		#typechain ||= [type]
+		
+	get breadcrumb
+		[type,self]
 		
 	# get examples
 	#	#examples ||= global.FS.findExamplesFor(new RegExp("({displayName})(?=\\(|\\.|=)",'g'))
@@ -198,17 +224,29 @@ class EventModifierEntity < Entity
 		
 	get siblings
 		#siblings ||= owner.modifiers.own.filter do $1 != self
+	
+	get parents
+		#parents ||= [owner]
 		
 	get href
 		owner.href + '/' + name
 		
 	get eventNames
 		owner.events.map do $1.name
+	
+	get breadcrumb
+		[owner,self]
 		
 	# get examples
 	# 	#examples ||= global.FS.findExamplesFor(new RegExp("({eventNames.join('|')})\\.{displayName}(?=\\(|\\.|=)",'g'))
 	
 class PropertyEntity < Entity
+	
+	get parents
+		#parents ||= [owner].concat(owner.parents)
+		
+	get breadcrumb
+		[owner,self]
 	
 	get href
 		owner.href + '/' + name	
@@ -224,7 +262,7 @@ kindToClass.eventmodifier = EventModifierEntity
 
 
 for entry in json.entries
-	root.entities.push Entity.build(entry)
+	Entity.build(entry)
 	# let [name,obj] = k.split('.').reverse!
 	# let cls = new Entity(k,v)
 	# root[k] = cls
