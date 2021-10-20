@@ -172,6 +172,6 @@ tag app-menu
 					<div>
 						<app-menu-section[tint:blue] data=ls('/language')>
 						<app-menu-section[tint:blue] data=ls('/tags')>
-						<app-menu-section[tint:blue] data=ls('/events')>
+						# <app-menu-section[tint:blue] data=ls('/events')>
 						# <app-menu-section[c:indigo6] data=ls('/styling')>
 						<app-menu-section[tint:blue] data=ls('/css')>

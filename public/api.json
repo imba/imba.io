@@ -89,17 +89,6 @@
           ]
         },
         {
-          "name": "srcElement",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "deprecated": true
-          },
-          "docs": [
-            ""
-          ]
-        },
-        {
           "name": "target",
           "meta": {},
           "kind": "property",
@@ -287,7 +276,7 @@
           "kind": "eventmodifier",
           "tags": {
             "detail": "(time = 500ms)",
-            "summary": true
+            "summary": "ensures that handler triggers at most every `n` seconds"
           },
           "docs": [
             "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">throttle</app-code-inline> modifier ensures the handler is called at most every <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link class=\"cfy-ah\">@scroll</api-link>, <api-link class=\"cfy-ah\">@pointermove</api-link> etc.</p>\n<p>See <api-link class=\"cfy-ah\">@event.cooldown</api-link> and <api-link class=\"cfy-ah\">@event.debounce</api-link>.</p>\n"
@@ -299,7 +288,7 @@
           "kind": "eventmodifier",
           "tags": {
             "detail": "(time = 500ms)",
-            "summary": "Yes"
+            "summary": "disable handler for a duration after trigger"
           },
           "docs": [
             "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">cooldown</app-code-inline> modifier ensures the handler is called at most every <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link class=\"cfy-ah\">@scroll</api-link>, <api-link class=\"cfy-ah\">@pointermove</api-link> etc.</p>\n<p>See <api-link class=\"cfy-ah\">@event.throttle</api-link> and <api-link class=\"cfy-ah\">@event.debounce</api-link>.</p>\n"
@@ -311,7 +300,7 @@
           "kind": "eventmodifier",
           "tags": {
             "detail": "(time = 500ms)",
-            "summary": true
+            "summary": "dont trigger until no events has been handled for `n` time"
           },
           "docs": [
             "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">debounce</app-code-inline> modifier ensures that a minimum amount of time has elapsed after the user stops interacting and before calling the handler. This is especially useful, for example, when querying an API and not wanting to perform a request on every keystroke.\n<app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">See</app-code-inline>@event.cooldown<app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">and</app-code-inline>@event.throttle`.</p>\n"
@@ -377,35 +366,7 @@
           ]
         },
         {
-          "name": "@emit-name",
-          "meta": {},
-          "kind": "eventmodifier",
-          "tags": {
-            "param": {
-              "text": "detail",
-              "kind": "parameterName"
-            }
-          },
-          "docs": [
-            "<p>Trigger another event via this handler</p>\n"
-          ]
-        },
-        {
           "name": "@flag",
-          "meta": {},
-          "kind": "eventmodifier",
-          "tags": {
-            "param": {
-              "text": "target",
-              "kind": "parameterName"
-            }
-          },
-          "docs": [
-            "<p>Add an html class to target for at least 250ms\nIf the callback returns a promise, the class\nwill not be removed until said promise has resolved</p>\n"
-          ]
-        },
-        {
-          "name": "@flag-name",
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
@@ -473,17 +434,6 @@
           "meta": {},
           "kind": "property",
           "tags": {},
-          "docs": [
-            ""
-          ]
-        },
-        {
-          "name": "which",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "deprecated": true
-          },
           "docs": [
             ""
           ]
@@ -957,28 +907,6 @@
           ]
         },
         {
-          "name": "char",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "deprecated": true
-          },
-          "docs": [
-            ""
-          ]
-        },
-        {
-          "name": "charCode",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "deprecated": true
-          },
-          "docs": [
-            ""
-          ]
-        },
-        {
           "name": "code",
           "meta": {},
           "kind": "property",
@@ -1010,17 +938,6 @@
           "meta": {},
           "kind": "property",
           "tags": {},
-          "docs": [
-            ""
-          ]
-        },
-        {
-          "name": "keyCode",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "deprecated": true
-          },
           "docs": [
             ""
           ]
@@ -1620,20 +1537,6 @@
         },
         {
           "name": "@flag",
-          "meta": {},
-          "kind": "eventmodifier",
-          "tags": {
-            "param": {
-              "text": "target",
-              "kind": "parameterName"
-            }
-          },
-          "docs": [
-            "<p>Add an html class to target for at least 250ms\nIf the callback returns a promise, the class\nwill not be removed until said promise has resolved</p>\n"
-          ]
-        },
-        {
-          "name": "@flag-name",
           "meta": {},
           "kind": "eventmodifier",
           "tags": {

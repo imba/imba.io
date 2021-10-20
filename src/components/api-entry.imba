@@ -20,7 +20,7 @@ css
 	api-link
 		d:inline-block
 		&.event,&.eventmodifier,&.pill
-			a px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
+			a@force px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
 				@before c:tint9 fw:normal
 				@hover bg:tint2
 		# &.inherited bg:tint0
@@ -42,7 +42,7 @@ css
 		bdt:1px solid gray2/70
 	h3 + dl bdt:0px
 	
-	.markdown >>>
+	.markdown@force >>>
 		h1 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid tint7 mt:6
 		h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid tint7 mt:6
 		h4 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid tint7 mt:6
@@ -50,6 +50,11 @@ css
 		a c:blue6
 		app-code-inline d:inline-block
 
+tag api-el
+	set data value
+		if typeof value == 'string'
+			value = api.lookup(value)
+		#data = value
 
 tag api-link
 	def hydrate
@@ -99,18 +104,27 @@ tag api-parents
 tag api-section
 	css mt:10
 		
+	set data value
+		if typeof value == 'string'
+			value = api.lookup(value)
+		#data = value
+		
+	get data
+		#data
+		
 	<self> <slot>
 
 tag api-props < api-section
 
 	name = 'Properties'
+	
 		
 	<self .{name.toLowerCase!} [d:none]=(data.length == 0)>
 		<h3> <slot name='head'> name
 		<slot>
 		<dl> for item in data.own
 			<dt> <api-link.pill data=item> # item.displayName
-			<dd innerHTML=item.summary>
+			<dd.markdown innerHTML=item.summary>
 		<slot name='foot'>
 		let inherited = data.inherited
 		if inherited.length
@@ -133,6 +147,18 @@ tag api-entry-modifiers
 	
 	<self>
 		<api-props name='Modifiers' data=data.modifiers>
+		
+tag api-modifiers-list
+	<self>
+		for data in api.kinds.eventinterface when data.modifiers.own.length
+			<api-section.events>
+				<h3> "{data.name} Modifiers"
+				<dl> for item in data.modifiers.own
+					<dt> <api-link.pill data=item> # item.displayName
+					<dd.markdown innerHTML=item.summary>
+
+		# 	<slot name='foot'>
+		# <api-props name='Modifier reference' data=api.Event.modifiers>
 
 tag api-docs
 	<self.markdown[d@empty:none]>
