@@ -183,6 +183,7 @@ class InterfaceEntity < Entity
 
 	def register
 		up.descendants.push(self) if up
+		root[name] = self
 		yes
 		
 	get parents

@@ -384,6 +384,13 @@ tag api-event-entry < api-entry
 
 		<api-props name='Properties' data=data.properties>
 			<p slot='head'> <api-link data=data.type>
+			
+		if data.type != api.Event and data.type.events.length > 1
+			<api-section>
+				<h3> "Related Events"
+				<dl> for item in data.type.events when item != data
+					<dt> <api-link.pill data=item> # <.pill> item.displayName
+					<dd.markdown innerHTML=item.summary>
 
 		<api-entry-examples data=data>
 
@@ -410,11 +417,18 @@ tag api-eventmodifier-entry < api-entry
 tag api-entry-toc
 	
 	<self>
-		""
 		# <h3> "See also"
-		# <div> <api-links data=data.siblings>
-		# for item in data.siblings
-		#	<api-link data=item>
+		# <div> for item in data.siblings
+		# 	<api-link[d:block] data=item>
+		
+		<h4> "Interfaces"
+		<div>
+			for item in api.kinds.interface
+				<api-link[d:block] data=item>
+			for item in api.kinds.eventinterface
+				<api-link[d:block] data=item>
+		# <api-entry-list items=api.kinds.interface.concat(api.kinds.eventinterface)>
+			
 
 tag api-interface-toc < api-entry-toc
 tag api-eventinterface-toc < api-interface-toc
