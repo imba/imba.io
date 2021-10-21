@@ -373,7 +373,7 @@ tag app-document
 				<div$content>
 					if doc.api?
 						# may be a bug?
-						<api-entry $key=doc.href data=doc>
+						<api-{doc.kind}-entry $key=doc.href data=doc>
 					else
 						<doc-section $key=doc.id data=doc level=0>
 						<app-document-nav data=doc>

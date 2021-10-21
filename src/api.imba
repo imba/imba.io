@@ -97,6 +97,10 @@ export class Entity
 		(root.kinds[kind] ||= []).push(self)
 		register!
 		
+	get tags
+		desc.tags
+		
+		
 	get searchText
 		#searchText ||= if true
 			(displayName).replace(/\-/g,'').toLowerCase!
@@ -252,6 +256,45 @@ class PropertyEntity < Entity
 		owner.href + '/' + name	
 
 class MethodEntity < PropertyEntity
+
+class StyleEntity < Entity
+	
+class StyleModifier < StyleEntity
+	
+class StyleProperty < StyleEntity
+	
+	get custom?
+		desc.tags.custom
+	
+	get alias
+		desc.alias
+	
+	get shortName
+		alias or name
+	
+	get aliasFor
+		custom? ? tags.detail : name
+		
+	get href
+		"/api/css/{name}"
+	
+	get related
+		#related ||= if true
+			let all = []
+			let meta = desc.meta
+			for item in root.kinds.styleprop
+				continue if item == self
+				for own k,v of item.meta
+					if v == 1 and meta[k] == 1
+						all.push(item)
+			all
+		
+	get mdn
+		return null if custom?
+		return "https://developer.mozilla.org/en-US/docs/Web/CSS/{name}"
+		
+	
+class StyleValue < StyleEntity
 	
 kindToClass.interface = InterfaceEntity
 kindToClass.eventinterface = EventInterfaceEntity
@@ -259,6 +302,8 @@ kindToClass.event = EventEntity
 kindToClass.property = PropertyEntity
 kindToClass.method = MethodEntity
 kindToClass.eventmodifier = EventModifierEntity
+
+kindToClass.styleprop = StyleProperty
 
 
 for entry in json.entries

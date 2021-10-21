@@ -1,4 +1,57 @@
-import {api} from '../store'
+import {api,ls} from '../store'
+
+def template str
+	str = str.trim!
+	let cache = new Map
+	return do(item,...objs)
+		if cache.has(item)
+			return cache.get(item)
+			
+		let out = str
+		out = out.replace(/%%([\w\-]+)/g) do
+			for obj in objs
+				return obj[$2] if obj[$2]
+			return item[$2]
+		cache.set(item,out)
+		return out
+
+# class Tpl
+# 	cache = new Map
+# 	def constructor str
+# 		template = str
+# 		
+# 	def render item
+# 		if cache.has(item)
+# 			return cache.get(item)
+# 		let str = template
+# 		str = str.replace(/%%([\w\-]+)/g) do
+# 			let val = item[$1]
+# 			val
+# 		cache.set(item,str)
+# 		return str
+
+const snippets = {}
+
+snippets.cssprop = template `
+# in declaration
+css div
+	%%name:value
+# inline style
+<section>
+	<div[%%name:value]> ...
+`
+
+snippets.cssaliased = template `
+# in declaration
+css div
+	%%name:value
+# inline style
+<section>
+	<div[%%name:value]> ...
+# using alias
+css div %%alias:value
+<div[%%alias:value]>
+`
 
 css
 	h1 fs:34px/1.4 fw:600 pb:2
@@ -13,13 +66,18 @@ css
 	.event,.events tint:violet
 	.property,.properties tint:cooler
 	.method tint:cool
+	.style,.styleprop tint:purple
 	a.link c:tint7
 	
 	app-code-inline d:inline-block
 	
+	.pill
+		px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
+	
 	api-link
 		d:inline-block
 		&.event,&.eventmodifier,&.pill
+			p:0 bg:clear
 			a@force px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
 				@before c:tint9 fw:normal
 				@hover bg:tint2
@@ -29,6 +87,8 @@ css
 			content: '.'
 	
 	.compact api-link a @before d:none
+	
+	
 	
 	dt api-link a fw:500
 		px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
@@ -147,18 +207,7 @@ tag api-entry-modifiers
 	
 	<self>
 		<api-props name='Modifiers' data=data.modifiers>
-		
-tag api-modifiers-list
-	<self>
-		for data in api.kinds.eventinterface when data.modifiers.own.length
-			<api-section.events>
-				<h3> "{data.name} Modifiers"
-				<dl> for item in data.modifiers.own
-					<dt> <api-link.pill data=item> # item.displayName
-					<dd.markdown innerHTML=item.summary>
 
-		# 	<slot name='foot'>
-		# <api-props name='Modifier reference' data=api.Event.modifiers>
 
 tag api-docs
 	<self.markdown[d@empty:none]>
@@ -246,6 +295,7 @@ tag api-entry
 			<div> "Other methods on {<api-link data=data.owner>} include "
 				for item in data.siblings
 					<api-link[mr:4px].inherited .pill data=item>
+
 		elif data.kind == 'property'
 			<h1>
 				<span[fw:normal]> <api-link data=data.owner>
@@ -256,22 +306,17 @@ tag api-entry
 					<api-link[mr:4px].inherited .pill data=item>
 
 tag api-interface-entry < api-entry
+	
+	<self>
+		<h1> data.name
+		<api-docs data=data>
+		<api-props name='Properties' data=data.properties>
+		<api-props name='Methods' data=data.methods>
 
 tag api-eventinterface-entry < api-interface-entry
 	<self>
-		<h1>
-			data.name
-		
-		<div.markdown>
-			for part in data.docs
-				<div innerHTML=part>
-				
-		# if data.guide
-		# 	<div> "YES"
-		# 	<doc-section data=data.guide level=0>
-		
-		
-		
+		<h1> data.name
+		<api-docs data=data>
 		<api-entry-modifiers data=data>
 		<api-entry-events data=data>
 		<api-props name='Properties' data=data.properties>
@@ -281,43 +326,66 @@ tag api-eventinterface-entry < api-interface-entry
 
 tag api-property-entry < api-entry
 	
-tag api-method-entry < api-entry
-	
-tag api-event-entry < api-entry
-	css tint:blue
 	<self>
 		<h1>
-			data.name
+			<span[fw:normal]> <api-link data=data.owner>
+			<span> "." + data.displayName
+		<api-docs data=data>
+		<div[my:4]> "Other properties on {<api-link data=data.owner>} include "
+			for item in data.siblings
+				<api-link[mr:4px].inherited .pill data=item>
+	
+tag api-method-entry < api-entry
+	
+	<self>
+		<h1>
+			<span[fw:normal]> <api-link data=data.owner>
+			<span> "." + data.displayName
+		<api-docs data=data>
+		<div> "Other methods on {<api-link data=data.owner>} include "
+			for item in data.siblings
+				<api-link[mr:4px].inherited .pill data=item>
+	
+tag api-event-entry < api-entry
+	<self>
+		<h1>
+			<span[fw:normal suffix: " › "]> <api-link data=data.type>
+			<span> data.name
+			
+		<api-docs data=data>
+		
+		unless data.meta.Syntax
+			<api-section>
+				# only if there is no syntax from the other
+				<h3> "Syntax"
+				<app-code-block raw="<div {data.displayName}=handler>">
+		
+		<api-entry-modifiers data=data.type>
 
-		<div.markdown>
-			for part in data.docs
-				<div innerHTML=part>
-		
-		# <api-entry-events[tint:orange] data=data>
-		<api-section>
-			<h3> "Syntax"
-		
 		<api-props name='Properties' data=data.properties>
 			<p slot='head'> <api-link data=data.type>
 
-		<api-entry-modifiers data=data>
-		
 		<api-entry-examples data=data>
 
 tag api-eventmodifier-entry < api-entry
 	<self>
-		<h1> "@event.{data.displayName}"
-
-		<div>
-			for part in data.docs
-				<div innerHTML=part>
+		<h1>
+			<span[fw:normal suffix: " › "]> <api-link data=data.owner>
+			<span> "." + data.displayName
+		<api-docs data=data>
 		
-		unless data.owner.name == 'Event'
-			<div> "See also related modifiers: "
-				for item in data.siblings
-					<api-link[mr:4px].inherited .pill data=item>
+		unless data.meta.Syntax
+			<api-section>
+				# only if there is no syntax from the other
+				<h3> "Syntax"
+				<app-code-block raw="<div @event.{data.displayName}=handler>">
 		
 		<api-entry-examples data=data>
+		
+		<api-section>
+			<h3> "See also"
+			<p> for item in data.siblings
+				<api-link[mr:4px].inherited .pill data=item>
 
 tag api-entry-toc
 	
@@ -334,3 +402,84 @@ tag api-event-toc < api-entry-toc
 tag api-property-toc < api-entry-toc
 tag api-method-toc < api-entry-toc
 tag api-eventmodifier-toc < api-entry-toc	
+
+tag api-styleprop-entry < api-entry
+	
+	get example
+		ls("/examples/css/{data.name}.imba") or ls("/examples/css/{data.alias}.imba")
+
+	<self>
+		<h1>
+			<span.name> data.displayName
+			if data.alias
+				<span.alias[c:gray4 mx:3 fw:400 prefix:'/ ']> data.alias
+		<api-docs data=data>
+		
+		unless data.meta.Syntax
+			<api-section>
+				# only if there is no syntax from the other
+				<h3> "Syntax"
+				# <app-code-block raw=snippets.cssprop(data)>
+				if data.alias
+					# <p> "For this property you can also use the alias:"
+					<app-code-block raw=snippets.cssaliased(data)>
+				else
+					<app-code-block raw=snippets.cssprop(data)>
+					
+		if example
+			<api-section>
+				<h3> "Examples"
+				<app-code-block href=(example.href)>
+		
+		if data.related.length
+			<api-section>
+				<h3> "See also"
+				<p> for item in data.related
+					<api-link[mr:4px] .pill data=item>
+
+
+		
+tag api-modifiers-list
+	<self>
+		for data in api.kinds.eventinterface when data.modifiers.own.length
+			<api-section.events>
+				<h3> "{data.name} Modifiers"
+				<dl> for item in data.modifiers.own
+					<dt> <api-link.pill data=item> # item.displayName
+					<dd.markdown innerHTML=item.summary>
+
+		# 	<slot name='foot'>
+		# <api-props name='Modifier reference' data=api.Event.modifiers>
+		
+		
+tag api-styleprop-list
+	
+	def hydrate
+		# not called when hydrated?
+		items = api.kinds.styleprop.sort do(a,b) a.shortName > b.shortName ? 1 : -1
+		
+	<self>
+		<api-section.style>
+			<h3> "Shorthands and Custom Properties"
+			<div>
+				css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
+				for item in items when (item.alias or item.custom?)
+					<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
+						<span.pill[bg:tint1/100 fw:500]> item.shortName
+						<span[c:gray5/80 mx:1 ofx:hidden text-overflow:ellipsis fs:xs]> item.aliasFor
+
+		
+		<api-section.style>
+			<h3> "Style Properties"
+			<div>
+				css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
+				let group = ''
+				for item in items
+					let chr = item.name[0]
+					if group != chr
+						<div[w:3col fw:600 d:hflex]>
+							<span[tt:uppercase px:0.5]> "{group = chr}"
+					<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
+						<span.pill[bg:tint1/50 fw:500]> item.name
+						if item.alias
+							<span.alias[c:gray5/80 mx:1]> item.alias

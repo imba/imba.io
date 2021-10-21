@@ -403,8 +403,8 @@ import 'util/styles'
 css body d:flex
 
 css app-panel d:hflex
-	aside p:1 bg:gray3
-	main p:1 fs:md fl:1
+    aside p:1 bg:gray3
+    main p:1 fs:md fl:1
 
 # ---
 tag app-panel
@@ -417,6 +417,7 @@ imba.mount do <app-panel>
     <div slot="sidebar"> "Stuff!"
     <div> "Something in main slot"
     <div> "More in main slot"
+
 ```
 
 ## Named Elements [preview=md]

@@ -1,4 +1,4 @@
-# [preview=style-options]
+# [preview=styles]
 import 'util/styles'
 export const vars = {flag: 'demo-rd'}
 

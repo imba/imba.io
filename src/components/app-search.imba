@@ -9,11 +9,17 @@ tag Item
 	<self @mousedown.stop.prevent.emit-go(data) @pointerover.emit-hover(index)>
 		if data.api?
 			<.path>
+				# <.item> "Reference"
 				css d:hflex c:gray6 ws:nowrap d:hflex a:center
-					api-link
-						&.modifier suffix: "modifier"
+					a
+						@after fs:xs c:gray4
+						&.eventmodifier
+							prefix: "."
+							suffix: " modifier"
+						&.event
+							suffix: " event"
 				for item in data.breadcrumb
-					<api-link[mr:3] data=item>
+					<a[mr:1] href=item.href .{item.kind}> item.displayName
 		else
 			<.path>
 				css d:hflex c:gray6

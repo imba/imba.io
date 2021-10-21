@@ -489,6 +489,12 @@ tag App
 ```
 Breakpoint blocks are not as succint as inline breakpoint modifiers, but it might add maintenance value for some.
 
+# Properties
+
+All the style properties are here
+
+<api-styleprop-list></api-styleprop-list>
+
 # Colors
 
 [demo](/examples/css/colors.imba?preview=styles)

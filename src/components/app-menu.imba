@@ -148,6 +148,11 @@ tag app-menu
 		if focused? then document.body.focus! else focus!
 
 	def render
+		const kinds = [
+			{locals: {}, children: api.kinds.interface, title: "Interfaces"}
+			{locals: {}, children: api.kinds.eventinterface, title: "Events"}
+			
+		]
 		<self tabIndex=-1>
 			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 flex:1]>
 				# <.search hotkey='s' @hotkey.log('clicked s').prevent.wait(50ms).emit-showsearch>
@@ -158,9 +163,11 @@ tag app-menu
 				# <app-menu-section[c:pink6] data=ls('/intro')>
 				if current and current.api?
 					<div>
-						let ev = {locals: {}, children: api.kinds.eventinterface, title: "Events"}
+						for item in kinds
+							<app-menu-section[tint:cyan] data=item>
+						# let ev = {locals: {}, children: api.kinds.eventinterface, title: "Events"}
 						# let styles = {locals: {}, children: api.kinds.eventinterface, title: "Styles"}
-						<app-menu-section[tint:cyan] data=ev>
+						# <app-menu-section[tint:cyan] data=ev>
 						# <app-menu-section[tint:indigo] data=styles>
 						# <div.menu-heading> "Events"
 						# for item in api.kinds.eventinterface
