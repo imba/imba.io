@@ -102,6 +102,25 @@ global css button
 # rest of file ...
 ```
 
+## Modifiers [wip]
+
+```imba
+# in selectors
+css button@hover
+    bg:blue
+# in properties
+css button
+    bg@hover:blue
+# after properties
+css button
+    bg:white @hover:whitesmoke @focus:blue
+```
+
+### Class Modifiers [wip]
+
+### Custom Breakpoints [wip]
+
+
 ## Scoped Styles [preview=lg]
 
 If you declare style rules inside `tag` definitions, all the styles will magically only apply to elements inside of this component.
@@ -359,42 +378,60 @@ imba.mount do <div[pos:absolute inset:0 d:flex ja:center]>
 
 # Modifiers
 
-Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down.
+Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down. See the [guide](/css/syntax#modifiers) for additional details.
 
-## Syntax
-
-##### in selectors
+### Syntax
 
 ```imba
+# in selectors
 css button@hover
     bg:blue
-```
-
-##### in properties
-
-```imba
+# in properties
 css button
     bg@hover:blue
-```
-
-##### after properties
-
-```imba
+# after properties
 css button
     bg:white @hover:whitesmoke @focus:blue
 ```
 
-##### class modifiers
+### Class Modifiers
+
+Classes can also be used as modifiers:
 
 ```imba
-css button
-    bg:white .primary:blue ..busy:gray
+css button c:white bg.primary:blue
+# is the same as
+css button c:white
+    .primary bg:blue
 ```
 
 ## Reference
 
-<doc-style-modifiers></doc-style-modifiers>
+### Media Modifiers
 
+<api-stylemod-list data-group="media"></api-stylemod-list>
+
+### Breakpoints
+
+<api-stylemod-list data-group="breakpoint"></api-stylemod-list>
+
+### Pseudo-classes
+
+<api-stylemod-list data-group="pseudoclass"></api-stylemod-list>
+
+### Pseudo-elements
+
+<api-stylemod-list data-group="pseudoelement"></api-stylemod-list>
+
+### Special Modifiers
+
+<api-stylemod-list data-group="custom"></api-stylemod-list>
+
+# Properties
+
+All the style properties are here
+
+<api-styleprop-list></api-styleprop-list>
 
 # Breakpoints
 
@@ -489,11 +526,6 @@ tag App
 ```
 Breakpoint blocks are not as succint as inline breakpoint modifiers, but it might add maintenance value for some.
 
-# Properties
-
-All the style properties are here
-
-<api-styleprop-list></api-styleprop-list>
 
 # Colors
 
@@ -659,450 +691,3 @@ tag Colors
             <Button[tint:{item}]> item
 ```
 
-# Dimensions
-
-## Sizing [toc-pills]
-
-### w [cssprop]
-
-[demo](/examples/css/width.imba?preview=styles)
-
-### h [cssprop]
-
-[demo](/examples/css/height.imba?preview=styles)
-
-### size [cssprop]
-
-[demo](/examples/css/size.imba?preview=styles)
-
-
-## Positioning [toc-pills]
-
-### pos [cssprop]
-
-[demo](/examples/css/positioning.imba?preview=styles)
-
-### t [cssprop]
-
-[demo](/examples/css/top.imba?preview=styles)
-
-### r [cssprop]
-
-[demo](/examples/css/right.imba?preview=styles)
-
-### b [cssprop]
-
-[demo](/examples/css/bottom.imba?preview=styles)
-
-### l [cssprop]
-
-[demo](/examples/css/left.imba?preview=styles)
-
-### inset [custom]
-
-## Margin [toc-pills]
-
-[demo](/examples/css/margin-aliases.imba?preview=styles)
-
-### m [cssprop]
-
-[demo](/examples/css/margin.imba?preview=styles)
-
-### mt [cssprop]
-
-[demo](/examples/css/margin-top.imba?preview=styles)
-
-### mr [cssprop]
-
-[demo](/examples/css/margin-right.imba?preview=styles)
-
-### mb [cssprop]
-
-[demo](/examples/css/margin-bottom.imba?preview=styles)
-
-### ml [cssprop]
-
-[demo](/examples/css/margin-left.imba?preview=styles)
-
-### mx [cssprop]
-
-[demo](/examples/css/mx.imba?preview=styles)
-
-### my [cssprop]
-
-[demo](/examples/css/my.imba?preview=styles)
-
-## Padding [toc-pills]
-
-[demo](/examples/css/padding-aliases.imba?preview=styles)
-
-### p [cssprop]
-
-[demo](/examples/css/padding.imba?preview=styles)
-
-### pt [cssprop]
-
-[demo](/examples/css/padding-top.imba?preview=styles)
-
-### pr [cssprop]
-
-[demo](/examples/css/padding-right.imba?preview=styles)
-
-### pb [cssprop]
-
-[demo](/examples/css/padding-bottom.imba?preview=styles)
-
-### pl [cssprop]
-
-[demo](/examples/css/padding-left.imba?preview=styles)
-
-### px [cssprop]
-
-[demo](/examples/css/px.imba?preview=styles)
-
-### py [cssprop]
-
-[demo](/examples/css/py.imba?preview=styles)
-
-# Layout
-
-## Display [toc-pills]
-
-### d [cssprop]
-
-### d:hflex [cssvalue]
-
-
-### d:vflex [cssvalue]
-
-### d:hgrid [cssvalue]
-
-### d:vgrid [cssvalue]
-
-## Flexbox [toc-pills] [cssprops]
-
-### fl [cssprop]
-
-### flf [cssprop]
-
-### fld [cssprop]
-
-### flb [cssprop]
-
-### flg [cssprop]
-
-### fls [cssprop]
-
-### flw [cssprop]
-
-
-## Grid [toc-pills]
-
-#### g [cssprop]
-#### rg [cssprop]
-#### cg [cssprop]
-#### gtr [cssprop]
-#### gtc [cssprop]
-#### gta [cssprop]
-#### gar [cssprop]
-#### gac [cssprop]
-#### gaf [cssprop]
-#### gcg [cssprop]
-#### grg [cssprop]
-#### ga [cssprop]
-#### gr [cssprop]
-#### gc [cssprop]
-#### gt [cssprop]
-#### grs [cssprop]
-#### gcs [cssprop]
-#### gre [cssprop]
-#### gce [cssprop]
-
-# Alignment
-
-## Alignment [toc-pills] [toc=cssprop]
-
-### ja [cssprop]
-
-### j [cssprop]
-
-
-
-### ji [cssprop]
-
-[demo](/examples/css/ji.imba?preview=styles)
-
-### jc [cssprop]
-
-### js [cssprop]
-
-### a [cssprop]
-
-
-### ai [cssprop]
-
-### ac [cssprop]
-
-### as [cssprop]
-
-
-### jai [cssprop]
-
-### jac [cssprop]
-
-### jas [cssprop]
-
-
-# Typography
-
-## Properties [toc-pills]
-
-### c [cssprop]
-### ff [cssprop]
-### fs [cssprop]
-### fw [cssprop]
-### ts [cssprop]
-### tt [cssprop]
-### ta [cssprop]
-### va [cssprop]
-### ls [cssprop]
-### lh [cssprop]
-### ws [cssprop]
-
-## Font Family [toc-pills]
-
-### ff
-
-[demo](/examples/css/ff.imba?preview=styles)
-
-### ff:mono
-
-### ff:sans
-
-### ff:serif
-
-### ff:custom
-
-You can declare custom font shorthands (or override the standard `mono`, `sans`, and `serif`) by declaring `--font-{name}` css variables in your styles:
-
-```imba
-import 'util/styles'
-# ---
-global css @root
-    --font-sans: Arial Narrow # override sans
-    --font-comic: Chalkboard, Comic Sans # add comic
-
-imba.mount do <section[fs:lg]>
-    <div[ff:serif]> "This is serif"
-    <div[ff:sans]> "This is sans"
-    <div[ff:comic]> "This is comic"
-```
-
-
-## Font Size
-
-[demo](/examples/css/fs.imba?preview=styles)
-
-## Font Weight
-
-[demo](/examples/css/fw.imba?preview=styles)
-
-# Backgrounds
-
-## Background [toc-pills]
-
-### bg [cssprop]
-
-### bgc [cssprop]
-
-### bgi [cssprop]
-
-### bgr [cssprop]
-
-### bgi [cssprop]
-
-### bga [cssprop]
-
-### bgs [cssprop]
-
-### bgclip
-
-# Borders
-
-## Border [toc-pills]
-### bd [cssprop]
-### bdr [cssprop]
-### bdl [cssprop]
-### bdt [cssprop]
-### bdb [cssprop]
-
-## Border Style [toc-pills]
-### bs [cssprop]
-### bsr [cssprop]
-### bsl [cssprop]
-### bst [cssprop]
-### bsb [cssprop]
-
-## Border Width [toc-pills]
-### bw [cssprop]
-### bwr [cssprop]
-### bwl [cssprop]
-### bwt [cssprop]
-### bwb [cssprop]
-
-## Border Color [toc-pills]
-### bc [cssprop]
-### bcr [cssprop]
-### bcl [cssprop]
-### bct [cssprop]
-### bcb [cssprop]
-
-## Border Radius [toc-pills]
-
-[demo](/examples/css/rd.imba?preview=styles)
-
-### rd [cssprop]
-### rdtl [cssprop]
-### rdtr [cssprop]
-### rdbl [cssprop]
-### rdbr [cssprop]
-### rdt [cssprop]
-### rdb [cssprop]
-### rdl [cssprop]
-### rdr [cssprop]
-
-# Animations
-
-# Transforms
-
-## Transform [toc-pills]
-
-[demo](/examples/css/transform.imba?preview=styles)
-
-### x [cssprop]
-
-### y [cssprop]
-
-### z [cssprop]
-
-### scale [cssprop]
-
-### scale-x [cssprop]
-
-### scale-y [cssprop]
-
-### rotate [cssprop]
-
-### skew-x [cssprop]
-
-### skew-y [cssprop]
-
-# Appearance
-
-### o [cssprop]
-
-### bxs [cssprop]
-
-[demo](/examples/css/bxs.imba?preview=styles)
-
-> TODO show how to define custom box shadows
-
-# Miscellaneous
-
-### prefix [cssprop]
-
-### suffix [cssprop]
-
-### zi [cssprop]
-
-### us [cssprop]
-
-### of [cssprop]
-
-### ofx [cssprop]
-
-### ofy [cssprop]
-
-### ofa [cssprop]
-
-
-# Transitions [preview=md]
-
-Imba has **experimental support** for transitioning when elements are added to and removed from the document. If you set an `ease` attribute on a tag, ie. `<my-element ease>`, imba makes it possible to easily style the enter-state and exit-state of the element and its children, as well as the timing and easing of this transition.
-
-Imba does not ship with any prebuilt transitions. This might change in a later version, but the idea is that the syntax for styling is powerful enough to easily create your own transitions. 
-
-
-```imba
-# ~preview=md
-import 'util/styles'
-
-css label d:hflex a:center us:none
-css input mx:1
-
-# ---
-tag App
-    alerted = no
-    <self @click=(alerted = !alerted)>
-        if alerted
-            <div.alert> "Important message"
-# ---
-let app = imba.mount <App.clickable>
-```
-
-In the above example, we attach the `<div>` to the dom only when `alerted` is true. In many cases you may want to smoothly transition the element in and out instead of abruptly removing it. To do this in imba, we simply add an `ease` property to the `<div>` in question.
-
-```imba
-# ~preview=md
-# css div p:2 m:2 overflow:hidden min-width:80px
-import 'util/styles'
-# ---
-tag App
-    alerted = no
-    <self @click=(alerted = !alerted)>
-        if alerted
-            <div.alert[opacity@off:0] ease> "Important message"
-# ---
-let app = imba.mount <App.clickable>
-```
-
-Now that we have declared that this element should ease, we use the `@off` style modifier to specify the appearance of the element when it is detached from the dom. In this case, we set that the opacity should be set to 0. Imba will transition to/from `@off` state smoothly, but all easings and durations can be customized. Imba takes care of keeping the element attached to the dom until all transitions have finished.
-
-If you want separate transitions depending on whether the element is being attached or detached, you can use the `@in` and `@out` modifiers:
-
-
-
-```imba
-# ~preview=md
-# css div p:2 m:2 overflow:hidden min-width:80px
-import 'util/styles'
-
-# ---
-tag App
-    alerted = no
-    <self @click=(alerted = !alerted)>
-        if alerted
-            <div.alert[y@in:100px y@out:-100px] ease> "In from below, out above!"
-# ---
-let app = imba.mount <App.clickable>
-```
-Now you can see that it comes in from the left, but leaves to the right. If the element is re-attached while exiting or detached while still entering, the transition will gracefully revert. You can see this by clicking the checkbox rapidly.
-
-You can easily transition nested elements inside the eased element as well.
-
-```imba
-# ~preview=md
-# css div p:2 m:2 overflow:hidden min-width:80px
-import 'util/styles'
-# ---
-tag App
-    alerted = no
-    <self @click=(alerted = !alerted)>
-        if alerted
-            <div.alert[o@off:0 y@off:100px ease:1s] ease>
-                <div[scale@off:0]> "Important message"
-# ---
-let app = imba.mount <App.clickable>
-```
-
-Click to see the inner div scale during the transition. Also note that we did set the duration of the transition using the `ease` style property. You can specify the ease duration and timing function for each element, and also specify them individually for transforms, opacity and colors. See properties.

@@ -53,6 +53,19 @@ css div %%alias:value
 <div[%%alias:value]>
 `
 
+snippets.cssaliased = template `
+# in declaration
+css div
+	%%name:value
+# inline style
+<section>
+	<div[%%name:value]> ...
+# using alias
+css div %%alias:value
+<div[%%alias:value]>
+`
+
+
 css
 	h1 fs:34px/1.4 fw:600 pb:2
 	h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0
@@ -61,12 +74,19 @@ css
 	a c:blue6
 	b fw:700
 	a em fw:500 font-style:normal
+	
+	a.h3 @force
+		fs:18px/1.2 fw:500 pb:1 bwb:0px mb:3 bdb:1px solid tint7 
+		c:tint7 d:block w:max-content
+		@hover td:none c:tint6
+
 	.link tint:blue
 	.eventmodifier,.modifiers tint:amber
 	.event,.events tint:violet
 	.property,.properties tint:cooler
 	.method tint:cool
 	.style,.styleprop tint:purple
+	.stylemod tint:purple
 	a.link c:tint7
 	
 	app-code-inline d:inline-block
@@ -436,6 +456,39 @@ tag api-styleprop-entry < api-entry
 				<h3> "See also"
 				<p> for item in data.related
 					<api-link[mr:4px] .pill data=item>
+					
+
+tag api-stylemod-entry < api-entry
+	
+	get example
+		ls("/examples/css/{data.name}.imba") or ls("/examples/css/{data.alias}.imba")
+
+	<self.stylemod>
+		<h1>
+			<span.name> data.displayName
+		<api-docs data=data>
+		
+		unless data.meta.Syntax
+			<api-section>
+				# only if there is no syntax from the other
+				<h3> "Syntax"
+				# <app-code-block raw=snippets.cssprop(data)>
+				if data.alias
+					# <p> "For this property you can also use the alias:"
+					<app-code-block raw=snippets.cssaliased(data)>
+				else
+					<app-code-block raw=snippets.cssprop(data)>
+					
+		if example
+			<api-section>
+				<h3> "Examples"
+				<app-code-block href=(example.href)>
+		
+		if data.related.length
+			<api-section>
+				<h3> "See also"
+				<p> for item in data.related
+					<api-link[mr:4px] .pill data=item>
 
 
 		
@@ -483,3 +536,116 @@ tag api-styleprop-list
 						<span.pill[bg:tint1/50 fw:500]> item.name
 						if item.alias
 							<span.alias[c:gray5/80 mx:1]> item.alias
+
+
+tag Stylemods
+	<self>
+		css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
+		for item in data
+			<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
+				<span.pill[bg:tint1/50 fw:500]> item.name
+
+tag app-reference-page
+	
+	<self>
+		<api-section>
+			<h3> "Interfaces"
+			<api-entry-list items=api.kinds.interface.concat(api.kinds.eventinterface)>
+			# <api-entry-list kind='eventinterface'>
+			
+		<api-section>
+			<h3> "Events"
+			<api-entry-list.collapsed.event items=api.kinds.event>
+			
+		<api-section>
+			<h3> "Event Modifiers"
+			<api-entry-list.collapsed.event items=api.kinds.eventmodifier qualifier='qualifier'>
+			
+
+tag api-entry-list
+	kind
+	group
+	items = null
+	qualifier
+	
+	def hydrate
+		kind = dataset.kind
+		group = dataset.group
+		load!
+		
+	def load
+		return if items
+		items = api.kinds[kind]
+		items = items.sort do(a,b) a.name > b.name ? 1 : -1
+		if group
+			items = items.filter do $1.tags[group]
+		let names = items.map do $1.name
+		items = items.filter do(item,i) names.indexOf(item.name) == i
+	
+	def setup
+		load!
+		
+	css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
+		
+		&.collapsed
+			d:hflex jc:flex-start flw:wrap
+		
+	<self .{kind}>
+		for item in items
+			<a[mr:1 fs:sm ws:nowrap] .{item.kind} href=item.href>
+				<span.pill[bg:tint1/50 fw:500]>
+					if qualifier
+						<span.qf> item[qualifier]
+					item.displayName
+
+tag api-stylemod-list
+	def hydrate
+		items = api.kinds.stylemod.sort do(a,b) a.name > b.name ? 1 : -1
+		if dataset.group
+			items = items.filter do $1.tags[dataset.group]
+		
+	<self.stylemod>
+		css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
+		for item in items
+			<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
+				<span.pill[bg:tint1/50 fw:500]> item.name
+				
+tag api-stylemod-section
+	
+	def hydrate
+		# not called when hydrated?
+		items = api.kinds.stylemod.sort do(a,b) a.name > b.name ? 1 : -1
+		
+	def grouped name
+		items.filter do $1.tags[name]
+		
+	<self>
+		# <api-section.style>
+		# 	<h3> "Special Modifiers"
+		# 	<div>
+		# 		css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
+		# 		for item in items when item.custom?
+		# 			<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
+		# 				<span.pill[bg:tint1/100 fw:500]> item.name
+
+		<api-section.style>
+			<h3> "Media Modifiers"
+			<Stylemods data=grouped('media')>
+			
+		<api-section.style>
+			<h3> "Pseudo-classes"
+			<Stylemods data=grouped('pseudoclass')>
+			
+		<api-section.style>
+			<h3> "Pseudo-elements"
+			<Stylemods data=grouped('pseudoelement')>
+			
+		<api-section.style>
+			<h3> "Special Modifiers"
+			<Stylemods data=grouped('custom')>
+			
+		# for group in ['media','pseudoclass','pseudoelement']
+		# 	<api-section.style>
+		# 		let items = self.items.filter do $1.tags[group]
+		# 		<h3> group
+		# 		<Stylemods data=items>

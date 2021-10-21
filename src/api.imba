@@ -166,6 +166,17 @@ export class Entity
 		
 	get href
 		"/api/{name}"
+		
+	get related
+		#related ||= if true
+			let all = []
+			let meta = desc.meta
+			for item in root.kinds[kind]
+				continue if item == self
+				for own k,v of item.tags
+					if v == 1 and meta[k] == 1
+						all.push(item)
+			all
 
 class InterfaceEntity < Entity
 	descendants = []
@@ -183,7 +194,7 @@ class InterfaceEntity < Entity
 class EventInterfaceEntity < InterfaceEntity
 	
 	get modifierPrefix
-		events.length == 1 ? events[0].displayName : "@{name.toLowerCase!}"
+		events.length == 1 ? events[0].displayName : "@{name.toLowerCase!.replace(/(\w)event/,'$1')}"
 	
 class EventEntity < Entity
 	
@@ -224,7 +235,7 @@ class EventModifierEntity < Entity
 		"{name.slice(1)}"
 		
 	get qualifier
-		owner.modifierPrefix
+		owner.modifierPrefix + "."
 		
 	get siblings
 		#siblings ||= owner.modifiers.own.filter do $1 != self
@@ -259,8 +270,6 @@ class MethodEntity < PropertyEntity
 
 class StyleEntity < Entity
 	
-class StyleModifier < StyleEntity
-	
 class StyleProperty < StyleEntity
 	
 	get custom?
@@ -276,23 +285,21 @@ class StyleProperty < StyleEntity
 		custom? ? tags.detail : name
 		
 	get href
-		"/api/css/{name}"
+		"/css/properties/{name}"
 	
-	get related
-		#related ||= if true
-			let all = []
-			let meta = desc.meta
-			for item in root.kinds.styleprop
-				continue if item == self
-				for own k,v of item.meta
-					if v == 1 and meta[k] == 1
-						all.push(item)
-			all
+	
 		
 	get mdn
 		return null if custom?
 		return "https://developer.mozilla.org/en-US/docs/Web/CSS/{name}"
 		
+class StyleModifier < StyleEntity
+	
+	get custom?
+		desc.tags.custom or desc.group == 'custom'
+	
+	get href
+		"/css/modifiers/{name}"
 	
 class StyleValue < StyleEntity
 	
@@ -304,13 +311,11 @@ kindToClass.method = MethodEntity
 kindToClass.eventmodifier = EventModifierEntity
 
 kindToClass.styleprop = StyleProperty
+kindToClass.stylemod = StyleModifier
 
 
 for entry in json.entries
 	Entity.build(entry)
-	# let [name,obj] = k.split('.').reverse!
-	# let cls = new Entity(k,v)
-	# root[k] = cls
 
 global.API = root
 export const api = root

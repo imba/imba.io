@@ -3455,47 +3455,44 @@
     },
     {
       "name": "px",
-      "meta": {
-        "padding": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "padding-(left+right)",
-        "custom": true
+        "custom": true,
+        "padding": 1
       },
       "docs": []
     },
     {
       "name": "py",
-      "meta": {
-        "padding": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "padding-(top+bottom)",
-        "custom": true
+        "custom": true,
+        "padding": 1
       },
       "docs": []
     },
     {
       "name": "mx",
-      "meta": {
-        "margin": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "margin-(left+right)",
-        "custom": true
+        "custom": true,
+        "margin": 1
       },
       "docs": []
     },
     {
       "name": "my",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "margin": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": []
     },
     {
@@ -3594,13 +3591,12 @@
     },
     {
       "name": "x",
-      "meta": {
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "transform: translateX(...)",
-        "custom": true
+        "custom": true,
+        "transform": 1
       },
       "docs": [
         "<p>Shorthand for setting transform translateX()</p>\n"
@@ -3608,13 +3604,12 @@
     },
     {
       "name": "y",
-      "meta": {
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "transform: translateY(...)",
-        "custom": true
+        "custom": true,
+        "transform": 1
       },
       "docs": [
         "<p>Shorthand for setting transform translateY()</p>\n"
@@ -3622,13 +3617,12 @@
     },
     {
       "name": "z",
-      "meta": {
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "transform: translateZ(...)",
-        "custom": true
+        "custom": true,
+        "transform": 1
       },
       "docs": [
         "<p>Shorthand for setting transform translateZ()</p>\n"
@@ -3636,13 +3630,12 @@
     },
     {
       "name": "skew-x",
-      "meta": {
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "transform: skewX(...)",
-        "custom": true
+        "custom": true,
+        "transform": 1
       },
       "docs": [
         "<p>Shorthand for setting transform skewX()</p>\n"
@@ -3650,13 +3643,12 @@
     },
     {
       "name": "skew-y",
-      "meta": {
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "transform: skewY(...)",
-        "custom": true
+        "custom": true,
+        "transform": 1
       },
       "docs": [
         "<p>Shorthand for setting transform skewY()</p>\n"
@@ -3664,13 +3656,12 @@
     },
     {
       "name": "scale-x",
-      "meta": {
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "transform: scaleX(...)",
-        "custom": true
+        "custom": true,
+        "transform": 1
       },
       "docs": [
         "<p>Shorthand for setting transform scaleX()</p>\n"
@@ -3678,13 +3669,12 @@
     },
     {
       "name": "scale-y",
-      "meta": {
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "transform: scaleY(...)",
-        "custom": true
+        "custom": true,
+        "transform": 1
       },
       "docs": [
         "<p>Shorthand for setting transform scaleY()</p>\n"
@@ -3692,14 +3682,13 @@
     },
     {
       "name": "rotate",
-      "meta": {
-        "skip": true,
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
         "detail": "transform: rotate(...)",
-        "custom": true
+        "custom": true,
+        "skip": true,
+        "transform": 1
       },
       "docs": [
         "<p>Shorthand for setting transform rotate()</p>\n"
@@ -3785,12 +3774,11 @@
     },
     {
       "name": "padding",
-      "meta": {
-        "padding": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "p"
+        "alias": "p",
+        "padding": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.</p>\n"
@@ -3823,12 +3811,11 @@
     },
     {
       "name": "margin",
-      "meta": {
-        "margin": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "m"
+        "alias": "m",
+        "margin": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits.</p>\n"
@@ -3870,12 +3857,11 @@
     },
     {
       "name": "margin-top",
-      "meta": {
-        "margin": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "mt"
+        "alias": "mt",
+        "margin": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..</p>\n"
@@ -3896,12 +3882,11 @@
     },
     {
       "name": "font-size",
-      "meta": {
-        "font": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "fs"
+        "alias": "fs",
+        "font": 1
       },
       "docs": [
         "<p>Indicates the desired height of glyphs from the font. For scalable fonts, the font-size is a scale factor applied to the EM unit of the font. (Note that certain glyphs may bleed outside their EM box.) For non-scalable fonts, the font-size is converted into absolute units and matched against the declared font-size of the font, using the same absolute coordinate space for both of the matched values.</p>\n"
@@ -3910,12 +3895,11 @@
     },
     {
       "name": "background-color",
-      "meta": {
-        "bg": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bgc"
+        "alias": "bgc",
+        "bg": 1
       },
       "docs": [
         "<p>Sets the background color of an element.</p>\n"
@@ -3924,12 +3908,11 @@
     },
     {
       "name": "text-align",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "ta"
+        "alias": "ta",
+        "text": 1
       },
       "docs": [
         "<p>Describes how inline contents of a block are horizontally aligned if the contents do not completely fill the line box.</p>\n"
@@ -3950,12 +3933,11 @@
     },
     {
       "name": "background",
-      "meta": {
-        "bg": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bg"
+        "alias": "bg",
+        "bg": 1
       },
       "docs": [
         "<p>Shorthand property for setting most background properties at the same place in the style sheet.</p>\n"
@@ -3964,12 +3946,11 @@
     },
     {
       "name": "font-weight",
-      "meta": {
-        "font": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "fw"
+        "alias": "fw",
+        "font": 1
       },
       "docs": [
         "<p>Specifies weight of glyphs in the font, their degree of blackness or stroke thickness.</p>\n"
@@ -3978,12 +3959,11 @@
     },
     {
       "name": "overflow",
-      "meta": {
-        "layout": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "of"
+        "alias": "of",
+        "layout": 1
       },
       "docs": [
         "<p>Shorthand for setting &#39;overflow-x&#39; and &#39;overflow-y&#39;.</p>\n"
@@ -3992,12 +3972,11 @@
     },
     {
       "name": "font-family",
-      "meta": {
-        "font": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "ff"
+        "alias": "ff",
+        "font": 1
       },
       "docs": [
         "<p>Specifies a prioritized list of font family names or generic family names. A user agent iterates through the list of family names until it matches an available font that contains a glyph for the character to be rendered.</p>\n"
@@ -4036,12 +4015,11 @@
     },
     {
       "name": "text-decoration",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "td"
+        "alias": "td",
+        "text": 1
       },
       "docs": [
         "<p>Decorations applied to font used for an element&#39;s text.</p>\n"
@@ -4050,12 +4028,11 @@
     },
     {
       "name": "z-index",
-      "meta": {
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "zi"
+        "alias": "zi",
+        "transform": 1
       },
       "docs": [
         "<p>For a positioned box, the &#39;z-index&#39; property specifies the stack level of the box in the current stacking context and whether the box establishes a local stacking context.</p>\n"
@@ -4085,12 +4062,11 @@
     },
     {
       "name": "margin-left",
-      "meta": {
-        "margin": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "ml"
+        "alias": "ml",
+        "margin": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..</p>\n"
@@ -4099,13 +4075,12 @@
     },
     {
       "name": "border-radius",
-      "meta": {
-        "radius": 1,
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "rd"
+        "alias": "rd",
+        "radius": 1,
+        "border": 1
       },
       "docs": [
         "<p>Defines the radii of the outer border edge.</p>\n"
@@ -4114,12 +4089,11 @@
     },
     {
       "name": "margin-bottom",
-      "meta": {
-        "margin": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "mb"
+        "alias": "mb",
+        "margin": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..</p>\n"
@@ -4128,12 +4102,11 @@
     },
     {
       "name": "margin-right",
-      "meta": {
-        "margin": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "mr"
+        "alias": "mr",
+        "margin": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..</p>\n"
@@ -4154,12 +4127,11 @@
     },
     {
       "name": "padding-left",
-      "meta": {
-        "padding": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "pl"
+        "alias": "pl",
+        "padding": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.</p>\n"
@@ -4168,12 +4140,11 @@
     },
     {
       "name": "padding-top",
-      "meta": {
-        "padding": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "pt"
+        "alias": "pt",
+        "padding": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.</p>\n"
@@ -4212,12 +4183,11 @@
     },
     {
       "name": "box-shadow",
-      "meta": {
-        "shadow": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "shadow"
+        "alias": "shadow",
+        "shadow": 1
       },
       "docs": [
         "<p>Attaches one or more drop-shadows to the box. The property is a comma-separated list of shadows, each specified by 2-4 length values, an optional color, and an optional &#39;inset&#39; keyword. Omitted lengths are 0; omitted colors are a user agent chosen color.</p>\n"
@@ -4226,12 +4196,11 @@
     },
     {
       "name": "background-image",
-      "meta": {
-        "bg": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bgi"
+        "alias": "bgi",
+        "bg": 1
       },
       "docs": [
         "<p>Sets the background image(s) of an element.</p>\n"
@@ -4240,12 +4209,11 @@
     },
     {
       "name": "padding-right",
-      "meta": {
-        "padding": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "pr"
+        "alias": "pr",
+        "padding": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.</p>\n"
@@ -4266,12 +4234,11 @@
     },
     {
       "name": "padding-bottom",
-      "meta": {
-        "padding": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "pb"
+        "alias": "pb",
+        "padding": 1
       },
       "docs": [
         "<p>Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.</p>\n"
@@ -4289,23 +4256,22 @@
     },
     {
       "name": "transform",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "transform": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>A two-dimensional transformation is applied to an element through the &#39;transform&#39; property. This property contains a list of transform functions similar to those allowed by SVG.</p>\n"
       ]
     },
     {
       "name": "border-bottom",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bdb"
+        "alias": "bdb",
+        "border": 1
       },
       "docs": [
         "<p>Shorthand property for setting border width, style and color.</p>\n"
@@ -4323,12 +4289,11 @@
     },
     {
       "name": "background-position",
-      "meta": {
-        "bg": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bgp"
+        "alias": "bgp",
+        "bg": 1
       },
       "docs": [
         "<p>Specifies the initial position of the background image(s) (after any resizing) within their corresponding background positioning area.</p>\n"
@@ -4337,12 +4302,11 @@
     },
     {
       "name": "border-top",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bdt"
+        "alias": "bdt",
+        "border": 1
       },
       "docs": [
         "<p>Shorthand property for setting border width, style and color</p>\n"
@@ -4369,12 +4333,11 @@
     },
     {
       "name": "border-color",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bc"
+        "alias": "bc",
+        "border": 1
       },
       "docs": [
         "<p>The color of the border around all four edges of an element.</p>\n"
@@ -4383,12 +4346,11 @@
     },
     {
       "name": "background-repeat",
-      "meta": {
-        "bg": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bgr"
+        "alias": "bgr",
+        "bg": 1
       },
       "docs": [
         "<p>Specifies how background images are tiled after they have been sized and positioned.</p>\n"
@@ -4397,12 +4359,11 @@
     },
     {
       "name": "text-transform",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "tt"
+        "alias": "tt",
+        "text": 1
       },
       "docs": [
         "<p>Controls capitalization effects of an element’s text.</p>\n"
@@ -4411,12 +4372,11 @@
     },
     {
       "name": "background-size",
-      "meta": {
-        "bg": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bgs"
+        "alias": "bgs",
+        "bg": 1
       },
       "docs": [
         "<p>Specifies the size of the background images.</p>\n"
@@ -4452,11 +4412,11 @@
     },
     {
       "name": "font-style",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Allows italic or oblique faces to be selected. Italic forms are generally cursive in nature while oblique faces are typically sloped versions of the regular face.</p>\n"
       ]
@@ -4472,12 +4432,11 @@
     },
     {
       "name": "border-left",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bdl"
+        "alias": "bdl",
+        "border": 1
       },
       "docs": [
         "<p>Shorthand property for setting border width, style and color</p>\n"
@@ -4486,12 +4445,11 @@
     },
     {
       "name": "border-right",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bdr"
+        "alias": "bdr",
+        "border": 1
       },
       "docs": [
         "<p>Shorthand property for setting border width, style and color</p>\n"
@@ -4500,23 +4458,22 @@
     },
     {
       "name": "text-overflow",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Text can overflow for example when it is prevented from wrapping.</p>\n"
       ]
     },
     {
       "name": "border-width",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bw"
+        "alias": "bw",
+        "border": 1
       },
       "docs": [
         "<p>Shorthand that sets the four &#39;border-*-width&#39; properties. If it has four values, they set top, right, bottom and left in that order. If left is missing, it is the same as right; if bottom is missing, it is the same as top; if right is missing, it is the same as top.</p>\n"
@@ -4549,12 +4506,11 @@
     },
     {
       "name": "overflow-y",
-      "meta": {
-        "layout": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "ofy"
+        "alias": "ofy",
+        "layout": 1
       },
       "docs": [
         "<p>Specifies the handling of overflow in the vertical direction.</p>\n"
@@ -4575,12 +4531,11 @@
     },
     {
       "name": "border-style",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bs"
+        "alias": "bs",
+        "border": 1
       },
       "docs": [
         "<p>The style of the border around edges of an element.</p>\n"
@@ -4610,12 +4565,11 @@
     },
     {
       "name": "overflow-x",
-      "meta": {
-        "layout": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "ofx"
+        "alias": "ofx",
+        "layout": 1
       },
       "docs": [
         "<p>Specifies the handling of overflow in the horizontal direction.</p>\n"
@@ -4624,12 +4578,11 @@
     },
     {
       "name": "flex-direction",
-      "meta": {
-        "flex": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "fld"
+        "alias": "fld",
+        "flex": 1
       },
       "docs": [
         "<p>Specifies how flex items are placed in the flex container, by setting the direction of the flex container’s main axis.</p>\n"
@@ -4647,12 +4600,11 @@
     },
     {
       "name": "flex",
-      "meta": {
-        "flex": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "fl"
+        "alias": "fl",
+        "flex": 1
       },
       "docs": [
         "<p>Specifies the components of a flexible length: the flex grow factor and flex shrink factor, and the flex basis.</p>\n"
@@ -4661,11 +4613,11 @@
     },
     {
       "name": "border-collapse",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Selects a table&#39;s border model.</p>\n"
       ]
@@ -4690,13 +4642,12 @@
     },
     {
       "name": "border-bottom-left-radius",
-      "meta": {
-        "radius": 1,
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "rdbl"
+        "alias": "rdbl",
+        "radius": 1,
+        "border": 1
       },
       "docs": [
         "<p>Defines the radii of the bottom left outer border edge.</p>\n"
@@ -4714,12 +4665,11 @@
     },
     {
       "name": "transform-origin",
-      "meta": {
-        "transform": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "origin"
+        "alias": "origin",
+        "transform": 1
       },
       "docs": [
         "<p>Establishes the origin of transformation for an element.</p>\n"
@@ -4728,12 +4678,11 @@
     },
     {
       "name": "flex-wrap",
-      "meta": {
-        "flex": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "flw"
+        "alias": "flw",
+        "flex": 1
       },
       "docs": [
         "<p>Controls whether the flex container is single-line or multi-line, and the direction of the cross-axis, which determines the direction new lines are stacked in.</p>\n"
@@ -4742,13 +4691,12 @@
     },
     {
       "name": "text-shadow",
-      "meta": {
-        "shadow": 1,
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "ts"
+        "alias": "ts",
+        "shadow": 1,
+        "text": 1
       },
       "docs": [
         "<p>Enables shadow effects to be applied to the text of the element.</p>\n"
@@ -4757,13 +4705,12 @@
     },
     {
       "name": "border-top-left-radius",
-      "meta": {
-        "radius": 1,
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "rdtl"
+        "alias": "rdtl",
+        "radius": 1,
+        "border": 1
       },
       "docs": [
         "<p>Defines the radii of the top left outer border edge.</p>\n"
@@ -4793,13 +4740,12 @@
     },
     {
       "name": "border-bottom-right-radius",
-      "meta": {
-        "radius": 1,
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "rdbr"
+        "alias": "rdbr",
+        "radius": 1,
+        "border": 1
       },
       "docs": [
         "<p>Defines the radii of the bottom right outer border edge.</p>\n"
@@ -4817,13 +4763,12 @@
     },
     {
       "name": "border-top-right-radius",
-      "meta": {
-        "radius": 1,
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "rdtr"
+        "alias": "rdtr",
+        "radius": 1,
+        "border": 1
       },
       "docs": [
         "<p>Defines the radii of the top right outer border edge.</p>\n"
@@ -4832,12 +4777,11 @@
     },
     {
       "name": "flex-grow",
-      "meta": {
-        "flex": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "flg"
+        "alias": "flg",
+        "flex": 1
       },
       "docs": [
         "<p>Sets the flex grow factor. Negative numbers are invalid.</p>\n"
@@ -4846,12 +4790,11 @@
     },
     {
       "name": "border-top-color",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bct"
+        "alias": "bct",
+        "border": 1
       },
       "docs": [
         "<p>Sets the color of the top border.</p>\n"
@@ -4860,12 +4803,11 @@
     },
     {
       "name": "border-bottom-color",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bcb"
+        "alias": "bcb",
+        "border": 1
       },
       "docs": [
         "<p>Sets the color of the bottom border.</p>\n"
@@ -4874,12 +4816,11 @@
     },
     {
       "name": "flex-shrink",
-      "meta": {
-        "flex": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "fls"
+        "alias": "fls",
+        "flex": 1
       },
       "docs": [
         "<p>Sets the flex shrink factor. Negative numbers are invalid.</p>\n"
@@ -4888,11 +4829,11 @@
     },
     {
       "name": "text-rendering",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The creator of SVG content might want to provide a hint to the implementation about what tradeoffs to make as it renders text. The ‘text-rendering’ property provides these hints.</p>\n"
       ]
@@ -4911,11 +4852,11 @@
     },
     {
       "name": "text-indent",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies the indentation applied to lines of inline content in a block. The indentation only affects the first line of inline content in the block unless the &#39;hanging&#39; keyword is specified, in which case it affects all lines except the first.</p>\n"
       ]
@@ -4931,11 +4872,11 @@
     },
     {
       "name": "border-spacing",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The lengths specify the distance that separates adjoining cell borders. If one length is specified, it gives both the horizontal and vertical spacing. If two are specified, the first gives the horizontal spacing and the second the vertical spacing. Lengths may not be negative.</p>\n"
       ]
@@ -4951,12 +4892,11 @@
     },
     {
       "name": "background-clip",
-      "meta": {
-        "bg": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bgclip"
+        "alias": "bgclip",
+        "bg": 1
       },
       "docs": [
         "<p>Determines the background painting area.</p>\n"
@@ -4965,12 +4905,11 @@
     },
     {
       "name": "border-left-color",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bcl"
+        "alias": "bcl",
+        "border": 1
       },
       "docs": [
         "<p>Sets the color of the left border.</p>\n"
@@ -4997,12 +4936,11 @@
     },
     {
       "name": "border-right-color",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bcr"
+        "alias": "bcr",
+        "border": 1
       },
       "docs": [
         "<p>Sets the color of the right border.</p>\n"
@@ -5047,11 +4985,11 @@
     },
     {
       "name": "overflow-wrap",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "layout": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit within the line box.</p>\n"
       ]
@@ -5076,23 +5014,22 @@
     },
     {
       "name": "font-variant",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies variant representations of the font</p>\n"
       ]
     },
     {
       "name": "border-bottom-width",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bwb"
+        "alias": "bwb",
+        "border": 1
       },
       "docs": [
         "<p>Sets the thickness of the bottom border.</p>\n"
@@ -5110,12 +5047,11 @@
     },
     {
       "name": "border-top-width",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bwt"
+        "alias": "bwt",
+        "border": 1
       },
       "docs": [
         "<p>Sets the thickness of the top border.</p>\n"
@@ -5133,12 +5069,11 @@
     },
     {
       "name": "flex-basis",
-      "meta": {
-        "flex": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "flb"
+        "alias": "flb",
+        "flex": 1
       },
       "docs": [
         "<p>Sets the flex basis.</p>\n"
@@ -5228,12 +5163,11 @@
     },
     {
       "name": "border-right-width",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bwr"
+        "alias": "bwr",
+        "border": 1
       },
       "docs": [
         "<p>Sets the thickness of the right border.</p>\n"
@@ -5290,12 +5224,11 @@
     },
     {
       "name": "border-left-width",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bwl"
+        "alias": "bwl",
+        "border": 1
       },
       "docs": [
         "<p>Sets the thickness of the left border.</p>\n"
@@ -5304,12 +5237,11 @@
     },
     {
       "name": "flex-flow",
-      "meta": {
-        "flex": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "flf"
+        "alias": "flf",
+        "flex": 1
       },
       "docs": [
         "<p>Specifies how flexbox items are placed in the flexbox.</p>\n"
@@ -5372,23 +5304,22 @@
     },
     {
       "name": "text-size-adjust",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The text-size-adjust CSS property controls the text inflation algorithm used on some smartphones and tablets. Other browsers will ignore this property.</p>\n"
       ]
     },
     {
       "name": "border-top-style",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bst"
+        "alias": "bst",
+        "border": 1
       },
       "docs": [
         "<p>Sets the style of the top border.</p>\n"
@@ -5397,12 +5328,11 @@
     },
     {
       "name": "border-bottom-style",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bsb"
+        "alias": "bsb",
+        "border": 1
       },
       "docs": [
         "<p>Sets the style of the bottom border.</p>\n"
@@ -5438,12 +5368,11 @@
     },
     {
       "name": "grid-template-columns",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gtc"
+        "alias": "gtc",
+        "grid": 1
       },
       "docs": [
         "<p>specifies, as a space-separated track list, the line names and track sizing functions of the grid.</p>\n"
@@ -5461,11 +5390,11 @@
     },
     {
       "name": "font-feature-settings",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Provides low-level control over OpenType font features. It is intended as a way of providing access to font features that are not widely used but are needed for a particular use case.</p>\n"
       ]
@@ -5481,34 +5410,33 @@
     },
     {
       "name": "background-position-x",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "bg": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>If background images have been specified, this property specifies their initial position (after any resizing) within their corresponding background positioning area.</p>\n"
       ]
     },
     {
       "name": "transform-style",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "transform": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Defines how nested elements are rendered in 3D space.</p>\n"
       ]
     },
     {
       "name": "background-origin",
-      "meta": {
-        "bg": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bgo"
+        "alias": "bgo",
+        "bg": 1
       },
       "docs": [
         "<p>For elements rendered as a single box, specifies the background positioning area. For elements rendered as multiple boxes (e.g., inline boxes on several lines, boxes on several pages) specifies which boxes &#39;box-decoration-break&#39; operates on to determine the background positioning area(s).</p>\n"
@@ -5517,12 +5445,11 @@
     },
     {
       "name": "border-left-style",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bsl"
+        "alias": "bsl",
+        "border": 1
       },
       "docs": [
         "<p>Sets the style of the left border.</p>\n"
@@ -5531,11 +5458,11 @@
     },
     {
       "name": "font-display",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The font-display descriptor determines how a font face is displayed based on whether and when it is downloaded and ready to use.</p>\n"
       ]
@@ -5560,12 +5487,11 @@
     },
     {
       "name": "background-attachment",
-      "meta": {
-        "bg": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bga"
+        "alias": "bga",
+        "bg": 1
       },
       "docs": [
         "<p>Specifies whether the background images are fixed with regard to the viewport (&#39;fixed&#39;) or scroll along with the element (&#39;scroll&#39;) or its contents (&#39;local&#39;).</p>\n"
@@ -5574,12 +5500,11 @@
     },
     {
       "name": "border-right-style",
-      "meta": {
-        "border": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "bsr"
+        "alias": "bsr",
+        "border": 1
       },
       "docs": [
         "<p>Sets the style of the right border.</p>\n"
@@ -5597,11 +5522,11 @@
     },
     {
       "name": "margin-block-end",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "margin": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;margin-bottom&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
@@ -5626,22 +5551,22 @@
     },
     {
       "name": "background-position-y",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "bg": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>If background images have been specified, this property specifies their initial position (after any resizing) within their corresponding background positioning area.</p>\n"
       ]
     },
     {
       "name": "font-stretch",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Selects a normal, condensed, or expanded face from a font family.</p>\n"
       ]
@@ -5675,11 +5600,11 @@
     },
     {
       "name": "margin-block-start",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "margin": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;margin-top&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
@@ -5695,12 +5620,11 @@
     },
     {
       "name": "text-decoration-color",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "tdc"
+        "alias": "tdc",
+        "text": 1
       },
       "docs": [
         "<p>Specifies the color of text decoration (underlines overlines, and line-throughs) set on the element with text-decoration-line.</p>\n"
@@ -5727,11 +5651,11 @@
     },
     {
       "name": "border-image",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Shorthand property for setting &#39;border-image-source&#39;, &#39;border-image-slice&#39;, &#39;border-image-width&#39;, &#39;border-image-outset&#39; and &#39;border-image-repeat&#39;. Omitted values are set to their initial values.</p>\n"
       ]
@@ -5768,11 +5692,11 @@
     },
     {
       "name": "padding-inline-start",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "padding": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;padding-left&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
@@ -5788,22 +5712,22 @@
     },
     {
       "name": "font-variant-ligatures",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies control over which ligatures are enabled or disabled. A value of ‘normal’ implies that the defaults set by the font are used.</p>\n"
       ]
     },
     {
       "name": "text-decoration-skip",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The text-decoration-skip CSS property specifies what parts of the element’s content any text decoration affecting the element must skip over. It controls all text decoration lines drawn by the element and also any text decoration lines drawn by its ancestors.</p>\n"
       ]
@@ -5831,12 +5755,11 @@
     },
     {
       "name": "grid-template-rows",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gtr"
+        "alias": "gtr",
+        "grid": 1
       },
       "docs": [
         "<p>specifies, as a space-separated track list, the line names and track sizing functions of the grid.</p>\n"
@@ -5845,22 +5768,22 @@
     },
     {
       "name": "padding-inline-end",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "padding": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;padding-right&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "grid-gap",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "grid": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Shorthand that specifies the gutters between grid columns and grid rows in one declaration. Replaced by &#39;gap&#39; property.</p>\n"
       ]
@@ -5876,12 +5799,11 @@
     },
     {
       "name": "grid-column",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gc"
+        "alias": "gc",
+        "grid": 1
       },
       "docs": [
         "<p>Shorthand for &#39;grid-column-start&#39; and &#39;grid-column-end&#39;.</p>\n"
@@ -5899,22 +5821,22 @@
     },
     {
       "name": "margin-inline-start",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "margin": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;margin-left&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "margin-inline-end",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "margin": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;margin-right&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
@@ -5984,12 +5906,11 @@
     },
     {
       "name": "grid-column-gap",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gcg"
+        "alias": "gcg",
+        "grid": 1
       },
       "docs": [
         "<p>Specifies the gutters between grid columns. Replaced by &#39;column-gap&#39; property.</p>\n"
@@ -6025,56 +5946,55 @@
     },
     {
       "name": "font-kerning",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Kerning is the contextual adjustment of inter-glyph spacing. This property controls metric kerning, kerning that utilizes adjustment data contained in the font.</p>\n"
       ]
     },
     {
       "name": "border-image-slice",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies inward offsets from the top, right, bottom, and left edges of the image, dividing it into nine regions: four corners, four edges and a middle.</p>\n"
       ]
     },
     {
       "name": "border-image-repeat",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies how the images for the sides and the middle part of the border image are scaled and tiled. If the second keyword is absent, it is assumed to be the same as the first.</p>\n"
       ]
     },
     {
       "name": "border-image-width",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The four values of &#39;border-image-width&#39; specify offsets that are used to divide the border image area into nine parts. They represent inward distances from the top, right, bottom, and left sides of the area, respectively.</p>\n"
       ]
     },
     {
       "name": "grid-row",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gr"
+        "alias": "gr",
+        "grid": 1
       },
       "docs": [
         "<p>Shorthand for &#39;grid-row-start&#39; and &#39;grid-row-end&#39;.</p>\n"
@@ -6092,12 +6012,11 @@
     },
     {
       "name": "grid-row-gap",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "grg"
+        "alias": "grg",
+        "grid": 1
       },
       "docs": [
         "<p>Specifies the gutters between grid rows. Replaced by &#39;row-gap&#39; property.</p>\n"
@@ -6106,12 +6025,11 @@
     },
     {
       "name": "text-decoration-style",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "tds"
+        "alias": "tds",
+        "text": 1
       },
       "docs": [
         "<p>Specifies the line style for underline, line-through and overline text decoration.</p>\n"
@@ -6129,11 +6047,11 @@
     },
     {
       "name": "border-image-outset",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The values specify the amount by which the border image area extends beyond the border box on the top, right, bottom, and left sides respectively. If the fourth value is absent, it is the same as the second. If the third one is also absent, it is the same as the first. If the second one is also absent, it is the same as the first. Numbers represent multiples of the corresponding border-width.</p>\n"
       ]
@@ -6161,12 +6079,11 @@
     },
     {
       "name": "grid-area",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "ga"
+        "alias": "ga",
+        "grid": 1
       },
       "docs": [
         "<p>Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement. Shorthand for &#39;grid-row-start&#39;, &#39;grid-column-start&#39;, &#39;grid-row-end&#39;, and &#39;grid-column-end&#39;.</p>\n"
@@ -6184,11 +6101,11 @@
     },
     {
       "name": "text-align-last",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Describes how the last line of a block or a line right before a forced line break is aligned when &#39;text-align&#39; is set to &#39;justify&#39;.</p>\n"
       ]
@@ -6204,12 +6121,11 @@
     },
     {
       "name": "grid-auto-rows",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gar"
+        "alias": "gar",
+        "grid": 1
       },
       "docs": [
         "<p>Specifies the size of implicitly created rows.</p>\n"
@@ -6236,12 +6152,11 @@
     },
     {
       "name": "text-decoration-line",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "tdl"
+        "alias": "tdl",
+        "text": 1
       },
       "docs": [
         "<p>Specifies what line decorations, if any, are added to the element.</p>\n"
@@ -6268,12 +6183,11 @@
     },
     {
       "name": "grid-auto-flow",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gaf"
+        "alias": "gaf",
+        "grid": 1
       },
       "docs": [
         "<p>Controls how the auto-placement algorithm works, specifying exactly how auto-placed items get flowed into the grid.</p>\n"
@@ -6300,12 +6214,11 @@
     },
     {
       "name": "grid-column-start",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gcs"
+        "alias": "gcs",
+        "grid": 1
       },
       "docs": [
         "<p>Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement.</p>\n"
@@ -6314,12 +6227,11 @@
     },
     {
       "name": "grid-template-areas",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gta"
+        "alias": "gta",
+        "grid": 1
       },
       "docs": [
         "<p>Specifies named grid areas, which are not associated with any particular grid item, but can be referenced from the grid-placement properties.</p>\n"
@@ -6346,12 +6258,11 @@
     },
     {
       "name": "grid-column-end",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gce"
+        "alias": "gce",
+        "grid": 1
       },
       "docs": [
         "<p>Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement.</p>\n"
@@ -6360,23 +6271,22 @@
     },
     {
       "name": "border-image-source",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies an image to use instead of the border styles given by the &#39;border-style&#39; properties and as an additional background layer for the element. If the value is &#39;none&#39; or if the image cannot be displayed, the border styles will be used.</p>\n"
       ]
     },
     {
       "name": "overflow-anchor",
-      "meta": {
-        "layout": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "ofa"
+        "alias": "ofa",
+        "layout": 1
       },
       "docs": [
         "<p>The overflow-anchor CSS property provides a way to opt out browser scroll anchoring behavior which adjusts scroll position to minimize content shifts.</p>\n"
@@ -6385,12 +6295,11 @@
     },
     {
       "name": "grid-row-start",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "grs"
+        "alias": "grs",
+        "grid": 1
       },
       "docs": [
         "<p>Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement.</p>\n"
@@ -6399,12 +6308,11 @@
     },
     {
       "name": "grid-row-end",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gre"
+        "alias": "gre",
+        "grid": 1
       },
       "docs": [
         "<p>Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement.</p>\n"
@@ -6413,34 +6321,33 @@
     },
     {
       "name": "font-variant-numeric",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies control over numerical forms.</p>\n"
       ]
     },
     {
       "name": "background-blend-mode",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "bg": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Defines the blending mode of each background layer.</p>\n"
       ]
     },
     {
       "name": "text-decoration-skip-ink",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "tdsi"
+        "alias": "tdsi",
+        "text": 1
       },
       "docs": [
         "<p>The text-decoration-skip-ink CSS property specifies how overlines and underlines are drawn when they pass over glyph ascenders and descenders.</p>\n"
@@ -6485,34 +6392,33 @@
     },
     {
       "name": "border-inline-end-width",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-right-width&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-inline-start-width",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-left-width&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "grid-auto-columns",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gac"
+        "alias": "gac",
+        "grid": 1
       },
       "docs": [
         "<p>Specifies the size of implicitly created columns.</p>\n"
@@ -6539,22 +6445,22 @@
     },
     {
       "name": "font-variant-caps",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies control over capitalized forms.</p>\n"
       ]
     },
     {
       "name": "text-anchor",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Used to align (start-, middle- or end-alignment) a string of text relative to a given point.</p>\n"
       ]
@@ -6588,22 +6494,22 @@
     },
     {
       "name": "font-variant-east-asian",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Allows control of glyph substitute and positioning in East Asian text.</p>\n"
       ]
     },
     {
       "name": "text-underline-position",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Sets the position of an underline specified on the same element: it does not affect underlines specified by ancestor elements. This property is typically used in vertical writing contexts such as in Japanese documents where it often desired to have the underline appear &#39;over&#39; (to the right of) the affected run of text</p>\n"
       ]
@@ -6658,11 +6564,11 @@
     },
     {
       "name": "text-orientation",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies the orientation of text within a line.</p>\n"
       ]
@@ -6678,12 +6584,11 @@
     },
     {
       "name": "grid-template",
-      "meta": {
-        "grid": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "gt"
+        "alias": "gt",
+        "grid": 1
       },
       "docs": [
         "<p>Shorthand for setting grid-template-columns, grid-template-rows, and grid-template-areas in a single declaration.</p>\n"
@@ -6692,22 +6597,22 @@
     },
     {
       "name": "border-inline-end-color",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-right-color&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-inline-start-color",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-left-color&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
@@ -6780,33 +6685,33 @@
     },
     {
       "name": "padding-block-start",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "padding": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;padding-top&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "padding-block-end",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "padding": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;padding-bottom&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "text-combine-upright",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The text-combine-upright CSS property specifies the combination of multiple characters into the space of a single character. If the combined text is wider than 1em, the user agent must fit the contents within 1em. The resulting composition is treated as a single upright glyph for layout and decoration. This property only has an effect in vertical writing modes.</p>\n<p>This is used to produce an effect that is known as tate-chū-yoko (縦中横) in Japanese, or as 直書橫向 in Chinese.</p>\n"
       ]
@@ -6840,99 +6745,99 @@
     },
     {
       "name": "border-inline-end-style",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-right-style&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-block-start-width",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-top-width&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-block-end-width",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-bottom-width&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-block-end-color",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-bottom-color&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-inline-start-style",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-left-style&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-block-start-color",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-top-color&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-block-end-style",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-bottom-style&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-block-start-style",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-top-style&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "font-variation-settings",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The font-variation-settings CSS property provides low-level control over OpenType or TrueType font variations, by specifying the four letter axis names of the features you want to vary, along with their variation values.</p>\n"
       ]
@@ -7066,11 +6971,11 @@
     },
     {
       "name": "transform-box",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "transform": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The transform-box CSS property defines the layout box to which the transform and transform-origin properties relate.</p>\n"
       ]
@@ -7178,11 +7083,11 @@
     },
     {
       "name": "font-optical-sizing",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The font-optical-sizing CSS property allows developers to control whether browsers render text with slightly differing visual representations to optimize viewing at different sizes, or not. This only works for fonts that have an optical size variation axis.</p>\n"
       ]
@@ -7198,33 +7103,33 @@
     },
     {
       "name": "border-inline-start",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-left&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-inline-end",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-right&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
     },
     {
       "name": "border-block-end",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-bottom&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
@@ -7240,11 +7145,11 @@
     },
     {
       "name": "border-block-start",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Logical &#39;border-top&#39;. Mapping depends on the parent element’s &#39;writing-mode&#39;, &#39;direction&#39;, and &#39;text-orientation&#39;.</p>\n"
       ]
@@ -7296,11 +7201,11 @@
     },
     {
       "name": "font-size-adjust",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Preserves the readability of text when font fallback occurs by adjusting the font-size so that the x-height is the same regardless of the font used.</p>\n"
       ]
@@ -7316,11 +7221,11 @@
     },
     {
       "name": "text-justify",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Selects the justification algorithm used when &#39;text-align&#39; is set to &#39;justify&#39;. The property applies to block containers, but the UA may (but is not required to) also support it on inline elements.</p>\n"
       ]
@@ -7381,11 +7286,11 @@
     },
     {
       "name": "padding-block",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "padding": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The padding-block CSS property defines the logical block start and end padding of an element, which maps to physical padding properties depending on the element&#39;s writing mode, directionality, and text orientation.</p>\n"
       ]
@@ -7410,33 +7315,33 @@
     },
     {
       "name": "margin-block",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "margin": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The margin-block CSS property defines the logical block start and end margins of an element, which maps to physical margins depending on the element&#39;s writing mode, directionality, and text orientation.</p>\n"
       ]
     },
     {
       "name": "margin-inline",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "margin": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The margin-inline CSS property defines the logical inline start and end margins of an element, which maps to physical margins depending on the element&#39;s writing mode, directionality, and text orientation.</p>\n"
       ]
     },
     {
       "name": "padding-inline",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "padding": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The padding-inline CSS property defines the logical inline start and end padding of an element, which maps to physical padding properties depending on the element&#39;s writing mode, directionality, and text orientation.</p>\n"
       ]
@@ -7461,33 +7366,33 @@
     },
     {
       "name": "border-block-color",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-block-color CSS property defines the color of the logical block borders of an element, which maps to a physical border color depending on the element&#39;s writing mode, directionality, and text orientation. It corresponds to the border-top-color and border-bottom-color, or border-right-color and border-left-color property depending on the values defined for writing-mode, direction, and text-orientation.</p>\n"
       ]
     },
     {
       "name": "border-block",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-block CSS property is a shorthand property for setting the individual logical block border property values in a single place in the style sheet.</p>\n"
       ]
     },
     {
       "name": "border-inline",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-inline CSS property is a shorthand property for setting the individual logical inline border property values in a single place in the style sheet.</p>\n"
       ]
@@ -7638,66 +7543,66 @@
     },
     {
       "name": "border-block-style",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-block-style CSS property defines the style of the logical block borders of an element, which maps to a physical border style depending on the element&#39;s writing mode, directionality, and text orientation. It corresponds to the border-top-style and border-bottom-style, or border-left-style and border-right-style properties depending on the values defined for writing-mode, direction, and text-orientation.</p>\n"
       ]
     },
     {
       "name": "border-block-width",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-block-width CSS property defines the width of the logical block borders of an element, which maps to a physical border width depending on the element&#39;s writing mode, directionality, and text orientation. It corresponds to the border-top-width and border-bottom-width, or border-left-width, and border-right-width property depending on the values defined for writing-mode, direction, and text-orientation.</p>\n"
       ]
     },
     {
       "name": "border-inline-color",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-inline-color CSS property defines the color of the logical inline borders of an element, which maps to a physical border color depending on the element&#39;s writing mode, directionality, and text orientation. It corresponds to the border-top-color and border-bottom-color, or border-right-color and border-left-color property depending on the values defined for writing-mode, direction, and text-orientation.</p>\n"
       ]
     },
     {
       "name": "border-inline-style",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-inline-style CSS property defines the style of the logical inline borders of an element, which maps to a physical border style depending on the element&#39;s writing mode, directionality, and text orientation. It corresponds to the border-top-style and border-bottom-style, or border-left-style and border-right-style properties depending on the values defined for writing-mode, direction, and text-orientation.</p>\n"
       ]
     },
     {
       "name": "border-inline-width",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-inline-width CSS property defines the width of the logical inline borders of an element, which maps to a physical border width depending on the element&#39;s writing mode, directionality, and text orientation. It corresponds to the border-top-width and border-bottom-width, or border-left-width, and border-right-width property depending on the values defined for writing-mode, direction, and text-orientation.</p>\n"
       ]
     },
     {
       "name": "overflow-block",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "layout": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The overflow-block CSS media feature can be used to test how the output device handles content that overflows the initial containing block along the block axis.</p>\n"
       ]
@@ -7749,44 +7654,44 @@
     },
     {
       "name": "font-language-override",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The value of &#39;normal&#39; implies that when rendering with OpenType fonts the language of the document is used to infer the OpenType language system, used to select language specific features when rendering.</p>\n"
       ]
     },
     {
       "name": "font-synthesis",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Controls whether user agents are allowed to synthesize bold or oblique font faces when a font family lacks bold or italic faces.</p>\n"
       ]
     },
     {
       "name": "font-variant-alternates",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>For any given character, fonts can provide a variety of alternate glyphs in addition to the default glyph for that character. This property provides control over the selection of these alternate glyphs.</p>\n"
       ]
     },
     {
       "name": "font-variant-position",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "font": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Specifies the vertical position</p>\n"
       ]
@@ -8027,11 +7932,11 @@
     },
     {
       "name": "scrollbar-darkshadow-color",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "shadow": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Determines the color of the gutter of a scroll bar.</p>\n"
       ]
@@ -8056,11 +7961,11 @@
     },
     {
       "name": "scrollbar-shadow-color",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "shadow": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>Determines the color of the bottom and right edges of the scroll box and scroll arrows of a scroll bar.</p>\n"
       ]
@@ -8121,48 +8026,48 @@
     },
     {
       "name": "border-end-end-radius",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "radius": 1,
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-end-end-radius CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on on the element&#39;s writing-mode, direction, and text-orientation.</p>\n"
       ]
     },
     {
       "name": "border-end-start-radius",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "radius": 1,
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-end-start-radius CSS property defines a logical border radius on an element, which maps to a physical border radius depending on the element&#39;s writing-mode, direction, and text-orientation.</p>\n"
       ]
     },
     {
       "name": "border-start-end-radius",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "radius": 1,
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-start-end-radius CSS property defines a logical border radius on an element, which maps to a physical border radius depending on the element&#39;s writing-mode, direction, and text-orientation.</p>\n"
       ]
     },
     {
       "name": "border-start-start-radius",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "radius": 1,
         "border": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The border-start-start-radius CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on the element&#39;s writing-mode, direction, and text-orientation.</p>\n"
       ]
@@ -8241,11 +8146,11 @@
     },
     {
       "name": "margin-trim",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "margin": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The margin-trim property allows the container to trim the margins of its children where they adjoin the container’s edges.</p>\n"
       ]
@@ -8342,22 +8247,22 @@
     },
     {
       "name": "overflow-clip-box",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "layout": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The overflow-clip-box CSS property specifies relative to which box the clipping happens when there is an overflow. It is short hand for the overflow-clip-box-inline and overflow-clip-box-block properties.</p>\n"
       ]
     },
     {
       "name": "overflow-inline",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "layout": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The overflow-inline CSS media feature can be used to test how the output device handles content that overflows the initial containing block along the inline axis.</p>\n"
       ]
@@ -8535,12 +8440,11 @@
     },
     {
       "name": "text-decoration-thickness",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "tdt"
+        "alias": "tdt",
+        "text": 1
       },
       "docs": [
         "<p>The text-decoration-thickness CSS property sets the thickness, or width, of the decoration line that is used on text in an element, such as a line-through, underline, or overline.</p>\n"
@@ -8549,12 +8453,11 @@
     },
     {
       "name": "text-emphasis",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "te"
+        "alias": "te",
+        "text": 1
       },
       "docs": [
         "<p>The text-emphasis CSS property is a shorthand property for setting text-emphasis-style and text-emphasis-color in one declaration. This property will apply the specified emphasis mark to each character of the element&#39;s text, except separator characters, like spaces,  and control characters.</p>\n"
@@ -8563,12 +8466,11 @@
     },
     {
       "name": "text-emphasis-color",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "tec"
+        "alias": "tec",
+        "text": 1
       },
       "docs": [
         "<p>The text-emphasis-color CSS property defines the color used to draw emphasis marks on text being rendered in the HTML document. This value can also be set and reset using the text-emphasis shorthand.</p>\n"
@@ -8577,12 +8479,11 @@
     },
     {
       "name": "text-emphasis-position",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "tep"
+        "alias": "tep",
+        "text": 1
       },
       "docs": [
         "<p>The text-emphasis-position CSS property describes where emphasis marks are drawn at. The effect of emphasis marks on the line height is the same as for ruby text: if there isn&#39;t enough place, the line height is increased.</p>\n"
@@ -8591,12 +8492,11 @@
     },
     {
       "name": "text-emphasis-style",
-      "meta": {
-        "text": 1
-      },
+      "meta": {},
       "kind": "styleprop",
       "tags": {
-        "alias": "tes"
+        "alias": "tes",
+        "text": 1
       },
       "docs": [
         "<p>The text-emphasis-style CSS property defines the type of emphasis used. It can also be set, and reset, using the text-emphasis shorthand.</p>\n"
@@ -8605,11 +8505,11 @@
     },
     {
       "name": "text-underline-offset",
-      "meta": {
+      "meta": {},
+      "kind": "styleprop",
+      "tags": {
         "text": 1
       },
-      "kind": "styleprop",
-      "tags": {},
       "docs": [
         "<p>The text-underline-offset CSS property sets the offset distance of an underline text decoration line (applied using text-decoration) from its original position.</p>\n"
       ]
@@ -8640,6 +8540,428 @@
       "docs": [
         "<p>The marks CSS at-rule descriptor, used with the @page at-rule, adds crop and/or cross marks to the presentation of the document. Crop marks indicate where the page should be cut. Cross marks are used to align sheets.</p>\n"
       ]
+    },
+    {
+      "name": "@odd",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": ":nth-child(odd)",
+        "pseudoclass": 1
+      },
+      "docs": [
+        "<p>Represents elements whose numeric position in a series of siblings is odd 1, 3, 5, etc</p>\n"
+      ]
+    },
+    {
+      "name": "@even",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": ":nth-child(even)",
+        "pseudoclass": 1
+      },
+      "docs": [
+        "<p>Represents elements whose numeric position in a series of siblings is even 2, 4, 6, etc</p>\n"
+      ]
+    },
+    {
+      "name": "@first",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": ":first-child",
+        "pseudoclass": 1
+      },
+      "docs": [
+        "<p>represents the first element among a group of sibling elements</p>\n"
+      ]
+    },
+    {
+      "name": "@last",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": ":last-child",
+        "pseudoclass": 1
+      },
+      "docs": [
+        "<p>represents the last element among a group of sibling elements</p>\n"
+      ]
+    },
+    {
+      "name": "@only",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": ":only-child",
+        "pseudoclass": 1
+      },
+      "docs": [
+        "<p>represents an element without any siblings</p>\n"
+      ]
+    },
+    {
+      "name": "@hover",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "pseudoclass": 1
+      },
+      "docs": [
+        "<p>Generally triggered when the user hovers over an element with the cursor (mouse pointer)</p>\n"
+      ]
+    },
+    {
+      "name": "@active",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "pseudoclass": 1
+      },
+      "docs": [
+        "<p>Element is being activated by the user. When using a mouse, &quot;activation&quot; typically starts when the user presses down the primary mouse button.</p>\n"
+      ]
+    },
+    {
+      "name": "@visited",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "pseudoclass": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@link",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "pseudoclass": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@enabled",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "pseudoclass": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@checked",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "pseudoclass": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@focus",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "pseudoclass": 1
+      },
+      "docs": [
+        "<p>element has focus</p>\n"
+      ]
+    },
+    {
+      "name": "@focin",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "custom": 1
+      },
+      "docs": [
+        "<p>element OR descendant of element has focus</p>\n"
+      ]
+    },
+    {
+      "name": "@xs",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(min-width: 480px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@sm",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(min-width: 640px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@md",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(min-width: 768px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@lg",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(min-width: 1024px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@xl",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(min-width: 1280px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@lt-xs",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(max-width: 479px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@lt-sm",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(max-width: 639px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@lt-md",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(max-width: 767px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@lt-lg",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(max-width: 1023px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@lt-xl",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(max-width: 1279px)",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@dark",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(prefers-color-scheme: dark)",
+        "media": 1
+      },
+      "docs": [
+        "<p>Indicates that user has notified that they prefer an interface that has a dark theme.</p>\n"
+      ]
+    },
+    {
+      "name": "@light",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(prefers-color-scheme: light)",
+        "media": 1
+      },
+      "docs": [
+        "<p>Indicates that user has notified that they prefer an interface that has a light theme, or has not expressed an active preference.</p>\n"
+      ]
+    },
+    {
+      "name": "@touch",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "custom": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@suspended",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "custom": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@move",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "custom": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@hold",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "custom": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@ssr",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "custom": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@landscape",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(orientation: landscape)\nThe viewport is in a landscape orientation, i.e., the width is greater than the height.",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@portrait",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(orientation: portrait)\nThe viewport is in a portrait orientation, i.e.,  the height is greater than or equal to the width.",
+        "breakpoint": 1,
+        "media": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@print",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(media: print)",
+        "media": 1
+      },
+      "docs": [
+        "<p>Intended for paged material and documents viewed on a screen in print preview mode.</p>\n"
+      ]
+    },
+    {
+      "name": "@screen",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "(media: screen)",
+        "media": 1
+      },
+      "docs": [
+        "<p>Intended primarily for screens.</p>\n"
+      ]
+    },
+    {
+      "name": "@before",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "detail": "::before { ... }",
+        "pseudoelement": 1
+      },
+      "docs": [
+        "<p>Pseudo-element that is the first child of the selected element</p>\n"
+      ]
+    },
+    {
+      "name": "@after",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "pseudoelement": 1,
+        "detail": "::after { ... }"
+      },
+      "docs": [
+        "<p>Pseudo-element that is the last child of the selected element</p>\n"
+      ]
+    },
+    {
+      "name": "@in",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "see": "",
+        "detail": "Style when element is transitioning into the dom",
+        "custom": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@out",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "see": "",
+        "detail": "Style when element is transitioning out of the dom",
+        "custom": 1
+      },
+      "docs": []
+    },
+    {
+      "name": "@off",
+      "meta": {},
+      "kind": "stylemod",
+      "tags": {
+        "see": "",
+        "detail": "Style when element is removed",
+        "custom": 1
+      },
+      "docs": []
     }
   ]
 }

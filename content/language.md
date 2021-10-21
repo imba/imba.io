@@ -2377,3 +2377,8 @@ imba.mount do <div>
 global css
     p color:blue5
 ```
+
+
+# Reference
+
+<app-reference-page></app-reference-page>

@@ -1462,9 +1462,7 @@ This will also work directly in src paths, like:
 
 Will be part of a future release.
 
-# Server-Side Rendering [wip]
 
-See [ssr-app-imba](https://github.com/imba/ssr-app-imba) repository as an example.
 
 # State Management
 

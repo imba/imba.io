@@ -476,6 +476,9 @@ export def find query, options = {}
 	return matches
 
 export def ls path
+	if api.paths[path]
+		return api.paths[path]
+
 	unless hits[path]
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
 		let item = fs # fs[parts.shift()]

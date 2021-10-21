@@ -161,7 +161,7 @@ tag app-menu
 				# 	<span[fl:1 font-style:italic]> "Search docs..."
 				# 	<span[rd:md bd:gray2 fs:xs h:5 px:1 c:gray5 d:hflex ja:center]> 'S'
 				# <app-menu-section[c:pink6] data=ls('/intro')>
-				if current and current.api?
+				if current and current.api? and false
 					<div>
 						for item in kinds
 							<app-menu-section[tint:cyan] data=item>
@@ -182,3 +182,4 @@ tag app-menu
 						# <app-menu-section[tint:blue] data=ls('/events')>
 						# <app-menu-section[c:indigo6] data=ls('/styling')>
 						<app-menu-section[tint:blue] data=ls('/css')>
+						<app-menu-section[tint:blue] data=ls('/advanced')>
