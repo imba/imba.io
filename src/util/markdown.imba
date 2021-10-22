@@ -61,6 +61,12 @@ let sanitizeCode = do(code)
 let renderer = new marked.Renderer
  
 def renderer.link href, title, text
+	if href == 'css'
+		if text[0] == '@'
+			return <api-link> "/css/modifiers/{text}"
+		else
+			return <api-link> "/css/properties/{text}"
+
 	if href.match(/^\/.*\.md/)
 		return (<embedded-app-document data-path=href>)
 	elif href.match(/^\/examples\//) and text
@@ -141,11 +147,20 @@ def renderer.heading text, level
 	meta.head = String(text)
 	return "<!--:H:-->{String(node)}<!--:/H:-->"
 
-def renderer.codespan code
-	code = unescape(code)
-	
+def renderer.codespan escaped
+	let code = unescape(escaped)
+
+	let m
+	let ref = null
+
+	if m = escaped.match(/^css (@?[\w\-\.]+)\:$/)
+		ref = 'css'
+
+	if ref and false
+		return String(<api-link> escaped)
+
 	let lang = 'imba'
-	if let m = code.match(/^(\w+)\$\s*/)
+	if m = code.match(/^(\w+)\$\s*/)
 		lang = m[1]
 		code = code.slice(m[0].length)
 	elif code[0] == '>'
@@ -275,7 +290,7 @@ export def render content, o = {}
 	let prev = object
 	let intro = segments[0]
 
-	console.log 'snippets',Object.keys(state.files)
+	# console.log 'snippets',Object.keys(state.files)
 	object.#files = state.files
 
 	for html,i in segments.slice(1)

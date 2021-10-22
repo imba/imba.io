@@ -15,6 +15,9 @@ const root = new class
 		paths[path]
 		
 	def lookup path
+		if paths[path]
+			return paths[path]
+			
 		if let m = path.match(/^(\@\w+)(?:\.([\w\-]+))?$/)
 			let path = "/api/Element/{m[1]}"
 			if m[1] == '@event'

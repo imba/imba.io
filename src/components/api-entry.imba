@@ -41,6 +41,16 @@ css div
 	<div[%%name:value]> ...
 `
 
+snippets.stylemod = template `
+# in declaration
+css div
+	%%name display:block color:indigo5
+	opacity:0.5 %%name:1
+# inline style
+<section>
+	<div[display%%name:block]> ...
+`
+
 snippets.cssaliased = template `
 # in declaration
 css div
@@ -96,7 +106,7 @@ css
 	
 	api-link
 		d:inline-block
-		&.event,&.eventmodifier,&.pill
+		&.event,&.eventmodifier,&.pill,&.styleprop,&.stylemod
 			p:0 bg:clear
 			a@force px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
 				@before c:tint9 fw:normal
@@ -139,8 +149,8 @@ tag api-el
 tag api-link
 	def hydrate
 		let text = textContent
-		data = api.lookup(text)
-		console.warn "hydrating!!!",text,data
+		data = api.lookup(text) or {displayName: text}
+		# console.warn "hydrating!!!",text,data
 		
 		
 	<self.link.{data.kind}>
@@ -486,12 +496,7 @@ tag api-stylemod-entry < api-entry
 			<api-section>
 				# only if there is no syntax from the other
 				<h3> "Syntax"
-				# <app-code-block raw=snippets.cssprop(data)>
-				if data.alias
-					# <p> "For this property you can also use the alias:"
-					<app-code-block raw=snippets.cssaliased(data)>
-				else
-					<app-code-block raw=snippets.cssprop(data)>
+				<app-code-block raw=snippets.stylemod(data)>
 					
 		if example
 			<api-section>

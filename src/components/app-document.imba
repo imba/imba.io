@@ -112,6 +112,9 @@ tag doc-section
 			d:inline-block fs:0.75em ff:mono lh:1.25em
 			bg: gray3/35 rd:sm va:middle p:0.1em 5px
 			-webkit-box-decoration-break: clone
+		
+		>>> api-link
+			d:inline-block
 
 	css .snippet,.h5 $bg:orange2 $hbg:teal4 $hc:teal9
 	css .op $hbg:teal4 $hc:teal9
