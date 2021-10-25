@@ -81,6 +81,7 @@ css
 		@hover td:none c:tint6
 
 	.link tint:blue
+	.interface tint:blue
 	.eventmodifier,.modifiers tint:amber
 	.event,.events tint:violet
 	.property,.properties tint:cooler
@@ -564,7 +565,7 @@ tag app-reference-page
 	<self>
 		<api-section>
 			<h3> "Interfaces"
-			<api-entry-list items=api.kinds.interface.concat(api.kinds.eventinterface)>
+			<api-entry-list.collapsed.interface items=api.kinds.interface.concat(api.kinds.eventinterface)>
 			# <api-entry-list kind='eventinterface'>
 			
 		<api-section>
