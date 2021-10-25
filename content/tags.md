@@ -993,6 +993,7 @@ imba.mount do <main>
 
 # Event Handling
 
+Imba has a special syntax for defining complex event handlers with very little code. You can listen to any DOM event by simply declaring `<div @eventname=handler>` on your elements.
 
 ## Basic syntax
 
@@ -1049,6 +1050,8 @@ Inspired by vue.js, Imba supports event modifiers. More often than not, event ha
 # Handle scroll events once every 500ms at most
 <section @scroll.throttle(500ms)=handler>
 ```
+
+Imba supports a ton of modifiers to make event handling convenient, and it is also possible to define your own modifiers.
 
 <api-modifiers-list></api-modifiers-list>
 
