@@ -991,7 +991,9 @@ imba.mount do <main>
             <button[mr:1].chip bind=person.interests value=item> item
 ```
 
-# Handling Events
+# Event Handling
+
+Imba has a special syntax for defining complex event handlers with very little code. You can listen to any DOM event by simply declaring `<div @eventname=handler>` on your elements.
 
 ## Basic syntax
 
@@ -1037,6 +1039,19 @@ const handler = console.log.bind(console)
 ## Event Modifiers
 
 Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
+
+### Syntax
+
+```imba
+# calls preventDefault on submit event
+<form @submit.prevent=handler>
+# Stop bubbling and handle if condition is true
+<button @click.stop.if(condition)=handler>
+# Handle scroll events once every 500ms at most
+<section @scroll.throttle(500ms)=handler>
+```
+
+Imba supports a ton of modifiers to make event handling convenient, and it is also possible to define your own modifiers.
 
 <api-modifiers-list></api-modifiers-list>
 

@@ -116,6 +116,22 @@ css button
     bg:white @hover:whitesmoke @focus:blue
 ```
 
+### Pseudo-classes
+
+Pseudo-classes (`:hover`, `:apactive`, ...) from css are supported using an `@` instead of the leading `:`. So the css selector `div:hover` is written as `div@hover` in Imba. In Imba you can also use pseudo-classes directly on properties:
+
+```imba
+css div
+    opacity:0.9
+    opacity@hover:1
+```
+If you add a `@pseudoclass:value` on the same line as a regular property, it will set the value of the last property, with the pseudo-class applied:
+
+```imba
+css div opacity:0.8 @hover:0.9 @focus:1
+```
+In addition to the default pseudo-classes from css, Imba supports several convenient additions like [@focin](css).
+
 ### Class Modifiers [wip]
 
 ### Custom Breakpoints [wip]
@@ -313,7 +329,6 @@ imba.mount do
 
 You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
 
-
 ## Variables
 
 ## Units
@@ -375,6 +390,11 @@ imba.mount do <div[pos:absolute inset:0 d:flex ja:center]>
 	<div#header> <a> "fading"
 ```
 
+# Properties
+
+Imba supports all regular css properties. For a full reference on all css properties we recommend visiting the MDN docs. There are some custom properties and shorthands added in Imba that are very valuable. There are also a configurable design system (inpsired by Tailwind) built in. Among other things, this features non-standard values for [box-shadow](css), [border-radius](css), [transition-timing-function](css), as well as [color](css) palettes. The custom [hue](css) property is especially useful..
+
+<api-styleprop-list></api-styleprop-list>
 
 # Modifiers
 
@@ -427,11 +447,7 @@ css button c:white
 
 <api-stylemod-list data-group="custom"></api-stylemod-list>
 
-# Properties
 
-All the style properties are here
-
-<api-styleprop-list></api-styleprop-list>
 
 # Breakpoints
 
