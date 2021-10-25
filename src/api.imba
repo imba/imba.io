@@ -105,8 +105,7 @@ export class Entity
 		
 		
 	get searchText
-		#searchText ||= if true
-			(displayName).replace(/\-/g,'').toLowerCase!
+		#searchText ||= (displayName).replace(/\-/g,'').toLowerCase!
 		
 	def match query, options
 		searchText.indexOf(query) >= 0
@@ -291,7 +290,8 @@ class StyleProperty < StyleEntity
 	get href
 		"/css/properties/{name}"
 	
-	
+	get searchText
+		#searchText ||= [alias,name].filter(do $1).join('').replace(/\-/g,'').toLowerCase!
 		
 	get mdn
 		return null if custom?

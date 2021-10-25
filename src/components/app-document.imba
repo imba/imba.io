@@ -89,7 +89,8 @@ tag doc-section-filters
 				<button bind=selection value=item> item.name
 
 tag doc-section
-
+	prop body-only
+	
 	css >>> li
 		fs:md/1.3 py:3px pl:6 pos:relative
 		@before content: "•" w:6 ta:center l:0 pos:absolute d:block c:teal5
@@ -274,7 +275,7 @@ tag doc-section
 			@intersect("-70px 0% -20% 0%").silent=intersecting
 		>
 
-			if data.head
+			if data.head and !body-only
 				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} id=data.hash>
 					css svg d:inline size:5
 					css .legend ml:1 c:gray5 fs:md
@@ -424,15 +425,15 @@ tag TocItem
 	css &.toc-hide d@force:none
 
 	css &.pill
-		tint:blue
+		hue:blue
 		d:inline-block m:0.5 ff:mono fs:xs va:top
-		> a d:block bg:tint2 c:tint6 rd:sm fw:700 fs:xs va:top px:1.5 py:0.5
-		&.in-focus > a c:tint8 bg:tint3
+		> a d:block bg:hue2 c:hue6 rd:sm fw:700 fs:xs va:top px:1.5 py:0.5
+		&.in-focus > a c:hue8 bg:hue3
 		
-		&.op tint:amber
-		&.keyword tint:amber
+		&.op hue:amber
+		&.keyword hue:amber
 	
-	css &.event-modifier tint:indigo
+	css &.event-modifier hue:indigo
 	# 	d:inline-block m:0.5 ff:mono fs:xs va:top p:0
 	# 	> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top px:1.5 py:0.5
 	# 	&.in-focus > a c:blue9 bg:blue3
@@ -447,7 +448,7 @@ tag TocItem
 tag app-document-toc
 	<self[pr:10]>
 		<div.menu-heading[c:gray5]> "On this page"
-		<.children> for item in data.parts
+		<.children> for item in data.sections
 			<TocItem data=item level=1>
 
 		<.wip[mt:4 w: <240px ml:2 fs:sm- c:gray6 bdl:2px solid yellow4 pl:3 py:1]>

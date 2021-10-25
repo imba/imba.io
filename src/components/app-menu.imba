@@ -29,12 +29,13 @@ tag app-menu-item
 
 	get hasChildren?
 		return false if data.api?
+		return data.docs.length > 0
 		# only children below level cutoff are shown as child sections in the menu
 		const result = data.children.filter(do(c) c.level < levelCutoff)
 		result.length > 0
 	
 	get renderChildren?
-		hasChildren? && !data.reference? and level < 1
+		hasChildren? && !data.reference? # and level < 1
 	
 	get active?
 		# this is a hacky way to find out if this is the active section
@@ -77,6 +78,8 @@ tag app-menu-item
 		.triangle c:gray5 pos:absolute t:calc(50% - 3px) l:-10px tween:transform 150ms ease-in-out
 		.active .triangle rotate:90deg
 		.children pl:15px of:hidden tween:height 200ms ease-out
+			h:0px
+		a.active + .children h:auto
 		&.wip > .item @after
 			pos:relative d:inline ai:center bg:yellow3 content:'wip' rd:sm
 			c:yellow7 fs:xxs/12px tt:uppercase px:1 py:0.5 rd:1 ml:1 va:middle fw:bold
@@ -89,9 +92,9 @@ tag app-menu-item
 				<span> data.title
 
 			if renderChildren? 
-				<div$children.children>
+				<div$children.children[$count:{data.docs.length}]>
 					css pl:15px of:hidden tween:height 200ms ease-out
-					for child in data.children
+					for child in data.docs
 						continue if child.level >= levelCutoff
 						<app-menu-item.child data=child>
 
@@ -164,11 +167,11 @@ tag app-menu
 				if current and current.api? and false
 					<div>
 						for item in kinds
-							<app-menu-section[tint:cyan] data=item>
+							<app-menu-section[hue:cyan] data=item>
 						# let ev = {locals: {}, children: api.kinds.eventinterface, title: "Events"}
 						# let styles = {locals: {}, children: api.kinds.eventinterface, title: "Styles"}
-						# <app-menu-section[tint:cyan] data=ev>
-						# <app-menu-section[tint:indigo] data=styles>
+						# <app-menu-section[hue:cyan] data=ev>
+						# <app-menu-section[hue:indigo] data=styles>
 						# <div.menu-heading> "Events"
 						# for item in api.kinds.eventinterface
 						#	<app-menu-item data=item>
@@ -177,9 +180,9 @@ tag app-menu
 						
 				else
 					<div>
-						<app-menu-section[tint:blue] data=ls('/language')>
-						<app-menu-section[tint:blue] data=ls('/tags')>
-						# <app-menu-section[tint:blue] data=ls('/events')>
+						<app-menu-section[hue:blue] data=ls('/language')>
+						<app-menu-section[hue:blue] data=ls('/tags')>
+						# <app-menu-section[hue:blue] data=ls('/events')>
 						# <app-menu-section[c:indigo6] data=ls('/styling')>
-						<app-menu-section[tint:blue] data=ls('/css')>
-						<app-menu-section[tint:blue] data=ls('/advanced')>
+						<app-menu-section[hue:blue] data=ls('/css')>
+						<app-menu-section[hue:blue] data=ls('/advanced')>

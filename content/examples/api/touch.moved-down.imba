@@ -5,9 +5,9 @@ css .rect pos:absolute inset:4
 # ---
 tag Example
 	css bg:gray2 @touch:gray3 @move:green3
-	<self @touch.moved(30px)=(x=e.x,y=e.y)> "x {x} | y {y}"
+	<self @touch.moved(30px,'down')=(x=e.x,y=e.y)> "x {x} | y {y}"
 # ---
 imba.mount do <Example.rect>
 ###
-Won't trigger until moved 30px
+Won't trigger until moved 30px down
 ###

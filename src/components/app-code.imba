@@ -400,7 +400,7 @@ tag app-code-block < app-code
 						@loaded=demoLoaded
 					>
 			if file and file.meta.foot
-				<div.markdown[my:2] innerHTML=file.meta.foot>
+				<div.markdown[my:2 bdl:1px dashed gray3 rdbl:6px ml:3 pl:3 c:gray5 pb:2] innerHTML=file.meta.foot>
 
 css app-arrow c:green5
 	>>>

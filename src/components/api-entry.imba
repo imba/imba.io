@@ -75,44 +75,48 @@ css div %%alias:value
 <div[%%alias:value]>
 `
 
+snippets.eventmodifier = template `
+<div %%qualifier%%displayName=handler>
+`
+
 
 css
 	h1 fs:34px/1.4 fw:600 pb:2
 	h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0
-	h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid tint7 
+	h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 
 	h4 fs:16px/1.2 fw:500 pb:2 bwb:0px mb:0
 	a c:blue6
 	b fw:700
 	a em fw:500 font-style:normal
 	
 	a.h3 @force
-		fs:18px/1.2 fw:500 pb:1 bwb:0px mb:3 bdb:1px solid tint7 
-		c:tint7 d:block w:max-content
-		@hover td:none c:tint6
+		fs:18px/1.2 fw:500 pb:1 bwb:0px mb:3 bdb:1px solid hue7 
+		c:hue7 d:block w:max-content
+		@hover td:none c:hue6
 
-	.link tint:blue
-	.interface tint:blue
-	.eventmodifier,.modifiers tint:amber
-	.event,.events tint:violet
-	.property,.properties tint:cooler
-	.method tint:cool
-	.style,.styleprop tint:purple
-	.stylemod tint:purple
-	a.link c:tint7
+	.link hue:blue
+	.interface hue:blue
+	.eventmodifier,.modifiers hue:amber
+	.event,.events hue:violet
+	.property,.properties hue:cooler
+	.method hue:cool
+	.style,.styleprop hue:purple
+	.stylemod hue:purple
+	a.link c:hue7
 	
 	app-code-inline d:inline-block
 	
 	.pill
-		px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
+		px:4px py:3px rd:md bg:hue1 c:hue7 d:inline-block fs:sm- lh:14px
 	
 	api-link
 		d:inline-block
 		&.event,&.eventmodifier,&.pill,&.styleprop,&.stylemod
 			p:0 bg:clear
-			a@force px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
-				@before c:tint9 fw:normal
-				@hover bg:tint2
-		# &.inherited bg:tint0
+			a@force px:4px py:3px rd:md bg:hue1 c:hue7 d:inline-block fs:sm- lh:14px
+				@before c:hue9 fw:normal
+				@hover bg:hue2
+		# &.inherited bg:hue0
 		
 		a[data-qualifier] @before
 			content: '.'
@@ -122,7 +126,7 @@ css
 	
 	
 	dt api-link a fw:500
-		px:4px py:3px rd:md bg:tint1 c:tint7 d:inline-block fs:sm- lh:14px
+		px:4px py:3px rd:md bg:hue1 c:hue7 d:inline-block fs:sm- lh:14px
 	
 	dt,dd bdb:1px solid gray2/70 py:2
 	dt fw:600 pr:2
@@ -134,9 +138,9 @@ css
 	h3 + dl bdt:0px
 	
 	.markdown@force >>>
-		h1 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid tint7 mt:6
-		h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid tint7 mt:6
-		h4 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid tint7 mt:6
+		h1 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 mt:6
+		h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 mt:6
+		h4 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 mt:6
 		p my:4 @only:0
 		a c:blue6
 		app-code-inline d:inline-block
@@ -247,22 +251,22 @@ tag api-docs
 
 	
 tag api-entry-examples < api-section
-	<self[tint:blue d@empty:none]>
+	<self[hue:blue d@empty:none]>
 		if data.examples.size > 0
 			<h3> "Examples"
 			<div> for item of data.examples
 				<div[mb:10 @last:4]> <app-code-block href=item.path>
 
 tag api-entry
-	css tint:blue
+	css hue:blue
 	<self>
 
 		if data.kind == 'interface'
 			<h1> data.name
 			<api-docs data=data>
-			<api-entry-events[tint:orange] data=data>
-			<api-entry-properties[tint:cooler] data=data.properties>
-			<api-entry-modifiers[tint:purple] data=data>
+			<api-entry-events[hue:orange] data=data>
+			<api-entry-properties[hue:cooler] data=data.properties>
+			<api-entry-modifiers[hue:purple] data=data>
 		
 		elif data.kind == 'eventinterface'
 			<h1> data.name
@@ -408,7 +412,9 @@ tag api-event-entry < api-entry
 tag api-eventmodifier-entry < api-entry
 	<self>
 		<h1>
-			<span[fw:normal suffix: " › "]> <api-link data=data.owner>
+			# <span[fw:normal suffix: " › "]> <api-link data=data.owner>
+			# <span[fw:normal suffix: " › "]> <api-link data=data.owner>
+			<a href=data.owner.href> data.owner.modifierPrefix
 			<span> "." + data.displayName
 		<api-docs data=data>
 		
@@ -416,7 +422,11 @@ tag api-eventmodifier-entry < api-entry
 			<api-section>
 				# only if there is no syntax from the other
 				<h3> "Syntax"
-				<app-code-block raw="<div @event.{data.displayName}=handler>">
+				<app-code-block raw=snippets.eventmodifier(data)>
+				# <app-code-block raw="<div @event.{data.displayName}=handler>">
+		
+		# if data.guide
+		# 	<doc-section data=data.guide level=0 body-only=yes>
 		
 		<api-entry-examples data=data>
 		
@@ -516,7 +526,7 @@ tag api-modifiers-list
 	<self>
 		for data in api.kinds.eventinterface when data.modifiers.own.length
 			<api-section.events>
-				<h3> "{data.name} Modifiers"
+				<h3> "{<a href=data.href> data.name} Modifiers"
 				<dl> for item in data.modifiers.own
 					<dt> <api-link.pill data=item> # item.displayName
 					<dd.markdown innerHTML=item.summary>
@@ -538,7 +548,7 @@ tag api-styleprop-list
 				css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
 				for item in items when (item.alias or item.custom?)
 					<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-						<span.pill[bg:tint1/100 fw:500]> item.shortName
+						<span.pill[bg:hue1/100 fw:500]> item.shortName
 						<span[c:gray5/80 mx:1 ofx:hidden text-overflow:ellipsis fs:xs]> item.aliasFor
 
 		
@@ -553,7 +563,7 @@ tag api-styleprop-list
 						<div[w:3col fw:600 d:hflex]>
 							<span[tt:uppercase px:0.5]> "{group = chr}"
 					<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-						<span.pill[bg:tint1/50 fw:500]> item.name
+						<span.pill[bg:hue1/50 fw:500]> item.name
 						if item.alias
 							<span.alias[c:gray5/80 mx:1]> item.alias
 
@@ -563,7 +573,7 @@ tag Stylemods
 		css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
 		for item in data
 			<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-				<span.pill[bg:tint1/50 fw:500]> item.name
+				<span.pill[bg:hue1/50 fw:500]> item.name
 
 tag app-reference-page
 	
@@ -613,7 +623,7 @@ tag api-entry-list
 	<self .{kind}>
 		for item in items
 			<a[mr:1 fs:sm ws:nowrap] .{item.kind} href=item.href>
-				<span.pill[bg:tint1/50 fw:500]>
+				<span.pill[bg:hue1/50 fw:500]>
 					if qualifier
 						<span.qf> item[qualifier]
 					item.displayName
@@ -628,7 +638,7 @@ tag api-stylemod-list
 		css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
 		for item in items
 			<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-				<span.pill[bg:tint1/50 fw:500]> item.name
+				<span.pill[bg:hue1/50 fw:500]> item.name
 				
 tag api-stylemod-section
 	
@@ -646,7 +656,7 @@ tag api-stylemod-section
 		# 		css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
 		# 		for item in items when item.custom?
 		# 			<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-		# 				<span.pill[bg:tint1/100 fw:500]> item.name
+		# 				<span.pill[bg:hue1/100 fw:500]> item.name
 
 		<api-section.style>
 			<h3> "Media Modifiers"

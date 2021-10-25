@@ -18,7 +18,7 @@ global.flags = document.documentElement.flags
 
 global.debug = yes if document.location.hash.indexOf('debug') >= 0
 
-css .tab tint:blue
+css .tab hue:blue
 
 tag app-root
 	prop doc
@@ -108,29 +108,29 @@ tag app-root
 					zi:300 fs:15px bg:cool8/98 c:white us:none
 
 					
-					.tab d:hflex mx:2 py:1 c:tint4 fs:sm- fw:500 tt:uppercase ja:center
+					.tab d:hflex mx:2 py:1 c:hue4 fs:sm- fw:500 tt:uppercase ja:center
 						svg h:16px w:auto mx:0.5 
 						span c:white/100 lh:20px pos:relative
 							tween:all 0.2s quint-out
 							@after content:"" d:block
 								tween:all 0.2s quint-out
-								pos:absolute h:2px t:100% bg:tint4 r:0 rd:full o:0
+								pos:absolute h:2px t:100% bg:hue4 r:0 rd:full o:0
 								x:-50% l:50% y:0px w:5px
 
 						@hover c:white
-							svg scale:1.15 c:tint5
+							svg scale:1.15 c:hue5
 						@!600 span d:none
 						@600 svg d:none d@only:block
-						.keycap bc:tint4/40 c:tint4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none
+						.keycap bc:hue4/40 c:hue4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none
 						
-						span c:tint3
+						span c:hue3
 						
 						&.active span c:white
 							@after o:1 y:0px w:30px
 
 					.toggler mx:0 d@md:none
 						svg tween:styles 0.1s
-						@hover c:tint4
+						@hover c:hue4
 							svg scale:1
 						&.active svg rotate:-90deg
 
@@ -151,22 +151,22 @@ tag app-root
 						css c:blue4/80 @hover:blue3
 							# bd:1px solid black/80 rd:lg bg:black/30 px:2 py:1 pr:1
 						<span[ mx:1 tt:none fw:normal]> "Quick search for anything ..."
-						<span.keycap[bc:tint4/40 c:tint4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none]> 'Ctrl K'
+						<span.keycap[bc:hue4/40 c:hue4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none]> 'Ctrl K'
 					if window.debug
 						<div @resize.silent=render> "{window.innerWidth}px"
 				<div[d:flex cursor:pointer us:none]>
 					
 					# if home?
-					<a.tab[tint:emerald] href='/language/introduction' .active=(doc and !doc.api?)>
+					<a.tab[hue:emerald] href='/language/introduction' .active=(doc and !doc.api?)>
 						<svg[mr:1] src='./assets/icons/map.svg'>
 						<span> "Guides"
-					<a.tab[tint:cyan] @click href='/api/MouseEvent' .active=(doc and doc.api?)>
+					<a.tab[hue:cyan] @click href='/api/MouseEvent' .active=(doc and doc.api?)>
 						<svg src='./assets/icons/book.svg'>
 						<span> "Reference"
-					<a.tab[tint:blue] @click.emit-showide>
+					<a.tab[hue:blue] @click.emit-showide>
 						<svg src='./assets/icons/play.svg'>
 						<span> "Try"
-					<a.tab[tint:indigo] target='_blank' href='https://discord.gg/mkcbkRw'>
+					<a.tab[hue:indigo] target='_blank' href='https://discord.gg/mkcbkRw'>
 						<svg src='./assets/icons/message-circle.svg'>
 						<span> "Chat"
 					<a.tab[ml:4] target='_blank' href='https://github.com/imba/imba'>

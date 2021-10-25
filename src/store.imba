@@ -228,6 +228,9 @@ export class File < Entry
 				$send = setTimeout(&,150) do
 					root.updateFile(self)
 		_model
+		
+	get complexity
+		body.length
 
 	def overwrite body
 		if body != self.body
@@ -431,7 +434,8 @@ export class Root < Dir
 	
 	def crawlExamples
 		let dir = find('/examples/api')
-		for item in dir.children
+		let items = dir.children.sort do(a,b) a.complexity > b.complexity ? 1 : -1
+		for item in items
 			for ref in item.meta.see
 				let m
 				if m = ref.match(/^(\@\w+)(?:\.([\w\-]+))?$/)
