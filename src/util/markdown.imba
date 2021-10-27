@@ -61,12 +61,21 @@ let sanitizeCode = do(code)
 let renderer = new marked.Renderer
  
 def renderer.link href, title, text
+	let apipath = null
 	if href == 'css'
 		if text[0] == '@'
-			return <api-link> "/css/modifiers/{text}"
+			apipath = "/css/modifiers/{text}"
+			# return <api-link> "/css/modifiers/{text}"
 		else
-			return <api-link> "/css/properties/{text}"
-
+			apipath = "/css/properties/{text}"
+			# return <api-link> "/css/properties/{text}"
+	elif href == 'api'
+		if text[0] == '@'
+			apipath = "/api/Element/{text}"
+	
+	if apipath
+		return <api-link> apipath
+		
 	if href.match(/^\/.*\.md/)
 		return (<embedded-app-document data-path=href>)
 	elif href.match(/^\/examples\//) and text

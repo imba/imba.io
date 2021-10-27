@@ -76,7 +76,6 @@ export class Entity
 		desc = desc
 		owner = owner
 		kind = desc.kind
-		docs = desc.docs or []
 		meta = desc.meta or {}
 		events = new Members(self)
 		members = new Members(self)
@@ -102,7 +101,9 @@ export class Entity
 		
 	get tags
 		desc.tags
-		
+	
+	get docs
+		desc.docs or ''
 		
 	get searchText
 		#searchText ||= (displayName).replace(/\-/g,'').toLowerCase!
@@ -140,7 +141,7 @@ export class Entity
 		[self]
 		
 	get summary
-		desc.tags and desc.tags.summary or docs[0]
+		desc.tags and desc.tags.summary or docs
 		
 	# get events
 	# 	members.events
@@ -228,6 +229,9 @@ class EventEntity < Entity
 		
 	get breadcrumb
 		[type,self]
+		
+	get docs
+		siblings.length == 0 and !desc.docs ? type.docs : desc.docs
 		
 	# get examples
 	#	#examples ||= global.FS.findExamplesFor(new RegExp("({displayName})(?=\\(|\\.|=)",'g'))

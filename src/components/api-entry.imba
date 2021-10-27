@@ -150,22 +150,19 @@ tag api-el
 		if typeof value == 'string'
 			value = api.lookup(value)
 		#data = value
+		
+	get data
+		#data
 
-tag api-link
+tag api-link < api-el
 	def hydrate
 		let text = textContent
 		data = api.lookup(text) or {displayName: text}
 		# console.warn "hydrating!!!",text,data
 		
-		
 	<self.link.{data.kind}>
 		<a href=data.href data-qualifier=data.qualifier>
 			<span> <slot> data.displayName 
-
-
-tag api-event-overview
-
-tag api-eventmodifier-overview
 
 tag api-links
 	pills = no
@@ -246,8 +243,8 @@ tag api-entry-modifiers
 
 tag api-docs
 	<self.markdown[d@empty:none]>
-		for part in data.docs
-			<div innerHTML=part>
+		if data.docs
+			<div innerHTML=data.docs>
 
 	
 tag api-entry-examples < api-section
@@ -384,8 +381,11 @@ tag api-method-entry < api-entry
 tag api-event-entry < api-entry
 	<self>
 		<h1>
-			<span[fw:normal suffix: " › "]> <api-link data=data.type>
-			<span> data.name
+			<span[fw:normal suffix: " / " ]> <api-link data="/api/Element">
+			<span> "{data.name}"
+			<span[fw:normal c:gray5]> " event"
+			
+		<p> "The object passed into the event handler for {data.name} is a {<api-link data=data.type>}"
 			
 		<api-docs data=data>
 		
@@ -398,7 +398,9 @@ tag api-event-entry < api-entry
 		<api-entry-modifiers data=data.type>
 
 		<api-props name='Properties' data=data.properties>
-			<p slot='head'> <api-link data=data.type>
+			<p slot='head'>
+				<api-link data=data.type>
+				<span> " interface"
 			
 		if data.type != api.Event and data.type.events.length > 1
 			<api-section>

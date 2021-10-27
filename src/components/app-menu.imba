@@ -164,7 +164,7 @@ tag app-menu
 				# 	<span[fl:1 font-style:italic]> "Search docs..."
 				# 	<span[rd:md bd:gray2 fs:xs h:5 px:1 c:gray5 d:hflex ja:center]> 'S'
 				# <app-menu-section[c:pink6] data=ls('/intro')>
-				if current and current.api? and false
+				if router.match('/api')
 					<div>
 						for item in kinds
 							<app-menu-section[hue:cyan] data=item>

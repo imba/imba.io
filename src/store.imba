@@ -484,12 +484,15 @@ export def ls path
 		return api.paths[path]
 
 	unless hits[path]
-		let parts = path.replace(/(^\/|\/$)/,'').split('/')
+		let parts = path.replace(/(^\/|\/$)/g,'').split('/')
 		let item = fs # fs[parts.shift()]
 		return null unless item
 		
+		
 		if parts[0] == 'api'
-			return api.entryForPath(path)
+			let apidoc = api.entryForPath(path)
+			if apidoc
+				return apidoc
 
 		for part,i in parts
 			let child = item.childByName(part)

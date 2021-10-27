@@ -11,7 +11,7 @@ import './components/home-page'
 
 import './repl/index'
 
-import {fs,files,ls} from './store'
+import {fs,files,ls,Dir} from './store'
 import * as sw from './sw/controller'
 
 global.flags = document.documentElement.flags
@@ -79,6 +79,9 @@ tag app-root
 			doc = ls('/language/introduction')
 		elif !path.match(/^\/(home|try)/)
 			doc = ls(path) or ls('/404')
+			
+		if doc isa Dir and doc.find('index')
+			doc = doc.find('index')
 
 		global.flags.incr('fastscroll')
 		setTimeout(&,500) do global.flags.decr('fastscroll')
@@ -94,6 +97,7 @@ tag app-root
 
 		let home? = router.match('/$')
 		let repl? = router.match('/try')
+		let api? = router.match('/api')
 		
 
 		<self[d:contents]
@@ -157,12 +161,12 @@ tag app-root
 				<div[d:flex cursor:pointer us:none]>
 					
 					# if home?
-					<a.tab[hue:emerald] href='/language/introduction' .active=(doc and !doc.api?)>
+					<a.tab[hue:emerald] href='/language/introduction' .active=(doc and !doc.api? and !api? and !home?)>
 						<svg[mr:1] src='./assets/icons/map.svg'>
-						<span> "Guides"
-					<a.tab[hue:cyan] @click href='/api/MouseEvent' .active=(doc and doc.api?)>
+						<span> "Learn"
+					<a.tab[hue:cyan] @click href='/api/' .active=(doc and api?)>
 						<svg src='./assets/icons/book.svg'>
-						<span> "Reference"
+						<span> "API"
 					<a.tab[hue:blue] @click.emit-showide>
 						<svg src='./assets/icons/play.svg'>
 						<span> "Try"

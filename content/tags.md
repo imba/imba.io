@@ -993,7 +993,7 @@ imba.mount do <main>
 
 # Event Handling
 
-Imba has a special syntax for defining complex event handlers with very little code. You can listen to any DOM event by simply declaring `<div @eventname=handler>` on your elements.
+Imba has a special syntax for defining complex event handlers with very little code. You can listen to any DOM event by simply declaring `<div @eventname=handler>` on your elements. In addition to supporting all the native DOM events, and arbitrary custom events, Imba includes several convenient non-native events like [@touch](api), [@resize](api), [@intersect](api) and [@hotkey](api) to simplify important aspects of developing web applications.
 
 ## Basic syntax
 
