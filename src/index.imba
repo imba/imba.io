@@ -119,7 +119,7 @@ tag app-root
 							@after content:"" d:block
 								tween:all 0.2s quint-out
 								pos:absolute h:2px t:100% bg:hue4 r:0 rd:full o:0
-								x:-50% l:50% y:0px w:5px
+								x:-50% l:50% y:0px w:5px max-width:100%
 
 						@hover c:white
 							svg scale:1.15 c:hue5
@@ -130,7 +130,7 @@ tag app-root
 						span c:hue3
 						
 						&.active span c:white
-							@after o:1 y:0px w:30px
+							@after o:1 y:0px w:30px 
 
 					.toggler mx:0 d@md:none
 						svg tween:styles 0.1s
