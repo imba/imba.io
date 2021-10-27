@@ -440,17 +440,17 @@ tag api-eventmodifier-entry < api-entry
 tag api-entry-toc
 	
 	<self>
-		# <h3> "See also"
-		# <div> for item in data.siblings
-		# 	<api-link[d:block] data=item>
-		
-		<h4> "Interfaces"
-		<div>
-			for item in api.kinds.interface
-				<api-link[d:block] data=item>
-			for item in api.kinds.eventinterface
-				<api-link[d:block] data=item>
-		# <api-entry-list items=api.kinds.interface.concat(api.kinds.eventinterface)>
+	# <h3> "See also"
+	# <div> for item in data.siblings
+	# 	<api-link[d:block] data=item>
+	
+	# <h4> "Interfaces"
+	# <div>
+	# 	for item in api.kinds.interface
+	# 		<api-link[d:block] data=item>
+	# 	for item in api.kinds.eventinterface
+	# 		<api-link[d:block] data=item>
+	# <api-entry-list items=api.kinds.interface.concat(api.kinds.eventinterface)>
 			
 
 tag api-interface-toc < api-entry-toc
