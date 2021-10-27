@@ -1119,6 +1119,18 @@
           "docs": "<p>This guard will break the chain unless the touch has moved more than threshold. Once this threshold has been reached, all subsequent updates of touch will pass through. The element will also activate the <api-link class=\"cfy-ah\">@move</api-link> pseudostate during touch - after threshold is reached.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"10.imba\" data-lang=\"imba\">&lt;div @touch.moved(threshold=4px, dir='any')&gt;</code></app-code-block>"
         },
         {
+          "name": "@hold",
+          "meta": {
+            "Syntax": true
+          },
+          "kind": "eventmodifier",
+          "tags": {
+            "summary": "Only start handling after pressing and holding still",
+            "detail": "(duration = 250ms)"
+          },
+          "docs": "<p>This guard will break the chain unless the touch has been held for a duration.\nIf the pointer moves more than 5px before the modifier activates, the handler will\nessentially be cancelled.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"11.imba\" data-lang=\"imba\">&lt;div @touch.hold(duration=250ms)&gt;</code></app-code-block>"
+        },
+        {
           "name": "@sync",
           "meta": {
             "Syntax": true
@@ -1128,7 +1140,7 @@
             "summary": "Sync the x,y properties of touch to another object",
             "detail": "(data, xProp?, yProp?)"
           },
-          "docs": "<p>A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"11.imba\" data-lang=\"imba\">&lt;div @touch.sync(target, xprop='x', yprop='y')&gt;</code></app-code-block>"
+          "docs": "<p>A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"12.imba\" data-lang=\"imba\">&lt;div @touch.sync(target, xprop='x', yprop='y')&gt;</code></app-code-block>"
         },
         {
           "name": "@apply",
@@ -1150,7 +1162,7 @@
             "summary": "Convert the coordinates of the touch to some other frame of reference.",
             "detail": "(target?,snap?)"
           },
-          "docs": "<p>A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you&#39;d want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"12.imba\" data-lang=\"imba\">&lt;div @touch.fit&gt; # make x,y relative to the element\n&lt;div @touch.fit(start,end,snap?)&gt;\n&lt;div @touch.fit(target)&gt; # make x,y relative to a target element\n&lt;div @touch.fit(target,start,end,snap?)&gt;\n&lt;div @touch.fit(target,[xstart,ystart],[xend,yend],snap?)&gt;</code></app-code-block>"
+          "docs": "<p>A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you&#39;d want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"13.imba\" data-lang=\"imba\">&lt;div @touch.fit&gt; # make x,y relative to the element\n&lt;div @touch.fit(start,end,snap?)&gt;\n&lt;div @touch.fit(target)&gt; # make x,y relative to a target element\n&lt;div @touch.fit(target,start,end,snap?)&gt;\n&lt;div @touch.fit(target,[xstart,ystart],[xend,yend],snap?)&gt;</code></app-code-block>"
         },
         {
           "name": "@reframe",
