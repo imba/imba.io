@@ -938,18 +938,6 @@
           "docs": "<p>Will add a class to the DOM element when intersecting</p>\n"
         },
         {
-          "name": "@options",
-          "meta": {},
-          "kind": "eventmodifier",
-          "tags": {
-            "param": {
-              "text": "thresholds",
-              "kind": "parameterName"
-            }
-          },
-          "docs": "<p>Configuring</p>\n"
-        },
-        {
           "name": "entry",
           "meta": {},
           "kind": "property",
@@ -1213,19 +1201,6 @@
       "extends": "Event",
       "meta": {},
       "members": [
-        {
-          "name": "@options",
-          "meta": {},
-          "kind": "eventmodifier",
-          "tags": {
-            "param": {
-              "text": "pattern",
-              "kind": "parameterName"
-            },
-            "see": "https"
-          },
-          "docs": ""
-        },
         {
           "name": "@capture",
           "meta": {},
