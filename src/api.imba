@@ -264,6 +264,9 @@ class EventModifierEntity < Entity
 	
 class PropertyEntity < Entity
 	
+	get siblings
+		owner.properties.filter do $1 != self
+		
 	get parents
 		#parents ||= [owner].concat(owner.parents)
 		
@@ -274,6 +277,9 @@ class PropertyEntity < Entity
 		owner.href + '/' + name	
 
 class MethodEntity < PropertyEntity
+	
+	get siblings
+		owner.methods.filter do $1 != self
 
 class StyleEntity < Entity
 	
