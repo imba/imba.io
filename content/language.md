@@ -651,7 +651,7 @@ console.log(object.a) # => 'foo'
 ```imba
 let field = 'age'
 let person = {name: 'Bob Smith', [field]: 32, gender: 'male'}
-console.log(person.age) # => 'Bob Smith'
+console.log(person.age) # => 32
 ```
 
 ##### Indented
