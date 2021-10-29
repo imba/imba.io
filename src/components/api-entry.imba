@@ -82,6 +82,8 @@ snippets.eventmodifier = template `
 
 css
 	h1 fs:34px/1.4 fw:600 pb:2
+		span @before c:gray4/40
+		span @after c:gray4/40
 	h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0
 	h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 
 	h4 fs:16px/1.2 fw:500 pb:2 bwb:0px mb:0
@@ -106,6 +108,15 @@ css
 	
 	app-code-inline d:inline-block
 	
+	.breadcrumb
+		fw:400 mt:-4px fs:sm
+		& > span
+			c:gray5
+			suffix: " » "
+			suffix@last: ""
+			@after c:gray4 fw:normal
+			a fw:500
+		
 	.pill
 		px:4px py:3px rd:md bg:hue1 c:hue7 d:inline-block fs:sm- lh:14px
 	
@@ -380,10 +391,14 @@ tag api-method-entry < api-entry
 	
 tag api-event-entry < api-entry
 	<self>
+		<.breadcrumb>
+			<span> <a href='/api'> "API"
+			<span> <api-link data="/api/Element">
+			<span> "Events"
 		<h1>
-			<span[fw:normal suffix: " / " ]> <api-link data="/api/Element">
+			# <span[fw:normal suffix: " / " ]> <api-link data="/api/Element">
 			<span> "{data.name}"
-			<span[fw:normal c:gray5]> " event"
+			# <span[fw:normal c:gray5]> " event"
 			
 		<p> "The object passed into the event handler for {data.name} is a {<api-link data=data.type>}"
 			
@@ -413,6 +428,10 @@ tag api-event-entry < api-entry
 
 tag api-eventmodifier-entry < api-entry
 	<self>
+		<.breadcrumb>
+			<span> <a href='/api'> "API"
+			<span> <a href=data.owner.href> data.owner.displayName
+			<span> "Modifiers"
 		<h1>
 			# <span[fw:normal suffix: " › "]> <api-link data=data.owner>
 			# <span[fw:normal suffix: " › "]> <api-link data=data.owner>
@@ -466,6 +485,9 @@ tag api-styleprop-entry < api-entry
 		ls("/examples/css/{data.name}.imba") or ls("/examples/css/{data.alias}.imba")
 
 	<self>
+		<.breadcrumb>
+			<span> <a href='/css/syntax'> "CSS"
+			<span> <a href='/css/properties'> "Properties"
 		<h1>
 			<span.name> data.displayName
 			if data.alias
@@ -482,6 +504,9 @@ tag api-styleprop-entry < api-entry
 					<app-code-block raw=snippets.cssaliased(data)>
 				else
 					<app-code-block raw=snippets.cssprop(data)>
+					
+		if data.guide
+			<doc-section data=data.guide level=0 body-only=yes>
 					
 		if example
 			<api-section>
@@ -501,6 +526,9 @@ tag api-stylemod-entry < api-entry
 		ls("/examples/css/{data.name}.imba") or ls("/examples/css/{data.alias}.imba")
 
 	<self.stylemod>
+		<.breadcrumb>
+			<span> <a href='/css/syntax'> "CSS"
+			<span> <a href='/css/modifiers'> "Modifiers"
 		<h1>
 			<span.name> data.displayName
 		<api-docs data=data>
