@@ -98,12 +98,14 @@ css
 
 	.link hue:blue
 	.interface hue:blue
+	.eventinterface hue:blue
 	.eventmodifier,.modifiers hue:amber
 	.event,.events hue:violet
 	.property,.properties hue:cooler
-	.method hue:cool
+	.method hue:violet
 	.style,.styleprop hue:purple
 	.stylemod hue:purple
+	.property hue:blue
 	a.link c:hue7
 	
 	app-code-inline d:inline-block
@@ -709,3 +711,25 @@ tag api-stylemod-section
 		# 		let items = self.items.filter do $1.tags[group]
 		# 		<h3> group
 		# 		<Stylemods data=items>
+		
+		
+tag api-li
+	css d:hflex ja:center ws:nowrap
+		a c:inherit
+			span@last fw:500
+		
+		&.event hue:amber
+	<self .{data.kind}>
+		<span.icon[p:1 mr:1]> <svg[c:hue5] src=data.icon>
+		if data.kind == 'method' or data.kind == 'property'
+			<a[mr:1 fl:1] href=data.href>
+				<span> data.owner.displayName
+				<span> "."
+				<span> data.displayName
+		elif data.modifier?
+			<a[mr:1 fl:1] href=data.href>
+				<span> data.owner.modifierPrefix + "."
+				<span> data.displayName
+		else
+			<a[mr:1 fl:1] href=data.href> <span> data.displayName
+		

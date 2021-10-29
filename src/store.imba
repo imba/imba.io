@@ -104,6 +104,9 @@ class Entry
 
 	get locals
 		#locals ||= LocalsProxy.for(path)
+		
+	get icon
+		import("codicons/symbol-file.svg")
 
 	get legend
 		data.legend
@@ -493,7 +496,7 @@ export def ls path
 		return api.paths[path]
 
 	unless hits[path]
-		let parts = path.replace(/(^\/|\/$)/g,'').split('/')
+		let parts = path.replace(/\#/g,'/').replace(/(^\/|\/$)/g,'').split('/')
 		let item = fs # fs[parts.shift()]
 		return null unless item
 		

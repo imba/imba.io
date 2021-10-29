@@ -167,7 +167,7 @@ tag app-menu
 				if router.match('/api')
 					<div>
 						for item in kinds
-							<app-menu-section[hue:cyan] data=item>
+							<app-menu-section[hue:blue] data=item>
 						# let ev = {locals: {}, children: api.kinds.eventinterface, title: "Events"}
 						# let styles = {locals: {}, children: api.kinds.eventinterface, title: "Styles"}
 						# <app-menu-section[hue:cyan] data=ev>

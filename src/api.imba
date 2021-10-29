@@ -183,6 +183,9 @@ export class Entity
 
 class InterfaceEntity < Entity
 	descendants = []
+	
+	get icon
+		import('codicons/symbol-class.svg')
 
 	def register
 		up.descendants.push(self) if up
@@ -202,6 +205,9 @@ class EventInterfaceEntity < InterfaceEntity
 	
 class EventEntity < Entity
 	
+	get icon
+		import('codicons/symbol-event.svg')
+
 	def register
 		root.paths["Element.@{name}"] = self
 		type.events.push(self)
@@ -238,6 +244,9 @@ class EventEntity < Entity
 		
 class EventModifierEntity < Entity
 	
+	get icon
+		import('codicons/symbol-method.svg')
+	
 	get displayName
 		"{name.slice(1)}"
 		
@@ -264,6 +273,9 @@ class EventModifierEntity < Entity
 	
 class PropertyEntity < Entity
 	
+	get icon
+		import('codicons/symbol-field.svg')
+	
 	get siblings
 		owner.properties.filter do $1 != self
 		
@@ -278,12 +290,20 @@ class PropertyEntity < Entity
 
 class MethodEntity < PropertyEntity
 	
+	get icon
+		import('codicons/symbol-method.svg')
+		
 	get siblings
 		owner.methods.filter do $1 != self
 
 class StyleEntity < Entity
 	
+	
+	
 class StyleProperty < StyleEntity
+	
+	get icon
+		import('codicons/symbol-enum.svg')
 	
 	get custom?
 		desc.tags.custom
@@ -299,6 +319,9 @@ class StyleProperty < StyleEntity
 		
 	get href
 		"/css/properties/{name}"
+		
+	get guide
+		global.FS.find("/api/css.properties.{name}")
 	
 	get searchText
 		#searchText ||= [alias,name].filter(do $1).join('').replace(/\-/g,'').toLowerCase!
@@ -308,6 +331,9 @@ class StyleProperty < StyleEntity
 		return "https://developer.mozilla.org/en-US/docs/Web/CSS/{name}"
 		
 class StyleModifier < StyleEntity
+	
+	get icon
+		import('codicons/symbol-enum.svg')
 	
 	get custom?
 		desc.tags.custom or desc.group == 'custom'

@@ -1,26 +1,21 @@
 import {ls,fs,File,Dir,find,api} from '../store'
 
 tag Item
-	css cursor:pointer d:hflex px:4 a:center pos:rel
+	css cursor:pointer d:hflex px:2 a:center pos:rel
 	css @lt-md pt:2
 		.path pos:abs fs:xxs t:0.5
 	
 
-	<self @mousedown.stop.prevent.emit-go(data) @pointerover.emit-hover(index)>
+	<self @mousedown.stop.prevent.emit('go',data) @pointerover.emit('hover',index)>
 		if data.api?
-			<.path>
-				# <.item> "Reference"
-				css d:hflex c:gray6 ws:nowrap d:hflex a:center
-					a
-						@after fs:xs c:gray4
-						&.eventmodifier
-							prefix: "."
-							suffix: " modifier"
-						&.event
-							suffix: " event"
-				for item in data.breadcrumb
-					<a[mr:1] href=item.href .{item.kind}> item.displayName
+			<api-li data=data>
+			# <.path>
+			# 	# if data.icon
+			# 	# 	<span.icon> <svg src=data.icon>
+			# 	# for item in data.breadcrumb
+			# 	# 	<a[mr:1] href=item.href .{item.kind}> item.displayName
 		else
+			<.icon[p:1 c:gray5 mr:1]> <svg src=data.icon>
 			<.path>
 				css d:hflex c:gray6
 				for parent in data.breadcrumb
@@ -46,11 +41,13 @@ tag app-search
 				roots: [ls('/language'),ls('/tags'),ls('/css'),api]
 			}
 			let matcher = query.toLowerCase!.replace(/\-/g,'')
-			hits = find(matcher,o)
+			
+			hits = query ? find(matcher,o) : (recent or [])
 			#focus = 0 # Math.max(0,Math.min(matches.length - 1,#focus))
 			#pointing = no
 
 	def mount
+		recent = (fs.locals.recent or []).map(do ls($1)).filter(do $1)
 		flags.add('hidden')
 		refresh!
 
@@ -64,6 +61,9 @@ tag app-search
 		go(hits[#focus])
 	
 	def go item
+		recent.unshift(item)
+		recent = recent.filter(do $3.indexOf($1) == $2)
+		fs.locals.recent = recent.map(do $1.href)
 		router.go(item.href)
 		blur!
 
@@ -75,6 +75,7 @@ tag app-search
 
 	def hide
 		# flags.remove('entered')
+		return
 		blur!
 		#hider = setTimeout(&,1000) do flags.add('hidden')
 
@@ -106,6 +107,9 @@ tag app-search
 				&.hidden d:none
 				@focus-within bg:cool9/50
 					main y:0px scale:1 o:1 pe:auto
+					
+				# bg:cool9/50
+				# main y:0px scale:1 o:1 pe:auto
 
 			css &.search2 bg:cool9/50
 				main y:0px scale:1 o:1 pe:auto
@@ -115,7 +119,7 @@ tag app-search
 					mt:20vh h:auto max-height:400px tween:styles 0.2s cubic-in-out
 
 					@lt-md w:90% mt:60px l:5%
-				<header[pos:sticky t:0 bg:white/85 zi:10 pt:4]>
+				<header[pos:sticky t:0 bg:white/85 zi:10 pt:4 pb:4]>
 					
 					<div[d:hflex ja:center]>
 						<input$input type='text' bind=query 
@@ -128,8 +132,12 @@ tag app-search
 							css @after d:block h:14px content:"esc" pos:absolute r:2
 								rd:md bd:gray2 fs:xs h:100% px:1.5 c:gray5 d:hflex ja:center 
 					# <.keycap[pos:abs r:4 t:2 ] hotkey='esc' @click=hide> 'esc'
-
-				<div$items[pos:rel mt:2 pb:4] @mousemove.silent=(#pointing = yes)>
+				if hits == recent
+					if recent.length == 0
+						<div[pb:4]> <span[c:gray4]> "No recent searches."
+					else
+						<div[pb:4]> <span[c:gray4]> "Recent"
+				<div$items[pos:rel pb:4] [d:none]=!hits.length @mousemove.silent=(#pointing = yes)>
 					<div$selection>
 						css h:1rh rd:md pos:abs bg:blue4/40 w:100% zi:0 y:calc($selIndex * 100%)
 							tween:all 0.1s cubic-in-out
