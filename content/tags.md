@@ -284,13 +284,13 @@ tag app-dialog
 			<header> "Dialog header"
 			<.body> body!
 
-
 	def body
 		<> # Returns all elements without any wrapping element
 			<h3> "Body text"
 			<p> "With some adjecent content"
 
-	# Because imba returns the last statement this function would only return the <p> element
+	# Because imba returns the last statement
+    # this function would only return the <p> element
 	def bad-body
 		<h3> "Body text"
 		<p> "With some adjecent content"
