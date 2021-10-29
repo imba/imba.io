@@ -284,13 +284,13 @@ tag app-dialog
 			<header> "Dialog header"
 			<.body> body!
 
-
 	def body
 		<> # Returns all elements without any wrapping element
 			<h3> "Body text"
 			<p> "With some adjecent content"
 
-	# Because imba returns the last statement this function would only return the <p> element
+	# Because imba returns the last statement
+    # this function would only return the <p> element
 	def bad-body
 		<h3> "Body text"
 		<p> "With some adjecent content"
@@ -403,8 +403,8 @@ import 'util/styles'
 css body d:flex
 
 css app-panel d:hflex
-	aside p:1 bg:gray3
-	main p:1 fs:md fl:1
+    aside p:1 bg:gray3
+    main p:1 fs:md fl:1
 
 # ---
 tag app-panel
@@ -417,6 +417,7 @@ imba.mount do <app-panel>
     <div slot="sidebar"> "Stuff!"
     <div> "Something in main slot"
     <div> "More in main slot"
+
 ```
 
 ## Named Elements [preview=md]
@@ -990,6 +991,70 @@ imba.mount do <main>
             <button[mr:1].chip bind=person.interests value=item> item
 ```
 
+# Event Handling
+
+Imba has a special syntax for defining complex event handlers with very little code. You can listen to any DOM event by simply declaring `<div @eventname=handler>` on your elements. In addition to supporting all the native DOM events, and arbitrary custom events, Imba includes several convenient non-native events like [@touch](api), [@resize](api), [@intersect](api) and [@hotkey](api) to simplify important aspects of developing web applications.
+
+## Basic syntax
+
+We can use `<tag @event=expression>` to listen to DOM events and run `expression` when they’re triggered.
+
+```imba
+let counter = 0
+<button ~[@click=(counter++)]~> "Increment to {counter + 1}"
+```
+
+It is important to understand how these event handlers are treated. Imba is created to maximize readability and remove clutter. If you set the value to something that looks like a regular method call, this call (and its arguments) will only be called when the event is actually triggered.
+
+```imba
+<div @click=console.log('hey')> 'Will log hey'
+```
+
+In the example above, the console.log will only be called when clicking the element. If you just supply a reference to some function, Imba will call that handler, with the event as the only argument.
+
+```imba
+<div @click=console.log> 'Will log the event'
+```
+
+Inside of these lazy handlers you can also refer to the event itself as `e`.
+
+```imba
+let x = 0
+<button @click=console.log(e.type,e.x,e.y)> "Click"
+<button @mousemove=(x = e.x)> "Mouse at {x}"
+```
+
+Remember that the expression will be called as is, so you never need to bind functions to their context and/or arguments.
+
+```imba
+import {todos} from './data.imba'
+
+const handler = console.log.bind(console)
+
+# ---
+<ul> for item,i in todos
+	<li @click=handler(e.type,item,i)> item.title
+```
+
+## Event Modifiers
+
+Inspired by vue.js, Imba supports event modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers can be pure logic without any knowledge of the event that triggered them.
+
+### Syntax
+
+```imba
+# calls preventDefault on submit event
+<form @submit.prevent=handler>
+# Stop bubbling and handle if condition is true
+<button @click.stop.if(condition)=handler>
+# Handle scroll events once every 500ms at most
+<section @scroll.throttle(500ms)=handler>
+```
+
+Imba supports a ton of modifiers to make event handling convenient, and it is also possible to define your own modifiers.
+
+<api-modifiers-list></api-modifiers-list>
+
 # Component Lifecycle
 
 ## Lifecycle Hooks
@@ -1412,9 +1477,7 @@ This will also work directly in src paths, like:
 
 Will be part of a future release.
 
-# Server-Side Rendering [wip]
 
-See [ssr-app-imba](https://github.com/imba/ssr-app-imba) repository as an example.
 
 # State Management
 

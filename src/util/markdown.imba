@@ -32,7 +32,6 @@ let slugify = do(str)
 	str = (str.split('(')[0] or str)
 	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
 
-
 	let from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
 	let to   = "aaaaaeeeeiiiioooouuuunc------"
 
@@ -62,6 +61,21 @@ let sanitizeCode = do(code)
 let renderer = new marked.Renderer
  
 def renderer.link href, title, text
+	let apipath = null
+	if href == 'css'
+		if text[0] == '@'
+			apipath = "/css/modifiers/{text}"
+			# return <api-link> "/css/modifiers/{text}"
+		else
+			apipath = "/css/properties/{text}"
+			# return <api-link> "/css/properties/{text}"
+	elif href == 'api'
+		if text[0] == '@'
+			apipath = "/api/Element/{text}"
+	
+	if apipath
+		return <api-link> apipath
+		
 	if href.match(/^\/.*\.md/)
 		return (<embedded-app-document data-path=href>)
 	elif href.match(/^\/examples\//) and text
@@ -142,11 +156,20 @@ def renderer.heading text, level
 	meta.head = String(text)
 	return "<!--:H:-->{String(node)}<!--:/H:-->"
 
-def renderer.codespan code
-	code = unescape(code)
-	
+def renderer.codespan escaped
+	let code = unescape(escaped)
+
+	let m
+	let ref = null
+
+	if m = escaped.match(/^css (@?[\w\-\.]+)\:$/)
+		ref = 'css'
+
+	if ref and false
+		return String(<api-link> escaped)
+
 	let lang = 'imba'
-	if let m = code.match(/^(\w+)\$\s*/)
+	if m = code.match(/^(\w+)\$\s*/)
 		lang = m[1]
 		code = code.slice(m[0].length)
 	elif code[0] == '>'
@@ -214,6 +237,9 @@ def renderer.table header, body
 
 	return out.toString().replace('$HEADER$',header).replace('$BODY$',body)
 
+export def htmlify content, o = {}
+	marked(content)
+
 export def render content, o = {}
 	let object = {toString: (do this.body), toc: [],meta: {}}
 
@@ -273,7 +299,7 @@ export def render content, o = {}
 	let prev = object
 	let intro = segments[0]
 
-	console.log 'snippets',Object.keys(state.files)
+	# console.log 'snippets',Object.keys(state.files)
 	object.#files = state.files
 
 	for html,i in segments.slice(1)
@@ -345,6 +371,7 @@ export def render content, o = {}
 
 	if object.children.length == 1
 		# console.log 'children length is one!!',object.children[0]
+		object.children[0].#files = object.#files
 		return object.children[0]
 
 	return object

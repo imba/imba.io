@@ -89,14 +89,12 @@ tag repl-browser
 				render!
 				
 				
-
-			let {log,info} = win.console.log
 			if $console
 				$console.context = win
 				$console.native = win.console
 				$console.autoclear!
 				win.console.log = $console.log.bind($console)
-				win.console.info = $console.info.bind($console)
+				win.console.info = $console.log.bind($console)
 		
 		if src
 			$iframe.src = src

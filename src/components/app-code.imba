@@ -114,7 +114,10 @@ tag app-code-block < app-code
 			if options.dir
 				file = example
 				example = example.parent
-			
+				
+			if example
+				meta = example.meta or {}
+
 		Object.assign(options,meta)
 
 		if example isa File
@@ -130,6 +133,12 @@ tag app-code-block < app-code
 		maxLines = Math.max(...lineCounts)
 		minLines = Math.min(...lineCounts)
 		render!
+		
+	set raw value
+		if #raw =? value
+			file = File.temporary(value,'imba')
+			files = [file]
+		
 
 	def hydrate
 		files = []
@@ -171,7 +180,9 @@ tag app-code-block < app-code
 				}
 				let file = fs.register(path + '/' + data.name,data)
 				files.push(file)
-			example = files[0]
+				
+			if parts.length
+				example = files[0]
 
 
 		for file in files
@@ -388,6 +399,8 @@ tag app-code-block < app-code
 						mode=options.preview
 						@loaded=demoLoaded
 					>
+			if file and file.meta.foot
+				<div.markdown[my:2 bdl:1px dashed gray3 rdbl:6px ml:3 pl:3 c:gray5 pb:2] innerHTML=file.meta.foot>
 
 css app-arrow c:green5
 	>>>

@@ -102,6 +102,41 @@ global css button
 # rest of file ...
 ```
 
+## Modifiers [wip]
+
+```imba
+# in selectors
+css button@hover
+    bg:blue
+# in properties
+css button
+    bg@hover:blue
+# after properties
+css button
+    bg:white @hover:whitesmoke @focus:blue
+```
+
+### Pseudo-classes
+
+Pseudo-classes (`:hover`, `:apactive`, ...) from css are supported using an `@` instead of the leading `:`. So the css selector `div:hover` is written as `div@hover` in Imba. In Imba you can also use pseudo-classes directly on properties:
+
+```imba
+css div
+    opacity:0.9
+    opacity@hover:1
+```
+If you add a `@pseudoclass:value` on the same line as a regular property, it will set the value of the last property, with the pseudo-class applied:
+
+```imba
+css div opacity:0.8 @hover:0.9 @focus:1
+```
+In addition to the default pseudo-classes from css, Imba supports several convenient additions like [@focin](css).
+
+### Class Modifiers [wip]
+
+### Custom Breakpoints [wip]
+
+
 ## Scoped Styles [preview=lg]
 
 If you declare style rules inside `tag` definitions, all the styles will magically only apply to elements inside of this component.
@@ -294,7 +329,6 @@ imba.mount do
 
 You can definitely use interpolated values with css variables as well, but it is best to interpolate them directly at the value where you want to use it. This way Imba can include the correct default unit if none is provided and more.
 
-
 ## Variables
 
 ## Units
@@ -356,44 +390,63 @@ imba.mount do <div[pos:absolute inset:0 d:flex ja:center]>
 	<div#header> <a> "fading"
 ```
 
+# Properties
+
+Imba supports all regular css properties. For a full reference on all css properties we recommend visiting the MDN docs. There are some custom properties and shorthands added in Imba that are very valuable. There are also a configurable design system (inpsired by Tailwind) built in. Among other things, this features non-standard values for [box-shadow](css), [border-radius](css), [transition-timing-function](css), as well as [color](css) palettes. The custom [hue](css) property is especially useful..
+
+<api-styleprop-list></api-styleprop-list>
 
 # Modifiers
 
-Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down.
+Modifiers are css [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) with superpowers. They can be used in selectors wherever you would normally use a pseudo-class. All css pseudo-classes are available as modifiers, but Imba offers additional modifiers to make responsive styling easy, as well as a ton of other convenient modifiers you can read about further down. See the [guide](/css/syntax#modifiers) for additional details.
 
-## Syntax
-
-##### in selectors
+### Syntax
 
 ```imba
+# in selectors
 css button@hover
     bg:blue
-```
-
-##### in properties
-
-```imba
+# in properties
 css button
     bg@hover:blue
-```
-
-##### after properties
-
-```imba
+# after properties
 css button
     bg:white @hover:whitesmoke @focus:blue
 ```
 
-##### class modifiers
+### Class Modifiers
+
+Classes can also be used as modifiers:
 
 ```imba
-css button
-    bg:white .primary:blue ..busy:gray
+css button c:white bg.primary:blue
+# is the same as
+css button c:white
+    .primary bg:blue
 ```
 
 ## Reference
 
-<doc-style-modifiers></doc-style-modifiers>
+### Media Modifiers
+
+<api-stylemod-list data-group="media"></api-stylemod-list>
+
+### Breakpoints
+
+<api-stylemod-list data-group="breakpoint"></api-stylemod-list>
+
+### Pseudo-classes
+
+<api-stylemod-list data-group="pseudoclass"></api-stylemod-list>
+
+### Pseudo-elements
+
+<api-stylemod-list data-group="pseudoelement"></api-stylemod-list>
+
+### Special Modifiers
+
+<api-stylemod-list data-group="custom"></api-stylemod-list>
+
 
 
 # Breakpoints
@@ -489,6 +542,7 @@ tag App
 ```
 Breakpoint blocks are not as succint as inline breakpoint modifiers, but it might add maintenance value for some.
 
+
 # Colors
 
 [demo](/examples/css/colors.imba?preview=styles)
@@ -499,7 +553,7 @@ The color CSS data-type represents a color in the sRGB color space. Colors can b
 
 Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, these named colors can be used anywhere in your styles where a color value is expected.
 
-# Theming [wip]
+# - Customizing Colors [wip]
 ## Color Theming
 
 Imba already contains color keywords, but you may also create aliases for color keywords, make your own keywords, or redefine the default keywords to new color values.
@@ -616,487 +670,53 @@ We could override one of the default keywords with these custom color values.
 }
 ```
 
-# Tints [wip]
-The `tint` color value works as an argument for passing color values to a component dynamically. The benefit of it over a regular css variable, is that we can still apply Imba's zero to nine lightness values and an alpha value with the forward-slash syntax. 
+# - Hues [wip]
+The `hue` color value works as an argument for passing color values to a component dynamically. The benefit of it over a regular css variable, is that we can still apply Imba's zero to nine lightness values and an alpha value with the forward-slash syntax. 
 
-Forexample `c:tint8/50` would give us any color we pass to the `tint:` proprety in a lightness value of 8, at 50% opacity.
-Below we have a Button component that is using `tint1`, `tint5`,  and `tint8/80`, we can then set the default tint value to cool  `tint:cool`, and the component will have the default color values of `cool1`, `cool5`, and `cool9/80`.
+Forexample `c:hue8/50` would give us any color we pass to the `hue:` property in a lightness value of 8, at 50% opacity.
+Below we have a Button component that is using `hue1`, `hue5`,  and `hue8/80`, we can then set the default tint value to cool  `hue:cool`, and the component will have the default color values of `cool1`, `cool5`, and `cool9/80`.
 ```imba
 tag Button
-    css c:tint8/80
-        bg:tint1 @hover:tint3
-        bd:2px solid tint5
-        tint:cool # default tint color, will be overridden
+    css c:hue8/80
+        bg:hue1 @hover:hue3
+        bd:2px solid hue5
+        hue:cool # default tint color, will be overridden
     <self>
         <span> <slot>
 ```
-We can then update the tint of a component instance, using a [color keyword](https://imba.io/css/colors) as a value for the `tint` property, as we did with `tint:cool`. We can add a tint value from any style scope, and the tint value will not affect the lightness and alpha values specified in the component's default styles.
+We can then update the tint of a component instance, using a [color keyword](https://imba.io/css/colors) as a value for the `hue` property, as we did with `hue:cool`. We can add a hue value from any style scope, and the hue value will not affect the lightness and alpha values specified in the component's default styles.
 ```imba
 tag App
     prop alpha = 100
-    css .red tint:red # component scope style
+    css .red hue:red # component scope style
     <self>
         <Button.global> "global"
-        <Button[tint:green]> "green" # inline style
+        <Button[hue:green]> "green" # inline style
         <Button.red> "red"
         <Button> "amber"
-            css tint:amber # nested inline style block
+            css hue:amber # nested inline style block
         <Button> "default" # default "cool" color
 ```
-### Dynamic Tint Values [tip]
-Value interpolation into tint values is not yet supported, but it will be supported in the near future.
+### Dynamic Hue Values [tip]
+
+Value interpolation into `hue` values is not yet supported. A good way to mimic support for it is rather to add the hues you want to have available as global classes, and use dynamic classes:
+
 ```imba
+# [preview=md]
+import 'util/styles'
+# ---
+global css
+    .red hue:red
+    .green hue:green
+    .blue hue:blue
+
 tag Colors
-    items = [red,green,blue]
-    <self>
+    items = ['red','green','blue']
+
+    <self> <fieldset>
         for item in items
-            <Button[tint:{item}]> item
+            <button[c:hue6] .{item}> item
+            
+imba.mount <Colors>
 ```
 
-# Dimensions
-
-## Sizing [toc-pills]
-
-### w [cssprop]
-
-[demo](/examples/css/width.imba?preview=styles)
-
-### h [cssprop]
-
-[demo](/examples/css/height.imba?preview=styles)
-
-### size [cssprop]
-
-[demo](/examples/css/size.imba?preview=styles)
-
-
-## Positioning [toc-pills]
-
-### pos [cssprop]
-
-[demo](/examples/css/positioning.imba?preview=styles)
-
-### t [cssprop]
-
-[demo](/examples/css/top.imba?preview=styles)
-
-### r [cssprop]
-
-[demo](/examples/css/right.imba?preview=styles)
-
-### b [cssprop]
-
-[demo](/examples/css/bottom.imba?preview=styles)
-
-### l [cssprop]
-
-[demo](/examples/css/left.imba?preview=styles)
-
-### inset [custom]
-
-## Margin [toc-pills]
-
-[demo](/examples/css/margin-aliases.imba?preview=styles)
-
-### m [cssprop]
-
-[demo](/examples/css/margin.imba?preview=styles)
-
-### mt [cssprop]
-
-[demo](/examples/css/margin-top.imba?preview=styles)
-
-### mr [cssprop]
-
-[demo](/examples/css/margin-right.imba?preview=styles)
-
-### mb [cssprop]
-
-[demo](/examples/css/margin-bottom.imba?preview=styles)
-
-### ml [cssprop]
-
-[demo](/examples/css/margin-left.imba?preview=styles)
-
-### mx [cssprop]
-
-[demo](/examples/css/mx.imba?preview=styles)
-
-### my [cssprop]
-
-[demo](/examples/css/my.imba?preview=styles)
-
-## Padding [toc-pills]
-
-[demo](/examples/css/padding-aliases.imba?preview=styles)
-
-### p [cssprop]
-
-[demo](/examples/css/padding.imba?preview=styles)
-
-### pt [cssprop]
-
-[demo](/examples/css/padding-top.imba?preview=styles)
-
-### pr [cssprop]
-
-[demo](/examples/css/padding-right.imba?preview=styles)
-
-### pb [cssprop]
-
-[demo](/examples/css/padding-bottom.imba?preview=styles)
-
-### pl [cssprop]
-
-[demo](/examples/css/padding-left.imba?preview=styles)
-
-### px [cssprop]
-
-[demo](/examples/css/px.imba?preview=styles)
-
-### py [cssprop]
-
-[demo](/examples/css/py.imba?preview=styles)
-
-# Layout
-
-## Display [toc-pills]
-
-### d [cssprop]
-
-### d:hflex [cssvalue]
-
-
-### d:vflex [cssvalue]
-
-### d:hgrid [cssvalue]
-
-### d:vgrid [cssvalue]
-
-## Flexbox [toc-pills] [cssprops]
-
-### fl [cssprop]
-
-### flf [cssprop]
-
-### fld [cssprop]
-
-### flb [cssprop]
-
-### flg [cssprop]
-
-### fls [cssprop]
-
-### flw [cssprop]
-
-
-## Grid [toc-pills]
-
-#### g [cssprop]
-#### rg [cssprop]
-#### cg [cssprop]
-#### gtr [cssprop]
-#### gtc [cssprop]
-#### gta [cssprop]
-#### gar [cssprop]
-#### gac [cssprop]
-#### gaf [cssprop]
-#### gcg [cssprop]
-#### grg [cssprop]
-#### ga [cssprop]
-#### gr [cssprop]
-#### gc [cssprop]
-#### gt [cssprop]
-#### grs [cssprop]
-#### gcs [cssprop]
-#### gre [cssprop]
-#### gce [cssprop]
-
-# Alignment
-
-## Alignment [toc-pills] [toc=cssprop]
-
-### ja [cssprop]
-
-### j [cssprop]
-
-
-
-### ji [cssprop]
-
-[demo](/examples/css/ji.imba?preview=styles)
-
-### jc [cssprop]
-
-### js [cssprop]
-
-### a [cssprop]
-
-
-### ai [cssprop]
-
-### ac [cssprop]
-
-### as [cssprop]
-
-
-### jai [cssprop]
-
-### jac [cssprop]
-
-### jas [cssprop]
-
-
-# Typography
-
-## Properties [toc-pills]
-
-### c [cssprop]
-### ff [cssprop]
-### fs [cssprop]
-### fw [cssprop]
-### ts [cssprop]
-### tt [cssprop]
-### ta [cssprop]
-### va [cssprop]
-### ls [cssprop]
-### lh [cssprop]
-### ws [cssprop]
-
-## Font Family [toc-pills]
-
-### ff
-
-[demo](/examples/css/ff.imba?preview=styles)
-
-### ff:mono
-
-### ff:sans
-
-### ff:serif
-
-### ff:custom
-
-You can declare custom font shorthands (or override the standard `mono`, `sans`, and `serif`) by declaring `--font-{name}` css variables in your styles:
-
-```imba
-import 'util/styles'
-# ---
-global css @root
-    --font-sans: Arial Narrow # override sans
-    --font-comic: Chalkboard, Comic Sans # add comic
-
-imba.mount do <section[fs:lg]>
-    <div[ff:serif]> "This is serif"
-    <div[ff:sans]> "This is sans"
-    <div[ff:comic]> "This is comic"
-```
-
-
-## Font Size
-
-[demo](/examples/css/fs.imba?preview=styles)
-
-## Font Weight
-
-[demo](/examples/css/fw.imba?preview=styles)
-
-# Backgrounds
-
-## Background [toc-pills]
-
-### bg [cssprop]
-
-### bgc [cssprop]
-
-### bgi [cssprop]
-
-### bgr [cssprop]
-
-### bgi [cssprop]
-
-### bga [cssprop]
-
-### bgs [cssprop]
-
-### bgclip
-
-# Borders
-
-## Border [toc-pills]
-### bd [cssprop]
-### bdr [cssprop]
-### bdl [cssprop]
-### bdt [cssprop]
-### bdb [cssprop]
-
-## Border Style [toc-pills]
-### bs [cssprop]
-### bsr [cssprop]
-### bsl [cssprop]
-### bst [cssprop]
-### bsb [cssprop]
-
-## Border Width [toc-pills]
-### bw [cssprop]
-### bwr [cssprop]
-### bwl [cssprop]
-### bwt [cssprop]
-### bwb [cssprop]
-
-## Border Color [toc-pills]
-### bc [cssprop]
-### bcr [cssprop]
-### bcl [cssprop]
-### bct [cssprop]
-### bcb [cssprop]
-
-## Border Radius [toc-pills]
-
-[demo](/examples/css/rd.imba?preview=styles)
-
-### rd [cssprop]
-### rdtl [cssprop]
-### rdtr [cssprop]
-### rdbl [cssprop]
-### rdbr [cssprop]
-### rdt [cssprop]
-### rdb [cssprop]
-### rdl [cssprop]
-### rdr [cssprop]
-
-# Animations
-
-# Transforms
-
-## Transform [toc-pills]
-
-[demo](/examples/css/transform.imba?preview=styles)
-
-### x [cssprop]
-
-### y [cssprop]
-
-### z [cssprop]
-
-### scale [cssprop]
-
-### scale-x [cssprop]
-
-### scale-y [cssprop]
-
-### rotate [cssprop]
-
-### skew-x [cssprop]
-
-### skew-y [cssprop]
-
-# Appearance
-
-### o [cssprop]
-
-### bxs [cssprop]
-
-[demo](/examples/css/bxs.imba?preview=styles)
-
-> TODO show how to define custom box shadows
-
-# Miscellaneous
-
-### prefix [cssprop]
-
-### suffix [cssprop]
-
-### zi [cssprop]
-
-### us [cssprop]
-
-### of [cssprop]
-
-### ofx [cssprop]
-
-### ofy [cssprop]
-
-### ofa [cssprop]
-
-
-# Transitions [preview=md]
-
-Imba has **experimental support** for transitioning when elements are added to and removed from the document. If you set an `ease` attribute on a tag, ie. `<my-element ease>`, imba makes it possible to easily style the enter-state and exit-state of the element and its children, as well as the timing and easing of this transition.
-
-Imba does not ship with any prebuilt transitions. This might change in a later version, but the idea is that the syntax for styling is powerful enough to easily create your own transitions. 
-
-
-```imba
-# ~preview=md
-import 'util/styles'
-
-css label d:hflex a:center us:none
-css input mx:1
-
-# ---
-tag App
-    alerted = no
-    <self @click=(alerted = !alerted)>
-        if alerted
-            <div.alert> "Important message"
-# ---
-let app = imba.mount <App.clickable>
-```
-
-In the above example, we attach the `<div>` to the dom only when `alerted` is true. In many cases you may want to smoothly transition the element in and out instead of abruptly removing it. To do this in imba, we simply add an `ease` property to the `<div>` in question.
-
-```imba
-# ~preview=md
-# css div p:2 m:2 overflow:hidden min-width:80px
-import 'util/styles'
-# ---
-tag App
-    alerted = no
-    <self @click=(alerted = !alerted)>
-        if alerted
-            <div.alert[opacity@off:0] ease> "Important message"
-# ---
-let app = imba.mount <App.clickable>
-```
-
-Now that we have declared that this element should ease, we use the `@off` style modifier to specify the appearance of the element when it is detached from the dom. In this case, we set that the opacity should be set to 0. Imba will transition to/from `@off` state smoothly, but all easings and durations can be customized. Imba takes care of keeping the element attached to the dom until all transitions have finished.
-
-If you want separate transitions depending on whether the element is being attached or detached, you can use the `@in` and `@out` modifiers:
-
-
-
-```imba
-# ~preview=md
-# css div p:2 m:2 overflow:hidden min-width:80px
-import 'util/styles'
-
-# ---
-tag App
-    alerted = no
-    <self @click=(alerted = !alerted)>
-        if alerted
-            <div.alert[y@in:100px y@out:-100px] ease> "In from below, out above!"
-# ---
-let app = imba.mount <App.clickable>
-```
-Now you can see that it comes in from the left, but leaves to the right. If the element is re-attached while exiting or detached while still entering, the transition will gracefully revert. You can see this by clicking the checkbox rapidly.
-
-You can easily transition nested elements inside the eased element as well.
-
-```imba
-# ~preview=md
-# css div p:2 m:2 overflow:hidden min-width:80px
-import 'util/styles'
-# ---
-tag App
-    alerted = no
-    <self @click=(alerted = !alerted)>
-        if alerted
-            <div.alert[o@off:0 y@off:100px ease:1s] ease>
-                <div[scale@off:0]> "Important message"
-# ---
-let app = imba.mount <App.clickable>
-```
-
-Click to see the inner div scale during the transition. Also note that we did set the duration of the transition using the `ease` style property. You can specify the ease duration and timing function for each element, and also specify them individually for transforms, opacity and colors. See properties.

@@ -89,7 +89,7 @@ tag app-repl
 				$console.context = win
 				$console.native = win.console
 				win.console.log = $console.log.bind($console)
-				win.console.info = $console.info.bind($console)
+				win.console.info = $console.log.bind($console)
 
 		$iframe.onload = do
 			try

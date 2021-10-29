@@ -368,7 +368,12 @@ export def highlight str,lang
 		if typ == 'comment' and token.value == '# ---\n'
 			if !head
 				let prev = tokens[i - 1]
-				let ind = indent
+				let nr = token.offset - 1
+				let ind = 0
+				while str[nr--] == '\t'
+					ind++
+				# let ind2 = indent
+				# console.warn "ind?",ind,ind2
 				parts.unshift("<div class='code-head ind{ind}'>")
 				parts.push('</div>')
 				head = token
@@ -400,3 +405,4 @@ export def highlight str,lang
 	cache[str] = out
 	return out
 	# return (<code.{Object.keys(flags).join(' ')} innerHTML=html>).outerHTML
+	

@@ -5,6 +5,7 @@ export const files = []
 export const paths = {}
 export const groups = {}
 export const types = {}
+import {api} from './api'
 
 global.paths = paths
 global.files = files
@@ -103,6 +104,9 @@ class Entry
 
 	get locals
 		#locals ||= LocalsProxy.for(path)
+		
+	get icon
+		import("codicons/symbol-file.svg")
 
 	get legend
 		data.legend
@@ -146,11 +150,13 @@ class Entry
 
 	get parents
 		#parents ||= parent.parents.concat(parent)
+		
+	get breadcrumb
+		parents
 
 	get prev
 		return null unless parent
 		prevSibling or parent.prev
-		# parent.children[parent.children.indexOf(self) - 1] or (parent.html ? parent : (parent.prev and parent.prev.last))
 
 	get next
 		return null unless parent
@@ -159,8 +165,14 @@ class Entry
 	get tocTitle
 		#tocTitle ||= data.title.replace(/\s*\(.*\)/g,'')
 		
+	get toc?
+		options.toc or options["toc-pills"]
+		
 	get reference?
 		parent and parent.name == 'reference'
+		
+	get pill?
+		options.keyword or options.op or options['event-modifier'] or options.cssprop or options.cssvalue
 
 	get prevSibling
 		parent ? parent.children[parent.children.indexOf(self) - 1] : null
@@ -172,6 +184,16 @@ class Entry
 		children.find(do $1.name == name) #  and !($1 isa Section)
 
 export class File < Entry
+	
+	static def temporary code,lang = 'imba'
+		let data = {
+			body: code
+			name: "{counter++}.{lang}"
+			children: []
+			meta: {}
+		}
+		return new self(data,null)
+		
 	constructor data, parent
 		super
 		$send = null
@@ -208,6 +230,9 @@ export class File < Entry
 				$send = setTimeout(&,150) do
 					root.updateFile(self)
 		_model
+		
+	get complexity
+		body.length
 
 	def overwrite body
 		if body != self.body
@@ -259,6 +284,16 @@ export class Markdown < Entry
 		return no
 
 export class Doc < Markdown
+	
+	get next
+		nextSibling or parent.next
+		
+	get prev
+		let target = prevSibling
+		if !target and parent isa Doc
+			return parent
+			
+		return target
 
 export class Section < Markdown
 	
@@ -392,6 +427,37 @@ export class Root < Dir
 				entries[i] = Entry.create(data,prev)
 		# console.log 'entries!!',entries
 		return entries.pop!
+		
+	def findExamplesFor query
+		let cache = (#examples ||= {})
+		let key = String(query)
+		return cache[key] if cache[key]
+
+		let items = []
+		let dir = find('/examples/api')
+		for item in dir.children
+			if query isa RegExp
+				continue unless item.body.match(query)
+			else
+				continue if item.body.indexOf(query) == -1
+			items.push(item)
+
+		return cache[key] = items
+	
+	def crawlExamples
+		let dir = find('/examples/api')
+		let items = dir.children.sort do(a,b) a.complexity > b.complexity ? 1 : -1
+		for item in items
+			for ref in item.meta.see
+				let m
+				if m = ref.match(/^(\@\w+)(?:\.([\w\-]+))?$/)
+					if let ev = api.paths["/api/Element/{m[1]}"]
+						ev.examples.add(item)
+						ev.type.examples.add(item)
+						
+						if let mod = m[2] and ev and ev.modifiers.get("@{m[2]}")
+							mod.examples.add(item)
+			yes
 
 	get path
 		''
@@ -406,7 +472,9 @@ types.guide = Guide
 raw.name = ''
 root = new Root(raw)
 export const fs = root
+export {api}
 
+root.crawlExamples!
 
 global.FS = fs
 global.gr = groups
@@ -424,10 +492,19 @@ export def find query, options = {}
 	return matches
 
 export def ls path
+	if api.paths[path]
+		return api.paths[path]
+
 	unless hits[path]
-		let parts = path.replace(/(^\/|\/$)/,'').split('/')
+		let parts = path.replace(/\#/g,'/').replace(/(^\/|\/$)/g,'').split('/')
 		let item = fs # fs[parts.shift()]
 		return null unless item
+		
+		
+		if parts[0] == 'api'
+			let apidoc = api.entryForPath(path)
+			if apidoc
+				return apidoc
 
 		for part,i in parts
 			let child = item.childByName(part)

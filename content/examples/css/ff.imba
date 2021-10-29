@@ -1,3 +1,4 @@
+# [preview=styles]
 import 'util/styles'
 export const vars = {flag: 'demo-sans'}
 

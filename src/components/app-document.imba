@@ -1,6 +1,7 @@
 import {ls,types,Section,Doc} from '../store'
 
 import '../repl/preview'
+import './api-entry'
 
 const Sheets = {}
 
@@ -88,7 +89,8 @@ tag doc-section-filters
 				<button bind=selection value=item> item.name
 
 tag doc-section
-
+	prop body-only
+	
 	css >>> li
 		fs:md/1.3 py:3px pl:6 pos:relative
 		@before content: "•" w:6 ta:center l:0 pos:absolute d:block c:teal5
@@ -111,6 +113,9 @@ tag doc-section
 			d:inline-block fs:0.75em ff:mono lh:1.25em
 			bg: gray3/35 rd:sm va:middle p:0.1em 5px
 			-webkit-box-decoration-break: clone
+		
+		>>> api-link
+			d:inline-block
 
 	css .snippet,.h5 $bg:orange2 $hbg:teal4 $hc:teal9
 	css .op $hbg:teal4 $hc:teal9
@@ -270,7 +275,7 @@ tag doc-section
 			@intersect("-70px 0% -20% 0%").silent=intersecting
 		>
 
-			if data.head
+			if data.head and !body-only
 				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} id=data.hash>
 					css svg d:inline size:5
 					css .legend ml:1 c:gray5 fs:md
@@ -294,6 +299,10 @@ tag doc-section
 					<.sections>
 						for item in data.sections
 							<doc-section query=filter data=item level=(level+1)>
+							
+
+
+
 tag app-document
 
 	css color: #4a5568 lh: 1.625
@@ -307,9 +316,11 @@ tag app-document
 	prop hash @set
 		let section = getSectionForHash(e.value)
 		reveal(section) if section
-
-	def mount
-		# document.scrollingElement.scrollTop = 0
+		
+	prop data @set
+		syncScroll! if mounted?
+	
+	def syncScroll
 		let hash = document.location.hash.slice(1)
 		let subsection = getSectionForHash(hash)
 		if subsection
@@ -317,6 +328,9 @@ tag app-document
 		else
 			window.scrollTo({left: 0,top: restoreScrollTop or 0,behavior: 'auto'})
 			scroller.scrollTop = restoreScrollTop or 0
+
+	def mount
+		syncScroll!
 
 	def unmount
 		let val = scroller.scrollTop
@@ -358,58 +372,84 @@ tag app-document
 	def render
 		let doc = data
 		return unless doc	
-
 		<self.markdown[d:block pb:24 pt:4 d:hflex] @refocus.silent=refocus>
 			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
 				<div$content>
-					<doc-section $key=doc.id data=doc level=0>
-				<app-document-nav data=doc>
+					if doc.api?
+						# may be a bug?
+						<api-{doc.kind}-entry $key=doc.href data=doc>
+					else
+						<doc-section $key=doc.id data=doc level=0>
+						if !doc.path.indexOf('/api/') == 0
+							<app-document-nav data=doc>
+
 			<.aside[fl:1 0 240px d@!1120:none]>
 				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 -webkit-overflow-scrolling:touch]>
-					<app-document-toc[d:block max-width:360px] data=doc>
+					if doc.api?
+						<api-{doc.kind}-toc data=doc>
+					else
+						<app-document-toc[d:block max-width:360px] data=doc>
 
+tag app-api-entry < app-document
+		
+	def render
+		<self.markdown[d:block pb:24 pt:4 d:hflex] @refocus.silent=refocus>
+			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
+				<div$content> "HELLO"
+			
 
 tag TocItem
 	level = 1
+	css pb:1
 
-	css .menu-link tween:colors 0.2s cubic-in-out
+	css .menu-link tween:colors 0.2s cubic-in-out px:0 pb:0
+		
+	css .children pl:2 lh:0
+		
+	css &.h3 > a fs:sm-
+	css &.h4 > a fs:sm-
 
 	css &.in-focus
 		> a c:gray9
-
+	
+	css &.toc-pills
+		> a py:0 px:0 fs:xxs fw:bold tt:uppercase c:gray5
+			
 	css &.toc-pills > .children
-		pl:1.5
-		> .child
-			d:inline-block m:0.5 ff:mono fs:xs va:top
-			> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
-			&.in-focus > a c:blue9 bg:blue3
-			&.cssvalue > a bg:sky2 c:sky6
+		pl:1.5 mb:1 px:0 ml:-0.5 pl:0
+		# > .child
+		# 	d:inline-block m:0.5 ff:mono fs:xs va:top
+		# 	> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
+		# 	&.in-focus > a c:blue9 bg:blue3
+		# 	&.cssvalue > a bg:sky2 c:sky6
 	
 	css &.toc-hide d@force:none
 
-	css &.op
+	css &.pill
+		hue:blue
 		d:inline-block m:0.5 ff:mono fs:xs va:top
-		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
-		&.in-focus > a c:blue9 bg:blue3
-
-
+		> a d:block bg:hue2 c:hue6 rd:sm fw:700 fs:xs va:top px:1.5 py:0.5
+		&.in-focus > a c:hue8 bg:hue3
+		
+		&.op hue:amber
+		&.keyword hue:amber
 	
-	css &.event-modifierz
-		d:inline-block m:0.5 ff:mono fs:xs va:top
-		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
-		&.in-focus > a c:blue9 bg:blue3
+	css &.event-modifier hue:indigo
+	# 	d:inline-block m:0.5 ff:mono fs:xs va:top p:0
+	# 	> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top px:1.5 py:0.5
+	# 	&.in-focus > a c:blue9 bg:blue3
 
-	<self[c:gray6] .{data.flagstr}>
+	<self[c:gray6] .{data.flagstr} .pill=data.pill?>
 		<a.menu-link[c@hover:gray8] href=data.href data=data innerHTML=data.tocTitle>
-		if level < 2
-			<.children[pl:2 lh:0]> for item in data.parts when item.level < 45
+		if level < 2 or data.toc?
+			<.children> for item in data.parts when item.level < 45
 				<TocItem.child data=item level=(level + 1)>
 
 
 tag app-document-toc
 	<self[pr:10]>
 		<div.menu-heading[c:gray5]> "On this page"
-		<.children> for item in data.parts
+		<.children> for item in data.sections
 			<TocItem data=item level=1>
 
 		<.wip[mt:4 w: <240px ml:2 fs:sm- c:gray6 bdl:2px solid yellow4 pl:3 py:1]>

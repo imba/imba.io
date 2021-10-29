@@ -20,8 +20,11 @@
   "scripts": {
     "start": "imba -w index.imba",
     "dev": "imba -w index.imba",
-    "build": "imba scripts/bundle-content.imba && imba build index.imba",
-    "watch": "imba scripts/bundle-content.imba -- -w",
+    "build": "npm run build-content && npm run build-api-docs && imba build index.imba",
+    "watch": "imba scripts/build-content.imba -- -w",
+    "build-content": "imba scripts/build-content.imba",
+    "watch-content": "imba scripts/build-content.imba -- -w",
+    "build-api-docs": "imba --node.external typescript scripts/build-api-docs.imba",
     "build-examples": "cd content/examples/express && imba build app.imba",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",
     "docker-deploy": "docker push imba.io:`git log --pretty=format:'%h' HEAD -n1`",
@@ -40,10 +43,14 @@
     "@types/node": "^13.13.52",
     "chokidar": "^3.5.2",
     "express": "^4.17.1",
-    "imba": "^2.0.0-alpha.170",
+    "imba": "^2.0.0-alpha.183",
     "marked": "^0.7.0",
     "passport": "^0.4.1",
     "perfect-arrows": "^0.3.3",
     "svgpath": "^2.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4",
+    "typescript-imba-plugin": "^1.2.2"
   }
 }
