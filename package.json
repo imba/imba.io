@@ -20,12 +20,12 @@
   "scripts": {
     "start": "imba -w index.imba",
     "dev": "imba -w index.imba",
-    "build": "npm run build-content && npm run generate-api-docs && imba build index.imba",
+    "build": "npm run build-content && npm run build-api-docs && imba build index.imba",
     
-    "watch": "imba scripts/generate-content.imba -- -w",
-    "build-content": "imba scripts/generate-content.imba",
-    "watch-content": "imba scripts/generate-content.imba -- -w",
-    "generate-api-docs": "imba --node.external typescript scripts/generate-api-docs.imba",
+    "watch": "imba scripts/build-content.imba -- -w",
+    "build-content": "imba scripts/build-content.imba",
+    "watch-content": "imba scripts/build-content.imba -- -w",
+    "build-api-docs": "imba --node.external typescript scripts/build-api-docs.imba",
     "build-examples": "cd content/examples/express && imba build app.imba",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",
     "docker-deploy": "docker push imba.io:`git log --pretty=format:'%h' HEAD -n1`",
