@@ -553,7 +553,7 @@ The color CSS data-type represents a color in the sRGB color space. Colors can b
 
 Just like other colors like `#7A4ACF`, `hsl(120,90%,45%)`, `rgba(120,255,176)`, these named colors can be used anywhere in your styles where a color value is expected.
 
-# Theming [wip]
+# - Customizing Colors [wip]
 ## Color Theming
 
 Imba already contains color keywords, but you may also create aliases for color keywords, make your own keywords, or redefine the default keywords to new color values.
@@ -670,40 +670,53 @@ We could override one of the default keywords with these custom color values.
 }
 ```
 
-# Tints [wip]
-The `tint` color value works as an argument for passing color values to a component dynamically. The benefit of it over a regular css variable, is that we can still apply Imba's zero to nine lightness values and an alpha value with the forward-slash syntax. 
+# - Hues [wip]
+The `hue` color value works as an argument for passing color values to a component dynamically. The benefit of it over a regular css variable, is that we can still apply Imba's zero to nine lightness values and an alpha value with the forward-slash syntax. 
 
-Forexample `c:tint8/50` would give us any color we pass to the `tint:` proprety in a lightness value of 8, at 50% opacity.
-Below we have a Button component that is using `tint1`, `tint5`,  and `tint8/80`, we can then set the default tint value to cool  `tint:cool`, and the component will have the default color values of `cool1`, `cool5`, and `cool9/80`.
+Forexample `c:hue8/50` would give us any color we pass to the `hue:` property in a lightness value of 8, at 50% opacity.
+Below we have a Button component that is using `hue1`, `hue5`,  and `hue8/80`, we can then set the default tint value to cool  `hue:cool`, and the component will have the default color values of `cool1`, `cool5`, and `cool9/80`.
 ```imba
 tag Button
-    css c:tint8/80
-        bg:tint1 @hover:tint3
-        bd:2px solid tint5
-        tint:cool # default tint color, will be overridden
+    css c:hue8/80
+        bg:hue1 @hover:hue3
+        bd:2px solid hue5
+        hue:cool # default tint color, will be overridden
     <self>
         <span> <slot>
 ```
-We can then update the tint of a component instance, using a [color keyword](https://imba.io/css/colors) as a value for the `tint` property, as we did with `tint:cool`. We can add a tint value from any style scope, and the tint value will not affect the lightness and alpha values specified in the component's default styles.
+We can then update the tint of a component instance, using a [color keyword](https://imba.io/css/colors) as a value for the `hue` property, as we did with `hue:cool`. We can add a hue value from any style scope, and the hue value will not affect the lightness and alpha values specified in the component's default styles.
 ```imba
 tag App
     prop alpha = 100
-    css .red tint:red # component scope style
+    css .red hue:red # component scope style
     <self>
         <Button.global> "global"
-        <Button[tint:green]> "green" # inline style
+        <Button[hue:green]> "green" # inline style
         <Button.red> "red"
         <Button> "amber"
-            css tint:amber # nested inline style block
+            css hue:amber # nested inline style block
         <Button> "default" # default "cool" color
 ```
-### Dynamic Tint Values [tip]
-Value interpolation into tint values is not yet supported, but it will be supported in the near future.
+### Dynamic Hue Values [tip]
+
+Value interpolation into `hue` values is not yet supported. A good way to mimic support for it is rather to add the hues you want to have available as global classes, and use dynamic classes:
+
 ```imba
+# [preview=md]
+import 'util/styles'
+# ---
+global css
+    .red hue:red
+    .green hue:green
+    .blue hue:blue
+
 tag Colors
-    items = [red,green,blue]
-    <self>
+    items = ['red','green','blue']
+
+    <self> <fieldset>
         for item in items
-            <Button[tint:{item}]> item
+            <button[c:hue6] .{item}> item
+            
+imba.mount <Colors>
 ```
 
