@@ -154,7 +154,6 @@ class Entry
 	get prev
 		return null unless parent
 		prevSibling or parent.prev
-		# parent.children[parent.children.indexOf(self) - 1] or (parent.html ? parent : (parent.prev and parent.prev.last))
 
 	get next
 		return null unless parent
@@ -282,6 +281,16 @@ export class Markdown < Entry
 		return no
 
 export class Doc < Markdown
+	
+	get next
+		nextSibling or parent.next
+		
+	get prev
+		let target = prevSibling
+		if !target and parent isa Doc
+			return parent
+			
+		return target
 
 export class Section < Markdown
 	

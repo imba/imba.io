@@ -380,7 +380,8 @@ tag app-document
 						<api-{doc.kind}-entry $key=doc.href data=doc>
 					else
 						<doc-section $key=doc.id data=doc level=0>
-						<app-document-nav data=doc>
+						if !doc.path.indexOf('/api/') == 0
+							<app-document-nav data=doc>
 
 			<.aside[fl:1 0 240px d@!1120:none]>
 				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 -webkit-overflow-scrolling:touch]>

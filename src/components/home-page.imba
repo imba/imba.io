@@ -161,7 +161,7 @@ tag home-page
 		rd@force:lg
 
 		main
-			$tabbar bg:clear px:2 pt:2 d.collapsed:none
+			$tabbar bg@force:clear px:2 pt:2 d.collapsed:none
 
 		$editor rd:lg
 			$code h@force:calc($mainLines * 1lh) p@force:2lh

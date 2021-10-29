@@ -17,9 +17,11 @@ import * as sw from './sw/controller'
 global.flags = document.documentElement.flags
 
 global.debug = yes if document.location.hash.indexOf('debug') >= 0
+let isApple = try (global.navigator.platform or '').match(/iPhone|iPod|iPad|Mac/)
+
 
 css .tab hue:blue
-
+	
 tag app-root
 	prop doc
 	prop show-menu
@@ -150,12 +152,12 @@ tag app-root
 						
 						
 				<div[flex: 1]>
-					<a[mr:4 jc:flex-start d:inline-flex cursor:pointer fs:sm mx:1] @click.emit-showsearch @hotkey('mod+k|s')>
+					<a[mr:4 jc:flex-start d:inline-flex cursor:pointer fs:sm mx:1] @click.emit('showsearch') @hotkey('mod+k|s')>
 						# <svg src='./assets/icons/search.svg'>
 						css c:blue4/80 @hover:blue3
 							# bd:1px solid black/80 rd:lg bg:black/30 px:2 py:1 pr:1
 						<span[ mx:1 tt:none fw:normal]> "Quick search for anything ..."
-						<span.keycap[bc:hue4/40 c:hue4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none]> 'Ctrl K'
+						<span.keycap[bc:hue4/40 c:hue4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none]> isApple ? "⌘K" : 'Ctrl K'
 					if window.debug
 						<div @resize.silent=render> "{window.innerWidth}px"
 				<div[d:flex cursor:pointer us:none]>
@@ -167,7 +169,7 @@ tag app-root
 					<a.tab[hue:cyan] @click href='/api/' .active=(doc and api?)>
 						<svg src='./assets/icons/book.svg'>
 						<span> "API"
-					<a.tab[hue:blue] @click.emit-showide>
+					<a.tab[hue:blue] @click.emit('showide')>
 						<svg src='./assets/icons/play.svg'>
 						<span> "Try"
 					<a.tab[hue:indigo] target='_blank' href='https://discord.gg/mkcbkRw'>
