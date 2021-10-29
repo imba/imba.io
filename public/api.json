@@ -64,13 +64,6 @@
           "docs": "<p>Returns true if event was dispatched by the user agent, and false otherwise.</p>\n"
         },
         {
-          "name": "returnValue",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
           "name": "target",
           "meta": {},
           "kind": "property",
@@ -97,13 +90,6 @@
           "kind": "method",
           "tags": {},
           "docs": "<p>Returns the invocation target objects of event&#39;s path (objects on which listeners will be invoked), except for any nodes in shadow trees of which the shadow root&#39;s mode is &quot;closed&quot; that are not reachable from event&#39;s currentTarget.</p>\n"
-        },
-        {
-          "name": "initEvent",
-          "meta": {},
-          "kind": "method",
-          "tags": {},
-          "docs": ""
         },
         {
           "name": "preventDefault",
@@ -202,7 +188,7 @@
           "tags": {
             "summary": "Don't trigger imba.commit from this event handler"
           },
-          "docs": "<p>By default, Imba will re-render all scheduled tags after any <em>handled</em> event. So, Imba won&#39;t re-render your application if you click an element that has no attached handlers, but if you&#39;ve added a <api-link class=\"cfy-ah\">@click</api-link> listener somewhere in the chain of elements, <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">imba.commit</app-code-inline> will automatically be called after the event has been handled. </p>\n<p>This is usually what you want, but it is useful to be able to override this, especially when dealing with <api-link class=\"cfy-ah\">@scroll</api-link> and other events that might fire rapidly.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"1.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @click.silent=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block>"
+          "docs": "<p>By default, Imba will re-render all scheduled tags after any <em>handled</em> event. So, Imba won&#39;t re-render your application if you click an element that has no attached handlers, but if you&#39;ve added a <api-link>@click</api-link> listener somewhere in the chain of elements, <app-code-inline data-lang=\"unknown\">imba.commit</app-code-inline> will automatically be called after the event has been handled. </p>\n<p>This is usually what you want, but it is useful to be able to override this, especially when dealing with <api-link>@scroll</api-link> and other events that might fire rapidly.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"1.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @click.silent=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block>"
         },
         {
           "name": "@wait",
@@ -222,7 +208,7 @@
             "detail": "(time = 500ms)",
             "summary": "ensures that handler triggers at most every `n` seconds"
           },
-          "docs": "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">throttle</app-code-inline> modifier ensures the handler is called at most every <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link class=\"cfy-ah\">@scroll</api-link>, <api-link class=\"cfy-ah\">@pointermove</api-link> etc.</p>\n<p>See <api-link class=\"cfy-ah\">@event.cooldown</api-link> and <api-link class=\"cfy-ah\">@event.debounce</api-link>.</p>\n"
+          "docs": "<p>The <app-code-inline data-lang=\"unknown\">throttle</app-code-inline> modifier ensures the handler is called at most every <app-code-inline data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link>@scroll</api-link>, <api-link>@pointermove</api-link> etc.</p>\n<p>See <api-link>@event.cooldown</api-link> and <api-link>@event.debounce</api-link>.</p>\n"
         },
         {
           "name": "@cooldown",
@@ -232,7 +218,7 @@
             "detail": "(time = 500ms)",
             "summary": "disable handler for a duration after trigger"
           },
-          "docs": "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">cooldown</app-code-inline> modifier ensures the handler is called at most every <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link class=\"cfy-ah\">@scroll</api-link>, <api-link class=\"cfy-ah\">@pointermove</api-link> etc.</p>\n<p>See <api-link class=\"cfy-ah\">@event.throttle</api-link> and <api-link class=\"cfy-ah\">@event.debounce</api-link>.</p>\n"
+          "docs": "<p>The <app-code-inline data-lang=\"unknown\">cooldown</app-code-inline> modifier ensures the handler is called at most every <app-code-inline data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link>@scroll</api-link>, <api-link>@pointermove</api-link> etc.</p>\n<p>See <api-link>@event.throttle</api-link> and <api-link>@event.debounce</api-link>.</p>\n"
         },
         {
           "name": "@debounce",
@@ -242,7 +228,7 @@
             "detail": "(time = 500ms)",
             "summary": "dont trigger until no events has been handled for `n` time"
           },
-          "docs": "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">debounce</app-code-inline> modifier ensures that a minimum amount of time has elapsed after the user stops interacting and before calling the handler. This is especially useful, for example, when querying an API and not wanting to perform a request on every keystroke.\n<app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">See</app-code-inline>@event.cooldown<app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">and</app-code-inline>@event.throttle`.</p>\n"
+          "docs": "<p>The <app-code-inline data-lang=\"unknown\">debounce</app-code-inline> modifier ensures that a minimum amount of time has elapsed after the user stops interacting and before calling the handler. This is especially useful, for example, when querying an API and not wanting to perform a request on every keystroke.\n<app-code-inline data-lang=\"unknown\">See</app-code-inline>@event.cooldown<app-code-inline data-lang=\"unknown\">and</app-code-inline>@event.throttle`.</p>\n"
         },
         {
           "name": "@trusted",
@@ -260,7 +246,7 @@
           "tags": {
             "summary": "Only trigger handler if event.target is the element itself"
           },
-          "docs": "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">self</app-code-inline> event modifier is a handy way of reacting to events only when they are clicked on the actual element you are interacting with and not, for example, a child element. This can be useful for things like modal wrappers when you only want to react when clicking directly.</p>\n"
+          "docs": "<p>The <app-code-inline data-lang=\"unknown\">self</app-code-inline> event modifier is a handy way of reacting to events only when they are clicked on the actual element you are interacting with and not, for example, a child element. This can be useful for things like modal wrappers when you only want to react when clicking directly.</p>\n"
         },
         {
           "name": "@sel",
@@ -291,7 +277,7 @@
             },
             "detail": "(name,detail = {})"
           },
-          "docs": "<p>Trigger another event via this handler {@link MyClass}</p>\n"
+          "docs": "<p>Trigger another event via this handler {@link MyClass }</p>\n"
         },
         {
           "name": "@flag",
@@ -497,13 +483,6 @@
         },
         {
           "name": "getModifierState",
-          "meta": {},
-          "kind": "method",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "initMouseEvent",
           "meta": {},
           "kind": "method",
           "tags": {},
@@ -903,7 +882,7 @@
           "tags": {
             "summary": "Stop handling unless intersectionRatio has increased."
           },
-          "docs": "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">out</app-code-inline> modifier stops the handler unless intersectionRatio has <em>increased</em>.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"8.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @intersect.in=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block>"
+          "docs": "<p>The <app-code-inline data-lang=\"unknown\">out</app-code-inline> modifier stops the handler unless intersectionRatio has <em>increased</em>.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"8.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @intersect.in=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block>"
         },
         {
           "name": "@out",
@@ -914,7 +893,7 @@
           "tags": {
             "summary": "Stop handling unless intersectionRatio has decreased."
           },
-          "docs": "<p>The <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">out</app-code-inline> modifier stops the handler unless intersectionRatio has <em>decreased</em>.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"9.imba\" data-lang=\"imba\"># Will only trigger when element starts intersecting\n&lt;div @intersect.out=handler&gt;\n# Will trigger whenever any part of the div is hidden\n&lt;div @intersect(1).out=handler&gt;</code></app-code-block>"
+          "docs": "<p>The <app-code-inline data-lang=\"unknown\">out</app-code-inline> modifier stops the handler unless intersectionRatio has <em>decreased</em>.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"9.imba\" data-lang=\"imba\"># Will only trigger when element starts intersecting\n&lt;div @intersect.out=handler&gt;\n# Will trigger whenever any part of the div is hidden\n&lt;div @intersect(1).out=handler&gt;</code></app-code-block>"
         },
         {
           "name": "@css",
@@ -959,7 +938,7 @@
           "docs": "<p>Difference in ratio since previous event</p>\n"
         }
       ],
-      "docs": "<p><a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API\">IntersectionObserver</a> is a <a href=\"https://caniuse.com/#feat=intersectionobserver\">well-supported</a> API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document&#39;s viewport. Imba adds a simplified abstraction on top of this via the custom <api-link class=\"cfy-ah\">@intersect</api-link> event.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"2.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @intersect.in=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block><h4>Parameters</h4><p>The <api-link class=\"cfy-ah\">@intersect</api-link> events accepts several arguments. You can pass in an object with the same <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root\">root</a>, <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin\">rootMargin</a>, and <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold\">threshold</a>  properties supported by <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver\">IntersectionObserver</a>. </p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"3.imba\" data-lang=\"imba\">&lt;div @intersect=handler&gt; # default options\n&lt;div @intersect(root: frame, rootMargin: '20px')=handler&gt;\n&lt;div @intersect(threshold: [0,0.5,1])=handler&gt;</code></app-code-block><p>For convenience, imba will convert certain arguments into options. A single number between 0 and 1 will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold\">threshold</a> option:</p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"4.imba\" data-lang=\"imba\"># n 0-1 adds single threshold at n visibility\n&lt;div @intersect(0)=handler&gt; # {threshold: 0}\n&lt;div @intersect(0.5)=handler&gt; # {threshold: 0.5}\n&lt;div @intersect(1)=handler&gt; # {threshold: 1.0}</code></app-code-block><p>Any number above 1 will add n thresholds, spread evenly:</p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"5.imba\" data-lang=\"imba\">&lt;div @intersect(2)=handler&gt; # {threshold: [0,1]}\n&lt;div @intersect(3)=handler&gt; # {threshold: [0,0.5,1]}\n&lt;div @intersect(5)=handler&gt; # {threshold: [0,0.25,0.5,0.75,1]}\n# ... and so forth</code></app-code-block><p>An element will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root\">root</a> option:</p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"6.imba\" data-lang=\"imba\">&lt;div @intersect(frame)=handler&gt; # {root: frame}\n&lt;div @intersect(frame,3)=handler&gt; # {root: frame, threshold: [0,0.5,1]}</code></app-code-block><p>A string will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin\">rootMargin</a> option:</p>\n<app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"7.imba\" data-lang=\"imba\">&lt;div @intersect(\"20px 10px\")=handler&gt; # {rootMargin: \"20px 10px\"}</code></app-code-block>",
+      "docs": "<p><a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API\">IntersectionObserver</a> is a <a href=\"https://caniuse.com/#feat=intersectionobserver\">well-supported</a> API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document&#39;s viewport. Imba adds a simplified abstraction on top of this via the custom <api-link>@intersect</api-link> event.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"2.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @intersect.in=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block><h4>Parameters</h4><p>The <api-link>@intersect</api-link> events accepts several arguments. You can pass in an object with the same <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root\">root</a>, <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin\">rootMargin</a>, and <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold\">threshold</a>  properties supported by <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver\">IntersectionObserver</a>. </p>\n<app-code-block data-path=\"/docs\"><code data-name=\"3.imba\" data-lang=\"imba\">&lt;div @intersect=handler&gt; # default options\n&lt;div @intersect(root: frame, rootMargin: '20px')=handler&gt;\n&lt;div @intersect(threshold: [0,0.5,1])=handler&gt;</code></app-code-block><p>For convenience, imba will convert certain arguments into options. A single number between 0 and 1 will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold\">threshold</a> option:</p>\n<app-code-block data-path=\"/docs\"><code data-name=\"4.imba\" data-lang=\"imba\"># n 0-1 adds single threshold at n visibility\n&lt;div @intersect(0)=handler&gt; # {threshold: 0}\n&lt;div @intersect(0.5)=handler&gt; # {threshold: 0.5}\n&lt;div @intersect(1)=handler&gt; # {threshold: 1.0}</code></app-code-block><p>Any number above 1 will add n thresholds, spread evenly:</p>\n<app-code-block data-path=\"/docs\"><code data-name=\"5.imba\" data-lang=\"imba\">&lt;div @intersect(2)=handler&gt; # {threshold: [0,1]}\n&lt;div @intersect(3)=handler&gt; # {threshold: [0,0.5,1]}\n&lt;div @intersect(5)=handler&gt; # {threshold: [0,0.25,0.5,0.75,1]}\n# ... and so forth</code></app-code-block><p>An element will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root\">root</a> option:</p>\n<app-code-block data-path=\"/docs\"><code data-name=\"6.imba\" data-lang=\"imba\">&lt;div @intersect(frame)=handler&gt; # {root: frame}\n&lt;div @intersect(frame,3)=handler&gt; # {root: frame, threshold: [0,0.5,1]}</code></app-code-block><p>A string will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin\">rootMargin</a> option:</p>\n<app-code-block data-path=\"/docs\"><code data-name=\"7.imba\" data-lang=\"imba\">&lt;div @intersect(\"20px 10px\")=handler&gt; # {rootMargin: \"20px 10px\"}</code></app-code-block>",
       "tags": {}
     },
     {
@@ -991,13 +970,6 @@
         },
         {
           "name": "entry",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "test",
           "meta": {},
           "kind": "property",
           "tags": {},
@@ -1067,28 +1039,28 @@
           "meta": {},
           "kind": "property",
           "tags": {},
-          "docs": "<p>Returns true if the <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">control</app-code-inline> key was down when the mouse event was fired.</p>\n"
+          "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">control</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
         {
           "name": "altKey",
           "meta": {},
           "kind": "property",
           "tags": {},
-          "docs": "<p>Returns true if the <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">alt</app-code-inline> key was down when the mouse event was fired.</p>\n"
+          "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">alt</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
         {
           "name": "shiftKey",
           "meta": {},
           "kind": "property",
           "tags": {},
-          "docs": "<p>Returns true if the <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">shift</app-code-inline> key was down when the mouse event was fired.</p>\n"
+          "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">shift</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
         {
           "name": "metaKey",
           "meta": {},
           "kind": "property",
           "tags": {},
-          "docs": "<p>Returns true if the <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">shift</app-code-inline> key was down when the mouse event was fired.</p>\n"
+          "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">shift</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
         {
           "name": "pointerType",
@@ -1116,7 +1088,7 @@
             "summary": "Only when touch has moved more than threshold",
             "detail": "(threshold = 4px)"
           },
-          "docs": "<p>This guard will break the chain unless the touch has moved more than threshold. Once this threshold has been reached, all subsequent updates of touch will pass through. The element will also activate the <api-link class=\"cfy-ah\">@move</api-link> pseudostate during touch - after threshold is reached.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"10.imba\" data-lang=\"imba\">&lt;div @touch.moved(threshold=4px, dir='any')&gt;</code></app-code-block>"
+          "docs": "<p>This guard will break the chain unless the touch has moved more than threshold. Once this threshold has been reached, all subsequent updates of touch will pass through. The element will also activate the <api-link>@move</api-link> pseudostate during touch - after threshold is reached.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"10.imba\" data-lang=\"imba\">&lt;div @touch.moved(threshold=4px, dir='any')&gt;</code></app-code-block>"
         },
         {
           "name": "@hold",
@@ -1128,7 +1100,7 @@
             "summary": "Only start handling after pressing and holding still",
             "detail": "(duration = 250ms)"
           },
-          "docs": "<p>This guard will break the chain unless the touch has been held for a duration.\nIf the pointer moves more than 5px before the modifier activates, the handler will\nessentially be cancelled.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"11.imba\" data-lang=\"imba\">&lt;div @touch.hold(duration=250ms)&gt;</code></app-code-block>"
+          "docs": "<p>This guard will break the chain unless the touch has been held for a duration.\nIf the pointer moves more than 5px before the modifier activates, the handler will\nessentially be cancelled.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"11.imba\" data-lang=\"imba\">&lt;div @touch.hold(duration=250ms)&gt;</code></app-code-block>"
         },
         {
           "name": "@sync",
@@ -1140,7 +1112,7 @@
             "summary": "Sync the x,y properties of touch to another object",
             "detail": "(data, xProp?, yProp?)"
           },
-          "docs": "<p>A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"12.imba\" data-lang=\"imba\">&lt;div @touch.sync(target, xprop='x', yprop='y')&gt;</code></app-code-block>"
+          "docs": "<p>A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"12.imba\" data-lang=\"imba\">&lt;div @touch.sync(target, xprop='x', yprop='y')&gt;</code></app-code-block>"
         },
         {
           "name": "@apply",
@@ -1162,7 +1134,7 @@
             "summary": "Convert the coordinates of the touch to some other frame of reference.",
             "detail": "(target?,snap?)"
           },
-          "docs": "<p>A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you&#39;d want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.</p>\n<h4>Syntax</h4><app-code-block class=\"cfy-af\" data-path=\"/docs\"><code class=\"cfy-ag\" data-name=\"13.imba\" data-lang=\"imba\">&lt;div @touch.fit&gt; # make x,y relative to the element\n&lt;div @touch.fit(start,end,snap?)&gt;\n&lt;div @touch.fit(target)&gt; # make x,y relative to a target element\n&lt;div @touch.fit(target,start,end,snap?)&gt;\n&lt;div @touch.fit(target,[xstart,ystart],[xend,yend],snap?)&gt;</code></app-code-block>"
+          "docs": "<p>A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you&#39;d want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"13.imba\" data-lang=\"imba\">&lt;div @touch.fit&gt; # make x,y relative to the element\n&lt;div @touch.fit(start,end,snap?)&gt;\n&lt;div @touch.fit(target)&gt; # make x,y relative to a target element\n&lt;div @touch.fit(target,start,end,snap?)&gt;\n&lt;div @touch.fit(target,[xstart,ystart],[xend,yend],snap?)&gt;</code></app-code-block>"
         },
         {
           "name": "@reframe",
@@ -1204,7 +1176,7 @@
           "docs": "<p>Add an html class to target for at least 250ms\nIf the callback returns a promise, the class\nwill not be removed until said promise has resolved</p>\n"
         }
       ],
-      "docs": "<p>To make it easier and more fun to work with touches, Imba includes a custom <api-link class=\"cfy-ah\">@touch</api-link> event that combines <api-link class=\"cfy-ah\">@pointerdown</api-link> -&gt; <api-link class=\"cfy-ah\">@pointermove</api-link> -&gt; <api-link class=\"cfy-ah\">@pointerup</api-link> in one convenient handler, with modifiers for commonly needed functionality.</p>\n",
+      "docs": "<p>To make it easier and more fun to work with touches, Imba includes a custom <api-link>@touch</api-link> event that combines <api-link>@pointerdown</api-link> -&gt; <api-link>@pointermove</api-link> -&gt; <api-link>@pointerup</api-link> in one convenient handler, with modifiers for commonly needed functionality.</p>\n",
       "tags": {}
     },
     {
@@ -1249,7 +1221,7 @@
           "meta": {},
           "kind": "method",
           "tags": {},
-          "docs": "<p>Appends an event listener for events whose type attribute value is type. The callback argument sets the callback that will be invoked when the event is dispatched.</p>\n<p>The options argument sets listener-specific options. For compatibility this can be a boolean, in which case the method behaves exactly as if the value was specified as options&#39;s capture.</p>\n<p>When set to true, options&#39;s capture prevents callback from being invoked when the event&#39;s eventPhase attribute value is BUBBLING_PHASE. When false (or not present), callback will not be invoked when event&#39;s eventPhase attribute value is CAPTURING_PHASE. Either way, callback will be invoked if event&#39;s eventPhase attribute value is AT_TARGET.</p>\n<p>When set to true, options&#39;s passive indicates that the callback will not cancel the event by invoking preventDefault(). This is used to enable performance optimizations described in § 2.8 Observing event listeners.</p>\n<p>When set to true, options&#39;s once indicates that the callback will only be invoked once after which the event listener will be removed.</p>\n<p>The event listener is appended to target&#39;s event listener list and is not appended if it has the same type, callback, and capture.</p>\n"
+          "docs": "<p>Appends an event listener for events whose type attribute value is type. The callback argument sets the callback that will be invoked when the event is dispatched.</p>\n<p>The options argument sets listener-specific options. For compatibility this can be a boolean, in which case the method behaves exactly as if the value was specified as options&#39;s capture.</p>\n<p>When set to true, options&#39;s capture prevents callback from being invoked when the event&#39;s eventPhase attribute value is BUBBLING_PHASE. When false (or not present), callback will not be invoked when event&#39;s eventPhase attribute value is CAPTURING_PHASE. Either way, callback will be invoked if event&#39;s eventPhase attribute value is AT_TARGET.</p>\n<p>When set to true, options&#39;s passive indicates that the callback will not cancel the event by invoking preventDefault(). This is used to enable performance optimizations described in § 2.8 Observing event listeners.</p>\n<p>When set to true, options&#39;s once indicates that the callback will only be invoked once after which the event listener will be removed.</p>\n<p>If an AbortSignal is passed for options&#39;s signal, then the event listener will be removed when signal is aborted.</p>\n<p>The event listener is appended to target&#39;s event listener list and is not appended if it has the same type, callback, and capture.</p>\n"
         },
         {
           "name": "dispatchEvent",
@@ -1713,6 +1685,13 @@
           "docs": "<p>Returns the node document. Returns null for documents.</p>\n"
         },
         {
+          "name": "part",
+          "meta": {},
+          "kind": "property",
+          "tags": {},
+          "docs": ""
+        },
+        {
           "name": "prefix",
           "meta": {},
           "kind": "property",
@@ -1909,13 +1888,6 @@
           "docs": "<p>Returns true if matching selectors against element&#39;s root yields element, and false otherwise.</p>\n"
         },
         {
-          "name": "msGetRegionContent",
-          "meta": {},
-          "kind": "method",
-          "tags": {},
-          "docs": ""
-        },
-        {
           "name": "releasePointerCapture",
           "meta": {},
           "kind": "method",
@@ -2028,18 +2000,11 @@
           "docs": "<p>If force is not given, &quot;toggles&quot; qualifiedName, removing it if it is present and adding it if it is not present. If force is true, adds qualifiedName. If force is false, removes qualifiedName.</p>\n<p>Returns true if qualifiedName is now present, and false otherwise.</p>\n"
         },
         {
-          "name": "webkitMatchesSelector",
-          "meta": {},
-          "kind": "method",
-          "tags": {},
-          "docs": ""
-        },
-        {
           "name": "addEventListener",
           "meta": {},
           "kind": "method",
           "tags": {},
-          "docs": "<p>Appends an event listener for events whose type attribute value is type. The callback argument sets the callback that will be invoked when the event is dispatched.</p>\n<p>The options argument sets listener-specific options. For compatibility this can be a boolean, in which case the method behaves exactly as if the value was specified as options&#39;s capture.</p>\n<p>When set to true, options&#39;s capture prevents callback from being invoked when the event&#39;s eventPhase attribute value is BUBBLING_PHASE. When false (or not present), callback will not be invoked when event&#39;s eventPhase attribute value is CAPTURING_PHASE. Either way, callback will be invoked if event&#39;s eventPhase attribute value is AT_TARGET.</p>\n<p>When set to true, options&#39;s passive indicates that the callback will not cancel the event by invoking preventDefault(). This is used to enable performance optimizations described in § 2.8 Observing event listeners.</p>\n<p>When set to true, options&#39;s once indicates that the callback will only be invoked once after which the event listener will be removed.</p>\n<p>The event listener is appended to target&#39;s event listener list and is not appended if it has the same type, callback, and capture.</p>\n"
+          "docs": "<p>Appends an event listener for events whose type attribute value is type. The callback argument sets the callback that will be invoked when the event is dispatched.</p>\n<p>The options argument sets listener-specific options. For compatibility this can be a boolean, in which case the method behaves exactly as if the value was specified as options&#39;s capture.</p>\n<p>When set to true, options&#39;s capture prevents callback from being invoked when the event&#39;s eventPhase attribute value is BUBBLING_PHASE. When false (or not present), callback will not be invoked when event&#39;s eventPhase attribute value is CAPTURING_PHASE. Either way, callback will be invoked if event&#39;s eventPhase attribute value is AT_TARGET.</p>\n<p>When set to true, options&#39;s passive indicates that the callback will not cancel the event by invoking preventDefault(). This is used to enable performance optimizations described in § 2.8 Observing event listeners.</p>\n<p>When set to true, options&#39;s once indicates that the callback will only be invoked once after which the event listener will be removed.</p>\n<p>If an AbortSignal is passed for options&#39;s signal, then the event listener will be removed when signal is aborted.</p>\n<p>The event listener is appended to target&#39;s event listener list and is not appended if it has the same type, callback, and capture.</p>\n"
         },
         {
           "name": "removeEventListener",
@@ -2266,6 +2231,13 @@
           "docs": ""
         },
         {
+          "name": "outerText",
+          "meta": {},
+          "kind": "property",
+          "tags": {},
+          "docs": ""
+        },
+        {
           "name": "spellcheck",
           "meta": {},
           "kind": "property",
@@ -2298,7 +2270,7 @@
           "meta": {},
           "kind": "method",
           "tags": {},
-          "docs": "<p>Appends an event listener for events whose type attribute value is type. The callback argument sets the callback that will be invoked when the event is dispatched.</p>\n<p>The options argument sets listener-specific options. For compatibility this can be a boolean, in which case the method behaves exactly as if the value was specified as options&#39;s capture.</p>\n<p>When set to true, options&#39;s capture prevents callback from being invoked when the event&#39;s eventPhase attribute value is BUBBLING_PHASE. When false (or not present), callback will not be invoked when event&#39;s eventPhase attribute value is CAPTURING_PHASE. Either way, callback will be invoked if event&#39;s eventPhase attribute value is AT_TARGET.</p>\n<p>When set to true, options&#39;s passive indicates that the callback will not cancel the event by invoking preventDefault(). This is used to enable performance optimizations described in § 2.8 Observing event listeners.</p>\n<p>When set to true, options&#39;s once indicates that the callback will only be invoked once after which the event listener will be removed.</p>\n<p>The event listener is appended to target&#39;s event listener list and is not appended if it has the same type, callback, and capture.</p>\n"
+          "docs": "<p>Appends an event listener for events whose type attribute value is type. The callback argument sets the callback that will be invoked when the event is dispatched.</p>\n<p>The options argument sets listener-specific options. For compatibility this can be a boolean, in which case the method behaves exactly as if the value was specified as options&#39;s capture.</p>\n<p>When set to true, options&#39;s capture prevents callback from being invoked when the event&#39;s eventPhase attribute value is BUBBLING_PHASE. When false (or not present), callback will not be invoked when event&#39;s eventPhase attribute value is CAPTURING_PHASE. Either way, callback will be invoked if event&#39;s eventPhase attribute value is AT_TARGET.</p>\n<p>When set to true, options&#39;s passive indicates that the callback will not cancel the event by invoking preventDefault(). This is used to enable performance optimizations described in § 2.8 Observing event listeners.</p>\n<p>When set to true, options&#39;s once indicates that the callback will only be invoked once after which the event listener will be removed.</p>\n<p>If an AbortSignal is passed for options&#39;s signal, then the event listener will be removed when signal is aborted.</p>\n<p>The event listener is appended to target&#39;s event listener list and is not appended if it has the same type, callback, and capture.</p>\n"
         },
         {
           "name": "removeEventListener",
@@ -2489,7 +2461,7 @@
       "kind": "event",
       "type": "Event",
       "meta": {},
-      "docs": "<p>The change event is fired for <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">&lt;input&gt;</app-code-inline>, <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">&lt;select&gt;</app-code-inline>, and <app-code-inline class=\"cfy-ai\" data-lang=\"unknown\">&lt;textarea&gt;</app-code-inline> elements when a change to the element&#39;s value is committed by the user.</p>\n",
+      "docs": "<p>The change event is fired for <app-code-inline data-lang=\"unknown\">&lt;input&gt;</app-code-inline>, <app-code-inline data-lang=\"unknown\">&lt;select&gt;</app-code-inline>, and <app-code-inline data-lang=\"unknown\">&lt;textarea&gt;</app-code-inline> elements when a change to the element&#39;s value is committed by the user.</p>\n",
       "tags": {
         "summary": "<p>Fires when the contents of the object or selection have changed.</p>\n"
       }

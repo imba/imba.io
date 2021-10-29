@@ -141,7 +141,7 @@ export class Entity
 		[self]
 		
 	get summary
-		desc.tags and desc.tags.summary or docs
+		desc.tags and desc.tags.summary or (docs and docs.length < 200 ? docs : '')
 		
 	# get events
 	# 	members.events
