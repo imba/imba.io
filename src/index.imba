@@ -151,13 +151,15 @@ tag app-root
 				# 	<a[p:1 2 fw:600 ml:10px rd:12px bgc:hsla(213.12, 93.90%, 67.84%, 1) c:hsla(215.00, 27.91%, 16.86%, 98%) @hover:white d@lt-md:none] href="https://jobs.scrimba.com" title="well, actually Scrimba is hiring - but learn to code in Imba with pay! "> "We are hiring!"
 						
 						
-				<div[flex: 1]>
-					<a[mr:4 jc:flex-start d:inline-flex cursor:pointer fs:sm mx:1] @click.emit('showsearch') @hotkey('mod+k|s')>
+				<div[flex:1 a:center jc:flex-start va:middle d:hflex]>
+					<a[mr:4 jc:flex-start d:inline-flex cursor:pointer fs:sm mx:1 a:center] @click.emit('showsearch') @hotkey('mod+k|s')>
 						# <svg src='./assets/icons/search.svg'>
 						css c:blue4/80 @hover:blue3
+						<svg[ml:1 d:block @md:none size:16px va:top pos:relative t:2px] src='./assets/icons/search.svg'>
+						<span[d:none @md:contents]>
 							# bd:1px solid black/80 rd:lg bg:black/30 px:2 py:1 pr:1
-						<span[ mx:1 tt:none fw:normal]> "Quick search for anything ..."
-						<span.keycap[bc:hue4/40 c:hue4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none]> isApple ? "⌘K" : 'Ctrl K'
+							<span[ mx:1 tt:none fw:normal]> "Quick search for anything ..."
+							<span.keycap[bc:hue4/40 c:hue4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none]> isApple ? "⌘K" :'Ctrl K'
 					if window.debug
 						<div @resize.silent=render> "{window.innerWidth}px"
 				<div[d:flex cursor:pointer us:none]>
