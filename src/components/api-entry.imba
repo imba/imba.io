@@ -715,21 +715,29 @@ tag api-stylemod-section
 		
 tag api-li
 	css d:hflex ja:center ws:nowrap
-		a c:inherit
+		a c:inherit mr:1 fl:1
 			span@last fw:500
 		
 		&.event hue:amber
 	<self .{data.kind}>
 		<span.icon[p:1 mr:1]> <svg[c:hue5] src=data.icon>
 		if data.kind == 'method' or data.kind == 'property'
-			<a[mr:1 fl:1] href=data.href>
+			<a href=data.href>
 				<span> data.owner.displayName
 				<span> "."
 				<span> data.displayName
 		elif data.modifier?
-			<a[mr:1 fl:1] href=data.href>
+			<a href=data.href>
 				<span> data.owner.modifierPrefix + "."
 				<span> data.displayName
+		elif data.kind == 'stylemod'
+			<a href=data.href>
+				<span> "css "
+				<span> data.displayName
+		elif data.kind == 'styleprop'
+			<a href=data.href>
+				<span> "css "
+				<span> data.displayName
 		else
-			<a[mr:1 fl:1] href=data.href> <span> data.displayName
+			<a href=data.href> <span> data.displayName
 		

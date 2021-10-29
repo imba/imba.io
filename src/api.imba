@@ -94,7 +94,7 @@ export class Entity
 			for item in desc.members
 				members.push(Entity.build(item,self))
 		
-		root.entities.push(self)
+		root.entities.unshift(self)
 		root.paths[href] = self
 		(root.kinds[kind] ||= []).push(self)
 		register!
