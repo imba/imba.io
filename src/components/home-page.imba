@@ -166,7 +166,7 @@ tag home-page
 		$editor rd:lg
 			$code h@force:calc($mainLines * 1lh) p@force:2lh
 			&.tabbed
-				$tabbar px:2 bg:clear pt:2
+				$tabbar px:2 bg@force:clear pt:2
 				$code pt@force:0.5lh
 
 		$preview z:10px

@@ -32,6 +32,8 @@ global css
 	.menu-link d:block p:1 2 fs:sm fw:500
 
 	.keycap rd:md bd:gray2 fs:xs h:5 px:1 c:gray5 d:hflex ja:center
+	
+	@root app-code-inline d:inline
 
 
 # code
