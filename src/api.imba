@@ -57,7 +57,7 @@ const root = new class
 		elif token.type == 'style.property.name'
 			entity = lookup("/css/properties/{token.value}")
 			
-		elif token.type == 'style.property.modifier'
+		elif token.type == 'style.property.modifier' or token.type == 'style.selector.modifier'
 			entity = lookup("/css/modifiers/{token.value}")
 		
 		return entity
