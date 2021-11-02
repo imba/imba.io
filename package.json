@@ -47,6 +47,7 @@
     "marked": "^0.7.0",
     "passport": "^0.4.1",
     "perfect-arrows": "^0.3.3",
+    "quick-score": "^0.0.13",
     "svgpath": "^2.3.0"
   },
   "devDependencies": {

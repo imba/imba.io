@@ -6,6 +6,7 @@ export const paths = {}
 export const groups = {}
 export const types = {}
 import {api} from './api'
+import {QuickScore} from "quick-score"
 
 global.paths = paths
 global.files = files
@@ -106,7 +107,7 @@ class Entry
 		#locals ||= LocalsProxy.for(path)
 		
 	get icon
-		import("codicons/symbol-file.svg")
+		import("codicons/book.svg")
 
 	get legend
 		data.legend
@@ -272,7 +273,11 @@ export class Guide < Entry
 		null
 
 export class Markdown < Entry
-
+	
+	get searchTitle
+		# #searchTitle ||= parents.concat(self).slice(1).map(do $1.title).join(" ")
+		#searchTitle ||= [self].map(do $1.title).join(" ")
+		
 	get searchText
 		#searchText ||= if true
 			(title + ' ' + legend or '').replace(/\-/g,'').toLowerCase!
@@ -480,16 +485,14 @@ global.FS = fs
 global.gr = groups
 
 const hits = {}
+let searchables
 
-export def find query, options = {}
-	let matches = []
-	let roots = options.roots or groups.guide
-	for guide in roots
-		for item in guide.descendants
-			# continue unless item isa Doc or item isa Section
-			if item.match(query,options)
-				matches.push(item)
-	return matches
+export def SearchList
+	# new QuickScore(matches,['searchTitle'])
+	# ls('/language'),ls('/tags'),ls('/css'),api
+	yes
+	
+
 
 export def ls path
 	if api.paths[path]
@@ -517,3 +520,24 @@ export def ls path
 	return hits[path]
 
 	return paths[path.replace(/\/$/,'')]
+
+
+export def find query, options = {}
+	let t = Date.now!
+	let norm-query = query.toLowerCase!.replace(/\-/g,'')
+	let matches = []
+	# let roots = options.roots or groups.guide
+	
+	
+	unless searchables
+		let all = []
+		for group in [ls('/language'),ls('/tags'),ls('/css'),api]
+			for item in group.descendants
+				all.push(item)
+
+		searchables = new QuickScore(all,['searchTitle','alias'])
+
+	let hits = searchables.search(query)
+	matches = hits.map do $1.item
+
+	return matches

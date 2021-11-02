@@ -1,38 +1,86 @@
 import {ls,fs,File,Dir,find,api} from '../store'
 
 tag Item
-	css cursor:pointer d:hflex px:2 a:center pos:rel
-	css @lt-md pt:2
-		.path pos:abs fs:xxs t:0.5
+	css cursor:pointer d:hflex px:2 a:center pos:rel hue:warmer
+		
+	css
+		&.link hue:blue
+		&.interface hue:blue
+		&.eventinterface hue:blue
+		&.eventmodifier hue:amber
+		&.event hue:amber
+		&.property hue:cooler
+		&.method hue:violet
+		&.style hue:purple
+		&.stylemod hue:purple
+		&.styleprop hue:purple
+		&.property hue:blue
+	
+	css .icon c:hue5
+		
+	# css @lt-md pt:2
+	css .qualifier
+		pos:abs fs:xxs b:0.5 l:9 c:warmer5 ws:pre d:hflex
+	
+	css .title
+		i font-style:normal
+		em fw:500 font-style:normal
+		mb:10px
+	
+	
 	
 
-	<self @mousedown.stop.prevent.emit('go',data) @pointerover.emit('hover',index)>
-		if data.api?
-			<api-li data=data>
-			# <.path>
-			# 	# if data.icon
-			# 	# 	<span.icon> <svg src=data.icon>
-			# 	# for item in data.breadcrumb
-			# 	# 	<a[mr:1] href=item.href .{item.kind}> item.displayName
+	<self @mousedown.stop.prevent.emit('go',data) @pointerover.emit('hover',index) .{data.kind}>
+	
+		<span.icon[p:1 mr:1]> <svg[c:hue5] src=data.icon>
+		if data.kind == 'method' or data.kind == 'property'
+			<.title>
+				<span> data.owner.displayName
+				<span> "."
+				<em> data.displayName
+			<span.qualifier> "Properties"
+		elif data.kind == 'event'
+			<.title> <em> data.displayName
+			<span.qualifier> "Events"
+		elif data.modifier?
+			<.title>
+				<span> data.owner.modifierPrefix + "."
+				<em> data.displayName
+			<span.qualifier> "Event Modifiers"
+		elif data.kind == 'stylemod'
+			<.title>
+				<em> data.displayName
+				# <span[c:gray4 fw:400]> " d:block"
+			<span.qualifier> "Styles > Modifiers"
+		elif data.kind == 'styleprop'
+			<.title>
+				# <span> "css "
+				<em> data.displayName
+				if data.alias
+					<i[c:warmer5]> " / {data.alias}"
+			<span.qualifier> "Styles > Properties"
+		elif data.interface?
+			<.title> <em> data.displayName
+			<span.qualifier> "Interfaces"
+		elif data.api?
+			<.title>
+				<em> data.displayName
+			<span.qualifier> data.kind
+			
 		else
-			<.icon[p:1 c:gray5 mr:1]> <svg src=data.icon>
-			<.path>
-				css d:hflex c:gray6
-				for parent in data.breadcrumb
-					<.item>
-						css ws:nowrap d:hflex a:center
-						<span.title innerHTML=(parent.head or parent.title)>
-						<svg[size:14px o:0.7 mt:2px mx:1] src='../assets/icons/chevron-right.svg'>
-			<span.html.title innerHTML=data.head>
+			# for parent in data.breadcrumb
+			#	<.item innerHTML=(parent.head or parent.title)>
+			#		css ws:pre d:hflex a:center suffix: " > " suffix@last: ""
+			<.title.html.title[mb:8px] innerHTML=data.head>
 				css c:gray9 fw:500
-			if data.legend
-				<.legend[c:gray5 ml:1 fs:sm]> data.legend
+			<.qualifier> data.breadcrumb.map(do $1.title).join( " > ")
 
 
 tag app-search
 	query = ''
 	hits = []
 	#focus = 0 # number representing the index of match
+	show-hits = 16
 
 	def refresh
 		if #matchQuery =? query
@@ -40,11 +88,10 @@ tag app-search
 				query: query
 				roots: [ls('/language'),ls('/tags'),ls('/css'),api]
 			}
-			let matcher = query.toLowerCase!.replace(/\-/g,'')
-			
-			hits = query ? find(matcher,o) : (recent or [])
+			hits = query ? find(query,o) : (recent or [])
 			#focus = 0 # Math.max(0,Math.min(matches.length - 1,#focus))
 			#pointing = no
+			$main.scrollTop = 0
 
 	def mount
 		recent = (fs.locals.recent or []).map(do ls($1)).filter(do $1)
@@ -53,9 +100,28 @@ tag app-search
 
 	def moveUp
 		#focus = Math.max(#focus - 1,0)
+		autoScroll!
 
 	def moveDown
-		#focus = (#focus + 1) % hits.length
+		#focus = Math.min((#focus + 1),hits.length - 1,show-hits - 1)
+		autoScroll!
+		
+	def autoScroll
+		render!
+		let bounds = $main.getBoundingClientRect!
+		let el = querySelector(".nr{#focus}")
+		let sel = el.getBoundingClientRect!
+
+		let btm = sel.bottom - bounds.bottom + 12
+		let top = sel.top - bounds.top - 74
+		
+		if btm > 0
+			$main.scrollBy(0,btm)
+			
+		elif top < 0
+			$main.scrollBy(0,top)
+	
+		# console.log bounds,sel,sel.bottom - bounds.bottom,btm,top
 	
 	def goToFocus
 		go(hits[#focus])
@@ -114,11 +180,11 @@ tag app-search
 			css &.search2 bg:cool9/50
 				main y:0px scale:1 o:1 pe:auto
 
-			<main tabindex=-1>
+			<main$main tabindex=-1>
 				css w:600px bg:white bxs:xxl px:4 ofy:auto rd:md
 					mt:20vh h:auto max-height:400px tween:styles 0.2s cubic-in-out
-
 					@lt-md w:90% mt:60px l:5%
+
 				<header[pos:sticky t:0 bg:white/85 zi:10 pt:4 pb:4]>
 					
 					<div[d:hflex ja:center]>
@@ -143,5 +209,5 @@ tag app-search
 							tween:all 0.1s cubic-in-out
 							o..empty:0
 					<div[zi:1 pos:rel]>
-						for match,i in hits when i < 16
-							<Item[h:1rh] index=i $key=match.id data=match>
+						for match,i in hits when i < show-hits
+							<Item[h:1rh] .nr{i} index=i $key=match.id data=match>

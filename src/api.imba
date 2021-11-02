@@ -108,6 +108,7 @@ export class Entity
 		desc = desc
 		owner = owner
 		kind = desc.kind
+		
 		meta = desc.meta or {}
 		events = new Members(self)
 		members = new Members(self)
@@ -136,6 +137,9 @@ export class Entity
 	
 	get docs
 		desc.docs or ''
+		
+	get searchTitle
+		displayName
 		
 	get searchText
 		#searchText ||= (displayName).replace(/\-/g,'').toLowerCase!
@@ -216,6 +220,9 @@ export class Entity
 class InterfaceEntity < Entity
 	descendants = []
 	
+	get interface?
+		yes
+	
 	get icon
 		import('codicons/symbol-class.svg')
 
@@ -246,6 +253,9 @@ class EventEntity < Entity
 		
 	get displayName
 		"@{name}"
+		
+	get searchTitle
+		name
 		
 	get href
 		"/api/Element/{displayName}"
@@ -285,6 +295,9 @@ class EventModifierEntity < Entity
 	get qualifier
 		owner.modifierPrefix + "."
 		
+	get searchTitle
+		"@event.{displayName} modifier"
+		
 	get siblings
 		#siblings ||= owner.modifiers.own.filter do $1 != self
 	
@@ -307,6 +320,9 @@ class PropertyEntity < Entity
 	
 	get icon
 		import('codicons/symbol-field.svg')
+		
+	get searchTitle
+		"{owner.name}.{name}"
 	
 	get siblings
 		owner.properties.filter do $1 != self
@@ -371,6 +387,9 @@ class StyleModifier < StyleEntity
 	
 	get icon
 		import('codicons/symbol-enum.svg')
+		
+	get searchTitle
+		name.slice(1)
 	
 	get custom?
 		desc.tags.custom or desc.group == 'custom'

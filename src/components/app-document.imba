@@ -326,8 +326,9 @@ tag app-document
 		if subsection
 			reveal(subsection)
 		else
-			window.scrollTo({left: 0,top: restoreScrollTop or 0,behavior: 'auto'})
-			scroller.scrollTop = restoreScrollTop or 0
+			let target = 0 # restoreScrollTop or 0
+			window.scrollTo({left: 0,top: target,behavior: 'auto'})
+			scroller.scrollTop =target
 
 	def mount
 		syncScroll!

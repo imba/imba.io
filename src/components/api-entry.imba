@@ -715,8 +715,14 @@ tag api-stylemod-section
 		
 tag api-li
 	css d:hflex ja:center ws:nowrap
-		a c:inherit mr:1 fl:1
-			span@last fw:500
+		a c:inherit fl:1 d:hflex ai:baseline ws:pre fw:400
+			i font-style:normal
+			em fw:500
+			.kind px:1 c:gray4 fs:xs fw:400 tt:uppercase ml:auto
+			mb:8px
+
+		.kind pos:absolute b:0.5 tt:none fs:xxs px:0 c:gray5
+			mb:8px fw:400 l:9
 		
 		&.event hue:amber
 	<self .{data.kind}>
@@ -725,19 +731,32 @@ tag api-li
 			<a href=data.href>
 				<span> data.owner.displayName
 				<span> "."
-				<span> data.displayName
+				<em> data.displayName
+			<span.kind> data.kind
+		elif data.kind == 'event'
+			<a href=data.href>
+				<em> data.displayName
+				# <span[c:gray4 fw:400]> "=handler"
+			<span.kind> "event"
 		elif data.modifier?
 			<a href=data.href>
 				<span> data.owner.modifierPrefix + "."
-				<span> data.displayName
+				<em> data.displayName
+			<span.kind> "event modifier"
 		elif data.kind == 'stylemod'
 			<a href=data.href>
-				<span> "css "
-				<span> data.displayName
+				<em> data.displayName
+				# <span[c:gray4 fw:400]> " d:block"
+			<span.kind> "style modifier"
 		elif data.kind == 'styleprop'
 			<a href=data.href>
-				<span> "css "
-				<span> data.displayName
+				# <span> "css "
+				<em> data.displayName
+				if data.alias
+					<i[c:gray4]> " / {data.alias}"
+			<span.kind> "css property"
 		else
-			<a href=data.href> <span> data.displayName
+			<a href=data.href>
+				<em> data.displayName
+			<span.kind> data.kind
 		
