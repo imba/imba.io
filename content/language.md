@@ -2035,8 +2035,9 @@ Any getter is bound only when first accessed. A lazy getter will in addition onl
 
 ```imba
 class Component
+    # The symbol #ref is only set the first time Component.ref is accessed
     get ref
-        #ref ||= utils.uuid! # The symbol #ref is only set the first time Component.ref is accessed
+        #ref ||= utils.uuid! 
 ```
 
 ## Computed Names

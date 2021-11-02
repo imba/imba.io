@@ -15,6 +15,9 @@ import {ScriptVersionCache} from './svc'
 line and character are both zero based
 ###
 export default class ImbaScriptInfo
+	
+	static def tmp content
+		new self(null,content)
 
 	def constructor owner,svc
 		if typeof svc == 'string'

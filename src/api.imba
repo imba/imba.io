@@ -31,6 +31,38 @@ const root = new class
 		
 	get descendants
 		entities
+		
+	def getEvent name
+		let ref = "/api/Element/@{name.replace('@','')}"
+		if name == 'event'
+			ref = "/api/Event"
+		lookup(ref)
+		
+	def getEventModifier evname,modname
+		let ev = getEvent(evname)
+		if ev
+			ev.modifiers.find(do $1.displayName == modname)
+		
+	def getStyleProperty name
+		lookup("/css/properties/{name}")
+		
+	def getEntityForToken token
+		let entity
+		if token.type == 'tag.event.name'
+			entity = getEvent(token.value)
+		elif token.type == 'tag.event-modifier.name'
+			let evname = token.context.name
+			let modname = token.value
+			entity = getEventModifier(evname,modname)
+		elif token.type == 'style.property.name'
+			entity = lookup("/css/properties/{token.value}")
+			
+		elif token.type == 'style.property.modifier'
+			entity = lookup("/css/modifiers/{token.value}")
+		
+		return entity
+		
+		
 
 class Members < Array
 	
@@ -301,6 +333,11 @@ class StyleEntity < Entity
 	
 	
 class StyleProperty < StyleEntity
+	
+	def register
+		if alias
+			root.paths["/css/properties/{alias}"] = self
+		super
 	
 	get icon
 		import('codicons/symbol-enum.svg')

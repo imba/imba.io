@@ -1,6 +1,6 @@
 import {highlight,clean} from '../util/highlight'
 import * as sw from '../sw/controller'
-import {ls,fs,File,Dir} from '../store'
+import {ls,fs,File,Dir,api} from '../store'
 import { getArrow,getBoxToBoxArrow } from "perfect-arrows"
 
 import './app-arrow'
@@ -24,6 +24,9 @@ tag app-code-block < app-code
 		>>> .code-head d:none
 		>>> .code-foot d:none
 		>>> span.region.hl pos:relative
+		>>> span.doc-ref @hover
+			bg:black/10 td:underline rd:md
+			cursor:help
 
 		&.has-focus >> span@not(.focus)@not(._style) opacity: 0.6
 		&.has-hide >>> span.hide d:none
@@ -63,7 +66,7 @@ tag app-code-block < app-code
 		pl:4
 		zi:4
 		>>> .frame rd:inherit
-		>>> .controls d:none
+		>>> $controls d:none
 
 		pos:relative
 		l:0
@@ -242,11 +245,25 @@ tag app-code-block < app-code
 			if vref
 				el.classList.add('highlight') for el in getElementsByClassName(vref)
 			hlvar = vref
+		
+		let tokel = e.target.closest('[data-nr]')
+		let token = tokel and file.highlighted.tokens[tokel.dataset.nr]
 
+		if tokel and token
+			if tokel.#awakened =? yes
+				awakenToken(tokel,token)
 		
 		let rule = e.target.closest('.scope-rule')
 		if #hoveredRule =? rule
 			focusStyleRule(e) if rule and !#clickedRules
+			
+	def awakenToken el, token
+		let entity = api.getEntityForToken(token)
+		
+		if entity
+			el.#entity = entity
+			el.flags.add('doc-ref')
+
 	
 	def setStateFlag e
 		let value = e.target.textContent.slice(1)
@@ -285,7 +302,7 @@ tag app-code-block < app-code
 	def intersecting e
 		# log 'snippet intersecting',e
 		flags.toggle('entered',e.isIntersecting)
-
+		
 	def render
 		return unless code or file
 		let name = (files[0] && files[0].name or '')
@@ -295,9 +312,11 @@ tag app-code-block < app-code
 		<self.p3d.snippet.{options.preview}.{fflags} .preview-{options.preview} .multi=(files.length > 1)
 			tabindex=-1
 			@click.sel('.scope-rule *,.scope-rule')=focusStyleRule
+			@click.sel('.doc-ref').!mod=(router.go(e.target.#entity.href))
+			@click.sel('.doc-ref').mod=(window.open(e.target.#entity.href))
 			@keydown.esc.stop=(#clickedRules = no)
-			@pointerover.silence=pointerover
-			@intersect.silence=intersecting
+			@pointerover.silent=pointerover
+			@intersect.silent=intersecting
 			>
 			
 
