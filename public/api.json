@@ -11,7 +11,9 @@
           "name": "bubbles",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns true or false depending on how event was initialized. True if event goes through its target&#39;s ancestors in reverse tree order, and false otherwise.</p>\n"
         },
         {
@@ -25,63 +27,81 @@
           "name": "cancelable",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns true or false depending on how event was initialized. Its return value does not always carry meaning, but true can indicate that part of the operation during which event was dispatched, can be canceled by invoking the preventDefault() method.</p>\n"
         },
         {
           "name": "composed",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns true or false depending on how event was initialized. True if event invokes listeners past a ShadowRoot node that is the root of its target, and false otherwise.</p>\n"
         },
         {
           "name": "currentTarget",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the object whose event listener&#39;s callback is currently being invoked.</p>\n"
         },
         {
           "name": "defaultPrevented",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns true if preventDefault() was invoked successfully to indicate cancelation, and false otherwise.</p>\n"
         },
         {
           "name": "eventPhase",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the event&#39;s phase, which is one of NONE, CAPTURING_PHASE, AT_TARGET, and BUBBLING_PHASE.</p>\n"
         },
         {
           "name": "isTrusted",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns true if event was dispatched by the user agent, and false otherwise.</p>\n"
         },
         {
           "name": "target",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the object to which event is dispatched (its target).</p>\n"
         },
         {
           "name": "timeStamp",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the event&#39;s timestamp as the number of milliseconds measured relative to the time origin.</p>\n"
         },
         {
           "name": "type",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the type of event, e.g. &quot;click&quot;, &quot;hashchange&quot;, or &quot;submit&quot;.</p>\n"
         },
         {
@@ -113,39 +133,12 @@
           "docs": "<p>When dispatched in a tree, invoking this method prevents event from reaching any objects other than the current object.</p>\n"
         },
         {
-          "name": "AT_TARGET",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "BUBBLING_PHASE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "CAPTURING_PHASE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "NONE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
           "name": "@prevent",
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "see": "https"
+            "see": "https",
+            "special": true
           },
           "docs": "<p>Tells the browser that the default action should not be taken. The event will still continue to propagate up the tree. See Event.preventDefault()</p>\n"
         },
@@ -153,28 +146,36 @@
           "name": "@stop",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Stops the event from propagating up the tree. Event listeners for the same event on nodes further up the tree will not be triggered. See Event.stopPropagation()</p>\n"
         },
         {
           "name": "@trap",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Prevents default action &amp; stops event from bubbling.</p>\n"
         },
         {
           "name": "@once",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Indicates that the listeners should be invoked at most once. The listener will automatically be removed when invoked.</p>\n"
         },
         {
           "name": "@capture",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Indicating that events of this type should be dispatched to the registered listener before being dispatched to tags deeper in the DOM tree.</p>\n"
         },
         {
@@ -182,7 +183,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "summary": "indicates that the listener will never call preventDefault()"
+            "summary": "indicates that the listener will never call preventDefault()",
+            "special": true
           },
           "docs": "<p>Indicates that the listener will never call preventDefault(). If a passive listener does call preventDefault(), the user agent will do nothing other than generate a console warning. This is useful for optimal performance while scrolling etc.</p>\n"
         },
@@ -193,7 +195,8 @@
           },
           "kind": "eventmodifier",
           "tags": {
-            "summary": "Don't trigger imba.commit from this event handler"
+            "summary": "Don't trigger imba.commit from this event handler",
+            "special": true
           },
           "docs": "<p>By default, Imba will re-render all scheduled tags after any <em>handled</em> event. So, Imba won&#39;t re-render your application if you click an element that has no attached handlers, but if you&#39;ve added a <api-link>@click</api-link> listener somewhere in the chain of elements, <app-code-inline data-lang=\"unknown\">imba.commit</app-code-inline> will automatically be called after the event has been handled. </p>\n<p>This is usually what you want, but it is useful to be able to override this, especially when dealing with <api-link>@scroll</api-link> and other events that might fire rapidly.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"1.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @click.silent=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block>"
         },
@@ -203,7 +206,8 @@
           "kind": "eventmodifier",
           "tags": {
             "summary": "pause handler for `n` duration (default 250ms)",
-            "detail": "(time = 500ms)"
+            "detail": "(time = 500ms)",
+            "special": true
           },
           "docs": "<p>The wait modifier delays the execution of subsequent modifiers and callback. It defaults to wait for 250ms, which can be overridden by passing a number or time as the first/only argument.</p>\n"
         },
@@ -213,7 +217,8 @@
           "kind": "eventmodifier",
           "tags": {
             "detail": "(time = 500ms)",
-            "summary": "ensures that handler triggers at most every `n` seconds"
+            "summary": "ensures that handler triggers at most every `n` seconds",
+            "special": true
           },
           "docs": "<p>The <app-code-inline data-lang=\"unknown\">throttle</app-code-inline> modifier ensures the handler is called at most every <app-code-inline data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link>@scroll</api-link>, <api-link>@pointermove</api-link> etc.</p>\n<p>See <api-link>@event.cooldown</api-link> and <api-link>@event.debounce</api-link>.</p>\n"
         },
@@ -223,7 +228,8 @@
           "kind": "eventmodifier",
           "tags": {
             "detail": "(time = 500ms)",
-            "summary": "disable handler for a duration after trigger"
+            "summary": "disable handler for a duration after trigger",
+            "special": true
           },
           "docs": "<p>The <app-code-inline data-lang=\"unknown\">cooldown</app-code-inline> modifier ensures the handler is called at most every <app-code-inline data-lang=\"unknown\">n</app-code-inline> milliseconds (defaults to 500ms). This can be useful for events that fire very rapidly like <api-link>@scroll</api-link>, <api-link>@pointermove</api-link> etc.</p>\n<p>See <api-link>@event.throttle</api-link> and <api-link>@event.debounce</api-link>.</p>\n"
         },
@@ -233,7 +239,8 @@
           "kind": "eventmodifier",
           "tags": {
             "detail": "(time = 500ms)",
-            "summary": "dont trigger until no events has been handled for `n` time"
+            "summary": "dont trigger until no events has been handled for `n` time",
+            "special": true
           },
           "docs": "<p>The <app-code-inline data-lang=\"unknown\">debounce</app-code-inline> modifier ensures that a minimum amount of time has elapsed after the user stops interacting and before calling the handler. This is especially useful, for example, when querying an API and not wanting to perform a request on every keystroke.</p>\n<p>See <api-link>@event.cooldown</api-link> and <api-link>@event.throttle</api-link>.</p>\n"
         },
@@ -242,7 +249,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "see": "https"
+            "see": "https",
+            "special": true
           },
           "docs": "<p>Stops handling unless event is trusted</p>\n"
         },
@@ -251,7 +259,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "summary": "Only trigger handler if event.target is the element itself"
+            "summary": "Only trigger handler if event.target is the element itself",
+            "special": true
           },
           "docs": "<p>The <app-code-inline data-lang=\"unknown\">self</app-code-inline> event modifier is a handy way of reacting to events only when they are clicked on the actual element you are interacting with and not, for example, a child element. This can be useful for things like modal wrappers when you only want to react when clicking directly.</p>\n"
         },
@@ -260,7 +269,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "detail": "(selector)"
+            "detail": "(selector)",
+            "special": true
           },
           "docs": "<p>Only trigger handler if event.target matches selector</p>\n"
         },
@@ -269,7 +279,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "detail": "(condition)"
+            "detail": "(condition)",
+            "special": true
           },
           "docs": "<p>Only trigger condition is truthy</p>\n"
         },
@@ -282,7 +293,8 @@
               "text": "detail",
               "kind": "parameterName"
             },
-            "detail": "(name,detail = {})"
+            "detail": "(name,detail = {})",
+            "special": true
           },
           "docs": "<p>Trigger another event via this handler {@link MyClass }</p>\n"
         },
@@ -294,7 +306,9 @@
             "param": {
               "text": "target",
               "kind": "parameterName"
-            }
+            },
+            "detail": "(name,target?)",
+            "special": true
           },
           "docs": "<p>Add an html class to target for at least 250ms\nIf the callback returns a promise, the class\nwill not be removed until said promise has resolved</p>\n"
         },
@@ -303,7 +317,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "detail": "(...data)"
+            "detail": "(...data)",
+            "special": true
           },
           "docs": "<p>Logs to console</p>\n"
         },
@@ -311,14 +326,18 @@
           "name": "detail",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "originalEvent",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         }
       ],
@@ -335,14 +354,18 @@
           "name": "detail",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "view",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         }
       ],
@@ -359,133 +382,171 @@
           "name": "altKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "button",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "buttons",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "clientX",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "clientY",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "ctrlKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "metaKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "movementX",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "movementY",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "offsetX",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "offsetY",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "pageX",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "pageY",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "relatedTarget",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "screenX",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "screenY",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "shiftKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "x",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "y",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
@@ -499,28 +560,36 @@
           "name": "@ctrl",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if ctrlKey is pressed</p>\n"
         },
         {
           "name": "@alt",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if altKey is pressed</p>\n"
         },
         {
           "name": "@shift",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if shiftKey is pressed</p>\n"
         },
         {
           "name": "@meta",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if metaKey is pressed</p>\n"
         },
         {
@@ -528,7 +597,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "summary": "Handle if metaKey (on mac) or ctrlKey (other platforms) is pressed"
+            "summary": "Handle if metaKey (on mac) or ctrlKey (other platforms) is pressed",
+            "special": true
           },
           "docs": "<p>Apple uses the ⌘ key while others use the Ctrl key for many keyboard shortcuts\nand features like (⌘ or Ctrl)+click for opening a link in a new tab.\nThis modifier unifies the logic and is essentially an alias for <app-code-inline data-lang=\"unknown\">.meta</app-code-inline> on mac,\nand <app-code-inline data-lang=\"unknown\">.ctrl</app-code-inline> for all other platforms.</p>\n"
         },
@@ -536,21 +606,27 @@
           "name": "@middle",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if middle button is pressed</p>\n"
         },
         {
           "name": "@left",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if left/primary button is pressed</p>\n"
         },
         {
           "name": "@right",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if right button is pressed</p>\n"
         }
       ],
@@ -567,70 +643,90 @@
           "name": "height",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "isPrimary",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "pointerId",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "pointerType",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "pressure",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "tangentialPressure",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "tiltX",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "tiltY",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "twist",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "width",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
@@ -652,7 +748,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "summary": "Handle if the event was generated by a mouse device."
+            "summary": "Handle if the event was generated by a mouse device.",
+            "special": true
           },
           "docs": ""
         },
@@ -661,7 +758,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "summary": "Handle if the event was generated by a pen or stylus device."
+            "summary": "Handle if the event was generated by a pen or stylus device.",
+            "special": true
           },
           "docs": ""
         },
@@ -670,7 +768,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "summary": "Handle if the event was generated by a touch, such as a finger."
+            "summary": "Handle if the event was generated by a touch, such as a finger.",
+            "special": true
           },
           "docs": ""
         },
@@ -678,7 +777,9 @@
           "name": "@pressure",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Only when pressure is at least amount (defaults to 0.5)</p>\n"
         }
       ],
@@ -695,7 +796,9 @@
           "name": "dataTransfer",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the DataTransfer object for the event.</p>\n"
         }
       ],
@@ -712,63 +815,81 @@
           "name": "altKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "code",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "ctrlKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "isComposing",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "key",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "location",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "metaKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "repeat",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "shiftKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
@@ -779,101 +900,93 @@
           "docs": ""
         },
         {
-          "name": "DOM_KEY_LOCATION_LEFT",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "DOM_KEY_LOCATION_NUMPAD",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "DOM_KEY_LOCATION_RIGHT",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "DOM_KEY_LOCATION_STANDARD",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
           "name": "@enter",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if enter key is pressed</p>\n"
         },
         {
           "name": "@left",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if left key is pressed</p>\n"
         },
         {
           "name": "@right",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if right key is pressed</p>\n"
         },
         {
           "name": "@up",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if up key is pressed</p>\n"
         },
         {
           "name": "@down",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if down key is pressed</p>\n"
         },
         {
           "name": "@tab",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if tab key is pressed</p>\n"
         },
         {
           "name": "@esc",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if esc key is pressed</p>\n"
         },
         {
           "name": "@space",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if space key is pressed</p>\n"
         },
         {
           "name": "@del",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if del key is pressed</p>\n"
         },
         {
           "name": "@key",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Handle if keyCode == code</p>\n"
         }
       ],
@@ -896,7 +1009,8 @@
           },
           "kind": "eventmodifier",
           "tags": {
-            "summary": "Stop handling unless intersectionRatio has increased."
+            "summary": "Stop handling unless intersectionRatio has increased.",
+            "special": true
           },
           "docs": "<p>The <app-code-inline data-lang=\"unknown\">out</app-code-inline> modifier stops the handler unless intersectionRatio has <em>increased</em>.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"8.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @intersect.in=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block>"
         },
@@ -907,7 +1021,8 @@
           },
           "kind": "eventmodifier",
           "tags": {
-            "summary": "Stop handling unless intersectionRatio has decreased."
+            "summary": "Stop handling unless intersectionRatio has decreased.",
+            "special": true
           },
           "docs": "<p>The <app-code-inline data-lang=\"unknown\">out</app-code-inline> modifier stops the handler unless intersectionRatio has <em>decreased</em>.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"9.imba\" data-lang=\"imba\"># Will only trigger when element starts intersecting\n&lt;div @intersect.out=handler&gt;\n# Will trigger whenever any part of the div is hidden\n&lt;div @intersect(1).out=handler&gt;</code></app-code-block>"
         },
@@ -916,7 +1031,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "summary": "Set css variable `--ratio` to the intersectionRatio."
+            "summary": "Set css variable `--ratio` to the intersectionRatio.",
+            "special": true
           },
           "docs": "<p>The css modifier sets a css variable --ratio on the event target with the current ratio.</p>\n"
         },
@@ -928,7 +1044,8 @@
             "param": {
               "text": "name",
               "kind": "parameterName"
-            }
+            },
+            "special": true
           },
           "docs": "<p>Will add a class to the DOM element when intersecting</p>\n"
         },
@@ -936,26 +1053,34 @@
           "name": "entry",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>The raw IntersectionObserverEntry</p>\n"
         },
         {
           "name": "ratio",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Ratio of the intersectionRect to the boundingClientRect</p>\n"
         },
         {
           "name": "delta",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Difference in ratio since previous event</p>\n"
         }
       ],
       "docs": "<p><a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API\">IntersectionObserver</a> is a <a href=\"https://caniuse.com/#feat=intersectionobserver\">well-supported</a> API in modern browsers. It provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document&#39;s viewport. Imba adds a simplified abstraction on top of this via the custom <api-link>@intersect</api-link> event.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"2.imba\" data-lang=\"imba\"># Will only trigger when intersection ratio increases\n&lt;div @intersect.in=handler&gt;\n# Will only trigger when element is more than 50% visible\n&lt;div @intersect(0.5).in=handler&gt;</code></app-code-block><h4>Parameters</h4><p>The <api-link>@intersect</api-link> events accepts several arguments. You can pass in an object with the same <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root\">root</a>, <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin\">rootMargin</a>, and <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold\">threshold</a>  properties supported by <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver\">IntersectionObserver</a>. </p>\n<app-code-block data-path=\"/docs\"><code data-name=\"3.imba\" data-lang=\"imba\">&lt;div @intersect=handler&gt; # default options\n&lt;div @intersect(root: frame, rootMargin: '20px')=handler&gt;\n&lt;div @intersect(threshold: [0,0.5,1])=handler&gt;</code></app-code-block><p>For convenience, imba will convert certain arguments into options. A single number between 0 and 1 will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/threshold\">threshold</a> option:</p>\n<app-code-block data-path=\"/docs\"><code data-name=\"4.imba\" data-lang=\"imba\"># n 0-1 adds single threshold at n visibility\n&lt;div @intersect(0)=handler&gt; # {threshold: 0}\n&lt;div @intersect(0.5)=handler&gt; # {threshold: 0.5}\n&lt;div @intersect(1)=handler&gt; # {threshold: 1.0}</code></app-code-block><p>Any number above 1 will add n thresholds, spread evenly:</p>\n<app-code-block data-path=\"/docs\"><code data-name=\"5.imba\" data-lang=\"imba\">&lt;div @intersect(2)=handler&gt; # {threshold: [0,1]}\n&lt;div @intersect(3)=handler&gt; # {threshold: [0,0.5,1]}\n&lt;div @intersect(5)=handler&gt; # {threshold: [0,0.25,0.5,0.75,1]}\n# ... and so forth</code></app-code-block><p>An element will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root\">root</a> option:</p>\n<app-code-block data-path=\"/docs\"><code data-name=\"6.imba\" data-lang=\"imba\">&lt;div @intersect(frame)=handler&gt; # {root: frame}\n&lt;div @intersect(frame,3)=handler&gt; # {root: frame, threshold: [0,0.5,1]}</code></app-code-block><p>A string will map to the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin\">rootMargin</a> option:</p>\n<app-code-block data-path=\"/docs\"><code data-name=\"7.imba\" data-lang=\"imba\">&lt;div @intersect(\"20px 10px\")=handler&gt; # {rootMargin: \"20px 10px\"}</code></app-code-block>",
-      "tags": {}
+      "tags": {
+        "custom": true
+      }
     },
     {
       "name": "ImbaResizeEvent",
@@ -967,33 +1092,43 @@
           "name": "width",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "height",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "rect",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "entry",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         }
       ],
       "docs": "<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver\">ResizeObserver</a> interface reports changes to the dimensions of an Element&#39;s content or border box. It has <a href=\"https://caniuse.com/#feat=resizeobserver\">good browser support</a> and is very useful in a wide variety of usecases. ResizeObserver avoids infinite callback loops and cyclic dependencies that are often created when resizing via a callback function. It does this by only processing elements deeper in the DOM in subsequent frames.</p>\n",
-      "tags": {}
+      "tags": {
+        "custom": true
+      }
     },
     {
       "name": "ImbaTouch",
@@ -1005,84 +1140,108 @@
           "name": "x",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>The final X coordinate of the pointer (after modifiers)</p>\n"
         },
         {
           "name": "y",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>The final Y coordinate of the pointer (after modifiers)</p>\n"
         },
         {
           "name": "target",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "clientX",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>The X coordinate of the pointer in local (DOM content) coordinates.</p>\n"
         },
         {
           "name": "clientY",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>The Y coordinate of the mouse pointer in local (DOM content) coordinates.</p>\n"
         },
         {
           "name": "active?",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>True if touch is still active</p>\n"
         },
         {
           "name": "ended?",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>True if touch has ended</p>\n"
         },
         {
           "name": "ctrlKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">control</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
         {
           "name": "altKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">alt</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
         {
           "name": "shiftKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">shift</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
         {
           "name": "metaKey",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">shift</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
         {
           "name": "pointerType",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Indicates the device type that caused the event (mouse, pen, touch, etc.)</p>\n"
         },
         {
@@ -1090,7 +1249,8 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "summary": "A unique identifier for the pointer causing the event."
+            "summary": "A unique identifier for the pointer causing the event.",
+            "special": true
           },
           "docs": "<p>The identifier is unique, being different from the identifiers of all other active pointer events. Since the value may be randomly generated, it is not guaranteed to convey any particular meaning.</p>\n"
         },
@@ -1102,7 +1262,8 @@
           "kind": "eventmodifier",
           "tags": {
             "summary": "Only when touch has moved more than threshold",
-            "detail": "(threshold = 4px)"
+            "detail": "(threshold = 4px)",
+            "special": true
           },
           "docs": "<p>This guard will break the chain unless the touch has moved more than threshold. Once this threshold has been reached, all subsequent updates of touch will pass through. The element will also activate the <api-link>@move</api-link> pseudostate during touch - after threshold is reached.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"10.imba\" data-lang=\"imba\">&lt;div @touch.moved(threshold=4px, dir='any')&gt;</code></app-code-block>"
         },
@@ -1114,7 +1275,8 @@
           "kind": "eventmodifier",
           "tags": {
             "summary": "Only start handling after pressing and holding still",
-            "detail": "(duration = 250ms)"
+            "detail": "(duration = 250ms)",
+            "special": true
           },
           "docs": "<p>This guard will break the chain unless the touch has been held for a duration.\nIf the pointer moves more than 5px before the modifier activates, the handler will\nessentially be cancelled.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"11.imba\" data-lang=\"imba\">&lt;div @touch.hold(duration=250ms)&gt;</code></app-code-block>"
         },
@@ -1126,7 +1288,8 @@
           "kind": "eventmodifier",
           "tags": {
             "summary": "Sync the x,y properties of touch to another object",
-            "detail": "(data, xProp?, yProp?)"
+            "detail": "(data, xProp?, yProp?)",
+            "special": true
           },
           "docs": "<p>A convenient touch modifier that takes care of updating the x,y values of some data during touch. When touch starts sync will remember the initial x,y values and only add/subtract based on movement of the touch.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"12.imba\" data-lang=\"imba\">&lt;div @touch.sync(target, xprop='x', yprop='y')&gt;</code></app-code-block>"
         },
@@ -1136,7 +1299,8 @@
           "kind": "eventmodifier",
           "tags": {
             "see": "https",
-            "detail": "(data, xProp?, yProp?)"
+            "detail": "(data, xProp?, yProp?)",
+            "special": true
           },
           "docs": "<p>Sets the x and y properties of object to the x and y properties of touch.</p>\n"
         },
@@ -1148,7 +1312,8 @@
           "kind": "eventmodifier",
           "tags": {
             "summary": "Convert the coordinates of the touch to some other frame of reference.",
-            "detail": "(target?,snap?)"
+            "detail": "(target?,snap?)",
+            "special": true
           },
           "docs": "<p>A very common need for touches is to convert the coordinates of the touch to some other frame of reference. When dragging you might want to make x,y relative to the container. For a custom slider you might want to convert the coordinates from pixels to relative offset of the slider track. There are loads of other scenarios where you&#39;d want to convert the coordinates to some arbitrary scale and offset. This can easily be achieved with fitting modifiers.</p>\n<h4>Syntax</h4><app-code-block data-path=\"/docs\"><code data-name=\"13.imba\" data-lang=\"imba\">&lt;div @touch.fit&gt; # make x,y relative to the element\n&lt;div @touch.fit(start,end,snap?)&gt;\n&lt;div @touch.fit(target)&gt; # make x,y relative to a target element\n&lt;div @touch.fit(target,start,end,snap?)&gt;\n&lt;div @touch.fit(target,[xstart,ystart],[xend,yend],snap?)&gt;</code></app-code-block>"
         },
@@ -1157,7 +1322,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "detail": "(target?, ax?, ay?)"
+            "detail": "(target?, ax?, ay?)",
+            "special": true
           },
           "docs": "<p>Just like @touch.fit but without clamping x,y to the bounds of the\ntarget.</p>\n"
         },
@@ -1166,7 +1332,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "detail": "(target?, ax?, ay?)"
+            "detail": "(target?, ax?, ay?)",
+            "special": true
           },
           "docs": "<p>Allow pinning the touch to a certain point in an element, so that\nall future x,y values are relative to this pinned point.</p>\n"
         },
@@ -1175,7 +1342,8 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "detail": "(to = 1)"
+            "detail": "(to = 1)",
+            "special": true
           },
           "docs": "<p>Round the x,y coordinates with an optional accuracy</p>\n"
         },
@@ -1187,13 +1355,16 @@
             "param": {
               "text": "target",
               "kind": "parameterName"
-            }
+            },
+            "special": true
           },
           "docs": "<p>Add an html class to target for at least 250ms\nIf the callback returns a promise, the class\nwill not be removed until said promise has resolved</p>\n"
         }
       ],
       "docs": "<p>To make it easier and more fun to work with touches, Imba includes a custom <api-link>@touch</api-link> event that combines <api-link>@pointerdown</api-link> -&gt; <api-link>@pointermove</api-link> -&gt; <api-link>@pointerup</api-link> in one convenient handler, with modifiers for commonly needed functionality.</p>\n",
-      "tags": {}
+      "tags": {
+        "custom": true
+      }
     },
     {
       "name": "ImbaHotkeyEvent",
@@ -1205,22 +1376,46 @@
           "name": "@capture",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Also trigger when input,textarea or a contenteditable is focused</p>\n"
         },
         {
           "name": "@global",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Trigger even if outside of the originating hotkey group</p>\n"
         },
         {
           "name": "@passive",
           "meta": {},
           "kind": "eventmodifier",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": "<p>Allow subsequent hotkey handlers for the same combo\nand don&#39;t automatically prevent default behaviour of originating\nkeyboard event</p>\n"
+        },
+        {
+          "name": "originalEvent",
+          "meta": {},
+          "kind": "property",
+          "tags": {
+            "special": true
+          },
+          "docs": "<p>The KeyboardEvent responsible for this HotkeyEvent</p>\n"
+        },
+        {
+          "name": "combo",
+          "meta": {},
+          "kind": "property",
+          "tags": {
+            "special": true
+          },
+          "docs": "<p>The combo for the event</p>\n"
         }
       ],
       "docs": "",
@@ -1267,56 +1462,72 @@
           "name": "baseURI",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns node&#39;s node document&#39;s document base URL.</p>\n"
         },
         {
           "name": "childNodes",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the children.</p>\n"
         },
         {
           "name": "firstChild",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the first child.</p>\n"
         },
         {
           "name": "isConnected",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns true if node is connected and false otherwise.</p>\n"
         },
         {
           "name": "lastChild",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the last child.</p>\n"
         },
         {
           "name": "nextSibling",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the next sibling.</p>\n"
         },
         {
           "name": "nodeName",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns a string appropriate for the type of node.</p>\n"
         },
         {
           "name": "nodeType",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the type of node.</p>\n"
         },
         {
@@ -1330,28 +1541,36 @@
           "name": "ownerDocument",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the node document. Returns null for documents.</p>\n"
         },
         {
           "name": "parentElement",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the parent element.</p>\n"
         },
         {
           "name": "parentNode",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the parent.</p>\n"
         },
         {
           "name": "previousSibling",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the previous sibling.</p>\n"
         },
         {
@@ -1465,132 +1684,6 @@
           "kind": "method",
           "tags": {},
           "docs": ""
-        },
-        {
-          "name": "ATTRIBUTE_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "CDATA_SECTION_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>node is a CDATASection node.</p>\n"
-        },
-        {
-          "name": "COMMENT_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>node is a Comment node.</p>\n"
-        },
-        {
-          "name": "DOCUMENT_FRAGMENT_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>node is a DocumentFragment node.</p>\n"
-        },
-        {
-          "name": "DOCUMENT_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>node is a document.</p>\n"
-        },
-        {
-          "name": "DOCUMENT_POSITION_CONTAINED_BY",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>Set when other is a descendant of node.</p>\n"
-        },
-        {
-          "name": "DOCUMENT_POSITION_CONTAINS",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>Set when other is an ancestor of node.</p>\n"
-        },
-        {
-          "name": "DOCUMENT_POSITION_DISCONNECTED",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>Set when node and other are not in the same tree.</p>\n"
-        },
-        {
-          "name": "DOCUMENT_POSITION_FOLLOWING",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>Set when other is following node.</p>\n"
-        },
-        {
-          "name": "DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "DOCUMENT_POSITION_PRECEDING",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>Set when other is preceding node.</p>\n"
-        },
-        {
-          "name": "DOCUMENT_TYPE_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>node is a doctype.</p>\n"
-        },
-        {
-          "name": "ELEMENT_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>node is an element.</p>\n"
-        },
-        {
-          "name": "ENTITY_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "ENTITY_REFERENCE_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "NOTATION_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "PROCESSING_INSTRUCTION_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>node is a ProcessingInstruction node.</p>\n"
-        },
-        {
-          "name": "TEXT_NODE",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
-          "docs": "<p>node is a Text node.</p>\n"
         }
       ],
       "docs": "<p>Node is an interface from which a number of DOM API object types inherit. It allows those types to be treated similarly; for example, inheriting the same set of methods, or being tested in the same way.</p>\n",
@@ -1606,14 +1699,18 @@
           "name": "attributes",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "classList",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Allows for manipulation of element&#39;s class content attribute as a set of whitespace-separated tokens through a DOMTokenList object.</p>\n"
         },
         {
@@ -1627,28 +1724,36 @@
           "name": "clientHeight",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "clientLeft",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "clientTop",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "clientWidth",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
@@ -1662,14 +1767,18 @@
           "name": "localName",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the local name.</p>\n"
         },
         {
           "name": "namespaceURI",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the namespace.</p>\n"
         },
         {
@@ -1697,28 +1806,36 @@
           "name": "ownerDocument",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the node document. Returns null for documents.</p>\n"
         },
         {
           "name": "part",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "prefix",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the namespace prefix.</p>\n"
         },
         {
           "name": "scrollHeight",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
@@ -1739,14 +1856,18 @@
           "name": "scrollWidth",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "shadowRoot",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns element&#39;s shadow root, if any, and if shadow root&#39;s mode is &quot;open&quot;, and null otherwise.</p>\n"
         },
         {
@@ -1760,7 +1881,9 @@
           "name": "tagName",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": "<p>Returns the HTML-uppercased qualified name.</p>\n"
         },
         {
@@ -2030,66 +2153,59 @@
           "docs": "<p>Removes the event listener in target&#39;s event listener list with the same type, callback, and options.</p>\n"
         },
         {
-          "name": "schedule",
-          "meta": {},
-          "kind": "method",
-          "tags": {},
-          "docs": "<p>Schedule this element to render after imba.commit()</p>\n"
-        },
-        {
-          "name": "unschedule",
-          "meta": {},
-          "kind": "method",
-          "tags": {},
-          "docs": ""
-        },
-        {
           "name": "data",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": ""
-        },
-        {
-          "name": "hotkey",
-          "meta": {},
-          "kind": "property",
-          "tags": {},
+          "tags": {
+            "idl": true,
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "hotkey__",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "route",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "route__",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "router",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "$key",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "idl": true,
+            "special": true
+          },
           "docs": "<p>Gives elements a stable identity inside lists</p>\n"
         },
         {
@@ -2097,16 +2213,20 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "hotkey": "events inside this group will be triggered\nwhen this element or a child has focus."
+            "summary": "Sets whether `@hotkey` events inside of this element\nis enabled or not",
+            "idl": true,
+            "special": true
           },
-          "docs": "<p>Sets whether @hotkey events inside of this element\nis enabled or not. If explicitly set to true, only</p>\n"
+          "docs": "<p>Sets whether <api-link>@hotkey</api-link> events inside of this element\nis enabled or not. If explicitly set to true, only\n<api-link>@hotkey</api-link> events inside this group will be triggered\nwhen this element or a child has focus.</p>\n"
         },
         {
           "name": "ease",
           "meta": {},
           "kind": "property",
           "tags": {
-            "see": ""
+            "see": "",
+            "idl": true,
+            "special": true
           },
           "docs": "<p>Enable transitions for when element is attached / detached</p>\n"
         },
@@ -2114,35 +2234,46 @@
           "name": "flags",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true,
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "emit",
           "meta": {},
           "kind": "method",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "focus",
           "meta": {},
           "kind": "method",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "blur",
           "meta": {},
           "kind": "method",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "log",
           "meta": {},
           "kind": "method",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         }
       ],
@@ -2166,7 +2297,9 @@
           "name": "accessKeyLabel",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
@@ -2215,35 +2348,45 @@
           "name": "offsetHeight",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "offsetLeft",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "offsetParent",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "offsetTop",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
           "name": "offsetWidth",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "readonly": true
+          },
           "docs": ""
         },
         {
@@ -2309,124 +2452,268 @@
           "name": "suspend",
           "meta": {},
           "kind": "method",
-          "tags": {},
-          "docs": "<p>Creates an instance of documenter.</p>\n"
+          "tags": {
+            "summary": "Suspend rendering of component",
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "unsuspend",
           "meta": {},
           "kind": "method",
-          "tags": {},
+          "tags": {
+            "summary": "Unsuspend rendering of component",
+            "lifecycle": true,
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "#parent",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "#context",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "render?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>Return false if component should not render</p>\n"
+          "tags": {
+            "summary": "Tells whether the component should render",
+            "abstract": true,
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "mounting?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>True if component is currently being mounted</p>\n"
+          "tags": {
+            "readonly": true,
+            "summary": "Tells whether the component is currently being mounted",
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "mounted?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>True if component is currently mounted in document</p>\n"
+          "tags": {
+            "readonly": true,
+            "summary": "Tells whether the component is currently mounted in document",
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "awakened?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>True if component has been awakened</p>\n"
+          "tags": {
+            "readonly": true,
+            "summary": "Tells whether the component has been awakened",
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "rendered?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>True if component has been rendered</p>\n"
+          "tags": {
+            "readonly": true,
+            "summary": "Tells whether the component has been rendered",
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "suspended?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>True if component has been suspended</p>\n"
+          "tags": {
+            "readonly": true,
+            "summary": "Tells whether the component has been suspended",
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "rendering?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>True if component is currently rendering</p>\n"
+          "tags": {
+            "readonly": true,
+            "summary": "Tells whether the component is currently rendering",
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "scheduled?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>True if component is scheduled to automatically render</p>\n"
+          "tags": {
+            "readonly": true,
+            "summary": "Tells whether the component is scheduled to automatically render",
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "hydrated?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>True if component has been hydrated on the client</p>\n"
+          "tags": {
+            "readonly": true,
+            "summary": "Tells whether the component has been hydrated on the client",
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "ssr?",
           "meta": {},
           "kind": "property",
-          "tags": {},
-          "docs": "<p>True if component was originally rendered on the server</p>\n"
+          "tags": {
+            "readonly": true,
+            "summary": "Tells whether the component was originally rendered on the server",
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "schedule",
           "meta": {},
           "kind": "method",
-          "tags": {},
-          "docs": "<p>Schedule this element to render after imba.commit()</p>\n"
+          "tags": {
+            "summary": "Start rendering the component on every imba.commit",
+            "special": true
+          },
+          "docs": ""
         },
         {
           "name": "unschedule",
           "meta": {},
           "kind": "method",
-          "tags": {},
+          "tags": {
+            "summary": "Stop rendering the component automatically on every imba.commit",
+            "special": true
+          },
+          "docs": ""
+        },
+        {
+          "name": "build",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "summary": "Called before any properties are set",
+            "lifecycle": true,
+            "abstract": true,
+            "special": true
+          },
+          "docs": ""
+        },
+        {
+          "name": "setup",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "summary": "Called before any properties are set",
+            "lifecycle": true,
+            "abstract": true,
+            "special": true
+          },
+          "docs": ""
+        },
+        {
+          "name": "awaken",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "summary": "Called before any properties are set",
+            "lifecycle": true,
+            "abstract": true,
+            "special": true
+          },
+          "docs": ""
+        },
+        {
+          "name": "mount",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "summary": "Called when element is attached to document",
+            "lifecycle": true,
+            "abstract": true,
+            "special": true
+          },
+          "docs": ""
+        },
+        {
+          "name": "unmount",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "summary": "Called when element is detached from document",
+            "lifecycle": true,
+            "abstract": true,
+            "special": true
+          },
+          "docs": ""
+        },
+        {
+          "name": "rendered",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "summary": "Called after render",
+            "lifecycle": true,
+            "abstract": true,
+            "special": true
+          },
           "docs": ""
         },
         {
           "name": "autorender",
           "meta": {},
           "kind": "property",
-          "tags": {},
+          "tags": {
+            "summary": "Specify how / when the component should re-render",
+            "idl": true,
+            "special": true
+          },
           "docs": "<p>Schedule the element to update itself\nyes = render on events / imba.commit\nno = force manual render\nnull / undefined = render via parent\n(n)s = render every n s\n(n)ms = render every n ms\n(n)fps = render n times per second</p>\n"
         }
       ],
       "docs": "",
-      "tags": {}
+      "tags": {
+        "custom": true
+      }
     },
     {
       "name": "abort",
@@ -2634,7 +2921,9 @@
       "type": "ImbaHotkeyEvent",
       "meta": {},
       "docs": "",
-      "tags": {}
+      "tags": {
+        "special": true
+      }
     },
     {
       "name": "input",
@@ -2658,7 +2947,9 @@
       "type": "ImbaIntersectEvent",
       "meta": {},
       "docs": "",
-      "tags": {}
+      "tags": {
+        "special": true
+      }
     },
     {
       "name": "keydown",
@@ -2952,7 +3243,9 @@
       "type": "ImbaResizeEvent",
       "meta": {},
       "docs": "",
-      "tags": {}
+      "tags": {
+        "special": true
+      }
     },
     {
       "name": "scroll",
@@ -3062,7 +3355,9 @@
       "type": "ImbaTouch",
       "meta": {},
       "docs": "",
-      "tags": {}
+      "tags": {
+        "special": true
+      }
     },
     {
       "name": "volumechange",

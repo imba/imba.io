@@ -18,4 +18,5 @@ jobs:
           git -C /home/imba/imba.io stash
           git -C /home/imba/imba.io pull origin master
           cd /home/imba/imba.io && npm install
-          cd /home/imba/imba.io && npm run build
+          cd /home/imba/imba.io && npm run build-content
+          cd /home/imba/imba.io && npm run build-site

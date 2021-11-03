@@ -22,6 +22,7 @@
     "dev": "imba -w index.imba",
     "build": "npm run build-content && npm run build-api-docs && imba build index.imba",
     "watch": "imba scripts/build-content.imba -- -w",
+    "build-site": "imba build index.imba",
     "build-content": "imba scripts/build-content.imba",
     "watch-content": "imba scripts/build-content.imba -- -w",
     "build-api-docs": "imba --node.external typescript scripts/build-api-docs.imba",
@@ -36,7 +37,7 @@
   "homepage": "http://imba.io",
   "repository": {
     "type": "git",
-    "url": "git://github.com/somebee/imba.io.git"
+    "url": "git://github.com/imba/imba.io.git"
   },
   "dependencies": {
     "@types/express": "^4.17.13",

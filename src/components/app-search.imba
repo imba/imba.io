@@ -65,9 +65,6 @@ tag Item
 			<span.qualifier> data.kind
 			
 		else
-			# for parent in data.breadcrumb
-			#	<.item innerHTML=(parent.head or parent.title)>
-			#		css ws:pre d:hflex a:center suffix: " > " suffix@last: ""
 			<.title.html.title[mb:8px] innerHTML=data.head>
 				css c:gray9 fw:500
 			<.qualifier> data.breadcrumb.map(do $1.title).join( " > ")

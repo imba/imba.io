@@ -38,6 +38,15 @@ global css
 	.no-scrollbar
 	
 		&::-webkit-scrollbar w:1 o:0.1
+		
+	.blue hue:blue
+	.orange hue:orange
+	.yellow hue:yellow
+	.amber hue:amber
+	.indigo hue:indigo
+	.violet hue:violet
+	.purple hue:purple
+	.green hue:green
 
 
 # code

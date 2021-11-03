@@ -183,6 +183,13 @@ class Entry
 
 	def childByName name
 		children.find(do $1.name == name) #  and !($1 isa Section)
+		
+	def childByHead name
+		children.find(do $1.head == name) #  and !($1 isa Section)
+		
+	get displayName
+		head
+
 
 export class File < Entry
 	
@@ -539,5 +546,8 @@ export def find query, options = {}
 
 	let hits = searchables.search(query)
 	matches = hits.map do $1.item
-
+	
+	if query[0] == '@'
+		matches = matches.filter do $1.event? or $1.stylemod? or $1.decorator?
+	# console.log query,hits
 	return matches

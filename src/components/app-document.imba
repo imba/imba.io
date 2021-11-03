@@ -88,6 +88,9 @@ tag doc-section-filters
 			for item in filters
 				<button bind=selection value=item> item.name
 
+
+
+	
 tag doc-section
 	prop body-only
 	
@@ -301,7 +304,16 @@ tag doc-section
 							<doc-section query=filter data=item level=(level+1)>
 							
 
-
+tag api-doc-section < doc-section
+	
+	def render
+		<self>
+			unless body-only
+				<div.html.title .h{data.data.hlevel} innerHTML=data.head>
+			<.content.html innerHTML=(data.html or '')>
+			<.sections> for item in data.sections
+				<api-doc-section data=item>
+							
 
 tag app-document
 
@@ -385,9 +397,10 @@ tag app-document
 							<app-document-nav data=doc>
 
 			<.aside[fl:1 0 240px d@!1120:none]>
-				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 pl:4 -webkit-overflow-scrolling:touch].no-scrollbar>
+				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 pl:4 -webkit-overflow-scrolling:touch max-width:300px pr:4
+				].no-scrollbar>
 					if doc.api?
-						<api-{doc.kind}-toc data=doc>
+						<api-entry-toc data=doc>
 					else
 						<app-document-toc[d:block max-width:360px] data=doc>
 

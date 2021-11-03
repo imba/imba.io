@@ -144,6 +144,14 @@ def generate-events
 	
 	const paths = []
 	
+	def getFileName node
+		return '' unless node
+		if node.fileName
+			return node.fileName
+		if node.parent
+			return getFileName(node.parent)
+			
+	
 	def crawl item, suggestedKind
 		return item.#doc if item.#doc
 		item.#doc = {}
@@ -194,14 +202,37 @@ def generate-events
 			continue if tags.deprecated
 
 			let itemname = item.imbaName
+			let itemtype = checker.type(item)
 			let meta = {}
 			let docs = getDocs(item,meta)
+			
 			
 			let kind = 'property'
 			
 			if item.method?
 				kind = 'method'
+				
+			if item.getter? and !item.setter?
+				tags.getter = yes
+					
+			if item.isReadonly
+				tags.readonly = yes
 			
+			let imbalib? = !!getFileName(item.valueDeclaration).match(/typings/)
+			# console.warn "PROP {itemname} {item.flags}",imbalib?
+			
+			if imbalib?
+				tags.special = yes
+			
+			if itemname == 'screenX' or itemname == 'hotkeys' or itemname == 'flags'
+				console.log itemname,item.isReadonly,item.getter?,item.flags
+			
+			# Skip the constants
+			if itemname.match(/^[A-Z_]+$/)
+				continue
+			# continue if docs == '' and !tags.summary
+			# continue if tags.internal or itemname[0] == '#'
+
 			if itemname[0] == '@'
 				kind = 'eventmodifier'
 				if itemname == '@options'
@@ -216,7 +247,10 @@ def generate-events
 			}
 			
 			doc.members.push(entry)
-			
+		
+		if false
+			doc.members = doc.members.sort do(a,b)
+				a.name > b.name ? 1 : -1
 		return item.#doc = type.#doc = doc
 
 	

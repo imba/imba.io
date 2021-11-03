@@ -80,8 +80,14 @@ class Members < Array
 	get properties
 		filter do $1.property?
 		
+	get domprops
+		filter do $1.tags.idl
+		
 	get methods
 		filter do $1 isa MethodEntity
+		
+	get resources
+		[]
 		
 	get own
 		filter do $1.owner == #owner
@@ -131,7 +137,10 @@ export class Entity
 		root.paths[href] = self
 		(root.kinds[kind] ||= []).push(self)
 		register!
-		
+	
+	get qualifier
+		''
+
 	get tags
 		desc.tags
 	
@@ -148,7 +157,7 @@ export class Entity
 		searchText.indexOf(query) >= 0
 		
 	get guide
-		global.FS.find(href)
+		global.FS.find('/api/reference').childByHead(href)
 		
 	def register
 		self
@@ -158,6 +167,9 @@ export class Entity
 		res.#owner = self
 		res
 		
+	get detail
+		tags.detail
+		
 	get modifiers
 		#modifiers ||= props.filter do $1.modifier?
 		
@@ -166,6 +178,10 @@ export class Entity
 		
 	get methods
 		#methods ||= props.filter do $1 isa MethodEntity
+		
+	get getters
+		#getters ||= props.filter do $1.tags.getter
+		
 		
 	get siblings
 		root.kinds[kind].filter do $1 != self
@@ -191,6 +207,30 @@ export class Entity
 	get property?
 		kind == 'property'
 		
+	get method?
+		kind == 'method'
+		
+	get member?
+		method? or property?
+		
+	get event?
+		kind == 'event'
+		
+	get eventmod?
+		kind == 'eventmodifier'
+		
+	get stylemod?
+		kind == 'stylemod'
+		
+	get styleprop?
+		kind == 'styleprop'
+	
+	get style?
+		stylemod? or styleprop?
+
+	get custom?
+		tags.custom or desc.group == 'custom' or tags.special
+
 	get api?
 		yes
 		
@@ -206,10 +246,16 @@ export class Entity
 	get href
 		"/api/{name}"
 		
+	get mdn
+		''
+		
+	get icon
+		import('codicons/symbol-namespace.svg')
+		
 	get related
 		#related ||= if true
 			let all = []
-			let meta = desc.meta
+			let meta = desc.tags
 			for item in root.kinds[kind]
 				continue if item == self
 				for own k,v of item.tags
@@ -227,7 +273,11 @@ class InterfaceEntity < Entity
 		import('codicons/symbol-class.svg')
 
 	def register
-		up.descendants.push(self) if up
+		let par = up
+		while par
+			par.descendants.push(self)
+			par = par.up
+
 		root[name] = self
 		yes
 		
@@ -235,13 +285,22 @@ class InterfaceEntity < Entity
 		#parents ||= up ? [up].concat(up.parents) : []
 	
 	get breadcrumb
-		[self]
+		#breadcrumb ||= [self]
+		
+	get mdn
+		custom? ? '' : "https://developer.mozilla.org/en-US/docs/Web/API/{name}"
+		
+	get related
+		parents.slice(0).reverse!.concat(descendants)
 
 class EventInterfaceEntity < InterfaceEntity
 	
 	get modifierPrefix
 		events.length == 1 ? events[0].displayName : "@{name.toLowerCase!.replace(/(\w)event/,'$1')}"
-	
+		
+	get resources
+		['/tags/event-handling']
+
 class EventEntity < Entity
 	
 	get icon
@@ -255,7 +314,7 @@ class EventEntity < Entity
 		"@{name}"
 		
 	get searchTitle
-		name
+		"{name} {displayName}"
 		
 	get href
 		"/api/Element/{displayName}"
@@ -281,6 +340,17 @@ class EventEntity < Entity
 	get docs
 		siblings.length == 0 and !desc.docs ? type.docs : desc.docs
 		
+	get related
+		let siblings = siblings
+		siblings.length > 0 ? siblings : super
+		
+	get mdn
+		return '' if tags.special
+		"https://developer.mozilla.org/en-US/docs/Web/API/Element/{name}_event"
+		
+	get resources
+		[type,'/tags/event-handling']
+
 	# get examples
 	#	#examples ||= global.FS.findExamplesFor(new RegExp("({displayName})(?=\\(|\\.|=)",'g'))
 		
@@ -296,7 +366,7 @@ class EventModifierEntity < Entity
 		owner.modifierPrefix + "."
 		
 	get searchTitle
-		"@event.{displayName} modifier"
+		"{displayName} @{owner.modifierPrefix}.{displayName}"
 		
 	get siblings
 		#siblings ||= owner.modifiers.own.filter do $1 != self
@@ -312,6 +382,12 @@ class EventModifierEntity < Entity
 	
 	get breadcrumb
 		[owner,self]
+	
+	get related
+		owner.modifiers.filter do $1 != self
+		
+	get resources
+		[owner,'/tags/event-handling']
 		
 	# get examples
 	# 	#examples ||= global.FS.findExamplesFor(new RegExp("({eventNames.join('|')})\\.{displayName}(?=\\(|\\.|=)",'g'))
@@ -335,6 +411,10 @@ class PropertyEntity < Entity
 	
 	get href
 		owner.href + '/' + name	
+		
+	get mdn
+		return '' if custom? or owner.custom?
+		owner.mdn + "/{name}"
 
 class MethodEntity < PropertyEntity
 	
@@ -372,9 +452,6 @@ class StyleProperty < StyleEntity
 		
 	get href
 		"/css/properties/{name}"
-		
-	get guide
-		global.FS.find("/api/css.properties.{name}")
 	
 	get searchText
 		#searchText ||= [alias,name].filter(do $1).join('').replace(/\-/g,'').toLowerCase!
@@ -389,7 +466,7 @@ class StyleModifier < StyleEntity
 		import('codicons/symbol-enum.svg')
 		
 	get searchTitle
-		name.slice(1)
+		name
 	
 	get custom?
 		desc.tags.custom or desc.group == 'custom'
