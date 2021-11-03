@@ -220,5 +220,5 @@ tag repl-console
 				<button[d..transient:none] @click=clear [d:none]=(!count)> 'Clear'
 			<div$snackbars>
 			<.content[pos:relative flex:1 bg:white]>
-				<div$scroller[pos:relative d:block ofy:auto inset:0]>
+				<div$scroller[d:block ofy:auto inset:0 pos:relative]>
 					<div$body[d:block] @resize=relayout>

@@ -373,8 +373,8 @@ tag app-document
 	def render
 		let doc = data
 		return unless doc	
-		<self.markdown[d:block pb:24 pt:4 d:hflex] @refocus.silent=refocus>
-			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
+		<self.markdown[d:block d:hflex] @refocus.silent=refocus>
+			<.main[max-width:768px w:768px px:6 fl:1 1 auto pb:24 pt:8]>
 				<div$content>
 					if doc.api?
 						# may be a bug?
@@ -385,7 +385,7 @@ tag app-document
 							<app-document-nav data=doc>
 
 			<.aside[fl:1 0 240px d@!1120:none]>
-				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 -webkit-overflow-scrolling:touch]>
+				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 pl:4 -webkit-overflow-scrolling:touch].no-scrollbar>
 					if doc.api?
 						<api-{doc.kind}-toc data=doc>
 					else

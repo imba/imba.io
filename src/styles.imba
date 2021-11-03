@@ -34,6 +34,10 @@ global css
 	.keycap rd:md bd:gray2 fs:xs h:5 px:1 c:gray5 d:hflex ja:center
 	
 	@root app-code-inline d:inline
+	
+	.no-scrollbar
+	
+		&::-webkit-scrollbar w:1 o:0.1
 
 
 # code

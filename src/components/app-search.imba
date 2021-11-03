@@ -25,10 +25,7 @@ tag Item
 	css .title
 		i font-style:normal
 		em fw:500 font-style:normal
-		mb:10px
-	
-	
-	
+		mb:10px	
 
 	<self @mousedown.stop.prevent.emit('go',data) @pointerover.emit('hover',index) .{data.kind}>
 	
@@ -211,3 +208,5 @@ tag app-search
 					<div[zi:1 pos:rel]>
 						for match,i in hits when i < show-hits
 							<Item[h:1rh] .nr{i} index=i $key=match.id data=match>
+					
+					<div[h:1] @intersect.in=(show-hits += 10)>
