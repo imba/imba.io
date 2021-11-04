@@ -760,6 +760,7 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
+            "detail": "(threshold=0.5)",
             "special": true
           },
           "docs": "<p>Only when pressure is at least amount (defaults to 0.5)</p>\n"
@@ -967,7 +968,7 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
-            "detail": "(key)",
+            "detail": "(code)",
             "special": true
           },
           "docs": "<p>Handle if keyCode == code</p>\n"
@@ -2230,6 +2231,63 @@
         }
       ],
       "docs": "<p>Element is the most general base class from which all objects in a Document inherit. It only has methods and properties common to all kinds of elements. More specific classes inherit from Element.</p>\n",
+      "tags": {}
+    },
+    {
+      "name": "ImbaRouter",
+      "kind": "interface",
+      "extends": null,
+      "meta": {},
+      "members": [
+        {
+          "name": "path",
+          "meta": {},
+          "kind": "property",
+          "tags": {
+            "special": true
+          },
+          "docs": "<p>The currently matching path</p>\n"
+        },
+        {
+          "name": "hash",
+          "meta": {},
+          "kind": "property",
+          "tags": {
+            "special": true
+          },
+          "docs": "<p>The hash</p>\n"
+        },
+        {
+          "name": "match",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "special": true
+          },
+          "docs": "<p>See if router currently matches a pattern/path</p>\n"
+        },
+        {
+          "name": "go",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "param": "state",
+            "special": true
+          },
+          "docs": "<p>Go to a url</p>\n"
+        },
+        {
+          "name": "replace",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "param": "state",
+            "special": true
+          },
+          "docs": "<p>Switch to another url without pushing to the history</p>\n"
+        }
+      ],
+      "docs": "",
       "tags": {}
     },
     {

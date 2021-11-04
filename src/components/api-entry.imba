@@ -225,7 +225,7 @@ tag api-li < api-el
 			rd:md p:1 c:hue6
 
 		.name px:1
-		.summary c:gray5 px:1 ws:nowrap of:hidden text-overflow:ellipsis
+		.summary c:gray5 px:1 ws:nowrap of:hidden text-overflow:ellipsis w:50px
 			>>> p d:contents
 		.flex fl:1
 
@@ -233,8 +233,11 @@ tag api-li < api-el
 		&.short .qf d:none
 		.pills ws:nowrap d:hflex ja:center
 		
+	set icon value
+		#icon = value
+		
 	get icon
-		mdn ? import('codicons/bookmark.svg') : data.icon
+		#icon or (mdn ? import('codicons/bookmark.svg') : data.icon)
 
 	<self .{data.kind} .mdn=mdn .custom=data.custom? .idl=data.idl? .getter=data.getter?>
 		<span.icon> <svg src=icon>
@@ -623,8 +626,10 @@ tag api-entry-toc < api-el
 	css
 		h3 fs:14px/1.2 fw:500 pb:1 bwb:0px mb:1 bdb:1px solid hue7
 		
-		api-li >>>
-			.summary d:none
+		api-li fs:14px
+			>>>
+				.summary d:none
+				.pills d:none
 			
 		section mb:5
 
@@ -652,19 +657,30 @@ tag api-entry-toc < api-el
 				<h3> "Related Modifiers"
 				<div> list(data.related,data.owner)
 		
+		if data.interface?
+			if data.up
+				<section.blue>
+					<h3> "Inheritance"
+					<div>
+						for item in data.parents.slice!.reverse!
+							<api-li data=item icon=api.icons.down>
+						<api-li[hue:gray my:1] data=data>
+						<div> for item in data.descendants
+							<api-li data=item icon=api.icons.right> # list(data.parents,data.type)
+		
 		if data.kind == 'interface'
 			<section.violet>
 				<h3> "Related Interfaces"
 				<div> list(data.related,data.type)
 			
-		if data.kind == 'eventinterface'
-			<section.amber>
-				<h3> "Supported Modifiers"
-				<div> list(data.modifiers,data.type)
-			
-			<section.violet>
-				<h3> "Related Events"
-				<div> list(data.events,data.type)
+		# if data.kind == 'eventinterface'
+		# 	<section.amber>
+		# 		<h3> "Supported Modifiers"
+		# 		<div> list(data.modifiers,data.type)
+		# 	
+		# 	<section.violet>
+		# 		<h3> "Related Events"
+		# 		<div> list(data.events,data.type)
 				
 		if data.kind == 'styleprop'
 			

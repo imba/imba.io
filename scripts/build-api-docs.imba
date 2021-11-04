@@ -242,6 +242,9 @@ def generate-events
 				
 			if imbalib? and !tags.summary and !docs
 				continue
+				
+			
+				
 			# continue if docs == '' and !tags.summary
 			# continue if tags.internal or itemname[0] == '#'
 
@@ -258,6 +261,11 @@ def generate-events
 				docs: docs
 			}
 			
+			if itemname == 'router'
+				crawl(itemtype)
+				console.log itemtype
+				item.returnType = "/api/ImbaRouter"
+			
 			doc.members.push(entry)
 		
 		# doc.members = doc.members.filter(do $1.tags.custom)
@@ -272,6 +280,8 @@ def generate-events
 	
 	for name in types
 		crawl(checker.type("{name}.prototype"))
+		
+	crawl(checker.type("imba"))
 
 	for item in checker.getEvents()
 		let name = item.imbaName

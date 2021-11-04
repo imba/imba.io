@@ -7,6 +7,14 @@ const root = new class
 	kinds = {}
 	lookups = {}
 	
+	icons = {
+		down: import('codicons/arrow-small-down.svg')
+		up: import('codicons/arrow-small-up.svg')
+		left: import('codicons/arrow-small-left.svg')
+		right: import('codicons/arrow-small-right.svg')
+		record: import('codicons/record.svg')
+	}
+	
 	def childByName name
 		console.log 'api child by name',name
 		return self[name]
@@ -213,7 +221,10 @@ export class Entity
 	
 	get head
 		displayName
-
+	
+	get interface?
+		no
+		
 	get modifier?
 		kind == 'eventmodifier'
 		
@@ -318,7 +329,7 @@ class InterfaceEntity < Entity
 class EventInterfaceEntity < InterfaceEntity
 	
 	get modifierPrefix
-		events.length == 1 ? events[0].displayName : "@{name.toLowerCase!.replace(/(\w)event/,'$1')}"
+		events.length == 1 ? "@{events[0].name}" : "@{name.toLowerCase!.replace(/(\w)event/,'$1')}"
 		
 	get resources
 		['/tags/event-handling']
