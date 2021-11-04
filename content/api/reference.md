@@ -51,6 +51,8 @@ For hotkey groups and disabling/enable all hotkeys within a certain dom tree see
 
 In addition to the default [built in colors](/css/colors), `hue0`,`hue1`,`...`,`hue9` refers to the color scale set by the `hue` property. Setting `hue:amber` in css, will make `hue2` refer to `amber2` inside all elements that are affected by this style. The `hue(n)` color values supports an alpha value with the forward-slash syntax like `hue4/40`
 
+
+
 ### Syntax
 ```imba
 <div[hue:violet color:hue4]>
@@ -94,4 +96,112 @@ imba.mount do <>
     <Button[hue:red]> "Button"
     <Button[hue:green]> "Button"
     <Button[hue:amber hue@hover:purple]> "Hover me"
+```
+
+# /api/ImbaElement/%23parent
+
+This is the documentation for the parent
+
+# /api/Element/data
+
+### Syntax
+```imba
+<element data=value>
+```
+## Usage
+
+The default convention in imba is to use the data property on elements to pass in the state/data they are supposed to represent. In this example we pass in the movie object through the data property:
+```imba
+tag movie-item
+    # using references to data
+    <self> <em> data.title
+
+<div> for movie in movies
+    <movie-item data=movie>
+```
+
+
+However, __there is nothing special about the data property__, besides it being declared for all elements. It is just a plain property. If you prefer to use more descriptive properties you are free to do so:
+
+```imba
+tag movie-item
+    prop movie
+    # using references to data
+    <self> <em> movie.title
+
+<div> for movie in movies
+    <movie-item movie=movie>
+```
+
+Declaring the property with `prop movie` is not strictly needed, but will give you auto-completions and get rid of warnings about a missing `movie` property in the tooling.
+
+### Type annotations
+
+When you are dealing with known data-structures it can be useful to set the type of the data property for better auto-completions and warnings:
+
+```imba
+tag movie-item
+    prop data\Movie
+    <self> <em> data.title
+
+<div> for movie in movies
+    # will warn if movie is not of type Movie
+    <movie-item data=movie>
+```
+
+### Convenience getters
+
+Sometimes when working with complex data objects it might be useful to define some getters to alias nested properties of your data.
+
+```imba
+tag movie-item
+    prop data\Movie
+    get director do data.director
+    get genres do data.genres
+
+    <self>
+        <em> data.title
+        <a href="/people/{director.id}"> director.name
+        <div> for genre in genres
+            <span> genre.title
+```
+
+### Overriding
+
+If you want to do something when setting data, you can easily create a setter and getter:
+```imba
+tag movie-item
+    set data value
+        #data = value
+        console.log "movie was set",value
+        
+    get data
+        #data
+```
+The memoized dom works in such a way that the setter will only be triggered when the value actually changes. If you set the property manually outside of rendering, the setter will be called every time, even of the value has not changed:
+```imba
+tag app
+    <self>
+        <div> for movie in movies
+            # manually set card.data when clicking an item
+            <movie-item data=movie @click=($card.data = movie)>
+        <movie-card$card>
+```
+In this case, the movie-item data setter will only be called when their `data` actually changes, even if we render the list a million times. But if you click a movie-item 10 times, the `movie-card.data` property will be set 10 times. This is only really a challenge if you do something computationally expensive in the `data` setter itself. In that case you can just check if something has changed:
+```imba
+tag movie-card
+    set data value
+        if #data != value
+            #data = value
+            # ... load more info about the movie?
+        
+    get data
+        #data
+```
+Since Imba embraces the concepts of memoization we have the `=?` operator that is shorthand for the pattern above.
+```imba
+if item.propname =? value
+    # item.propname is now set to value,
+    # and was previously set to something else
+    yes
 ```

@@ -321,24 +321,6 @@
             "special": true
           },
           "docs": "<p>Logs to console</p>\n"
-        },
-        {
-          "name": "detail",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        },
-        {
-          "name": "originalEvent",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
         }
       ],
       "docs": "<p>An event which takes place in the DOM.</p>\n",
@@ -985,6 +967,7 @@
           "meta": {},
           "kind": "eventmodifier",
           "tags": {
+            "detail": "(key)",
             "special": true
           },
           "docs": "<p>Handle if keyCode == code</p>\n"
@@ -1087,44 +1070,7 @@
       "kind": "eventinterface",
       "extends": "UIEvent",
       "meta": {},
-      "members": [
-        {
-          "name": "width",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        },
-        {
-          "name": "height",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        },
-        {
-          "name": "rect",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        },
-        {
-          "name": "entry",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        }
-      ],
+      "members": [],
       "docs": "<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver\">ResizeObserver</a> interface reports changes to the dimensions of an Element&#39;s content or border box. It has <a href=\"https://caniuse.com/#feat=resizeobserver\">good browser support</a> and is very useful in a wide variety of usecases. ResizeObserver avoids infinite callback loops and cyclic dependencies that are often created when resizing via a callback function. It does this by only processing elements deeper in the DOM in subsequent frames.</p>\n",
       "tags": {
         "custom": true
@@ -1155,20 +1101,12 @@
           "docs": "<p>The final Y coordinate of the pointer (after modifiers)</p>\n"
         },
         {
-          "name": "target",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        },
-        {
           "name": "clientX",
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>The X coordinate of the pointer in local (DOM content) coordinates.</p>\n"
         },
@@ -1177,7 +1115,8 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>The Y coordinate of the mouse pointer in local (DOM content) coordinates.</p>\n"
         },
@@ -1186,7 +1125,8 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>True if touch is still active</p>\n"
         },
@@ -1195,7 +1135,8 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>True if touch has ended</p>\n"
         },
@@ -1204,7 +1145,8 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">control</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
@@ -1213,7 +1155,8 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">alt</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
@@ -1222,7 +1165,8 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">shift</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
@@ -1231,7 +1175,8 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>Returns true if the <app-code-inline data-lang=\"unknown\">shift</app-code-inline> key was down when the mouse event was fired.</p>\n"
         },
@@ -1240,7 +1185,8 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>Indicates the device type that caused the event (mouse, pen, touch, etc.)</p>\n"
         },
@@ -1250,7 +1196,8 @@
           "kind": "property",
           "tags": {
             "summary": "A unique identifier for the pointer causing the event.",
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": "<p>The identifier is unique, being different from the identifiers of all other active pointer events. Since the value may be randomly generated, it is not guaranteed to convey any particular meaning.</p>\n"
         },
@@ -1683,6 +1630,30 @@
           "meta": {},
           "kind": "method",
           "tags": {},
+          "docs": ""
+        },
+        {
+          "name": "#context",
+          "meta": {},
+          "kind": "property",
+          "tags": {
+            "custom": true,
+            "summary": "Proxy to reference data on elements up the tree",
+            "special": true,
+            "getter": true
+          },
+          "docs": ""
+        },
+        {
+          "name": "#parent",
+          "meta": {},
+          "kind": "property",
+          "tags": {
+            "custom": true,
+            "summary": "Reference to the parentNode even before element has been attached",
+            "special": true,
+            "getter": true
+          },
           "docs": ""
         }
       ],
@@ -2158,16 +2129,9 @@
           "kind": "property",
           "tags": {
             "idl": true,
-            "special": true
-          },
-          "docs": ""
-        },
-        {
-          "name": "hotkey__",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
+            "summary": "Default property for setting the data of an element",
+            "special": true,
+            "custom": true
           },
           "docs": ""
         },
@@ -2176,16 +2140,22 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "idl": true,
+            "summary": "The path/route this element should be enabled for",
+            "special": true,
+            "custom": true
           },
           "docs": ""
         },
         {
-          "name": "route__",
+          "name": "route-to",
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "idl": true,
+            "summary": "The path/route to go to when clicking this element",
+            "special": true,
+            "custom": true
           },
           "docs": ""
         },
@@ -2194,7 +2164,10 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "special": true
+            "summary": "Reference to the imba router",
+            "custom": true,
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2204,7 +2177,8 @@
           "kind": "property",
           "tags": {
             "idl": true,
-            "special": true
+            "special": true,
+            "custom": true
           },
           "docs": "<p>Gives elements a stable identity inside lists</p>\n"
         },
@@ -2215,7 +2189,8 @@
           "tags": {
             "summary": "Sets whether `@hotkey` events inside of this element\nis enabled or not",
             "idl": true,
-            "special": true
+            "special": true,
+            "custom": true
           },
           "docs": "<p>Sets whether <api-link>@hotkey</api-link> events inside of this element\nis enabled or not. If explicitly set to true, only\n<api-link>@hotkey</api-link> events inside this group will be triggered\nwhen this element or a child has focus.</p>\n"
         },
@@ -2226,7 +2201,8 @@
           "tags": {
             "see": "",
             "idl": true,
-            "special": true
+            "special": true,
+            "custom": true
           },
           "docs": "<p>Enable transitions for when element is attached / detached</p>\n"
         },
@@ -2235,8 +2211,9 @@
           "meta": {},
           "kind": "property",
           "tags": {
-            "readonly": true,
-            "special": true
+            "summary": "Allows for manipulation of element's class content attribute",
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2245,36 +2222,11 @@
           "meta": {},
           "kind": "method",
           "tags": {
+            "param": "options",
+            "custom": true,
             "special": true
           },
-          "docs": ""
-        },
-        {
-          "name": "focus",
-          "meta": {},
-          "kind": "method",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        },
-        {
-          "name": "blur",
-          "meta": {},
-          "kind": "method",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        },
-        {
-          "name": "log",
-          "meta": {},
-          "kind": "method",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
+          "docs": "<p>Emits event</p>\n"
         }
       ],
       "docs": "<p>Element is the most general base class from which all objects in a Document inherit. It only has methods and properties common to all kinds of elements. More specific classes inherit from Element.</p>\n",
@@ -2449,6 +2401,18 @@
       "meta": {},
       "members": [
         {
+          "name": "render",
+          "meta": {},
+          "kind": "method",
+          "tags": {
+            "summary": "Called to update the element and their children",
+            "abstract": true,
+            "lifecycle": true,
+            "special": true
+          },
+          "docs": ""
+        },
+        {
           "name": "suspend",
           "meta": {},
           "kind": "method",
@@ -2470,24 +2434,6 @@
           "docs": ""
         },
         {
-          "name": "#parent",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        },
-        {
-          "name": "#context",
-          "meta": {},
-          "kind": "property",
-          "tags": {
-            "special": true
-          },
-          "docs": ""
-        },
-        {
           "name": "render?",
           "meta": {},
           "kind": "property",
@@ -2495,7 +2441,8 @@
             "summary": "Tells whether the component should render",
             "abstract": true,
             "lifecycle": true,
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2507,7 +2454,8 @@
             "readonly": true,
             "summary": "Tells whether the component is currently being mounted",
             "lifecycle": true,
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2519,7 +2467,8 @@
             "readonly": true,
             "summary": "Tells whether the component is currently mounted in document",
             "lifecycle": true,
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2531,7 +2480,8 @@
             "readonly": true,
             "summary": "Tells whether the component has been awakened",
             "lifecycle": true,
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2543,7 +2493,8 @@
             "readonly": true,
             "summary": "Tells whether the component has been rendered",
             "lifecycle": true,
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2555,7 +2506,8 @@
             "readonly": true,
             "summary": "Tells whether the component has been suspended",
             "lifecycle": true,
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2567,7 +2519,8 @@
             "readonly": true,
             "summary": "Tells whether the component is currently rendering",
             "lifecycle": true,
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2579,7 +2532,8 @@
             "readonly": true,
             "summary": "Tells whether the component is scheduled to automatically render",
             "lifecycle": true,
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2591,7 +2545,8 @@
             "readonly": true,
             "summary": "Tells whether the component has been hydrated on the client",
             "lifecycle": true,
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2602,7 +2557,8 @@
           "tags": {
             "readonly": true,
             "summary": "Tells whether the component was originally rendered on the server",
-            "special": true
+            "special": true,
+            "getter": true
           },
           "docs": ""
         },
@@ -2705,7 +2661,8 @@
           "tags": {
             "summary": "Specify how / when the component should re-render",
             "idl": true,
-            "special": true
+            "special": true,
+            "custom": true
           },
           "docs": "<p>Schedule the element to update itself\nyes = render on events / imba.commit\nno = force manual render\nnull / undefined = render via parent\n(n)s = render every n s\n(n)ms = render every n ms\n(n)fps = render n times per second</p>\n"
         }
@@ -2718,7 +2675,7 @@
     {
       "name": "abort",
       "kind": "event",
-      "type": "UIEvent",
+      "type": "Event",
       "meta": {},
       "docs": "<p>The loading of a resource has been aborted.</p>\n",
       "tags": {
@@ -2922,7 +2879,8 @@
       "meta": {},
       "docs": "",
       "tags": {
-        "special": true
+        "custom": true,
+        "detail": "(combo)"
       }
     },
     {
@@ -2948,7 +2906,7 @@
       "meta": {},
       "docs": "",
       "tags": {
-        "special": true
+        "custom": true
       }
     },
     {
@@ -3244,7 +3202,7 @@
       "meta": {},
       "docs": "",
       "tags": {
-        "special": true
+        "custom": true
       }
     },
     {
@@ -3356,7 +3314,7 @@
       "meta": {},
       "docs": "",
       "tags": {
-        "special": true
+        "custom": true
       }
     },
     {

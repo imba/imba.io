@@ -80,7 +80,13 @@ class Members < Array
 	get properties
 		filter do $1.property?
 		
+	get custom
+		filter do $1.custom?
+		
 	get domprops
+		filter do $1.tags.idl
+		
+	get idl
 		filter do $1.tags.idl
 		
 	get methods
@@ -94,12 +100,19 @@ class Members < Array
 		
 	get inherited
 		filter do $1.owner != #owner and get($1.name) == $1
+	
+	get unique
+		filter do self.get($1.name) == $1
 
 	def filter cb
 		new Members(#owner,super)
 		
 	def get name
 		find do $1.name == name
+	
+	get grouped
+		let all = unique
+		[all.own,all.inherited]
 	
 const kindToClass = {}
 
@@ -163,7 +176,7 @@ export class Entity
 		self
 		
 	get props
-		let res = (up ? (members.concat(up.props)) : members)
+		let res\Members = (up ? (members.concat(up.props)) : members)
 		res.#owner = self
 		res
 		
@@ -210,6 +223,9 @@ export class Entity
 	get method?
 		kind == 'method'
 		
+	get getter?
+		!!tags.getter
+		
 	get member?
 		method? or property?
 		
@@ -230,6 +246,9 @@ export class Entity
 
 	get custom?
 		tags.custom or desc.group == 'custom' or tags.special
+			
+	get idl?
+		tags.idl
 
 	get api?
 		yes
@@ -239,6 +258,9 @@ export class Entity
 		
 	get title
 		displayName
+		
+	get escapedName
+		global.escape(name)
 		
 	get fullName
 		owner ? "{owner.fullName}.{displayName}" : displayName
@@ -304,20 +326,21 @@ class EventInterfaceEntity < InterfaceEntity
 class EventEntity < Entity
 	
 	get icon
-		import('codicons/symbol-event.svg')
+		# import('codicons/symbol-event.svg')
+		import('codicons/mention.svg')
 
 	def register
 		root.paths["Element.@{name}"] = self
 		type.events.push(self)
 		
 	get displayName
-		"@{name}"
+		"{name}"
 		
 	get searchTitle
 		"{name} {displayName}"
 		
 	get href
-		"/api/Element/{displayName}"
+		"/api/Element/@{displayName}"
 		
 	get siblings
 		type.events.filter do $1 != self
@@ -357,7 +380,7 @@ class EventEntity < Entity
 class EventModifierEntity < Entity
 	
 	get icon
-		import('codicons/symbol-method.svg')
+		import('codicons/symbol-event.svg')
 	
 	get displayName
 		"{name.slice(1)}"
@@ -395,7 +418,8 @@ class EventModifierEntity < Entity
 class PropertyEntity < Entity
 	
 	get icon
-		import('codicons/symbol-field.svg')
+		return import('codicons/symbol-enum.svg') if idl?
+		getter? ? import('codicons/symbol-method.svg') : import('codicons/symbol-field.svg')
 		
 	get searchTitle
 		"{owner.name}.{name}"
@@ -410,7 +434,7 @@ class PropertyEntity < Entity
 		[owner,self]
 	
 	get href
-		owner.href + '/' + name	
+		owner.href + '/' + escapedName	
 		
 	get mdn
 		return '' if custom? or owner.custom?
@@ -451,7 +475,7 @@ class StyleProperty < StyleEntity
 		custom? ? tags.detail : name
 		
 	get href
-		"/css/properties/{name}"
+		"/css/properties/{escapedName}"
 	
 	get searchText
 		#searchText ||= [alias,name].filter(do $1).join('').replace(/\-/g,'').toLowerCase!

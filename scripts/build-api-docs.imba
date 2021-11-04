@@ -224,11 +224,23 @@ def generate-events
 			if imbalib?
 				tags.special = yes
 			
-			if itemname == 'screenX' or itemname == 'hotkeys' or itemname == 'flags'
-				console.log itemname,item.isReadonly,item.getter?,item.flags
+			if itemname == 'screenX' or itemname == 'hotkeys' or itemname == 'mounted?'
+				console.log itemname,item.isReadonly,item.getter?,item.flags,item.valueDeclaration.modifierFlagsCache,item.flags & ts.SymbolFlags.GetAccessor
+			
+			let getter = item.flags & ts.SymbolFlags.GetAccessor
+			let setter = item.flags & ts.SymbolFlags.SetAccessor
+			
+			if getter and !setter
+				tags.getter = yes
+					
+			if tags.idl or tags.imba
+				tags.custom = yes
 			
 			# Skip the constants
-			if itemname.match(/^[A-Z_]+$/)
+			if itemname.match(/^[A-Z_]+$/) or tags.private
+				continue
+				
+			if imbalib? and !tags.summary and !docs
 				continue
 			# continue if docs == '' and !tags.summary
 			# continue if tags.internal or itemname[0] == '#'
@@ -247,6 +259,8 @@ def generate-events
 			}
 			
 			doc.members.push(entry)
+		
+		# doc.members = doc.members.filter(do $1.tags.custom)
 		
 		if false
 			doc.members = doc.members.sort do(a,b)

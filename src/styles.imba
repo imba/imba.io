@@ -40,6 +40,8 @@ global css
 		&::-webkit-scrollbar w:1 o:0.1
 		
 	.blue hue:blue
+	.sky hue:sky
+	.cyan hue:cyan
 	.orange hue:orange
 	.yellow hue:yellow
 	.amber hue:amber
@@ -47,6 +49,7 @@ global css
 	.violet hue:violet
 	.purple hue:purple
 	.green hue:green
+	.emerald hue:emerald
 
 
 # code
