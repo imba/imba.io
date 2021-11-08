@@ -1059,8 +1059,7 @@ if object.value =? input
     yes
 ```
 
-Regular assignment that returns true or false depending on whether the left-hand was changed or not. More concise way of doing. The reassignment may seem unnecessary at first, but since memoization is an oft-used pattern in Imba, this is a very convenient addition.
-
+Regular assignment that returns true or false depending on whether the left-hand was changed or not. More concise way of doing:
 ```imba
 let object = {}
 let input = 200
@@ -1069,6 +1068,7 @@ if object.value != input
     object.value = input
     yes
 ```
+The reassignment may seem unnecessary at first, but since memoization is an oft-used pattern in Imba, this is a very convenient addition.
 
 
 ## Bitwise Operators [toc-pills]
