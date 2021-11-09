@@ -158,11 +158,15 @@ def generate-events
 		# let type = checker.type("{name}.prototype")
 
 		let type = checker.type(item)
-		let base = checker.checker.getBaseTypes(type)
+		
 		let props = checker.props(type)
 		let ref = type.symbol.escapedName
 		let name = ref
 		
+		console.log "crawl {name}",type.symbol.flags
+		let iface = type.symbol.flags & (32 | 64)
+		
+		let base = iface ? checker.checker.getBaseTypes(type) : []
 		let up = base[0] ? crawl(base[0]).name : null
 		let meta = {}
 		
@@ -170,6 +174,9 @@ def generate-events
 		
 		if checker.member(type,'stopImmediatePropagation') or name == 'ImbaTouch'
 			kind = 'eventinterface'
+			
+		if name == 'imba'
+			console.log props
 		
 		let doc = {
 			name: ref
@@ -207,9 +214,10 @@ def generate-events
 			let docs = getDocs(item,meta)
 			
 			
+			
 			let kind = 'property'
 			
-			if item.method?
+			if item.method? or item.flags & 16
 				kind = 'method'
 				
 			if item.getter? and !item.setter?
@@ -222,6 +230,7 @@ def generate-events
 			# console.warn "PROP {itemname} {item.flags}",imbalib?
 			
 			if imbalib?
+				# custom?
 				tags.special = yes
 			
 			if itemname == 'screenX' or itemname == 'hotkeys' or itemname == 'mounted?'
@@ -236,6 +245,8 @@ def generate-events
 			if tags.idl or tags.imba
 				tags.custom = yes
 			
+			
+				
 			# Skip the constants
 			if itemname.match(/^[A-Z_]+$/) or tags.private
 				continue
@@ -243,7 +254,8 @@ def generate-events
 			if imbalib? and !tags.summary and !docs
 				continue
 				
-			
+			if name == 'imba'
+				console.log itemname,item.flags,kind
 				
 			# continue if docs == '' and !tags.summary
 			# continue if tags.internal or itemname[0] == '#'
@@ -261,7 +273,7 @@ def generate-events
 				docs: docs
 			}
 			
-			if itemname == 'router'
+			if itemname == 'router' and false
 				crawl(itemtype)
 				console.log itemtype
 				item.returnType = "/api/ImbaRouter"
@@ -281,6 +293,8 @@ def generate-events
 	for name in types
 		crawl(checker.type("{name}.prototype"))
 		
+	crawl(checker.type("ImbaRouter.prototype"))
+	
 	crawl(checker.type("imba"))
 
 	for item in checker.getEvents()

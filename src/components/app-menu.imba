@@ -166,6 +166,10 @@ tag app-menu
 				# <app-menu-section[c:pink6] data=ls('/intro')>
 				if router.match('/api')
 					<div>
+						let base = ls('/api/menu')
+						for item in base.children
+							<app-menu-section[hue:blue] data=item>
+							
 						for item in kinds
 							<app-menu-section[hue:blue] data=item>
 						# <app-menu-section[hue:blue] data=ls('/css')>

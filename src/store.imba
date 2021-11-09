@@ -118,8 +118,8 @@ class Entry
 	get path
 		parent ? (parent.path + '/' + name) : ''
 
-	get href
-		path
+	get href\string
+		options.href or path
 
 	get title
 		data.title or basename.replace(/\-/g,' ')
