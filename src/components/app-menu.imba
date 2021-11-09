@@ -170,8 +170,8 @@ tag app-menu
 						for item in base.children
 							<app-menu-section[hue:blue] data=item>
 							
-						for item in kinds
-							<app-menu-section[hue:blue] data=item>
+						# for item in kinds
+						#	<app-menu-section[hue:blue] data=item>
 						# <app-menu-section[hue:blue] data=ls('/css')>
 						# let ev = {locals: {}, children: api.kinds.eventinterface, title: "Events"}
 						# let styles = {locals: {}, children: api.kinds.eventinterface, title: "Styles"}

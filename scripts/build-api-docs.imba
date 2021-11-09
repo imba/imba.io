@@ -212,7 +212,11 @@ def generate-events
 			let itemtype = checker.type(item)
 			let meta = {}
 			let docs = getDocs(item,meta)
+			let iface = item.flags & (32 | 64)
 			
+			if iface and name == 'imba'
+				console.log 'crawl member!!!'
+				crawl(item)
 			
 			
 			let kind = 'property'
@@ -293,7 +297,7 @@ def generate-events
 	for name in types
 		crawl(checker.type("{name}.prototype"))
 		
-	crawl(checker.type("ImbaRouter.prototype"))
+	# crawl(checker.type("ImbaRouter.prototype"))
 	
 	crawl(checker.type("imba"))
 
