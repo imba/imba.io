@@ -23,9 +23,9 @@ Hello
 
 # - Events
 
-# - Router [href=/api/ImbaRouter]
+# - Router [href=/api/imba/Router]
 
-# - Scheduler [href=/api/ImbaScheduler]
+# - Scheduler [href=/api/imba/Scheduler]
 
 
 # CSS

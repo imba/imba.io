@@ -483,11 +483,20 @@ tag api-interface-entry < api-entry
 		<api-section>
 			<h3> "Methods"
 			props(data.methods,data,"This interface inherits methods of ")
-					
+
+		let ifaces = data.props.interfaces
+		if ifaces.length
+			<api-section>
+				<h3> "Interfaces"
+				<div> for item in ifaces
+					<api-li data=item>
+				# props(ifaces,data,"This interface inherits methods of ")
 		
 		# <api-props name='Getters' data=data.getters>
 		# <api-props name='Properties' data=data.properties>
 		# <api-props name='Methods' data=data.methods>
+
+tag api-ns-entry < api-interface-entry
 
 tag api-eventinterface-entry < api-interface-entry
 	<self>

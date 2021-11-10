@@ -178,6 +178,7 @@ app.get(/\.*/) do(req,res)
 		<body tabIndex='-1'>
 			<script src="./public/content.json.js?as=iife">
 			<script src="./public/api.imba?as=iife">
+			<script src="./public/reference.js?as=iife">
 			<script type="module" src="./src/index.imba">
 
 # pass through imba serve to automatically

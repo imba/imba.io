@@ -6,6 +6,7 @@ const root = new class
 	entities = []
 	kinds = {}
 	lookups = {}
+	members = []
 	
 	icons = {
 		down: import('codicons/arrow-small-down.svg')
@@ -36,6 +37,9 @@ const root = new class
 					return ev.modifiers.get("@{m[2]}")
 				return ev
 		return null
+
+	get href
+		"/api"
 		
 	get descendants
 		entities
@@ -96,6 +100,9 @@ class Members < Array
 		
 	get idl
 		filter do $1.tags.idl
+
+	get interfaces
+		filter do $1 isa InterfaceEntity
 		
 	get methods
 		filter do $1 isa MethodEntity
@@ -296,6 +303,8 @@ export class Entity
 						all.push(item)
 			all
 
+class NamespaceEntity < Entity
+
 class InterfaceEntity < Entity
 	descendants = []
 	
@@ -313,6 +322,9 @@ class InterfaceEntity < Entity
 
 		root[name] = self
 		yes
+
+	get href
+		owner.href + "/{name}"
 		
 	get parents
 		#parents ||= up ? [up].concat(up.parents) : []
@@ -517,13 +529,14 @@ kindToClass.event = EventEntity
 kindToClass.property = PropertyEntity
 kindToClass.method = MethodEntity
 kindToClass.eventmodifier = EventModifierEntity
+kindToClass.ns = NamespaceEntity
 
 kindToClass.styleprop = StyleProperty
 kindToClass.stylemod = StyleModifier
 
 
 for entry in json.entries
-	Entity.build(entry)
+	Entity.build(entry,root)
 
 global.API = root
 export const api = root

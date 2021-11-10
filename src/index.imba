@@ -10,6 +10,7 @@ import './components/app-search'
 import './components/home-page'
 
 import './repl/index'
+import './api2'
 
 import {fs,files,ls,Dir} from './store'
 import * as sw from './sw/controller'
