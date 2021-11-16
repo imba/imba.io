@@ -28,7 +28,11 @@ export const enum SymbolFlags {
     Transient               = 1 << 25,  // Transient symbol (created during type check)
     Assignment              = 1 << 26,  // Assignment treated as declaration (eg `this.prop = 1`)
     ModuleExports           = 1 << 27,  // Symbol for CommonJS `module` of `module.exports`
-    Modifier                = 1 << 28, 
+
+    // Custom imba flags
+    Modifier                = 1 << 28,
+    Event                = 1 << 29,
+    CSS                = 1 << 30,
 
 
     /* @internal */
@@ -91,4 +95,55 @@ export const enum SymbolFlags {
 
     /* @internal */
     LateBindingContainer = Class | Interface | TypeLiteral | ObjectLiteral | Function,
+}
+
+export const enum CategoryFlags {
+    None                    = 0,
+    API = 1 << 0,
+    CSSProperty = 1 << 1,
+    CSSModifier                = 1 << 2,
+    CSSPseudoElement              = 1 << 3,
+    CSSValueType                = 1 << 4,
+    CSSValue                = 1 << 5,
+    Article = 1 << 6,
+
+    CSS = CSSProperty | CSSModifier | CSSPseudoElement | CSSValueType | CSSValue,
+}
+
+export const enum ModifierFlags {
+    None =               0,
+    Export =             1 << 0,  // Declarations
+    Ambient =            1 << 1,  // Declarations
+    Public =             1 << 2,  // Property/Method
+    Private =            1 << 3,  // Property/Method
+    Protected =          1 << 4,  // Property/Method
+    Static =             1 << 5,  // Property/Method
+    Readonly =           1 << 6,  // Property/Method
+    Abstract =           1 << 7,  // Class/Method/ConstructSignature
+    Async =              1 << 8,  // Property/Method/Function
+    Default =            1 << 9,  // Function/Class (export default declaration)
+    Const =              1 << 11, // Const enum
+    HasComputedJSDocModifiers = 1 << 12, // Indicates the computed modifier flags include modifiers from JSDoc.
+
+    Deprecated =         1 << 13, // Deprecated tag.
+    Override =           1 << 14, // Override method.
+
+    // Custom for imba docs
+    ImbaSpecific =       1 << 15, 
+    Event =              1 << 16,
+    Upcase =             1 << 17,
+    EventInterface =     1 << 18,
+    NodeInterface =     1 << 19,
+    CSS =     1 << 20,
+    
+    HasComputedFlags =   1 << 29, // Modifier flags have been computed
+
+    AccessibilityModifier = Public | Private | Protected,
+    // Accessibility modifiers and 'readonly' can be attached to a parameter in a constructor to make it a property.
+    ParameterPropertyModifier = AccessibilityModifier | Readonly | Override,
+    NonPublicAccessibilityModifier = Private | Protected,
+
+    TypeScriptModifier = Ambient | Public | Private | Protected | Readonly | Abstract | Const | Override,
+    ExportDefault = Export | Default,
+    All = Export | Ambient | Public | Private | Protected | Static | Readonly | Abstract | Async | Default | Const | Deprecated | Override
 }

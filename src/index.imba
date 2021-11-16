@@ -10,9 +10,9 @@ import './components/app-search'
 import './components/home-page'
 
 import './repl/index'
-import './api2'
-
-import {fs,files,ls,Dir} from './store'
+import API from './api'
+import Locals from './util/locals'
+import {fs,files,ls,Dir,pathForUrl} from './store'
 import * as sw from './sw/controller'
 
 global.flags = document.documentElement.flags
@@ -22,6 +22,10 @@ let isApple = try (global.navigator.platform or '').match(/iPhone|iPod|iPad|Mac/
 
 
 css .tab hue:blue
+
+extend tag element
+	get site
+		global.site
 	
 tag app-root
 	prop doc
@@ -29,6 +33,7 @@ tag app-root
 
 	def setup
 		global.site = self
+		locals = Locals.for('site')
 		yes
 
 	def mount
@@ -52,17 +57,26 @@ tag app-root
 		pt:$header-height
 		h:100vh w:$menu-width t:0 pos:fixed
 		fs:sm fw:500
-		bg:white
+		bg:white/96 @lg:clear
 		zi:150
 		max-width:80vw
-		x:-100% @md:0 @focin:0
-		border-right:gray3 @md:none
+		x:-100% @lg:0 @focin:0
 		transition:all 250ms cubic-in-out
+
+		@lt-lg
+			shadow@focin:0 25px 50px -6px rgba(0, 0, 0, 0.1)
+
 	
 	css $repl
 		of:hidden inset:0 pos:fixed zi:2000 rd:0 bxs:xl
 		transition:transform 250ms quint-out
 		y:110% .routed:0
+
+	css $toggler
+		pos:fixed t:0 r:0 bg:blue4 size:48px d:flex ja:center rd:md m:4
+		d@lg:none zi:200
+		svg size:28px c:white
+		&.active bg:blue5
 
 	css .open-ide-button
 		bottom:0 right:0 m:5 border:gray2 py:3 px:4 rd:3
@@ -74,12 +88,18 @@ tag app-root
 
 	def go path
 		self.path = path
-		doc ||= ls('/language/introduction')
+		doc ||= ls('/docs/intro')
 
 		let parts = path.replace(/(^\/|\/$)/,'').split('/')
+
+		let state = pathForUrl(path)
+		#state = state
+		self.st = state
+
 		# redirect home somehow?
 		if path == '/' or path == '/index.html'
-			doc = ls('/language/introduction')
+			doc = ls('/docs/intro')
+
 		elif !path.match(/^\/(home|try)/)
 			doc = ls(path) or ls('/404')
 			
@@ -98,7 +118,7 @@ tag app-root
 		if path != router.url.pathname
 			go(router.url.pathname)
 
-		let home? = router.match('/$')
+		let home? = router.match('/$') or router.match('/home')
 		let repl? = router.match('/try')
 		let api? = router.match('/api')
 		
@@ -109,12 +129,13 @@ tag app-root
 			@showsearch=$search.show!
 			.show-menu=($menu..focused?)
 			>
+			# <div[pos:absolute w:100% bg:blue0 h:20px rotate:1deg]>
 			<div.header>
 				css pos:fixed d:flex ai:center
 					px:2 w:100% h:$header-height top:0px
 					zi:300 fs:15px bg:cool8/98 c:white us:none
+					d:none
 
-					
 					.tab d:hflex mx:2 py:1 c:hue4 fs:sm- fw:500 tt:uppercase ja:center
 						svg h:16px w:auto mx:0.5 
 						span c:white/100 lh:20px pos:relative
@@ -154,11 +175,9 @@ tag app-root
 						
 				<div[flex:1 a:center jc:flex-start va:middle d:hflex]>
 					<a[mr:4 jc:flex-start d:inline-flex cursor:pointer fs:sm mx:1 a:center] @click.emit('showsearch') @hotkey('mod+k|s')>
-						# <svg src='./assets/icons/search.svg'>
 						css c:blue4/80 @hover:blue3
 						<svg[ml:1 d:block @md:none size:16px va:top pos:relative t:2px] src='./assets/icons/search.svg'>
 						<span[d:none @md:contents]>
-							# bd:1px solid black/80 rd:lg bg:black/30 px:2 py:1 pr:1
 							<span[ mx:1 tt:none fw:normal]> "Quick search for anything ..."
 							<span.keycap[bc:hue4/40 c:hue4/50 h:22px px:1.5 fw:500 ml:0.5 tt:none]> isApple ? "⌘K" :'Ctrl K'
 					if window.debug
@@ -166,12 +185,12 @@ tag app-root
 				<div[d:flex cursor:pointer us:none]>
 					
 					# if home?
-					<a.tab[hue:emerald] href='/language/introduction' .active=(doc and !doc.api? and !api? and !home?)>
+					<a.tab[hue:emerald] href='/docs' .active=(doc and !doc.api? and !api? and !home?)>
 						<svg[mr:1] src='./assets/icons/map.svg'>
 						<span> "Learn"
-					<a.tab[hue:cyan] @click href='/api/' .active=(doc and api?)>
-						<svg src='./assets/icons/book.svg'>
-						<span> "API"
+					# <a.tab[hue:cyan] @click href='/api/' .active=(doc and api?)>
+					# 	<svg src='./assets/icons/book.svg'>
+					# 	<span> "API"
 					<a.tab[hue:blue] @click.emit('showide')>
 						<svg src='./assets/icons/play.svg'>
 						<span> "Try"
@@ -184,22 +203,29 @@ tag app-root
 						<svg src='./assets/icons/twitter.svg'>
 					if !home?
 						<a.tab.toggler
-							.active=($menu..focused?)
+							.toggled=($menu..focused?)
+							@touch.flag('active')
 							@mousedown.prevent=$menu.toggle!
 						>
 							<svg[h:32px] src='./assets/icons/menu.svg'>
 
 			<app-repl$repl id='repl' fs=fs route='/try' .nokeys=!repl?>
 			<app-search$search>
+			<div$toggler .toggled=($menu..focused?)
+				@touch.prevent.flag('active')
+				@pointerup.prevent=$menu.toggle!
+				>
+				<svg src='./assets/icons/menu.svg'>
 			
+			<app-menu$menu current=#state.page>
+
 			if home?
 				<home-page>
-			elif doc
-				<app-menu$menu current=doc>
-				# if doc.api?
-				# 	<app-api-entry[ml@md:$menu-width]  $key=doc.id data=doc .nokeys=repl? hash=document.location.hash> "yes!"
-				# else
-				<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl? hash=document.location.hash>
+			elif #state..page
+				# <app-menu$menu current=#state.page>
+				<app-document$doc[ml@md:$page-margin-left] $key=#state.page.id  data=#state.page  .nokeys=repl? hash=document.location.hash breadcrumbs=#state.path>
+			# elif doc
+			#	<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl? hash=document.location.hash>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
 			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
 

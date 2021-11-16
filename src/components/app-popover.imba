@@ -83,9 +83,13 @@ tag app-popover
 	get dims
 		data[mode or frame.tipMode] or data.lg
 
+	def reframing t
+		console.log 'touch',t
+
 	def relayout e
 		# log 'relayout',target,e..type
 		let dims = dims
+		# log 'relayout',dims
 		let op = offsetParent
 		if target and dims.ty != undefined and op
 			try
@@ -201,12 +205,13 @@ tag app-popover
 				# 	> '' # data.text
 			<div$end
 				>
-					<$box>
+					<$box.box>
 						if window.debug
 							<span
 								@touch.meta.stop.reframe('.overlays',0,1,0.25).sync(dims,'fx','fy')=relayout
 								@touch.alt.stop.reframe($box,100,0,1).sync(dims,'bax','bay')=relayout
 								@touch.reframe('.overlays',0,1,0.25).sync(dims,'tx','ty')=relayout
+								# @touch.reframe('.overlays',0,1,0.25)=reframing
 								> data.text
 							<div$debug[pe:auto pos:abs mt:-1lh l:50% fs:9px/1.2 ff:sans fw:400 c:white d:hflex ts:none x:-50% z:10px bg:black/70]>
 								css span d:block ws:nowrap c@hover:blue3 px:0.5 rd:xs h:1lh
@@ -224,6 +229,6 @@ tag app-popover
 								# <span @touch.reframe('.overlays',0,1,0.25).sync(dims,'fx','fy')=relayout> "{dims.fx},{dims.fy}"
 								
 						else
-							<span> data.text
+							<span[ff:notes]> data.text
 
 			# add debug box showing details

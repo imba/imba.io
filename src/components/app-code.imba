@@ -1,8 +1,8 @@
 import {highlight,clean} from '../util/highlight'
 import * as sw from '../sw/controller'
-import {ls,fs,File,Dir,api} from '../store'
+import {ls,fs,File,Dir} from '../store'
 import { getArrow,getBoxToBoxArrow } from "perfect-arrows"
-
+import API from '../api'
 import './app-arrow'
 import './app-popover'
 import '../repl/browser'
@@ -258,9 +258,11 @@ tag app-code-block < app-code
 			focusStyleRule(e) if rule and !#clickedRules
 			
 	def awakenToken el, token
-		let entity = api.getEntityForToken(token)
+		return unless token..match
+		let entity = API.getEntityForToken(token)
 		
 		if entity
+			console.log 'got entity?',token,entity
 			el.#entity = entity
 			el.flags.add('doc-ref')
 
@@ -565,11 +567,11 @@ tag app-code-file
 		.item outline:1px dashed blue4
 
 	<self[d:block pos:relative] .debug=(window.debug) @intersect.in.once.silent=intersect>
-		<div$sizer[pos:abs t:0 l:0 w:2vw h:2vh pe:none] @resize.silent.debounce(50ms)=relayout>
+		<div$sizer.sizer[pos:abs t:0 l:0 w:2vw h:2vh pe:none] @resize.silent.debounce(50ms)=relayout>
 		<code$code[ff:mono].{data.flags} @scroll.passive=scrolled>
 			<span$anchor[pos:abs]> " "
 			<pre$pre[w:100px ta:left].code innerHTML=data.html>
-		<$overlays[pos:abs t:0 l:0 h:100% w:100% pe:none].p3d>
+		<$overlays.overlays[pos:abs t:0 l:0 h:100% w:100% pe:none].p3d>
 			for hl in data.highlights
 				<app-popover frame=self data=hl>
 		if window.debug

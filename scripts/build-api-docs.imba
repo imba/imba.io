@@ -3,9 +3,10 @@ import nfs from 'fs'
 
 import * as ts from 'typescript/lib/tsserverlibrary'
 import imba-plugin from 'typescript-imba-plugin'
-import {SymbolFlags} from '../src/util/flags'
+import {SymbolFlags,ModifierFlags,CategoryFlags} from '../src/util/flags'
 
 import marked from 'marked'
+import mdn-api from './mdn-data/api/inheritance.json'
 
 const mdrenderer = new marked.Renderer
 let codeblocknr = 0
@@ -30,7 +31,7 @@ def mdrenderer.codespan code
 		return String(<api-link name=code> code)
 
 	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
-	return String(<app-code-inline data-lang='unknown'> escaped)
+	return String(<code> escaped)
 
 def mdrenderer.heading text, level
 	mdstate[text] = yes
@@ -149,12 +150,25 @@ def getDocs item,meta
 
 def getMeta sym
 	let tags = sym.imbaTags
-	tags.desc = getDocs(sym)
+
+	if let doc = getDocs(sym)
+		tags.desc = doc
+	let fname = getFileName(sym.valueDeclaration)
+
+	if fname.match(/typings/)
+		tags.imba = yes
+	
+	if fname.match(/\bdom\./)
+		tags.dom = yes
+
 	return tags
 	
 
-
 let globalSym = checker.resolve('globalThis')
+let globalEventTarget = checker.resolve('EventTarget')
+let cssns = checker.checker.getMergedSymbol(checker.resolve('imbacss'))
+
+cssns.#imbaName = 'css'
 
 let counter = 0
 const allEntries = []
@@ -167,6 +181,11 @@ const extras = {
 	"CSSStyleDeclaration": {shallow: yes}
 	DocumentAndElementEventHandlers: {shallow: yes}
 	GlobalEventHandlers: {shallow: yes}
+	Animatable: {flatten: yes, skip: yes}
+	InnerHtml: {flatten: yes, skip: yes}
+	ChildNode: {flatten: yes, skip: yes}
+	ParentNode: {flatten: yes, skip: yes}
+	WindowOrWorkerGlobalScope: {flatten: yes, skip: yes}
 }
 
 
@@ -192,8 +211,11 @@ class Entry
 	parent = null
 	name
 	kind = null
-	basetype = null
+	inherits = null
+	implements = null
 	flags = 0
+	mods = 0
+	cat = 0
 	tags
 	meta = {}
 	docs
@@ -202,7 +224,11 @@ class Entry
 		symbol.#entry = self
 		#symbol = symbol
 		#key = Symbol!
+		#extras = new Map
 		setup!
+	
+	get css?
+		cat & CategoryFlags.CSS
 
 	def setup
 		let sym = #symbol
@@ -216,31 +242,122 @@ class Entry
 
 		let extra = extras[name] or {}
 
-		# if name == '__type'
-		# 	return
+		if meta.deprecated or name == 'TObject'
+			return
 		
 		parent = sym == globalSym ? null : Entry.for(sym.parent or globalSym)
+
+		if extra.skip
+			return
+
+		if name.match(/^\w+__$/)
+			return
+
+		if flags & SymbolFlags.TypeParameter
+			return
+
 		
 		let d = getDocs(typ and typ.symbol or sym,meta)
+
+
+		mods = sym.valueDeclaration..modifierFlagsCache
+		mods ||= 0
+		mods ~= ts.ModifierFlags.HasComputedFlags
+
+		if checker.member(typ,'DOCUMENT_NODE')
+			mods |= ModifierFlags.NodeInterface
+
+		if parent and parent.#symbol == cssns
+			# console.warn "is in css namespace",name
+			# mods |= ModifierFlags.CSS
+			if sym.isStyleProp
+				cat |= CategoryFlags.CSSProperty
+				flags = SymbolFlags.Property
+				if meta.proxy
+					proxy = Entry.for(checker.styleprop(meta.proxy))
+					mods |= ModifierFlags.ImbaSpecific
+					delete meta.proxy
+
+			if sym.isStyleModifier
+				cat |= CategoryFlags.CSSModifier
+				flags = SymbolFlags.Modifier
+
+			if sym.isStyleType
+				cat |= CategoryFlags.CSSValueType
+				flags = SymbolFlags.Enum
+				name = name.slice(1)
+		
+		if parent and parent.css?
+			cat |= CategoryFlags.CSSValue
+			if flags & SymbolFlags.Property
+				flags = SymbolFlags.EnumMember
+				
+
+		# hack around certain addEventListener things
+		if parent..mods & ModifierFlags.NodeInterface and name.match(/^(add|remove)EventListener/)
+			return
+
+		# if mods
+		#	console.log 'checkFlags',name,mods,mods & ts.ModifierFlags.Readonly
+		if meta.custom or (meta.imba and sym.#kind != 'event')
+			mods |= ModifierFlags.ImbaSpecific
+			delete meta.custom
+			delete meta.imba
+
+
+		if meta.abstract
+			mods |= ModifierFlags.Abstract
 
 		let iface = flags & (32 | 64)
 
 		let base = iface and typ ? checker.checker.getBaseTypes(typ) : []
+
+		let mdn = mdn-api[name]
+
 		if base[0]
-			basetype = Entry.for(base[0].symbol)
-			implements = base.slice(1).map do Entry.for($1.symbol)
+			# tons of weird tweaks
+			if name == 'ChildNode'
+				console.log "childnode inherits?",base
+
+			unless name == 'Navigator'
+				inherits = Entry.for(base.shift!.symbol)
+
+			# go through the items to we implement
+			implements = for item in base
+				let iname = item.symbol.name
+				# let mdn = mdn-api[iname]
+
+				if mdn and mdn.implements.indexOf(iname) == -1 or extras[iname]..flatten or name == 'Navigator'
+					# console.log "{name} does not implement {iname} in mdn?? {!!mdn}",item.symbol.members.size
+					for [mname,member] of item.symbol.members
+						let sym = Object.create(member)
+						sym.parent = #symbol
+						sym.#entry = null
+						# console.log "sym!!",sym,sym.getDocumentationComment
+						if sym.getDocumentationComment
+							#extras.set(sym.escapedName,sym)
+						else
+							console.log 'weird symbol??',sym
+						# sym.escapedName,sym
+					continue
+
+				Entry.for(item.symbol)
 
 		if checker.member(typ,'stopImmediatePropagation') or name == 'ImbaTouch'
-			kind = 'eventinterface'
+			# kind = 'eventinterface'
+			mods |= ModifierFlags.EventInterface
 
 		
-		if name[0] == '@'
+		if name[0] == '@' and !css?
 			kind = 'modifier'
 			flags = SymbolFlags.Modifier
 
 		if sym.#kind == 'event'
 			kind = 'event'
-			
+			flags = SymbolFlags.Event
+
+		if name.match(/^[A-Z_]+$/)
+			mods |= ModifierFlags.Upcase
 
 		id = allEntries.push(self)
 
@@ -257,31 +374,25 @@ class Entry
 
 		# not for the namespaces?
 		let props = checker.props(checker.member(sym,'prototype'))
-
-		for set in [sym.members,sym.exports]
+		let added = {}
+		for set in [sym.members,sym.exports,#extras]
 
 			for [mname,member] of set
+
 				# console.log mname
 				continue if mname == 'prototype'
+
+				if added[mname]
+					console.log "was already added {name} {mname}"
+					continue
+
+				added[mname] = yes
 			
 				let imbalib? = !!getFileName(member.valueDeclaration).match(/typings/)
 				let meta = getMeta(member)
 
-				if meta.desc or meta.summary or !imbalib?
+				if meta.desc or meta.summary or Object.keys(meta).length > 1 or !imbalib? or member.#kind
 					Entry.for(member)
-
-		return self
-
-		console.log "loop over props for {name}"
-		for item in props
-			if item.imbaName == 'prototype'
-				continue
-			
-			let par = checker.checker.getMergedSymbol(item.parent)
-
-
-			# add duplicate entries for the different types
-			Entry.for(item)
 
 		return self
 
@@ -302,6 +413,8 @@ class Entry
 		if typeof data == 'object'
 			let o = []
 			for own k,v of data
+				continue if v isa Array and v.length == 0
+
 				unless v == null
 					o.push "{k}:{stringify(v,ctx)}"
 
@@ -325,26 +438,34 @@ def serialize entries = allEntries
 		item.stringify(item,ctx)
 
 	out += ctx.join(',\n') + ']}'
-	console.log out
+	# console.log out
 	return out
 
 
 if true
 	let arr = checker.sym('Array')
 	let sch = checker.sym('imba.Scheduler')
-	let inc = ['UIEvent','imba.Scheduler','imba.Component','ImbaIntersectEvent','ImbaHotkeyEvent','ImbaResizeEvent','ImbaTouch','ImbaEvents']
-	# console.log arr.parent.escapedName
-	# inc = ['imba.Component']
+	let inc = ['UIEvent','imba.Scheduler','imba.Component','ImbaEvents','HTMLElementTagNameMap','imbacss','Math','String','Number']
+	# ,'ImbaIntersectEvent','ImbaHotkeyEvent','ImbaResizeEvent','ImbaTouch','ImbaEvents'
 
 	let events = checker.props('ImbaEvents')
+
+	inc.push('Set','Map','WeakSet','WeakMap')
+
 	for ev in events
 		ev.#kind = 'event'
 
+
+	for cssprop in checker.styleprops
+		cssprop.#kind = 'styleprop'
+
 	for ref in inc
+		# console.log 'ref',ref,checker.sym(ref)
 		Entry.for(checker.sym(ref))
 
 	let js = serialize(allEntries)
 	let dest = np.resolve(__dirname,'..','public','reference.js')
 	nfs.writeFileSync(dest,js,'utf8')
+	console.log "wrote {js.length / 1000}kb"
 
 process.exit(0)

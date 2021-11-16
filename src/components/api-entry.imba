@@ -1,4 +1,6 @@
+import { @setting } from '../util/decorators'
 import {api,ls} from '../store'
+import API,{icons} from '../api'
 import type {Entity} from '../api'
 
 def template str
@@ -73,7 +75,6 @@ css
 	h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0 bdb:1px solid hue7
 	h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 
 	h4 fs:16px/1.2 fw:500 pb:2 bwb:0px mb:0
-	a c:blue6
 	b fw:700
 	a em fw:500 font-style:normal
 	
@@ -82,44 +83,9 @@ css
 		c:hue7 d:block w:max-content
 		@hover td:none c:hue6
 
-	.link hue:blue
-	.interface hue:blue
-	.eventinterface hue:blue
-	.eventmodifier,.modifiers hue:amber
-	.event,.events hue:violet
-	.property,.properties hue:cooler
-	.method hue:violet
-	.style,.styleprop hue:purple
-	.stylemod hue:purple
-	.property hue:blue
-	# .property.custom hue:yellow
-	# .property.getter hue:sky
 	a.link c:hue7
 	
 	app-code-inline d:inline-block
-	
-	.table
-		# d:table w:100%
-		# table-layout:fixed ws:normal max-width:100%
-		d:vgrid
-		
-		> d:contents
-	
-	.breadcrumb
-		fw:400 mt:-4px fs:sm
-		& > span
-			c:gray5
-			@last @after d:none
-			@after
-				c:gray4
-				fw:600
-				fs:xs
-				content: " > "
-			a fw:500
-		.self c:gray5
-			a c:inherit
-		# bdb:1px solid gray3 pb:1 mb:1
-			
 		
 	.pill
 		px:4px py:3px rd:md bg:hue1 c:hue7 d:inline-block fs:sm- lh:14px
@@ -153,6 +119,7 @@ css
 		mb:2 @empty:0 fs:sm
 		d:grid gtc: max-content auto
 		bdt:1px solid gray2/70
+
 	h3 + dl bdt:0px
 	
 	api-links
@@ -166,13 +133,17 @@ css
 		h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 mt:6
 		h4 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 mt:6
 		p my:4 @only:0
-		a c:blue6
+		# a c:blue6
 		app-code-inline d:inline-block
 		
 	.markdown >>>
 		.h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0 bdb:1px solid hue7
 		.h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 
 		.h4 fs:16px/1.2 fw:500 pb:2 bwb:0px mb:0
+
+	api-li a
+		@before o:0.8 fw:400 c:hue9
+		@after o:0.8 fw:400 c:hue9
 
 tag api-el
 	
@@ -193,21 +164,22 @@ tag api-link < api-el
 	
 	def hydrate
 		let text = textContent
-		data = api.lookup(text) or {displayName: text}
+		let path = dataset.path or text
+		data = API.lookup(path) or {displayName: text}
 		# console.warn "hydrating!!!",text,data
 		
-	<self.link.{data.kind} .custom=data.custom?>
+	<self.link.{data.flagstr}>
 		<a href=data.href data-qualifier=data.qualifier>
-			<span> <slot> data.displayName 
+			<span> <slot> dataset.title or data.displayName
 
 tag api-pills
 	<self>
-		if data.tags..abstract
+		if data.kind.abstract
 			<div.abstract> "abstract"
+		if data.kind.readonly
+			<div.readonly> "readonly"
 		if data.idl?
 			<div.idl> "idl"
-		if data.custom?
-			<div.source> "imba"
 
 tag api-li < api-el
 	prop href
@@ -215,14 +187,27 @@ tag api-li < api-el
 	prop name
 
 	css d:hflex ja:center ws:nowrap jc:flex-start min-height:1rh
-		a c:inherit d:hflex ai:baseline ws:pre
+		a d:hflex ai:baseline ws:pre
 			i font-style:normal
-			c:hue6
 			text-underline-offset:2px
-			@hover td:underline
 		
 		.icon
-			rd:md p:1 c:hue6
+			@before fs:11px/1 pos:absolute t:100% l:100% c:hue6 fw:bold
+				ts:-1px 0px 0px white, 0px -1px 0px white, -1px -1px 0px white
+				x:-50% y:-50%
+				ml:-0.1icon
+				mt:-0.1icon
+		
+		&.inherited .icon o:0.8
+			@before content:"▲"
+		&.event .icon @before content:""
+		&.custom .icon o:1
+			@before content:"★"
+
+		&.modifier a suffix:$detail
+		&.event a suffix:$detail
+		&.css a suffix:$detail
+		&.mdn a suffix:""		
 
 		.name px:1
 		.summary c:gray5 px:1 ws:nowrap of:hidden text-overflow:ellipsis w:50px
@@ -232,6 +217,10 @@ tag api-li < api-el
 		&.mdn hue:blue
 		&.short .qf d:none
 		.pills ws:nowrap d:hflex ja:center
+
+		&.head
+			&.method a prefix:$qualifier "."
+		
 		
 	set icon value
 		#icon = value
@@ -239,41 +228,22 @@ tag api-li < api-el
 	get icon
 		#icon or (mdn ? import('codicons/bookmark.svg') : data.icon)
 
-	<self .{data.kind} .mdn=mdn .custom=data.custom? .idl=data.idl? .getter=data.getter?>
+	<self .{data.flagstr} .mdn=mdn>
+		css $qualifier:{"'{data.qualifier}'"} $detail:{"'{data.detail}'"}
 		<span.icon> <svg src=icon>
+
 		<a.name href=(href or (mdn ? data.mdn : data.href)) target=(mdn ? '_blank' : undefined)>
 			if name
 				<em> name
 			elif data.member?
-				<span.qf> data.owner.displayName
-				<span.qf> "."
 				<em> data.displayName
-				if data.method?
+				if data.callable?
 					<em> "()"
-			elif data.event?
-				<em> data.displayName
-				# <span.kind> "event"
-			elif data.eventmod?
-				<span.qf> data.owner.modifierPrefix + "."
-				<em> data.displayName
-				<span.detail> data.detail
-				# <span.kind> "event modifier"
-			elif data.stylemod?
-				<em> data.displayName
-				# <span.kind> "style modifier"
-			elif data.styleprop?
-				<em> data.displayName
-				if data.alias
-					<i[c:gray4].qf> " / {data.alias}"
-				# <span.kind> "css property"
 			else
 				<em> data.displayName
+				if data.callable?
+					<em> "()"
 		<api-pills.pills data=data>
-		# <.pills>
-		#	if data.custom?
-		#		<span.source> 'imba'
-		#	if data.idl?
-		#		<span.idl> 'idl'
 		<.summary.flex innerHTML=data.summary>
 		
 
@@ -319,56 +289,14 @@ tag api-section
 		
 	<self> <slot>
 	
-tag api-dl
-	prop items = []
-	prop linkflags
-	
-	<self> <dl>
-		for item in items
-			<dt> <api-link.pill data=item .{linkflags}>
-			<dd.markdown innerHTML=item.summary>
-
-tag api-props < api-section
-
-	name = 'Properties'
-	
-		
-	<self .{name.toLowerCase!} [d:none]=(data.length == 0)>
-		<h3> <slot name='head'> name
-		<slot>
-		<dl> for item in data.own
-			<dt> <api-link.pill data=item> # item.displayName
-			<dd.markdown innerHTML=item.summary>
-		<slot name='foot'>
-		let inherited = data.inherited
-		if inherited.length
-			<api-parents data=data.owner members=inherited> "This interface inherits {name.toLowerCase!} of "
-
-tag api-entry-properties < api-props
-	<self>
-		<api-props name='Properties' data=data.properties>
-			
-tag api-entry-methods < api-props
-	
-tag api-entry-events < api-section
-	<self.events>
-		<h3> <slot name='head'> 'Events'
-		<dl> for item in data.events
-			<dt> <api-link.pill data=item> # <.pill> item.displayName
-			<dd.markdown innerHTML=item.summary>
-			
-tag api-entry-modifiers
-	
-	<self>
-		<api-props name='Modifiers' data=data.modifiers>
-
-
 tag api-docs
-	<self.markdown[d@empty:none]>
-		if data.guide
+	<self.html[d@empty:none]>
+		if data.#article
+			<api-doc-section[d:contents] data=data.#article body-only=yes>
+		elif data.guide
 			<api-doc-section[d:contents] data=data.guide body-only=yes>
-		elif data.docs
-			<div innerHTML=data.docs>	
+		elif data.desc
+			<div innerHTML=data.desc>	
 		elif data.summary
 			<div.summary innerHTML=data.summary>
 
@@ -382,45 +310,11 @@ tag api-entry-examples < api-section
 
 tag api-entry
 	css hue:blue
-		1rh:40px
 		
 		h1
 			d:hflex ai:center
 			svg size:32px
 
-		api-li
-			# & + api-li bdt:1px solid #efefef
-			bdb:1px solid #efefef
-			>>>
-				a fw:500
-				.qf d:none
-				.icon px:0
-				.name fs:15px c:hue7
-				.summary fs:13px c:gray5
-				.detail c:hue7/80 fw:400 pl :1 d@empty:none
-				.pill fs:xxs py:0px hue:gray order:1 ml:1 c:gray5
-				.pills order:1 ws:nowrap hue:yellow c:default
-					> * fs:11px/1 order:1 ml:1 rd:sm px:4px py:2px bg:hue1 c:hue7/80 fw:500
-					.source hue:sky
-					.abstract hue:gray c:gray5
-					.idl hue:blue
-					
-		api-li.head
-			bdb:none
-			>>>
-				.icon size:32px c:hue6
-					svg size:32px c:hue6
-				fs:inherit
-				c:gray7
-				# a c:gray7 td@hover:none
-				a@hover td:none
-				.qf d:inline fw:400
-				.summary d:none
-				.pills d:none
-				.detail fw:400
-				
-			&.eventmodifier >>> .qf d:none
-					
 				
 		.grouping c:gray4 fs:xxs w:max-content
 			pos:absolute
@@ -459,180 +353,175 @@ tag api-entry
 			# if all.length <log-tag> mine.length
 	<self>
 
-tag api-interface-entry < api-entry
-	
-	<self>
-		<.breadcrumb>
-			<span> <a href='/api'> "API"
-			for item in data.breadcrumb
-				<span> <api-link data=item .self=(item == data)>
-			# for item in data.breadcrumb
-			#	<span> <api-link data=item>
-		<h1>
-			<api-li.head data=data>
-		<api-docs data=data>
-		# <dl> for item in data.props.domprops
-		# 	<dt> <api-link.pill data=item> # item.displayName
-		# 	<dd.markdown innerHTML=item.summary>
-		# <api-props name='Properties' data=data.properties.domprops>
+const titles = {
+	properties: 'Properties'
+}
+
+tag api-list
+	mode = 'list'
+
+	def hydrate
+		let text = textContent
+		let parts = text.split(' ')
+		let q = parts.slice(1).join(' ')
+		##key = text
+		data = API.lookup(parts[0])
+		items = data.all.sorted
+		items = items.filter(q) if q
+		data = data.symbol
+
+	set path value
+		let parts = value.split(' ')
+		let q = parts.slice(1).join(' ')
+		data = API.lookup(parts[0])
+		items = data.all.sorted
+		items = items.filter(q) if q
+		data = data.symbol
+
+	def resized
+		yes
+
+	def render
+		let items = self.items
+
+		<self.api.list .{mode} .empty=(items.length == 0) .{mode} @resize.silent=resized>
+			<div.items> for item in items
+				<api-li data=item $key=item.id>
+
+tag api-grid < api-list
+	mode = 'grid'
+
+tag api-symbols
+	name
+	data\Entity
+	kind = 'properties'
+	mode = 'full'
+
+	@setting(local:1) showInherited
+
+	get #key do ##key or "{kind}-list"
+
+	css &.empty d:none
+
+	def hydrate
+		let text = textContent
+		let parts = text.split(' ')
+		let q = parts.slice(1).join(' ')
+		##key = text
+
+
+		data = API.lookup(parts[0])
 		
-		<api-section>
-			<h3> "Properties"
-			props(data.properties,data,"This interface inherits properties of ")
+		mode = dataset.mode
+		let sym = closest('api-symbol-entry')..data
 
-		<api-section>
-			<h3> "Methods"
-			props(data.methods,data,"This interface inherits methods of ")
+		items = data.all.sorted
+		if dataset.own
+			items = items.own
 
-		let ifaces = data.props.interfaces
-		if ifaces.length
-			<api-section>
-				<h3> "Interfaces"
-				<div> for item in ifaces
-					<api-li data=item>
-				# props(ifaces,data,"This interface inherits methods of ")
+		items = items.filter(q) if q
+
+	def resized
+		yes	
+
+	def render
+		let items = self.items or data.all[kind].sorted
+
+		let own = items.own
+		let len = items.length
+		let inherited = items.length - own.length
+
+		unless showInherited
+			items = own
+
+		css 
+			api-li order:0 .upcase:10 .custom:-10
+			api-li.inherited.modifier order:5
+
+		if showInherited
+			css api-li.inherited >>> a
+				@before o:0.8 fw:400 c:hue9
+				@after o:0.8 fw:400 c:hue9
+
+		<self[mt:10].api .empty=(len == 0) .many=(len > 10) .{mode} @resize.silent=resized>
+			<header>
+				<h3[d:hflex]>
+					<span.name[fl:1 tt:capitalize]>
+						<slot> title or name or titles[kind] or kind
+
+					if inherited > 0
+						<label[fs:sm c:gray6 us:none d:hflex ja:center]>
+							<input[mx:1 mb:1px] type='checkbox' bind=showInherited>
+							<span> "Inherited"
+			<.list .grid=(flags.contains('compact'))> <div.items>
+				for item in items
+					<api-li data=item $key=item.id .inherited=(item.owner != items.owner)>
+
+tag api-symbol-entry < api-entry
+
+	<self.api>
+		# <.breadcrumb>
+		# 	# <span> <a href='/api'> "API"
+		# 	for item in data.breadcrumb
+		# 		<span> <a href=item.href .self=(item == data)> item.navName 
 		
-		# <api-props name='Getters' data=data.getters>
-		# <api-props name='Properties' data=data.properties>
-		# <api-props name='Methods' data=data.methods>
+		if data.navName != 'API'
+			<h1[pt:4]>
+				<api-li.head[fl:0 w:auto] data=data>
+				if data.mdn
+					<a[fs:xs c:blue6 mt:16px ml:1] href=data.mdn target='_blank'> "MDN"
 
-tag api-ns-entry < api-interface-entry
+		if data.kind.article
+			<api-doc-section[d:contents] data=data.meta.article body-only=yes>
 
-tag api-eventinterface-entry < api-interface-entry
-	<self>
-		breadcrumbs!
-		<h1> <svg src=data.icon/> data.name
-		<api-docs data=data>
-		# <api-entry-modifiers data=data>
-		
-		# props("Modifiers", data.modifiers.own,data.modifiers.inherited)
-		
-		<api-section>
-			<h3> "Modifiers"
-			props(data.modifiers,data,"This interface inherits modifiers from ")
+		elif data.ns?
+			<api-docs data=data>
+			if !data.guide
+				<api-symbols kind='namespaces' data=data.all.namespaces>
+				<api-symbols kind='variables' data=data.all>
+				<api-symbols kind='functions' data=data.all>
+				<api-symbols kind='interfaces' data=data.all>
 
-		<api-section>
-			<h3> "Events"
-			<div[fs:sm]> for item in data.events
-				<api-li data=item>
+		elif data.event?
+			<api-docs data=data>
+			<api-symbols kind='modifiers' data=data.modifiers>
+			<api-symbols kind='properties' data=data.valuetype.all>
+				<a href=data.valuetype.href> data.valuetype.name
+				<span> " interface"
+			<api-entry-examples data=data>
 
-
-			
-		<api-section>
-			<h3> "Properties"
-			props(data.properties)
-
-			# <div[fs:sm]>
-			# 	let all = data.modifiers.unique
-			# 	let owner = data
-			# 	for item in all
-			# 		if item.owner != owner
-			# 			<div.grouping> "Inherited from {<a> (owner = item.owner).displayName}"
-			# 		<api-li data=item>
-			# <api-parents[] data=data members=data.modifiers.inherited> "Additional modifiers are #inherited from "
-					
-		# <api-entry-events data=data>
-		# <api-props name='Properties' data=data.properties>
-		# <api-props name='Methods' data=data.methods>
-		<api-entry-examples data=data>
-		
-
-tag api-property-entry < api-entry
-	
-	<self>
-		breadcrumbs!
-		<h1>
-			<svg src=data.icon>
-			<span[fw:normal]> <api-link data=data.owner>
-			<span> "." + data.displayName
-		<api-docs data=data>
-		# <div[my:4]> "Other properties on {<api-link data=data.owner>} include "
-		# 	for item in data.siblings
-		# 		<api-link[mr:4px].inherited .pill data=item>
-	
-tag api-method-entry < api-entry
-	
-	<self>
-		breadcrumbs!
-		<h1>
-			<svg src=data.icon>
-			<span[fw:normal]> <api-link data=data.owner>
-			<span> "." + data.displayName
-		<api-docs data=data>
-		<div> "Other methods on {<api-link data=data.owner>} include "
-			for item in data.siblings
-				<api-link[mr:4px].inherited .pill data=item>
-	
-tag api-event-entry < api-entry
-	<self>
-		<.breadcrumb>
-			<span> <a href='/api'> "API"
-			<span> <api-link namepath="/api/Element">
-			<span> "Events"
-		<h1>
-			<api-li.head data=data>
-			# <span[fw:normal suffix: " / " ]> <api-link data="/api/Element">
-			# <span> "{data.displayName}"
-			# <span[fw:normal c:gray5]> " event"
-			
-		# <p> "The object passed into the event handler for {data.name} is a {<api-link data=data.type>}"
-		<api-docs data=data>
-		
-		unless data.meta.Syntax
-			<api-section>
-				# only if there is no syntax from the other
-				<h3> "Syntax"
-				<app-code-block raw="<div @{data.displayName}=handler>">
-		
-		<api-section>
-			<h3> "Modifiers"
-			props(data.modifiers,data.type,"{data.type.name} inherits modifiers of ")
-			
-		# <api-entry-modifiers data=data.type>
-		
-		if data.name == 'touch' or true
-			<api-section>
-				<h3> "{<api-link data=data.type>} Properties"
-				props(data.properties,data.type,"{data.type.name} inherits properties of ")
-
-		# <api-section>
-		# 	<h3> "{<api-link data=data.type>} Methods"
-		# 	props(data.methods,data.type,"{data.type.name} inherits methods of ")
-
-		# <api-props name='Properties' data=data.properties>
-		# 	<p slot='head'>
-		# 		<api-link data=data.type>
-		# 		<span> " interface"
-	
-		<api-entry-examples data=data>
-
-tag api-eventmodifier-entry < api-entry
-	<self>
-		<.breadcrumb>
-			<span> <a href='/api'> "API"
-			<span> <a href=data.owner.href> data.owner.displayName
-			<span> "Modifiers"
-		<h1>
-			# <span[fw:normal suffix: " › "]> <api-link data=data.owner>
-			# <span[fw:normal suffix: " › "]> <api-link data=data.owner>
-			<api-li.head.short data=data>
-			# <svg[] src=data.icon>
-			# <a href=data.owner.href> data.owner.modifierPrefix
-			# <span> "." + data.displayName
-			# <span> data.detail
-		<api-docs data=data>
-		
-		unless data.meta.Syntax
+		elif data.kind.css and data.kind.property
+			<api-docs data=data>
 			<api-section>
 				# only if there is no syntax from the other
 				<h3> "Syntax"
-				<app-code-block raw=snippets.eventmodifier(data)>
+				# <app-code-block raw=snippets.cssprop(data)>
+				if data.alias
+					<app-code-block raw=snippets.cssaliased(data)>
+				else
+					<app-code-block raw=snippets.cssprop(data)>
 
-		<api-entry-examples data=data>
+		elif data.kind.property
+			<api-docs data=data>
+			if data.valuetype and data.kind.readonly
+				<p> "The {data.qualifiedName} us a read-only property that returns a {<api-link data=data.valuetype>}"
+				# <div> "VALUETYPE!!!"
+				# <api-list items=data.valuetype.own>
+				# <api-symbols kind='methods' data=data.valuetype.all>
+		else
+			<api-docs data=data>
+			<api-symbols kind='implementors' data=data.all items=(data.implementors or [])>
+			<api-symbols kind='events' data=data.own>
+			<api-symbols kind='modifiers' data=data.all>
+			<api-symbols kind='properties' data=data.all>
+			<api-symbols kind='methods' data=data.all>
+			<api-entry-examples data=data>
+			
 
 tag api-entry-toc < api-el
 	
 	css
+		1rh:24px
 		h3 fs:14px/1.2 fw:500 pb:1 bwb:0px mb:1 bdb:1px solid hue7
 		
 		api-li fs:14px
@@ -651,57 +540,30 @@ tag api-entry-toc < api-el
 	
 	
 	<self[pt:0px]>
-	
-		if data.kind == 'event'
-			<section.amber>
-				<h3> "Supported Modifiers"
-				<div> list(data.modifiers,data.type)
-			
-			<section.violet>
-				<h3> "Related Events"
-				<div> list(data.related,data.type)
-		
-		if data.kind == 'eventmodifier'
-			<section.amber>
-				<h3> "Related Modifiers"
-				<div> list(data.related,data.owner)
-		
-		if data.interface?
-			if data.up
-				<section.blue>
-					<h3> "Inheritance"
-					<div>
-						for item in data.parents.slice!.reverse!
-							<api-li data=item icon=api.icons.down>
-						<api-li[hue:gray my:1] data=data>
-						<div> for item in data.descendants
-							<api-li data=item icon=api.icons.right> # list(data.parents,data.type)
-		
-		if data.kind == 'interface'
-			<section.violet>
-				<h3> "Related Interfaces"
-				<div> list(data.related,data.type)
-			
-		# if data.kind == 'eventinterface'
+		# if data.kind.event
 		# 	<section.amber>
 		# 		<h3> "Supported Modifiers"
 		# 		<div> list(data.modifiers,data.type)
 		# 	
 		# 	<section.violet>
 		# 		<h3> "Related Events"
-		# 		<div> list(data.events,data.type)
-				
-		if data.kind == 'styleprop'
-			
-			<section.violet>
-				<h3> "Related"
-				<div> list(data.related)
-				
-		if data.kind == 'stylemod'
-			<section.violet>
-				<h3> "Related"
-				<div> list(data.related)
+		# 		<div> list(data.related,data.type)
 		
+		# if data.kind == 'eventmodifier'
+		# 	<section.amber>
+		# 		<h3> "Related Modifiers"
+		# 		<div> list(data.related,data.owner)
+		
+		if data.kind.interface
+			if data.proto
+				<section.blue>
+					<h3> "Hierarchy"
+					<div>
+						for item in data.protos
+							<api-li data=item icon=icons.down>
+						<api-li[hue:gray my:1] data=data>
+						<div> for item in data.inheritors
+							<api-li data=item icon=icons.right> # list(data.parents,data.type)
 		<section.blue>
 			<h3> "Resources"
 			<div>
@@ -717,230 +579,3 @@ tag api-entry-toc < api-el
 		<div> for item,i in items
 			<a.pill.lg[mr:1 px:1.5] .{item.kind} .inherited=(item.owner != owner) href=item.href>
 				<span> item.displayName
-			# <api-link[mr:1] data=item .inherited=(item.owner != data)>
-			
-tag api-styleprop-entry < api-entry
-	
-	get example
-		ls("/examples/css/{data.name}.imba") or ls("/examples/css/{data.alias}.imba")
-
-	<self>
-		<.breadcrumb>
-			<span> <a href='/css/syntax'> "CSS"
-			<span> <a href='/css/properties'> "Properties"
-		<h1>
-			<span.name> data.displayName
-			if data.alias
-				<span.alias[c:gray4 mx:3 fw:400 prefix:'/ ']> data.alias
-
-		<api-docs data=data>
-		
-		if !data.meta.Syntax and !data.guide
-			<api-section>
-				# only if there is no syntax from the other
-				<h3> "Syntax"
-				# <app-code-block raw=snippets.cssprop(data)>
-				if data.alias
-					# <p> "For this property you can also use the alias:"
-					<app-code-block raw=snippets.cssaliased(data)>
-				else
-					<app-code-block raw=snippets.cssprop(data)>
-		
-		<api-section>
-			<h3> "Related"
-			<div[fs:sm d:vflex]> for item in data.related
-				<api-li data=item>
-			# props(data.related,data.type,"{data.type.name} inherits properties of ")
-					
-		if example
-			<api-section>
-				<h3> "Examples"
-				<app-code-block href=(example.href)>
-					
-
-tag api-stylemod-entry < api-entry
-	
-	get example
-		ls("/examples/css/{data.name}.imba") or ls("/examples/css/{data.alias}.imba")
-
-	<self.stylemod>
-		<.breadcrumb>
-			<span> <a href='/css/syntax'> "CSS"
-			<span> <a href='/css/modifiers'> "Modifiers"
-		<h1>
-			<span.name> data.displayName
-		<api-docs data=data>
-		
-		unless data.meta.Syntax
-			<api-section>
-				# only if there is no syntax from the other
-				<h3> "Syntax"
-				<app-code-block raw=snippets.stylemod(data)>
-					
-		if example
-			<api-section>
-				<h3> "Examples"
-				<app-code-block href=(example.href)>
-
-
-		
-tag api-modifiers-list
-	<self>
-		for data in api.kinds.eventinterface when data.modifiers.own.length
-			<api-section.events>
-				<h3> "{<a href=data.href> data.name} Modifiers"
-				<dl> for item in data.modifiers.own
-					<dt> <api-link.pill data=item> # item.displayName
-					<dd.markdown innerHTML=item.summary>
-
-		# 	<slot name='foot'>
-		# <api-props name='Modifier reference' data=api.Event.modifiers>
-		
-		
-tag api-styleprop-list
-	
-	def hydrate
-		# not called when hydrated?
-		items = api.kinds.styleprop.sort do(a,b) a.shortName > b.shortName ? 1 : -1
-		
-	<self>
-		<api-section.style>
-			<h3> "Shorthands and Custom Properties"
-			<div>
-				css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
-				for item in items when (item.alias or item.custom?)
-					<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-						<span.pill[bg:hue1/100 fw:500]> item.shortName
-						<span[c:gray5/80 mx:1 ofx:hidden text-overflow:ellipsis fs:xs]> item.aliasFor
-
-		
-		<api-section.style>
-			<h3> "Style Properties"
-			<div>
-				css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
-				let group = ''
-				for item in items
-					let chr = item.name[0]
-					if group != chr
-						<div[w:3col fw:600 d:hflex]>
-							<span[tt:uppercase px:0.5]> "{group = chr}"
-					<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-						<span.pill[bg:hue1/50 fw:500]> item.name
-						if item.alias
-							<span.alias[c:gray5/80 mx:1]> item.alias
-		
-
-
-tag Stylemods
-	<self>
-		css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
-		for item in data
-			<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-				<span.pill[bg:hue1/50 fw:500]> item.name
-
-tag app-reference-page
-	
-	<self>
-		<api-section>
-			<h3> "Interfaces"
-			<api-entry-list.collapsed.interface items=api.kinds.interface.concat(api.kinds.eventinterface)>
-			# <api-entry-list kind='eventinterface'>
-			
-		<api-section>
-			<h3> "Events"
-			<api-entry-list.collapsed.event items=api.kinds.event>
-			
-		<api-section>
-			<h3> "Event Modifiers"
-			<api-entry-list.collapsed.event items=api.kinds.eventmodifier qualifier='qualifier'>
-			
-
-tag api-entry-list
-	kind
-	group
-	items = null
-	qualifier
-	
-	def hydrate
-		kind = dataset.kind
-		group = dataset.group
-		load!
-		
-	def load
-		return if items
-		items = api.kinds[kind]
-		items = items.sort do(a,b) a.name > b.name ? 1 : -1
-		if group
-			items = items.filter do $1.tags[group]
-		let names = items.map do $1.name
-		items = items.filter do(item,i) names.indexOf(item.name) == i
-	
-	def setup
-		load!
-		
-	css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
-		
-		&.collapsed
-			d:hflex jc:flex-start flw:wrap
-		
-	<self .{kind}>
-		for item in items
-			<a[mr:1 fs:sm ws:nowrap] .{item.kind} href=item.href>
-				<span.pill[bg:hue1/50 fw:500]>
-					if qualifier
-						<span.qf> item[qualifier]
-					item.displayName
-
-tag api-stylemod-list
-	def hydrate
-		items = api.kinds.stylemod.sort do(a,b) a.name > b.name ? 1 : -1
-		if dataset.group
-			items = items.filter do $1.tags[dataset.group]
-		
-	<self.stylemod>
-		css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
-		for item in items
-			<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-				<span.pill[bg:hue1/50 fw:500]> item.name
-				
-tag api-stylemod-section
-	
-	def hydrate
-		# not called when hydrated?
-		items = api.kinds.stylemod.sort do(a,b) a.name > b.name ? 1 : -1
-		
-	def grouped name
-		items.filter do $1.tags[name]
-		
-	<self>
-		# <api-section.style>
-		# 	<h3> "Special Modifiers"
-		# 	<div>
-		# 		css d:grid gtc:1fr 1fr 1fr rg:2 cg:1
-		# 		for item in items when item.custom?
-		# 			<a[mr:1 fs:sm ws:nowrap d:hflex ofx:hidden] href=item.href>
-		# 				<span.pill[bg:hue1/100 fw:500]> item.name
-
-		<api-section.style>
-			<h3> "Media Modifiers"
-			<Stylemods data=grouped('media')>
-			
-		<api-section.style>
-			<h3> "Pseudo-classes"
-			<Stylemods data=grouped('pseudoclass')>
-			
-		<api-section.style>
-			<h3> "Pseudo-elements"
-			<Stylemods data=grouped('pseudoelement')>
-			
-		<api-section.style>
-			<h3> "Special Modifiers"
-			<Stylemods data=grouped('custom')>
-			
-		# for group in ['media','pseudoclass','pseudoelement']
-		# 	<api-section.style>
-		# 		let items = self.items.filter do $1.tags[group]
-		# 		<h3> group
-		# 		<Stylemods data=items>
-		
-		

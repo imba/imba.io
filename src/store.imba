@@ -1,11 +1,14 @@
 import {highlight} from './util/highlight'
-
+import Locals from './util/locals'
 export const raw = global['content.json']
 export const files = []
 export const paths = {}
 export const groups = {}
 export const types = {}
-import {api} from './api'
+export const hrefs = {}
+import API from './api'
+import {SymbolFlags as S,ModifierFlags as M,CategoryFlags as C} from './util/flags'
+
 import {QuickScore} from "quick-score"
 
 global.paths = paths
@@ -17,50 +20,6 @@ let counter = 1
 const extToLanguage =
 	js: 'javascript'
 	html: 'html'
-
-class LocalsProxy
-	static def for key, storage = global.localStorage
-		new Proxy({},new self(key,storage)) 
-
-	constructor key, storage
-		ns = key
-		storage = storage
-		cache = {}
-
-	def serialize val, key
-		JSON.stringify(val)
-
-	def deserialize val, key
-		JSON.parse(val)
-
-	def pathify key
-		ns + ':' + key
-
-	def get target, key
-		if cache.hasOwnProperty(key)
-			return cache[key]
-
-		let path = pathify(key)
-		let raw = storage.getItem(path)
-
-		if raw != undefined
-			return cache[key] = deserialize(raw,key)
-		return undefined
-
-	def set target, key, value
-		let cached = cache[key]
-		let path = pathify(key)
-		let raw = storage.getItem(path)
-
-		if cached != value
-			if value == undefined
-				storage.removeItem(path)
-				delete cache[key]
-			else
-				storage.setItem(path,serialize(value,key))
-			cache[key] = value
-			# global.imba..commit!
-		return yes
 
 class Entry
 	prop dirty @set imba.commit!
@@ -92,6 +51,9 @@ class Entry
 		flags = (data.flags || []).concat("entry-{id}")
 		flagstr = flags.join(' ')
 
+		if options.href
+			hrefs[#href = options.href] = self
+
 		groups[type] ||= []
 		groups[type].push(this)
 
@@ -102,9 +64,13 @@ class Entry
 				return item
 		else
 			self.children = []
+		
+		if self isa Doc or self isa Guide
+			hrefs[href] = self
+
 
 	get locals
-		#locals ||= LocalsProxy.for(path)
+		#locals ||= Locals.for(path)
 		
 	get icon
 		import("codicons/book.svg")
@@ -119,13 +85,19 @@ class Entry
 		parent ? (parent.path + '/' + name) : ''
 
 	get href\string
-		options.href or path
+		#href or options.href or data.href or (parent ? parent.href + '/' + name : name)
 
 	get title
 		data.title or basename.replace(/\-/g,' ')
 
 	get basename
 		data.name.replace(/\.\w+$/,'')
+
+	get navName
+		data.title or title
+
+	get qualifiedTitle
+		title
 
 	get folders
 		children.filter(do $1 isa Dir)
@@ -134,7 +106,10 @@ class Entry
 		children.filter(do $1 isa File)
 	
 	get docs
-		children.filter(do $1 isa Doc)
+		#docs or children.filter(do $1 isa Doc)
+
+	get navItems
+		#navItems or docs
 
 	get sections
 		children.filter(do $1 isa Section)
@@ -153,7 +128,7 @@ class Entry
 		#parents ||= parent.parents.concat(parent)
 		
 	get breadcrumb
-		parents
+		#nav ? #nav.breadcrumb : (parent ? parent.breadcrumb.concat(self) : [self])
 
 	get prev
 		return null unless parent
@@ -182,13 +157,19 @@ class Entry
 		parent ? parent.children[parent.children.indexOf(self) + 1] : null
 
 	def childByName name
-		children.find(do $1.name == name) #  and !($1 isa Section)
+		children.find(do $1.name == name) or (doc ? doc.childByName(name) : null) #  and !($1 isa Section)
 		
 	def childByHead name
 		children.find(do $1.head == name) #  and !($1 isa Section)
 		
 	get displayName
 		head
+
+	get searchTitle
+		title
+
+	get searchText
+		searchTitle
 
 
 export class File < Entry
@@ -281,22 +262,19 @@ export class Guide < Entry
 
 export class Markdown < Entry
 	
-	get searchTitle
-		# #searchTitle ||= parents.concat(self).slice(1).map(do $1.title).join(" ")
-		#searchTitle ||= [self].map(do $1.title).join(" ")
-		
-	get searchText
-		#searchText ||= if true
-			(title + ' ' + legend or '').replace(/\-/g,'').toLowerCase!
-		
-
 	def match query
 		if searchText.indexOf(query) >= 0
 			return yes
 		return no
 
+	get page
+		parent isa Doc ? parent : parent.page
+		
+
 export class Doc < Markdown
 	
+	get page
+		self
 	get next
 		nextSibling or parent.next
 		
@@ -314,6 +292,17 @@ export class Section < Markdown
 
 	get hash
 		#hash ||= href.split('#')[1]
+
+	get qualifiedTitle
+		"{page.title} > {title}"
+
+	get searchTitle
+		"{page.title} > {title}"
+		# qualifiedTitle
+
+	get searchText
+		searchTitle
+		# "{garbleText page.title} > {title}"
 
 	# get href
 	#	"{parent.href}#{name}"
@@ -455,6 +444,42 @@ export class Root < Dir
 			items.push(item)
 
 		return cache[key] = items
+
+	def mergeApiDocs
+		return
+		let root = find('/reference')
+
+		for item in root.descendants when item.options.href
+			let href = item.options.href
+			if href.match(/^\/api/)
+				# console.log 'matched api!',item
+				if let symbol = API.lookup(href)
+					# console.log "Linking {href}"
+					symbol.#article = item
+				else
+					let par = API.lookup(href.replace(/\/[^\/]+$/,''))
+					let sym = API.create({
+						mods:0
+						flags:0
+						parent:par
+						cat: C.Article
+						name: item.head
+						meta:{href:href, article: item}
+					})
+					# sym.#article = item
+					# console.log 'new symbol',sym,item
+		return
+
+	def linkNavWithDocs
+		let dir = find('nav')
+		# console.log "found nav?!",dir
+		for item in dir.descendants when item.options.doc
+			let doc = find(item.options.doc)
+			# console.log "found doc?",item.head,doc,item.href,item.options.doc
+			item.doc = doc
+			item.#docs = item.children
+			doc.#nav = item
+			doc.#href = item.href
 	
 	def crawlExamples
 		let dir = find('/examples/api')
@@ -463,12 +488,11 @@ export class Root < Dir
 			for ref in item.meta.see
 				let m
 				if m = ref.match(/^(\@\w+)(?:\.([\w\-]+))?$/)
-					if let ev = api.paths["/api/Element/{m[1]}"]
+					if let entry = API.lookup(ref)
+						entry.examples.add(item)
+
+					if let ev = API.lookup(m[1])
 						ev.examples.add(item)
-						ev.type.examples.add(item)
-						
-						if let mod = m[2] and ev and ev.modifiers.get("@{m[2]}")
-							mod.examples.add(item)
 			yes
 
 	get path
@@ -484,37 +508,32 @@ types.guide = Guide
 raw.name = ''
 root = new Root(raw)
 export const fs = root
-export {api}
+export const api = API
+
 
 root.crawlExamples!
+root.mergeApiDocs!
+root.linkNavWithDocs!
 
 global.FS = fs
 global.gr = groups
 
 const hits = {}
-let searchables
-
-export def SearchList
-	# new QuickScore(matches,['searchTitle'])
-	# ls('/language'),ls('/tags'),ls('/css'),api
-	yes
-	
-
+let indices = {}
 
 export def ls path
-	if api.paths[path]
-		return api.paths[path]
+	if API.hrefs[path]
+		return API.hrefs[path]
+
+	if hrefs[path]
+		return hrefs[path]
 
 	unless hits[path]
-		let parts = path.replace(/\#/g,'/').replace(/(^\/|\/$)/g,'').split('/')
+		let hash = null
+		[path,hash] = path.split('#')
+		let parts = path.replace(/(^\/|\/$)/g,'').split('/') # .replace(/\#/g,'/')
 		let item = fs # fs[parts.shift()]
 		return null unless item
-		
-		
-		if parts[0] == 'api'
-			let apidoc = api.entryForPath(path)
-			if apidoc
-				return apidoc
 
 		for part,i in parts
 			let child = item.childByName(part)
@@ -522,32 +541,65 @@ export def ls path
 				item = child
 			else
 				return null
+
+		if item and hash
+			for child in item.descendants
+				if child.hash == hash
+					break item = child
+
 		hits[path] = item
 	
 	return hits[path]
 
 	return paths[path.replace(/\/$/,'')]
 
+export def pathForUrl url
+	let hits = []
+	let parts = url.split('/')
+	while parts.length
+		let hit = ls(parts.join('/'))
+		hits.unshift(hit) if hit
+		parts.pop!
+
+	return {
+		path: hits
+		page: hits[-1]
+	}
 
 export def find query, options = {}
 	let t = Date.now!
-	let norm-query = query.toLowerCase!.replace(/\-/g,'')
-	let matches = []
-	# let roots = options.roots or groups.guide
-	
-	
-	unless searchables
+
+	let cfg = {
+		# useSkipReduction: do false
+		wordSeparators: "-/\\:()<>%._=&[]+ \t\n\r@"
+		# adjustRemainingScore: do(str,query,remainingScore) return remainingScore
+	}
+
+	unless indices.all
 		let all = []
-		for group in [ls('/language'),ls('/tags'),ls('/css'),api]
-			for item in group.descendants
-				all.push(item)
+		for item in API.descendants
+			all.push(item)
+		
+		# should rather search pages resolved via /nav
+		let docs = fs.find('docs').descendants.sort do $1.level > $2.level ? -1 : 1
 
-		searchables = new QuickScore(all,['searchTitle','alias'])
+		for item in docs
+			all.push(item)
+		indices.all = new QuickScore(all,{ keys: ['searchText'], config: cfg})
+	
+	let index = indices.all
 
-	let hits = searchables.search(query)
-	matches = hits.map do $1.item
+	# if query.match(/\./)
+	# 	indices.api ||= if true
+	# 		let all = API.descendants.filter do !$1.kind.css
+	# 		new QuickScore(all,{ keys: ['searchPath'], config: cfg})
+	# 	index = indices.api
+
+	let hits = index.search(query)
 	
 	if query[0] == '@'
-		matches = matches.filter do $1.event? or $1.stylemod? or $1.decorator?
+		hits = hits.filter do $1.item.event? or $1.item.stylemod? or $1.item.decorator?
 	# console.log query,hits
-	return matches
+	return hits
+
+global.LS = ls

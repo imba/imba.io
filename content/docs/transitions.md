@@ -1,12 +1,3 @@
----
-title: Advanced
-multipage: true
----
-
-# Server-Side Rendering [wip]
-
-See [ssr-app-imba](https://github.com/imba/ssr-app-imba) repository as an example.
-
 # Transitions & Animation [preview=md]
 
 Imba has **experimental support** for transitioning when elements are added to and removed from the document. If you set an `ease` attribute on a tag, ie. `<my-element ease>`, imba makes it possible to easily style the enter-state and exit-state of the element and its children, as well as the timing and easing of this transition.
