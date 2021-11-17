@@ -1,4 +1,5 @@
 import {ls,fs,File,Dir,find,api} from '../store'
+let isApple = try (global.navigator.platform or '').match(/iPhone|iPod|iPad|Mac/)
 
 tag Item
 	css cursor:pointer d:hflex px:2 a:center pos:rel hue:warmer
@@ -25,49 +26,96 @@ tag Item
 	css .title
 		i font-style:normal
 		em fw:500 font-style:normal
-		mb:10px	
+		.category c:gray5 fs:smaller
+		# mb:10px
 
-	<self @mousedown.stop.prevent.emit('go',data) @pointerover.emit('hover',index) .{data.kind}>
-	
-		<span.icon[p:1 mr:1]> <svg[c:hue5] src=data.icon>
-		if data.kind == 'method' or data.kind == 'property'
+	get item
+		data.item
+
+	set data value
+		# console.log 'did set value',value
+		#data = value
+
+		if value.scoreKey
+			let m = data.matches[value.scoreKey]
+			let val = value.item.searchTitle
+
+			if val.length == data.scoreValue.length
+				let k = m.length
+				while k > 0
+					let part = m[--k]
+					val = val.slice(0,part[0]) + "<b>" + val.slice(part[0],part[1]) + "</b>" + val.slice(part[1])
+					value.html = val
+				# highlight the matching parts
+
+	get data
+		#data
+
+	<self @mousedown.stop.prevent.emit('go',item) @pointerover.emit('hover',index) .{item.kind} .{item.flagstr}>
+		<span.icon[p:1 mr:1]> <svg[c:hue5] src=item.icon>
+
+		if data.html
 			<.title>
-				<span> data.owner.displayName
-				<span> "."
-				<em> data.displayName
-			<span.qualifier> "Properties"
-		elif data.kind == 'event'
-			<.title> <em> data.displayName
+				<em innerHTML=data.html>
+				if item.detail
+					<span.detail> item.detail
+				if item.labelName
+					<span.category> " {item.labelName}"
+		elif item.modifier?
+			<.title>
+				<em> item.qualifiedName
+				<span.category> " modifier"
+		elif item.api?
+			<.title>
+				<em> item.qualifiedName
+				<span.detail> item.detail
+				if item.labelName
+					<span.category> " {item.labelName}"
+		elif item.kind == 'event'
+			<.title> <em> item.displayName
 			<span.qualifier> "Events"
-		elif data.modifier?
+		elif item.modifier?
 			<.title>
-				<span> data.owner.modifierPrefix + "."
-				<em> data.displayName
+				<span> item.owner.modifierPrefix + "."
+				<em> item.displayName
 			<span.qualifier> "Event Modifiers"
-		elif data.kind == 'stylemod'
+		elif item.kind == 'stylemod'
 			<.title>
-				<em> data.displayName
+				<em> item.displayName
 				# <span[c:gray4 fw:400]> " d:block"
 			<span.qualifier> "Styles > Modifiers"
-		elif data.kind == 'styleprop'
+		elif item.kind == 'styleprop'
 			<.title>
 				# <span> "css "
-				<em> data.displayName
-				if data.alias
-					<i[c:warmer5]> " / {data.alias}"
+				<em> item.displayName
+				if item.alias
+					<i[c:warmer5]> " / {item.alias}"
 			<span.qualifier> "Styles > Properties"
-		elif data.interface?
-			<.title> <em> data.displayName
+		elif item.interface?
+			<.title> <em> item.displayName
 			<span.qualifier> "Interfaces"
-		elif data.api?
+		elif item.api?
 			<.title>
-				<em> data.displayName
-			<span.qualifier> data.kind
+				<em> item.displayName
+			<span.qualifier> item.kind
 			
 		else
-			<.title.html.title[mb:8px] innerHTML=data.head>
+			<.title.html.title innerHTML=item.qualifiedTitle>
 				css c:gray9 fw:500
-			<.qualifier> data.breadcrumb.map(do $1.title).join( " > ")
+			# <.qualifier> data.breadcrumb.map(do $1.title).join( " > ")
+
+tag app-search-field
+
+	<self[hue:warm]>
+		css c:hue4
+		css @hover
+			hue:blue
+			.keycap bg:hue0
+		<a[jc:flex-start d:hflex cursor:pointer fs:sm a:center] @click.emit('showsearch') @hotkey('mod+k|s')>
+			# css c:blue4/80 @hover:blue3
+			<svg[d:block size:16px lh:16px va:top pos:relative c:hue4] src='../assets/icons/search.svg'>
+			<span[mx:1 tt:none fw:normal fl:1 d@!500:none]> "Search docs ..."
+			<span.keycap[bc:hue7/40 c:hue7/50 h:20px px:1 fw:500 ml:0.5 tt:none d@!500:none]> isApple ? "⌘K" :'Ctrl K'
 
 
 tag app-search
@@ -78,17 +126,15 @@ tag app-search
 
 	def refresh
 		if #matchQuery =? query
-			let o = {
-				query: query
-				roots: [ls('/language'),ls('/tags'),ls('/css'),api]
-			}
+			let o = {query: query}
 			hits = query ? find(query,o) : (recent or [])
 			#focus = 0 # Math.max(0,Math.min(matches.length - 1,#focus))
 			#pointing = no
 			$main.scrollTop = 0
 
 	def mount
-		recent = (fs.locals.recent or []).map(do ls($1)).filter(do $1)
+		recent = (fs.locals.searchhistory or []).map(do {item: ls($1)} ).filter(do $1.item)
+
 		flags.add('hidden')
 		refresh!
 
@@ -121,9 +167,16 @@ tag app-search
 		go(hits[#focus])
 	
 	def go item
-		recent.unshift(item)
-		recent = recent.filter(do $3.indexOf($1) == $2)
-		fs.locals.recent = recent.map(do $1.href)
+		item = item.item or item
+
+		let prev = recent.find(do $1.item == item)
+
+		if prev
+			recent.splice(recent.indexOf(prev),1)
+		recent.unshift({item: item})
+		recent.length = Math.min(recent.length,10)
+		# recent = recent.filter(do $3.indexOf($1) == $2)
+		fs.locals.searchhistory = recent.map(do $1.item.href)
 		router.go(item.href)
 		blur!
 
@@ -204,6 +257,6 @@ tag app-search
 							o..empty:0
 					<div[zi:1 pos:rel]>
 						for match,i in hits when i < show-hits
-							<Item[h:1rh] .nr{i} index=i $key=match.id data=match>
+							<Item[h:1rh] .nr{i} index=i $key=match.item.id data=match>
 					
 					<div[h:1] @intersect.in=(show-hits += 10)>

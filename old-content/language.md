@@ -1,6 +1,7 @@
 ---
-title:Overview
+title:Docs
 multipage:true
+href:/docs
 ---
 
 # Introduction
@@ -1289,25 +1290,26 @@ for item, i in items
 ### get [keyword]
 
 ```imba
-  prop price = 100
-  prop taxRate = 20
+    prop price = 100
+    prop taxRate = 20
   
-  get totalPrice
+    get totalPrice
     price * (1 + taxRate / 100)
   
-  def render
-    <self>
-      <input bind=price>
-      <input bind=taxRate>
-      <p> "Total: {totalPrice}" # 120
+    def render
+        <self>
+            <input bind=price>
+            <input bind=taxRate>
+            <p> "Total: {totalPrice}" # 120
 
 ```
 
 ### set [keyword]
 
 ```imba
-  set name value
-    console.log "The name has been set to", value
+class Item
+    set name value
+        console.log "The name has been set to", value
 ```
 
 ### def [keyword]
@@ -2378,3 +2380,81 @@ imba.mount do <div>
 global css
     p color:blue5
 ```
+
+# Tags
+
+# Components
+
+# Styles [href=/docs/css]
+
+Built in - blablabla
+
+# - Properties
+
+Imba supports all regular css properties. For a full reference on all css properties we recommend visiting the MDN docs. There are some custom properties and shorthands added in Imba that are very valuable. There are also a configurable design system (inpsired by Tailwind) built in. Among other things, this features non-standard values for [box-shadow](css), [border-radius](css), [transition-timing-function](css), as well as [color](css) palettes. The custom [hue](css) property is especially useful..
+
+### Non-standard Properties
+
+<api-grid>css.own.properties.custom</api-grid>
+
+### Standard CSS Properties
+
+<api-grid>css.own.properties.native</api-grid>
+
+# - Modifiers
+
+<api-grid>css.own.modifiers</api-grid>
+
+
+# Events [href=/docs/events2]
+
+### Event Interfaces
+
+<api-grid>Event.inheritors</api-grid>
+
+
+### Non-standard Events
+
+<api-list>ImbaEvents.own.events.custom</api-list>
+
+### [Mouse](/api/MouseEvent) Events
+
+<api-list>MouseEvent.own.events</api-list>
+
+### [Pointer](/api/PointerEvent) Events
+
+<api-list>PointerEvent.own.events</api-list>
+
+### [Keyboard](/api/KeyboardEvent) Events
+
+<api-list>KeyboardEvent.own.events</api-list>
+
+### [Drag & Drop](/api/DragEvent) Events
+
+<api-list>DragEvent.own.events</api-list>
+
+# - Modifiers
+
+### Shared Modifiers
+
+<api-list>Event.own.modifiers</api-list>
+
+### Keyboard Modifiers
+
+<api-list>KeyboardEvent.own.modifiers</api-list>
+
+### Mouse Modifiers
+
+<api-list>MouseEvent.own.modifiers</api-list>
+
+### Pointer Modifiers
+
+<api-list>PointerEvent.own.modifiers</api-list>
+
+### Touch Modifiers
+
+<api-list>imba.Touch.own.modifiers</api-list>
+
+# - Handling
+
+Hello

@@ -1,6 +1,7 @@
 import { ImbaDocument,Monarch2,highlight as imbaHighlight,M2 } from 'imba/program'
 import ImbaDoc,{Monarch,M} from '../../scripts/lexer'
 
+import {tokenizer as JSGrammar } from '../repl/languages/javascript'
 
 
 const cache = {}
@@ -98,7 +99,15 @@ export def highlight str,lang
 
 	let tokens = []
 	if lang != 'imba'
-		if let tokenizer = Monarch.getTokenizer(lang)
+		let tokenizer = {
+			js: JSGrammar
+			javascript: JSGrammar
+			json: JSGrammar
+		}[lang]
+
+		tokenizer ||= Monarch.getTokenizer(lang)
+
+		if tokenizer
 			let lines = str.split('\n')
 			let state = tokenizer.getInitialState!
 

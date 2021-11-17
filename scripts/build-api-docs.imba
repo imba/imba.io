@@ -3,8 +3,10 @@ import nfs from 'fs'
 
 import * as ts from 'typescript/lib/tsserverlibrary'
 import imba-plugin from 'typescript-imba-plugin'
+import {SymbolFlags,ModifierFlags,CategoryFlags} from '../src/util/flags'
 
 import marked from 'marked'
+import mdn-api from './mdn-data/api/inheritance.json'
 
 const mdrenderer = new marked.Renderer
 let codeblocknr = 0
@@ -29,7 +31,7 @@ def mdrenderer.codespan code
 		return String(<api-link name=code> code)
 
 	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
-	return String(<app-code-inline data-lang='unknown'> escaped)
+	return String(<code> escaped)
 
 def mdrenderer.heading text, level
 	mdstate[text] = yes
@@ -114,8 +116,17 @@ console.log !!global.ils
 let script = global.ils.getImbaScript('index.imba')
 let checker = script.getTypeChecker!
 
+def getFileName node
+	return '' unless node
+	if node.fileName
+		return node.fileName
+	if node.parent
+		return getFileName(node.parent)
+		
 def write name, data
 	# let dest = np.resolve(__dirname,'..','..','imba.io','public',name + '.json')
+	let tpl = 'globalThis.$api$ = function(_){\nCONTENT\n}'
+
 	let dest = np.resolve(__dirname,'..','public',name + '.json')
 	let body = JSON.stringify(data,null,2)
 	nfs.writeFileSync(dest,body,'utf8')
@@ -136,284 +147,325 @@ def getDocs item,meta
 	
 	return toMarkdown(md,meta)
 
-const api = {events: [],entries: []}
 
-def generate-events
-	console.log !!global.ils,!!script
+def getMeta sym
+	let tags = sym.imbaTags
+
+	if let doc = getDocs(sym)
+		tags.desc = doc
+	let fname = getFileName(sym.valueDeclaration)
+
+	if fname.match(/typings/)
+		tags.imba = yes
 	
+	if fname.match(/\bdom\./)
+		tags.dom = yes
+
+	return tags
 	
-	const paths = []
+
+let globalSym = checker.resolve('globalThis')
+let globalEventTarget = checker.resolve('EventTarget')
+let cssns = checker.checker.getMergedSymbol(checker.resolve('imbacss'))
+
+cssns.#imbaName = 'css'
+
+let counter = 0
+const allEntries = []
+
+def log sym
+	for own k,v of sym
+		console.log k,v
+
+const extras = {
+	"CSSStyleDeclaration": {shallow: yes}
+	DocumentAndElementEventHandlers: {shallow: yes}
+	GlobalEventHandlers: {shallow: yes}
+	Animatable: {flatten: yes, skip: yes}
+	InnerHtml: {flatten: yes, skip: yes}
+	ChildNode: {flatten: yes, skip: yes}
+	ParentNode: {flatten: yes, skip: yes}
+	WindowOrWorkerGlobalScope: {flatten: yes, skip: yes}
+}
+
+
+class Entry
+
+	static def for symbol\(ts.Symbol)
+		symbol = checker.checker.getMergedSymbol(symbol)
+
+		if symbol.#entry
+			return symbol.#entry
+
+		if symbol.flags & ts.SymbolFlags.Transient
+			let other = checker.type(symbol).symbol
+			console.warn "TRANSIENT {symbol.imbaName}"
+
+		symbol.#entry ||= new self(symbol)
+
+	static def member symbol\(ts.Symbol),par
+		let item = self.for(symbol)
+		item.up = par if par
+		return item
+
+	parent = null
+	name
+	kind = null
+	inherits = null
+	implements = null
+	flags = 0
+	mods = 0
+	cat = 0
+	tags
+	meta = {}
+	docs
+
+	constructor symbol
+		symbol.#entry = self
+		#symbol = symbol
+		#key = Symbol!
+		#extras = new Map
+		setup!
 	
-	def getFileName node
-		return '' unless node
-		if node.fileName
-			return node.fileName
-		if node.parent
-			return getFileName(node.parent)
-			
-	
-	def crawl item, suggestedKind
-		return item.#doc if item.#doc
-		item.#doc = {}
-		# let type = checker.type("{name}.prototype")
+	get css?
+		cat & CategoryFlags.CSS
 
-		let type = checker.type(item)
-		let base = checker.checker.getBaseTypes(type)
-		let props = checker.props(type)
-		let ref = type.symbol.escapedName
-		let name = ref
+	def setup
+		let sym = #symbol
+		let typ = checker.type(sym,yes)
+		# console.log "setup {sym.imbaName}",!!sym.parent,sym.parent..imbaName,sym.mergeId
+		# typid = typ and typ.#typid ||= counter++
+		flags = sym.flags
+		flags ~= ts.SymbolFlags.Transient
+		name = sym.imbaName
+		meta = getMeta(sym)
+
+		let extra = extras[name] or {}
+
+		if meta.deprecated or name == 'TObject'
+			return
 		
-		let up = base[0] ? crawl(base[0]).name : null
-		let meta = {}
+		parent = sym == globalSym ? null : Entry.for(sym.parent or globalSym)
+
+		if extra.skip
+			return
+
+		if name.match(/^\w+__$/) or name == 'internal'
+			return
+
+		if flags & SymbolFlags.TypeParameter
+			return
+
 		
-		let kind = 'interface'
+		let d = getDocs(typ and typ.symbol or sym,meta)
+
+
+		mods = sym.valueDeclaration..modifierFlagsCache
+		mods ||= 0
+		mods ~= ts.ModifierFlags.HasComputedFlags
+
+		if checker.member(typ,'DOCUMENT_NODE')
+			mods |= ModifierFlags.NodeInterface
+
+		if parent and parent.#symbol == cssns
+			# console.warn "is in css namespace",name
+			# mods |= ModifierFlags.CSS
+			if sym.isStyleProp
+				cat |= CategoryFlags.CSSProperty
+				flags = SymbolFlags.Property
+				if meta.proxy
+					proxy = Entry.for(checker.styleprop(meta.proxy))
+					mods |= ModifierFlags.ImbaSpecific
+					delete meta.proxy
+
+			if sym.isStyleModifier
+				cat |= CategoryFlags.CSSModifier
+				flags = SymbolFlags.Modifier
+
+			if sym.isStyleType
+				cat |= CategoryFlags.CSSValueType
+				flags = SymbolFlags.Enum
+				name = name.slice(1)
 		
-		if checker.member(type,'stopImmediatePropagation') or name == 'ImbaTouch'
-			kind = 'eventinterface'
-		
-		let doc = {
-			name: ref
-			kind: kind
-			extends: up
-			meta: meta
-			members: []
-			docs: getDocs(type.symbol,meta)
-			tags: type.symbol.imbaTags or {}
-		}
-
-		api.entries.push(doc)
-		paths[ref] = doc
-
-		# doc
-		# let props = checker.props(type)
-		# let mods = props.filter do $1.escapedName != 'αoptions' and $1.escapedName[0] == 'α'
-		let mods = props
-		
-		for item,i in mods
-			let par = item.parent
-			
-			if i == 0
-				console.log par.escapedName
+		if parent and parent.css?
+			cat |= CategoryFlags.CSSValue
+			if flags & SymbolFlags.Property
+				flags = SymbolFlags.EnumMember
 				
-			continue unless par.escapedName == name
 
-			let tags = item.imbaTags
-			
-			continue if tags.deprecated
+		# hack around certain addEventListener things
+		if parent..mods & ModifierFlags.NodeInterface and name.match(/^(add|remove)EventListener/)
+			return
 
-			let itemname = item.imbaName
-			let itemtype = checker.type(item)
-			let meta = {}
-			let docs = getDocs(item,meta)
-			
-			
-			let kind = 'property'
-			
-			if item.method?
-				kind = 'method'
-				
-			if item.getter? and !item.setter?
-				tags.getter = yes
-					
-			if item.isReadonly
-				tags.readonly = yes
-			
-			let imbalib? = !!getFileName(item.valueDeclaration).match(/typings/)
-			# console.warn "PROP {itemname} {item.flags}",imbalib?
-			
-			if imbalib?
-				tags.special = yes
-			
-			if itemname == 'screenX' or itemname == 'hotkeys' or itemname == 'mounted?'
-				console.log itemname,item.isReadonly,item.getter?,item.flags,item.valueDeclaration.modifierFlagsCache,item.flags & ts.SymbolFlags.GetAccessor
-			
-			let getter = item.flags & ts.SymbolFlags.GetAccessor
-			let setter = item.flags & ts.SymbolFlags.SetAccessor
-			
-			if getter and !setter
-				tags.getter = yes
-					
-			if tags.idl or tags.imba
-				tags.custom = yes
-			
-			# Skip the constants
-			if itemname.match(/^[A-Z_]+$/) or tags.private
-				continue
-				
-			if imbalib? and !tags.summary and !docs
-				continue
-				
-			
-				
-			# continue if docs == '' and !tags.summary
-			# continue if tags.internal or itemname[0] == '#'
+		# if mods
+		#	console.log 'checkFlags',name,mods,mods & ts.ModifierFlags.Readonly
+		if meta.custom or (meta.imba and sym.#kind != 'event')
+			mods |= ModifierFlags.ImbaSpecific
+			delete meta.custom
+			delete meta.imba
 
-			if itemname[0] == '@'
-				kind = 'eventmodifier'
-				if itemname == '@options'
+
+		if meta.abstract
+			mods |= ModifierFlags.Abstract
+
+		let iface = flags & (32 | 64)
+
+		let base = iface and typ ? checker.checker.getBaseTypes(typ) : []
+
+		let mdn = mdn-api[name]
+
+		if base[0]
+			# tons of weird tweaks
+			if name == 'ChildNode'
+				console.log "childnode inherits?",base
+
+			unless name == 'Navigator'
+				inherits = Entry.for(base.shift!.symbol)
+
+			# go through the items to we implement
+			implements = for item in base
+				let iname = item.symbol.name
+				# let mdn = mdn-api[iname]
+
+				if mdn and mdn.implements.indexOf(iname) == -1 or extras[iname]..flatten or name == 'Navigator'
+					# console.log "{name} does not implement {iname} in mdn?? {!!mdn}",item.symbol.members.size
+					for [mname,member] of item.symbol.members
+						let sym = Object.create(member)
+						sym.parent = #symbol
+						sym.#entry = null
+						# console.log "sym!!",sym,sym.getDocumentationComment
+						if sym.getDocumentationComment
+							#extras.set(sym.escapedName,sym)
+						else
+							console.log 'weird symbol??',sym
+						# sym.escapedName,sym
 					continue
-	
-			let entry = {
-				name: itemname
-				meta: meta
-				kind: kind
-				tags: tags
-				docs: docs
-			}
+
+				Entry.for(item.symbol)
+
+		if checker.member(typ,'stopImmediatePropagation') or name == 'ImbaTouch'
+			# kind = 'eventinterface'
+			mods |= ModifierFlags.EventInterface
+
+		
+		if name[0] == '@' and !css?
+			kind = 'modifier'
+			flags = SymbolFlags.Modifier
+
+		if sym.#kind == 'event'
+			kind = 'event'
+			flags = SymbolFlags.Event
+
+		if name.match(/^[A-Z_]+$/)
+			mods |= ModifierFlags.Upcase
+
+		id = allEntries.push(self)
+
+		if typ and typ.symbol and typ.symbol != sym
+			# interface or something?
+			if typ.symbol.flags & (32 | 64)
+				valuetype = Entry.for(typ.symbol)
+
+		if sym == globalSym
+			return self
+
+		if extra.shallow
+			return self
+
+		# not for the namespaces?
+		let props = checker.props(checker.member(sym,'prototype'))
+		let added = {}
+		for set in [sym.members,sym.exports,#extras]
+
+			for [mname,member] of set
+
+				# console.log mname
+				continue if mname == 'prototype'
+
+				if added[mname]
+					console.log "was already added {name} {mname}"
+					continue
+
+				added[mname] = yes
 			
-			if itemname == 'router'
-				crawl(itemtype)
-				console.log itemtype
-				item.returnType = "/api/ImbaRouter"
+				let imbalib? = !!getFileName(member.valueDeclaration).match(/typings/)
+				let meta = getMeta(member)
+
+				if meta.desc or meta.summary or Object.keys(meta).length > 1 or !imbalib? or member.#kind
+					Entry.for(member)
+
+		return self
+
+	def stringify data,ctx = [],root = no
+
+		if data isa Entry and !data.id
+			return null
+
+		if data isa Entry and !root
+			if ctx[data.#key] =? yes
+				ctx.push( stringify(data,ctx,yes) )
 			
-			doc.members.push(entry)
-		
-		# doc.members = doc.members.filter(do $1.tags.custom)
-		
-		if false
-			doc.members = doc.members.sort do(a,b)
-				a.name > b.name ? 1 : -1
-		return item.#doc = type.#doc = doc
-
-	
-	let types = ['PointerEvent','DragEvent','KeyboardEvent','ImbaIntersectEvent','ImbaResizeEvent','ImbaTouch','ImbaHotkeyEvent','ImbaElement']
-	
-	for name in types
-		crawl(checker.type("{name}.prototype"))
-		
-	crawl(checker.type("imba"))
-
-	for item in checker.getEvents()
-		let name = item.imbaName
-		let type = checker.type(item)
-		let typename = type.symbol.name
-		
-		let meta = {}
-		let docs = getDocs(item,meta)
-		let tags = item.imbaTags
-		# check for other potential docs from ts
-		let handler = checker.sym("GlobalEventHandlers.on{name}")
-		if handler
-			# console.log 'found handler',getDocs(handler,{})
-			let docs2 = getDocs(handler,{})
-			if docs2 and !tags.summary
-				tags.summary = docs2
-		
-		if paths[typename]
+			return "s[{data.id}]"
 			
-			let doc = {	
-				name: name
-				kind: 'event'
-				type: typename
-				meta: meta
-				docs: docs
-				tags: tags
-			}
+		if data isa Array
+			return "[{data.map(do stringify($1,ctx)).join(',')}]"
 
-			api.entries.push(doc)
-	
-	# console.log api
-	
-	# let dest = np.resolve(__dirname,'..','..','imba.io','public','api.json')
-	# nfs.writeFileSync(dest,JSON.stringify(api,null,2),'utf8')
-	
-def generate-styles
-	let script = global.ils.getImbaScript('index.imba')
-	let checker = script.getTypeChecker!
-	
-	let patterns = [
-		[/^(box-(align|direction|flex|flex-group|orient|lines|pack)|rotate)$/,skip: yes]
-		[/(border-.*radius)/,{radius: 1}]
-		[/shadow/,{shadow: 1}]
-		[/^text-/,{text: 1}]
-		[/^font-/,{font: 1}]
-		[/^border-/,{border: 1}]
-		[/^grid-/,{grid: 1}]
-		[/^flex\b/,{flex: 1}]
-		[/^(padding|px|py)/,{padding: 1}]
-		[/^(margin|mx|my)/,{margin: 1}]
-		[/^(background)/,{bg: 1}]
-		[/^(-background)/,{color: 1}]
-		[/^overflow\b/,{layout: 1}]
-		[/^(transform|x|y|z|skew(-[xyz])?|rotate|scale(-[xyz])?)\b/,{transform: 1}]
-	]
-	
-	let map = {}
-	# let api = {entries: []}
-	
-	for sym in checker.styleprops
-		let name = sym.imbaName
-		let tags = sym.imbaTags
-		let key = sym.escapedName
+		if typeof data == 'object'
+			let o = []
+			for own k,v of data
+				continue if v isa Array and v.length == 0
 
-		# let aliased = tags.proxy and util.toImbaIdentifier(tags.proxy)
-		if tags.proxy
-			if map[tags.proxy]
-				map[tags.proxy].alias = name
-				continue
-			else
-				map[tags.proxy] = {
-					alias: name
-					#alias: sym
-				}
-				continue
-			
+				unless v == null
+					o.push "{k}:{stringify(v,ctx)}"
 
-		let meta = {}
-		
-		for [pat,options] in patterns
-			if pat.test(name)
-				Object.assign(tags,options)
+			let raw = "\{{o.join(',')}\}"
 
-		let item = {
-			name: name
-			meta: meta
-			kind: 'styleprop'
-			tags: tags
-			docs: getDocs(sym,meta)
-		}
+			return data isa Entry ? "s[{data.id}]=a({raw})" : raw
 		
-		if map[key]
-			item = Object.assign(map[key],item)
+		if typeof data == 'string'
+			return JSON.stringify(data)
+		
+		return data
 
-		map[key] = item
-		
-		api.entries.push(item)
-		
-	for sym in checker.stylemods
-		let name = sym.imbaName
-		let tags = sym.imbaTags
-		let key = sym.escapedName
-		let meta = {}
-		let cat = 'custom'
-		let media = checker.member(sym,'media')
-		let native = checker.member(sym,'name')
-		let detail = tags.detail or ''
-		
-		if detail.match(/width|height/)
-			tags.breakpoint = 1
-		
-		if media
-			# cat = 'media'
-			tags.media = 1
-		elif detail.match(/^\:\:/)
-			tags.pseudoelement = 1
-		elif native
-			tags.pseudoclass = 1
-		else
-			tags.custom = 1
-		
-		let item = {
-			name: name
-			meta: meta
-			kind: 'stylemod'
-			tags: tags
-			docs: getDocs(sym,meta)
-		}
-		api.entries.push(item)
+let globalEntry = Entry.for(globalSym)
 
-generate-events!
-generate-styles!
+def serialize entries = allEntries
+	let out = 'globalThis.$api = function(s,a){\n return ['
 
-write('api',api)
+	let ctx = []
+
+	for item in entries
+		item.stringify(item,ctx)
+
+	out += ctx.join(',\n') + ']}'
+	# console.log out
+	return out
+
+
+if true
+	let arr = checker.sym('Array')
+	let sch = checker.sym('imba.Scheduler')
+	let inc = ['UIEvent','imba.Scheduler','imba.Component','ImbaEvents','HTMLElementTagNameMap','imbacss','Math','String','Number']
+	# ,'ImbaIntersectEvent','ImbaHotkeyEvent','ImbaResizeEvent','ImbaTouch','ImbaEvents'
+
+	let events = checker.props('ImbaEvents')
+
+	inc.push('Set','Map','WeakSet','WeakMap')
+
+	for ev in events
+		ev.#kind = 'event'
+
+
+	for cssprop in checker.styleprops
+		cssprop.#kind = 'styleprop'
+
+	for ref in inc
+		# console.log 'ref',ref,checker.sym(ref)
+		Entry.for(checker.sym(ref))
+
+	let js = serialize(allEntries)
+	let dest = np.resolve(__dirname,'..','public','reference.js')
+	nfs.writeFileSync(dest,js,'utf8')
+	console.log "wrote {js.length / 1000}kb"
+
 process.exit(0)

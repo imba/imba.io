@@ -15,17 +15,39 @@ let state = {headings: [],last: null}
 
 let slugmap = {
 	'|': 'pipe'
-	'=': 'eq'
+	'=': 'E'
 	'&': 'and'
 	'!': 'n'
-	'?': 'q'
+	'?': 'Q'
 	'>': 'gt'
 	'<': 'lt'
 	'%': 'mod'
 	'*': 'star'
 	'/': 'slash'
-	'^': 'up'
+	'^': 'exp'
 	'~': 'tilde'
+}
+
+let opmap = {
+	'<<': 'bitwise-left'
+	'>>': 'bitwise-right'
+	'>>=': 'right-shift-assignment'
+	'<<=': 'left-shift-assignment'
+	'>>>=': 'unsigned-right-shift-assignment'
+	'>>>': 'bitwise-unsigned-right'
+	'&&=': 'bitwise-unsigned-right'
+	'++': 'increment'
+	'--': 'decrement'
+	'&=': 'bitwise-and-assignment'
+	'|=': 'bitwise-or-assignment'
+	'&': 'bitwise-and'
+	'|': 'bitwise-or'
+	'^=': 'bitwise-xor-assignment'
+	'^': 'bitwise-xor'
+	'~': 'bitwise-not'
+	'+': 'addition'
+	'-': 'subtraction'
+
 }
 
 let slugify = do(str)
@@ -38,7 +60,7 @@ let slugify = do(str)
 	str = str.replace(/[\|\=\&\?\!\>\<\~\/\*\^\%]+/g) do
 		$1.split('').map(do slugmap[$1]).join('-')
 		# slugmap[$1] or '' # remove invalid chars
-	str = str.replace(/[^a-z0-9 -]/g, '') # remove invalid chars
+	str = str.replace(/[^a-zA-Z0-9 -\+\@]/g, '') # remove invalid chars
 	str = str.replace(/\s+/g, '-') # collapse whitespace and replace by -
 	str = str.replace(/-+/g, '-') # collapse dashes
 
@@ -64,14 +86,17 @@ def renderer.link href, title, text
 	let apipath = null
 	if href == 'css'
 		if text[0] == '@'
-			apipath = "/css/modifiers/{text}"
+			apipath = "/api/css/{text}"
 			# return <api-link> "/css/modifiers/{text}"
 		else
-			apipath = "/css/properties/{text}"
+			apipath = "/docs/css/properties/{text}"
 			# return <api-link> "/css/properties/{text}"
 	elif href == 'api'
 		if text[0] == '@'
 			apipath = "/api/Element/{text}"
+		
+	if href.indexOf("api://") == 0
+		return <api-link data-path=href.slice(6) data-title=text>
 	
 	if apipath
 		return <api-link> apipath
@@ -92,7 +117,13 @@ def renderer.link href, title, text
 	return (<a href=href title=(title or '')> <span innerHTML=text>)
 
 def renderer.blockquote quote
-	return String(<blockquote innerHTML=quote>)
+	let flags = ""
+	quote = quote.replace(/\[([\w\s]+)\]/) do(m,fl)
+		# flags[fl] = 1
+		flags += fl
+		""
+
+	return String(<blockquote className=flags innerHTML=quote>)
 
 def renderer.paragraph text
 	# state.last = text
@@ -117,6 +148,10 @@ def renderer.heading text, level
 	while m = text.match(/^\.(\w+)/)
 		flags.push(m[1])
 		text = text.slice(m[0].length)
+	
+	if text.indexOf('discord') >= 0
+		console.log "HEADING",text,level
+		# throw "done"
 
 	text = text.replace(/\s*\[([\w\-]+)(?:\=([^\]]+))?\]\s*/g) do(m,key,value)
 		let flag = key.toLowerCase!
@@ -139,10 +174,12 @@ def renderer.heading text, level
 		meta.type = 'doc'
 		text = text.slice(n[0].length)
 
-	let plain = text.replace(/\<[^\>]+\>/g,'')
+	let plain = text.replace(/<\/?\w+[^>]*>/g,'')
 
-	meta.slug = meta.options.slug or slugify(plain)
-	meta.title = unescape(text)
+	meta.slug = meta.options.slug or slugify(unescape(plain))
+	# meta.slugg = plain
+	meta.title = unescape(text).replace(/<\/?\w+[^>]*>/g,'')
+	# meta.title2 = text
 
 	if text.indexOf('<code') == 0
 		# should add code-flag?

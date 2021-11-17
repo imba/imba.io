@@ -1,5 +1,5 @@
 import {ls,types,Section,Doc} from '../store'
-
+import {icons} from '../api'
 import '../repl/preview'
 import './api-entry'
 
@@ -23,7 +23,31 @@ tag doc-anchor
 		yes
 
 	def render
-		<self @intersect.silence=entered>
+		<self @intersect.silent=entered>
+
+tag doc-pages
+
+	css d:vgrid g:4 my:6
+	css .item py:4 px:6 d:block ai:center
+		bd:1px solid gray3 rd:lg bc:gray2
+		bg:gray0 @hover:gray1
+		>>> p my@force:0
+
+		# .item
+		# bg:clear bd:none px:0 py:0
+
+
+	def hydrate
+		data = closest('app-document').data
+
+	def render
+		<self>
+			for item in data.children
+				<a.item href=item.href>
+					<span[d:hflex ai:center c:blue6 fs:18px fw:600]>
+						<span[fl:1]> item.title
+						<svg src=icons.right>
+					<span[c:gray4 fs:sm/1.2 td@hover:none] innerHTML=item.html>
 
 tag app-document-nav
 
@@ -106,22 +130,10 @@ tag doc-section
 	css &.hide d:none
 	css &.collapsed > .body d:none
 
-	# css &.tip border:1px solid gray3/50 rd:md p:4 bg:orange2
-
-	css .html
-		>> * mt@first:0 mb@last:0
-		>>> a c:blue7 td@hover:underline
-
-		>>> app-code-inline
-			d:inline-block fs:0.75em ff:mono lh:1.25em
-			bg: gray3/35 rd:sm va:middle p:0.1em 5px
-			-webkit-box-decoration-break: clone
-		
-		>>> api-link
-			d:inline-block
-
 	css .snippet,.h5 $bg:orange2 $hbg:teal4 $hc:teal9
 	css .op $hbg:teal4 $hc:teal9
+	css .tip hue:orange
+
 	css .tip $bg:orange2 $hbg:orange4 $hc:orange8
 	css .orange $bg:orange2 $hbg:orange4 $hc:orange8
 	css .yellow $bg:yellow2 $hbg:yellow4 $hc:yellow8
@@ -129,11 +141,11 @@ tag doc-section
 	css .green $bg:green2 $hbg:green4 $hc:green8
 	css .neutral $bg:gray2 $hbg:gray4 $hc:gray8
 
-	css .head pos:relative c:#3A4652 bc:gray3/75 d:block
-		&.h1 fs:34px/1.4 fw:600 pb:2
-		&.h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0
-		&.h3 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:0
-		&.h4 fs:20px/1.2 fw:500 pb:2 bwb:0px mb:0
+	css .head pos:relative c:#3A4652 d:block
+		&.h1 fs:34px/1.4 fw:600 pb:2 pt:4
+		&.h2 fs:26px/1.2 fw:600 pb:3
+		# &.h3 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:0
+		# &.h4 fs:20px/1.2 fw:500 pb:2 mb:0
 
 		&.zl1 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
 		&.zh2.zl2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
@@ -190,22 +202,11 @@ tag doc-section
 
 	css .body
 
-		&.tip mt:-2 pb:1 ml:0 rd:md p:4 bg:$bg
-			>>> p fs:md- c:gray9/70
+		&.tip mt:-2 pb:1 ml:0 rd:md p:4 bg:hue1
+			>>> p fs:md- c:gray9/70 my:0
 
-		>>> p my:3
-
-		>>> blockquote
-			bg:gray2 my:3 p:2 px:3
-			color:gray8 fs:md-
-			p fs:md-
-			> mt@first:0 mb@last:0
-		
-		>>> app-code-block + app-code-block
-			mt:4
-
-		>>> app-code-block + blockquote
-			bdl:3px solid gray2 mx:3 p:0 pl:3 c:gray6 bg:clear
+		# >>> app-code-block + blockquote
+		# 	bdl:3px solid gray2 mx:3 p:0 pl:3 c:gray6 bg:clear
 
 		>>> table
 			w:100% bdb:1px solid gray2
@@ -307,16 +308,16 @@ tag doc-section
 tag api-doc-section < doc-section
 	
 	def render
-		<self>
+		<self.html>
 			unless body-only
-				<div.html.title .h{data.data.hlevel} innerHTML=data.head>
-			<.content.html innerHTML=(data.html or '')>
+				<div.title .h{data.data.hlevel} innerHTML=data.head>
+			<.content innerHTML=(data.html or '')>
 			<.sections> for item in data.sections
 				<api-doc-section data=item>
 							
 
 tag app-document
-
+	prop breadcrumbs
 	css color: #4a5568 lh: 1.625
 	css $content > mb@last:0 mt@first:0
 
@@ -384,25 +385,34 @@ tag app-document
 
 	def render
 		let doc = data
-		return unless doc	
+		return unless doc
+
+		doc = data.doc or doc
+
 		<self.markdown[d:block d:hflex] @refocus.silent=refocus>
 			<.main[max-width:768px w:768px px:6 fl:1 1 auto pb:24 pt:8]>
+				<.breadcrumb>
+					<span[d@800:none]> <a href='/'> "Imba"
+					for item in breadcrumbs
+						<span> <a href=item.href .self=(item == data)> item.navName or item.name
+					<app-search-field>
 				<div$content>
+					
+							
 					if doc.api?
-						# may be a bug?
-						<api-{doc.kind}-entry $key=doc.href data=doc>
+						<api-symbol-entry $key=doc.href data=doc>
 					else
 						<doc-section $key=doc.id data=doc level=0>
 						if !doc.path.indexOf('/api/') == 0
-							<app-document-nav data=doc>
+							<app-document-nav data=data>
 
 			<.aside[fl:1 0 240px d@!1120:none]>
-				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 pl:4 -webkit-overflow-scrolling:touch max-width:300px pr:4
+				<$toc[d:block pos:sticky t:0px h:100vh ofy:auto pt:32px pb:10 pl:4 -webkit-overflow-scrolling:touch max-width:300px pr:4
 				].no-scrollbar>
 					if doc.api?
 						<api-entry-toc data=doc>
 					else
-						<app-document-toc[d:block max-width:360px] data=doc>
+						<app-document-toc[d:block max-width:360px] $key=doc.href data=doc>
 
 tag app-api-entry < app-document
 		
@@ -462,7 +472,7 @@ tag TocItem
 
 tag app-document-toc
 	<self[pr:10]>
-		<div.menu-heading[c:gray5]> "On this page"
+		<div.menu-heading[c:gray5 px:0]> "On this page"
 		<.children> for item in data.sections
 			<TocItem data=item level=1>
 
