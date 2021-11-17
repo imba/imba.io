@@ -133,7 +133,7 @@ tag app-search
 			$main.scrollTop = 0
 
 	def mount
-		recent = (fs.locals.recent or []).map(do {item: ls($1)} ).filter(do $1.item)
+		recent = (fs.locals.searchhistory or []).map(do {item: ls($1)} ).filter(do $1.item)
 
 		flags.add('hidden')
 		refresh!
@@ -176,7 +176,7 @@ tag app-search
 		recent.unshift({item: item})
 		recent.length = Math.min(recent.length,10)
 		# recent = recent.filter(do $3.indexOf($1) == $2)
-		fs.locals.recent = recent.map(do $1.item.href)
+		fs.locals.searchhistory = recent.map(do $1.item.href)
 		router.go(item.href)
 		blur!
 
