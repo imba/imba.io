@@ -475,11 +475,12 @@ export class Root < Dir
 		# console.log "found nav?!",dir
 		for item in dir.descendants when item.options.doc
 			let doc = find(item.options.doc)
-			# console.log "found doc?",item.head,doc,item.href,item.options.doc
+			# console.log "found doc?",item.head,doc,item.href,item.options.doc,item.href
 			item.doc = doc
 			item.#docs = item.children
 			doc.#nav = item
 			doc.#href = item.href
+			hrefs[item.href] = item
 	
 	def crawlExamples
 		let dir = find('/examples/api')
