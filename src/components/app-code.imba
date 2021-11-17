@@ -262,7 +262,7 @@ tag app-code-block < app-code
 		let entity = API.getEntityForToken(token)
 		
 		if entity
-			console.log 'got entity?',token,entity
+			# console.log 'got entity?',token,entity
 			el.#entity = entity
 			el.flags.add('doc-ref')
 
