@@ -5,6 +5,8 @@ import './api-entry'
 
 const Sheets = {}
 
+css element o:1
+
 Sheets.operators = [
 	{name: 'All',regex: /.*/}
 	{name: 'Arithmetic',regex: /op-math/}
@@ -33,9 +35,6 @@ tag doc-pages
 		bg:gray0 @hover:gray1
 		>>> p my@force:0
 
-		# .item
-		# bg:clear bd:none px:0 py:0
-
 
 	def hydrate
 		data = closest('app-document').data
@@ -47,7 +46,7 @@ tag doc-pages
 					<span[d:hflex ai:center c:blue6 fs:18px fw:600]>
 						<span[fl:1]> item.title
 						<svg src=icons.right>
-					<span[c:gray4 fs:sm/1.2 td@hover:none] innerHTML=item.html>
+					# <span[c:gray4 fs:sm/1.2 td@hover:none] innerHTML=item.html>
 
 tag app-document-nav
 
