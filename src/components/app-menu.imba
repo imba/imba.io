@@ -88,4 +88,4 @@ tag app-menu
 						<svg src='../assets/icons/twitter.svg'>
 					<div[fl:1]>
 				# <app-search-field[bg:warmer1 p:2 rd:lg w:180px order:-1]>
-			<div[pos:absolute b:0 h:100px w:100% bg:linear-gradient(to bottom,white/0,white) l:0 pe:none]>
+			<div[pos:absolute b:0 h:100px l:0 r:20px bg:linear-gradient(to bottom,white/0,white) l:0 pe:none]>
