@@ -178,7 +178,7 @@ tag app-search
 		# recent = recent.filter(do $3.indexOf($1) == $2)
 		fs.locals.searchhistory = recent.map(do $1.item.href)
 		router.go(item.href)
-		blur!
+		blur!    
 
 	def show
 		flags.remove('hidden')
@@ -237,7 +237,9 @@ tag app-search
 					<div[d:hflex ja:center]>
 						<input$input type='text' bind=query 
 							@input.debounce(50ms)=refresh
-							placeholder="Search docs">
+							placeholder="Search docs"
+							spellcheck=no
+							>
 							css p:2 w:100% bg:white rd:md bd:gray2 bxs:xs
 								@focus bxs:outline,xs bd:blue4
 						<div hotkey='esc' @click=blur>
