@@ -250,7 +250,7 @@ class Entry
 		if extra.skip
 			return
 
-		if name.match(/^\w+__$/)
+		if name.match(/^\w+__$/) or name == 'internal'
 			return
 
 		if flags & SymbolFlags.TypeParameter

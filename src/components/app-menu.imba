@@ -48,7 +48,7 @@ tag app-menu-section
 			css d:hflex a:center
 			<span[c:hue6]> data.title
 		<div.content.{data.slug}>
-			<.children[pb:4 pl:2]> for item in (members or data.children)
+			<.children[pb:4 pl:2 mt:-2]> for item in (members or data.children)
 				<app-menu-item data=item level=1>
 
 tag app-menu
