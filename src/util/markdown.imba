@@ -11,6 +11,24 @@ marked.setOptions({
 	smartypants: false
 })
 
+export def normalizeIndentation str
+	let lines = str.split('\n')
+	let ind = null
+
+	for line in lines
+		let m = line.match(/^[\t ]*/)[0]
+		# unless m
+		#	console.log line,m,line.match(/^[\t ]*/)
+		if line.length > m.length
+			ind = m if !ind or ind.length > m.length
+
+	if ind
+		for line,i in lines
+			if line.indexOf(ind) == 0
+				lines[i] = line.slice(ind.length)
+	
+	return lines.join('\n')
+
 let state = {headings: [],last: null}
 
 let slugmap = {
@@ -219,6 +237,8 @@ def renderer.codespan escaped
 def renderer.code code, lang, opts = {}
 	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 	let last = state.last
+
+	code = normalizeIndentation(code)
 
 	let [type,name] = lang.split(' ')
 
