@@ -20,7 +20,7 @@ export def normalizeIndentation str
 		# unless m
 		#	console.log line,m,line.match(/^[\t ]*/)
 		if line.length > m.length
-			ind = m if !ind or ind.length > m.length
+			ind = m if ind == null or ind.length > m.length
 
 	if ind
 		for line,i in lines
