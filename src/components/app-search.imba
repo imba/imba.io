@@ -37,15 +37,25 @@ tag Item
 		#data = value
 
 		if value.scoreKey
-			let m = data.matches[value.scoreKey]
+			let m = value.matches[value.scoreKey]
 			let val = value.item.searchTitle
+			let scoreVal = value.scoreValue
+			let pre = ''
 
-			if val.length == data.scoreValue.length
+			if scoreVal.length < val.length
+				let offset = val.length - scoreVal.length
+				let pre2 = val.slice(0,offset)
+				if val.slice(offset) == scoreVal
+					pre = pre2
+					val = scoreVal
+
+			if val.length == scoreVal.length
 				let k = m.length
 				while k > 0
 					let part = m[--k]
 					val = val.slice(0,part[0]) + "<b>" + val.slice(part[0],part[1]) + "</b>" + val.slice(part[1])
-					value.html = val
+
+				value.html = pre + val
 				# highlight the matching parts
 
 	get data
@@ -148,6 +158,7 @@ tag app-search
 		
 	def autoScroll
 		render!
+		# console.log 'autoScroll!',#focus
 		let bounds = $main.getBoundingClientRect!
 		let el = querySelector(".nr{#focus}")
 		let sel = el.getBoundingClientRect!
@@ -259,6 +270,7 @@ tag app-search
 							o..empty:0
 					<div[zi:1 pos:rel]>
 						for match,i in hits when i < show-hits
+							# console.log "render item {i} {match.item.id}",match.item
 							<Item[h:1rh] .nr{i} index=i $key=match.item.id data=match>
 					
 					<div[h:1] @intersect.in=(show-hits += 10)>

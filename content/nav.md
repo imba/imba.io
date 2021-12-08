@@ -4,7 +4,7 @@
 
 ## Getting Started [doc=docs/getting-started] [href=/start]
 
-## Community [doc=docs/community] [href=/community]
+## Changelog [doc=changelog] [href=/changelog]
 
 ## Playground [href=/try]
 

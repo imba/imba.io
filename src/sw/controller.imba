@@ -43,7 +43,7 @@ export def load
 				# console.log 'register service worker'
 				reg = await sw.register(scope + "/__sw_{clid.split("-")[1]}__.js", scope: scope + "/")
 
-			let frame = <iframe[pos:absolute t:-10 l:-10 h:1 w:1] src="{scope}/__blank__.html">
+			let frame = new <iframe[pos:absolute t:-10 l:-10 h:1 w:1] src="{scope}/__blank__.html">
 
 			frame.onload = do(e)
 				

@@ -46,11 +46,21 @@ class Rect
 tag repl-browser
 	dims = new Rect(50,50,300,240)
 
+	prop options
+	prop root
+	prop file
+	prop mode
+	prop demo
+	prop $win
+	prop $doc
+	prop $console
+	prop exports
+
 	css d:block pe:none
 
 	def build
 		t0 = Date.now!
-		$iframe = <iframe[pos:absolute width:100% height:100% min-width:200px rdb:inherit ]>
+		$iframe = new <iframe[pos:absolute width:100% height:100% min-width:200px rdb:inherit ]>
 		$iframe.src = 'about:blank'
 		commands = []
 
@@ -63,14 +73,8 @@ tag repl-browser
 
 			# connect with the url as well
 			win.addEventListener('routerinit') do(e)
-				let r = #framerouter = e.detail
-
-				r.on('change') do(e)
-					if $address
-						$address.value = r.path
-
 				if options.route
-					r.replace(options.route)
+					e.detail.replace(options.route)
 
 			win.expose = do(example)
 				let keys = Object.keys(example)
@@ -144,12 +148,6 @@ tag repl-browser
 						@focus bd:blue4 bxs:ring
 					if options.title
 						<.title[fs:sm c:gray5 pe:none]> options.title
-					if options.tools
-						<.tools[d:hflex a:center w:100% p:1 pt:3 pe:none]>
-							<.tool @click=rerun> <svg src='icons/arrow-left.svg'>
-							<.tool @click=rerun> <svg src='icons/arrow-right.svg'>
-							# <.tool .on=(options.rerun) @click=rerun> <svg src='icons/refresh-cw.svg'>
-							<input$address type='text' placeholder='/'>
 				<div$body[fl:1 pos:rel rdb:inherit]> $iframe
 			<div.corner[cursor:nwse-resize b:100% r:100%] @touch.round.sync(dims,'left','top')>
 			<div.corner[cursor:nesw-resize b:100% l:100%] @touch.round.sync(dims,'right','top')>
@@ -159,11 +157,3 @@ tag repl-browser
 			<div.side[cursor:ew-resize t:0 l:100% h:100%] @touch.round.sync(dims,'right','-')>
 			<div.side[cursor:ns-resize t:100% w:100%]     @touch.round.sync(dims,'-','bottom')>
 			<div.side[cursor:ew-resize t:0 r:100% h:100%] @touch.round.sync(dims,'left','-')>
-
-# debugging stuff
-if false
-	imba.mount do <div>
-		<section[h:700px bg:indigo3 d:flex ja:center]>
-			<repl-browser>
-		<section[h:700px bg:blue3 d:flex ja:center]>
-			<repl-browser[h:400px]>

@@ -1,3 +1,4 @@
+import './util/shared'
 import './util/layout'
 # import './util/shortcuts'
 import './styles'
@@ -183,7 +184,6 @@ tag app-root
 					if window.debug
 						<div @resize.silent=render> "{window.innerWidth}px"
 				<div[d:flex cursor:pointer us:none]>
-					
 					# if home?
 					<a.tab[hue:emerald] href='/docs' .active=(doc and !doc.api? and !api? and !home?)>
 						<svg[mr:1] src='./assets/icons/map.svg'>
@@ -223,7 +223,7 @@ tag app-root
 				<home-page>
 			elif #state..page
 				# <app-menu$menu current=#state.page>
-				<app-document$doc[ml@md:$page-margin-left] $key=#state.page.id  data=#state.page  .nokeys=repl? hash=document.location.hash breadcrumbs=#state.path>
+				<app-document[ml@md:$page-margin-left] $key=#state.page.id  data=#state.page  .nokeys=repl? hash=document.location.hash breadcrumbs=#state.path>
 			# elif doc
 			#	<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl? hash=document.location.hash>
 			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>

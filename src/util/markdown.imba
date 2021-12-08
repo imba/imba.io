@@ -134,7 +134,7 @@ def renderer.paragraph text
 
 def renderer.heading text, level
 	let typ = "h{level}"
-	let flags = [typ]
+	let flags = []
 	let meta = {type: 'section', hlevel: level, flags: flags, level: level * 10, children: [], meta: {},options: {}}
 	let m 
 

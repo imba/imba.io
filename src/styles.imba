@@ -152,6 +152,12 @@ global css
 
 		p my:3
 
+		ul
+			list-style: disc outside pl:7
+			li
+				fs:md/1.3 pos:relative
+				> p > code d:table mb:1 fw:600
+
 		blockquote
 			bg:gray2 my:3 p:2 px:3
 			color:gray8 fs:md-

@@ -68,6 +68,8 @@ class Entry
 		if self isa Doc or self isa Guide
 			hrefs[href] = self
 
+	get resources
+		[]
 
 	get locals
 		#locals ||= Locals.for(path)
@@ -299,6 +301,9 @@ export class Section < Markdown
 	get searchTitle
 		"{page.title} > {title}"
 		# qualifiedTitle
+
+	get shortSearchText
+		title
 
 	get searchText
 		searchTitle
@@ -572,7 +577,8 @@ export def find query, options = {}
 
 	let cfg = {
 		# useSkipReduction: do false
-		wordSeparators: "-/\\:()<>%._=&[]+ \t\n\r@"
+		wordSeparators: "-/\\:()<>%_.=&[]+ \t\n\r@"
+		longStringLength: 40
 		# adjustRemainingScore: do(str,query,remainingScore) return remainingScore
 	}
 
@@ -586,7 +592,8 @@ export def find query, options = {}
 
 		for item in docs
 			all.push(item)
-		indices.all = new QuickScore(all,{ keys: ['searchText'], config: cfg})
+
+		indices.all = new QuickScore(all,{ keys: ['searchText','shortSearchText'], config: cfg})
 	
 	let index = indices.all
 
@@ -597,10 +604,28 @@ export def find query, options = {}
 	# 	index = indices.api
 
 	let hits = index.search(query)
-	
+
+	hits = hits.filter do $1.score > 0.1 or $2 < 4
+
 	if query[0] == '@'
 		hits = hits.filter do $1.item.event? or $1.item.stylemod? or $1.item.decorator?
-	# console.log query,hits
-	return hits
+
+
+	let seen = new Set
+	let docs = []
+	let finals = []
+	for hit in hits
+		seen.add(hit.item)
+		let par = hit.item.parent
+		if par and seen.has(par)
+			continue
+
+		if hit.item isa Entry
+			finals.push(hit)
+		else
+			finals.push(hit)
+	
+	# console.log query,hits,docs,finals
+	return docs.concat(finals)
 
 global.LS = ls

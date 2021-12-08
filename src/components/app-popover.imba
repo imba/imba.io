@@ -20,6 +20,7 @@ const FLAGS = {
 const modes = ['lg','sm']
 
 tag app-popover
+	prop frame # Outer bounds of the code block
 
 	css self
 		d:block c:green4 t:0 l:0 pos:abs w:0 h:0

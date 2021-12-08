@@ -77,7 +77,7 @@ tag app-repl
 		# $placeholder = self # for the router
 		$options = {lineNumbers: true}
 
-		$iframe = <iframe.(position:absolute width:100% height:100%)>
+		$iframe = new <iframe[pos:absolute width:100% height:100%]>
 		$iframe.src = 'about:blank'
 
 		$iframe.replify = do(win)
@@ -149,7 +149,8 @@ tag app-repl
 
 	def routeDidResolve route,match
 		let src = router.pathname.slice(4)
-		console.log 'routeDidResolve',match,src
+		# console.log 'routeDidResolve',match,src
+		
 		let item = ls(src)
 		if item isa File
 			currentFile = item

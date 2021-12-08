@@ -9,6 +9,32 @@ import marked from 'marked'
 import mdn-api from './mdn-data/api/inheritance.json'
 
 const mdrenderer = new marked.Renderer
+
+export const Globals = {
+	'global': {datatype: 'globalThis'}
+	'imba': {datatype: 'globalThis.imba'}
+	'module': {}
+	'window': {datatype: 'globalThis.window'}
+	'document': {datatype: 'globalThis.document'}
+	'exports': {}
+	'console': {datatype: 'globalThis.console'}
+	'process': {datatype: 'globalThis.process'}
+	'parseInt': {datatype: 'globalThis.parseInt'}
+	'parseFloat': {datatype: 'globalThis.parseFloat'}
+	'setTimeout':{datatype: 'globalThis.setTimeout'}
+	'setInterval': {datatype: 'globalThis.setInterval'}
+	'setImmediate': {datatype: 'globalThis.setImmediate'}
+	'clearTimeout': {datatype: 'globalThis.clearTimeout'}
+	'clearInterval': {datatype: 'globalThis.clearInterval'}
+	'clearImmediate': {datatype: 'globalThis.clearImmediate'}
+	'globalThis': {datatype: 'globalThis'}
+	'isNaN': {datatype: 'globalThis.isNaN'}
+	'isFinite': {datatype: 'globalThis.isFinite'}
+	'__dirname': {datatype: '\\string'}
+	'__filename': {datatype: '\\string'}
+	'__realname': {datatype: '\\string'}
+}
+
 let codeblocknr = 0
 let mdstate = {}
 
@@ -242,7 +268,14 @@ class Entry
 
 		let extra = extras[name] or {}
 
+		if name == 'Int8Array'
+			console.log sym
+			# throw "done!"
+
 		if meta.deprecated or name == 'TObject'
+			return
+
+		if name.match(/^__(new|call|index|constructor)/)
 			return
 		
 		parent = sym == globalSym ? null : Entry.for(sym.parent or globalSym)
@@ -442,15 +475,26 @@ def serialize entries = allEntries
 	return out
 
 
-if true
+def run
 	let arr = checker.sym('Array')
 	let sch = checker.sym('imba.Scheduler')
 	let inc = ['UIEvent','imba.Scheduler','imba.Component','ImbaEvents','HTMLElementTagNameMap','imbacss','Math','String','Number']
 	# ,'ImbaIntersectEvent','ImbaHotkeyEvent','ImbaResizeEvent','ImbaTouch','ImbaEvents'
 
 	let events = checker.props('ImbaEvents')
+	let glob = checker.props('globalThis')
 
-	inc.push('Set','Map','WeakSet','WeakMap')
+	for item in glob
+		let name = item.imbaName
+		console.log item.imbaName
+		if name.match(/^parseInt/) or Globals[name]
+			inc.push(item)
+		# if name.match(/^[A-Z]/)
+		#	inc.push(item)
+
+	# return
+
+	inc.push('Array','Set','Map','WeakSet','WeakMap','Uint8Array')
 
 	for ev in events
 		ev.#kind = 'event'
@@ -468,4 +512,5 @@ if true
 	nfs.writeFileSync(dest,js,'utf8')
 	console.log "wrote {js.length / 1000}kb"
 
+run!
 process.exit(0)

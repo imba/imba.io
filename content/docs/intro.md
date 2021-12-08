@@ -7,10 +7,15 @@ Imba is a Web programming language that compiles to Javascript. Imba is fast in 
 In Imba DOM elements _and_ CSS are treated as first-class citizens. DOM elements are compiled to a [memoized DOM](https://www.freecodecamp.org/news/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52/), which is an [order of magnitude faster](https://somebee.github.io/dom-reconciler-bench/index.html) than today's virtual DOM implementations.
 
 #### Imba At A Glance
+
 - Compiles to Javascript
+
 - Works with Javascript
+
 - Smart, Minimal Syntax
+
 - Built-in Tags & Styles
+
 - Amazing Performance
 
 ## Community
@@ -71,4 +76,5 @@ We thoroughly recommend using our Visual Studio Code integration which has fanta
 If you run into any issues, you can check out the GitHub repository or come and join us in our friendly Discord chat group.
 
 - [GitHub](https://github.com/imba/imba)
+
 - [Discord](https://discord.gg/mkcbkRw)

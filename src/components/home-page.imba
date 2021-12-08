@@ -362,7 +362,7 @@ tag home-page
 				# <h1[py:5].gradient> `Build Fast, Fast.`
 				<h1[py:5 fs:120px/1].gradient> `Imba`
 				# <div[fs:60px/1]> 'Build Things Fast'
-				<div[d:block @870:hgrid mt:6]>
+				<div[mt:6]>
 					css d:hflex flw:wrap g:10px cg:30px
 					<div[fs:xl/1.8 fl:100 1 470px]>
 						<p[c:cool8]> `Imba is a Web programming language that's fast in two ways: Imba's time-saving syntax with built-in tags and styles results in less typing and switching files so you can {<u> 'build things fast.'} Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM libraries, so you can {<u> 'build fast things.'}`

@@ -96,7 +96,7 @@ class Kind
 	get icon
 		#icon ||= if true
 			let m = self
-			let group = self.css ? cssicons : icons
+			let group = #flags.css ? cssicons : icons
 			#str.split(" ").reverse!.map(do group[$1]).find(do !!$1)
 
 	def toString
@@ -143,9 +143,6 @@ class Members < Array
 
 	get sorted
 		#sorted('name') do self.sort do $1.name > $2.name ? 1 : -1
-		
-	get resources
-		[]
 		
 	get own
 		filter(&,'own') do $1.isOwnedBy(#owner)
@@ -207,7 +204,7 @@ export class Entity
 		super(raw)
 		kind = kind
 
-		id = idcounter++
+		id = "ent{idcounter++}"
 
 		if parent
 			parent.members.push(self)
@@ -238,6 +235,9 @@ export class Entity
 
 	get guide
 		global.FS.find('/reference').childByHead(href)
+
+	get resources
+		[]
 
 	get api? do yes
 	get flagstr do String(kind)
@@ -330,7 +330,7 @@ export class Entity
 		# searchPath
 
 	get searchPath
-		global? ? (ns? ? name : "global.{name}") : parent.searchPath + ".{displayName}"
+		global? ? ((ns? or interface?) ? name : "global.{name}") : parent.searchPath + ".{displayName}"
 
 	get searchText
 		return searchPath
@@ -356,6 +356,12 @@ export class Entity
 		#own ||= new Members(self,members,{own:1})
 
 	get mdn
+		if global? and !kind.custom
+			if meta.dom
+				return "https://developer.mozilla.org/en-US/docs/Web/API/{name}"
+			else
+				return "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/{name}"
+
 		if member? and !custom? and !parent.custom? and parent.mdn
 			return parent.mdn + "/{name}"
 

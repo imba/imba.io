@@ -67,6 +67,7 @@ tag repl-console-item
 
 	ts = Date.now!
 	repeats = 0
+	context
 
 	css d:block c:gray6 fw:500
 		transition: all 250ms cubic-out

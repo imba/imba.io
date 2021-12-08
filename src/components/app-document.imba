@@ -116,12 +116,6 @@ tag doc-section-filters
 	
 tag doc-section
 	prop body-only
-	
-	css >>> li
-		fs:md/1.3 py:3px pl:6 pos:relative
-		@before content: "•" w:6 ta:center l:0 pos:absolute d:block c:teal5
-		> p > code d:table mb:1 fw:600
-		> mt@first:0 mb@last:0
 
 	css my:1em d:block
 		mt:8 .h1:12 .h2:12 .h3:8 @first:8
@@ -143,13 +137,7 @@ tag doc-section
 	css .head pos:relative c:#3A4652 d:block
 		&.h1 fs:34px/1.4 fw:600 pb:2 pt:4
 		&.h2 fs:26px/1.2 fw:600 pb:3
-		# &.h3 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:0
-		# &.h4 fs:20px/1.2 fw:500 pb:2 mb:0
 
-		&.zl1 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
-		&.zh2.zl2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
-		&.zl2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
-		&.zl3 fs:18px/1.2 fw:500 pb:3 bwb:0px mb:3
 		&.tip fs:16px/1.2 fw:500 pb:3 bwb:0 mb:0
 
 		&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:-1 bwb:0 mb.tip:-3 mb.op:-3
@@ -279,7 +267,7 @@ tag doc-section
 		>
 
 			if data.head and !body-only
-				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} id=data.hash>
+				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} .h{data.data.hlevel} id=data.hash>
 					css svg d:inline size:5
 					css .legend ml:1 c:gray5 fs:md
 					<a[pos:absolute l:-20px c:gray5 o:0] href=data.href> '#'
@@ -317,6 +305,7 @@ tag api-doc-section < doc-section
 
 tag app-document
 	prop breadcrumbs
+
 	css color: #4a5568 lh: 1.625
 	css $content > mb@last:0 mt@first:0
 
@@ -387,7 +376,7 @@ tag app-document
 		return unless doc
 
 		doc = data.doc or doc
-
+		# console.log 'render document?!'
 		<self.markdown[d:block d:hflex] @refocus.silent=refocus>
 			<.main[max-width:768px w:768px px:6 fl:1 1 auto pb:24 pt:8]>
 				<.breadcrumb>
@@ -396,8 +385,6 @@ tag app-document
 						<span> <a href=item.href .self=(item == data)> item.navName or item.name
 					<app-search-field>
 				<div$content>
-					
-							
 					if doc.api?
 						<api-symbol-entry $key=doc.href data=doc>
 					else
