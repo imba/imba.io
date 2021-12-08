@@ -66,8 +66,8 @@ tag app-menu
 	def render
 		<self tabIndex=-1>
 			
-			<div.scroller[pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 pt:24px flex:1 d:vflex]>
-				css 1rh:26px
+			<div.scroller>
+				css pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 pt:24px flex:1 d:vflex 1rh:26px pb:60px
 				<div>
 					
 					for item,i in ls('/nav').children

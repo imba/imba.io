@@ -301,7 +301,8 @@ tag api-doc-section < doc-section
 			<.content innerHTML=(data.html or '')>
 			<.sections> for item in data.sections
 				<api-doc-section data=item>
-							
+
+let FIRST_DOC_MOUNT = no
 
 tag app-document
 	prop breadcrumbs
@@ -314,6 +315,9 @@ tag app-document
 	get scroller
 		document.scrollingElement
 
+	get doc
+		data and data.doc or doc
+
 	prop hash @set
 		let section = getSectionForHash(e.value)
 		reveal(section) if section
@@ -322,14 +326,19 @@ tag app-document
 		syncScroll! if mounted?
 	
 	def syncScroll
+		if FIRST_DOC_MOUNT =? yes
+			# console.log 'skip first syncScroll'
+			return
+		# console.log 'syncScroll'
 		let hash = document.location.hash.slice(1)
+		# console.log 'section for hash?!',hash
 		let subsection = getSectionForHash(hash)
 		if subsection
 			reveal(subsection)
 		else
 			let target = 0 # restoreScrollTop or 0
 			window.scrollTo({left: 0,top: target,behavior: 'auto'})
-			scroller.scrollTop =target
+			scroller.scrollTop = target
 
 	def mount
 		syncScroll!
@@ -340,12 +349,12 @@ tag app-document
 
 	def getSectionForHash hash
 		hash = hash.slice(1) if hash[0] == '#'
-		return hash and data and data.descendants.find do $1.hash == hash
+		return hash and doc and doc.descendants.find do $1.hash == hash
 				
 
 	def reveal section
 		let view = querySelector ".entry-{section.id}.head"
-		view..scrollIntoView!
+		view..scrollIntoView(yes)
 		self
 
 	def refocus
