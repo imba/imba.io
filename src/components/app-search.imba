@@ -271,6 +271,6 @@ tag app-search
 					<div[zi:1 pos:rel]>
 						for match,i in hits when i < show-hits
 							# console.log "render item {i} {match.item.id}",match.item
-							<Item[h:1rh] .nr{i} index=i $key=match.item.id data=match>
+							<Item[h:1rh] .nr{i} index=i key=match.item.id data=match>
 					
 					<div[h:1] @intersect.in=(show-hits += 10)>

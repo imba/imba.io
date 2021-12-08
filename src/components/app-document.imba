@@ -395,9 +395,9 @@ tag app-document
 					<app-search-field>
 				<div$content>
 					if doc.api?
-						<api-symbol-entry $key=doc.href data=doc>
+						<api-symbol-entry key=doc.href data=doc>
 					else
-						<doc-section $key=doc.id data=doc level=0>
+						<doc-section key=doc.id data=doc level=0>
 						if !doc.path.indexOf('/api/') == 0
 							<app-document-nav data=data>
 
@@ -407,7 +407,7 @@ tag app-document
 					if doc.api?
 						<api-entry-toc data=doc>
 					else
-						<app-document-toc[d:block max-width:360px] $key=doc.href data=doc>
+						<app-document-toc[d:block max-width:360px] key=doc.href data=doc>
 
 tag app-api-entry < app-document
 		

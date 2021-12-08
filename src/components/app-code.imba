@@ -384,7 +384,7 @@ tag app-code-block < app-code
 							<div.item @click=openInEditor> "open"
 						css	&.collapsed .actions pos:abs t:0 r:0
 					if file
-						<app-code-file.p3d $key=file.id file=file data=hl>
+						<app-code-file.p3d key=file.id file=file data=hl>
 				if options.windowed
 					<repl-browser$browser.browser-bounds
 						options=options

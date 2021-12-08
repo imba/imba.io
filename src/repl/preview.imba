@@ -98,7 +98,7 @@ tag app-repl-preview
 	def minimize
 		flags.remove('maximized')
 
-	def maximized?
+	get maximized?
 		flags.contains('maximized')
 
 	def toggle

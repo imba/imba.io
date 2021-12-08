@@ -222,12 +222,7 @@ tag app-root
 			if home?
 				<home-page>
 			elif #state..page
-				# <app-menu$menu current=#state.page>
-				<app-document[ml@md:$page-margin-left] $key=#state.page.id  data=#state.page  .nokeys=repl? hash=document.location.hash breadcrumbs=#state.path>
-			# elif doc
-			#	<app-document$doc[ml@md:$menu-width]  $key=doc.id  data=doc .nokeys=repl? hash=document.location.hash>
-			# <app-document$doc[ml@md:$menu-width] data=doc .nokeys=repl>
-			# <div.open-ide-button @click=$repl.show! hotkey='enter'> 'OPEN IDE'
+				<app-document[ml@md:$page-margin-left] key=#state.page.id  data=#state.page  .nokeys=repl? hash=document.location.hash breadcrumbs=#state.path>
 
 imba.mount <app-root>
 document.scrollingElement.scrollLeft = 0

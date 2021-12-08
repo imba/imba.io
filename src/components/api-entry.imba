@@ -386,7 +386,7 @@ tag api-list
 
 		<self.api.list .{mode} .empty=(items.length == 0) .{mode} @resize.silent=resized>
 			<div.items> for item in items
-				<api-li data=item $key=item.id>
+				<api-li data=item key=item.id>
 
 tag api-grid < api-list
 	mode = 'grid'
@@ -455,7 +455,7 @@ tag api-symbols
 							<span> "Inherited"
 			<.list .grid=(flags.contains('compact'))> <div.items>
 				for item in items
-					<api-li data=item $key=item.id .inherited=(item.owner != items.owner)>
+					<api-li data=item key=item.id .inherited=(item.owner != items.owner)>
 
 tag api-symbol-entry < api-entry
 
