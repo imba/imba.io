@@ -65,7 +65,10 @@ def mdrenderer.heading text, level
 	
 def toMarkdown str, meta
 	mdstate = meta or {}
-	marked(str,{renderer: mdrenderer})
+	marked(str,{
+		renderer: mdrenderer
+		sanitize: true
+	})
 
 
 ###

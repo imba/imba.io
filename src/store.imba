@@ -614,8 +614,12 @@ export def find query, options = {}
 	let seen = new Set
 	let docs = []
 	let finals = []
+
 	for hit in hits
 		seen.add(hit.item)
+
+	for hit in hits
+		# seen.add(hit.item)
 		let par = hit.item.parent
 		if par and seen.has(par)
 			continue
