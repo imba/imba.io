@@ -113,7 +113,7 @@ css button
 
 ### Pseudo-classes
 
-Pseudo-classes (`:hover`, `:apactive`, ...) from css are supported using an `@` instead of the leading `:`. So the css selector `div:hover` is written as `div@hover` in Imba. In Imba you can also use pseudo-classes directly on properties:
+Pseudo-classes (`:hover`, `:active`, ...) from css are supported using an `@` instead of the leading `:`. So the css selector `div:hover` is written as `div@hover` in Imba. In Imba you can also use pseudo-classes directly on properties:
 
 ```imba
 css div
@@ -126,6 +126,14 @@ If you add a `@pseudoclass:value` on the same line as a regular property, it wil
 css div opacity:0.8 @hover:0.9 @focus:1
 ```
 In addition to the default pseudo-classes from css, Imba supports several convenient additions like [@focin](css).
+
+### Pseudo-elements
+
+Pseudo-elements (`::marker`, `::selection`, ...) are supported with the same syntax as in css.
+
+```imba
+css li::marker c:blue4
+```
 
 ### Class Modifiers
 
