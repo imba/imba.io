@@ -258,16 +258,16 @@ tag home-page
 	css self >>> home-section
 		px:6
 		max-width:990px
-		& > .bg pe:none rd:20px mx:-30px t:-30px o:1
+		& > .bg pe:none rd:20px mx:-15px t:-20px o:1
 		&.s0 hue:blue
 		&.s2 hue:indigo
 		&.s4 hue:sky
 		&.s6 hue:warmer
 
-		&.s0 > .bg pos:abs inset:0 z:-40px t:-30px b:0px rotate:0.5deg bg:blue0
-		&.s2 > .bg pos:abs inset:0 z:-38px t:-30px b:-20px rotate:-0.6deg bg:indigo0
-		&.s4 > .bg pos:abs inset:0 z:-36px t:-30px b:-20px rotate:0.3deg bg:sky0
-		&.s6 > .bg pos:abs inset:0 z:-34px t:-30px b:-20px rotate:-0.5deg bg:warmer1
+		&.s0 > .bg pos:abs inset:0 z:-2px t:-20px b:0px rotate:0.5deg bg:blue0
+		&.s2 > .bg pos:abs inset:0 z:-2px t:-20px b:-20px rotate:-0.6deg bg:indigo0
+		&.s4 > .bg pos:abs inset:0 z:-2px t:-20px b:-20px rotate:0.3deg bg:sky0
+		&.s6 > .bg pos:abs inset:0 z:-2px t:-20px b:-20px rotate:-0.5deg bg:warmer1
 
 		&.quick-tour @important
 			py:0
