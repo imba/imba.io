@@ -133,7 +133,7 @@ tag repl-browser
 			css .side pos:abs size:20px
 			<.box>
 				css of:hidden d:vflex bg:white rd:inherit pos:rel fl:1
-				<div$titlebar @touch.self.round.sync(dims,'x','y')>
+				<div$titlebar @touch.self.lock.round.sync(dims,'x','y')>
 					css pos:relative rdt:md bg:gray2
 						d:vflex a:center j:flex-end
 						bd:gray3 bdb:gray2 p:1
@@ -149,11 +149,11 @@ tag repl-browser
 					if options.title
 						<.title[fs:sm c:gray5 pe:none]> options.title
 				<div$body[fl:1 pos:rel rdb:inherit]> $iframe
-			<div.corner[cursor:nwse-resize b:100% r:100%] @touch.round.sync(dims,'left','top')>
-			<div.corner[cursor:nesw-resize b:100% l:100%] @touch.round.sync(dims,'right','top')>
-			<div.corner[cursor:nwse-resize t:100% l:100%] @touch.round.sync(dims,'right','bottom')>
-			<div.corner[cursor:nesw-resize t:100% r:100%] @touch.round.sync(dims,'left','bottom')>
-			<div.side[cursor:ns-resize b:100% w:100%]     @touch.round.sync(dims,'-','top')>
-			<div.side[cursor:ew-resize t:0 l:100% h:100%] @touch.round.sync(dims,'right','-')>
-			<div.side[cursor:ns-resize t:100% w:100%]     @touch.round.sync(dims,'-','bottom')>
-			<div.side[cursor:ew-resize t:0 r:100% h:100%] @touch.round.sync(dims,'left','-')>
+			<div.corner[cursor:nwse-resize b:100% r:100%] @touch.lock.round.sync(dims,'left','top')>
+			<div.corner[cursor:nesw-resize b:100% l:100%] @touch.lock.round.sync(dims,'right','top')>
+			<div.corner[cursor:nwse-resize t:100% l:100%] @touch.lock.round.sync(dims,'right','bottom')>
+			<div.corner[cursor:nesw-resize t:100% r:100%] @touch.lock.round.sync(dims,'left','bottom')>
+			<div.side[cursor:ns-resize b:100% w:100%]     @touch.lock.round.sync(dims,'-','top')>
+			<div.side[cursor:ew-resize t:0 l:100% h:100%] @touch.lock.round.sync(dims,'right','-')>
+			<div.side[cursor:ns-resize t:100% w:100%]     @touch.lock.round.sync(dims,'-','bottom')>
+			<div.side[cursor:ew-resize t:0 r:100% h:100%] @touch.lock.round.sync(dims,'left','-')>
