@@ -21,8 +21,7 @@ commands:
     copyNoteLink: {}
 workspace:
     vaults:
-        -
-            fsPath: vault
+        - fsPath: vault
     journal:
         dailyDomain: daily
         name: journal
@@ -33,11 +32,11 @@ workspace:
         dateFormat: y.MM.dd.HHmmss
         addBehavior: asOwnDomain
     task:
-        name: ''
-        dateFormat: ''
+        name: ""
+        dateFormat: ""
         addBehavior: childOfCurrent
         statusSymbols:
-            '': ' '
+            "": " "
             wip: w
             done: x
             assigned: a
@@ -45,7 +44,7 @@ workspace:
             blocked: b
             delegated: l
             dropped: d
-            pending: 'y'
+            pending: "y"
         prioritySymbols:
             H: high
             M: medium
