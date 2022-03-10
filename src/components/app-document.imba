@@ -316,7 +316,7 @@ tag app-document
 		document.scrollingElement
 
 	get doc
-		data and data.doc or doc
+		data and data.doc or data
 
 	prop hash @set
 		let section = getSectionForHash(e.value)
