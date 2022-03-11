@@ -3,7 +3,12 @@ import Locals from './locals'
 export def @setting target, name, desc	
 	let o = this[0] or {}
 	let sym = Symbol!
+	let define = no
 
+	unless desc
+		desc = {}
+		define = yes
+	
 	extend desc
 		def set value
 			let curr = self[sym]
@@ -45,3 +50,11 @@ export def @setting target, name, desc
 				self[name] = sym
 
 			self[sym]
+
+	if define
+		Object.defineProperty(target,name,desc)
+		return
+	else
+		desc
+
+	
