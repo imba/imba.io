@@ -472,7 +472,10 @@ tag app-document-toc
 			<TocItem data=item level=1>
 
 		<.wip[mt:4 w: <240px ml:2 fs:sm- c:gray6 bdl:2px solid yellow4 pl:3 py:1]>
-			<div[my:-2]> "Documentation is a work-in-progress. We are actively looking for contributors. If you can help, have feedback, or want to ask questions, please reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}."
+			<i> "March 11th, 2022"
+			<div> "We are overhauling the docs, and we need your help!"
+			<div[my:4]> "Do you have a few minutes to answer what you think is missing?"
+			<a[td:underline] href="https://form.typeform.com/to/GdMKZMBh"> "Take survey"
 	
 tag embedded-app-document
 	def hydrate
