@@ -23,7 +23,7 @@ tag app-menu-item
 			<a$item.item .l{level} route-to=data.href>
 				<span> data.title
 
-			if data.docs.length
+			if data.docs..length
 				<div$children.children[$count:{data.docs.length}]>
 					for child in data.docs
 						<app-menu-item.child data=child level=(level + 1)>
@@ -48,6 +48,7 @@ tag app-menu-section
 			css d:hflex a:center
 			<span[c:hue6]> data.title
 		<div.content.{data.slug}>
+			# if members or data.children
 			<.children[pb:4 pl:2 mt:-2]> for item in (members or data.children)
 				<app-menu-item data=item level=1>
 
@@ -60,6 +61,14 @@ tag app-menu
 	get focused?
 		document.activeElement == self
 
+	get survey
+		return {
+			title: "Documentation week survey"
+			href: "https://form.typeform.com/to/GdMKZMBh"
+			# flagstr: ""
+			# slug: "survey"
+		}
+
 	def toggle
 		if focused? then document.body.focus! else focus!
 
@@ -69,12 +78,14 @@ tag app-menu
 			<div.scroller>
 				css pos:absolute ofy:auto inset:0 top:$header-height p:5 pr:0 pt:24px flex:1 d:vflex 1rh:26px pb:60px
 				<div>
-					
 					for item,i in ls('/nav').children
 						# if i == 1
 						#	<app-search-field[bg:warmer1 p:2 rd:lg w:180px order:-1]>
 						<app-menu-section[hue:blue] data=item members=item.children>
-				
+
+				# <app-menu-section[hue:blue] data=survey members>
+				# 	<app-menu-item[hue:orange] data=survey>
+
 				<div.icons[d:hflex ja:center ai:center cg:10px c:blue5 order:0 px:2]>
 					css 1icon:24px
 						svg size:1icon c:hue5 @hover:hue7 stroke-width:1.5px

@@ -1,7 +1,8 @@
 Official site for Imba. Work in progress.
 
 ## Run
-```
+
+```bash
 # clone the repository
 git clone https://github.com/imba/imba.io
 
@@ -15,7 +16,7 @@ npm install
 npm run watch
 
 # run server
-npm start
+npm run dev
 ```
 
 Because the site uses service workers it requires https: with a trusted certificate.
