@@ -52,7 +52,7 @@
     "svgpath": "^2.3.0"
   },
   "devDependencies": {
-    "node-fetch": "^3.1.0",
+    "node-fetch": "^3.1.1",
     "typescript": "^4.4.4",
     "typescript-imba-plugin": "^1.2.8"
   }
