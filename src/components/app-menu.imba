@@ -18,6 +18,12 @@ tag app-menu-item
 		a.active + .children > .child > .item o:1 pe:auto mb:0
 		a.l1 o:1 pe:auto mb:0
 
+		&.highlight > .item
+			c:rose5 .active:gray9
+			@after content: "!" d:inline-block
+				bg:rose5/80 rd:md c:white ml:1 px:1
+				fs:xxs fw:bold
+
 	def render
 		<self[d:contents] .{data.flagstr}>
 			<a$item.item .l{level} route-to=data.href>

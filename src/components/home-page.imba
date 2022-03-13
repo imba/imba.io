@@ -158,7 +158,7 @@ tag home-page
 
 		home-section pos:relative
 		home-section,figure d:vflex ja:center as:stretch
-		h1,h2,h3,nav,article w:100%
+		nav,article w:100%
 
 		h1,h22 ff:brand ws:pre-line pb:6
 			fs:34px/0.9 @xs:50px/0.9 @sm:60px/0.9 @md:90px/0.9 @1120:100px/0.9 @1220:112px/0.9
@@ -382,6 +382,16 @@ tag home-page
 							<li[py:1 d:hflex a:center px:2 pr:6]>
 								<svg[mr:3 size:16px c:purple7] src='icons/arrow-right.svg'>
 								<span> usp
+			
+			<home-section[my:10px mb:30px]>
+				css c:yellow9 fs:xl
+				<.bg [pos:abs inset:0 z:-2px t:-20px b:-20px rotate:0.1deg bg:yellow1]>
+				<div[d:vflex ja:center]>
+					<span[c:yellow9 fw:600]> "We are overhauling the docs, and we need your help!"
+					<span[fs:md]> "Do you have a few minutes to answer what you think is missing? "
+					<a[c:blue6 td:underline] href='https://form.typeform.com/to/GdMKZMBh'> 'Take Survey'
+					
+
 	
 			for item,i in ls('/home/examples').children
 				<home-section[my:10 py:10] .s{i} .{item.flagstr}>

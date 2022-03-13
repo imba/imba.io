@@ -218,7 +218,7 @@ tag doc-section
 			fs:18px/1.2 fw:500 pb:3
 	
 	css .marktext
-		bg:yellow3 d:block px:0.5 rd:xl p:10px 15px fs:sm c:yellow7 fw:500
+		bg:yellow2 d:block px:0.5 rd:lg p:10px 15px fs:sm c:yellow7 fw:500
 		-webkit-box-decoration-break: clone
 		& a td: underline
 
@@ -393,6 +393,11 @@ tag app-document
 					for item in breadcrumbs
 						<span> <a href=item.href .self=(item == data)> item.navName or item.name
 					<app-search-field>
+				<div[d:hflex ja:center bg:yellow2 p:3 4 rd:lg c:yellow9 mt:2 fs:xs]>
+					<div[fl:1 d:vflex]>
+						<span[c:yellow9 fw:600 fs:sm]> "We are overhauling the docs, and we need your help!"
+						<span[c:yellow8]> "Do you have a few minutes to answer what you think is missing? "
+					<a[c:blue6 td:underline fs:sm fw:600] href='https://form.typeform.com/to/GdMKZMBh'> 'Take Survey'
 				<div$content>
 					if doc.api?
 						<api-symbol-entry key=doc.href data=doc>
@@ -472,7 +477,7 @@ tag app-document-toc
 			<TocItem data=item level=1>
 
 		<.wip[mt:4 w: <240px ml:2 fs:sm- c:gray6 bdl:2px solid yellow4 pl:3 py:1]>
-			<i> "March 11th, 2022"
+			<i> "March 13th, 2022"
 			<div> "We are overhauling the docs, and we need your help!"
 			<div[my:4]> "Do you have a few minutes to answer what you think is missing?"
 			<a[td:underline] href="https://form.typeform.com/to/GdMKZMBh"> "Take survey"

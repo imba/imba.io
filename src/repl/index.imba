@@ -1,5 +1,4 @@
 import './monaco'
-import { @watch } from '../decorators'
 import {ls, File, Dir} from '../store'
 import * as sw from '../sw/controller'
 

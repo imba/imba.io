@@ -1,4 +1,3 @@
-import { @watch } from '../decorators'
 import * as sw from '../sw/controller'
 
 import {fs} from '../store'

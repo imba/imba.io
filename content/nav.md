@@ -8,6 +8,8 @@
 
 ## Playground [href=/try]
 
+## Contribute [href=/contribute] [doc=docs/contribute] [highlight]
+
 # Docs [doc=docs/index] [href=/docs]
 
 ## Introduction [doc=docs/intro] [href=/docs/intro]

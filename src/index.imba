@@ -9,7 +9,6 @@ import './components/app-code'
 import './components/doc-widgets'
 import './components/app-search'
 import './components/home-page'
-import './navbar-announcement'
 
 import './repl/index'
 import API from './api'
@@ -139,8 +138,6 @@ tag app-root
 			@showsearch=$search.show!
 			.show-menu=($menu..focused?)
 			>
-			# <div[pos:absolute w:100% bg:blue0 h:20px rotate:1deg]>
-			<navbar-announcement post=announcement> if announcement
 			<div.header>
 				css pos:fixed d:flex ai:center
 					px:2 w:100% h:$header-height top:0px
