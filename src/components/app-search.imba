@@ -143,8 +143,8 @@ tag app-search
 			$main.scrollTop = 0
 
 	def mount
-		recent = (fs.locals.searchhistory or []).map(do {item: ls($1)} ).filter(do $1.item)
-
+		recent = (fs.locals.searchhistory or []).map(do ls($1) ).filter(do(item,i,arr) item and arr.indexOf(item) == i)
+		recent = recent.map do {item: $1}
 		flags.add('hidden')
 		refresh!
 
