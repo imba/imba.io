@@ -1,50 +1,623 @@
-const json = globalThis['api.json']
-let counter = 0
+import {SymbolFlags as S,ModifierFlags as M,CategoryFlags as C} from './util/flags'
+import Locals from './util/locals.imba'
+export const MAP = {}
+let t = Date.now!
+global.apimap = MAP
+let idcounter = 0
+
+def hrefToEntities url
+	let hits = []
+	let parts = url.split('/')
+	while parts.length
+		let hit = MAP[parts.join('/')]
+		hits.unshift(hit) if hit
+		parts.pop!
+
+	return hits
+
+def garbleText text
+	text.replace(/\w/g,'J')
+
+export const icons = {
+	down: import('codicons/arrow-small-down.svg')
+	up: import('codicons/arrow-small-up.svg')
+	left: import('codicons/arrow-small-left.svg')
+	right: import('codicons/arrow-small-right.svg')
+	record: import('codicons/record.svg')
+	entity: import('codicons/symbol-namespace.svg')
+	interface: import('codicons/symbol-class.svg')
+	ns: import('codicons/symbol-namespace.svg')
+	method: import('codicons/symbol-method.svg')
+	function: import('codicons/symbol-method.svg')
+	variable: import('codicons/symbol-variable.svg')
+	property: import('codicons/symbol-field.svg')
+	accessor: import('codicons/symbol-field.svg')
+	style: import('codicons/symbol-enum.svg')
+	event: import('codicons/mention.svg')
+	modifier: import('codicons/symbol-event.svg')
+	enum: import('codicons/symbol-enum.svg')
+	option: import('codicons/symbol-enum-member.svg')
+}
+
+export const cssicons = Object.assign({},icons,{
+	property: import('codicons/symbol-enum.svg')
+	modifier: import('codicons/symbol-namespace.svg')
+	
+})
+
+class Matcher
+	static map = {}
+	static def for raw
+		map[raw] ||= new self(raw)
+
+	def constructor query
+		#query = query
+		match = match.bind(self)
+
+	
+	def match item\Entity
+		if item.kind.#str.indexOf(#query) >= 0
+			# console.log "matched {item.kind.#str} {#query}"
+			return yes
+		return no
+
+class Kind
+
+	static def for raw
+		let key = "{raw.flags or 0}.{raw.mods or 0}.{raw.cat or 0}"
+		self[key] ||= new self(raw.flags,raw.mods,raw.cat)
+
+	def constructor flags,mods,cat
+		let str = "entity"
+		str += " css" if cat & C.CSS
+		str += " article" if cat & C.Article
+		str += " accessor" if flags & S.PropertyOrAccessor
+		str += " property" if flags & S.Property
+		str += " function" if flags & S.Function
+		str += " variable" if flags & S.Variable
+		str += " method"   if flags & S.Method
+		str += " modifier" if flags & S.Modifier
+		str += " interface" if flags & (S.Interface | S.Class)
+		str += " ns" if flags & S.Namespace
+		str += " event" if flags & S.Event
+		str += " custom" if mods & M.ImbaSpecific
+		str += " native" unless mods & M.ImbaSpecific
+		str += " readonly" if mods & M.Readonly
+		str += " abstract" if mods & M.Abstract
+		str += " upcase" if mods & M.Upcase
+		str += " enum" if flags & S.Enum
+		str += " option" if flags & S.EnumMember
+		#str = str
+		#flags = {}
+		for key in str.split(" ")
+			self[key] = #flags[key] = yes
+		self
+
+	get icon
+		#icon ||= if true
+			let m = self
+			let group = #flags.css ? cssicons : icons
+			#str.split(" ").reverse!.map(do group[$1]).find(do !!$1)
+
+	def toString
+		#str
+
+	def match str
+		self
+
+class Members < Array
+	
+	def constructor owner, items = [], filters = {}
+		super(...items)
+		#owner = owner
+		#filters = filters
+		#cache = {}
+		self
+		
+	get owner
+		#owner
+
+	get filters
+		#filters
+	
+	get all
+		self
+
+	get modifiers do filter(&,'modifier') do $1.modifier?
+	get variables do filter(&,'variable') do $1.variable?
+	get functions do filter(&,'function') do $1.function?
+	get properties do filter(&,'property') do $1.property?
+	get methods do filter(&,'method') do $1.method?
+	get accessors do filter(&,'accessor') do $1.accessor?
+	get setters do filter(&,'setter') do $1.accessor? and !$1.kind.readonly
+	get getters do filter(&,'getter') do $1.getter?
+	get events do filter(&,'event') do $1.event?
+	get custom do filter(&,'custom') do $1.custom?
+	get options do filter(&,'option') do $1.kind.option
+	get native do filter(&,'native') do !$1.custom?
+	get domprops do filter(&,'domprops') do $1.tags.idl
+	get interfaces do filter(&,'interface') do $1.interface?
+	get namespaces do filter(&,'namespace') do $1.ns?
+	get idl do filter(&,'idl') do $1.tags.idl
+	get enums do filter(&,'enum') do $1.kind.enum
+
+	get sorted
+		#sorted('name') do self.sort do $1.name > $2.name ? 1 : -1
+		
+	get own
+		filter(&,'own') do $1.isOwnedBy(#owner)
+		
+	get inherited
+		filter(&,'inherited') do $1.owner != #owner and get($1.name) == $1
+	
+	get unique
+		filter do self.get($1.name) == $1
+
+	def #sorted key, cb
+		return self if #filters.sort == key
+		return #cache[key] ||= new Members(#owner,cb(),Object.assign({},#filters,{sort:key}))
+
+	def filter cb,name
+		if typeof cb == 'string'
+			# filter based on the kind flags
+			let matcher = Matcher.for(cb)
+			cb = matcher.match
+
+		if name
+			return self if #filters[name]
+			return #cache[name] ||= new Members(#owner,super(cb),Object.assign({},#filters,{[name]:1}))
+
+		new Members(#owner,super(cb),Object.assign({},#filters))
+
+	def get name
+		find do $1.name == name
+	
+	get grouped
+		let all = unique
+		[all.own,all.inherited]
+
+extend class Array
+	get own
+		self
+	
+	get inherited
+		self
+
+
+export class Entity
+	name
+	meta = {}
+	flags = 0
+	mods = 0
+	cat = 0
+	proxy\Entity = null
+	parent\Entity = null
+	inherits\Entity = null
+	implements\Entity[] = []
+	implementors\Entity[] = []
+	# inheritors\Entity[] = []
+	valuetype\Entity = null
+	examples = new Set
+	members = []
+
+	def constructor raw,kind
+		super(raw)
+		kind = kind
+
+		id = "ent{idcounter++}"
+
+		if parent
+			parent.members.push(self)
+
+		if event? and valuetype
+			valuetype.members.push(self)
+
+		if inherits
+			let curr = inherits
+			while curr
+				curr.inheritors.push(self)
+				curr = curr.inherits
+
+		for mixin in implements
+			mixin.implementors.push(self)
+
+		if proxy
+			proxy.shorthand = self			
+		
+		# MAP[qualifiedName] = self
+		MAP[href] = self
+
+	get inheritors
+		#inheritors ||= new Members(self,[],{own:1})
+
+	get locals
+		#locals ||= Locals.for(href)
+
+	get guide
+		global.FS.find('/reference').childByHead(href)
+
+	get resources
+		[]
+
+	get api? do yes
+	get flagstr do String(kind)
+	get icon do #icon or kind.icon
+	get css? do (cat & C.CSS) != 0
+	get ns? do flags & S.Namespace
+	get global? do !parent or !parent.parent
+	get interface? do flags & (S.Interface | S.Class) and !css?
+	get method? do (flags & S.Method) != 0
+	get variable? do (flags & S.Variable) != 0 and !interface?
+	get function? do (flags & S.Function) != 0
+	get property? do (flags & S.Property) != 0 or accessor?
+	get modifier? do (flags & S.Modifier) != 0
+	get event? do (flags & S.Event) != 0
+	get getter? do (flags & S.GetAccessor) != 0
+	get accessor? do (flags & S.PropertyOrAccessor) != 0
+	get member? do method? or property?
+	get callable? do method? or function?
+	get custom? do (mods & M.ImbaSpecific) != 0
+	get readonly? do (mods & M.Readonly) != 0
+	get upcase? do (mods & M.Upcase) != 0
+
+	get cssprop? do (cat & C.CSSProperty) != 0
+	get cssmodifier? do (cat & C.CSSModifier) != 0
+
+	get desc
+		meta.desc
+	
+	get summary
+		meta.summary or (meta.desc and meta.desc.length < 150 ? meta.desc : '')
+
+	get owner
+		parent
+
+	get proto
+		inherits
+	
+	get protos
+		proto ? proto.protos.concat(proto) : []
+
+	def get key
+		members.find do $1.name == key
+
+	get breadcrumb
+		#breadcrumb ||= hrefToEntities(href)
+		# !parent ? [self] :  parent.breadcrumb.concat(self)
+
+	def isOwnedBy val
+		return yes if event? and valuetype == val
+		owner == val
+	
+	def lookup key
+		key = key.replace(/^global(This)?\./,'')
+		let parts = key.split('.')
+		let source = self
+
+		while source and parts[0]
+			let key = parts.shift!
+
+			if key[0] =='#' and source isa Members
+				let cat = key.slice(1)
+				source = source.filter do $1.meta[cat]
+				continue
+
+
+			let res = source[key]
+			if res isa Members
+				source = res
+			elif !res
+				source = source.all.find do $1.name == key
+
+		return source
+		# properties.find do $1.name == key
+	
+	get displayName
+		name
+
+	get navName
+		displayName
+	
+	get urlName
+		name
+	
+	get alias
+		meta.alias
+
+	get searchTitle
+		# global? ? (ns? ? name : "global.{name}") : parent.searchTitle + ".{displayName}"
+		searchPath # searchPath.replace(/\./g,' ')
+		# searchPath
+
+	get searchPath
+		global? ? ((ns? or interface?) ? name : "global.{name}") : parent.searchPath + ".{displayName}"
+
+	get searchText
+		return searchPath
+
+		unless global?
+			return (garbleText parent.searchPath) + ".{displayName}"
+		displayName
+
+	get qualifiedName
+		global? ? name : parent.qualifiedName + ".{displayName}"
+
+	get qualifier
+		global? ? '' : parent.qualifiedName
+
+	get detail
+		meta.detail or ''
+
+	get href
+		#href ||= parent.href + "/" + global.escape(urlName)
+		# "/api/" + qualifiedName.replace(/\./g,'/')
+
+	get own
+		#own ||= new Members(self,members,{own:1})
+
+	get mdn
+		if global? and !kind.custom
+			if meta.dom
+				return "https://developer.mozilla.org/en-US/docs/Web/API/{name}"
+			else
+				return "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/{name}"
+
+		if member? and !custom? and !parent.custom? and parent.mdn
+			return parent.mdn + "/{name}"
+
+	get all
+		#all ||= if true
+			let arr = []
+			let mapped = {}
+			
+
+			if inherits
+				for el in inherits.all
+					mapped[el.name] = el
+					arr.push(el)
+
+			let add = do(item)
+				if let overloaded = mapped[item.name]
+					arr.splice(arr.indexOf(overloaded),1)
+					item.overload = overloaded
+
+				arr.push(item)
+
+			
+			for item in members
+				add(item)
+				
+			for mixin in implements
+				for item in mixin.members
+					add(item)
+				# arr.push(...mixin.members)
+			new Members(self,arr)
+
+
+class GlobalEntity < Entity
+
+	get href
+		"/api"
+
+	get qualifiedName
+		"global"
+
+	get navName
+		"API"
+
+class InterfaceEntity < Entity
+	get modifiers
+		#modifiers ||= all.modifiers
+
+	get mdn
+		if global? and !kind.custom
+			if meta.dom
+				"https://developer.mozilla.org/en-US/docs/Web/API/{name}"
+			else
+				"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/{name}"
+		
+
+# class EventEntity < Entity
+
+class EventEntity < Entity
+	get qualifier
+		''
+
+	get href
+		"/api/Element/@{name}"
+	
+	get modifiers
+		#modifiers ||= valuetype.all.modifiers
+		# new Members(self,[])
+
+	get labelName
+		"event"
+
+	get searchPath
+		"@{name}"
+
+	get mdn
+		return if kind.custom
+		"https://developer.mozilla.org/en-US/docs/Web/API/Element/{name}_event"
+
+class ModifierEntity < Entity
+	get urlName
+		"{displayName}"
+
+	get href
+		# "{owner.href}/modifiers/{displayName}"
+		"/docs/events/modifiers/{owner.name}.{displayName}"
+
+	get qualifier
+		''
+
+	get displayName
+		name.slice(1)
+
+class StyleEntity < Entity
+
+	get qualifiedName
+		displayName
+
+	get searchPath
+		displayName
+
+class StyleModifierEntity < StyleEntity
+	
+	get labelName
+		"css modifier"
+
+	get href
+		"/docs/css/modifiers/{name}"
+
+class StylePropertyEntity < StyleEntity
+
+	get labelName
+		"css property"
+
+	get urlName
+		"{displayName}"
+
+	get href
+		"/docs/css/properties/{name}"
+
+	get qualifiedName
+		name # "css {name}"
+
+	get qualifier
+		"css "
+
+	get detail
+		return " / {shorthand.name}" if shorthand
+		return " / {proxy.name}" if proxy
+		return ""
+
+	get mdn
+		return if kind.custom and !proxy
+		let name = proxy ? proxy.name : name
+		"https://developer.mozilla.org/en-US/docs/Web/CSS/{name}"
+
+# class StyleTypeEntity < StyleEntity
+
+class StyleTypeEntity < StyleEntity
+
+	get href
+		"/docs/css/values/{global.escape name}"
+
+	get displayName
+		"<{name}>"
+
+	get qualifiedName
+		displayName
+
+	get labelName
+		"css data type"
+
+	get mdn
+		return if kind.custom
+		"https://developer.mozilla.org/en-US/docs/Web/CSS/{name}_value"
+
+
+class StyleValueEntity < StyleEntity
+
+	get searchPath
+		"{parent.displayName}: {displayName}"
+
+	get labelName
+		parent.displayName + " value"
+
+class ArticleEntity < Entity
+
+	get href
+		meta.href
+
+	get guide
+		meta.article
+	
+def build raw
+	let cls = Entity
+	let kind = Kind.for(raw)
+
+	if kind.interface
+		# console.log 'found interface',kind
+		# if raw.flags & (S.Interface | S.Class)
+		cls = InterfaceEntity
+	if kind.event
+		cls = EventEntity
+	if kind.modifier
+		cls = ModifierEntity 
+	if !raw.parent
+		cls = GlobalEntity
+	
+	if kind.css
+		cls = StyleEntity
+
+		if kind.property
+			cls = StylePropertyEntity
+		elif kind.modifier
+			cls = StyleModifierEntity
+		elif kind.enum
+			cls = StyleTypeEntity
+		elif kind.option
+			cls = StyleValueEntity
+	
+	if kind.article
+		cls = ArticleEntity
+
+	return new cls(raw,kind)
+
+const all = global.$api({},build)
+console.log "api took",Date.now! - t
+global.api2 = all
 
 const root = new class
-	paths = []
-	entities = []
-	kinds = {}
-	lookups = {}
-	
-	icons = {
-		down: import('codicons/arrow-small-down.svg')
-		up: import('codicons/arrow-small-up.svg')
-		left: import('codicons/arrow-small-left.svg')
-		right: import('codicons/arrow-small-right.svg')
-		record: import('codicons/record.svg')
-	}
-	
-	def childByName name
-		console.log 'api child by name',name
-		return self[name]
+	root = all[0]
+	hrefs = MAP
+
+	get descendants
+		all
+
+	def create raw
+		build(raw)
+
+	def path url
+		let hits = []
+		let parts = url.split('/')
+		while parts.length
+			let hit = MAP[parts.join('/')]
+			hits.unshift(hit) if hit
+			parts.pop!
 		
-	def entryForPath path
-		paths[path]
-		
+		return hits
+			
 	def lookup path
-		if paths[path]
-			return paths[path]
+		if MAP[path]
+			return MAP[path]
 			
 		if let m = path.match(/^(\@\w+)(?:\.([\w\-]+))?$/)
 			let path = "/api/Element/{m[1]}"
 			if m[1] == '@event'
 				path = "/api/Event"
 
-			if let ev = paths[path]
+			if let ev = MAP[path]
 				if m[2]
 					return ev.modifiers.get("@{m[2]}")
 				return ev
+		
+		return root.lookup(path)
 		return null
-		
-	get descendants
-		entities
-		
+
+	def get path
+		if MAP[path]
+			return MAP[path]
+
+		root.lookup(path)
+
 	def getEvent name
 		let ref = "/api/Element/@{name.replace('@','')}"
 		if name == 'event'
 			ref = "/api/Event"
-		lookup(ref)
+		MAP[ref]
 		
 	def getEventModifier evname,modname
 		let ev = getEvent(evname)
@@ -52,10 +625,41 @@ const root = new class
 			ev.modifiers.find(do $1.displayName == modname)
 		
 	def getStyleProperty name
-		lookup("/css/properties/{name}")
+		return
+
+	def inferTypeForToken tok
+		if tok.match('self')
+			return tok.context.selfScope.selfPath
+
+		if tok.match('accessor')
+			# let lft = tok.prev.prev
+			return [inferTypeForToken(tok.prev.prev),tok.value]
+
+		if tok.match('identifier')
+			let sym = tok.symbol
+			# what if it is inside an object that is flagged as an assignment?			
+			if tok.value == 'global'
+				return 'globalThis'
+
+			if sym and sym.datatype
+				return sym.datatype
+			
+			if !sym
+				let scope = tok.context.selfScope
+
+				if tok.value == 'self'
+					return scope.selfPath
+
+				if tok.value[0] == tok.value[0].toLowerCase!
+					return "{scope.selfPath}.{tok.value}"
+			
+			# console.log 'found identifiyer!',tok,tok.symbol
+			return "globalThis.{tok.value}"
+
 		
 	def getEntityForToken token
 		let entity
+		
 		if token.type == 'tag.event.name'
 			entity = getEvent(token.value)
 		elif token.type == 'tag.event-modifier.name'
@@ -63,467 +667,22 @@ const root = new class
 			let modname = token.value
 			entity = getEventModifier(evname,modname)
 		elif token.type == 'style.property.name'
-			entity = lookup("/css/properties/{token.value}")
+			entity = lookup("/docs/css/properties/{token.value}")
 			
 		elif token.type == 'style.property.modifier' or token.type == 'style.selector.modifier'
-			entity = lookup("/css/modifiers/{token.value}")
+			entity = lookup("/docs/css/modifiers/{token.value}")
+
+		if !entity
+			let path = inferTypeForToken(token)
+			# console.log "inferred type",path
+			if path isa Array
+				path = path.join(".")
+			if path
+				try
+					return root.lookup(path)
+		
 		
 		return entity
-		
-		
 
-class Members < Array
-	
-	def constructor owner, items = []
-		super(...items)
-		#owner = owner
-		self
-		
-	get owner
-		#owner
-		
-	get modifiers
-		filter do $1.modifier?
-		
-	get properties
-		filter do $1.property?
-		
-	get custom
-		filter do $1.custom?
-		
-	get domprops
-		filter do $1.tags.idl
-		
-	get idl
-		filter do $1.tags.idl
-		
-	get methods
-		filter do $1 isa MethodEntity
-		
-	get resources
-		[]
-		
-	get own
-		filter do $1.owner == #owner
-		
-	get inherited
-		filter do $1.owner != #owner and get($1.name) == $1
-	
-	get unique
-		filter do self.get($1.name) == $1
-
-	def filter cb
-		new Members(#owner,super)
-		
-	def get name
-		find do $1.name == name
-	
-	get grouped
-		let all = unique
-		[all.own,all.inherited]
-	
-const kindToClass = {}
-
-export class Entity
-	static def build desc, owner
-		let cls = kindToClass[desc.kind] or Entity
-		new cls(desc,owner)
-
-	def constructor desc, owner
-		id = "api{counter++}"
-		name = desc.name
-		desc = desc
-		owner = owner
-		kind = desc.kind
-		
-		meta = desc.meta or {}
-		events = new Members(self)
-		members = new Members(self)
-		examples = new Set
-		
-		unless owner
-			root[name] = self
-		
-		if desc.extends
-			up = root[desc.extends]
-			
-		if desc.type
-			type = root[desc.type]
-		
-		if desc.members
-			for item in desc.members
-				members.push(Entity.build(item,self))
-		
-		root.entities.unshift(self)
-		root.paths[href] = self
-		(root.kinds[kind] ||= []).push(self)
-		register!
-	
-	get qualifier
-		''
-
-	get tags
-		desc.tags
-	
-	get docs
-		desc.docs or ''
-		
-	get searchTitle
-		displayName
-		
-	get searchText
-		#searchText ||= (displayName).replace(/\-/g,'').toLowerCase!
-		
-	def match query, options
-		searchText.indexOf(query) >= 0
-		
-	get guide
-		global.FS.find('/api/reference').childByHead(href)
-		
-	def register
-		self
-		
-	get props
-		let res\Members = (up ? (members.concat(up.props)) : members)
-		res.#owner = self
-		res
-		
-	get detail
-		tags.detail
-		
-	get modifiers
-		#modifiers ||= props.filter do $1.modifier?
-		
-	get properties
-		#properties ||= props.properties
-		
-	get methods
-		#methods ||= props.filter do $1 isa MethodEntity
-		
-	get getters
-		#getters ||= props.filter do $1.tags.getter
-		
-		
-	get siblings
-		root.kinds[kind].filter do $1 != self
-	
-	get parents
-		[]
-		
-	get breadcrumb
-		[self]
-		
-	get summary
-		desc.tags and desc.tags.summary or (docs and docs.length < 200 ? docs : '')
-		
-	# get events
-	# 	members.events
-	
-	get head
-		displayName
-	
-	get interface?
-		no
-		
-	get modifier?
-		kind == 'eventmodifier'
-		
-	get property?
-		kind == 'property'
-		
-	get method?
-		kind == 'method'
-		
-	get getter?
-		!!tags.getter
-		
-	get member?
-		method? or property?
-		
-	get event?
-		kind == 'event'
-		
-	get eventmod?
-		kind == 'eventmodifier'
-		
-	get stylemod?
-		kind == 'stylemod'
-		
-	get styleprop?
-		kind == 'styleprop'
-	
-	get style?
-		stylemod? or styleprop?
-
-	get custom?
-		tags.custom or desc.group == 'custom' or tags.special
-			
-	get idl?
-		tags.idl
-
-	get api?
-		yes
-		
-	get displayName
-		name
-		
-	get title
-		displayName
-		
-	get escapedName
-		global.escape(name)
-		
-	get fullName
-		owner ? "{owner.fullName}.{displayName}" : displayName
-		
-	get href
-		"/api/{name}"
-		
-	get mdn
-		''
-		
-	get icon
-		import('codicons/symbol-namespace.svg')
-		
-	get related
-		#related ||= if true
-			let all = []
-			let meta = desc.tags
-			for item in root.kinds[kind]
-				continue if item == self
-				for own k,v of item.tags
-					if v == 1 and meta[k] == 1
-						all.push(item)
-			all
-
-class InterfaceEntity < Entity
-	descendants = []
-	
-	get interface?
-		yes
-	
-	get icon
-		import('codicons/symbol-class.svg')
-
-	def register
-		let par = up
-		while par
-			par.descendants.push(self)
-			par = par.up
-
-		root[name] = self
-		yes
-		
-	get parents
-		#parents ||= up ? [up].concat(up.parents) : []
-	
-	get breadcrumb
-		#breadcrumb ||= [self]
-		
-	get mdn
-		custom? ? '' : "https://developer.mozilla.org/en-US/docs/Web/API/{name}"
-		
-	get related
-		parents.slice(0).reverse!.concat(descendants)
-
-class EventInterfaceEntity < InterfaceEntity
-	
-	get modifierPrefix
-		events.length == 1 ? "@{events[0].name}" : "@{name.toLowerCase!.replace(/(\w)event/,'$1')}"
-		
-	get resources
-		['/tags/event-handling']
-
-class EventEntity < Entity
-	
-	get icon
-		# import('codicons/symbol-event.svg')
-		import('codicons/mention.svg')
-
-	def register
-		root.paths["Element.@{name}"] = self
-		type.events.push(self)
-		
-	get displayName
-		"{name}"
-		
-	get searchTitle
-		"{name} {displayName}"
-		
-	get href
-		"/api/Element/@{displayName}"
-		
-	get siblings
-		type.events.filter do $1 != self
-		
-	get properties
-		type.properties
-		
-	get modifiers
-		type.modifiers
-		
-	get parents
-		typechain
-		
-	get typechain
-		#typechain ||= [type]
-		
-	get breadcrumb
-		[type,self]
-		
-	get docs
-		siblings.length == 0 and !desc.docs ? type.docs : desc.docs
-		
-	get related
-		let siblings = siblings
-		siblings.length > 0 ? siblings : super
-		
-	get mdn
-		return '' if tags.special
-		"https://developer.mozilla.org/en-US/docs/Web/API/Element/{name}_event"
-		
-	get resources
-		[type,'/tags/event-handling']
-
-	# get examples
-	#	#examples ||= global.FS.findExamplesFor(new RegExp("({displayName})(?=\\(|\\.|=)",'g'))
-		
-class EventModifierEntity < Entity
-	
-	get icon
-		import('codicons/symbol-event.svg')
-	
-	get displayName
-		"{name.slice(1)}"
-		
-	get qualifier
-		owner.modifierPrefix + "."
-		
-	get searchTitle
-		"{displayName} @{owner.modifierPrefix}.{displayName}"
-		
-	get siblings
-		#siblings ||= owner.modifiers.own.filter do $1 != self
-	
-	get parents
-		#parents ||= [owner]
-		
-	get href
-		owner.href + '/' + name
-		
-	get eventNames
-		owner.events.map do $1.name
-	
-	get breadcrumb
-		[owner,self]
-	
-	get related
-		owner.modifiers.filter do $1 != self
-		
-	get resources
-		[owner,'/tags/event-handling']
-		
-	# get examples
-	# 	#examples ||= global.FS.findExamplesFor(new RegExp("({eventNames.join('|')})\\.{displayName}(?=\\(|\\.|=)",'g'))
-	
-class PropertyEntity < Entity
-	
-	get icon
-		return import('codicons/symbol-enum.svg') if idl?
-		getter? ? import('codicons/symbol-method.svg') : import('codicons/symbol-field.svg')
-		
-	get searchTitle
-		"{owner.name}.{name}"
-	
-	get siblings
-		owner.properties.filter do $1 != self
-		
-	get parents
-		#parents ||= [owner].concat(owner.parents)
-		
-	get breadcrumb
-		[owner,self]
-	
-	get href
-		owner.href + '/' + escapedName	
-		
-	get mdn
-		return '' if custom? or owner.custom?
-		owner.mdn + "/{name}"
-
-class MethodEntity < PropertyEntity
-	
-	get icon
-		import('codicons/symbol-method.svg')
-		
-	get siblings
-		owner.methods.filter do $1 != self
-
-class StyleEntity < Entity
-	
-	
-	
-class StyleProperty < StyleEntity
-	
-	def register
-		if alias
-			root.paths["/css/properties/{alias}"] = self
-		super
-	
-	get icon
-		import('codicons/symbol-enum.svg')
-	
-	get custom?
-		desc.tags.custom
-	
-	get alias
-		desc.alias
-	
-	get shortName
-		alias or name
-	
-	get aliasFor
-		custom? ? tags.detail : name
-		
-	get href
-		"/css/properties/{escapedName}"
-	
-	get searchText
-		#searchText ||= [alias,name].filter(do $1).join('').replace(/\-/g,'').toLowerCase!
-		
-	get mdn
-		return null if custom?
-		return "https://developer.mozilla.org/en-US/docs/Web/CSS/{name}"
-		
-class StyleModifier < StyleEntity
-	
-	get icon
-		import('codicons/symbol-enum.svg')
-		
-	get searchTitle
-		name
-	
-	get custom?
-		desc.tags.custom or desc.group == 'custom'
-	
-	get href
-		"/css/modifiers/{name}"
-	
-class StyleValue < StyleEntity
-	
-kindToClass.interface = InterfaceEntity
-kindToClass.eventinterface = EventInterfaceEntity
-kindToClass.event = EventEntity
-kindToClass.property = PropertyEntity
-kindToClass.method = MethodEntity
-kindToClass.eventmodifier = EventModifierEntity
-
-kindToClass.styleprop = StyleProperty
-kindToClass.stylemod = StyleModifier
-
-
-for entry in json.entries
-	Entity.build(entry)
-
-global.API = root
-export const api = root
+global.api = root
+export default root

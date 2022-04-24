@@ -1,16 +1,10 @@
 .DS_Store
+.vscode/
 node_modules
 tmp
-test/perf
 npm-debug.log
-www/client.js
-www/sandbox.js
-docs/gists/
-# Local Netlify folder
 .netlify
 dist/
-www/index.html
-www/dist
-
+public/reference.js
 public/content.json.js
 public/examples.json

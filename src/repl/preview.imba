@@ -1,4 +1,3 @@
-import { @watch } from '../decorators'
 import * as sw from '../sw/controller'
 
 import {fs} from '../store'
@@ -21,11 +20,18 @@ tag app-repl-preview
 	prop scale = 1
 	prop size = 'auto-auto'
 	prop mode
+	prop file
 	prop options = {}
+	prop $win
+	prop $doc
+	prop demo
+	prop exports
+	prop src
 
 	def build
 		t0 = Date.now!
-		$iframe = <iframe[pos:absolute width:100% height:100% min-width:200px]>
+
+		$iframe = new <iframe[pos:absolute width:100% height:100% min-width:200px]>
 		$iframe.src = 'about:blank'
 		commands = []
 
@@ -38,7 +44,7 @@ tag app-repl-preview
 
 			# connect with the url as well
 			win.addEventListener('routerinit') do(e)
-				let r = #framerouter = e.detail
+				let r = e.detail
 
 				r.on('change') do(e)
 					if $address
@@ -91,7 +97,7 @@ tag app-repl-preview
 	def minimize
 		flags.remove('maximized')
 
-	def maximized?
+	get maximized?
 		flags.contains('maximized')
 
 	def toggle
@@ -288,7 +294,7 @@ tag app-repl-preview
 
 	def render
 		recalc!
-		<self @intersect.silence.in=entered>
+		<self @intersect.silent.in=entered>
 			css .cmd
 				rd:md bg:gray1 px:1.5 py:0 c:gray7 tween:all 0.1s mx:1 bxs:xs suffix:"()"
 				@before content:"run " o:0.8 fw:400

@@ -18,7 +18,8 @@
 		"target": "esnext",
 		"newLine": "lf",
 		"moduleResolution": "node",
-        "lib": ["ESNext","DOM"]
+        "lib": ["ESNext","DOM"],
+		"types": []
     },
     "include": [
         "index.imba"

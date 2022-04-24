@@ -1,5 +1,6 @@
 import { WorkerManager, setupMode } from '../workers/imba/client'
-import {grammar} from 'imba/src/program/grammar.imba'
+# import {grammar} from 'imba/src/program/grammar.imba'
+import {grammar} from '../../../scripts/lexer/grammar' # imba/src/program/grammar.imba
 
 export const id = 'imba'
 export const extensions = ['.imba']
@@ -35,7 +36,7 @@ export const configuration = {
 	}]
 }
 
-export var language = grammar
+export const language = grammar
 
 export def setup monaco
 	monaco.languages.register({id,extensions,aliases})

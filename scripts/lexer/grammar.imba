@@ -52,7 +52,7 @@ def denter indent,outdent,stay,o = {}
 			indent[k] += '*$1'
 
 	# for own k,v of cases  
-	let rule = [/^(\t*)(?=[^\t\n])/,{cases: cases}]
+	let rule = [/^(\t*)(?=[^ \t\n])/,{cases: cases}]
 	if o.comment
 		let clones = {}
 		for own k,v of cases
@@ -326,6 +326,7 @@ export const states = {
 	array_body: [
 		[/\]@implicitCall/, token: ']', switchTo: '@implicit_call_body=']
 		[/\]/, ']', '@pop']
+		[/\)|\}/,'invalid']
 		'indentable_'
 		'expr_'
 		[',','delimiter']
@@ -620,7 +621,8 @@ export const states = {
 	]
 
 	field_: [
-		[/((?:lazy )?)((?:static )?)(const|let|attr)(?=\s|$)/, ['keyword.lazy','keyword.static','keyword.$1','@_vardecl=field-$3']] # $2_body.$S2.$2.$S4
+		[/((?:lazy )?)((?:static )?)(const|let|attr|prop)(?=\s|$)/, ['keyword.lazy','keyword.static','keyword.$1','@_vardecl=field-$3']] # $2_body.$S2.$2.$S4
+		[/(declare\s+)(?=@fieldid)/,'keyword.declare']
 		[/(static\s+)(?=@fieldid)/,'keyword.static']
 		[/(@fieldid)(?=$)/,'entity.name.field']
 		[/(@fieldid)/,['entity.name.field','@_field_1']]
@@ -856,6 +858,7 @@ export const states = {
 		[/(\@)(\.{0,2}[\w\-\<\>\!]*)/,'style.selector.modifier']
 		[/\.([\w\-]+)?/,'style.selector.class-name']
 		[/\#([\w\-]+)?/,'style.selector.id']
+		[/\:\:([\w\-]+)?/,'style.selector.pseudo-element']
 		[/([\w\-]+)/,'style.selector.element']
 		[/(>+|~|\+)/,'style.selector.operator']
 		[/(\*+)/,'style.selector.element.any']
@@ -870,16 +873,17 @@ export const states = {
 
 	css_props: [
 		denter(null,-1,0)
-		[/(?=@cssPropertyKey2)/,'','@css_property&-_styleprop-_stylepropkey']
+		[/(?=@cssPropertyKey2([^\:]|$))/,'','@css_property&-_styleprop-_stylepropkey']
 		[/#(\s.*)?\n?$/, 'comment']
-		[/(?=[\%\*\w\&\$\>\.\[\@\!]|\#[\w\-])/,'','@>css_selector&rule-_sel']
+		[/(?=[\%\*\w\&\$\>\.\[\@\!]|\#[\w\-]|\:\:)/,'','@>css_selector&rule-_sel']
 		[/\s+/, 'white']
 	]
 
 	css_selector: [
 		denter({switchTo: '@css_props'},-1,{token:'@rematch',switchTo:'@css_props&_props'})
 		[/(\}|\)|\])/,'@rematch', '@pop']
-		[/(?=\s*@cssPropertyKey2)/,'',switchTo:'@css_props&_props']
+		# [/\s*\:\:(?:[\w\-]+)?/,'style.selector.pseudo-element']
+		[/(?=\s*@cssPropertyKey2[^\:])/,'',switchTo:'@css_props&_props']
 		[/\s*#\s/,'@rematch',switchTo:'@css_props&_props']
 		'sel_'
 	]
@@ -970,7 +974,7 @@ export const states = {
 
 	tag_: [
 		[/(\s*)(<)(?=\.)/,['white','tag.open','@_tag/flag']],
-		[/(\s*)(<)(?=\w|\{|\[|\%|\#|>)/,['white','tag.open','@_tag/name']]
+		[/(\s*)(<)(?=\w|\{|\[|\%|\#|\(|>)/,['white','tag.open','@_tag/name']]
 	]
 	tag_content: [
 		denter(2,-1,0)

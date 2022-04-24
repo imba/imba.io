@@ -1,14 +1,17 @@
 import Script from './lexer'
+import fetch from 'node-fetch'
 
 const chokidar = require 'chokidar'
 const path = require 'path'
 const fs = require 'fs'
 const marked = require '../src/util/markdown'
+# const fetch = require 'node-fetch'
 
 const bundle = 'content'
 const root = path.resolve(__dirname,'..','content')
 const dest = path.resolve(__dirname,'..','public')
 const imbasrc = path.resolve(__dirname,'..','node_modules','imba','dist')
+const changelog = path.resolve(__dirname,'..','node_modules','imba','changelog.md')
 
 console.log __dirname,__realname
 
@@ -24,6 +27,8 @@ const examples = {
 const models = { }
 const map = {'.': data}
 const watcher = chokidar.watch(root)
+watcher.add(changelog)
+
 
 def sort item
 	if item.type == 'dir'
@@ -45,7 +50,6 @@ def save
 
 watcher.on('all') do
 	let abs = $2
-	let is-dir = $1.indexOf('Dir') >= 0
 	let rel = path.relative(root,abs).split(path.sep).join('/')
 	let sorter = path.basename(rel)
 	let src = rel.replace(/\b\d+\-/g,'')
@@ -57,7 +61,12 @@ watcher.on('all') do
 	return if rel.match(/\.(png|jpg|gif)$/)
 	
 	return if name == '.DS_Store' or src == '' or name.match(/\-(\.\w+)?$/)
-	# console.log 'watcher',$1,src,dirname
+	console.log abs,rel,src
+	if name == 'changelog.md'
+		console.log 'changelog!!!'
+		src = "changelog.md"
+		dirname = '.'
+
 
 	let up = map[dirname]
 	let id = "/{src}"
@@ -83,8 +92,6 @@ watcher.on('all') do
 			# path: '/' + src
 			fullPath: abs
 		}
-		
-		# console.log abs
 
 		if name == 'meta.json'
 			let meta = JSON.parse(item.body)
@@ -125,8 +132,7 @@ watcher.on('all') do
 		
 		else
 			console.log 'file',src
-			
-			
+
 			if item.ext == 'imba'
 				item.meta ||= {}
 				# parse the first line arguments
@@ -162,8 +168,6 @@ watcher.on('all') do
 						let ev = mod.context.name
 						see.push("@{ev}.{mod.value}")
 						
-					
-					
 					console.log item.meta
 			
 			examples["/" + src] = {
