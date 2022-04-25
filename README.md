@@ -12,6 +12,9 @@ cd imba.io
 # install dependencies
 npm install
 
+# build
+npm run build
+
 # package content from content/ (continously)
 npm run watch
 
