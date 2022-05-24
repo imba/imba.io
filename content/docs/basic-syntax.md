@@ -293,6 +293,9 @@ for own key, value of object
 
 - [ ] TODO: When to use `for ... of ...` vs `for ... in ...`
 
+for of compiles to iterator -> should use in examples
+
+
 You can quickly loop over arrays with `for ... in ...`.
 
 ```imba
@@ -315,7 +318,7 @@ const multiline = ///
 
 ## Ranges
 
-- [ ] TODO: mention inclusive/exclusive.
+- [ ] TODO: mention inclusive/exclusive. -> make a task to have a conversation about these, as we rarely use them
 
 Ranges use three dots within brackets `[0 ... 10]`.
 
@@ -360,12 +363,11 @@ const handler = do(event)
 
 ## Components
 
-- [ ] TODO: Link to web components
-- [ ] TODO: Link to explanation on `<self>`
+- [ ] TODO: Link to explanation on `<self>` -> ask Nathan about a future scrim that explains components/<self> better?
 - [ ] TODO: Link to tags
 - [ ] TODO: Link to rendering
 
-Tags are compiled down to _extremely optimized_ native [web components](). By default, `data` is the name used to pass values into a tag. Using `data` is simple, but declaring each prop and its type is usually better. 
+Tags are compiled down to _extremely optimized_ native [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). By default, `data` is the name used to pass values into a tag. Using `data` is simple, but declaring each prop and its type is usually better. 
 
 ```imba
 # Importing a todos array from another Imba file called "data.imba":
@@ -403,9 +405,23 @@ In Imba, inline styles are much more powerful. Keeping elements, styles and logi
 <div[padding:3rem @lg:5rem @print:0]> # Conditional styles based on media queries.
 ```
 
-Short names can be an anti-pattern in software development, because they are hard to decipher. After all, if `d` could mean any number of things, you would have to look it up each time.
+### Shorthands
 
-CSS keywords are constant - they never change. New ones are added as the language grows, but existing keywords stay the same. This means that you can trust that `d` will always mean `display`. Imba developers often say they quickly become as natural and easy to read as the CSS keywords.
+- [ ] Link to additional shorthands
+
+Single letter variable names are often considered to be an anti-pattern. Seeing the name `c`, what does it mean? `columns`? `content`? `color`? Reading code with unclear naming costs time and effort.
+
+`c` is shorthand for `color`. But will that always be the case? Could it ever change, and mean `columns` or `content` instead?
+
+```imba
+<div[c:blue]>
+```
+
+**CSS keywords don't change. Imba shorthands don't change.**
+
+Stability and consistency builds trust. Let's learn one more: `bg` is shorthand for `background`. Knowing both `bg` and `c`, what does the shorthand `bgc` "look like"? `background-color`!
+
+Imba shorthands are bound directly to CSS, and remain stable. This makes Imba shorthands quick to read, write, and understand at a glance. `d` will always mean `display`, `p` will always mean `padding`, `m` will always mean `margin`, and so on.
 
 - [ ] Link to shorthand overview
 
@@ -413,6 +429,10 @@ CSS keywords are constant - they never change. New ones are added as the languag
 <div[display:flex flex-direction:row color:blue]> # Regular keywords
 <div[d:flex fld:row c:blue]> # Shorthand keywords
 ```
+
+Imba developers often say these shorthand names become as familiar and natural as CSS itself, but faster. The Imba tooling gives you the full keyword on hover, and will even suggest the shorthand if you hover the regular CSS keyword.
+
+### Scoping styles
 
 Inline styles apply to the element itself, and everything within it. Changing the scope lets you apply styles to subtrees, components, tags, the entire file, or even globally.
 
@@ -424,6 +444,7 @@ global css p fs:15px
 css p color:blue7 fw:500 
 
 tag todo-app
+    # Set at the todo-app level to style everything within the tag.
     css .item color:gray8 bg@hover:gray1
     css .item.done color:green8 text-decoration:line-through
 
@@ -431,7 +452,7 @@ tag todo-app
         <div.item .done=todo.completed> <span> todo.title
 ```
 
-Selector can also be nested inside tag trees, and be included only when certain conditions are true.
+Styling can also be nested inside tag trees, and be conditionally included.
 
 ```imba
 tag todo-app
@@ -453,7 +474,7 @@ tag todo-app
 
 ## Comments
 
-Single-line comments in Imba are any text following `# ` on the same line.
+Single-line comments in Imba are any text following `# ` on the same line. The space is required.
 
 ```imba
 # This is a comment
@@ -501,14 +522,18 @@ tag todo-item
         <button @click.stop.emit('remove')> 'x'
 ```
 
-Types can also be imported from other `.imba`,`.js`,`.ts`, and `.d.ts` files.
-
-- [ ] Do we recommend `import type` now?
+Types can also be imported from other `.imba`,`.js`,`.ts`, and `.d.ts` files, if you only want to annotate your code. If we need the actual User class, for example to create a new user with `user = new User()`, then we would need to do a regular import.
 
 ```imba
-import type { Resource, User } from './models'
+# Only the type is imported:
+import type { User } from './models'
 
-class State
-    items\Resource[]
-    currentUser\User
+tag user-card
+    # The User is annotated here, so we only need the type:
+    prop user\User
+
+    <self>
+        # We know what kind of object a User is now:
+        <p> user.name
+        <img src=user.profile alt="Profile picture"> 
 ```
