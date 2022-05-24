@@ -1,8 +1,12 @@
 # Basic Syntax
 
+**The brand new Imba course has launched! Learn Imba through fully interactive screencasts:** <https://scrimba.com/learn/imba>
+
 A good way to think of Imba is, "it’s just JavaScript". Imba compiles directly to readable JavaScript. This means that every native type with all of their methods, properties and behaviour are the exact same. So, strings are just strings, arrays are just arrays, and so on.
 
 ## Literals
+
+[Watch the scrim on syntax in the Imba course](https://scrimba.com/learn/imba/intro-to-imba-syntax-cpwyK7Tz)
 
 Imba syntax is familiar and often the same as JavaScript. Let's look at some examples of [literals](https://developer.mozilla.org/en-US/docs/Glossary/Literal). The comments below highlight  how Imba can be both easier to read and faster to write.
 
@@ -38,6 +42,9 @@ const alsoElement = <div.{object.name}> "{object.name} class" # Easy interpolati
 ## Functions
 
 _Note: Differences between functions and arrow functions are covered in the [functions overview](functions.md)._
+
+[Watch the scrim on functions in the Imba course](https://scrimba.com/learn/imba/functions-cJLGEQCB)
+
 
 Imba uses the shorter `def` instead of the `function` keyword. `do` instead of `() => {}`. These are faster to write, read, and recognize at a glance.
 
@@ -218,6 +225,8 @@ def method name, { title, desc = 'no description' }
 
 _Note: More details about classes are in the [class overview](classes.md)._
 
+[Watch the scrim on classes in the Imba course](https://scrimba.com/learn/imba/classes-cbVveMS4)
+
 Classes in Imba can do the same things as classes in JavaScript, but have several additional features making them easier to use. 
 
 ```imba
@@ -263,6 +272,8 @@ const newTodos = Todo.createTodos ['Learn Imba', 'Eat breakfast']
 
 ## Loops & Iteration
 
+[Watch the scrim on loops in the Imba course](https://scrimba.com/learn/imba/loops-co2eb439ab71581a6ad3f0ea1)
+
 Loops in Imba have more useful features than in JavaScript, making it easier to loop over object properties.
 
 [Iterables](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) can be looped over with `for ... of ...`.
@@ -291,17 +302,15 @@ for own key, value of object
     # answer: 42
 ```
 
-- [ ] TODO: When to use `for ... of ...` vs `for ... in ...`
-
-for of compiles to iterator -> should use in examples
-
-
-You can quickly loop over arrays with `for ... in ...`.
+You can quickly loop over arrays with `for ... in ...`. It compiles to native iterators in JavaScript, and is generally the best choice together with `for own`.
 
 ```imba
 for value, index in array
     console.log value
 ```
+
+[Watch the scrim on looping within tags in the Imba course](https://scrimba.com/learn/imba/loops-inside-tags-co59443e78abc774ac34f72f4)
+
 
 ## Regular Expressions
 
@@ -318,9 +327,7 @@ const multiline = ///
 
 ## Ranges
 
-- [ ] TODO: mention inclusive/exclusive. -> make a task to have a conversation about these, as we rarely use them
-
-Ranges use three dots within brackets `[0 ... 10]`.
+Ranges use three dots within brackets `[0 ... 10]`, counting up until the upper number. This makes it easy to use with `myArray.length` without having to write `myArray.length - 1`.
 
 ```imba
 const items = []
@@ -363,9 +370,7 @@ const handler = do(event)
 
 ## Components
 
-- [ ] TODO: Link to explanation on `<self>` -> ask Nathan about a future scrim that explains components/<self> better?
-- [ ] TODO: Link to tags
-- [ ] TODO: Link to rendering
+[Watch the scrim on tags in the Imba course](https://scrimba.com/learn/imba/tags-co83d4e259d958441d6c9b8e7)
 
 Tags are compiled down to _extremely optimized_ native [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). By default, `data` is the name used to pass values into a tag. Using `data` is simple, but declaring each prop and its type is usually better. 
 
@@ -391,9 +396,7 @@ imba.mount <todo-app data=todos>
 
 ## Styles
 
-- [ ] Link to imba course scrim on css here
-
-~~With the CSS shorthands and modifiers it is easy to use inline styles even for complex components.~~
+[Watch the scrim on inline styles in the Imba course](https://scrimba.com/learn/imba/inline-styles-coe2d48f9a05c7b17e6fb46f7)
 
 In HTML you can set inline styles on an element with `style="display: flex;"`. Using classes is often recommended, as keeping track of these inline styles can be slow, brittle, and difficult to work with.
 
@@ -407,7 +410,7 @@ In Imba, inline styles are much more powerful. Keeping elements, styles and logi
 
 ### Shorthands
 
-- [ ] Link to additional shorthands
+[Watch the scrim on shorthands in the Imba course](https://scrimba.com/learn/imba/style-property-shorthands-co55547d5954f4b8576d0f730)
 
 Single letter variable names are often considered to be an anti-pattern. Seeing the name `c`, what does it mean? `columns`? `content`? `color`? Reading code with unclear naming costs time and effort.
 
@@ -423,8 +426,6 @@ Stability and consistency builds trust. Let's learn one more: `bg` is shorthand 
 
 Imba shorthands are bound directly to CSS, and remain stable. This makes Imba shorthands quick to read, write, and understand at a glance. `d` will always mean `display`, `p` will always mean `padding`, `m` will always mean `margin`, and so on.
 
-- [ ] Link to shorthand overview
-
 ```imba
 <div[display:flex flex-direction:row color:blue]> # Regular keywords
 <div[d:flex fld:row c:blue]> # Shorthand keywords
@@ -433,6 +434,9 @@ Imba shorthands are bound directly to CSS, and remain stable. This makes Imba sh
 Imba developers often say these shorthand names become as familiar and natural as CSS itself, but faster. The Imba tooling gives you the full keyword on hover, and will even suggest the shorthand if you hover the regular CSS keyword.
 
 ### Scoping styles
+
+
+[Watch the scrim on scoping styles in the Imba course](https://scrimba.com/learn/imba/scoped-styles-co50f4384944f5102c6e6d8ca)
 
 Inline styles apply to the element itself, and everything within it. Changing the scope lets you apply styles to subtrees, components, tags, the entire file, or even globally.
 
@@ -499,9 +503,6 @@ Type annotations in Imba are compiled to [JSDoc](https://jsdoc.app) comments and
 ```imba
 const item\string = window.title
 ```
-
-- [ ] link to more advanced jsdoc usage?
-- [ ] mention wrapping annotation in parenthesis to make whitespace easier?
 
 Annotations are extra useful to create "contracts" between parts of your code. It is faster to understand and re-use tags when their props are annotated, for example.
 
