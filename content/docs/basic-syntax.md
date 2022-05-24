@@ -138,7 +138,7 @@ const withoutCommas = [
     'four'
 ]
 
-console.log(withCommas, withoutCommas) # Logs "[ 1, 2, 3, 4 ] [ 1, 2, 3, 4 ]"
+console.log(withCommas, withoutCommas) # [ 'one', 'two', 'three', 'four' ] [ 'one', 'two', 'three', 'four' ]
 ```
 
 ## Objects
@@ -156,7 +156,7 @@ const person =
 def logObject(object)
     console.log("Logging:", object)
 
-logEvent(name: 'Rincewind', profession: 'Wizzard') # Logs "Logging: { name: 'Rincewind', profession: 'Wizzard' }"
+logObject(name: 'Rincewind', profession: 'Wizzard') # Logs "Logging: { name: 'Rincewind', profession: 'Wizzard' }"
 ```
 
 
@@ -174,6 +174,8 @@ Properties work the same way as in JavaScript. They can be accessed and assigned
 const person = { name: 'Bob Smith', age: 32, gender: 'male' }
 person.name
 person.age = 33
+
+console.log(person.age) # Logs "33"
 ```
 
 Keys work the same way as in JavaScript.
@@ -183,6 +185,8 @@ const person = { name: 'Bob Smith', age: 32, gender: 'male' }
 
 person['name']
 person['age'] = 33
+
+console.log(person.age) # Logs "33"
 ```
 
 Destructuring (as defined in ES6) works the same way as in JavaScript.
@@ -194,6 +198,7 @@ const a = 'foo'
 const b = 42
 const c = {}
 const object = { a, b, c }
+
 console.log(object) # Logs "{ a: 'foo', b: 42, c: {} }"
 ```
 
@@ -204,12 +209,12 @@ Parenthesis can be skipped, even when setting default values.
 
 ```imba
 def withArgument param
-    console.log param
+	console.log param
 
 withArgument(42) # Logs "42"
 
 def withDefaultValue name = 'Imba'
-    console.log param
+	console.log name
 
 withDefaultValue() # Logs "Imba"
 ```
@@ -218,7 +223,9 @@ Objects can be deconstructed like normal, and given default values.
 
 ```imba
 def method name, { title, desc = 'no description' }
-    console.log name, title, desc
+	console.log name, title, desc
+
+console.log method('Rincewind', title: 'Wizzard') # Logs "Rincewind Wizzard no description"
 ```
 
 ## Classes
@@ -231,29 +238,29 @@ Classes in Imba can do the same things as classes in JavaScript, but have severa
 
 ```imba
 class Todo
-    # Properties are member variables:
-    prop title
-    prop completed = no
-    prop due = null
+	# Properties are member variables:
+	prop title
+	prop completed = no
+	prop due = null
 
-    # Methods are instance level functions:
-    def complete
-        completed = yes
+	# Methods are instance level functions:
+	def complete
+		completed = yes
 
-    # Getters:
-    get overdue
-        due and due < new Date
+	# Getters:
+	get overdue
+		due and due < new Date
 
-    # Setters:
-    ???
 
-    # Static methods are class level functions:
-    static def createTodos titles
-        names.map do(title)
-            new Todo(title: title)
+	# Static methods are class level functions:
+	static def createTodos titles
+		titles.map do(title)
+			new Todo(title: title)
 
 
 const todo = new Todo title: 'Read introduction'
+
+console.log todo # Logs "Todo { title: 'Read introduction', completed: false, due: null }"
 ```
 
 Instance level methods are called on the object made from the class.
@@ -261,12 +268,21 @@ Instance level methods are called on the object made from the class.
 ```imba
 const myTodo = new Todo title: 'Learn Imba'
 myTodo.complete()
+
+console.log myTodo # Logs "Todo { title: 'Learn Imba', completed: true, due: null }"
 ```
 
 Class level methods are called directly on the class.
 
 ```imba
 const newTodos = Todo.createTodos ['Learn Imba', 'Eat breakfast']
+
+console.log newTodos
+# Logs:
+# [
+#   Todo { title: 'Learn Imba', completed: false, due: null },
+#   Todo { title: 'Eat breakfast', completed: false, due: null }
+# ]
 ```
 
 
