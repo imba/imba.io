@@ -369,7 +369,7 @@ tag home-page
 						<div[d:block @480:hflex fs:md @580:lg  mx:-2 my:4]>
 							css a rd:xl m:2 p:2 bg:green3 bd:green3-5 bcb:green5 px:4 c:green8 fw:bold d:block ta:center
 								@hover bg:green3-3
-							<a href="/start"> "Get started"
+							<a href="/docs/intro#getting-started"> "Get started"
 							css div rd:xl bd:gray2 bg:gray1 m:2 p:2 pr:4 c:gray6 ff:mono bs:solid fw:bold
 								fs:sm @580:17px ls:-0.3px d:hflex ja:center
 								@before content: '>' c:gray3  px:1

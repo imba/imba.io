@@ -1,6 +1,6 @@
 # Basic Syntax
 
-**The brand new Imba course has launched! Learn Imba through fully interactive screencasts:** <https://scrimba.com/learn/imba>
+**The Imba course launched! Learn Imba through fully interactive screencasts:** <https://scrimba.com/learn/imba>
 
 A good way to think of Imba is, "it’s just JavaScript". Imba compiles directly to readable JavaScript. This means that every native type with all of their methods, properties and behaviour are the exact same. So, strings are just strings, arrays are just arrays, and so on.
 
