@@ -41,7 +41,7 @@ const alsoElement = <div.{object.name}> "{object.name} class" # Easy interpolati
 
 ## Functions
 
-_Note: Differences between functions and arrow functions are covered in the [functions overview](functions.md)._
+_Note: Differences between functions and arrow functions are covered in the [functions overview](/docs/functions)._
 
 [Watch the scrim on functions in the Imba course](https://scrimba.com/learn/imba/functions-cJLGEQCB)
 
@@ -223,7 +223,7 @@ def method name, { title, desc = 'no description' }
 
 ## Classes
 
-_Note: More details about classes are in the [class overview](classes.md)._
+_Note: More details about classes are in the [class overview](/docs/classes)._
 
 [Watch the scrim on classes in the Imba course](https://scrimba.com/learn/imba/classes-cbVveMS4)
 
