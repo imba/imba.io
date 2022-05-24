@@ -318,12 +318,7 @@ for own key, value of object
     # answer: 42
 ```
 
-You can quickly loop over arrays with `for ... in ...`. It compiles to native iterators in JavaScript, and is generally the best choice together with `for own`.
-
-```imba
-for value, index in array
-    console.log value
-```
+Looping within tags works the same way.
 
 [Watch the scrim on looping within tags in the Imba course](https://scrimba.com/learn/imba/loops-inside-tags-co59443e78abc774ac34f72f4)
 
