@@ -2,8 +2,6 @@
 
 ## Overview [href=/$]
 
-## Getting Started [doc=docs/getting-started] [href=/start]
-
 ## Changelog [doc=changelog] [href=/changelog]
 
 ## Playground [href=/try]

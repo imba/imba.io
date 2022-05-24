@@ -1,5 +1,7 @@
 # Introduction
 
+You can try Imba right in your browser at <https://scrimba.com>, which has a full free Imba course: <https://scrimba.com/learn/imba>.
+
 ## Build Fast, Fast.
 
 Imba is a Web programming language that compiles to Javascript. Imba is fast in two ways: Time-saving syntax with built-in tags and styles results in less typing and switching files so you can build things fast. A groundbreaking memoized DOM is an order of magnitude faster than virtual DOM libraries, so you can build fast things.
