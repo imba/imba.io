@@ -61,7 +61,7 @@ tag app
 			<a route-to="/test/inner"> "Inner Page"
 		
 		<home route="/"> # this will render on /, /test, and /test/inner
-		<test route="/test"> # this will renderon /test and /test/inner
+		<test route="/test"> # this will render on /test and /test/inner
 		<inner route="/test/inner"> # this will render on /test/inner
 ```
 

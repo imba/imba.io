@@ -54,7 +54,7 @@ setup(){
 }
 ```
 
-This is essentially what `self` does under the hood. In imba, `self` is bound do the closest _selfish_ scope. Besides the root scope of a file, only the scopes of `def`, `get` and `set` are selfish.
+This is essentially what `self` does under the hood. In imba, `self` is bound to the closest _selfish_ scope. Besides the root scope of a file, only the scopes of `def`, `get` and `set` are selfish.
 
 ```imba
 class Item

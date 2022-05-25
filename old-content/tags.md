@@ -5,7 +5,7 @@ multipage:true
 
 # Basic Syntax
 
-In Imba, DOM elements are a first-class part of the language. Imba does not use a virtual DOM, instead it compiles declarative tag trees into an extremely efficient [memoized dom](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52), which is orders of magnitute faster than virtual DOM approaches, yet conceptually simpler.
+In Imba, DOM elements are a first-class part of the language. Imba does not use a virtual DOM, instead it compiles declarative tag trees into an extremely efficient [memoized dom](https://medium.com/free-code-camp/the-virtual-dom-is-slow-meet-the-memoized-dom-bb19f546cc52), which is orders of magnitude faster than virtual DOM approaches, yet conceptually simpler.
 
 ## Constructing Elements
 
@@ -517,7 +517,7 @@ The virtual DOM was a fantastic innovation. It brought about a much more product
 
 This process is still quite slow, and to work around these inherent challenges we've resorted to complex state management frameworks that carefully track the changing data, making sure that only specific views need to re-render. Even with this in place, rendering complex lists and very dynamic views can often become sluggish. What if we could get better performance in a world where the data layer and view layer don’t really know or care about each other?
 
-Imba introduces a *revolutionary* new way of reconciling your dom which is orders of magnitutes faster than existing virtual DOM approaches. Understanding the basic concepts is invaluable to get a deep understanding of how to make things with Imba.
+Imba introduces a *revolutionary* new way of reconciling your dom which is orders of magnitudes faster than existing virtual DOM approaches. Understanding the basic concepts is invaluable to get a deep understanding of how to make things with Imba.
 
 ## How it Works
 
@@ -1152,7 +1152,7 @@ tag app
 			<a route-to="/test/inner"> "Inner Page"
 		
 		<home route="/"> # this will render on /, /test, and /test/inner
-		<test route="/test"> # this will renderon /test and /test/inner
+		<test route="/test"> # this will render on /test and /test/inner
 		<inner route="/test/inner"> # this will render on /test/inner
 ```
 

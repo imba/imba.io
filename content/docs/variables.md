@@ -24,7 +24,7 @@ if let user = array.find(do $1 isa Person)
 
 ## Implicit Self
 
-Any identifier starting with a lowercase letter or `$` that is not previusly declared will be treated as an accessor on `self`. This is a crucial concept to understand, especially when coming from JavaScript, where any undeclared variable implicitly refers to the global scope.
+Any identifier starting with a lowercase letter or `$` that is not previously declared will be treated as an accessor on `self`. This is a crucial concept to understand, especially when coming from JavaScript, where any undeclared variable implicitly refers to the global scope.
 
 ```imba
 let declared = yes
@@ -102,7 +102,7 @@ setup(){
 }
 ```
 
-This is essentially what `self` does under the hood. In imba, `self` is bound do the closest _selfish_ scope. Besides the root scope of a file, only the scopes of `def`, `get` and `set` are selfish.
+This is essentially what `self` does under the hood. In imba, `self` is bound to the closest _selfish_ scope. Besides the root scope of a file, only the scopes of `def`, `get` and `set` are selfish.
 
 ```imba
 class Item
