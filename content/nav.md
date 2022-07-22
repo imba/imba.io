@@ -74,6 +74,10 @@ Reference for all shorthands and regular css properties.
 
 Reference for all style modifiers.
 
+### Custom Units [doc=docs/style-units] [href=/docs/css/units]
+
+Defining and using custom style units.
+
 ### Values [doc=docs/style-data-types] [href=/docs/css/values]
 
 Reference for all css data types like `<color>`, `<angle>` and `<length>`
