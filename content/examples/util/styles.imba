@@ -74,7 +74,7 @@ global css
 	button
 		d:grid gaf:column ja:center gap:2
 		py:1 px:3 fw:400 min-width:6 min-height:8
-		bw:1 bc:gray4 rd:2
+		bw:1px bc:gray4 rd:2
 		fs:md/1.2
 		c:gray7 @hover:gray8
 		bg:gray1 @hover:gray2 @active:gray3

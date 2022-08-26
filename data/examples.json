@@ -1,0 +1,2403 @@
+{
+  "/examples/changelog/1/index.imba": {
+    "body": "import MyWorker from './some/script?worker'\nimport MySharedWorker from './some/script?sharedworker'\nimport url from './some/script?worker&url'",
+    "lang": ""
+  },
+  "/examples/changelog/2/index.imba": {
+    "body": "<div route='/'> # matches / _only_\n<div route='/*'> # matches any path\n\n<div route='/items'> # matches /items, /items/1 etc\n<div route='/items/'> # matches /items only",
+    "lang": "imba"
+  },
+  "/examples/changelog/3/index.imba": {
+    "body": "<div>\n    <div route='/items/new'>\n    <div route='/items/:id'> # if /items/new matched - this will not show\n    <div route='/'> # matches if url is exactly '/'\n    <div route='*'> # matches if none of the above matches",
+    "lang": "imba"
+  },
+  "/examples/changelog/4/index.imba": {
+    "body": "import md from 'tag-markdown'\nconst html = md`## Welcome to {name}`",
+    "lang": "imba"
+  },
+  "/examples/changelog/5/index.imba": {
+    "body": "class Order\n    @lazy get lines\n        ...",
+    "lang": "imba"
+  },
+  "/examples/changelog/6/index.imba": {
+    "body": "tag ConfirmDialog\n    # when this dialog is mounted - all hotkey handlers preceding\n    # it in the dom tree will be blocked by the `*` listener\n    <self @hotkey('*').global>\n        <button @hotkey('esc')> \"Cancel\"\n        <button @hotkey('enter')> \"Ok\"",
+    "lang": "imba"
+  },
+  "/examples/changelog/7/index.imba": {
+    "body": "css div width: calc(100vw - 40px)\n# can now be written as\ncss div width: 100vw - 40px",
+    "lang": "imba"
+  },
+  "/examples/changelog/8/index.imba": {
+    "body": "css div\n    @!hover o:0.5 # div:not(:hover) { opacity: 0.5 } \n    @!md d:none # @media (max-width: 767px) { div { display:none } }\n# also works for classes\ncss div\n    @.!disabled o:0.5 # div:not(.disabled){ opacity:0.5 }",
+    "lang": "imba"
+  },
+  "/examples/changelog/9/index.imba": {
+    "body": "tag App\n    # scoped selectors have higher precedence than global styles\n    css .selector d:block",
+    "lang": "imba"
+  },
+  "/examples/changelog/10/index.imba": {
+    "body": "let x = null\nx ||=\n    one: 1\n    two: 2\n# would previously compile incorrectly to x ||= {one: 1}",
+    "lang": "imba"
+  },
+  "/examples/changelog/11/index.imba": {
+    "body": "tag App\n    <self>\n        # all clicks outside of button tags\n        <div @click.!closest('button')>\n            <button> <span> \"Click\"\n            <p> \"blabla\"",
+    "lang": "imba"
+  },
+  "/examples/changelog/12/index.imba": {
+    "body": "def List items\n    return if items.length == 0\n\n    <section>\n        <slot>\n        <ul> for item in items\n            <li> item.title\n\ntag App\n    def head\n        <header> <slot> <h2> \"Welcome\"\n\n    <self>\n        <head()>\n        <List(data.newest)> <h2> \"Newest posts\"\n        <List(data.all).large> <h2> \"All posts\"",
+    "lang": "imba"
+  },
+  "/examples/changelog/13/index.imba": {
+    "body": "const items = [{title: \"One\"},{title: \"Two\"}]\n\ntag App\n    <self> for item in items\n        # objects themselves can be used as keys now\n        <AppItem key=item data=item>",
+    "lang": "imba"
+  },
+  "/examples/changelog/14/index.imba": {
+    "body": "tag App\n    get body\n        <div> \"This is body\"\n\n    def list title, items\n        <section>\n            <h2> title\n            <ul> for item in items\n                <li> item.title\n\n    <self>\n        <( body )>\n        <( list 'Top', data.popular ).large [mt:2]>\n        <( list 'New', data.posts.slice(0,10) )>",
+    "lang": "imba"
+  },
+  "/examples/changelog/15/index.imba": {
+    "body": "def wrap text\n    let div = <div.item> text\n    return div\n\nimba.mount do <section>\n    <( wrap \"One\" )>\n    <( wrap \"Two\" )>",
+    "lang": "imba"
+  },
+  "/examples/changelog/16/index.imba": {
+    "body": "def wrap text\n    let div = new <div.item> text\n    return div",
+    "lang": "imba"
+  },
+  "/examples/changelog/17/index.imba": {
+    "body": "import {PostView,ArticleView} from './views'\n\nconst items = [\n    { type: Post, title: \"My post\"}\n    { type: Article, title: \"My article\"}\n]\n\ntag App\n    <self>\n        for item in items\n            <{item.type} data=item>",
+    "lang": "imba"
+  },
+  "/examples/changelog/18/index.imba": {
+    "body": "css .warn hue:red\ncss .large p:4 fs:lg\n\ntag Button\n    css p:2 fs:sm hue:blue\n\n# styles from classes take precedence\n<Button.warn.large>",
+    "lang": "imba"
+  },
+  "/examples/changelog/19/index.imba": {
+    "body": "tag Button\n    css bg:blue2\n    css .warn bg:red2\n    css &.large fs:lg\n\n    <self.warn.large> \"Still blue bg - but large\"",
+    "lang": "imba"
+  },
+  "/examples/changelog/20/index.imba": {
+    "body": "class Foo\n    declare a\\number",
+    "lang": "imba"
+  },
+  "/examples/changelog/21/index.imba": {
+    "body": "if condition\nand test\nor force\n    return ...",
+    "lang": "imba"
+  },
+  "/examples/changelog/22/index.imba": {
+    "body": "for member,index,len in list\n    # len refers to the length of the iterable list\n    if index == len - 1\n        yes # this is the last element",
+    "lang": "imba"
+  },
+  "/examples/changelog/23/index.imba": {
+    "body": "# will only toggle when pressing space, no matter how long you\n# keep it pressed.\n<div @hotkey('space')=togglePlayback>\n# holding the right arrow will call fastForward repeatedly\n<div @hotkey('right').repeat=fastForward>",
+    "lang": "imba"
+  },
+  "/examples/changelog/24/index.imba": {
+    "body": "<div> data.name\n    \"something\"\nif data.name\n    \"something\"",
+    "lang": "imba"
+  },
+  "/examples/changelog/25/index.imba": {
+    "body": "<div> data.name\n    css d:block # style for the div",
+    "lang": "imba"
+  },
+  "/examples/changelog/26/index.imba": {
+    "body": "<div>\n    for item in data.items\n        for label in item.labels\n            <div> label",
+    "lang": "imba"
+  },
+  "/examples/changelog/27/index.imba": {
+    "body": "user..[key]",
+    "lang": "imba"
+  },
+  "/examples/changelog/28/index.imba": {
+    "body": "import * as icons from 'imba-codicons'\n\n<svg src=icons.volume-up>\n# you get completions and previews for all icons, but only volume-up\n# will be bundled in your code now",
+    "lang": "imba"
+  },
+  "/examples/changelog/29/index.imba": {
+    "body": "<div @click.mod.stop=openInNewWindow @click=openHere>",
+    "lang": "imba"
+  },
+  "/examples/changelog/30/index.imba": {
+    "body": "<div @touch.moved-left(4px)> # before\n<div @touch.moved(4px,'left')> # after",
+    "lang": "imba"
+  },
+  "/examples/changelog/31/index.imba": {
+    "body": "# hue can be set to any named color from the imba color palette\n<div[hue:orange]>\n    <h1[color:hue7]> # refer to a shade/tint of the aliased color",
+    "lang": "imba"
+  },
+  "/examples/changelog/32/index.imba": {
+    "body": "extend class KeyboardEvent\n\n  def @f1\n    return keyCode == 112",
+    "lang": "imba"
+  },
+  "/examples/changelog/33/index.imba": {
+    "body": "# handler will be called immediately upon scrolling and keep emitting\n# every 100ms until there are no more scroll events. \n<div @scroll.throttle(100ms)=handler>\n\n# So, clicking this button twice will trigger once immediately,\n# and then again after 1 second. Previously the second click would\n# never trigger.\n<div @click.throttle(1s)=handler>",
+    "lang": "imba"
+  },
+  "/examples/changelog/34/index.imba": {
+    "body": "# So, clicking this button twice will trigger once immediately, and\n# the next click will be ignored as long as it happens less than a second later\n<div @click.cooldown(1s)=handler>",
+    "lang": "imba"
+  },
+  "/examples/changelog/35/index.imba": {
+    "body": "#  Only call handler if shiftKey is NOT pressed\n<div @click.!shift=handler>\n\n#  Only call handler if target does NOT match the selector\n<div @click.!sel('.active')=handler>",
+    "lang": "imba"
+  },
+  "/examples/changelog/36/index.imba": {
+    "body": "#  Only call handler if the middle mouse button was pressed\n<div @click.middle=handler>\n\n#  Only start touch handling if the right mouse button was pressed\n<div @touch.right=handler>",
+    "lang": "imba"
+  },
+  "/examples/changelog/37/index.imba": {
+    "body": "# the html class showing will be present on div\n# whenever it is intersecting with the viewport\n<div @intersect.flag('showing')>",
+    "lang": "imba"
+  },
+  "/examples/changelog/38/index.imba": {
+    "body": "# handler is only called at the end of the touch\n<div @touch.end=handler>\n# handler is only called at the end of the touch if pointer moved\n<div @touch.moved.end=handler>",
+    "lang": "imba"
+  },
+  "/examples/changelog/39/index.imba": {
+    "body": "# handler is only called once the touch has been held for 1000ms\n<div @touch.hold=handler>\n# handler only called if ctrl was pressed and touch held for 250ms\n<div @touch.ctrl.hold(250ms)=handler>",
+    "lang": "imba"
+  },
+  "/examples/changelog/40/index.imba": {
+    "body": "const obj = {}\n# apply is essentially shorthand for setting properties:\n<div @touch.apply(obj)>\n<div @touch=(obj.x = e.x, obj.y = e.y)>",
+    "lang": "imba"
+  },
+  "/examples/changelog/41/index.imba": {
+    "body": "# Only trigger if F1 is pressed (event.keyCode==112)\n<div @keydown.key(112)=handler>",
+    "lang": "imba"
+  },
+  "/examples/changelog/42/index.imba": {
+    "body": "# Only trigger if PrintScreen is pressed (event.key=='PrintScreen')\n<div @keydown.key('PrintScreen')=handler>",
+    "lang": "imba"
+  },
+  "/examples/changelog/43/index.imba": {
+    "body": "# If user moves more than 10px up/down before left/right\n# the touch will not be handled\n<div @touch.moved-x(10px)=draghandle>",
+    "lang": "imba"
+  },
+  "/examples/changelog/44/index.imba": {
+    "body": "# button click is triggered onless touch is held more than 500ms\n<li @touch.hold(500ms)=draghandle> <button @click=handle>",
+    "lang": "imba"
+  },
+  "/examples/changelog/45/index.imba": {
+    "body": "# Scrolling will now work fine when touching the div and flicking up/down.\n# Only if the user holds still on the element for 500ms will scrolling and\n# default behavior be prevented.\n<div @touch.hold(500ms)=draghandler>",
+    "lang": "imba"
+  },
+  "/examples/reference/1/index.imba": {
+    "body": "socket.addEventListener('message',imba.commit)",
+    "lang": "imba"
+  },
+  "/examples/reference/2/index.imba": {
+    "body": "def load\n    let res = await window.fetch(\"/items\")\n    state.items = await res.json!\n    imba.commit!",
+    "lang": "imba"
+  },
+  "/examples/reference/3/index.imba": {
+    "body": "# supply the key combo in the @hotkey(arguments)\n<div @hotkey('ctrl+shift+k')=handler>\n# gmail style sequences\n<div @hotkey('g i')=handler>\n<div @hotkey('g a')=handler>\n# hotkey without a handler defaults to click\n<div @hotkey('mod+n') @click=clickHandler>\n# hotkey without a handler on a form field will focus\n<input @hotkey('s') placeholder=\"Search...\">",
+    "lang": "imba"
+  },
+  "/examples/reference/4/index.imba": {
+    "body": "<div @hotkey('f').passive.log('not called')>\n<div @hotkey('f').log('called next - stops here')>\n<div @hotkey('f').passive.log('called first')>",
+    "lang": "imba"
+  },
+  "/examples/reference/5/index.imba": {
+    "body": "tag App\n    <self>\n        if let item = state.selection\n            <div[d:none]\n                @hotkey('del')=deleteItem(item)\n                @hotkey('enter')=editItem(item)\n                @hotkey('esc')=(state.selection = null)\n            >",
+    "lang": "imba"
+  },
+  "/examples/reference/6/index.imba": {
+    "body": "<div[hue:violet color:hue4]>",
+    "lang": "imba"
+  },
+  "/examples/reference/7/index.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\nglobal css body d:hflex ja:center inset:0\n# ---\ntag Button\n    css px:4 py:2 rd:md cursor:pointer c:white\n        text-shadow:0px 1px blue8/70\n        bg:blue5 @hover:blue6\n        bd:1px solid blue6\n\n    <self> <span> <slot>\n\nimba.mount do <Button> \"Button\"",
+    "lang": "imba"
+  },
+  "/examples/reference/8/index.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\nglobal css body d:hflex ja:center inset:0\n# ---\ntag Button\n    css px:4 py:2 rd:md cursor:pointer c:white\n        text-shadow:0px 1px hue8/70\n        bg:hue5 @hover:hue6\n        bd:1px solid hue6\n\n    <self> <span> <slot>\n\nimba.mount do <>\n    <Button[hue:blue]> \"Button\"\n    <Button[hue:red]> \"Button\"\n    <Button[hue:green]> \"Button\"\n    <Button[hue:amber hue@hover:purple]> \"Hover me\"",
+    "lang": "imba"
+  },
+  "/examples/reference/9/index.imba": {
+    "body": "<element data=value>",
+    "lang": "imba"
+  },
+  "/examples/reference/10/index.imba": {
+    "body": "tag movie-item\n    # using references to data\n    <self> <em> data.title\n\n<div> for movie in movies\n    <movie-item data=movie>",
+    "lang": "imba"
+  },
+  "/examples/reference/11/index.imba": {
+    "body": "tag movie-item\n    prop movie\n    # using references to data\n    <self> <em> movie.title\n\n<div> for movie in movies\n    <movie-item movie=movie>",
+    "lang": "imba"
+  },
+  "/examples/reference/12/index.imba": {
+    "body": "tag movie-item\n    prop data\\Movie\n    <self> <em> data.title\n\n<div> for movie in movies\n    # will warn if movie is not of type Movie\n    <movie-item data=movie>",
+    "lang": "imba"
+  },
+  "/examples/reference/13/index.imba": {
+    "body": "tag movie-item\n    prop data\\Movie\n    get director do data.director\n    get genres do data.genres\n\n    <self>\n        <em> data.title\n        <a href=\"/people/{director.id}\"> director.name\n        <div> for genre in genres\n            <span> genre.title",
+    "lang": "imba"
+  },
+  "/examples/reference/14/index.imba": {
+    "body": "tag movie-item\n    set data value\n        #data = value\n        console.log \"movie was set\",value\n\n    get data\n        #data",
+    "lang": "imba"
+  },
+  "/examples/reference/15/index.imba": {
+    "body": "tag app\n    <self>\n        <div> for movie in movies\n            # manually set card.data when clicking an item\n            <movie-item data=movie @click=($card.data = movie)>\n        <movie-card$card>",
+    "lang": "imba"
+  },
+  "/examples/reference/16/index.imba": {
+    "body": "tag movie-card\n    set data value\n        if #data != value\n            #data = value\n            # ... load more info about the movie?\n\n    get data\n        #data",
+    "lang": "imba"
+  },
+  "/examples/reference/17/index.imba": {
+    "body": "if item.propname =? value\n    # item.propname is now set to value,\n    # and was previously set to something else\n    yes",
+    "lang": "imba"
+  },
+  "/examples/reference/18/index.imba": {
+    "body": "let single = 'single quotes'\nlet double = \"double quotes\"\nlet interpolation = \"string has {double}\"\nlet template = `current version is {imba.version}`",
+    "lang": "imba"
+  },
+  "/examples/reference/19/index.imba": {
+    "body": "let string = 'one\ntwo three'\n# => 'onetwo three'",
+    "lang": "imba"
+  },
+  "/examples/reference/20/index.imba": {
+    "body": "let string = '''\nThis string is written\nover multiple lines\n'''\n# => 'This string\\nis written over\\nmultiple lines'",
+    "lang": "imba"
+  },
+  "/examples/reference/21/index.imba": {
+    "body": "let string = '''\n    First level is ignored\n        This is indented\n    Not indented\n    '''",
+    "lang": "imba"
+  },
+  "/examples/reference/22/index.imba": {
+    "body": "`string text`\n# multiple lines\n`string text line 1\n string text line 2`\n# interpolated expression\n`string text {expression} string text`\n# tagged template\nmethod`string text {expression} string text`",
+    "lang": "imba"
+  },
+  "/examples/reference/23/index.imba": {
+    "body": "let length = 100px\nlet progress = 87%\nlet dynamic = (window.innerWidth)px",
+    "lang": "imba"
+  },
+  "/examples/reference/24/index.imba": {
+    "body": "10s # 10000\n250ms # 250\n5s - 150ms # 4850\n60fps # 16.66666",
+    "lang": "imba"
+  },
+  "/examples/reference/25/index.imba": {
+    "body": "let integer = 42\nlet float = 42.10\nlet hex = 0x00\nlet binary = 0b0010110",
+    "lang": "imba"
+  },
+  "/examples/reference/26/index.imba": {
+    "body": "let budget = 120_000_000\nlet spent = 123_150_077.59\nlet hex = 0xA0_B0_C0\nlet binary = 0b0010_1100",
+    "lang": "imba"
+  },
+  "/examples/reference/27/index.imba": {
+    "body": "const biggestNum     = Number.MAX_VALUE\nconst smallestNum    = Number.MIN_VALUE\nconst infiniteNum    = Number.POSITIVE_INFINITY\nconst negInfiniteNum = Number.NEGATIVE_INFINITY\nconst notANum        = Number.NaN",
+    "lang": "imba"
+  },
+  "/examples/reference/28/index.imba": {
+    "body": "10s # 10000\n250ms # 250\n5s - 150ms # 4850\n60fps # 16.66666",
+    "lang": "imba"
+  },
+  "/examples/reference/29/index.json": {
+    "body": "{\n    \"theme\": {\n        \"colors\": {            \n        }\n    }\n}",
+    "lang": "json"
+  },
+  "/examples/reference/30/index.json": {
+    "body": "{\n    \"theme\": {\n        \"colors\": {            \n            \"primary\": \"indigo\"\n        }\n    }\n}",
+    "lang": "json"
+  },
+  "/examples/reference/31/index.imba": {
+    "body": "<h1[c:primary4]> \"hello world!\"",
+    "lang": "imba"
+  },
+  "/examples/reference/32/index.json": {
+    "body": "{\n    \"theme\": {\n        \"colors\": {            \n            \"gray\": \"warmer\"\n        }\n    }\n}",
+    "lang": "json"
+  },
+  "/examples/reference/33/index.json": {
+    "body": "{\n    \"theme\": {\n        \"colors\": {\n            \"coral\": {\n                \"0\": \"hsl(40,33%,98%)\",\n                \"1\": \"hsl(28,61%,94%)\",\n                \"2\": \"hsl(12,62%,88%)\",\n                \"3\": \"hsl(10,54%,76%)\",\n                \"4\": \"hsl(6,56%,65%)\",\n                \"5\": \"hsl(5,49%,54%)\",\n                \"6\": \"hsl(4,49%,44%)\",\n                \"7\": \"hsl(4,50%,34%)\",\n                \"8\": \"hsl(4,50%,24%)\",\n                \"9\": \"hsl(6,52%,15%)\"\n            }\n        }\n    }\n}",
+    "lang": "json"
+  },
+  "/examples/reference/34/index.imba": {
+    "body": "<h1[c:coral7/70]> \"hello world!\"",
+    "lang": "imba"
+  },
+  "/examples/reference/35/index.json": {
+    "body": "{\n    \"theme\": {\n        \"colors\": {\n            \"coral\": {\n                \"0\": \"hsl(40,33%,98%)\",\n                \"4\": \"hsl(6,56%,65%)\",\n                \"9\": \"hsl(6,52%,15%)\"\n            }\n        }\n    }\n}",
+    "lang": "json"
+  },
+  "/examples/home/examples/1/index.imba": {
+    "body": "let number = 42\nlet bool = yes\n\n# strings\nlet string = 'the answer is 42'\nlet dynamic = \"the answer is {number}\"\nlet template = `the answer is {number}`\n\n# dimensions\nlet length = 20px\nlet duration = 150ms\n\nlet regex = /answer is (\\d+)/\nlet array = [1,2,3]\nlet object = {name: 'Imba', type: 'language'}",
+    "lang": "imba"
+  },
+  "/examples/home/examples/2/index.imba": {
+    "body": "class Todo\n    # properties\n    prop title\n    prop completed = no\n    prop due = null\n\n    # methods\n    def complete\n        completed = yes\n\n    # getters\n    get overdue\n        due and due < new Date\n\nlet todo = new Todo title: 'Read introduction'",
+    "lang": "imba"
+  },
+  "/examples/home/examples/3/index.imba": {
+    "body": "# elements are first class citizens\nconst list = <ul title=\"reminders\">\n    <li> \"Remember milk\"\n    <li> \"Greet visitor\"\n\n# setting classes on elements\n<div.panel.large> \"Hello world\"\n# setting dynamic and conditional classes\n<div.panel.state-{state} .hidden=condition> \"Panel\"\n# binding handlers (with modifiers)\n<div.panel @click.prevent=handler> \"Panel\"",
+    "lang": "imba"
+  },
+  "/examples/home/examples/4/index.imba": {
+    "body": "# looping over iterables\nfor {id,name} of iterable\n    \"{name} has id {id}\"\n\n# looping over Object.keys/values pairs\nfor own key,value of object\n    [key,value]\n\n# fast looping over arrays\nfor member,index in array\n    member",
+    "lang": "imba"
+  },
+  "/examples/home/features/1/index.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\n\nconst api = new class\n    def login user,pass\n        await new Promise do setTimeout($1,800)\n        return true\n\n# ---\ntag Login < form\n\n    def handler e\n        await api.login(name,secret)\n\n    css pos:abs inset:0 d:grid ja:center\n\n    <self @submit.prevent.flag-busy=handler>\n        <input type='text' bind=name>\n        <input type='password' bind=secret>\n        <button disabled=(!name or !secret)>\n            <span> `Login as {name}`\n# ---\nimba.mount <Login[pos:abs inset:0 d:grid ja:center]>\n# ~tag|2,-9,23,61,13,93,53~ define web components\n# ~css |2,7,153,99,,82,57~ integrated styling\n# ~submit|0,-35,106,27,19,61,16~ powerful event handling\n# ~bind|0,45,-155,50,,48,75~ two-way data-binding\n\ncss section div\n    d:block rd:sm bg:sky3 w:auto h:auto\n    tween:all 0.1s ease-in-out",
+    "lang": "imba"
+  },
+  "/examples/home/features/2/index.imba": {
+    "body": "import express from 'express'\nimport passport from 'passport'\nimport services from './services.ts'\n\nconst app = express()\n\napp.get '/404' do(req,res)\n    res.send String <html> <body>\n        <img src='./confused-cat.png'>\n        <h1> \"We could not find this page!\"\n\napp.get '/' do(req,res)\n    let page = import('./index.html')\n    res.send page.body\n# ~express|1,-13.6,-42.0,50.0~ whole js ecosystem\n# ~body|0,93.4,-67.4,50.0~ server-side rendering\n# ~./services.ts|1,27.3,-90.5,50.0~ import typescript directly\n# ~./index.html|0,23.9,20.5,50.0~ zero-config bundling",
+    "lang": "imba"
+  },
+  "/examples/home/features/3/index.imba": {
+    "body": "# [preview=inline]\nimport 'util/styles'\nglobal css body > * pos:abs inset:6 rd:md of:hidden\n# ---\nimport {genres} from 'imdb'\n\ntag Panel\n    prop split = 30\n\n    <self[d:flex fs:xs bg:teal0]>\n        <div[p:2 bg:teal1 flb:{split}%]> \"Menu\"\n        <div[w:2 fls:0 bg:teal3 bg@touch:teal5]\n            @touch.pin.fit(self,0,100)=(split=e.x)>\n        <div[p:2 fl:1]>\n            <ul> for genre in genres.top\n                <li> genre.title\n\nimba.mount <Panel>\n# ~d:flex|1,28.0,-145.9,50.0~ Tailwind inspired inline styles\n# ~@touch.pin|1,137.8,-235.9,50.0~ Rich touch handling\n# ~.pin|0,21.0,-88.0,50.0~ Useful event modifiers\n# ~@touch|0,10.3,111.7,50.0~ Style property variants\n# ~%|1,41.5,-167.2,50.0~ Inline style interpolation",
+    "lang": "imba"
+  },
+  "/examples/home/features/4/index.imba": {
+    "body": "# [preview=xl]\ncss section div\n    d:block rd:sm bg:sky3 w:auto h:auto\n    tween:all 0.1s ease-in-out\n\nimba.mount do <div[pos:abs inset:0 d:grid ja:center]>\n    # ---\n    <section[d:hgrid ja:stretch g:2 size:120px]>\n        <div[bg:green2]>\n        <div[bg:orange3]>\n        <div[bg:red3 h:2rows y:6px]>\n        <div[bg:indigo3 bg@hover:pink4]>\n        <div[bg:teal2]>\n# ~d:hgrid~ predefined layouts\n# ~bg:teal2~ color presets\n# ~6px~ style individual transform properties\n# ~@hover~ inline state variants",
+    "lang": "imba"
+  },
+  "/examples/home/features/5/index.imba": {
+    "body": "# [preview=xl]\nimport 'util/styles'\n# css body bg:gray1\ncss drag-me\n    d:block pos:relative p:3 m:1\n    bg:white bxs:sm rd:sm cursor:default\nyes\n# ---\ntag drag-me\n    <self @touch.prevent.moved.sync(self)>\n        css bg:white @touch:blue4\n            scale:1 @touch:1.2\n            x:{x} y:{y} rotate:{x}deg\n        <span> 'drag me'\n\nimba.mount <drag-me>\n# ~touch~ pointer handler\n# ~.sync~ update x,y coordinates of target",
+    "lang": "imba"
+  },
+  "/examples/home/features/6/index.imba": {
+    "body": "# [preview=lg]\nimport 'util/styles'\n\ncss body > * w:50vw m:2 h:4 bg:blue3 pos:relative rd:sm\ncss .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% rd:sm\ncss .thumb b x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6\n\ntag slider\n    prop min = -50\n    prop max = 50\n    prop step = 1\n    prop value = 0\n\n    <self @touch.fit(min,max,step)=(value = e.x)>\n        <.thumb[l:{100 * (value - min) / (max - min)}%]> <b> value\n\nimba.mount do <>\n    <slider min=0 max=1 step=0.25>\n    <slider min=-100 max=100 step=1>\n    <slider min=10 max=-10 step=0.5>",
+    "lang": "imba"
+  },
+  "/examples/guides/shortcuts/1/index.imba": {
+    "body": "<button @click=togglePlayback> \"Play/pause\"",
+    "lang": "imba"
+  },
+  "/examples/guides/shortcuts/2/index.imba": {
+    "body": "<button @hotkey('space') @click=togglePlayback> \"Play/pause\"",
+    "lang": "imba"
+  },
+  "/examples/guides/shortcuts/3/index.imba": {
+    "body": "tag App\n    <self>\n        if let item = state.selection\n            <div[d:none]\n                @hotkey('del')=deleteItem(item)\n                @hotkey('enter')=editItem(item)\n                @hotkey('esc')=(state.selection = null)\n            >",
+    "lang": "imba"
+  },
+  "/examples/controls.imba": {
+    "body": "import 'util/styles'\n\nexport tag Box\n\tcss self\n\t\tpos:relative\n\t\tbg:teal3 c:gray9/70 rd:md o:0.9\n\t\tw:>24 h:10 m:1 px:4 fs:sm\n\t\td:flex ja:center\n\t\tcursor:default\n\t\t&.covered bg:red4\n\n\t\t@nth-of-type(1) bg:blue3\n\t\t@nth-of-type(2) bg:teal3\n\t\t@nth-of-type(3) bg:purple3\n\t\t@nth-of-type(4) bg:indigo3\n\t\t@nth-of-type(5) bg:pink3\n\t\t@nth-of-type(6) bg:yellow3\n\n\tprop x = 0\n\tprop y = 0\n\n\t<self[x:{x} y:{y}] @touch.moved.sync(self)> <slot> \"box\""
+  },
+  "/examples/data.imba": {
+    "body": "export const movies = [\n\t{ title: \"The Shawshank Redemption\", rank: \"1\", id: \"tt0111161\" }\n\t{ title: \"The Godfather\", rank: \"2\", id: \"tt0068646\" }\n\t{ title: \"The Godfather: Part II\", rank: \"3\", id: \"tt0071562\" }\n\t{ title: \"Pulp Fiction\", rank: \"4\", id: \"tt0110912\" }\n\t{ title: \"The Good, the Bad and the Ugly\", rank: \"5\", id: \"tt0060196\" }\n\t{ title: \"The Dark Knight\", rank: \"6\", id: \"tt0468569\" }\n\t{ title: \"12 Angry Men\", rank: \"7\", id: \"tt0050083\" }\n\t{ title: \"Schindler's List\", rank: \"8\", id: \"tt0108052\" }\n\t{ title: \"The Lord of the Rings: The Return of the King\", rank: \"9\", id: \"tt0167260\" }\n\t{ title: \"Fight Club\", rank: \"10\", id: \"tt0137523\" }\n\t{ title: \"Star Wars: Episode V - The Empire Strikes Back\", rank: \"11\", id: \"tt0080684\" }\n\t{ title: \"The Lord of the Rings: The Fellowship of the Ring\", rank: \"12\", id: \"tt0120737\" }\n\t{ title: \"One Flew Over the Cuckoo's Nest\", rank: \"13\", id: \"tt0073486\" }\n\t{ title: \"Inception\", rank: \"14\", id: \"tt1375666\" }\n\t{ title: \"Goodfellas\", rank: \"15\", id: \"tt0099685\" }\n\t{ title: \"Star Wars\", rank: \"16\", id: \"tt0076759\" }\n\t{ title: \"Seven Samurai\", rank: \"17\", id: \"tt0047478\" }\n\t{ title: \"Forrest Gump\", rank: \"18\", id: \"tt0109830\" }\n\t{ title: \"The Matrix\", rank: \"19\", id: \"tt0133093\" }\n\t{ title: \"The Lord of the Rings: The Two Towers\", rank: \"20\", id: \"tt0167261\" }\n\t{ title: \"City of God\", rank: \"21\", id: \"tt0317248\" }\n\t{ title: \"Se7en\", rank: \"22\", id: \"tt0114369\" }\n\t{ title: \"The Silence of the Lambs\", rank: \"23\", id: \"tt0102926\" }\n\t{ title: \"Once Upon a Time in the West\", rank: \"24\", id: \"tt0064116\" }\n\t{ title: \"Casablanca\", rank: \"25\", id: \"tt0034583\" }\n\t{ title: \"The Usual Suspects\", rank: \"26\", id: \"tt0114814\" }\n\t{ title: \"Raiders of the Lost Ark\", rank: \"27\", id: \"tt0082971\" }\n\t{ title: \"Rear Window\", rank: \"28\", id: \"tt0047396\" }\n\t{ title: \"It's a Wonderful Life\", rank: \"29\", id: \"tt0038650\" }\n\t{ title: \"Psycho\", rank: \"30\", id: \"tt0054215\" }\n\t{ title: \"Léon: The Professional\", rank: \"31\", id: \"tt0110413\" }\n\t{ title: \"Sunset Blvd.\", rank: \"32\", id: \"tt0043014\" }\n\t{ title: \"American History X\", rank: \"33\", id: \"tt0120586\" }\n\t{ title: \"Apocalypse Now\", rank: \"34\", id: \"tt0078788\" }\n\t{ title: \"Terminator 2: Judgment Day\", rank: \"35\", id: \"tt0103064\" }\n\t{ title: \"Saving Private Ryan\", rank: \"36\", id: \"tt0120815\" }\n\t{ title: \"Memento\", rank: \"37\", id: \"tt0209144\" }\n\t{ title: \"City Lights\", rank: \"38\", id: \"tt0021749\" }\n\t{ title: \"Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb\", rank: \"39\", id: \"tt0057012\" }\n\t{ title: \"Alien\", rank: \"40\", id: \"tt0078748\" }\n\t{ title: \"Modern Times\", rank: \"41\", id: \"tt0027977\" }\n\t{ title: \"Spirited Away\", rank: \"42\", id: \"tt0245429\" }\n\t{ title: \"North by Northwest\", rank: \"43\", id: \"tt0053125\" }\n\t{ title: \"Back to the Future\", rank: \"44\", id: \"tt0088763\" }\n\t{ title: \"Life Is Beautiful\", rank: \"45\", id: \"tt0118799\" }\n\t{ title: \"The Shining\", rank: \"46\", id: \"tt0081505\" }\n\t{ title: \"The Pianist\", rank: \"47\", id: \"tt0253474\" }\n\t{ title: \"Citizen Kane\", rank: \"48\", id: \"tt0033467\" }\n\t{ title: \"The Departed\", rank: \"49\", id: \"tt0407887\" }\n\t{ title: \"M\", rank: \"50\", id: \"tt0022100\" }\n\t{ title: \"Paths of Glory\", rank: \"51\", id: \"tt0050825\" }\n\t{ title: \"Vertigo\", rank: \"52\", id: \"tt0052357\" }\n\t{ title: \"Django Unchained\", rank: \"53\", id: \"tt1853728\" }\n\t{ title: \"Double Indemnity\", rank: \"54\", id: \"tt0036775\" }\n\t{ title: \"The Dark Knight Rises\", rank: \"55\", id: \"tt1345836\" }\n\t{ title: \"Aliens\", rank: \"56\", id: \"tt0090605\" }\n\t{ title: \"Taxi Driver\", rank: \"57\", id: \"tt0075314\" }\n\t{ title: \"American Beauty\", rank: \"58\", id: \"tt0169547\" }\n\t{ title: \"The Green Mile\", rank: \"59\", id: \"tt0120689\" }\n\t{ title: \"Gladiator\", rank: \"60\", id: \"tt0172495\" }\n\t{ title: \"The Intouchables\", rank: \"61\", id: \"tt1675434\" }\n\t{ title: \"WALL·E\", rank: \"62\", id: \"tt0910970\" }\n\t{ title: \"The Lives of Others\", rank: \"63\", id: \"tt0405094\" }\n\t{ title: \"Toy Story 3\", rank: \"64\", id: \"tt0435761\" }\n\t{ title: \"The Great Dictator\", rank: \"65\", id: \"tt0032553\" }\n\t{ title: \"The Prestige\", rank: \"66\", id: \"tt0482571\" }\n\t{ title: \"A Clockwork Orange\", rank: \"67\", id: \"tt0066921\" }\n\t{ title: \"Lawrence of Arabia\", rank: \"68\", id: \"tt0056172\" }\n\t{ title: \"Amélie\", rank: \"69\", id: \"tt0211915\" }\n\t{ title: \"To Kill a Mockingbird\", rank: \"70\", id: \"tt0056592\" }\n\t{ title: \"Reservoir Dogs\", rank: \"71\", id: \"tt0105236\" }\n\t{ title: \"Das Boot\", rank: \"72\", id: \"tt0082096\" }\n\t{ title: \"The Lion King\", rank: \"73\", id: \"tt0110357\" }\n\t{ title: \"Cinema Paradiso\", rank: \"74\", id: \"tt0095765\" }\n\t{ title: \"Star Wars: Episode VI - Return of the Jedi\", rank: \"75\", id: \"tt0086190\" }\n\t{ title: \"The Treasure of the Sierra Madre\", rank: \"76\", id: \"tt0040897\" }\n\t{ title: \"The Third Man\", rank: \"77\", id: \"tt0041959\" }\n\t{ title: \"Once Upon a Time in America\", rank: \"78\", id: \"tt0087843\" }\n\t{ title: \"Requiem for a Dream\", rank: \"79\", id: \"tt0180093\" }\n\t{ title: \"Eternal Sunshine of the Spotless Mind\", rank: \"80\", id: \"tt0338013\" }\n\t{ title: \"Full Metal Jacket\", rank: \"81\", id: \"tt0093058\" }\n\t{ title: \"Oldboy\", rank: \"82\", id: \"tt0364569\" }\n\t{ title: \"Braveheart\", rank: \"83\", id: \"tt0112573\" }\n\t{ title: \"L.A. Confidential\", rank: \"84\", id: \"tt0119488\" }\n\t{ title: \"Bicycle Thieves\", rank: \"85\", id: \"tt0040522\" }\n\t{ title: \"Chinatown\", rank: \"86\", id: \"tt0071315\" }\n\t{ title: \"Singin' in the Rain\", rank: \"87\", id: \"tt0045152\" }\n\t{ title: \"Princess Mononoke\", rank: \"88\", id: \"tt0119698\" }\n\t{ title: \"Monty Python and the Holy Grail\", rank: \"89\", id: \"tt0071853\" }\n\t{ title: \"Metropolis\", rank: \"90\", id: \"tt0017136\" }\n\t{ title: \"Rashomon\", rank: \"91\", id: \"tt0042876\" }\n\t{ title: \"Some Like It Hot\", rank: \"92\", id: \"tt0053291\" }\n\t{ title: \"Amadeus\", rank: \"93\", id: \"tt0086879\" }\n\t{ title: \"2001: A Space Odyssey\", rank: \"94\", id: \"tt0062622\" }\n\t{ title: \"All About Eve\", rank: \"95\", id: \"tt0042192\" }\n\t{ title: \"Witness for the Prosecution\", rank: \"96\", id: \"tt0051201\" }\n\t{ title: \"The Sting\", rank: \"97\", id: \"tt0070735\" }\n\t{ title: \"The Apartment\", rank: \"98\", id: \"tt0053604\" }\n\t{ title: \"Grave of the Fireflies\", rank: \"99\", id: \"tt0095327\" }\n\t{ title: \"Indiana Jones and the Last Crusade\", rank: \"100\", id: \"tt0097576\" }\n]"
+  },
+  "/examples/helpers.imba": {
+    "body": "global.$show = do(text,item)\n\timba.mount <dl[p:4 pb:0 js:start]>\n\t\t<dt[color:gray5 fs:sm]> text\n\t\t<dd> item\n\nglobal.$log = do(desc,value)\n\tconsole.info(desc)\n\tconsole.log(value)\n\nglobal.$commit = do(flag)\n\timba.commit!"
+  },
+  "/examples/vs/stateful-component/app.imba": {
+    "body": "tag Timer\n\tseconds = 0\n\t<self> \"Seconds: {seconds++}\"\n\nimba.mount <Timer autorender=1s>"
+  },
+  "/examples/vs/stateful-component/app.jsx": {
+    "body": "class Timer extends React.Component {\n    constructor(props) {\n      super(props);\n      this.state = { seconds: 0 };\n    }\n  \n    tick() {\n      this.setState(state => ({\n        seconds: state.seconds + 1\n      }));\n    }\n  \n    componentDidMount() {\n      this.interval = setInterval(() => this.tick(), 1000);\n    }\n  \n    componentWillUnmount() {\n      clearInterval(this.interval);\n    }\n  \n    render() {\n      return (\n        <div>\n          Seconds: {this.state.seconds}\n        </div>\n      );\n    }\n  }\n  \n  ReactDOM.render(\n    <Timer />,\n    document.getElementById('timer-example')\n  );"
+  },
+  "/examples/vs/simple-component/app.imba": {
+    "body": "tag HelloMessage\n\t<self> \"Hello {name}\"\n\nimba.mount <HelloMessage name=\"Taylor\">"
+  },
+  "/examples/vs/simple-component/app.jsx": {
+    "body": "class HelloMessage extends React.Component {\n    render() {\n      return (\n        <div>\n          Hello {this.props.name}\n        </div>\n      );\n    }\n  }\n  \n  ReactDOM.render(\n    <HelloMessage name=\"Taylor\" />,\n    document.getElementById('hello-example')\n  );"
+  },
+  "/examples/vs/markdown-editor/app.imba": {
+    "body": "tag MarkdownEditor\n\tvalue = 'Hello, **world**!'\n\tmd = new global.Remarkable\n\n\t<self.MarkdownEditor>\n\t\t<h3> 'Input'\n\t\t<label for='content'> 'Enter some markdown'\n\t\t<textarea#content bind=value>\n\t\t<h3> 'Output'\n\t\t<div.content innerHTML=md.render(value)>\n\nimba.mount <MarkdownEditor>"
+  },
+  "/examples/vs/markdown-editor/app.jsx": {
+    "body": "class MarkdownEditor extends React.Component {\n  constructor(props) {\n    super(props);\n    this.md = new Remarkable();\n    this.handleChange = this.handleChange.bind(this);\n    this.state = { value: 'Hello, **world**!' };\n  }\n\n  handleChange(e) {\n    this.setState({ value: e.target.value });\n  }\n\n  getRawMarkup() {\n    return { __html: this.md.render(this.state.value) };\n  }\n\n  render() {\n    return (\n      <div className=\"MarkdownEditor\">\n        <h3>Input</h3>\n        <label htmlFor=\"markdown-content\">\n          Enter some markdown\n        </label>\n        <textarea\n          id=\"markdown-content\"\n          onChange={this.handleChange}\n          defaultValue={this.state.value}\n        />\n        <h3>Output</h3>\n        <div\n          className=\"content\"\n          dangerouslySetInnerHTML={this.getRawMarkup()}\n        />\n      </div>\n    );\n  }\n}\n\nReactDOM.render(\n  <MarkdownEditor />,\n  document.getElementById('markdown-example')\n);"
+  },
+  "/examples/vs/application/app.imba": {
+    "body": "tag TodoApp < div\n\tprop newtitle = ''\n\tprop items = []\n\n\tdef add\n\t\titems.push(text: newtitle)\n\t\tnewtitle = ''\n\n\t<self>\n\t\t<h3> \"TODO\"\n\t\t<TodoList items=items>\n\t\t<form @submit.prevent.if(newtitle)=add>\n\t\t\t<label for='new-todo'> 'What needs to be done?'\n\t\t\t<input#new-todo bind=newtitle>\n\t\t\t<button> \"Add #{items.length + 1}\"\n\ntag TodoList < ul\n\t<self> for item in items\n\t\t<li> item.text\n\nimba.mount <TodoApp>"
+  },
+  "/examples/vs/application/app.jsx": {
+    "body": "class TodoApp extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = { items: [], text: '' };\n    this.handleChange = this.handleChange.bind(this);\n    this.handleSubmit = this.handleSubmit.bind(this);\n  }\n\n  render() {\n    return (\n      <div>\n        <h3>TODO</h3>\n        <TodoList items={this.state.items} />\n        <form onSubmit={this.handleSubmit}>\n          <label htmlFor=\"new-todo\">\n            What needs to be done?\n          </label>\n          <input\n            id=\"new-todo\"\n            onChange={this.handleChange}\n            value={this.state.text}\n          />\n          <button>\n            Add #{this.state.items.length + 1}\n          </button>\n        </form>\n      </div>\n    );\n  }\n\n  handleChange(e) {\n    this.setState({ text: e.target.value });\n  }\n\n  handleSubmit(e) {\n    e.preventDefault();\n    if (this.state.text.length === 0) {\n      return;\n    }\n    const newItem = {\n      text: this.state.text,\n      id: Date.now()\n    };\n    this.setState(state => ({\n      items: state.items.concat(newItem),\n      text: ''\n    }));\n  }\n}\n\nclass TodoList extends React.Component {\n  render() {\n    return (\n      <ul>\n        {this.props.items.map(item => (\n          <li key={item.id}>{item.text}</li>\n        ))}\n      </ul>\n    );\n  }\n}\n\nReactDOM.render(\n  <TodoApp />,\n  document.getElementById('todos-example')\n);"
+  },
+  "/examples/util/data.imba": {
+    "body": "# copy($$('.js-label-link').map(v=> `{name: '${v.textContent.trim()}', color: '${v.style.backgroundColor}'}`).join('\\n'))\nexport const labels = [\n\t{name: 'bug', color: 'rgb(252, 41, 41)'}\n\t{name: 'duplicate', color: 'rgb(204, 204, 204)'}\n\t{name: 'help wanted', color: 'rgb(21, 152, 24)'}\n\t{name: 'invalid', color: 'rgb(230, 230, 230)'}\n\t{name: 'question', color: 'rgb(204, 49, 124)'}\n\t{name: 'wontfix', color: 'rgb(255, 255, 255)'}\n]\n\nexport const data = {\n\timba: {name: 'Imba', url: 'https://imba.io', color: '#4fd1c5'}\n\tvue: {name: 'Vue', url: 'https://vuejs.org', color: '#4fc08d'}\n\tsvelte: {name: 'Svelte', url: 'https://svelte.dev', color: '#ff3e00'}\n\treact: {name: 'React', url: 'https://reactjs.org', color: '#61dafb'}\n\tember: {name: 'Ember', url: 'https://emberjs.com', color: '#e04e39'}\n}\n\nexport const projects = [data.imba,data.vue,data.svelte,data.react]\n"
+  },
+  "/examples/util/styles.imba": {
+    "body": "global css\n\t@focus outline:none\n\n\tbody\n\t\td:grid gaf:row ac:center jc:stretch ji:center gap:2 p:2\n\n\tmain,div,section,form,article,header,footer\n\t\tpos:relative\n\n\tbody > main\n\t\td:grid gaf:row ac:start gap:2 p:2\n\t\tpos:absolute inset:0\n\n\tdiv\n\t\tgaf:column ja:center\n\n\tsection,form\n\t\td:grid gaf:row ac:center jc:stretch ji:center gap:2\n\n\theader,footer\n\t\td:flex fld:row gaf:column js:stretch jc:stretch ji:stretch gap:2\n\n\tarticle\n\t\td:grid gaf:row ac:start gap:2 p:2\n\t\trd:2\n\t\tborder:1px dashed gray3\n\t\tmin-height:60px\n\n\tfigure\n\t\td:grid gaf:row ja:center gap:2\n\n\tbody > fieldset\n\t\td:hflex flw:wrap ja:center\n\t\t> * m:1\n\t\t> h1,h2,h3,h4,h5,h6,p,legend w:100% fls:0 ta:center\n\t\tlegend c:gray6 fs:sm\n\n\n\n\tgroup,cell,box\n\t\td:grid pos:relative gtc:100% ai:center\n\t\t1cmx:0.5cg 1cmy:0.5rg\n\t\t> div\n\t\t\tall:unset pos:relative m:-1cmx -1cmy d:flex flw:wrap ai:inherit\n\t\t\t\n\t\t> div > * m:1cmy 1cmx\n\n\tflex\n\t\tpos:relative d:flex flw:wrap\n\t\t1cmx:0.5cg 1cmy:0.5rg\n\t\tm:-1cmx -1cmy\n\t\t> * m:1cmy 1cmx\n\n\t.group, .bar\n\t\tpos:relative d:flex flw:wrap fld:row\n\t\t1cmx:0.5cg 1cmy:0.5rg\n\t\tm.group:-1cmx -1cmy\n\t\t> * m:1cmy 1cmx\n\n\tli\n\t\tp:1\n\t\tbbw:1 bbc:gray3\n\n\tlabel\n\t\tfw:400 c:gray6 fs:sm ta:center\n\n\ta td:u c:blue6\n\n\tmark\n\t\td:grid gaf:column ja:center gap:2\n\t\tbw:1 bc:yellow4 rd:1 py:1 px:2 fs:smaller\n\t\tbg:yellow3 c:yellow8\n\n\tbutton\n\t\td:grid gaf:column ja:center gap:2\n\t\tpy:1 px:3 fw:400 min-width:6 min-height:8\n\t\tbw:1px bc:gray4 rd:2\n\t\tfs:md/1.2\n\t\tc:gray7 @hover:gray8\n\t\tbg:gray1 @hover:gray2 @active:gray3\n\t\tbxs:xs\n\t\tus:none\n\t\ttween:100ms ease-in-out\n\t\ty@active:1px\n\t\t@focus outline:none bxs:0 0 0 3px blue3/35 bc:blue4\n\t\t@disabled c:gray5\n\t\t# @is-busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none\n\n\t.chip\n\t\tpx:2 py:1 fs:sm\n\n\t.pill rd:2 bg:teal2 fs:xs c:teal7 py:1 px:2\n\t\n\t.clickable\n\t\tinset:0 bg:gray1 p:2 of:hidden d:hflex ja:center\n\t\t@before content: \"click anywhere\" c:gray3 fs:xl fw:500\n\n\t.rect\n\t\tcursor:pointer\n\t\tfs:sm c:black/70\n\t\ttouch-action:none\n\t\td:flex jc:center ai:center rd:sm min-width:8 min-height:8\n\t\tbg:purple3/60 @hover:purple3/90\n\t\t\n\t.alert\n\t\tbd:blue6 bg:blue5 d:hflex ja:center c:white rd:sm p:2 px:3 pos:absolute inset:24px\n\n\t.tags\n\t\tm: -4px\n\t\t> m:4px\n\n\t.handle\n\t\tpos:absolute fs:sm w:1em h:1em mt:-0.5em ml:-0.5em bg:purple6 rd:xs\n\t\ttop:0 left:0 \n\n\t.panel\n\t\td:flex fld:column flex:1\n\t\theader,footer flex:0\n\t\tsection,main flex:1\n\n\t.frame\n\t\tpos:absolute inset:10 bd:1px dashed gray4 bg:gray1 rd:md d:flex ja:center\n\n\tsamp,var\n\t\td:grid ja:center min-width:60px p:1\n\t\tbs:dashed bw:1 bc:gray4 rd:2\n\n\tselect,textarea,input\n\t\tpy:1 px:3 min-width:10 min-height:8\n\t\tbw:1 rd:2\n\t\tfs:md/1.2\n\t\tc:gray8 @hover:gray9\n\t\tbc:gray3 @hover:gray4/80\n\t\tbg:white @focus:white\n\t\t@focus bxs:0 0 0 3px blue3/35 bc:blue4\n\t\t@disabled c:gray5\n\n\tinput[type=range],input[type=checkbox],input[type=radio]\n\t\tp:0 bw:0 bxs:none min-width:initial\n\n\tinput[type=number] w:60px pr:0\n\n\tinput@not([type]),input[type=text]\n\t\tmin-width:20\n\t\tflex:1\n\n\tinput.inline\n\t\tbw:0 bg:clear p:0 m:0\n\n\tselect\n\t\tw:160px flex:1\n\n\t.faded o:0.5\n\t.busy c:gray5 opacity:0.7 scale:0.96 pe:none outline:none\n\n\tinput[type=range]\n\t\t-webkit-appearance: none min-height:initial\n\n\tinput[type=range]::-webkit-slider-runnable-track\n\t\tw:100% h:8px bg:gray2 rd:2 border:1px solid gray4 box-sizing:border-box\n\tinput[type=range]::-webkit-slider-thumb\n\t\t-webkit-appearance: none \n\t\tw:14px h:14px mt:-4px bg:blue5 rd:10 box-sizing:border-box\n\n\tinput[type=checkbox]\n\t\tmin-height:initial\n\n\tinput[type=radio]\n\t\tmin-height:initial\n\n\t#hud\n\t\tpos:absolute t:0 l:0 r:0 p:3 bg:gray1 border-bottom:1px solid gray3\n\t\th:8 fs:sm c:gray5\n\t\tinput[type=range] w:60px\n\t\t.num d:block w:6\n\n\t#hud + main t:8\n\nglobal css .clocks\n\td:grid gtc: 1fr 1fr 1fr 1fr p:4 gap:4\n\n\t.clock\n\t\tpos:relative w:100% py:50% rd:2 bg:gray3\n\t\t@after content: attr(title) w:100% ta:center b:0 pos:absolute d:block\n\n\t.dial\n\t\ttransform-origin: 50% 100% rd:1\n\t\tpos:absolute b:50% l:50% x:-50%\n\t\tbg:gray8 .m:gray7 .s:red\n\t\th:30% .m:42% .s:45%\n\t\tw:5px .m:4px .s:3px\n\t\ti,b pos:absolute d:block t:100% bg:inherit l:50% x:-50%\n\t\ti h:10px ..s:20px w:75% o:0.7\n\t\tb size:10px rd:100 y:-50%\n\nglobal css .app\n\td:vflex pos:absolute inset:0 p:2\n\t> nav d:hflex ja:center p:1 bdb:1px solid gray3\n\t\ta mx:1\n\t> main fl:1 d:vflex ja:center\n\t.page  fl:1 d:hflex ja:center\n\ta.active td:none c:gray8\n\taside fl:0 0 120px d:vflex j:flex-start px:2 bdr:gray3 fs:sm\n\tmain d:hflex ac:stretch  p:2\n\tsection fl:1\n\nglobal css .colors\n\tdiv m:1 w:16 h:8 rd:md d:flex ja:center\n\nglobal css .striped\n\tbackground-size: auto auto\n\tbackground-color: rgba(255, 255, 255, 1)\n\t# background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, currentColor 3px, currentColor 6px )\n\tbackground-image: repeating-linear-gradient(45deg, transparent, transparent 3px, currentColor 3px, currentColor 4px )\n\nglobal css .inline-demo\n\td:hflex pos:absolute inset:0 ja:center\n\tdiv d:flex ja:center\n\n\t.filled\n\t\tpos:absolute inset:0 d:flex ja:center rd:sm\n\t\ttransition:all 0.1s ease-in-out\n\n\t.target\n\t\td:flex ja:center\n\t\ttransition:all 0.1s ease-in-out\n\n\t.dashed\n\t\tpos:absolute inset:4 d:flex ja:center rd:0\n\t\tbd:1px dashed white bgc:white/25\n\n\t.border-radius\n\t\tpos:absolute inset:4 d:flex ja:center rd:0\n\t\tbgc:white/25\n\n\t.base bgc:yellow2 size:80px\n\n\t&.typography\n\t\tc:white fs:xl\n\n\t&.transforms\n\t\tc:white fs:xl\n\t\t.target transition:all 0.25s ease-out\n\t\t.base bgc:yellow2 size:80px rd:sm\n\t\t.base > div pos:absolute inset:0 bgc:blue3/90 rd:sm\n\n\t&.sizes\n\t\tc:white\n\t\t.base bgc:white size:80px\n\t\t.base > div pos:absolute inset:0 bgc:blue3\n\n\t&.margins\n\t\tc:white\n\t\t.base > div.target pos:absolute inset:0 bgc:white rd:sm\n\n\t&.positions\n\t\tc:white\n\t\t.base bgc:yellow2 size:80px pos:relative\n\t\t.base > div size:40px bgc:blue2 t:0 l:0\n\t\n\t&.positioning\n\t\tc:white\n\t\t.base bgc:yellow2 size:80px pos:relative\n\t\t.base > div size:40px bgc:blue2 pos:absolute\n\t\n\t&.paddings\n\t\tc:white\n\t\t.target\n\t\t\tsize:100px\n\t\t\tbgi:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAH0lEQVQYV2NkQAUzGZH4MxkYGNJhAmAOSBIkAOeABABpLgOeuZzTDQAAAABJRU5ErkJggg==')\n\t\t\td:flex\n\t\t\tbgc:gray1\n\t\t\trd:sm\n\t\t\t@after\n\t\t\t\tcontent:\" \"\n\t\t\t\td:block\n\t\t\t\tas:stretch\n\t\t\t\tfl:1\n\t\t\t\tbgc:white\n\t\t\t\to:0.8\n\t\t\t\trd:xs\n\t\t.base > div.target pos:absolute inset:0 bgc:white rd:sm\n\nglobal css .modal-wrapper pos:absolute t:0 l:0 w:100% h:100% d:flex jc:center ai:center bg:gray3\n\tmain bg:white w:80% h:10rem p:6 d:flex jc:center ai:center rd:xl"
+  },
+  "/examples/tic-tac-toe/app.imba": {
+    "body": "import Game from './state.imba'\nimport {Tile} from './tile.imba'\n\ncss .tiles\n\tfl:1 w:100% h:100% c:blue1 fs:30px\n\td:grid grid: 1fr 1fr 1fr / 1fr 1fr 1fr\n\t\ntag App\n\tprop game = new Game\n\n\t<self[d:vflex pos:abs inset:0]>\n\t\t<div.tiles> for tile,i in game.tiles\n\t\t\t<Tile data=game nr=i @click=game.place(i)> tile\n\ndocument.body.appendChild <App autorender=yes>"
+  },
+  "/examples/tic-tac-toe/state.imba": {
+    "body": "const combos = [\n\t[0,1,2],[3,4,5],[6,7,8],\n\t[0,3,6],[1,4,7],[2,5,8],\n\t[0,4,8],[2,4,6]\n]\n\nexport default class Game\n\tprop turn = 0\n\tprop tiles = new Array(9)\n\tprop moves = []\n\tprop winner\n\n\tdef place index\n\t\treturn if tiles[index] or winner\n\t\tmoves.length = turn\n\t\tmoves.push(index)\n\t\tturn = moves.length\n\t\tcalculate!\n\t\n\tdef calculate\n\t\twinner = null\n\t\ttiles = new Array(9)\n\t\tfor cross,i in moves when i < turn\n\t\t\ttiles[cross] = i % 2 ? \"⚬\" : \"×\"\n\t\t\n\t\tfor line in combos\n\t\t\tlet [a,b,c] = line\n\t\t\tif tiles[a] and tiles[a] == tiles[b] == tiles[c]\n\t\t\t\tbreak winner = line\n\t\treturn self"
+  },
+  "/examples/tic-tac-toe/tile.imba": {
+    "body": "export tag Tile\n\tprop nr\n\n\tcss d:flex ja:center bg:blue6 bg@odd:blue5 fs.won:50px\n\n\tdef render\n\t\tlet placed = data.moves.indexOf(nr)\n\t\tlet won = data.winner and data.winner.indexOf(nr) >= 0\n\t\t<self .won=won> <span> <slot>\n# ~bg@odd|16,-3.6,-0.8,40,,45,80,2.8,0.3/-~ Style property modifiers"
+  },
+  "/examples/sliders/app.imba": {
+    "body": "import 'util/styles'\n\ncss body > * w:50vw m:2 h:4 bg:blue3 pos:relative rd:sm\ncss .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% rd:sm\ncss .thumb b x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6\n\n# ---\ntag Slider\n\tprop min = -50\n\tprop max = 50\n\tprop step = 1\n\tprop value = 0\n\n\t<self @touch.fit(min,max,step)=(value = e.x)>\n\t\t<.thumb[l:{100 * (value - min) / (max - min)}%]> <b> value\n\nimba.mount do <>\n\t<Slider min=0 max=1 step=0.25>\n\t<Slider min=-100 max=100 step=1>\n\t<Slider min=10 max=-10 step=0.5>"
+  },
+  "/examples/simple-clock/clock.imba": {
+    "body": "import './styles'\n\ntag app-clock\n\t<self autorender=1fps>\n\t\tlet ts = Date.now! / 60000 + utc * 60\n\t\t<div.location> <slot>\n\t\t<div.dial.hour[rotate:{ts / 720}]>\n\t\t<div.dial.minute[rotate:{ts / 60}]>\n\t\t<div.dial.second[rotate:{ts % 1000}]>\n\t\t<div.circle>\n\ndocument.body.appendChild <div.grid>\n\t<app-clock[bg:pink2] utc=-5> 'New York'\n\t<app-clock[bg:purple2] utc=-8> 'San Fran'\n\t<app-clock[bg:indigo2] utc=0> 'London'\n\t<app-clock[bg:sky2] utc=9> 'Tokyo'"
+  },
+  "/examples/simple-clock/styles.imba": {
+    "body": "global css body bg:white\n\nglobal css .grid\n\td:grid gtc:1fr 1fr gap:4 pos:abs w:100% h:100% p:4\n\nglobal css app-clock\n\tpos:rel w:100% h:100% rd:2 d:block\n\t.location fs:md fw:700 ta:center c:gray8/40 p:2\n\t.dial pos:abs b:50% l:50% x:-50% origin:50% 100% rd:1\n\t.hour bg:gray8 h:30% w:5px\n\t.minute bg:gray6 h:42% w:4px\n\t.second bg:red5 h:45% w:2px\n\t.circle pos:abs t:50% l:50% m:-5px size:10px bg:red5 rd:full"
+  },
+  "/examples/performance/app.imba": {
+    "body": "import 'util/styles'\n\ncss div pos:absolute d:block inset:0 p:4 pe:none\ncss mark pos:absolute\ncss li d:inline-block px:1 m:1 rd:2 fs:xs bg:gray1\n# ---\ntag app\n\tprop title = \"Hey\"\n\tprop point = {x:100, y: 100}\n\t\n\tcss pos:abs inset:0 p:8 cursor:default\n\n\t<self @mousemove=(point=e)>\n\t\t# dynamically create one list item for every\n\t\t# pixel the mouse is offset to\n\t\t<ul> for nr in [0 ... point.x]\n\t\t\t# use dynamic inline styles for certain conditions\n\t\t\t<li[bg:pink3 rotate:{point.x / 360}]=(nr < point.x / 5)> nr\n\t\t<div[pos:abs b:0 r:0 t:{point.y}px l:{point.x}px bg:blue5/20]>\n\nimba.mount <app[pos:abs inset:0 p:8 cursor:default]>"
+  },
+  "/examples/paint/app.imba": {
+    "body": "import './canvas'\nimport './pickers'\n\nglobal css body m:0 p:0 rd:lg bg:yellow1 of:hidden\n\nconst strokes = [1,2,3,5,8,12]\nconst colors = ['#F59E0B','#10B981','#3B82F6','#8B5CF6']\nconst state = {stroke: 5, color: '#3B82F6'}\n\ntag App\n\t<self>\n\t\t<div[ta:center pt:20 o:0.2 fs:xl]> 'draw here'\n\t\t<app-canvas[pos:abs inset:0] state=state>\n\t\t<div.tools[pos:abs b:0 w:100% d:hgrid ja:center]>\n\t\t\t<stroke-picker options=strokes bind=state.stroke>\n\t\t\t<color-picker options=colors bind=state.color>\n\nimba.mount <App[pos:abs inset:0]>\n# ~rd:lg|16,4.6,-1.8,50,26,4,52,0.8,0/-~ tailwind-like css shorthands\n# ~yellow1|16,3.5,-0.8,50,12,10,55,1.3,0/-~ and colors\n# ~ta:center|16,6,-1,34,,1,49,5.8,-0.5/-~ inline styles\n# ~state.color|16,-2.3,0.8,42,25,44,20,-0.8,1.3/-~ two-way databinding\n# ~global css|18,7.3,-0.5,31,12,8,46,7.5,-0.3/18,7,-0.6,31,12,10,43,8.1,0~ built-in css\n# ~tag|18,11.8,-0.8,75,24,8,45,7.3,0.5/18,8.8,-0.8,15,22,4,50,7.5,0.8~ native web components"
+  },
+  "/examples/paint/canvas.imba": {
+    "body": "tag app-canvas\n\tprop dpr = window.devicePixelRatio\n\tprop state = {}\n\n\tdef draw e\n\t\tlet path = e.#path ||= new Path2D\n\t\tlet ctx = $canvas.getContext('2d')\n\t\tpath.lineTo(e.x * dpr,e.y * dpr)\n\t\tctx.lineWidth = state.stroke * dpr\n\t\tctx.strokeStyle = state.color\n\t\tctx.stroke(path)\n\t\n\tdef resized e\n\t\t$canvas.width = offsetWidth * dpr\n\t\t$canvas.height = offsetHeight * dpr\n\n\t<self @resize=resized @touch.prevent.moved.fit(self)=draw>\n\t\t<canvas$canvas[pos:abs w:100% h:100%]>"
+  },
+  "/examples/paint/pickers.imba": {
+    "body": "tag value-picker\n\tcss w:100px h:40px pos:rel\n\t\td:hgrid ji:center ai:center\n\tcss .item h:100% pos:rel tween:styles 0.1s ease-out\n\n\tdef update e\n\t\tdata = options[e.x]\n\n\t<self @touch.stop.fit(0,options.length - 1,1)=update>\n\t\tfor item in options\n\t\t\t<div.item[$value:{item}] .sel=(item==data)>\n\ntag stroke-picker < value-picker\n\tcss .item bg:black w:calc($value*1px) h:40% rd:sm\n\t\to:0.3 @hover:0.8 .sel:1\n\ntag color-picker < value-picker\n\tcss .item js:stretch rdt:lg bg:$value mx:2px scale-y.sel:1.5"
+  },
+  "/examples/features/inline-css.imba": {
+    "body": "tag app\n\t<self>\n\t\t<button[bg:blue4]> \"Click me\"\n\nimba.mount <app>"
+  },
+  "/examples/express/app.imba": {
+    "body": "import express from 'express'\nimport passport from 'passport'\nimport index from './index.html'\nimport image from './confused-cat.png'\n\nconst app = express()\n\napp.get '/404' do(req,res)\n\tres.send String <html> <body>\n\t\t<h1> \"We could not find this page!\"\n\t\t<img src=image>\n\t\t<a href='/'> \"Go home!\"\n\napp.get '/:page' do(req,res)\n\tres.send index.body\n\napp.get '/' do(req,res)\n\tres.redirect('/top')\n\nimba.serve app.listen(8001)\n# ~import express|18,5.7,0.1,65,16,-1,50,31.8,3.8/18,7.2,0.3,14,17,20,36,29.8,1.8~ import any javascript library\n# ~body|16,7.2,-1.1,24,12,12,50,1.5,0/16,-0.6,-1.3,24,12,46,82,1.5,0~ server-side rendering\n# ~./confused-cat.png|16,5.3,0.9,22,35,9,49,4.1,2.5/16,4.8,1.1,22,18,2,35,16,2.8~ images are resolved and bundled\n# ~imba.serve|18,7,0.5,26,41,6,54,6,2.3/18,7.5,-0.8,9,38,2,51,6.3,0~ serve with live reloading, asset bundling++"
+  },
+  "/examples/express/client.imba": {
+    "body": "import 'imba/preflight.css'\nimport './components'\n\nglobal css body\n\tm:0 p:0 ff:sans bg:#f6f6ef\n\ta c:inherit td:none @hover:underline cursor:pointer\n\ntag app-root\n\t<self>\n\t\t<header[bg:#ff6602 h:8 d:hflex ja:center pos:sticky t:0]>\n\t\t\tcss a px:1 c.active:white\n\t\t\t<a route-to='/top'> \"Top\"\n\t\t\t<a route-to='/new'> \"New\"\n\t\t\t<a route-to='/show'> \"Show\"\n\t\t\t<a route-to='/ask'> \"Ask\"\n\t\t<main[c:gray5 fs:xs]>\n\t\t\t<story-list route='/:category'>\n\nimba.router.alias('/', '/top')\nimba.mount <app-root>"
+  },
+  "/examples/express/components.imba": {
+    "body": "import store from './store'\n\ntag story-item < li\n\t<self[d:block py:2 px:4] @intersect.silent.in=data.load!>\n\t\t<div>\n\t\t\t<span[fs:sm/1.2 c:gray9]> data.title or \"-\"\n\t\t\t<span[ml:1 prefix:\"(\" suffix:\")\" d@empty:none]>\n\t\t\t\tif data.url then <a href=data.url.href> data.url.hostname\n\t\t<div> \"{data.score} points by {data.by}\"\n\ntag story-list\n\tdef routed {category},state\n\t\tlet url = `{category}stories`\n\t\tdata = state.data ||= await store.fetch(url)\n\t\tdata.preload(0,15)\n\t\twindow.scrollTo(0,0)\n\n\t<self[d:block o@suspended:0.4]>\n\t\t<ul> for item in data\n\t\t\t<story-item data=item>"
+  },
+  "/examples/express/index.html": {
+    "body": "<html lang=\"en\">\n    <head>\n        <meta charset=\"UTF-8\">\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n        <title>Imba Hackernews</title>\n        <!-- reference to the client script styles -->\n        <link rel=\"stylesheet\" href=\"*\">\n    </head>\n    <body>\n        <!-- reference to the client script -->\n        <script type=\"module\" src=\"./client.imba\"></script>\n    </body>\n</html>"
+  },
+  "/examples/express/store.imba": {
+    "body": "export class Items < Array\n\n\tconstructor db,raw = []\n\t\tsuper(...raw.map(do db.ref($1)))\n\t\tdb = db\n\n\tdef preload from = 0, to = length\n\t\tawait Promise.all slice(from,to).map do $1.load!\n\nexport class Item\n\tconstructor id,db\n\t\tid = id\n\t\tdb = db\n\t\tloaded = no\n\t\tkids\\Item[] = []\n\t\t#depth = -1\n\n\tdef load depth = 0\n\t\tif #depth == -1\n\t\t\t#depth = 0\n\t\t\tlet data = await db.fetch(\"item/{id}\")\n\t\t\tdata ||= {deleted: true}\n\t\t\tdata.kids = new Items(db,data.kids or [])\n\t\t\tdata.url &&= new URL(data.url)\n\t\t\tObject.assign(self,data)\n\t\t\tloaded = yes\n\n\t\tif depth > #depth\n\t\t\t#depth = depth\n\t\t\tawait Promise.all(kids.map do $1.load(depth - 1))\n\n\t\tself\n\nexport default new class\n\tconstructor\n\t\tidmap = {}\n\t\tglobal.store = self\n\n\tdef fetch path, {from=-1,to=-1}={}\n\t\tlet url = \"https://hacker-news.firebaseio.com/v0/{path}.json\"\n\t\tlet req = await window.fetch(url)\n\t\tlet res = await req.json!\n\n\t\tif res isa Array\n\t\t\tres = new Items(self,res.slice(0,50))\n\n\t\timba.commit!\n\t\treturn res\n\n\tdef ref id\n\t\tidmap[id] ||= new Item(id,self)"
+  },
+  "/examples/events/divider.imba": {
+    "body": "import 'util/styles'\nglobal css body > * pos:abs inset:0 fs:xs\nglobal css aside bg:gray1\n# ---\ntag Panel\n\tprop split = 30\n\n\t<self[d:flex]>\n\t\t<aside[flb:{split}%]> \"Menu\"\n\t\t<div[w:2 fls:0 bg:sky3 bg@touch:sky5]\n\t\t\t@touch.pin.fit(self,0,100)=(split=e.x)>\n\t\t<section>\n\nimba.mount <Panel>"
+  },
+  "/examples/events/drag.imba": {
+    "body": "import 'util/styles'\n# css body bg:gray1\ncss drag-me\n\td:block pos:relative p:3 m:1\n\tbg:white bxs:sm rd:sm cursor:default\nyes\n# ---\ntag drag-me\n\t<self @touch.prevent.moved.sync(self)>\n\t\tcss bg:white @touch:blue4\n\t\t\tscale:1 @touch:1.2\n\t\t\tx:{x} y:{y} rotate:{x}deg\n\t\t<span> 'drag me'\n\nimba.mount <drag-me>"
+  },
+  "/examples/events/modifiers.imba": {
+    "body": "imba.mount do <fieldset>\n\t<button @click.throttle(1s).log('clicked')> 'click me'\n\t<div> \"Not clickable within 1 second of previous invocation.\""
+  },
+  "/examples/css/appearance.imba": {
+    "body": "import 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 transform: translate(30px,50%)\ncss .demo-2 transform: rotate(0.5turn)\ncss .demo-3 transform: skew(30deg,20deg)\ncss .demo-4 transform: scale(0.7) translate(-50%,-50%)\ncss .demo-5 transform: rotate(3deg) scale(0.8)\ncss .demo-6 transform: skewY(20deg)\n# ---\n\nimba.mount do <.inline-demo.transforms>\n\t<div.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/bottom.imba": {
+    "body": "import 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 b:0\ncss .demo-2 b:5 # using default scale\ncss .demo-3 b:50%\n# ---\n\nimba.mount do <.inline-demo.positioning>\n\t<.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/bxs.imba": {
+    "body": "import 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\nimba.mount do <.inline-demo>\n\t# ---\n\tcss .demo-1 bxs:xxs\n\tcss .demo-2 bxs:xs\n\tcss .demo-3 bxs:sm\n\tcss .demo-4 bxs:md\n\tcss .demo-5 bxs:lg\n\tcss .demo-6 bxs:xl\n\tcss .demo-7 bxs:xxl\n\tcss .demo-8 bxs:outline\n\t# ---\n\t<div.filled[bg:gray1 inset:0]>\n\t\t<div.target[pos:absolute inset:8 bg:white].{vars.flag}>"
+  },
+  "/examples/css/colors.imba": {
+    "body": "import 'util/styles'\nconst item = {tint: 'sky3'}\nexport const vars = {flag: 'demo-1'}\n\nimba.mount do <.inline-demo>\n\t# ---\n\tcss .demo-hex bg:#7A4ACF\n\tcss .demo-hsl bg:hsl(120,90%,45%)\n\tcss .demo-rgba bg:rgba(120,255,176)\n\tcss .demo-1 bg:blue3 @hover:blue5\n\tcss .demo-2 bg:indigo5/80% # with transparency\n\tcss .demo-interpolation bg:{item.tint} # works with interpolated values\n\t# ---\n\t<div.filled.{vars.flag}> 'Lipsum'"
+  },
+  "/examples/css/ff.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-sans'}\n\n# ---\ncss .demo-sans ff:sans # all\ncss .demo-serif ff:serif # top-left\ncss .demo-mono ff:mono # top-right\ncss .demo-georgia ff:Georgia, serif\ncss .demo-gill ff:\"Gill Sans\", sans-serif\n# ---\n\nimba.mount do <.inline-demo.typography>\n\t<div.{vars.flag}> 'This is my text'"
+  },
+  "/examples/css/fs.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-md'}\n\n# ---\ncss .demo-xxs fs:xxs # 10px\ncss .demo-xs fs:xs  # 12px\ncss .demo-sm fs:sm # 14px\ncss .demo-md fs:md # 16px\ncss .demo-lg fs:lg # 18px\ncss .demo-xl fs:xl # 20px\ncss .demo-2xl fs:2xl # 24px\ncss .demo-3xl fs:3xl # 30px\ncss .demo-4xl fs:4xl # 36px\ncss .demo-5xl fs:5xl # 48px\ncss .demo-6xl fs:6xl # 64px\n# ---\n\nimba.mount do <.inline-demo.typography>\n\t<div.{vars.flag}> 'Text'"
+  },
+  "/examples/css/fw.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 fw:100\ncss .demo-2 fw:900\ncss .demo-3 fw:normal\ncss .demo-4 fw:bold\ncss .demo-5 fw:lighter\ncss .demo-6 fw:bolder\n# ---\n\nimba.mount do <.inline-demo.typography> <div.{vars.flag}> 'Text'"
+  },
+  "/examples/css/height.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 h:30px # 30px\ncss .demo-2 h:50% # 50%\ncss .demo-3 h:100% # 100%\n# ---\n\nimba.mount do <.inline-demo.sizes>\n\t<.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/ji.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\ncss .demo-1 justify-items: center\ncss .demo-2 justify-items: start\ncss .demo-3 justify-items: end\ncss .demo-4 justify-items: flex-start\ncss .demo-5 justify-items: flex-end\ncss .demo-6 justify-items: self-start\ncss .demo-7 justify-items: self-end\ncss .demo-8 justify-items: left\ncss .demo-9 justify-items: right\n\nimba.mount do <.inline-demo.paddings> <div.target.{vars.flag}>"
+  },
+  "/examples/css/layouts.imba": {
+    "body": "import 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\ncss .grid bg:clear h:100px w:100px\n\t> d:block rd:sm bg:sky3 w:auto h:auto\n\t\ttween:all 0.1s ease-in-out\n\ncss .target w:12 h:12\n\nimba.mount do <.inline-demo>\n\t# ---\n\t<div.grid[d:grid ja:stretch g:1]>\n\t\t<div[bg:green2]>\n\t\t<div[bg:orange3]>\n\t\t<div[bg:red3 h:2rows y:6px]>\n\t\t<div[bg:indigo3 bg@hover:pink4]>\n\t\t<div[bg:teal2]>"
+  },
+  "/examples/css/left.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 l:0\ncss .demo-2 l:5 # using default scale\ncss .demo-3 l:50%\n# ---\n\nimba.mount do <.inline-demo.positioning>\n\t<.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/margin-aliases.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 m: 16px # margin\ncss .demo-2 mt:16px # margin-top\ncss .demo-3 mr:16px # margin-right\ncss .demo-4 mb:16px # margin-bottom\ncss .demo-5 ml:16px # margin-left\ncss .demo-6 mx:16px # margin-left + margin-right\ncss .demo-7 my:16px # margin-top + margin-bottom\n# ---\n\nimba.mount do <.inline-demo.margins>\n\t<.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/margin-bottom.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 mb:1em\ncss .demo-2 mb:2 # using default scale\ncss .demo-3 mb:10%\ncss .demo-4 mb:50px\n# ---\n\nimba.mount do <.inline-demo.margins>\n\t<div.base.striped[c:orange5/60 bgc:orange5/20]>\n\t\t<div[bg:orange5].target.{vars.flag}>"
+  },
+  "/examples/css/margin-left.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 ml:1em\ncss .demo-2 ml:2 # using default scale\ncss .demo-3 ml:10%\ncss .demo-4 ml:50px\n# ---\n\nimba.mount do <.inline-demo.margins>\n\t<div.base.striped[c:orange5/60 bgc:orange5/20]>\n\t\t<div[bg:orange5].target.{vars.flag}>"
+  },
+  "/examples/css/margin-right.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 mr:1em\ncss .demo-2 mr:2 # using default scale\ncss .demo-3 mr:10%\ncss .demo-4 mr:50px\n# ---\n\nimba.mount do <.inline-demo.margins>\n\t<div.base.striped[c:orange5/60 bgc:orange5/20]>\n\t\t<div[bg:orange5].target.{vars.flag}>"
+  },
+  "/examples/css/margin-top.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 mt:1em\ncss .demo-2 mt:2 # using default scale\ncss .demo-3 mt:10%\ncss .demo-4 mt:50px\n# ---\n\nimba.mount do <.inline-demo.margins>\n\t<div.base.striped[c:orange5/60 bgc:orange5/20]>\n\t\t<div[bg:orange5].target.{vars.flag}>"
+  },
+  "/examples/css/margin.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 m:1em\ncss .demo-2 m:5% 0\ncss .demo-3 m:5px 15px 10px\ncss .demo-4 m:5px 15px 10px 0\ncss .demo-5 m:0\n# ---\n\nimba.mount do <.inline-demo.margins>\n\t<div.base.striped[c:orange5/60 bgc:orange5/20]>\n\t\t<div[bg:orange5].target.{vars.flag}>"
+  },
+  "/examples/css/mx.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 mx:1em\ncss .demo-2 mx:2 # using default scale\ncss .demo-3 mx:10%\ncss .demo-4 mx:20px\n# ---\n\nimba.mount do <.inline-demo.margins>\n\t<div.base.striped[c:orange5/60 bgc:orange5/20]>\n\t\t<div[bg:orange5].target.{vars.flag}>"
+  },
+  "/examples/css/my.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 my:1em\ncss .demo-2 my:2 # using default scale\ncss .demo-3 my:10%\ncss .demo-4 my:20px\n# ---\n\nimba.mount do <.inline-demo.margins>\n\t<div.base.striped[c:orange5/60 bgc:orange5/20]>\n\t\t<div[bg:orange5].target.{vars.flag}>"
+  },
+  "/examples/css/padding-aliases.imba": {
+    "body": "import 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 p: 16px # padding\ncss .demo-2 pt:16px # padding-top\ncss .demo-3 pr:16px # padding-right\ncss .demo-4 pb:16px # padding-bottom\ncss .demo-5 pl:16px # padding-left\ncss .demo-6 px:16px # padding-left + padding-right\ncss .demo-7 py:16px # padding-top + padding-bottom\n# ---\n\nimba.mount do <.inline-demo.paddings>\n\t<div.target.{vars.flag}>"
+  },
+  "/examples/css/padding-bottom.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 pb:1em\ncss .demo-2 pb:6 # using default scale\ncss .demo-3 pb:40px\ncss .demo-4 pb:20%\n# ---\n\nimba.mount do <.inline-demo.paddings>\n\t<div.target.{vars.flag}>"
+  },
+  "/examples/css/padding-left.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 pl:1em\ncss .demo-2 pl:6 # using default scale\ncss .demo-3 pl:40px\ncss .demo-4 pl:20%\n# ---\n\nimba.mount do <.inline-demo.paddings>\n\t<div.target.{vars.flag}>"
+  },
+  "/examples/css/padding-right.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 pr:1em\ncss .demo-2 pr:6 # using default scale\ncss .demo-3 pr:40px\ncss .demo-4 pr:20%\n# ---\n\nimba.mount do <.inline-demo.paddings>\n\t<div.target.{vars.flag}>"
+  },
+  "/examples/css/padding-top.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 pt:1em\ncss .demo-2 pt:6 # using default scale\ncss .demo-3 pt:40px\ncss .demo-4 pt:20%\n# ---\n\nimba.mount do <.inline-demo.paddings>\n\t<div.target.{vars.flag}>"
+  },
+  "/examples/css/padding.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 p:1em\ncss .demo-2 p:5% 0\ncss .demo-3 p:5px 15px 10px\ncss .demo-4 p:5px 15px 10px 0\ncss .demo-5 p:0\n# ---\n\nimba.mount do <.inline-demo.paddings>\n\t<div.target.{vars.flag}>"
+  },
+  "/examples/css/position.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 pos:relative\ncss .demo-2 pos:absolute\ncss .demo-3 pos:fixed\n# ---\n\nimba.mount do <.inline-demo.positions>\n\t<.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/px.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 px:4 # size units\ncss .demo-2 px:8px\ncss .demo-3 px:10% # relative to width of container\ncss .demo-4 px:4 @hover:8\ncss .demo-5 px:0\n# ---\n\nimba.mount do <.inline-demo.paddings> <div.target.{vars.flag}>"
+  },
+  "/examples/css/py.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 py:4 # size units\ncss .demo-2 py:8px\ncss .demo-3 py:10% # relative to width of container\ncss .demo-4 py:4 @hover:8\ncss .demo-5 py:0\n# ---\n\nimba.mount do <.inline-demo.paddings> <div.target.{vars.flag}>"
+  },
+  "/examples/css/rd.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-rd'}\n\n# ---\ncss .demo-rd rd:16px # all\ncss .demo-rdtl rdtl:16px # top-left\ncss .demo-rdtr rdtr:16px # top-right\ncss .demo-rdbl rdbl:16px # bottom-left\ncss .demo-rdbr rdbr:16px # bottom-right\ncss .demo-rdt rdt:16px # top-left and top-right\ncss .demo-rdr rdr:16px # top-right and bottom-right\ncss .demo-rdb rdb:16px # bottom-left and bottom-right\ncss .demo-rdl rdl:16px # top-left and bottom-left\n# ---\n\nimba.mount do <.inline-demo>\n\t<div.filled>\n\t\t<div.target[pos:absolute inset:8 bg:teal3/30 bd:teal3].{vars.flag}> ''"
+  },
+  "/examples/css/right.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 r:0\ncss .demo-2 r:5 # using default scale\ncss .demo-3 r:50%\n# ---\n\nimba.mount do <.inline-demo.positioning>\n\t<.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/size.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 size:30px # 30px\ncss .demo-2 size:50% # 50%\ncss .demo-3 size:100% # 100%\n# ---\n\nimba.mount do <.inline-demo.sizes>\n\t<.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/sizing.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\ncss .target w:12 h:12\n# ---\ncss .demo-1 w:20 h:12 mx:4 p:2\ncss .demo-2 m:5% 0\ncss .demo-3 m:5px 15px 10px\ncss .demo-4 m:5px 15px 10px 0\ncss .demo-5 m:0\ncss .demo-6 m:0\n# ---\n\nimba.mount do <.inline-demo.margins>\n\t<div.base.striped[c:orange5/60 bgc:orange5/20]>\n\t\t<div[bg:orange5].target.{vars.flag}>"
+  },
+  "/examples/css/top.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 t:0\ncss .demo-2 t:5 # using default scale\ncss .demo-3 t:50%\n# ---\n\nimba.mount do <.inline-demo.positioning>\n\t<.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/transform.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 transform: translate(30px,50%)\ncss .demo-2 transform: rotate(0.5turn)\ncss .demo-3 transform: skew(30deg,20deg)\ncss .demo-4 transform: scale(0.7) translate(-50%,-50%)\ncss .demo-5 transform: rotate(3deg) scale(0.8)\ncss .demo-6 transform: skewY(20deg)\n# ---\n\nimba.mount do <.inline-demo.transforms>\n\t<div.base> <div.target.{vars.flag}>"
+  },
+  "/examples/css/variants.imba": {
+    "body": ""
+  },
+  "/examples/css/width.imba": {
+    "body": "# [preview=styles]\nimport 'util/styles'\nexport const vars = {flag: 'demo-1'}\n\n# ---\ncss .demo-1 w:30px # 30px\ncss .demo-2 w:50% # 50%\ncss .demo-3 w:100% # 100%\n# ---\n\nimba.mount do <.inline-demo.sizes>\n\t<.base> <div.target.{vars.flag}>"
+  },
+  "/examples/clock/app.imba": {
+    "body": "tag app-clock\n\t<self>\n\t\tcss div pos:abs b:50% l:50% x:-50% origin:50% 100%\n\t\tlet ts = Date.now! / 60000 + utc * 60\n\t\t<header[fs:xl fw:700 ta:center c:gray8/40 p:2]> name\n\t\t<div[rd:1 bg:gray8 h:13vmin w:5px rotate:{ts / 720}]>\n\t\t<div[rd:1 bg:gray6 h:18vmin w:4px rotate:{ts / 60}]>\n\t\t<div[rd:1 bg:red5 h:21vmin w:2px rotate:{ts % 1000}]>\n\t\t<div[rd:full bg:red5 size:10px y:50%]>\n\ntag app\n\t<self[d:grid gtc:1fr 1fr gap:4 pos:abs w:100% h:100% p:4]>\n\t\tcss app-clock pos:rel w:100% rd:2\n\t\t<app-clock[bg:pink2] name='New York' utc=-5>\n\t\t<app-clock[bg:purple2] name='San Fran' utc=-8>\n\t\t<app-clock[bg:indigo2] name='London' utc=0>\n\t\t<app-clock[bg:sky2] name='Tokyo' utc=9>\n\nimba.mount <app autorender=1fps>"
+  },
+  "/examples/basics/counter.imba": {
+    "body": "tag hello-world\n\t<self> <p> \"Increment!\"\n\nimba.mount <hello-world>"
+  },
+  "/examples/basics/hello-world.imba": {
+    "body": "tag hello-world\n\t<self> <p> \"Hello world!\"\n\nimba.mount <hello-world>"
+  },
+  "/examples/api/carousel.imba": {
+    "body": "# [preview=lg]\n# ---\nimport {genres} from 'imdb'\n\ntag Card\n\tprop shown = 1\n\tcss bg:gray3 d:vflex ja:center c:white rd:md pos:relative\n\n\t<self[o:{shown}] @intersect(20)=(shown = e.ratio)>\n\t\t<div[fs:xl c:gray8]> data.title\n\t\t<div[bg:{data.color} p:1 2 rd:lg]> shown.toFixed(2)\n\ntag App\n\tcss self\n\t\td:hgrid pos:absolute inset:0 gap:4px py:6\n\t\tofx:scroll scroll-snap-type:x mandatory\n\t\t.item scroll-snap-align:start w:200px\n\t\t@before,@after content:\" \" d:block w:6\n\n\t<self> for item in genres\n\t\t<Card.item data=item>\n# ---\nlet app = <App>\nimba.mount app"
+  },
+  "/examples/api/click.button.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do <div[inset:0 d:grid gaf:column ja:center g:4]>\n\t# ---\n\t<button @click.left.log('clicked')> 'Click Left'\n\t<button @click.middle.log('clicked')> 'Click Middle'\n\t<button @click.right.log('clicked')> 'Click Right'"
+  },
+  "/examples/api/click.cooldown.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\n# ---\n# disable handler for duration after triggered\nimba.mount do <fieldset>\n\t<button @click.cooldown.log('clicked')> 'click me'\n\t<div> \"Not clickable within 1 second of previous invocation.\""
+  },
+  "/examples/api/custom-slider.imba": {
+    "body": "# [preview=lg] [title=Custom Slider]\nimport 'util/styles'\n\nglobal css body > * w:50vw m:2 h:4 bg:blue3 pos:relative rd:sm\n# css .track h:4 w:100% bg:blue3 pos:relative rd:sm\ncss .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% rd:sm\ncss .thumb b x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6\n\n# ---\ntag Slider\n\tprop min = -50\n\tprop max = 50\n\tprop step = 1\n\tprop value = 0\n\n\t<self @touch.fit(min,max,step)=(value = e.x)>\n\t\t<.thumb[l:{100 * (value - min) / (max - min)}%]> <b> value\n\nimba.mount do <>\n\t<Slider min=0 max=1 step=0.1>\n\t<Slider min=-100 max=100 step=1>\n\t<Slider min=10 max=-10 step=0.5>\n"
+  },
+  "/examples/api/event.capture.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do <fieldset>\n\t# ---\n\t<div @click.capture.stop.log('captured!')>\n\t\t<button @click.log('button')> 'Click me'\n"
+  },
+  "/examples/api/event.emit.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do\n\t# ---\n\t<div.group @select=console.log(e.type,e.detail)>\n\t\t<button @click.emit('select')> 'emit'\n\t\t<button @click.emit('select',{a:1,b:2})> 'with data'"
+  },
+  "/examples/api/event.flag.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do\n\t# ---\n\t<div.group>\n\t\t# Add 'busy' html class to button during click\n\t\t<button @click.flag('busy')> 'flag self'\n\t\t# Optionally supply a selector / element to flag\n\t\t<button @click.flag('busy','div').wait(1s)> 'flag div'\n"
+  },
+  "/examples/api/event.if.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n# ---\nlet age = 20\n\nimba.mount do <div.group>\n\t<input type='number' bind=age>\n\t<button @click.if(age > 20).log('drink')> 'drink'\n\t<button @click.if(age > 16).log('drive')> 'drive'"
+  },
+  "/examples/api/event.once.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do <fieldset>\n\t# ---\n\t# Removes listener the first time it is triggered\n\t<button @click.once.log('once!')> 'Click me'\n\t# Removes lsitener on click only if shift is pressed\n\t<button @click.shift.once.log('yes!')> \"shift-once\"\n\t# Removes listener on click even if shift was not pressed!\n\t<button @click.once.shift.log('yes!')> \"once-shift\"\n"
+  },
+  "/examples/api/event.prevent.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do\n\t# ---\n\t<a href='https://google.com' @click.prevent.log('prevented')> 'Google.com'\n"
+  },
+  "/examples/api/event.sel.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\n# only trigger if event.target.matches(selector) is true\nimba.mount do <fieldset>\n\t# ---\n\t<button @click.log('!')> 'Button'\n\t<button @click.sel('.pri').log('!!')> 'Button'\n\t<button.pri @click.sel('.pri').log('!!!')> 'Button'"
+  },
+  "/examples/api/event.self.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do <fieldset>\n\t# ---\n\t# Wont trigger when clicking inside the <b>\n\t<button @click.self.log('clicked!')> \"Button\"\n\t\t<b> \"Nested\""
+  },
+  "/examples/api/event.silent.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\n\n# ---\nlet counter = 0\n\nimba.mount do <section>\n\t<div.group>\n\t\t<button @click.silent=(do yes)> \"Silenced\"\n\t\t<button @click=(do yes)> \"Not silenced\"\n\t<label> \"Rendered {++counter} times\""
+  },
+  "/examples/api/event.stop.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do\n\t# ---\n\t<div.group @click.log('clicked div')>\n\t\t<button @click.stop.log('stopped')> 'click.stop'\n\t\t<button @click.log('bubble')> 'click'"
+  },
+  "/examples/api/event.throttle.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\n# ---\nimba.mount do <fieldset>\n\t<button @click.throttle(1s).log('trigger!')> 'Throttle'\n\t<button @click.cooldown(1s).log('trigger!')> 'Cooldown'\n\t<button @click.debounce(1s).log('trigger!')> 'Debounce'\n\t<input @input.debounce.log('query') placeholder=\"Search...\">\n"
+  },
+  "/examples/api/event.wait.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\n# ---\n# delay subsequent modifiers by duration\nimba.mount do <div.group>\n\t<button @click.wait.log('!')> 'wait'\n\t<button @click.wait(100ms).log('!')> 'wait 100ms'\n\t<button @click.log('!').wait(500ms).log('!!')> 'wait 500ms'"
+  },
+  "/examples/api/intersect.imba": {
+    "body": "# [preview=lg]\nimport {Box} from 'controls'\n# ---\ntag App\n\t<self>\t\n\t\t<Box @intersect.out.log('outside of viewport')> 'drag'\n\t\t<Box @intersect(self).out.log('outside of App')> 'drag'\n\t\t<Box @intersect(self,0.5).out.log('halfway')> 'drag'\n\t\t<Box @intersect(self,1).out.log('covered')> 'drag'\n# ---\nimba.mount <App.frame>"
+  },
+  "/examples/api/keydown.keys.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do <fieldset>\n\t# ---\n\t<input placeholder=\"Focus me...\"\n\t\t@keydown.left.log('left!')\n\t\t@keydown.right.log('right!')\n\t\t@keydown.down.log('down!')\n\t\t@keydown.up.log('up!')\n\t\t@keydown.enter.log('enter!')\n\t\t@keydown.esc.log('esc!')\n\t\t@keydown.del.log('del!')\n\t\t@keydown.tab.log('tab!')\n\t\t@keydown.space.log('space!')\n\t>"
+  },
+  "/examples/api/mouse.mod.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do\n\t# ---\n\t<button @click.mod.log('new tab!') @click.!mod.log('here!')> 'Open'\n"
+  },
+  "/examples/api/paint.imba": {
+    "body": "# [preview=xl]\n# ---\nconst dpr = window.devicePixelRatio\n\ntag app-paint\n\tprop size = 500\n\t\n\tdef draw e\n\t\tlet path = e.$path ||= new Path2D\n\t\tpath.lineTo(e.x * dpr,e.y * dpr)\n\t\t$canvas.getContext('2d').stroke(path)\n\n\tdef render\n\t\t<self[d:block overflow:hidden bg:blue1]>\n\t\t\t<canvas$canvas[size:{size}px]\n\t\t\t\twidth=size*dpr height=size*dpr @touch.fit(self)=draw>\n\nimba.mount <app-paint>"
+  },
+  "/examples/api/pane-with-divider.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\n\n# ---\ntag Panel\n\tprop split = 70\n\n\t<self[d:flex pos:absolute inset:0]>\n\t\t<div[bg:teal2 flex-basis:{split}%]>\n\t\t<div[fls:0 w:2 bg:teal3 @touch:teal5]\n\t\t\t@touch.pin.fit(self,0,100,2)=(split=e.x)>\n\t\t<div[bg:teal1 flex:1]>\n\nimba.mount do <Panel>"
+  },
+  "/examples/api/pointerdown.pressure.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\n\nimba.mount do\n\t# ---\n\t<button @pointerdown.pressure.log('pressured?')> 'Button'"
+  },
+  "/examples/api/pointerdown.type.imba": {
+    "body": "# [preview=sm]\nimport 'util/styles'\nimba.mount do <div[inset:0 d:grid gaf:column ja:center g:4]>\n\t# ---\n\t<button @pointerdown.mouse.log('mouse!')> 'Mouse Only'\n\t<button @pointerdown.pen.log('pen!')> 'Pen Only'\n\t<button @pointerdown.touch.log('touch!')> 'Touch Only'"
+  },
+  "/examples/api/resize-textarea.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\n# ---\ntag App\n\tprop box = {}\n\n\t<self[d:block inset:0 ta:center]>\n\t\t<div[fs:sm]> \"Size is {box.width} - {box.height}\"\n\t\t<textarea[w:100px h:40px resize:both] @resize=(box=e.rect)>\n\nimba.mount <App>"
+  },
+  "/examples/api/selection.silent.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\n\n# ---\ntag Filter\n\tcounter = 0\n\t<self>\n\t\t<div> \"Filter rendered {counter++} times\"\n\t\t<input value=\"Default\" @selection.log('!')>\n\t\t<input value=\"Silent\" @selection.silent.log('!')>\n\ntag App\n\tcounter = 0\n\t<self[ta:center]>\n\t\t<b> \"App rendered {counter++} times\"\n\t\t<Filter>\n\nimba.mount <App>\n"
+  },
+  "/examples/api/simple-draggable.imba": {
+    "body": "# [preview=xl]\nimport 'util/styles'\n# css body bg:gray1\n# ---\ntag drag-me\n\tcss d:block pos:relative p:3 m:1\n\t\tbg:white bxs:sm rd:sm cursor:default\n\t\t@touch scale:1.02\n\t\t@move scale:1.05 rotate:2deg zi:2 bxs:lg\n\n\tdef build\n\t\tx = y = 0\n\n\tdef render\n\t\t<self[x:{x} y:{y}] @touch.moved.sync(self)> 'drag me'\n\nimba.mount do <div.grid>\n\t<drag-me>\n\t<drag-me>\n\t<drag-me>"
+  },
+  "/examples/api/touch.fit-0.imba": {
+    "body": "# [preview=lg]\nimport 'util/styles'\ncss .rect w:calc(100vw - 80px)\n# ---\ntag Unfitted\n\t<self @touch=(x=e.x)> \"window.x {x}\"\ntag Fitted\n\t<self @touch.fit(self)=(x=e.x)> \"box.x {x}\"\ntag Snapped\n\t<self @touch.fit(self,2)=(x=e.x)> \"box.x {x}\"\n\nimba.mount do <>\n\t<Unfitted.rect>\n\t<Fitted.rect>\n\t<Snapped.rect>\n"
+  },
+  "/examples/api/touch.fit-1.imba": {
+    "body": "# [preview=lg]\nimport 'util/styles'\ncss .rect pos:absolute inset:4\n# ---\ntag Example\n\t# convert x,y to go from 0 in top left corner to 100 in bottom right\n\t<self @touch.fit(self,0,100)=(x=e.x,y=e.y)> \"x:{x} y:{y}\"\n# ---\nimba.mount <Example.rect>\n"
+  },
+  "/examples/api/touch.fit-2.imba": {
+    "body": "# [preview=lg]\nimport 'util/styles'\ncss .rect pos:relative size:100px\nlet str = \"Touch + drag inside boxes\"\nconst handler = do(t)\n\tstr = \"x:{t.x} y:{t.y}\"\n# ---\ntag Example\n\t# convert x,y to go from 0 in top left corner to 100 in bottom right\n\t<self[d:contents]>\n\t\t<fieldset[d:grid gaf:column ja:center g:4]>\n\t\t\t<div.rect @touch.fit(0,100)=handler> \"(0,100)\"\n\t\t\t<div.rect @touch.fit(0,50)=handler> \"(0,50)\"\n\t\t\t<div.rect @touch.fit(100,-100,2)=handler> \"(100,-100,2)\"\n\t\t\t<div.rect @touch.fit([0,-5],[1,5],0.1)=handler> \"([0,-5],[1,5],0.1)\"\n\t\t<label[ta:center]> str\n# ---\nimba.mount <Example>\n"
+  },
+  "/examples/api/touch.moved-down.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\ncss .rect pos:absolute inset:4\n\n# ---\ntag Example\n\tcss bg:gray2 @touch:gray3 @move:green3\n\t<self @touch.moved(30px,'down')=(x=e.x,y=e.y)> \"x {x} | y {y}\"\n# ---\nimba.mount do <Example.rect>\n"
+  },
+  "/examples/api/touch.moved-left.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\ncss .rect pos:absolute inset:4\n\n# ---\ntag Example\n\tcss bg:gray2 @touch:gray3 @move:green3\n\t<self @touch.moved(30px,'left')=(x=e.x,y=e.y)> \"x {x} | y {y}\"\n# ---\nimba.mount do <Example.rect>\n"
+  },
+  "/examples/api/touch.moved-right.imba": {
+    "body": "# [preview=md] [example=ImbaTouch.@moved]\nimport 'util/styles'\ncss .rect pos:absolute inset:4\n\n# ---\ntag Example\n\tcss bg:gray2 @touch:gray3 @move:green3\n\t<self @touch.moved(30px,'right')=(x=e.x,y=e.y)> \"x {x} | y {y}\"\n# ---\nimba.mount do <Example.rect>\n"
+  },
+  "/examples/api/touch.moved-up.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\ncss .rect pos:absolute inset:4\n\n# ---\ntag Example\n\tcss bg:gray2 @touch:gray3 @move:green3\n\t<self @touch.moved(30px,'up')=(x=e.x,y=e.y)> \"x {x} | y {y}\"\n# ---\nimba.mount do <Example.rect>\n"
+  },
+  "/examples/api/touch.moved-x.imba": {
+    "body": "# [preview=md] [example=ImbaTouch.@moved-x]\nimport 'util/styles'\ncss .rect pos:absolute inset:4\n# ---\ntag Example\n\tcss bg:gray2 @touch:gray3 @move:green3\n\t<self @touch.moved(30px,'x')=(x=e.x,y=e.y)> \"x {x} | y {y}\"\n# ---\nimba.mount do <Example.rect>\n"
+  },
+  "/examples/api/touch.moved-y.imba": {
+    "body": "# [preview=md] [example=ImbaTouch.@moved-x]\nimport 'util/styles'\ncss .rect pos:absolute inset:4\n# ---\ntag Example\n\tcss bg:gray2 @touch:gray3 @move:green3\n\t<self @touch.moved(30px,'y')=(x=e.x,y=e.y)> \"x {x} | y {y}\"\n# ---\nimba.mount do <Example.rect>\n"
+  },
+  "/examples/api/touch.moved.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\ncss .rect pos:absolute inset:4\n\n# ---\ntag Example\n\tcss bg:gray2 @touch:gray3 @move:green3\n\t<self @touch.moved(30px)=(x=e.x,y=e.y)> \"x {x} | y {y}\"\n# ---\nimba.mount do <Example.rect>\n"
+  },
+  "/examples/api/touch.sync-1.imba": {
+    "body": "# [preview=md] \nimport 'util/styles'\n\n# ---\nconst pos = {x:0,y:0}\nimba.mount do <>\n\t<div[w:60px x:{pos.x} y:{pos.y}].rect @touch.sync(pos)> 'drag'\n\t<div[w:60px x:{pos.y} y:{pos.x}].rect> 'flipped'\n"
+  },
+  "/examples/api/touch.sync-2.imba": {
+    "body": "# [preview=md] [title=sync( data, xname = 'x', yname = 'y' )]\nimport 'util/styles'\n\n# ---\nconst data = {a:0,b:0}\nimba.mount do <>\n\t<div[w:80px].rect @touch.sync(data,'a','b')> 'drag'\n\t<label> \"a:{data.a} b:{data.b}\"\n"
+  },
+  "/examples/7guis/circle-drawer/app.imba": {
+    "body": "import 'util/styles'\n# https://github.com/eugenkiss/7guis/wiki#circle\n# TODO: Undo/Redo\n\ntag circle-drawer\n\t\n\tcircles = []\t\n\tselection = null\n\tcontext = false\n\n\tdef handleClick e\n\t\treturn context = false if context\n\t\tcircles = circles.concat({ cx: e.offsetX, cy: e.offsetY, r: 20 })\n\t\tselection = circles[circles.length - 1]\n\t\n\tdef setSelection i, showContext = false\n\t\tcontext = showContext\n\t\tselection = circles[i]\n\t\n\tcss d:block pos:relative\n\n\tcss svg bg:gray3 w:100% h:40rem\n\t\n\tcss .context-menu \n\t\tpos:absolute w:90% t:50% l:50% px:5 py:3 bg:white bd:gray1 \n\t\tbxs:md transform: translate(-50%,-50%)\n\t\tp fs:sm- c:gray6 mb:2\n\t\tinput w:100%\n\t\t\n\tdef render\n\t\t<self>\n\n\t\t\tif context\n\t\t\t\t<div.context-menu>\n\t\t\t\t\t<p> \"Adjust diameter of circle at ({selection.cx}, {selection.cy})\"\n\t\t\t\t\t<input type=\"range\" bind=selection.r>\n\t\t\t\n\t\t\t<svg @click=handleClick>\n\t\t\t\tfor circle, i in circles\n\t\t\t\t\tconst selected = selection..cx === circle.cx && selection..cy === circle.cy\n\t\t\t\t\t<circle r=circle.r \n\t\t\t\t\t\t[cx:{circle.cx} cy:{circle.cy} fill:white]\n\t\t\t\t\t\t[fill:gray5]=selected\n\t\t\t\t\t\t@click.stop=setSelection(i)\n\t\t\t\t\t\t@contextmenu.prevent=setSelection(i, true)>\n\nimba.mount <circle-drawer>"
+  },
+  "/examples/7guis/circle-drawer/index.html": {
+    "body": "<meta charset=\"UTF-8\">\n<link href='/preflight.css' rel='stylesheet'>\n<script type='module' src='app.imba'></script>"
+  },
+  "/examples/7guis/crud/app.imba": {
+    "body": "import 'util/styles'\n# https://github.com/eugenkiss/7guis/wiki#crud\n\nlet people = [\n\t{ first: \"Hans\", last: \"Emil\" }\n\t{ first: \"Max\", last: \"Mustermann\" }\n\t{ first: \"Roman\", last: \"Tisch\" }\n]\n\ntag app-crud\n\n\tprop index = 0 @set\n\t\tfirst = selected..first || \"\"\n\t\tlast = selected..last || \"\"\n\t\tquery = \"\"\n\t\n\tprop query = \"\"\n\tprop first = people[0].first\n\tprop last = people[0].last\n\n\tget selected do people[index]\n\t\n\tget filteredPeople\n\t\tpeople.filter do(p) p.last.toLowerCase!.startsWith(query.toLowerCase!)\n\n\tdef createPerson\n\t\tpeople = people.concat({ first, last })\n\t\tindex = people.length - 1\n\t\n\tdef updatePerson\n\t\tpeople[index] = { first, last }\n\t\n\tdef deletePerson\n\t\tpeople = people.filter do(p, i) i != index\n\t\tindex = people.length ? people.length - 1 : 0\n\t\n\tcss .container d:block max-width:60rem m:6rem auto\n\tcss .button-group d:hflex cg:2 mt:2\n\tcss button px:2 py:1 bg:gray2 bd:gray3 rd:sm cursor:pointer cursor@disabled:not-allowed bg@hover:gray3\n\t\n\tdef render\n\n\t\t<self.container>\n\n\t\t\t<input[d:block mb:2] placeholder=\"Filter prefix\" bind=query>\n\t\t\t\n\t\t\t<div[d:hflex ai:flex-start cg:2]>\n\t\t\t\n\t\t\t\t<select[w:10rem] size=5 bind=index>  for person, i in filteredPeople\n\t\t\t\t\t<option value=i.toString!> \"{person.last}, {person.first}\"\n\n\t\t\t\t<div[d:inline-flex fld:column g:2]>\n\t\t\t\t\t<input placeholder=\"First name\" bind=first>\n\t\t\t\t\t<input placeholder=\"First name\" bind=last>\n\t\t\t\n\t\t\t<div.button-group>\n\t\t\t\t<button disabled=(!first || !last) @click=createPerson> \"Create\"\n\t\t\t\t<button disabled=(!first || !last) @click=updatePerson> \"Update\"\n\t\t\t\t<button disabled=!people.length @click=deletePerson> \"Delete\"\n\nimba.mount <app-crud>"
+  },
+  "/examples/7guis/crud/index.html": {
+    "body": "<meta charset=\"UTF-8\">\n<link href='/preflight.css' rel='stylesheet'>\n<script type='module' src='app.imba'></script>"
+  },
+  "/examples/7guis/timer/app.imba": {
+    "body": "import 'util/styles'\n# https://github.com/eugenkiss/7guis/wiki#timer\n\ntag app-timer\n\n\tprop duration = 5000\n\tprop step = 50\n\t\n\telapsed = 0\n\n\tcss progress\n\t\tw:8rem h:0.6rem rd:md\n\t\t&::-webkit-progress-bar bg:gray2 rd:md\n\t\t&::-webkit-progress-value bg:blue4 rd:md\n\t\n\tget elapsedTime do (elapsed / 1000).toFixed(1)\n\tget durationInSeconds do (duration/1000).toFixed(1)\n\t\n\tdef runTimer\n\t\t#interval = setInterval(&, step) do\n\t\t\telapsed = elapsed >= duration ? 0 : elapsed + step\n\t\t\timba.commit!\n\t\n\tdef stopTimer do #interval && clearInterval(#interval)\n\tdef resetTimer do elapsed = 0\n\t\n\tdef mount do runTimer!\n\tdef unmount do stopTimer!\n\n\tcss section d:hflex cg:4 ai:center mb:4\n\tcss footer d:hflex cg:2\n\t\n\tdef render\n\t\t<self>\n\n\t\t\t<section>\n\t\t\t\t<span> \"Elapsed time\"\n\t\t\t\t<progress value=(elapsed / duration)>\n\t\t\t\n\t\t\t<section> \"{elapsedTime}s\"\n\t\t\t\n\t\t\t<section>\n\t\t\t\t<span> \"Duration {durationInSeconds}s\"\n\t\t\t\t<input type=\"range\" min=\"1000\" max=\"10000\" bind=duration>\n\t\t\t\n\t\t\t<footer>\n\t\t\t\t<button @click=resetTimer!> \"Reset\"\n\nimba.mount <app-timer>"
+  },
+  "/examples/7guis/timer/index.html": {
+    "body": "<meta charset=\"UTF-8\">\n<link href='/preflight.css' rel='stylesheet'>\n<script type='module' src='app.imba'></script>"
+  },
+  "/examples/7guis/flight-booker/app.imba": {
+    "body": "import 'util/styles'\n# https://github.com/eugenkiss/7guis/wiki#flight-booker\ntag flight-booker\n\tprop isReturn = false\n\tprop start = (new Date).toISOString!.slice(0,10)\n\tprop end = start\n\n\tdef bookFlight\n\t\tlet type = isReturn ? 'return' : 'one-way'\n\t\tlet message = `You have booked a {type} flight, leaving {new Date(end).toDateString!}`\n\t\tmessage += ` and returning {new Date(end).toDateString!}` if isReturn\n\t\twindow.alert(message)\n\n\t<self[d:grid gap:3]>\n\t\t<select[w:100%] bind=isReturn>\n\t\t\t<option value=false> 'one-way flight'\n\t\t\t<option value=true>\t'return flight'\n\t\t<input bind=start type='date'>\n\t\t<input bind=end type='date' disabled=!isReturn>\n\t\t<button @click=bookFlight disabled=(isReturn && start >= end)> 'book'\n\nimba.mount <flight-booker>"
+  },
+  "/examples/7guis/flight-booker/index.html": {
+    "body": "<meta charset=\"UTF-8\">\n<link href='/preflight.css' rel='stylesheet'>\n<script type='module' src='app.imba'></script>"
+  },
+  "/examples/7guis/temperature/app.imba": {
+    "body": "import 'util/styles'\n\n# https://github.com/eugenkiss/7guis/wiki#counter\n\ntag app-temperature\n\tprop f = 32\n\n\tget c\n\t\t(5 / 9 * (f - 32)).toFixed(1)\n\n\tset c tmp\\number\n\t\tf = +(32 + (9 / 5 * tmp)).toFixed(1)\n\t\n\tcss input w:5rem\n\n\t<self>\n\t\t<input type='number' bind=c /> \" °c = \"\n\t\t<input type='number' bind=f /> \" °f\"\n\nimba.mount <app-temperature>"
+  },
+  "/examples/7guis/temperature/index.html": {
+    "body": "<meta charset=\"UTF-8\">\n<script type='module' src='app.imba'></script>"
+  },
+  "/examples/7guis/counter/app.imba": {
+    "body": "import 'util/styles'\n\n# https://github.com/eugenkiss/7guis/wiki#counter\n\ntag app-counter\n\tprop count = 0\n\n\t<self[d:hflex cg:2]>\n\t\t<input[w:10rem] type='number' bind=count>\n\t\t<button @click=count++> \"count\"\n\nimba.mount <app-counter>"
+  },
+  "/examples/7guis/counter/index.html": {
+    "body": "<meta charset=\"UTF-8\">\n<script type='module' src='app.imba'></script>"
+  },
+  "/examples/apps/todos/app.imba": {
+    "body": "import { Todo } from './todo.imba'\n\ntag App\n\tprop items = [new Todo('Hello'),new Todo('Hello again')]\n\n\tdef add title\n\t\titems.push(new Todo(title))\n\t\t$input.value = ''\n\n\tdef archive\n\t\titems = items.filter(do !$1.done)\n\n\tdef render\n\t\t<self[d:flex fld:column pos:absolute inset:0]>\n\t\t\t<form[d:flex bg:gray2 p:2 m:0] @submit.prevent=add($input.value)>\n\t\t\t\t<input$input[flex:1 p:1 bg:clear] placeholder='What to do?'>\n\t\t\t<ul[flex:1 px:1]> for item in items\n\t\t\t\t<li[bc:gray2 bbw:1 p:2 fw:500] [td:s c:gray6 fw:400]=item.done @click=item.toggle>\n\t\t\t\t\t<span> item.title\n\t\t\t<footer[bg:gray2 p:3]>\n\t\t\t\t<span> \"You have {items.length} todos\"\n\t\t\t\t<button @click=archive> \"Archive\"\n\nimba.mount <App>"
+  },
+  "/examples/apps/todos/todo.imba": {
+    "body": "export class Todo\n\tconstructor title\n\t\ttitle = title\n\t\tdone = no\n\n\tdef archive\n\t\tyes\n\n\tdef toggle\n\t\tdone = !done"
+  },
+  "/examples/apps/paint/app.imba": {
+    "body": "const dpr = window.devicePixelRatio\n\ntag app-paint\n\tprop size = 500\n\t\n\tdef draw e\n\t\tlet path = e.$path ||= new Path2D\n\t\tpath.lineTo(e.x * dpr,e.y * dpr)\n\t\t$canvas.getContext('2d').stroke(path)\n\n\tdef render\n\t\t<self[d:block overflow:hidden bg:blue1]>\n\t\t\t<canvas$canvas[size:{size}px]\n\t\t\t\twidth=size*dpr height=size*dpr @touch.fit(self)=draw>\n\nimba.mount <app-paint>\n"
+  },
+  "/examples/apps/filtered-list/app.imba": {
+    "body": "import {movies} from 'imdb'\n\ntag App\n\tprop query\n\n\tdef match movie\n\t\t!query or movie.title.toLowerCase!.indexOf(query) >= 0\n\n\tdef render\n\t\t<self[d:block p:5]>\n\t\t\t<input[p:2 d:block w:100%] bind=query placeholder=\"Search\">\n\t\t\t<ul> for movie in movies\n\t\t\t\tcontinue if !match(movie)\n\t\t\t\t<li[p:2 bbw:1 bbc:gray3]> movie.title\n\nimba.mount <App>"
+  },
+  "/examples/apps/draggable/app.imba": {
+    "body": "tag draggable-item\n\tcss w:20 p:4 m:6 pos:relative d:block\n\tcss @touch scale:1.05 rotate:2deg zi:2\n\tcss @move scale:1.05 rotate:2deg zi:2\n\n\tdef build\n\t\tx = y = 0\n\n\tdef render\n\t\t<self[x:{x} y:{y}] @touch.moved.sync(self)> 'drag me'\n\nimba.mount do <div>\n\t<draggable-item[bg:blue3]>\n\t<draggable-item[bg:teal3]>\n\t<draggable-item[bg:orange3]>"
+  },
+  "/examples/apps/draggable/index.html": {
+    "body": "<meta charset=\"UTF-8\">\n<link href='/preflight.css' rel='stylesheet'>\n<script type='module' src='app.imba'></script>"
+  },
+  "/examples/apps/clock/app.imba": {
+    "body": "tag app-clock\n\tprop utc\n\n\tcss pos:relative w:100% py:50% rd:2 bg:gray3\n\n\tcss .dial\n\t\ttransform-origin: 50% 100% rd:1\n\t\tpos:absolute b:50% l:50% x:-50%\n\t\tbg:gray8 .m:gray7 .s:red\n\t\th:30% .m:42% .s:45%\n\t\tw:5px .m:4px .s:3px\n\t\ti,b pos:absolute d:block t:100% bg:inherit l:50% x:-50%\n\t\ti h:10px ..s:20px w:75% o:0.7\n\t\tb size:10px rd:100 y:-50%\n\n\tdef mount\n\t\t$interval = setInterval(render.bind(self),1000)\n\t\n\tdef unmount\n\t\tclearInterval($interval)\n\t\n\tdef render\n\t\tlet ts = Date.now! / 60000 + utc * 60\n\t\t<self>\n\t\t\t<div.dial.h[rotate:{ts / 720}]> <i>\n\t\t\t<div.dial.m[rotate:{ts / 60}]> <i>\n\t\t\t<div.dial.s[rotate:{ts}]> <i/> <b>\n\nimba.mount do <div[d:grid gtc: 1fr 1fr p:4 gap:4]>\n\t<app-clock title='New York' utc=-5>\n\t<app-clock title='San Fran' utc=-8>\n\t<app-clock title='London' utc=0>\n\t<app-clock title='Tokyo' utc=9>"
+  },
+  "/examples/apps/clock/index.html": {
+    "body": "<meta charset=\"UTF-8\">\n<link href='/preflight.css' rel='stylesheet'>\n<script type='module' src='app.imba'></script>"
+  },
+  "/examples/apps/playground/app.imba": {
+    "body": "tag x-app\n\tcss .blue bg:blue2 @hover:blue3 color:blue8\n\tcss .teal bg:teal2 @hover:teal3 color:teal8\n\tcss .yellow bg:yellow2 @hover:yellow3 color:yellow8\n\tcss .red bg:red2 @hover:red3 color:red8 \n\tcss .item p:4 flex:1 rd:3 m:4\n\n\tdef render\n\t\t<self [d:flex flw:wrap]>\n\t\t\t<div.blue.item> \"One\"\n\t\t\t<div.red.item> \"Two\"\n\t\t\t<div.teal.item> \"Three\"\n\t\t\t<div.yellow.item> \"Four\"\n\nimba.mount <x-app>"
+  },
+  "/examples/apps/playground/data.imba": {
+    "body": "export var todos = [\n\ttitle: 'Remember milk'\n\tdone: no\n\t-\n\ttitle: 'Buy groceries'\n\tdone: no\n\t-\n\ttitle: 'Write article'\n\tdone: yes\n]\n\nexport var pages = [\n\ttitle: 'About'\n\t-\n\ttitle: 'Features'\n\t-\n\ttitle: 'Blog'\n]\n"
+  },
+  "/examples/docs/assets/1/app.imba": {
+    "body": "import './assets/normalize.css'\n\ntag App\n    # ...",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/2/server.imba": {
+    "body": "import {App} from './app'\napp.get(/.*/) do(req,res)\n    res.send String <html>\n        <head>\n            <title> \"Application\"\n            <style src='./app'>\n        <body> <App>\n",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/2/app.imba": {
+    "body": "global css\n    body bg:gray2 # ...\n\nexport tag App\n    <self>\n        <div[fw:bold]> \"Welcome\"",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/3/app.imba": {
+    "body": "tag App\n    <self> <div[ bg:url(./logo.png) ]>",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/4/app.imba": {
+    "body": "tag App\n    <self> <img src='./logo.png'>",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/5/app.imba": {
+    "body": "import logo from './logo.png'\n\ntag App\n    <self> <img src=logo>",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/6/app.imba": {
+    "body": "import logo from './logo.png'\n\nlogo.url # the unique hashed url for this image\nlogo.size # size of assets - in bytes\nlogo.hash # unique hash of the contents of the asset\nlogo.body # the actual contents of the asset - only available on server\nlogo.width # width of the imported image\nlogo.height # height of the imported image\n\ntag App\n    <self> <img src=logo width=logo.width>",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/7/app.imba": {
+    "body": "const states = {\n    open: import('./icons/alert-circle.svg')\n    closed: import('./icons/check-circle.svg')\n    archived: import('./icons/package.svg')\n}\n\n<div> for issue in issues\n    <div>\n        <img.icon src=states[issue.state]>\n        <span> issue.title",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/8/app.imba": {
+    "body": "const states = {\n    open: import('./icons/alert-circle.svg')\n    closed: import('./icons/check-circle.svg')\n    archived: import('./icons/package.svg')\n}\n\n<div> for issue in issues\n    <div>\n        <.icon[ bg:{states[issue.state]} ]>\n        <.title> issue.title",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/9/app.imba": {
+    "body": "<div>\n    # the package.svg will now be inlined in this tag\n    <svg src='./icons/package.svg'>",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/10/app.imba": {
+    "body": "<div>\n    # change color on hover\n    <svg[c:gray6 @hover:blue7] src='./icons/package.svg'>\n    # override stroke-width \n    <svg[stroke-width:4px] src='./icons/check.svg'>",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/11/server.imba": {
+    "body": "# some express server ...\napp.on(/.*/) do(req,res)\n    res.send String <html>\n        <head>\n            <title> \"Gobias Industries\"\n        <body>\n            <script type=\"module\" src=\"./client\">\n",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/11/client.imba": {
+    "body": "# some client code here",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/12/app.imba": {
+    "body": "\nconst script = import.worker './compiler'\n# script is now an asset reference to the bundled compiler entrypoint.\nscript.url # reference to the unique/hashed url of this script\nscript.body # node only - actual contents of the bundle\n\nconst worker = new Worker(script.url)",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/13/app.imba": {
+    "body": "const sw = import.worker './sw/service'\nsw.url # /__assets__/sw/worker.JNA7FI8P.js",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/14/app.imba": {
+    "body": "app.get('/sw.js') do(req,res)\n    const asset = import.worker('./sw/service')\n    res.send asset.body",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/15/presets.imba": {
+    "body": "export const presets = \n    node:\n        platform: 'node'\n        format: 'cjs'\n        sourcemap: true\n        target: ['node12.19.0']\n        external: ['dependencies','!imba']\n\n    web:\n        platform: 'browser'\n        target: ['es2020','chrome58','firefox57','safari11','edge16']\n        sourcemap: true\n        format: 'esm'\n\n    iife:\n        extends: 'web'\n        format: 'iife'\n\n    client:\n        extends: 'web'\n        splitting: true\n\n    worker:\n        format: 'esm'\n        platform: 'worker'\n        splitting: false\n",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/16/app.imba": {
+    "body": "import icons from './feather/*.svg'\n\n# contains all matching assets:\nicons.check\nicons.circle\n...",
+    "lang": "imba"
+  },
+  "/examples/docs/assets/17/app.imba": {
+    "body": "<div> for issue in issues\n    <div>\n        <svg src=\"./icons/{issue.state}.svg\">\n        <div.title> issue.title",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/1/index.imba": {
+    "body": "const number = 42\nconst string = \"the answer is 42\"\nconst alsoString = \"the answer is {number}\" # No need for backtick strings or ${}.\nconst regex = /answer is (\\d+)/\nconst array = [1, 2, 3]\nconst bool = true\nconst alsoBool = yes # You can write booleans as yes and no.\nconst object = { name: 'Imba', type: 'language' }\nconst alsoObject = name: 'Imba', type: 'language' # You can skip the curly braces.\nconst indentedObject = # For indented objects, you can skip the commas.\n    name: 'Imba'\n    version: 2.0\n    repository: 'https://github.com/imba/imba'\n    inspiration: ['ruby', 'python', 'react', 'coffeescript']",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/2/index.imba": {
+    "body": "const duration = 150ms\nconst longerDuration = 42s\nconst element = <div.large.header> \"Welcome\"\nconst alsoElement = <div.{object.name}> \"{object.name} class\" # Easy interpolation, using the object above.",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/3/index.imba": {
+    "body": "def func(a, b)\n    return a * b\n\ndef alsoFunc(a, b)\n    a * b # Implicit return\n\nconst smallerFunc = do(a, b) a * b # Implicit return on one line",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/4/index.imba": {
+    "body": "const single = 'single quotes'\nconst double = \"double quotes\"\nconst interpolation = \"string has {double}\"\nconst template = `current version is {indentedObject.version}` # Interpolating using the object above.",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/5/index.imba": {
+    "body": "const multipleLines = 'one\ntwo three'\nconsole.log(multipleLines) # Logs \"onetwo three\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/6/index.imba": {
+    "body": "const lineBreaks = '''\nThis string is written\nover multiple lines\n'''\nconsole.log(lineBreaks) # Logs \"This string\\nis written over\\nmultiple lines\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/7/index.imba": {
+    "body": "const stringIndentation = '''\n    First level is ignored\n        This is indented\n    Not indented\n    '''",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/8/index.imba": {
+    "body": "const person = 'Mike'\nconst age = 28\n\ndef myTag(strings, personExp, ageExp)\n    const str0 = strings[0] # \"That \"\n    const str1 = strings[1] # \" is a \"\n    const str2 = strings[2] # \".\"\n\n    const ageStr = (ageExp > 99) ? 'centenarian' : 'youngster'\n\n    # We can even return a string built using a template literal\n    \"{str0}{personExp}{str1}{ageStr}{str2}\"\n\nconst output = myTag`That {person} is a {age}.`\n\nconsole.log(output) # Logs \"That Mike is a youngster.\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/9/index.imba": {
+    "body": "const withCommas = [\n    'one',\n    'two',\n    'three',\n    'four',\n]\n\nconst withoutCommas = [\n    'one'\n    'two'\n    'three'\n    'four'\n]\n\nconsole.log(withCommas, withoutCommas) # [ 'one', 'two', 'three', 'four' ] [ 'one', 'two', 'three', 'four' ]",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/10/index.imba": {
+    "body": "const object = { a: 'foo', b: 42, c: {} }\nconst person =\n    name: 'Bob Smith'\n    age: 32\n    gender: 'male'\n\n# Curly braces are optional as the keys and values are clear:\ndef logObject(object)\n    console.log(\"Logging:\", object)\n\nlogObject(name: 'Rincewind', profession: 'Wizzard') # Logs \"Logging: { name: 'Rincewind', profession: 'Wizzard' }\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/11/index.imba": {
+    "body": "const field = 'age'\nconst person = { name: 'Bob Smith', [field]: 32, gender: 'male' }\nconsole.log(person.age) # Logs \"32\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/12/index.imba": {
+    "body": "const person = { name: 'Bob Smith', age: 32, gender: 'male' }\nperson.name\nperson.age = 33\n\nconsole.log(person.age) # Logs \"33\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/13/index.imba": {
+    "body": "const person = { name: 'Bob Smith', age: 32, gender: 'male' }\n\nperson['name']\nperson['age'] = 33\n\nconsole.log(person.age) # Logs \"33\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/14/index.imba": {
+    "body": "const a = 'foo'\nconst b = 42\nconst c = {}\nconst object = { a, b, c }\n\nconsole.log(object) # Logs \"{ a: 'foo', b: 42, c: {} }\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/15/index.imba": {
+    "body": "def withArgument param\n    console.log param\n\nwithArgument(42) # Logs \"42\"\n\ndef withDefaultValue name = 'Imba'\n    console.log name\n\nwithDefaultValue() # Logs \"Imba\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/16/index.imba": {
+    "body": "def method name, { title, desc = 'no description' }\n    console.log name, title, desc\n\nconsole.log method('Rincewind', title: 'Wizzard') # Logs \"Rincewind Wizzard no description\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/17/index.imba": {
+    "body": "class Todo\n    # Properties are member variables:\n    prop title\n    prop completed = no\n    prop due = null\n\n    # Methods are instance level functions:\n    def complete\n        completed = yes\n\n    # Getters:\n    get overdue\n        due and due < new Date\n\n\n    # Static methods are class level functions:\n    static def createTodos titles\n        titles.map do(title)\n            new Todo(title: title)\n\n\nconst todo = new Todo title: 'Read introduction'\n\nconsole.log todo # Logs \"Todo { title: 'Read introduction', completed: false, due: null }\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/18/index.imba": {
+    "body": "const myTodo = new Todo title: 'Learn Imba'\nmyTodo.complete()\n\nconsole.log myTodo # Logs \"Todo { title: 'Learn Imba', completed: true, due: null }\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/19/index.imba": {
+    "body": "const newTodos = Todo.createTodos ['Learn Imba', 'Eat breakfast']\n\nconsole.log newTodos\n# Logs:\n# [\n#   Todo { title: 'Learn Imba', completed: false, due: null },\n#   Todo { title: 'Eat breakfast', completed: false, due: null }\n# ]",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/20/index.imba": {
+    "body": "for todo, index of newTodos\n    console.log \"{todo.title} at position {index}\"\n    # Logs:\n    # \"Learn Imba at position 0\"\n    # \"Eat breakfast at position 1\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/21/index.imba": {
+    "body": "const object =\n    hello: 'world'\n    learning: 'imba'\n    answer: 42\n\nfor own key, value of object\n    console.log \"{key}: {value}\"\n    # Logs:\n    # hello: world\n    # learning: imba\n    # answer: 42",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/22/index.imba": {
+    "body": "const literal = /ab+c/i\nconst regex = new RegExp('ab+c', 'i')\nconst multiline = ///\n    ab+ # allows comments and whitespace\n    c\n///",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/23/index.imba": {
+    "body": "const items = []\nfor i in [1 ... 5]\n    items.push(i)\n\nconsole.log items # Logs [1, 2, 3, 4]",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/24/index.imba": {
+    "body": "const list = <ul title=\"reminders\">\n    <li> \"Remember milk\"\n    <li> \"Greet visitor\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/25/index.imba": {
+    "body": "const state = 'open'\nconst condition = no\n\n<div.panel.large> \"With classes\"\n<div.state-{state}> \"Dynamic class name\"\n<div.hidden=condition> \"Conditionally hidden\"\n<div.panel.state-{state} .hidden=condition> \"Dynamic and conditional\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/26/index.imba": {
+    "body": "const handler = do(event)\n    console.log \"Panel clicked!\"\n\n<div.panel @click.prevent=handler> \"Panel\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/27/index.imba": {
+    "body": "# Importing a todos array from another Imba file called \"data.imba\":\nimport { todos } from './data'\n\n# Declaring a web component without specifying props:\ntag todo-item\n    <self .completed=data.completed>\n        <input bind=data.completed type='checkbox'>\n        <span.title> data.title\n        <button @click.stop.emit('remove')> 'x'\n\n# Using the todo-item inside another web component:\ntag todo-app\n    <self> for todo in todos\n        <todo-item data=todo>\n\n# Rendering the todo-app with the imported todos array:\nimba.mount <todo-app data=todos>",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/28/index.imba": {
+    "body": "<div[display:flex flex-direction:row color:blue]>\n<div[opacity:0.5 @hover:1]> # Conditional styles based on pseudostates.\n<div[padding:3rem @lg:5rem @print:0]> # Conditional styles based on media queries.",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/29/index.imba": {
+    "body": "<div[c:blue]>",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/30/index.imba": {
+    "body": "<div[display:flex flex-direction:row color:blue]> # Regular keywords\n<div[d:flex fld:row c:blue]> # Shorthand keywords",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/31/index.imba": {
+    "body": "# Set `global` at the top level to style all <p> elements.\nglobal css p fs:15px\n\n# Set at the top level to style every <p> element in the file.\ncss p color:blue7 fw:500 \n\ntag todo-app\n    # Set at the todo-app level to style everything within the tag.\n    css .item color:gray8 bg@hover:gray1\n    css .item.done color:green8 text-decoration:line-through\n\n    <self> for todo in todos\n        <div.item .done=todo.completed> <span> todo.title",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/32/index.imba": {
+    "body": "tag todo-app\n    <self>\n        if user.loggedIn # Styling can be conditional.\n            css .header bg:green2\n\n        <div.header>\n            css .tab # Scoped to the <div.header> only.\n                l:flex mx:2 py:1 fw:500\n                c:teal6 @hover:teal7 @active:teal9\n            <a.tab href='https://github.com/imba/imba'> \"GitHub\"\n            <a.tab href='https://discord.gg/mkcbkRw'> \"Chat\"\n\n        <div.footer>\n            # Not in the <div.header> scope, so the .tab styling is not applied.\n            <a.tab href='https://github.com/imba/imba.io'> \"Documentation\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/33/index.imba": {
+    "body": "# This is a comment\nconst name = \"imba\" # my favorite language",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/34/index.imba": {
+    "body": "###\nThis color is my favorite\nI need several lines to really\nemphasize this fact.\n###\nconst color = \"blue\"",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/35/index.imba": {
+    "body": "const item\\string = window.title",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/36/index.imba": {
+    "body": "def multiply a\\number, b\\number\n    a * b\n\n# Rewriting the todo-tag with annotated props makes it easier to understand and use.\ntag todo-item\n    prop completed = no\n    prop title\\string\n\n    <self .completed=completed>\n        <input bind=completed type='checkbox'>\n        <span.title> title\n        <button @click.stop.emit('remove')> 'x'",
+    "lang": "imba"
+  },
+  "/examples/docs/basic-syntax/37/index.imba": {
+    "body": "# Only the type is imported:\nimport type { User } from './models'\n\ntag user-card\n    # The User is annotated here, so we only need the type:\n    prop user\\User\n\n    <self>\n        # We know what kind of object a User is now:\n        <p> user.name\n        <img src=user.profile alt=\"Profile picture\"> ",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/1/index.imba": {
+    "body": "class Rect\n    # custom constructor\n    constructor w,h\n        width = w\n        height = h\n\n    # class method\n    def expand hor,ver = hor\n        width += hor\n        height += ver\n\n    # getter\n    get area\n        width * height\n\n    # setter\n    set area size\n        width = height = Math.sqrt size",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/2/index.imba": {
+    "body": "let fido = new Dog",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/3/index.imba": {
+    "body": "class Rect\n    constructor w,h\n        width = w\n        height = h\n    # ...",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/4/index.imba": {
+    "body": "class Rect\n    def expand hor,ver = hor\n        width += hor\n        height += ver",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/5/index.imba": {
+    "body": "class Rect\n    width = 10\n    height = 10",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/6/index.imba": {
+    "body": "class Rect\n    width = 10\n    height = 10\n    area = width * height\n\nconsole.log (new Rect).area # 100",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/7/index.imba": {
+    "body": "class Rect\n    get area\n        width * height",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/8/index.imba": {
+    "body": "class Rect\n    set sides value\n        width = value\n        height = value",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/9/index.imba": {
+    "body": "class Component\n    # The symbol #ref is only set the first time Component.ref is accessed\n    get ref\n        #ref ||= utils.uuid! ",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/10/index.imba": {
+    "body": "let method = 'items'\nlet getter = 'title'\n\nclass Todo\n    get [getter]\n        data[getter]\n\n    def [method]\n        console.log \"called method {method}\"\n\nlet todo = new Todo\ntodo.items! # called method items\ntodo.title",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/11/index.imba": {
+    "body": "class Todo\n    set title value\n        # do something here\n        #title = value\n\n    get title\n        #title",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/12/index.imba": {
+    "body": "class Component\n    get ref\n        #ref ||= utils.uuid!",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/13/index.imba": {
+    "body": "const map = new WeakMap\n\nextend class Object\n    get #ref\n        map.set(self,utils.uuid!) unless map.has(self)\n        return map.get(self)",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/14/index.imba": {
+    "body": "extend class Object\n    get #ref\n        ##ref ||= utils.uuid!",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/15/index.imba": {
+    "body": "const object = {}\nobject.#ref # '... uuid ...'\n# Even built in objects now have this property\nwindow.#ref",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/16/index.imba": {
+    "body": "extend class Node\n    def #append node\n        # setup some listeners etc\n        appendChild(node)",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/17/index.imba": {
+    "body": "const map = new WeakMap\n\nextend class Object\n    get #ref\n        map.set(self,Symbol()) unless map.has(self)\n        return map.get(self)\n\n# Now you will be able to access `.#ref` on _all_ objects,\n# and get a unique symbol back every time.\nconst object = {}\nobject.#ref # Symbol()",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/18/index.imba": {
+    "body": "class Rect\n    static size = 50\n    size = 100\nconsole.log Rect.size # 50\nconsole.log (new Rect).size # 100",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/19/index.imba": {
+    "body": "class Rect\n    static def build side\n        let item = new self\n        item.width = item.height = side\n        return item\n\nRect.build(10)",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/20/index.imba": {
+    "body": "class Animal\n    constructor name\n        name = name\n\n    def move distance = 0\n        console.log \"Animal moved {distance} meters.\"\n\n    def speak\n        console.log \"{name} makes a noise.\"\n\nclass Dog < Animal\n    def speak\n        console.log \"{name} barks.\"\n\nlet dog = new Dog 'Mitzie'\ndog.move 10 # Animal moved 10 meters.\ndog.speak! # Mitzie barks.",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/21/index.imba": {
+    "body": "class Animal\n    constructor name\n        name = name\n\nclass Dog < Animal\n    constructor name, breed\n        super # calls Animal constructor with the same arguments (name, breed).\n        # super(name) # This would be an explit way to achieve the same effect\n        breed = breed\n\nlet dog = new Dog 'Mitzie', 'Pug'\nconsole.log dog.name\ndog.speak! # Mitzie barks.",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/22/index.imba": {
+    "body": "class Designer < Person\n    def greet greeting\n        console.log 'will greet'\n        super # same as super.greet(...arguments)",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/23/index.imba": {
+    "body": "class Designer < Person\n    def greet greeting\n        super \"Hey {greeting}\" # same as super.greet",
+    "lang": "imba"
+  },
+  "/examples/docs/classes/24/index.imba": {
+    "body": "class Animal\n    constructor name\n        name = name\n\n    def move distance = 0\n        console.log \"Animal moved {distance} meters.\"\n\n    def speak\n        console.log \"{name} makes a noise.\"\n\nclass Dog < Animal\n    def speak\n        console.log \"{name} barks.\"\n\n    def move distance = 0\n        super.speak! # call the Animal#speak method directly!\n        console.log \"{name} ran {distance} meters.\"\n\nlet dog = new Dog 'Mitzie'\ndog.move 10 # Mitzie makes a noise. Mitzie ran 10 meters.",
+    "lang": "imba"
+  },
+  "/examples/docs/components/1/app.imba": {
+    "body": "# [preview=md]\nimport {Draggable} from './draggable'\n\ntag App\n    <self[inset:0 d:hflex ja:center]>\n        <Draggable[hue:blue]> 'One'\n        <Draggable[hue:sky]> 'Two'\n        <Draggable[hue:indigo]> 'Three'\n        <Draggable[hue:purple]> 'Four'\n\nimba.mount <App>\n",
+    "lang": "imba"
+  },
+  "/examples/docs/components/1/draggable.imba": {
+    "body": "export tag Draggable\n    css pos:relative d:flex ja:center\n        rd:md bg:hue3 c:gray9/70 \n        w:24 h:10 m:1 px:4 fs:sm\n        cursor:grab\n\n    prop x = 0\n    prop y = 0\n\n    <self[x:{x}px y:{y}px] @touch.moved.sync(self)> <slot> \"box\"",
+    "lang": "imba"
+  },
+  "/examples/docs/components/2/index.imba": {
+    "body": "tag app-component\n    # add methods, properties, ...",
+    "lang": "imba"
+  },
+  "/examples/docs/components/3/index.imba": {
+    "body": "export tag AppComponent\n    # methods, properties, ...",
+    "lang": "imba"
+  },
+  "/examples/docs/components/4/index.imba": {
+    "body": "import 'util/styles'\n\n# ---\ntag app-panel\n    <self.group>\n        <button @click=($name.value += 'Hi')> \"Write\"\n        <input$name type='text'>\n# ---\n\nimba.mount <app-panel>",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/1/index.imba": {
+    "body": "for num in [1,2,3]\n    num * 2",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/2/index.imba": {
+    "body": "for num,index in [1,2,3]\n    console.log num * index\n# => [1,4,9]",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/3/index.imba": {
+    "body": "# go through every other element\nfor num in [1,2,3] by 2\n    num * 2",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/4/index.imba": {
+    "body": "# go through every other element\nfor num,i in [1,2,3] when i % 2\n    console.log num",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/5/index.imba": {
+    "body": "# from 0 up to (including) 3\nfor num in [0 .. 3]\n    num\n# => [0,1,2,3]",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/6/index.imba": {
+    "body": "# from 0 up to (excluding) 3\nfor num in [0 ... 3]\n    num\n# => [0,1,2]",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/7/index.imba": {
+    "body": "class LabelString\n    def constructor label\n        label = label\n\n    def toIterable\n        console.log 'called toIterable'\n        label.split(',')\n\nlet labels = new LabelString 'idea,proposal,duplicate'\n\nfor label in labels\n    console.log label.toUpperCase!",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/8/index.imba": {
+    "body": "let iterable = [10,20,30]\nfor value of iterable\n    console.log value",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/9/index.imba": {
+    "body": "let iterable = 'imba'\nfor value of iterable\n    console.log value",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/10/index.imba": {
+    "body": "let iterable = new Uint8Array([0x00,0xff])\nfor value of iterable\n    console.log value",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/11/index.imba": {
+    "body": "let iterable = new Map([['a',1],['b',2],['c',3]])\nfor entry of iterable\n    console.log entry\n\n# destructuring\nfor [key,value] of iterable\n    console.log value",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/12/index.imba": {
+    "body": "let iterable = new Set([1, 1, 2, 2, 3, 3])\nfor value of iterable\n    console.log value",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/13/index.imba": {
+    "body": "def fn\n    for arg of arguments\n        arg * 2\nconsole.log fn(1,2,3) # => [2,4,6]",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/14/index.imba": {
+    "body": "let iterable = new Map([['a',1],['b',2],['c',3]])\nfor entry,idx of iterable\n    console.log entry,idx\nfor [key,value],idx of iterable\n    console.log key,value,idx",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/15/index.javascript": {
+    "body": "let obj = { a: 1, b: 2, c: 3 };\nfor (const [key, value] of Object.entries(obj)) {\n    console.log(`${key}: ${value}`);\n}",
+    "lang": "javascript"
+  },
+  "/examples/docs/control-flow/16/index.imba": {
+    "body": "let obj = {a: 1, b: 2, c: 3}\nfor own key,value of obj\n    console.log \"{key} is {value}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/17/index.imba": {
+    "body": "let ary = [1,2,3]\nwhile let item = ary.pop!\n    console.log item",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/18/index.imba": {
+    "body": "let ary = [1,2,3]\nuntil ary.length == 0\n    console.log ary.pop!",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/19/index.imba": {
+    "body": "let res = for num in [1,2,3,4,5]\n    continue if num == 3\n    num * 2\nconsole.log res # [2,4,8,10]",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/20/index.imba": {
+    "body": "let res = for num in [1,2,3,4,5]\n    break if num == 3\n    num * 2\n# => [2,4]",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/21/index.imba": {
+    "body": "let res = for num in [1,2,3,4,5]\n    continue -1 if num == 3\n    num * 2\n# continue with an argument acts like early return within Array#map\n# => [2,4,-1,8,10]",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/22/index.imba": {
+    "body": "let res = for num in [1,2,3,4,5]\n    break if num == 3\n    num * 2\n# => [2,4]",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/23/index.imba": {
+    "body": "let res = for num in [1,2,3,4,5]\n    break -1 if num == 3\n    num * 2",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/24/index.imba": {
+    "body": "# indented\nif condition\n    console.log 'yes!'",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/25/index.imba": {
+    "body": "unless condition\n    console.log 'condition was not truthy'",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/26/index.imba": {
+    "body": "if condition\n    console.log 'yes!'\nelse\n    console.log 'no!'",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/27/index.imba": {
+    "body": "if expr > 10\n    console.log 'over 10'\nelif expr > 5\n    console.log 'over 5'\nelif expr\n    console.log 'not falsy'",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/28/index.imba": {
+    "body": "console.log 'yes' if condition\nconsole.log 'no' unless condition",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/29/index.imba": {
+    "body": "condition ? console.log('yes!') : console.log('no!')",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/30/index.imba": {
+    "body": "switch value\n    when 10\n        yes\n    when 5\n        no\n    else\n        throw 'nope'",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/31/await.imba": {
+    "body": "def load url\n    let res = await window.fetch url\n    return res.json\n\nlet data = await load \"/some/url\"",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/32/index.imba": {
+    "body": "def load url\n    window.fetch(url).then do(res)\n        return res.json\n\nload(\"/some/url\").then do(data)\n    # do something with data",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/33/app.imba": {
+    "body": "def run\n    # adding a try without a catch block will silently swallow an error\n    let test = try Math.rEndom!\n    return test # returns undefined as Math.rEndom! is not a function\nconsole.log run! # undefined",
+    "lang": "imba"
+  },
+  "/examples/docs/control-flow/34/index.imba": {
+    "body": "def parse input\n    try\n        return JSON.parse input\n    catch e\n        console.error \"Invalid json passed to parser: \", e.message\n\nparse('<invalid json, error here we come!>')",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/1/index.imba": {
+    "body": "# ~preview=md\nimport 'util/styles'\n\n# ---\nlet message = \"Hello\"\n\nimba.mount do <section>\n    <input type='text' bind=message>\n    <label> \"Message is {message}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/2/index.imba": {
+    "body": "# ~preview=md\nimport 'util/styles'\n\n# ---\nlet tweet = ''\n\nimba.mount do <section>\n    <textarea bind=tweet placeholder=\"What's on your mind...\">\n    <label> \"Written {tweet.length} characters\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/3/index.imba": {
+    "body": "# ~preview=md\nimport 'util/styles'\n\n# ---\nlet point = {r:0, x:0}\n\nimba.mount do <section[gap:2]>\n    <input type='range' bind=point.x>\n    <input type='range' bind=point.r>\n    <label[js:center w:40px rotate:{point.r}deg x:{point.x}]> \"{point.x},{point.r}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/4/index.imba": {
+    "body": "# ~preview\nimport 'util/styles'\n\n# ---\nlet a=1\nlet b=2\n\nimba.mount do <div.group>\n    <input type='number' min=0 max=100 bind=a/> \" + \"\n    <input type='number' min=0 max=100 bind=b/> \" = \"\n    <samp> \"{a + b}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/5/index.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\n# ---\nlet bool=no\n\nimba.mount do <section>\n    <label>\n        <input[mr:1] type='checkbox' bind=bool />\n        <span> \"Enabled: {bool}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/6/index.imba": {
+    "body": "# [preview=md]\nimport {genres} from 'imdb'\nimport 'util/styles'\n\ncss div d:flex flf:row wrap pi:center jc:flex-start\n\n# ---\nlet options = ['React','Vue','Imba','Svelte','Ember']\nlet interests = []\n\nimba.mount do <section>\n    <div> for option in options\n        <label[mr:2]>\n            <input type='checkbox' bind=interests value=option/>\n            <span[pl:1]> option\n    <label> \"Interested in {interests.join(', ')}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/7/index.imba": {
+    "body": "# [preview=md]\nimport {genres} from 'imdb'\nimport 'util/styles'\n\ncss div d:flex flf:row wrap pi:center jc:flex-start\n\n# ---\nlet options = ['React','Vue','Imba','Svelte','Ember']\nlet interest = 'Imba'\n\nimba.mount do <section>\n    <div> for option in options\n        <label[mr:2]>\n            <input type='radio' bind=interest value=option/>\n            <span[pl:1]> option\n    <label> \"Interested in {interest}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/8/index.imba": {
+    "body": "# [preview=md]\nimport {genres} from 'imdb'\nimport 'util/styles'\n\ncss div d:flex flf:row wrap pi:center jc:flex-start\n\n# ---\nlet options = ['React','Vue','Imba','Svelte','Ember']\nlet focus = 'Imba'\n\nimba.mount do <section>\n    <select bind=focus> for item in options\n        <option value=item> item\n    <label> \"Focused on {focus}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/9/index.imba": {
+    "body": "# [preview=lg]\nimport {genres} from 'imdb'\nimport 'util/styles'\n\ncss div d:flex flf:row wrap pi:center jc:flex-start\n\n# ---\nimport {projects} from 'util/data'\n\nlet choices = []\n\nimba.mount do <section>\n    <select multiple bind=choices> for item in projects\n        <option value=item> item.name\n    <label> \"Interested in\"\n    <div> for item in choices\n        <div[color:{item.color}]> item.name",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/10/index.imba": {
+    "body": "# [preview=md]\nimport {genres} from 'imdb'\nimport 'util/styles'\n\n# ---\nlet state = 'one'\ncss button.checked bxs:inset bg:gray2 o:0.6\n\nimba.mount do <section>\n    <div.group>\n        <button bind=state value='one'> \"one\"\n        <button bind=state value='two'> \"two\"\n    <label> \"State is {state}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/11/index.imba": {
+    "body": "# [preview=lg]\nimport 'util/styles'\n\n# ---\nlet options = {\n    width: 12\n    height: 12\n    title: 'Something'\n}\n\ntag Field\n    get type\n        typeof data == 'number' ? 'range' : 'text'\n\n    <self[d:flex js:stretch]>\n        <label[w:80px]> <slot> 'Field'\n        <input[flex:1] type=type bind=data>\n\nimba.mount do <section>\n    <Field bind=options.title> 'Title'\n    <Field bind=options.width> 'Width'\n    <Field bind=options.height> 'Height'\n    <label> \"{options.title} is {options.width}x{options.height}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/data-binding/12/index.imba": {
+    "body": "# [preview=xl]\nimport {genres} from 'imdb'\nimport 'util/styles'\n\ncss div d:flex flf:row wrap pi:center jc:flex-start\n\n# ---\nlet people = [{name: 'Jane Doe', interests: ['Imba']}]\nlet person = people[0]\n\ndef addPerson\n    person = {name: 'John',interests:[]}\n    people.push(person)\n\ndef addInterest e\n    person.interests.push e.target.value\n    e.target.value = ''\n\nimba.mount do <main>\n    <header>\n        <select bind=person>  for item in people\n            <option value=item> item.name\n        <button[ml:2] @click=addPerson> 'Add'\n    <article>\n        <label[ta:left]> \"Editing {person.name}:\"\n        <input bind=person.name placeholder=\"Name...\">\n        <input placeholder=\"Add interest...\" @keyup.enter.prevent=addInterest>\n        <div.tags> for item in person.interests\n            <button[mr:1].chip bind=person.interests value=item> item",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/1/index.imba": {
+    "body": "let el = <div.large title=\"Item\">\nconsole.log el # HTMLDivElement\nconsole.log el.outerHTML # <div class='large' title='Item'>",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/2/index.imba": {
+    "body": "let number = 1\nlet bool = false\n\ntag App\n    <self .ready=bool>\n        <h1.header> \"Number is {number}\"\n",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/3/index.js": {
+    "body": "/*\nThis is handcrafted pseudocode – the real imba output is\nmore optimised and compact, making it a little harder to\nunderstand.\n*/\nlet number = 1;\nlet bool = false;\n\nclass App extends HTMLImbaElement {\n    render(){\n        var $ = (this.cache || this.cache = {});\n\n        // toggle the class name on the App element - based on\n        // value of bool, and cache the valua for later checks\n        if($.val != bool) this.classList.toggle('ready',$.val = bool)\n\n        if(!$.rendered){\n            $.h1 = this.appendChild('h1') // add h1 and cache element\n            $.h1.className = \"header\"; // only on first render\n            $.h1.insertText(\"Number is \"); // only on first render\n            $.t1 = h1.insertText(number); // add text and cache textnode\n        } else {\n            // has been rendered previously, not much to do!\n            $.t1.textContent = number; // update the text of the textnode\n        }        \n        $.rendered = true; // mark App as rendered\n        // nothing is returned from render\n    }\n};",
+    "lang": "js"
+  },
+  "/examples/docs/declarative-rendering/4/main.imba": {
+    "body": "global css body d:flex ja:center\n# ---\nlet number = 1\ntag App\n    <self>\n        <h1.header> \"Number is {number}\"\n\ndocument.body.appendChild <App>",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/5/main.imba": {
+    "body": "# [footer] [preview=md]\nglobal css body d:flex ja:center\n# ---\nlet number = 1\ntag App\n    <self>\n        <h1.header> \"Number is {number}\"\n\nlet el = <App>\ndocument.body.appendChild el\n\nexport def update\n    number = Math.random!\n    el.render! # call render manually\n# ---\nexport const actionzs = {\n    \"number += 1\": do\n        number += 1\n        console.log \"incremented number to {number}\"\n    \"el.render()\": do el.render!\n}",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/6/main.imba": {
+    "body": "# [footer] [preview=lg]\nglobal css body d:flex ja:center\n# ---\ntag Item\n    css d:block px:1 m:1 bg:blue2 fs:sm rd:md\n    <self> \"Changes on every render: {Math.random!}\"\n\ntag App\n    <self>\n        <Item>\n        <Item>\n\ndocument.body.appendChild let el = <App>\n# ---\nexport const actions = {\n    \"el.render\": do el.render!\n}",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/7/index.imba": {
+    "body": "# [preview=xl]\nimport 'util/styles'\n\ncss div pos:absolute d:block inset:0 p:4\ncss mark pos:absolute\ncss li d:inline-block px:1 m:1 rd:2 fs:xs bg:gray1 @hover:blue2\n# ---\nlet x = 20\nlet y = 20\nlet title = \"Hey\"\n# mount our elements via imba.mount\nimba.mount do\n    <main @mousemove=(x=e.x,y=e.y)>\n        <input bind=title>\n        <label> \"Mouse is at {x} {y}\"\n        <mark[x:{x} y:{y} rotate:{x / 360}]> \"Item\"\n        <ul> for nr in [0 ... y]\n            <li> nr % 12 and nr or title",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/8/index.imba": {
+    "body": "websocket.addEventListener('message',imba.commit)",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/9/index.imba": {
+    "body": "def load\n    let res = await window.fetch(\"/items\")\n    state.items = await res.json!\n    imba.commit!",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/10/index.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\n# ---\ntag Clock\n    css d:block p:2 bd:1px solid gray4 m:2 ta:center\n    def mount   do #interval = setInterval(render.bind(self),1000)\n    def unmount do clearInterval(#interval)\n    def render  do <self> <span> (new Date).toLocaleString!\n\nimba.mount do\n    <div @click.log('clicked')>\n        <span> \"Rendered on click {Math.random!}\"\n        <Clock>",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/11/index.imba": {
+    "body": "# [preview=md]\nimport 'util/styles'\n# ---\ntag Clock\n    css d:block p:2 bd:1px solid gray4 m:2 ta:center\n    <self> <span> (new Date).toLocaleString!\n\nimba.mount do\n    <div @click.log('clicked')>\n        <span> \"Rendered on click {Math.random!}\"\n        <Clock autorender=1s>",
+    "lang": "imba"
+  },
+  "/examples/docs/declarative-rendering/12/index.imba": {
+    "body": "# [preview=xl]\nimport 'util/styles'\nglobal css body d:block\n# ---\ntag app-clock\n    prop utc\n\n    def render\n        let ts = Date.now! / 60000 + utc * 60\n        <self.clock>\n            <div.dial.h[rotate:{ts / 720}]> <i>\n            <div.dial.m[rotate:{ts / 60}]> <i>\n            <div.dial.s[rotate:{ts}]> <i/> <b>\n\nimba.mount do\n    <div.clocks>\n        <app-clock autorender=1s title='New York' utc=-5>\n        <app-clock autorender=500ms title='San Fran' utc=-8>\n        <app-clock autorender=10fps title='London' utc=0>\n        <app-clock autorender=60fps title='Tokyo' utc=9>",
+    "lang": "imba"
+  },
+  "/examples/docs/event-handling/1/index.imba": {
+    "body": "let counter = 0\n<button @click=(counter++)> \"Increment to {counter + 1}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/event-handling/2/index.imba": {
+    "body": "<div @click=console.log('hey')> 'Will log hey'",
+    "lang": "imba"
+  },
+  "/examples/docs/event-handling/3/index.imba": {
+    "body": "<div @click=console.log> 'Will log the event'",
+    "lang": "imba"
+  },
+  "/examples/docs/event-handling/4/index.imba": {
+    "body": "let x = 0\n<button @click=console.log(e.type,e.x,e.y)> \"Click\"\n<button @mousemove=(x = e.x)> \"Mouse at {x}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/event-handling/5/index.imba": {
+    "body": "import {todos} from './data.imba'\n\nconst handler = console.log.bind(console)\n\n# ---\n<ul> for item,i in todos\n    <li @click=handler(e.type,item,i)> item.title",
+    "lang": "imba"
+  },
+  "/examples/docs/event-handling/6/index.imba": {
+    "body": "# Call preventDefault on submit event before handling\n<form @submit.prevent=handler>\n# Handle only if condition is true\n<button @click.if(condition)=handler>\n# Handle scroll events once every 500ms at most\n<section @scroll.throttle(500ms)=handler>",
+    "lang": "imba"
+  },
+  "/examples/docs/event-handling/7/index.imba": {
+    "body": "<div @click.ctrl.stop=handler>",
+    "lang": "imba"
+  },
+  "/examples/docs/events/1/index.imba": {
+    "body": "<div @click.stop.cooldown=console.log('hey')> 'Click me'",
+    "lang": "imba"
+  },
+  "/examples/docs/functions/1/index.imba": {
+    "body": "# defining a function\nconst square = do(num) num * num\n\n# inside an object\nconst util =\n    upcase: do(str) str.toUpperCase!\n    downcase: do(str) str.toLowerCase!",
+    "lang": "imba"
+  },
+  "/examples/docs/functions/2/index.imba": {
+    "body": "const multiply = do(a, b = 1)\n    a * b",
+    "lang": "imba"
+  },
+  "/examples/docs/functions/3/index.imba": {
+    "body": "def add num, ...rest\n    for item in rest\n        num += item\n    return num\n\nadd 1,2,3,4,5",
+    "lang": "imba"
+  },
+  "/examples/docs/functions/4/index.imba": {
+    "body": "def draw {size = 'big', coords = {x:0, y:0}, radius = 25}\n    console.log size,coords,radius\n\ndraw coords:{x: 18, y:30}, radius:30",
+    "lang": "imba"
+  },
+  "/examples/docs/functions/5/index.imba": {
+    "body": "# the following expressions are equivalent\nconsole.log('hello')\nconsole.log 'hello'",
+    "lang": "imba"
+  },
+  "/examples/docs/functions/6/index.imba": {
+    "body": "# the following expressions are equivalent\nMath.random()\nMath.random!",
+    "lang": "imba"
+  },
+  "/examples/docs/functions/7/index.imba": {
+    "body": "[1,2,3].map do(item)\n    item * 2 # [2,4,6]",
+    "lang": "imba"
+  },
+  "/examples/docs/functions/8/index.imba": {
+    "body": "setTimeout((do\n    console.log 'waited!'\n    [1,2,3].reduce((do(sum,value)\n        sum + value\n    ),0)\n),1500) # looks pretty messy",
+    "lang": "imba"
+  },
+  "/examples/docs/functions/9/index.imba": {
+    "body": "setTimeout(&,1500) do\n    console.log 'waited!'\n    [1,2,3].reduce(&,0) do(sum, value)\n        sum + value",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/1/index.imba": {
+    "body": "# readonly constant\nconst one = 123\n\n# single declaration\nlet a = 123\n\n# array destructuring\nlet [e,f,...rest] = [1,2,3,4,5]\n\n# object destructuring\nlet {g,h,data:i} = {g:1,h:2,data:3}\n\n# in conditionals\nif let user = array.find(do $1 isa Person)\n    yes",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/2/index.imba": {
+    "body": "# global scope\nlet x = 1\nif true\n    # block scope\n    let y = 2\ny # not a variable in scope",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/3/index.javascript": {
+    "body": "setup(){\n    var self = this;\n    [1,2,3].map(function(){\n        self.doSomething();\n    })\n}",
+    "lang": "javascript"
+  },
+  "/examples/docs/grammar/4/index.imba": {
+    "body": "class Item\n    def setup\n        # selfish scope\n        [1,2,3].map do |val|\n            # selfless scope\n            self # the Item\n            this # the array",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/5/index.imba": {
+    "body": "const scale = 1\nclass Rectangle\n    def check forced\n        forced # found variable named arg - no implicit self\n        scale # found in scope! - no implicit self\n        width # no variable - equivalent to self.width\n        normalize! # not found - method call on self\n",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/6/index.imba": {
+    "body": "let changes = 0\nclass Line\n    def expand\n        changes += 1 # changes += 1\n        width += 10 # self.width += 10",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/7/index.imba": {
+    "body": "def method\n    data # not in scope - same as self.data\n    let data = {a:1,b:2}\n    data # in scope",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/8/index.imba": {
+    "body": "tag sized-list\n    prop items = []\n    prop size = 10\n\n    get empty? do !items.length",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/9/index.imba": {
+    "body": "# $(n) is a shorter way to reference known arguments\n['a','b','c','d'].map do $1.toUpperCase!\n['a','b','c','d'].map do(item) item.toUpperCase!",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/10/index.imba": {
+    "body": "const obj = {name: 'Jane', #clearance: 'high'}\nobj.name\nobj.#clearance",
+    "lang": "imba"
+  },
+  "/examples/docs/grammar/11/index.imba": {
+    "body": "a.import\na['import']\na = { import: 'test' }",
+    "lang": "imba"
+  },
+  "/examples/docs/identifiers/1/index.imba": {
+    "body": "let my-dashed-var = yes\nlet object = {dashed-key: 1, other-key: 2}\n\nclass Item\n    prop full-name\\string\n\n    def rename new-name\n        full-name = new-name",
+    "lang": "imba"
+  },
+  "/examples/docs/identifiers/2/index.imba": {
+    "body": "let number = 100\nlet wrong = number-items.length # wrong!\nlet right = number - items.length # right!",
+    "lang": "imba"
+  },
+  "/examples/docs/identifiers/3/index.imba": {
+    "body": "tag sized-list\n    prop items = []\n    prop size = 10\n\n    get empty?\n        !items.length",
+    "lang": "imba"
+  },
+  "/examples/docs/identifiers/4/index.imba": {
+    "body": "const user = {name: 'Jane', #clearance: 'high'}\nuser.name # => Jane\nuser.#clearance # => high\nJSON.stringify(user) # => {\"name\": \"Jane\"}",
+    "lang": "imba"
+  },
+  "/examples/docs/identifiers/5/index.imba": {
+    "body": "const user = {name: 'Jane', #clearance: 'high'}\nuser.#clearance # => high\nuser[Symbol.for('#clearance')] # => high",
+    "lang": "imba"
+  },
+  "/examples/docs/identifiers/6/index.imba": {
+    "body": "# $(n) is a shorter way to reference known arguments\n['a','b','c','d'].map do $1.toUpperCase!\n['a','b','c','d'].map do(item) item.toUpperCase!",
+    "lang": "imba"
+  },
+  "/examples/docs/identifiers/7/index.imba": {
+    "body": "a.import\na['import']\na = { import: 'test' }",
+    "lang": "imba"
+  },
+  "/examples/docs/intro/1/index.sh": {
+    "body": "npx imba create my-app",
+    "lang": "sh"
+  },
+  "/examples/docs/intro/2/index.sh": {
+    "body": "npx imba create my-app\ncd my-app\nnpm install\nnpm start",
+    "lang": "sh"
+  },
+  "/examples/docs/intro/3/index.sh": {
+    "body": "npm build",
+    "lang": "sh"
+  },
+  "/examples/docs/literals/1/index.imba": {
+    "body": "let single = 'single quotes'\nlet double = \"double quotes\"\nlet interpolation = \"string has {double}\"\nlet template = `current version is {imba.version}`",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/2/index.imba": {
+    "body": "let string = 'one\ntwo three'\n# => 'onetwo three'",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/3/index.imba": {
+    "body": "let string = '''\nThis string is written\nover multiple lines\n'''\n# => 'This string\\nis written over\\nmultiple lines'",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/4/index.imba": {
+    "body": "let string = '''\n    First level is ignored\n        This is indented\n    Not indented\n    '''",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/5/index.imba": {
+    "body": "`string text`\n# multiple lines\n`string text line 1\n string text line 2`\n# interpolated expression\n`string text {expression} string text`\n# tagged template\nmethod`string text {expression} string text`",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/6/index.imba": {
+    "body": "let length = 100px\nlet progress = 87%\nlet dynamic = (window.innerWidth)px",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/7/index.imba": {
+    "body": "10s # 10000\n250ms # 250\n5s - 150ms # 4850\n60fps # 16.66666",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/8/index.imba": {
+    "body": "let integer = 42\nlet float = 42.10\nlet hex = 0x00\nlet binary = 0b0010110",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/9/index.imba": {
+    "body": "let budget = 120_000_000\nlet spent = 123_150_077.59\nlet hex = 0xA0_B0_C0\nlet binary = 0b0010_1100",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/10/index.imba": {
+    "body": "const biggestNum     = Number.MAX_VALUE\nconst smallestNum    = Number.MIN_VALUE\nconst infiniteNum    = Number.POSITIVE_INFINITY\nconst negInfiniteNum = Number.NEGATIVE_INFINITY\nconst notANum        = Number.NaN",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/11/index.imba": {
+    "body": "10s # 10000\n250ms # 250\n5s - 150ms # 4850\n60fps # 16.66666",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/12/index.imba": {
+    "body": "[1, 2, 3, 4]",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/13/index.imba": {
+    "body": "const array = [\n    'one'\n    'two'\n    'three'\n    'four'\n]",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/14/index.imba": {
+    "body": "let object = {a: 'foo', b: 42, c: {}}\nconsole.log(object.a) # => 'foo'",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/15/index.imba": {
+    "body": "let field = 'age'\nlet person = {name: 'Bob Smith', [field]: 32, gender: 'male'}\nconsole.log(person.age) # => 32",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/16/index.imba": {
+    "body": "let person =\n    name: 'Bob Smith'\n    age: 32\n    gender: 'male'\nconsole.log(person.name) # => 'Bob Smith'",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/17/index.imba": {
+    "body": "let person = {name: 'Bob Smith', age: 32, gender: 'male'}\n# ---\nperson.name\nperson.age = 33",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/18/index.imba": {
+    "body": "let person = {name: 'Bob Smith', age: 32, gender: 'male'}\n# ---\nperson['name']\nperson['age'] = 33",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/19/index.imba": {
+    "body": "let a = 'foo'\nlet b = 42\nlet c = {}\nlet object = {a,b,c}\nconsole.log(object) # => {a: 'foo', b: 42 c: {}}",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/20/index.imba": {
+    "body": "let bool1 = true\nlet bool2 = yes # alias for true\nlet bool3 = false\nlet bool4 = no # alias for false",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/21/index.imba": {
+    "body": "let value = null",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/22/index.imba": {
+    "body": "0 == '0'  # true\n0 === '0' # false",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/23/index.imba": {
+    "body": "let regex = /ab+c/i",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/24/index.imba": {
+    "body": "let regex = new RegExp('ab+c', 'i')",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/25/index.imba": {
+    "body": "let regex = ///\n    ab+ # allows comments and whitespace\n    c\n///",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/26/index.imba": {
+    "body": "result = \"\"\nfor i in [1...5]\n    result = \"{result}, \"\n\nresult # => 1, 2, 3, 4",
+    "lang": "imba"
+  },
+  "/examples/docs/literals/27/index.imba": {
+    "body": "let myElement = <div.foo title=\"Greetings\"> \"Hello World\"",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/1/index.imba": {
+    "body": "import defaultExport from \"module-name\"\nimport * as name from \"module-name\"\nimport { export1 } from \"module-name\"\nimport { export1 as alias1 } from \"module-name\"\nimport { export1 , export2 } from \"module-name\"\nimport { foo , bar } from \"module-name\"\nimport { export1 , export2 as alias2 , [...] } from \"module-name\"\nimport defaultExport, { export1 [ , [...] ] } from \"module-name\"\nimport defaultExport, * as name from \"module-name\"\nimport \"module-name\"",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/2/index.imba": {
+    "body": "import DefaultExport from './source'",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/3/index.imba": {
+    "body": "import {capitalize,camelize} from './util'",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/4/main.imba": {
+    "body": "import {capitalize as upcase,camelize} from './util'\n",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/4/util.imba": {
+    "body": "export def capitalize\n    return 123\n\nexport def camelize\n    return 123",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/5/main.imba": {
+    "body": "import * as utils from './util'\nconsole.log utils.ping!, utils.pong!\n",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/5/util.imba": {
+    "body": "export def ping\n    return 123\n\nexport def pong\n    return 123",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/6/app.imba": {
+    "body": "import {myExport} from './util'\nconsole.log myExport!\n",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/6/util.imba": {
+    "body": "export def myExport\n    return 123",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/7/app.imba": {
+    "body": "import './controls'\n\nimba.mount do <div[pos:absolute inset:0 d:flex a:center j:center]>\n    <my-component>\n    <app-avatar>\n",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/7/controls.imba": {
+    "body": "# no need to export this - it is globally available\n# as long as the file is imported somewhere in your project\ntag my-component\n    <self[d:inline-block p:2]> \"Custom component\"\n\ntag app-avatar\n    <self[d:inline-block]> \"Avatar\"",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/8/app.imba": {
+    "body": "import {MyElement} from './element'\n\nimba.mount do <div> <MyElement>\n",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/8/element.imba": {
+    "body": "export tag MyElement\n    <self[d:inline-block p:2]> \"Custom element here\"",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/9/app.imba": {
+    "body": "import './styles'\n\nimba.mount do <div>\n    <p> \"Globally styled\"\n",
+    "lang": "imba"
+  },
+  "/examples/docs/modules/9/styles.imba": {
+    "body": "global css\n    p color:blue5",
+    "lang": "imba"
+  },
+  "/examples/docs/mounting/1/index.imba": {
+    "body": "# [preview=lg]\nimport 'util/styles'\n\n# ---\nlet array = [\"First\",\"Second\"]\n\nlet view = <main>\n    <button @click=array.push('More')> 'Add'\n    <ul.list> for item in array\n        <li> item\n\n# view is a real native DOM element\ndocument.body.appendChild view",
+    "lang": "imba"
+  },
+  "/examples/docs/mounting/2/index.imba": {
+    "body": "import 'util/styles'\n\n# ---\nlet array = [\"First\",\"Second\"]\n\nimba.mount do\n    <main>\n        <button @click=array.push('More')> 'Add'\n        <ul.list> for item in array\n            <li> item",
+    "lang": "imba"
+  },
+  "/examples/docs/mounting/3/index.imba": {
+    "body": "# [preview=lg]\nimport 'util/styles'\n\ncss div pos:absolute d:block inset:0 p:4\ncss mark pos:absolute\ncss li d:inline-block px:1 m:1 rd:2 fs:xs bg:gray1 @hover:blue2\n\n# ---\nlet x = 20\nlet y = 20\nlet title = \"Hey\"\n\nimba.mount do\n    <main @mousemove=(x=e.x,y=e.y)>\n        <input bind=title>\n        <label> \"Mouse is at {x} {y}\"\n        <mark[x:{x} y:{y} rotate:{x / 360}]> \"Item\"\n        <ul> for nr in [0 ... y]\n            <li> nr % 12 and nr or title",
+    "lang": "imba"
+  },
+  "/examples/docs/mounting/4/index.imba": {
+    "body": "socket.addEventListener('message',imba.commit)",
+    "lang": "imba"
+  },
+  "/examples/docs/mounting/5/index.imba": {
+    "body": "def load\n    let res = await window.fetch(\"/items\")\n    state.items = await res.json!\n    imba.commit!",
+    "lang": "imba"
+  },
+  "/examples/docs/observables/1/index.imba": {
+    "body": "@observable\nclass AppState\n\n",
+    "lang": "imba"
+  },
+  "/examples/docs/observables/2/index.imba": {
+    "body": "# [preview=md]\nimport {genres,movies} from 'imdb'\n\ntag App\n    @observable query = ''\n    hits = movies\n    # this is run when any observed property\n    # referenced in this method is changed\n    @autorun def refresh\n        console.log \"autorunning\"\n        let all = movies\n        if query\n            let regex = new RegExp(query.split(\"\").join(\".*?\"),\"i\")\n            all = all.filter do regex.test($1.title)\n        self.hits = all\n\n    <self>\n        <input bind=query>\n        <div>\n            <h2> \"Results:\"\n            <ul> for item in hits\n                <li> item.title\n\nimba.mount <App>",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/1/index.imba": {
+    "body": "1 + 2 # 3",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/2/index.imba": {
+    "body": "3 - 1 # 2",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/3/index.imba": {
+    "body": "6 / 3 # 2",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/4/index.imba": {
+    "body": "3 * 2 # 6",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/5/index.imba": {
+    "body": "5 % 2 # 1",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/6/index.imba": {
+    "body": "2 ** 3 # 8",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/7/index.imba": {
+    "body": "-i # Unary negation",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/8/index.imba": {
+    "body": "+i # Unary plus",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/9/index.imba": {
+    "body": "null && 10 # null\n0 && 10 # 0\n1 && 10 # 10\n'' && 'str' # ''",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/10/index.imba": {
+    "body": "null and 10 # null\n1 and 10 # 10",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/11/index.imba": {
+    "body": "null || 10 # 10\n0 || 10 # 10\n1 || 10 # 1",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/12/index.imba": {
+    "body": "null or 10 # 10\n0 or 10 # 10\n1 or 10 # 1",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/13/index.imba": {
+    "body": "null ?? 10 # 10\n0 ?? 10 # 0\n'' ?? 'str' # ''",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/14/index.imba": {
+    "body": "let a = true\n!a # false\n!10 # false\n!0 # true",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/15/index.imba": {
+    "body": "x == y # Equality",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/16/index.imba": {
+    "body": "x != y # Inequality",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/17/index.imba": {
+    "body": "x === y # Strict equality",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/18/index.imba": {
+    "body": "x is y # Also strict equality",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/19/index.imba": {
+    "body": "x !== y # Strict inequality",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/20/index.imba": {
+    "body": "x isnt y # Also strict inequality",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/21/index.imba": {
+    "body": "x > y # Greater than",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/22/index.imba": {
+    "body": "x >= y # Greater than or equal",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/23/index.imba": {
+    "body": "x < y # Less than",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/24/index.imba": {
+    "body": "x <= y # Less than or equal",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/25/index.imba": {
+    "body": "honda isa Car #",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/26/index.imba": {
+    "body": "princess !isa Car",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/27/index.imba": {
+    "body": "typeof item",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/28/index.imba": {
+    "body": "a = b",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/29/index.imba": {
+    "body": "a ||= b # If falsy assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/30/index.imba": {
+    "body": "a &&= b # If truthy assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/31/index.imba": {
+    "body": "a ??= b # If null assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/32/index.imba": {
+    "body": "a += b # Addition assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/33/index.imba": {
+    "body": "a -= b # Decrement assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/34/index.imba": {
+    "body": "a *= b # Multiplication assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/35/index.imba": {
+    "body": "a /= b # Division assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/36/index.imba": {
+    "body": "a %= b # Remainder assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/37/index.imba": {
+    "body": "a **= b # Exponential assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/38/index.imba": {
+    "body": "a++ # Increment assignment, returns original value",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/39/index.imba": {
+    "body": "a-- # Decrement assignment, returns original value",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/40/index.imba": {
+    "body": "++a # Increment assignment, returns incremented value",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/41/index.imba": {
+    "body": "--a # Decrement assignment, returns decremented value",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/42/index.imba": {
+    "body": "let object = {}\nlet input = 200\n# ---\nif object.value =? input\n    yes",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/43/index.imba": {
+    "body": "let object = {}\nlet input = 200\n# ---\nif object.value != input\n    object.value = input\n    yes",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/44/index.imba": {
+    "body": "a & b # Bitwise AND",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/45/index.imba": {
+    "body": "a !& b # Bitwise NOT AND",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/46/index.imba": {
+    "body": "a | b # Bitwise OR",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/47/index.imba": {
+    "body": "a ^ b # Bitwise XOR",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/48/index.imba": {
+    "body": "~ a # Bitwise NOT",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/49/index.imba": {
+    "body": "a << b # Left shift",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/50/index.imba": {
+    "body": "a >> b # Sign-propagating right shift",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/51/index.imba": {
+    "body": "a >>> b # Zero-fill right shift",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/52/index.imba": {
+    "body": "a <<= 1 # Left shift assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/53/index.imba": {
+    "body": "a >>= 1 # Right shift assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/54/index.imba": {
+    "body": "a >>>= 1 # Unsigned right shift assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/55/index.imba": {
+    "body": "a &= 1 # Bitwise AND assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/56/index.imba": {
+    "body": "a |= 1 # Bitwise OR assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/57/index.imba": {
+    "body": "a ~= 1 # Bitwise NOT assignment (unassignment)",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/58/index.imba": {
+    "body": "a ^= 1 # Bitwise XOR assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/59/index.imba": {
+    "body": "const STATES = {LOADED: 2}\nlet data = {state: 0}\n\n# ---\nif data.state |=? STATES.LOADED\n    yes",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/60/index.imba": {
+    "body": "const STATES = {LOADED: 2}\nlet data = {state: 0}\n\n# ---\nif (data.state & STATES.LOADED) == 0\n    data.state |= STATES.LOADED\n    # do something here...",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/61/index.imba": {
+    "body": "const STATES = {LOADED: 2}\nlet data = {state: 0}\n\n# ---\nif data.state ~=? STATES.LOADED\n    # went from loaded to not loaded",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/62/index.imba": {
+    "body": "const STATES = {LOADED: 2}\nlet data = {state: 0}\n\n# ---\nif (data.state & STATES.LOADED) == 0\n    data.state |= STATES.LOADED\n    # do something here...",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/63/index.imba": {
+    "body": "a ^=? 1 # Bitwise XOR assignment",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/64/index.imba": {
+    "body": "let object = {one: {value: 1}}\nconsole.log object..two..value\n# undefined\nconsole.log object.two.value\n# TypeError: Cannot read property 'value' of undefined",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/65/index.imba": {
+    "body": "let object = {one: 1, two: 2}\ndelete object.one",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/66/index.imba": {
+    "body": "class Game\n  prop turn\n    prop tiles\n    prop moves\n    prop winner\n\n    def constructor\n        moves = []\n        tiles = new Array(9)\n        turn = 0",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/67/index.imba": {
+    "body": "switch status\n    when \"completed\"\n        console.log \"This project has been completed\"\n    when \"archived\"\n        console.log \"This project has been archived\"\n    else\n        console.log \"This project is active\"",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/68/index.imba": {
+    "body": "for num in [1,2,3]\n    num * 2",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/69/index.imba": {
+    "body": "for item in items\n    <li> item.name",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/70/index.imba": {
+    "body": "for item, i in items\n    <li> \"{i+1}: {item.name}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/71/index.imba": {
+    "body": "class Item\n    prop price = 100\n    prop taxRate = 20\n\n    get totalPrice\n        price * (1 + taxRate / 100)\n\n    def render\n        <self>\n            <input bind=price>\n            <input bind=taxRate>\n            <p> \"Total: {totalPrice}\" # 120\n",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/72/index.imba": {
+    "body": "class Item\n    set name value\n        console.log \"The name has been set to\", value",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/73/index.imba": {
+    "body": "def multiply a, b\n  a * b\n\n# default values\ndef method name = 'imba'\n  console.log param\n\n# destructuring parameters\ndef method name, {title, desc = 'no description'}\n  console.log name,title,desc",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/74/index.imba": {
+    "body": "prop name\n\n# With default value\nprop name = \"John Smith\"\n\n# With VS Code type annotations\nprop name\\string = \"Guest user\"",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/75/index.imba": {
+    "body": "<form attr:id=\"product-form\">",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/76/index.imba": {
+    "body": "# Define a new global tag component\ntag page-header\n  ...",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/77/index.imba": {
+    "body": "# Define a new local tag component\ntag Header\n  ...",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/78/index.imba": {
+    "body": "if condition\n    console.log 'yes!'",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/79/index.imba": {
+    "body": "if expr > 10\n    console.log 'over 10'\nelif expr > 5\n    console.log 'over 5'\nelif expr\n    console.log 'not falsy'",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/80/index.imba": {
+    "body": "if condition\n    console.log 'yes!'\nelse\n    console.log 'no!'",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/81/index.imba": {
+    "body": "def fetch\n    # adding a try without a catch block will silently swallow an erro\n    try\n      const result = await axios.get('my-api.com')",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/82/index.imba": {
+    "body": "def fetch\n  try\n    const result = await axios.get('my-api.com')\n  catch e\n    console.error \"There was an error\", e",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/83/index.imba": {
+    "body": "let res = for num in [1,2,3,4,5]\n    continue if num == 3\n    num * 2\nconsole.log res # [2,4,8,10]",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/84/index.imba": {
+    "body": "# continue with an argument acts like early return within Array#map\nlet res = for num in [1,2,3,4,5]\n    continue -1 if num == 3\n    num * 2\n# res => [2,4,-1,8,10]",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/85/index.imba": {
+    "body": "let res = for num in [1,2,3,4,5]\n    break if num == 3\n    num * 2\n# res => [2,4]",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/86/index.imba": {
+    "body": "# When supplying an argument to break\n# this value will be added to the resulting array\nlet res = for num in [1,2,3,4,5]\n    break -1 if num == 3\n    num * 2",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/87/index.imba": {
+    "body": "# In Imba the last statement is returned automatically\ndef add a, b\n  a + b",
+    "lang": "imba"
+  },
+  "/examples/docs/operators/88/index.imba": {
+    "body": "# But it can be useful for returning other values or early\ndef add a, b\n  return 0 unless a && b\n  a + b",
+    "lang": "imba"
+  },
+  "/examples/docs/routing/1/app.imba": {
+    "body": "# [preview=lg] [titlebar] [route=/home]\nimport './styles.imba'\nimport './about.imba'\n\ntag App\n    <self>\n        <nav>\n            <a route-to='/home'> \"Home\"\n            <a route-to='/about'> \"About\"\n            <a href='/more'> \"More\"\n\n        <div route='/home'> \"Welcome\"\n        <about-page route='/about'>\n        <div route='/more'> \"More...\"\n\nimba.mount <App.app>\n",
+    "lang": "imba"
+  },
+  "/examples/docs/routing/1/about.imba": {
+    "body": "tag about-page < main\n    <self>\n        <aside>\n            <a route-to=\"team\"> \"Team\"\n            <a route-to=\"contact\"> \"Contact\"\n        <section>\n            <div route=''> \"Stuff about us. Click the links to the right\"\n            <div route='team'> \"Our team\"\n            <div route='contact'> \"Contact us at\"\n",
+    "lang": "imba"
+  },
+  "/examples/docs/routing/1/styles.imba": {
+    "body": "import 'util/styles'\n# ---\nglobal css @root\n    # links using route-to gets an .active flag when the\n    # route is matching\n    a.active td:none c:gray8\n    aside fl:0 0 120px d:vflex j:flex-start px:2 bdr:gray3 fs:sm\n    main d:hflex ac:stretch\n    section fl:1",
+    "lang": "imba"
+  },
+  "/examples/docs/routing/2/matching.imba": {
+    "body": "tag app\n    <self>\n        <nav>\n            <a route-to=\"/\"> \"Home Page\"\n            <a route-to=\"/test\"> \"Test Page\"\n            <a route-to=\"/test/inner\"> \"Inner Page\"\n\n        <home route=\"/\"> # this will render on /, /test, and /test/inner\n        <test route=\"/test\"> # this will renderon /test and /test/inner\n        <inner route=\"/test/inner\"> # this will render on /test/inner",
+    "lang": "imba"
+  },
+  "/examples/docs/routing/3/exact-matching.imba": {
+    "body": "tag app\n    <self>\n        <nav>\n            <a route-to=\"/$\"> \"Home Page\"\n            <a route-to=\"/test$\"> \"Test Page\"\n            <a route-to=\"/test/inner$\"> \"Inner Page\"\n\n        <home route=\"/$\"> # this will only render on /\n        <test route=\"/test$\"> # this will only render on /test\n        <inner route=\"/test/inner$\"> # this will only render on /test/inner",
+    "lang": "imba"
+  },
+  "/examples/docs/routing/4/app.imba": {
+    "body": "# [preview=lg] [titlebar] [route=/genre/drama]\nimport 'util/styles'\n# ---\nimport {genres} from 'imdb'\n\ntag Genre\n    <self> \"Genre with id {route.params.id}\"\n\ntag App\n    <self>\n        # render links for all genres\n        <nav> for item in genres.top\n            <a route-to=\"/genre/{item.id}\"> item.title\n        <Genre.page route=\"/genre/:id\">\n# ---\nimba.mount <App.app>",
+    "lang": "imba"
+  },
+  "/examples/docs/routing/5/app.imba": {
+    "body": "# [preview=lg] [titlebar] [route=/genre/drama]\nimport 'util/styles'\n# ---\nimport {genres} from 'imdb'\n\ntag Genre\n    def routed params, state\n        console.log 'routed',params\n        data = state.genre ||= await genres.fetch(params.id)\n\n    <self[d:vflex o@suspended:0.4]>\n        <div> \"{data.title} has {data.movies.length} movies in top 250\"\n# ---\ntag App\n    <self>\n        <nav> for item in genres.top\n            <a route-to=\"/genre/{item.id}\"> item.title\n        <Genre.page route=\"/genre/:id\">\nimba.mount <App.app>",
+    "lang": "imba"
+  },
+  "/examples/docs/slots/1/index.imba": {
+    "body": "tag app-option\n    <self>\n        <input type=\"checkbox\">\n        <label> <slot>\n\nimba.mount do <app-option>\n    <b> \"Option name\"\n    <span> \"Description for this option\"",
+    "lang": "imba"
+  },
+  "/examples/docs/slots/2/index.imba": {
+    "body": "import 'util/styles'\ncss body d:flex\ncss app-option d:hflex a:center\ncss app-example d:vflex\n\n# ---\ntag app-option\n    <self>\n        <input type=\"checkbox\">\n        <label> <slot> \"Default label\"\n\ntag app-example\n    <self>\n        <app-option>\n        <app-option> <span> \"Custom label\"\n\nimba.mount <app-example>",
+    "lang": "imba"
+  },
+  "/examples/docs/slots/3/index.imba": {
+    "body": "# ~preview\nimport 'util/styles'\ncss body d:flex\n\ncss app-panel d:hflex\n    aside p:1 bg:gray3\n    main p:1 fs:md fl:1\n\n# ---\ntag app-panel\n    <self.panel>\n        <aside.left> <slot name=\"sidebar\"> \"Sidebar\"\n        <main> <slot> <p> \"Default Body\"\n        <aside.right> <slot name=\"Detail\"> \"Right\"\n\nimba.mount do <app-panel>\n    <div slot=\"sidebar\"> \"Stuff!\"\n    <div> \"Something in main slot\"\n    <div> \"More in main slot\"\n",
+    "lang": "imba"
+  },
+  "/examples/docs/state-management/1/index.imba": {
+    "body": "let count = 0\n\ntag Counter\n    <self>\n        <div> count\n        <button @click=(count = count + 1)> \"Add One\"",
+    "lang": "imba"
+  },
+  "/examples/docs/state-management/2/index.imba": {
+    "body": "# store state as a property on a tag\ntag Counter\n    prop count = 0\n    <self>\n        <div> count\n        <button @click=(count = count + 1)> \"Add One\"\n\ntag App\n    <self>\n        <Counter count=10>\n        <Counter count=5>",
+    "lang": "imba"
+  },
+  "/examples/docs/state-management/3/index.imba": {
+    "body": "let globalAppState = new MyAppState()\n\n# Extend 'element' with a new property for getting an app state value\nextend tag element\n    get appState\n        return globalAppState\n\n# Now any tag can use the 'appState' property\ntag Foo\n  <self> appState.someValue",
+    "lang": "imba"
+  },
+  "/examples/docs/style-modifiers/1/index.imba": {
+    "body": "css div@700 display:block # -> @media (min-width: 700px)\ncss div@!650 display:none # -> @media (max-width: 650px)\ncss div width:100% @700:80% @1300:1200px",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/1/index.imba": {
+    "body": "css .btn\n    position: relative\n    display: block\n    background: #b2f5ea\n    padding-left: 4px\n    padding-right: 4px\n\ncss .btn@hover\n    background: #81e6d9",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/2/index.imba": {
+    "body": "css .btn\n    display:block background:#b2f5ea padding-left:4px padding-right:4px\ncss .btn@hover\n    background: #81e6d9",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/3/index.imba": {
+    "body": "css .btn\n    d:block pl:4px pr:4px bg:#b2f5ea\ncss .btn@hover\n    bg:#81e6d9",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/4/index.imba": {
+    "body": "css .btn\n    d:block px:1 bg:teal2\ncss .btn@hover\n    bg:teal3",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/5/index.imba": {
+    "body": "css .btn d:block px:1 bg:teal2\ncss .btn@hover bg:teal3",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/6/index.imba": {
+    "body": "css .btn d:block px:1 bg:teal2 bg@hover:teal3",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/7/index.imba": {
+    "body": "css .card\n    display: block\n    background: gray1\n    .title color:blue6 # matches .card .title\n    h2.desc color:gray6 # matches .card h2.title\n    # to scope in on current item use &\n    &.large padding:16px # matches .card.large",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/8/index.imba": {
+    "body": "css button\n    position: relative\n    display: block\n    background: #b2f5ea\n\n# rest of file ...",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/9/index.imba": {
+    "body": "global css button\n    position: relative\n    display: block\n    background: #b2f5ea\n\n# rest of file ...",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/10/index.imba": {
+    "body": "# in selectors\ncss button@hover\n    bg:blue\n# in properties\ncss button\n    bg@hover:blue\n# after properties\ncss button\n    bg:white @hover:whitesmoke @focus:blue",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/11/index.imba": {
+    "body": "css div\n    opacity:0.9\n    opacity@hover:1",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/12/index.imba": {
+    "body": "css div opacity:0.8 @hover:0.9 @focus:1",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/13/index.imba": {
+    "body": "css li::marker c:blue4",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/14/index.imba": {
+    "body": "css button c:white bg.primary:blue\n# is the same as\ncss button c:white\n    .primary bg:blue",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/15/index.imba": {
+    "body": "css div@700 display:block # -> @media (min-width: 700px)\ncss div@!650 display:none # -> @media (max-width: 650px)\ncss div width:100% @700:80% @1300:1200px",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/16/index.imba": {
+    "body": "# ~preview=lg\n# these are global -- applies to everything in project\n# ---\ntag app-card\n    css fs:sm rd:md d:vflex bg:teal1 c:teal7\n    css .header bg:teal2/50 p:3\n    css .body p:3\n\n    <self>\n        <.header> \"Card Header\"\n        <.body> <p> \"Card Paragraph\"\n\ntag app-root\n    # local styles does not leak into app-card\n    css .header bg:green3 p:4 fw:600\n\n    <self>\n        <.header> \"App Header\"\n        <app-card>\n        <app-card>\n# ---\nimba.mount do <app-root[d:grid gap:4 p:4]>",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/17/index.imba": {
+    "body": "# ~preview=lg\nimport 'util/styles'\n# these are global -- applies to everything in project\ncss @root ta:center\n# ---\ntag base-item\n    css d:block m:2 p:3 bg:gray2\n    css h1 fs:lg fw:600 c:purple7\n    <self>\n        <h1> \"Heading\"\n        <p> <slot> \"Description\"\n\ntag pink-item < base-item\n    css bg:pink2\n    css h1 c:pink7\n\ntag custom-item < pink-item\n    <self>\n        <h1> \"Heading\"\n        <p[fw:bold]> <slot> \"Description\"\n        <div> \"Show more...\"\n\nimba.mount do <div>\n    <base-item> \"Base item\"\n    <pink-item> \"Pink item\"\n    <custom-item> \"Custom item\"",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/18/index.imba": {
+    "body": "# ~preview=lg\n# ---\ntag app-item\n    <self> <p> \"Normal\"\n\ntag app-root\n    css p fw:600\n    <self>\n        <div> <p> \"Bold\"\n        <div innerHTML='<p>Normal<p>'>\n        <div> <app-item>\n\n# ---\nimba.mount do <app-root[d:grid gap:4 p:4]>",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/19/index.imba": {
+    "body": "# ~preview=lg\n# these are global -- applies to everything in project\ntag app-item\n    <self> <p> \"Not bold\"\n# ---\ntag app-root\n    css div p fw:600\n    css div >>> p c:blue6\n\n    <self>\n        <div> <p> \"Literal\"\n        <div> <app-item>\n        <div innerHTML='<p>Generated<p>'>\n# ---\nimba.mount do <app-root[d:grid gap:4 p:4]>",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/20/index.imba": {
+    "body": "# ~preview=lg\n# these are global -- applies to everything in project\ntag app-item\n    <self> <p> \"Nested Paragraph\"\n# ---\ntag app-root\n    css div p fw:600\n    css div >> p c:blue6\n\n    <self>\n        <div> <p> \"Literal\"\n        <div> <app-item>\n        <div innerHTML='<p>Generated<p>'>\n# ---\nimba.mount do <app-root[d:grid gap:4 p:4]>",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/21/index.imba": {
+    "body": "<div[position:relative display:flex flex-direction:row padding:2rem]>",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/22/index.imba": {
+    "body": "# More padding on large screens:\n<div[pos:relative d:flex fld:row p:2 @lg:3]>\n# Darker background color on hover:\n<button[bg:gray2 @hover:gray3]> \"Click me\"\n# Set text color when input is focused:\n<input[color@focus:blue7]>",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/23/index.imba": {
+    "body": "# line-through and lighter color if item is done\n<div[p:2 color:green9] [td:s c:gray4]=item.done>",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/24/index.imba": {
+    "body": "# ~preview\ncss div p:2 m:2 overflow:hidden min-width:80px\n\n# ---\nlet ptr = {x:0, y:0}\nimba.mount do\n    <section[d:block pos:absolute inset:0] @pointermove=(ptr = e)>\n        <div[bg:indigo2 w:{20 + ptr.x / 5}%]> \"% width\"\n        <div[bg:green2 w:{ptr.x}px]> \"px width\"\n",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/25/index.imba": {
+    "body": "css div --varname:100px width:var(--varname)",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/26/index.imba": {
+    "body": "css div $varname:100px width:$varname",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/27/index.imba": {
+    "body": "# ~preview\ncss div pos:absolute p:3 t:2 l:2\ncss section d:block pos:absolute inset:0 user-select:none\n\n# ---\nlet ptr = {x:0, y:0}\nlet num = 0\nimba.mount do\n    <section @pointermove=(ptr = e) @click=(num++)>\n        <div[bg:teal2 x:{ptr.x} y:{ptr.y} rotate:{ptr.x / 360}]> \"Full\"\n        <div[bg:purple2 x:{ptr.x / 2} y:{ptr.y / 2} rotate:{num / 45}]> \"Half\"\n",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/28/custom-unit.imba": {
+    "body": "global css @root\n    1pad: 25px\n    1col: calc(100vw / 12)\n\ntag app-dialog\n    css \n        # span 12 columns by default,\n        # 6 colums at >768px viewports\n        # and 3 columns on >1280px viewports.\n        width:12col @md:6col @lg:3col\n        p: 1pad",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/29/index.imba": {
+    "body": "# to declare an anim available everywhere - use global\nglobal css @keyframes blink\n    0% c:white\n    100% c:blue\n\n# non-global animations are only available in the file\ncss @keyframes blink\n    0% c:white\n    100% c:blue",
+    "lang": "imba"
+  },
+  "/examples/docs/style-syntax/30/index.imba": {
+    "body": "# We have a global blink animation\nglobal css @keyframes blink\n    0% c:white\n    100% c:blue\n# animate all links on hover\nglobal css a\n    d:block bg:gray2 rd:md m:2 p:2\n    @hover animation: blink 2s\n\n# Override blink animation just inside #header .item\ncss #header a\n    @keyframes blink\n        from opacity:0\n        to opacity:1\n\nimba.mount do <div[pos:absolute inset:0 d:flex ja:center]>\n    <a> \"changing color\"\n    <div#header> <a> \"fading\"",
+    "lang": "imba"
+  },
+  "/examples/docs/style-units/1/index.imba": {
+    "body": "global css @root\n    1fh: 24px # declaring a unit named fh (field height)\n    1ffs: 14px # declaring a unit named ffs (field font size)",
+    "lang": "imba"
+  },
+  "/examples/docs/style-units/2/index.imba": {
+    "body": "css .field\n    height:1fh\n    font-size:1ffs",
+    "lang": "imba"
+  },
+  "/examples/docs/style-units/3/index.imba": {
+    "body": "global css @root\n    1space:14px .dense:8px\n    @lg 1space:18px .dense: 12px",
+    "lang": "imba"
+  },
+  "/examples/docs/style-units/4/index.imba": {
+    "body": "tag Dashboard\n    css self\n        # sidebar width\n        1sbw:200px @lg:260px\n\n    <self>\n        <aside[w:1sbw]> \n        <main[ml:0.5sbw pl:0.5sbw]>",
+    "lang": "imba"
+  },
+  "/examples/docs/style-units/5/index.imba": {
+    "body": "global css @root\n    1space:12px \n    hr my:0.5space",
+    "lang": "imba"
+  },
+  "/examples/docs/style-units/6/index.css": {
+    "body": ":root {\n    --u_space:12px\n}\n:root hr {\n    margin-top:calc(var(--u_space) * 0.5)\n}",
+    "lang": "css"
+  },
+  "/examples/docs/styles/1/index.imba": {
+    "body": "css .btn\n    display: block\n    background: #b2f5ea\n    padding-left: 4px\n    padding-right: 4px\n\ncss .btn@hover\n    background: #81e6d9",
+    "lang": "imba"
+  },
+  "/examples/docs/styles/2/index.imba": {
+    "body": "css .btn d:block px:1 bg:teal2 bg@hover:teal3",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/1/index.imba": {
+    "body": "let div = <div#main.note.sticky title='Welcome'> 'Hello'",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/2/index.imba": {
+    "body": "let div = document.createElement('div') # create div\ndiv.id = 'main' # set id\ndiv.classList.add('note') # add .note\ndiv.classList.add('sticky') # add .sticky\ndiv.title = 'Welcome' # set title\ndiv.textContent = 'Hello' # set textContent",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/3/index.imba": {
+    "body": "# add note and editorial classes\n<div.note.editorial> \"Hello\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/4/index.imba": {
+    "body": "<div.note.editorial .resolved=data.isResolved> \"Hello\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/5/index.imba": {
+    "body": "let marks = 'rounded important'\nlet state = 'done'\nlet color = 'blue'\n# ---\n<div.item .{marks} .{state} .bg-{color}-200> \"Hello\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/6/index.imba": {
+    "body": "<div.item .theme-{user.theme}=app.loggedIn> \"Hello\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/7/index.imba": {
+    "body": "# add example for el.flags here",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/8/index.imba": {
+    "body": "<div lang=\"en\" title=data.title tabIndex=0> \"Hello\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/9/index.imba": {
+    "body": "<div somename='hello'> # sets property on div\n<div html:someproperty='hello'> # sets html attribute on div",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/10/index.imba": {
+    "body": "tag app-panel\n    attr desc",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/11/index.imba": {
+    "body": "<app-panel desc=\"Some description\">",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/12/index.imba": {
+    "body": "<div[color:red bg:blue padding:8px]> \"Hello\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/13/index.imba": {
+    "body": "<div[color:red bg:blue] [display:none]=app.loggedIn> \"Hello\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/14/index.imba": {
+    "body": "let counter = 0\n<button @click=(counter++)> \"Increment to {counter + 1}\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/15/index.imba": {
+    "body": "<div> <ul>\n    <li> <span> 'one'\n    <li> <span> 'two'\n    <li> <span> 'three'",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/16/index.imba": {
+    "body": "<div>\n    \"This is \"\n    <b> \"very\"\n    \" important\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/17/index.imba": {
+    "body": "<div> \"This is {<b> \"very\"} important\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/18/index.imba": {
+    "body": "<label> <input type='checkbox'/> 'Dark Mode'",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/19/index.imba": {
+    "body": "<div>\n    if items\n        <h1> \"List of items:\"\n        <ul> for item in items\n            <li> <span> item\n    else\n        <span> \"No items found\"",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/20/index.imba": {
+    "body": "# ~preview=xl\nimport {movies} from 'imdb'\n\ncss .heading c:blue7 fs:xs fw:bold p:2 bc:gray3 bbw:1 pos:sticky t:0 bg:white\ncss .item mx:2 d:flex px:2 py:3 bc:gray2 bbw:1 bg.hover:gray1\ncss .title px:1 t:truncate\ncss .number rd:3 px:2 bg:blue2 mr:1 fs:xs c:blue7 d:grid pc:center\n\n# ---\nimba.mount do <div.list> for movie,i in movies\n    if i % 10 == 0\n        # Add a heading for every 10th item\n        <div.heading> \"{i + 1} to {i + 10}\"\n    <div.item>\n        <span.number> i + 1\n        <span.title> movie.title\n    # break out of the loop early\n    break if movie.title == 'The Usual Suspects'",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/21/index.imba": {
+    "body": "# ~preview\nimport 'util/styles'\n# ---\nlet data = {type: 'button', label: 'Hello'}\nimba.mount do\n    <div.group>\n        <section> \"A section\"\n        <{data.type}> data.label",
+    "lang": "imba"
+  },
+  "/examples/docs/tags/22/fragment.imba": {
+    "body": "tag app-dialog\n    def render\n        <self>\n            <header> \"Dialog header\"\n            <.body> body!\n\n    def body\n        <> # Returns all elements without any wrapping element\n            <h3> \"Body text\"\n            <p> \"With some adjecent content\"\n\n    # Because imba returns the last statement\n    # this function would only return the <p> element\n    def bad-body\n        <h3> \"Body text\"\n        <p> \"With some adjecent content\"\n",
+    "lang": "imba"
+  },
+  "/examples/docs/teleports/1/index.imba": {
+    "body": "import 'util/styles'\n\n# ---\ntag my-menu\n    css .menu-container shadow:0 0 0 1px black/10, lg rd:5px mt:5px o:0 ml:10px of:hidden tween:all 300ms ease\n        .menu-item p:5px 10px bdb:1px solid cooler2 @last:none bgc:white @hover: blue5 c:gray8 @hover:white cursor:pointer\n\n    showMenu = false\n\n    <self>\n\n        <global\n            @click.outside=(showMenu = false)\n            @keydown=(showMenu = false if e.key === 'Escape')\n        >\n\n        <div[d:flex]>\n            <button @click=(showMenu = !showMenu)> \"Toggle Menu\"\n            <div.menu-container [opacity:1]=showMenu>\n                <div.menu-item> \"Click Outside\"\n                <div.menu-item> \"Or Press Escape\"\n# ---\n\nimba.mount <my-menu>",
+    "lang": "imba"
+  },
+  "/examples/docs/teleports/2/index.imba": {
+    "body": "import 'util/styles'\n\n# ---\ntag my-menu\n\n    css .modal-window zi:10 c:white pos:absolute t:50% l:50% x:-50% y:-50% bgc:black/70 p:30px rd:10px\n\n    showModal = false\n\n    <self>\n        <button @click=(showModal = !showModal)> \"Toggle Modal\"\n        <global>\n            if showModal\n                <div.modal-window @click=(showModal = false)>\n                    <h1> \"This is appended to the body tag\"\n\n# ---\n\nimba.mount <my-menu>",
+    "lang": "imba"
+  },
+  "/examples/docs/transitions/1/index.imba": {
+    "body": "# ~preview=md\nimport 'util/styles'\n\ncss label d:hflex a:center us:none\ncss input mx:1\n\n# ---\ntag App\n    alerted = no\n    <self @click=(alerted = !alerted)>\n        if alerted\n            <div.alert> \"Important message\"\n# ---\nlet app = imba.mount <App.clickable>",
+    "lang": "imba"
+  },
+  "/examples/docs/transitions/2/index.imba": {
+    "body": "# ~preview=md\n# css div p:2 m:2 overflow:hidden min-width:80px\nimport 'util/styles'\n# ---\ntag App\n    alerted = no\n    <self @click=(alerted = !alerted)>\n        if alerted\n            <div.alert[opacity@off:0] ease> \"Important message\"\n# ---\nlet app = imba.mount <App.clickable>",
+    "lang": "imba"
+  },
+  "/examples/docs/transitions/3/index.imba": {
+    "body": "# ~preview=md\n# css div p:2 m:2 overflow:hidden min-width:80px\nimport 'util/styles'\n\n# ---\ntag App\n    alerted = no\n    <self @click=(alerted = !alerted)>\n        if alerted\n            <div.alert[y@in:100px y@out:-100px] ease> \"In from below, out above!\"\n# ---\nlet app = imba.mount <App.clickable>",
+    "lang": "imba"
+  },
+  "/examples/docs/transitions/4/index.imba": {
+    "body": "# ~preview=md\n# css div p:2 m:2 overflow:hidden min-width:80px\nimport 'util/styles'\n# ---\ntag App\n    alerted = no\n    <self @click=(alerted = !alerted)>\n        if alerted\n            <div.alert[o@off:0 y@off:100px ease:1s] ease>\n                <div[scale@off:0]> \"Important message\"\n# ---\nlet app = imba.mount <App.clickable>",
+    "lang": "imba"
+  },
+  "/examples/docs/variables/1/index.imba": {
+    "body": "# readonly constant\nconst one = 123\n\n# single declaration\nlet a = 123\n\n# array destructuring\nlet [e,f,...rest] = [1,2,3,4,5]\n\n# object destructuring\nlet {g,h,data:i} = {g:1,h:2,data:3}\n\n# in conditionals\nif let user = array.find(do $1 isa Person)\n    yes",
+    "lang": "imba"
+  },
+  "/examples/docs/variables/2/index.imba": {
+    "body": "let declared = yes\ndeclared # => yes\nundeclared # => the same as this.undeclared",
+    "lang": "imba"
+  },
+  "/examples/docs/variables/3/index.imba": {
+    "body": "const scale = 1\n\nclass Rectangle\n    def check forced\n        forced # found variable named arg - no implicit self\n        scale # resolves to variable declared in root\n        width # implicit self (no variable named width)\n        self.width # explicit self",
+    "lang": "imba"
+  },
+  "/examples/docs/variables/4/index.imba": {
+    "body": "def method\n    data # not in scope - same as self.data\n    let data = {a:1,b:2}\n    data # in scope",
+    "lang": "imba"
+  },
+  "/examples/docs/variables/5/index.imba": {
+    "body": "class Loader\n    prop window\n\n    def setup\n        window # Ooops, reference to the global window\n        self.window # Pheew, reference to Loader.window",
+    "lang": "imba"
+  },
+  "/examples/docs/variables/6/index.imba": {
+    "body": "# global scope\nlet x = 1\nif true\n    # block scope\n    let y = 2\ny # not a variable in scope",
+    "lang": "imba"
+  },
+  "/examples/docs/variables/7/index.javascript": {
+    "body": "setup(){\n    var self = this;\n    [1,2,3].map(function(){\n        self.doSomething();\n    })\n}",
+    "lang": "javascript"
+  },
+  "/examples/docs/variables/8/index.imba": {
+    "body": "class Item\n    def setup\n        # selfish scope\n        [1,2,3].map do |val|\n            # selfless scope\n            self # the Item\n            this # the array",
+    "lang": "imba"
+  },
+  "/examples/docs/start/1/index.sh": {
+    "body": "npx imba create my-app",
+    "lang": "sh"
+  },
+  "/examples/docs/start/2/index.sh": {
+    "body": "npx imba create my-app\ncd my-app\nnpm install\nnpm start",
+    "lang": "sh"
+  },
+  "/examples/docs/start/3/index.sh": {
+    "body": "npm build",
+    "lang": "sh"
+  }
+}

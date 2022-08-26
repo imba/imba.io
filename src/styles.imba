@@ -129,7 +129,9 @@ global css
 
 	.head.h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:2 bdb:1px solid hue7
 	.head.h3 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 
-	.head.h4 fs:18px/1.2 fw:500 pb:2 bwb:0px mb:2 bdb:1px solid hue7 mt:6
+	.head.h4 fs:18px/1.2 fw:500 pb:0 bwb:0px mb:2 bdb:0px solid hue7 mt:6 mb:0
+
+	
 
 	.html
 		a c:blue7 td@hover:underline
@@ -151,6 +153,8 @@ global css
 			a bg:hue1 px:1 py:0.5 rd:md fs:smaller
 
 		p my:3
+
+		p.large fs:18px
 
 		ul
 			list-style: disc outside pl:7
@@ -184,6 +188,16 @@ global css
 
 		# app-code-block + blockquote
 		# 	bdl:3px solid gray2 mx:3 p:0 pl:3 c:gray6 bg:clear
+	
+	.ultable ul
+		list-style:none pl:0
+		li > p@first fs:16px fw:600
+			.code fs:15px fw:inherit
+		p pl:4 @first:0 mb@first:-2
+
+		# as grid here
+		d:grid gtc:max-content 1fr
+		li d:contents
 	
 	.breadcrumb
 		fw:400 fs:sm d:hflex ai:center

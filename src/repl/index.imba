@@ -233,7 +233,7 @@ tag app-repl
 						&.active bg:gray9/20 c:white fw:bold
 
 				<.scroller[pt:3 l:abs scroll-y inset:0 pb:5]>
-					<div$back[d:none @lg:block px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline] @click=leave> "⇦ back to site"
+					<div$back[px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline] @click=leave> "⇦ back to site"
 					<div.items> for child in examples.folders when child.data.sorted
 						<h5[p:1 7 fs:xs c:cooler5 fw:bold tt:uppercase]> child.title
 						<div[pb:5]> for item in child.folders
@@ -245,11 +245,11 @@ tag app-repl
 					<span hotkey='left' @click=goPrev>
 					<span hotkey='right' @click=goNext>
 					<span hotkey='esc' @click=leave>
-					<div[d:flex flw:wrap cursor:default]> for file in project..children
+					<div[d:flex flw:wrap cursor:default]> for file in (project..children or [])
 						<a.tab route-to.replace="/try{file.path}" .dirty=file.dirty .errors=file.hasErrors>
 							<span.circ>
 							<span.name> file.basename
-							<span[d.imba:none].ext.{file.ext}> "." + file.ext
+							<span.ext.{file.ext}> "." + file.ext
 				
 					<div[flex:1]>
 					

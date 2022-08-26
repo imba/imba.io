@@ -93,6 +93,11 @@ let unescape = do(code)
 	code = code.replace(/\&amp;/g,"&")
 	return code
 
+let escapeCode = do(code)
+	code = code.replace(/\[/g,"&#91;")
+	code = code.replace(/\]/g,"&#93;")
+	return code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
+
 let sanitizeCode = do(code)
 	code = code.replace(/~\[/g,'')
 	code = code.replace(/\]~/g,'')
@@ -148,6 +153,9 @@ def renderer.paragraph text
 	if text.indexOf("<app-code-block") == 0
 		return text
 
+	if text.indexOf('! ') == 0
+		return String(<p.large innerHTML=text.slice(2)>)
+
 	return String(<p innerHTML=text>)
 
 def renderer.heading text, level
@@ -170,7 +178,9 @@ def renderer.heading text, level
 	if text.indexOf('discord') >= 0
 		console.log "HEADING",text,level
 		# throw "done"
-
+	# if text.indexOf("[cli]") >= 0
+	# 	console.log "FOUND HEADER",text
+	# 	throw 1
 	text = text.replace(/\s*\[([\w\-]+)(?:\=([^\]]+))?\]\s*/g) do(m,key,value)
 		let flag = key.toLowerCase!
 		meta.options[flag] = value or yes
@@ -235,7 +245,7 @@ def renderer.codespan escaped
 	self.code(code,lang, inline: yes)
 
 def renderer.code code, lang, opts = {}
-	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
+	let escaped = escapeCode(code)
 	let last = state.last
 
 	code = normalizeIndentation(code)

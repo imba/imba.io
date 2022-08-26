@@ -2,7 +2,12 @@
     "compilerOptions": {
         "checkJs": true,
         "target": "esnext",
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "codicons/*": ["src/assets/codicons/*"],
+            "icons/*": ["src/assets/icons/*"]
+        }
     },
-    "include": ["src/**/*"]
+    "include": ["index.imba","src/**/*"]
 }

@@ -67,7 +67,7 @@ def toMarkdown str, meta
 	mdstate = meta or {}
 	marked(str,{
 		renderer: mdrenderer
-		sanitize: true
+		sanitize: false
 	})
 
 
@@ -365,7 +365,7 @@ class Entry
 
 				if mdn and mdn.implements.indexOf(iname) == -1 or extras[iname]..flatten or name == 'Navigator'
 					# console.log "{name} does not implement {iname} in mdn?? {!!mdn}",item.symbol.members.size
-					for [mname,member] of item.symbol.members
+					for [mname,member] of (item.symbol.members or [])
 						let sym = Object.create(member)
 						sym.parent = #symbol
 						sym.#entry = null
@@ -413,7 +413,7 @@ class Entry
 		let added = {}
 		for set in [sym.members,sym.exports,#extras]
 
-			for [mname,member] of set
+			for [mname,member] of (set or [])
 
 				# console.log mname
 				continue if mname == 'prototype'
@@ -511,7 +511,7 @@ def run
 		Entry.for(checker.sym(ref))
 
 	let js = serialize(allEntries)
-	let dest = np.resolve(__dirname,'..','public','reference.js')
+	let dest = np.resolve(__dirname,'..','data','reference.js')
 	nfs.writeFileSync(dest,js,'utf8')
 	console.log "wrote {js.length / 1000}kb"
 

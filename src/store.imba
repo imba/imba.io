@@ -1,6 +1,11 @@
 import {highlight} from './util/highlight'
 import Locals from './util/locals'
-export const raw = global['content.json']
+
+import raw from '../data/content.json'
+export {raw}
+
+# export const raw = global['content.json']
+
 export const files = []
 export const paths = {}
 export const groups = {}
@@ -576,11 +581,47 @@ export def find query, options = {}
 	let t = Date.now!
 
 	let cfg = {
-		# useSkipReduction: do false
+		useSkipReduction2: do(str,query,remainingScore,searchRange,remainingRange,matchedRange,fullMatchedRange)
+			let len = str.length
+			let split = str.indexOf('.',remainingRange.location)
+			if str.match(/TouchList|border-top-left/)
+				console.log("use skip?",...$0,split)
+			
+			if len < 40
+				return true
+
+			
+			return false
+
 		wordSeparators: "-/\\:()<>%_.=&[]+ \t\n\r@"
 		longStringLength: 40
-		# adjustRemainingScore: do(str,query,remainingScore) return remainingScore
+		adjustRemainingScore2: do(str,query,remainingScore,skipped,searchRange,remainingRange,matchedRange)
+			# console.log($0)
+			if str.match(/TouchList|border-top-left/)
+				console.log(...$0)
+			return remainingScore * remainingRange.length
 	}
+
+	###
+	string,
+		query,
+		remainingScore,
+		skippedSpecialChar,
+		searchRange,
+		remainingSearchRange,
+		matchedRange,
+		fullMatchedRange
+		
+
+		string,
+		query,
+		remainingScore,
+		searchRange,
+		remainingSearchRange,
+		matchedRange,
+		fullMatchedRange
+	###
+	# let adjustRemainingScore = do()
 
 	unless indices.all
 		let all = []

@@ -1,17 +1,21 @@
 import Script from './lexer'
-import fetch from 'node-fetch'
+import fetch from 'node-fetch?bundle'
 
 const chokidar = require 'chokidar'
 const path = require 'path'
 const fs = require 'fs'
 const marked = require '../src/util/markdown'
-# const fetch = require 'node-fetch'
-
+# const fetch = require 'node-fetch?bundle'
 const bundle = 'content'
 const root = path.resolve(__dirname,'..','content')
-const dest = path.resolve(__dirname,'..','public')
+
+
+# const dest = path.resolve(__dirname,'..','public')
+const dest = path.resolve(__dirname,'..','data')
 const imbasrc = path.resolve(__dirname,'..','node_modules','imba','dist')
 const changelog = path.resolve(__dirname,'..','node_modules','imba','changelog.md')
+
+console.log root,dest,imbasrc,changelog
 
 console.log __dirname,__realname
 
@@ -39,12 +43,14 @@ def sort item
 
 def save
 	sort(child) for child in data.children
+
 	let json = JSON.stringify(data,null,2)
 	let js = "globalThis['{bundle}.json'] = {json}"
 	# fs.writeFileSync(path.resolve(dest,"{bundle}.json"),json)
-	fs.writeFileSync(path.resolve(dest,"{bundle}.json.js"),js)
-
+	fs.writeFileSync(path.resolve(dest,"{bundle}.js"),js)
+	fs.writeFileSync(path.resolve(dest,"{bundle}.json"),json)
 	let examples-json = JSON.stringify(examples,null,2)
+	console.log 'WRITING TO',path.resolve(dest,"examples.json")
 	fs.writeFileSync(path.resolve(dest,"examples.json"),examples-json)
 	
 

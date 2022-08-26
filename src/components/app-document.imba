@@ -168,6 +168,12 @@ tag doc-section
 		&.intersect-modifier
 			.title prefix: "@intersect."
 
+		&.cli >>>
+			# bc:gray1
+			# .title ff:mono bg:gray1 px:1 py:0.5 rd:md fw:600
+			em fw:normal font-style:normal
+			app-code-inline fs:inherit fw:inherit ff:sans d:contents
+
 		.tab mr:3 fw:500 td:none @hover:none
 			outline@focus:none
 			c:blue6 @hover:gray7 .active:gray9
@@ -393,7 +399,7 @@ tag app-document
 					for item in breadcrumbs
 						<span> <a href=item.href .self=(item == data)> item.navName or item.name
 					<app-search-field>
-				<div[d:hflex ja:center bg:yellow2 p:3 4 rd:lg c:yellow9 mt:2 fs:xs]>
+				<div[d:hflex ja:center bg:yellow2 p:3 4 rd:lg c:yellow9 mt:2 fs:xs d:none]>
 					<div[fl:1 d:vflex]>
 						<span[c:yellow9 fw:600 fs:sm]> "We are overhauling the docs, and we need your help!"
 						<span[c:yellow8]> "Do you have a few minutes to answer what you think is missing? "
@@ -476,11 +482,11 @@ tag app-document-toc
 		<.children> for item in data.sections
 			<TocItem data=item level=1>
 
-		<.wip[mt:4 w: <240px ml:2 fs:sm- c:gray6 bdl:2px solid yellow4 pl:3 py:1]>
-			<i> "March 13th, 2022"
-			<div> "We are overhauling the docs, and we need your help!"
+		<.wip>
+			css w: <200px fs:sm- bg:yellow2/80 px:4 py:3 rd:md bdl:none c:yellow9 mt:4
+			<div[fw:bold]> "We are overhauling the docs, and we need your help!"
 			<div[my:4]> "Do you have a few minutes to answer what you think is missing?"
-			<a[td:underline] href="https://form.typeform.com/to/GdMKZMBh"> "Take survey"
+			<a[td:underline fs:lg c:blue7] href="https://form.typeform.com/to/GdMKZMBh"> "Take survey"
 	
 tag embedded-app-document
 	def hydrate

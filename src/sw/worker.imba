@@ -1,17 +1,15 @@
 const imbac = require 'imba/compiler'
 global.imbac = imbac
 
-#  TODO - do the same live import for imdb and future libraryes
-const ResolveMap = {
-	'imba': import('../imba.imba?as=web,module').url
-	'imdb': '/imdb.js'
-}
+import {rewriteImports} from '../compiler'
 
 const mimeTypeMap = {
 	'html': 'text/html;charset=utf-8'
 	'css': 'text/css;charset=utf-8'
-	'js': 'application/javascript;charset=utf-8'
-	'imba': 'application/javascript;charset=utf-8'
+	'js': 'text/javascript;charset=utf-8'
+	'mjs': 'text/javascript;charset=utf-8'
+	'imba': 'text/javascript;charset=utf-8'
+	'map': 'application/json;charset=utf-8'
 	'png': 'image/png'
 	'jpg': 'image/jpg'
 	'jpeg': 'image/jpg'
@@ -20,6 +18,7 @@ const mimeTypeMap = {
 }
 
 const indexTemplate = "
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset='UTF-8'>
@@ -44,7 +43,6 @@ def compileImba file
 		# rewrite certain special things
 		body = body.replace(/# @(show|log)( .*)?\n(\t*)/g) do(m,typ,text,tabs)
 			m + "${typ} '{(text or '').trim!}', "
-		body = body.replace(/from 'imdb'/g,'from "/imdb.js"')
 		body = body.replace(/(import [^\n]*')(\w[^']*)(?=')/g) do(m,start,path)
 			# console.log 'rewrite',path,'to',"/repl/examples/{path}"
 			start + "/repl/examples/{path}"
@@ -52,10 +50,11 @@ def compileImba file
 		let result = imbac.compile(body,{
 			platform: 'web',
 			sourcePath: file.path,
-			format: 'esm',
-			resolve: ResolveMap
+			format: 'esm'
 		})
-		file.js = result.toString!
+
+		let js = rewriteImports(result.toString())
+		file.js = js
 	catch e
 		console.log 'error compiling',e
 		return
@@ -177,6 +176,16 @@ class Worker
 				return client
 		return null
 
+	def waitForBridge
+		let tries = 0
+		while tries < 5
+			let client = await getBridge!
+			return client if client
+			await new Promise do setTimeout($1,200)
+			console.log 'waiting for bridge...'
+			tries++
+		return null
+
 	def onfetch e
 		let url = new URL(e.request.url)
 		let clientId = e.resultingClientId or e.clientId or e.targetClientId
@@ -202,7 +211,7 @@ class Worker
 			return
 
 		let responder = new Promise do(resolve)
-			let handler = await getBridge!
+			let handler = await waitForBridge!
 			let t0 = Date.now!
 
 			# console.log 'sw respond',url.pathname,#scope,url.pathname != path,!!handler,nr

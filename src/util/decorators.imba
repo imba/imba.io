@@ -20,13 +20,13 @@ export def @setting target, name, desc
 				store = Locals.for(o.ns or #key,global.sessionStorage)
 			
 			if value === sym
-				value = store and store[name] ?? o.default ?? null
+				value = store..[name] ?? o.default ?? null
 
 			# console.log 'initial set to default value',o.ns,#key,value,curr
 
 			if curr === undefined and value === sym
 				# console.log 'initial set to default value',o.ns,#key
-				value = store and store[name] ?? o.default ?? null
+				value = store..[name] ?? o.default ?? null
 				if store
 					value = store[name] or value
 			if curr === undefined and value === undefined

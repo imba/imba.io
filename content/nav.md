@@ -2,11 +2,13 @@
 
 ## Overview [href=/$]
 
-## Changelog [doc=changelog] [href=/changelog]
+## Getting Started [doc=docs/start] [href=/start]
+
+## Command Line [doc=docs/cli] [href=/cli]
+
+## Resources [href=/resources] [doc=docs/resources]
 
 ## Playground [href=/try]
-
-## Contribute [href=/contribute] [doc=docs/contribute] [highlight]
 
 # Docs [doc=docs/index] [href=/docs]
 
@@ -88,6 +90,8 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 ## Reference [href=/api]
 
+## Changelog [doc=changelog] [href=/changelog]
+
 
 # Guides [href=/guides] [doc=guides/index]
 
@@ -98,3 +102,5 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 ## Using Imba Router [doc=docs/routing] [href=/guides/routing] [skip]
 
 ## Keyboard Shortcuts [doc=guides/shortcuts] [href=/guides/shortcuts]
+
+## Deploying Your App [doc=guides/deployment] [href=/guides/deployment]
