@@ -46,7 +46,7 @@
     "es-module-lexer": "^1.0.3",
     "express": "^4.17.1",
     "imba": "^2.0.0-alpha.217",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "node-fetch": "^3.2.10",
     "passport": "^0.4.1",
     "perfect-arrows": "^0.3.3",
