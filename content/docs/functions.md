@@ -93,3 +93,11 @@ setTimeout(&,1500) do
     [1,2,3].reduce(&,0) do(sum, value)
         sum + value
 ```
+
+### Positional Arguments
+
+You can refer to positional arguments from within functions with `$n` if you don't want to explicitly name them.
+
+```imba
+[1,2,3,4,5].filter do $1 > 3
+```
