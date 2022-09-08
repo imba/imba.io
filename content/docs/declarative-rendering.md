@@ -4,7 +4,7 @@ The virtual DOM was a fantastic innovation. It brought about a much more product
 
 This process is still quite slow, and to work around these inherent challenges we've resorted to complex state management frameworks that carefully track the changing data, making sure that only specific views need to re-render. Even with this in place, rendering complex lists and very dynamic views can often become sluggish. What if we could get better performance in a world where the data layer and view layer don’t really know or care about each other?
 
-Imba introduces a *revolutionary* new way of reconciling your dom which is orders of magnitutes faster than existing virtual DOM approaches. Understanding the basic concepts is invaluable to get a deep understanding of how to make things with Imba.
+Imba introduces a *revolutionary* new way of reconciling your dom which is orders of magnitudes faster than existing virtual DOM approaches. Understanding the basic concepts is invaluable to get a deep understanding of how to make things with Imba.
 
 ## How it Works
 
