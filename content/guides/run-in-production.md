@@ -20,9 +20,9 @@ If you've followed that guide, the server is ready to go with Node.js!
 
 If not, you'll need to at least install and set up the following so you can run a Node.js script on your server:
 
-- [Node.js and NPM](https://nodejs.org/)
-- Ideally, a process manager, for example [PM2](https://pm2.keymetrics.io/)
-- A server, for example [nginx](https://nginx.org/en/docs/)
+- [Node.js and NPM](https://nodejs.org/). We currenly recommend v18 for full stack Imba, or v16 for static sites. Some static site hosts don't have v18 support yet.
+- [PM2](https://pm2.keymetrics.io/). We strongly recommend using a process manager for Node, and PM2 is great.
+- [nginx](https://nginx.org/en/docs/).
 
 ## Preparing your project for production
 
