@@ -369,20 +369,22 @@ tag app-code-block < app-code
 
 			<main$snippet.p3d.snippet-body @exports=bindExports(e.detail)>
 				<div$editor.code.p3d .tabbed=(files.length >= 2)>
-					css .actions o:0
+					css .actions o:0 transition:opacity 100ms
 					css @hover .actions o:1
 					<div$tabbar .collapsed=(files.length < 2)>
 						css pos:relative zi:2 bg:#3d4253
 							c:gray6 fs:sm fw:500 rdt:inherit d:hflex j:space-between
 							.item d:block c:cooler4/90 c.on:blue3 py:0.25 px:1.5 td:none fw:600 rd:lg mx:0
+								cursor:pointer
 								tween:styles 0.1s ease-in-out
 								c@hover:blue4
 								&.on bg:#354153
 						<div[d:hflex ..collapsed:none px:1 py:1].tabs> for item in files
 							<a.tab.item .on=(file==item) @click.stop.silent=openFile(item)> item.name
 						<div[px:2 py:1 zi:2].actions>
-							<div.item @click=openInEditor> "open"
-						css	&.collapsed .actions pos:abs t:0 r:0
+							<div.item @click=openInEditor> "edit"
+								css @not(@hover) c:warm1
+						css &.collapsed .actions pos:abs t:0 r:0
 					if file
 						<app-code-file.p3d key=file.id file=file data=hl>
 				if options.windowed
