@@ -88,6 +88,8 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 ## Assets [doc=docs/assets] [href=/docs/assets]
 
+## Decorators [doc=docs/decorators] [href=/docs/decorators]
+
 ## Reference [href=/api]
 
 ## Changelog [doc=changelog] [href=/changelog]
