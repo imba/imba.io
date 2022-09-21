@@ -1,16 +1,25 @@
-Official site for Imba. Work in progress.
+# [Imba.io](https://imba.io/)
+Imba's official website and documentation.
 
-## Run
+# Contributing
+Contributing guide [below](#contributing-guide).
 
+Contributions and suggestions are very welcome,
+just ask before making any non-obvious changes.
+You can reach out to us on [Discord](https://discord.gg/mkcbkRw),
+create an issue here on Github,
+or take our [survey](https://form.typeform.com/to/GdMKZMBh).
+
+## Installation
 ```bash
-# clone the repository
-git clone https://github.com/imba/imba.io
+# fork the repository and clone your fork
+git clone https://github.com/your-fork/imba.io
 
 # enter the folder
 cd imba.io
 
 # install dependencies
-npm install
+npm i
 
 # build
 npm run build
@@ -22,38 +31,141 @@ npm run watch
 npm run dev
 ```
 
-Because the site uses service workers it requires https: with a trusted certificate.
-To test things in development you need to do it via Chrome launched with specific args:
+## Contributing Guide
 
-```bash
-open -na Google\ Chrome --args --ignore-certificate-errors --allow-insecure-localhost --unsafely-treat-insecure-origin-as-secure=https://localhost:9000
-# if this does not work - try
-# /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-insecure-localhost --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost:9000
+### Adding Documentation
+You can find the main documentation in [`/content/docs/`](/content/docs/).
+
+See our proprietary markdown syntax guide [below](#markdown-syntax).
+
+### Adding API Reference Examples
+To add your own example, add it to [`/content/examples/api/`](/content/examples/api/).
+
+The API docs are unique in that they are automatically included
+as examples for any of the language constructs they use.
+
+So, if you add an example that contains `@intersect.in`,
+you don't have to do anything special, the build scripts
+will automatically include your example on the `@intersect.in`
+API reference page, and on the pages of any other constructs
+your example uses.
+
+### Editing The Navbar
+The navbar is parsed from the markdown in [`/content/nav.md`](/content/nav.md).
+Just copy the formatting used for other documents.
+Your markdown page must start with an h1 such as `# Hello`.
+
+### Markdown Syntax
+We've added some proprietary markdown syntax,
+especially to help with code snippets.
+The code that parses snippets and related options can be found
+in [`src/components/app-code.imba`](src/components/app-code.imba)
+
+#### Options
+You can specify options by placing a comment
+on the first line of an imba snippet.
+Multiple options can be specified.
+
+````
+```imba
+# [preview=md] [windowed] [titlebar] [title=Test]
+console.log "code goes here"
 ```
+````
 
-Now visit https://localhost:9000/ in that browser.
+Available options are:
 
-## Having trouble with https?
+- App previews
 
-https is required to be able to run the examples and snippets. You can still run the rest of the site and work on documentation without this. So, if you're having trouble setting up https use the `npm start-without-https` command instead of the normal `npm start`, this will disable https while you work.
+	```
+	# [preview=md]
+	```
+	This will show a preview of the app under your snippet.
+	Available preview sizes are `sm`, `md`, `lg`, and `xl`.
 
+- Console previews
+	```
+	# [preview=console]
+	```
+	This will show a preview of any values logged by the snippet.
 
-## Looking for projects using Imba?
+- Style previews
+	```
+	# [preview=styles]
+	```
+	This will show a preview like the one at the top of the
+	[color page](https://imba.io/docs/css/values/color).
 
-The [Awesome Imba][0] list has several projects and resources listed surrounding
-Imba.  Other noteworthy projects are 
+- Windowed previews
+	```
+	# [preview=md] [windowed]
+	```
+	This will show your code in a floating window rather than
+	directly under your snippet.
 
-- [Scrimba][1] - Learning platform to code with interactive tutorials
-- [Reiknistofa fiskmarkaða][3] - The Iceland fish market auction
-- [GitSpeak][2] - Fast GitHub client
+- Hiding parts of a snippet
 
-## License
+	You can hide the beginning and end of a snippet with `# ---`:
+	````
+	```imba
+	global css body bg:blue2 # This code will be hidden
+	# ---
+	tag app
+		<self>
+			"lol"
+	# ---
+	imba.mount <app> # This code will be hidden
+	```
+	````
 
-[MIT](./LICENSE)
+	The hidden code will still affect any preview,
+	and will still be included in the code when users click `open` on a snippet.
 
-Copyright (c) 2015-present, Imba
+- Tabs & Multiple Files
 
-[0]: https://github.com/koolamusic/awesome-imba
-[1]: https://scrimba.com/
-[2]: https://gitspeak.com/
-[3]: https://rsf.is/
+	You can assign a filename to snippets by writing it after
+	the start of a snippet:
+	````
+	```imba main.imba
+	console.log "lol"
+	```
+	````
+
+	If you create two named snippets in succession,
+	it will create a snippet with tabs where the files can
+	import from and export to eachother and whatnot.
+
+	If you name a snippet `main.imba`
+	it automatically shows a medium preview window.
+
+- Snippet From Folder With `[demo]`
+
+	You can also create a folder and refer to it with:
+	```
+	[demo](/path/to/folder)
+	```
+
+	You can supply options in the URL:
+	```
+	[demo](/examples/simple-clock?&windowed=1&title=Clocks&ar=1)
+	```
+
+- Tip boxes
+	```
+	> [tip box yellow]
+	```
+	This will show a yellow tip box, useful for "experimental" warnings
+	and whatnot.
+
+- Misc
+
+	If you have questions about any of these, reach out to us.
+	```
+	[title=sync( data, xname = 'x', yname = 'y' )]
+	[example=ImbaTouch.@moved-x]
+	[titlebar]
+	[route=/home]
+	[dir]
+	[footer]
+	[url=https://example.com]
+	```
