@@ -47,7 +47,7 @@
     "esbuild": "^0.15.10",
     "express": "^4.17.1",
     "imba": "^2.0.0-alpha.223",
-    "marked": "^0.7.0",
+    "marked": "^4.1.0",
     "node-fetch": "^3.2.10",
     "passport": "^0.4.1",
     "perfect-arrows": "^0.3.3",
