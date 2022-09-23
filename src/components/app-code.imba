@@ -380,7 +380,7 @@ tag app-code-block < app-code
 								c@hover:blue4
 								&.on bg:#354153
 						<div[d:hflex ..collapsed:none px:1 py:1].tabs> for item in files
-							<a.tab.item .on=(file==item) @click.stop.silent=openFile(item)> item.name
+							<a.tab.item .on=(file==item) @click.stop.silent=openFile(item) href="#"> item.name
 						<div[px:2 py:1 zi:2].actions>
 							<div.item @click=openInEditor> "edit"
 								css @not(@hover) c:warm1

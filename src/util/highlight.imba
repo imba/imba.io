@@ -1,4 +1,5 @@
-import { ImbaDocument,Monarch2,highlight as imbaHighlight,M2 } from 'imba/program'
+import {program} from 'imba/compiler'
+const { ImbaDocument, Monarch2, highlight:imbaHighlight, M2 } = program
 import ImbaDoc,{Monarch,M} from '../../scripts/lexer'
 
 import {tokenizer as JSGrammar } from '../repl/languages/javascript'

@@ -89,7 +89,7 @@ tag rotating-shapes
 				<div css:transform="translate(-50%,-50%) rotateY({i / -9}turn) translateZ(-900px)">
 
 
-import {aliases} from 'imba/src/compiler/styler'
+import {aliases} from 'imba/compiler'
 
 tag styles-bg
 	def setup

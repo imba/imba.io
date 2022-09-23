@@ -1,5 +1,4 @@
 import { DiagnosticsAdapter } from './adapter'
-import {SemanticTokenTypes,SemanticTokenModifiers} from 'imba/program'
 
 const STOP_WHEN_IDLE_FOR = 2 * 60 * 1000 # 2min
 
@@ -48,7 +47,7 @@ export class WorkerManager
 		worker.withSyncedResources(resources).then do client
 
 export def setupMode modeId
-	let url = import('./worker?worker&url')
+	let url = "import('./worker&url')"
 	console.log 'starting worker at',url
 	let client = new WorkerManager(url, {})
 	let worker = client.getLanguageServiceWorker.bind(client)

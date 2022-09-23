@@ -1,6 +1,4 @@
-import {aliases} from 'imba/src/compiler/styler'
-import {fonts,modifiers,variants} from 'imba/src/compiler/theme'
-import * as selparser from 'imba/src/compiler/selparse'
+import {aliases, fonts, modifiers, variants, selparser} from 'imba/compiler'
 
 const selparseCache = {}
 
