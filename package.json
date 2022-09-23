@@ -21,7 +21,7 @@
   "scripts": {
     "start": "imba -w index.imba",
     "dev": "imba -wSM index.imba",
-	"prebuild": "npm run build-content && npm run build-api-docs",
+    "prebuild": "npm run build-content && npm run build-api-docs",
     "build": "vite build",
     "watch": "imba scripts/build-content.imba -- -w",
     "build-site": "imba build index.imba",
@@ -60,6 +60,7 @@
     "vitest-github-actions-reporter-temp": "^0.8.3"
   },
   "devDependencies": {
+    "rollup-plugin-visualizer": "^5.8.1",
     "typescript": "^4.4.4",
     "typescript-imba-plugin": "^1.2.8"
   }
