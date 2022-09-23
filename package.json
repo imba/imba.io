@@ -1,5 +1,6 @@
 {
   "name": "imba.io",
+  "type": "module",
   "description": "Official website for Imba",
   "keywords": [
     "imba",
@@ -45,13 +46,17 @@
     "chokidar": "^3.5.2",
     "es-module-lexer": "^1.0.3",
     "express": "^4.17.1",
-    "imba": "^2.0.0-alpha.217",
+    "imba": "^2.0.0-alpha.220",
     "marked": "^0.7.0",
     "node-fetch": "^3.2.10",
     "passport": "^0.4.1",
     "perfect-arrows": "^0.3.3",
     "quick-score": "^0.0.13",
-    "svgpath": "^2.3.0"
+    "svgpath": "^2.3.0",
+    "vite": "^3.1.3",
+    "vite-plugin-imba": "^0.7.3",
+    "vitest": "^0.23.4",
+    "vitest-github-actions-reporter-temp": "^0.8.3"
   },
   "devDependencies": {
     "typescript": "^4.4.4",
