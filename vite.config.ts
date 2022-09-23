@@ -3,6 +3,8 @@ import { defineConfig } from "vite";
 import GithubActionsReporter from "vitest-github-actions-reporter-temp";
 import path from "path";
 
+const target = ['es2020'] // needed to support bigint
+
 export default defineConfig({
   plugins: [imba()],
   resolve: {
@@ -12,8 +14,16 @@ export default defineConfig({
 	},
     extensions: [ '.imba', '.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
   },
+  optimizeDeps: {
+	esbuildOptions:{
+		target
+	}
+  },
   define: {
     "import.meta.vitest": "undefined",
+  },
+  build: {
+	target, 
   },
   test: {
     globals: true,

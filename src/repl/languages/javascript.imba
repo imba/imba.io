@@ -1,5 +1,5 @@
-import { Monarch } from 'imba/program'
-
+import {program} from 'imba/compiler'
+const {Monarch} = program
 export const language = {
 	tokenPostfix: '.js',
 

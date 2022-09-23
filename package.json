@@ -21,7 +21,8 @@
   "scripts": {
     "start": "imba -w index.imba",
     "dev": "imba -wSM index.imba",
-    "build": "npm run build-content && npm run build-api-docs && imba build index.imba",
+	"prebuild": "npm run build-content && npm run build-api-docs",
+    "build": "vite build",
     "watch": "imba scripts/build-content.imba -- -w",
     "build-site": "imba build index.imba",
     "build-content": "imba scripts/build-content.imba",

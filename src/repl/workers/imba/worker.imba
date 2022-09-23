@@ -1,4 +1,4 @@
-const imbac = require 'imba/compiler'
+import {compile} from 'imba/compiler'
 
 import {ImbaDocument} from 'imba/program'
 
@@ -42,7 +42,7 @@ class ImbaWorker
 		let out = {errors: []}
 
 		try
-			let res = imbac.compile(code,{sourcePath: uri})
+			let res = compile(code,{sourcePath: uri})
 			# console.log 'did compile',res
 			out.js = res.js
 			return Promise.resolve(out)
@@ -57,7 +57,7 @@ class ImbaWorker
 		let code = model.getValue
 		
 		if (/\S/).test(code)
-			let out = imbac.compile(code,{})
+			let out = compile(code,{})
 			return Promise.resolve(String(out))
 		else
 			return Promise.resolve({})

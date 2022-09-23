@@ -1,4 +1,5 @@
-import {SemanticTokenTypes,SemanticTokenModifiers,M} from 'imba/program'
+import {program} from 'imba/compiler'
+const {SemanticTokenTypes,SemanticTokenModifiers,M} = program 
 
 export class Adapter
 	
