@@ -1,6 +1,8 @@
 global css
 	@focus outline:none
 
+	html,body m:0 min-height:100vh
+
 	body
 		d:grid gaf:row ac:center jc:stretch ji:center gap:2 p:2
 
@@ -99,7 +101,13 @@ global css
 		cursor:pointer
 		fs:sm c:black/70
 		touch-action:none
-		d:flex jc:center ai:center rd:sm min-width:8 min-height:8
+		d:flex jc:center ai:center rd:sm min-width:8 min-height:8 ta:center
+
+	.box
+		cursor:pointer
+		fs:sm c:black/70
+		touch-action:none
+		d:flex jc:center ai:center rd:sm min-width:8 min-height:8 ta:center
 		bg:purple3/60 @hover:purple3/90
 		
 	.alert
