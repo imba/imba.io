@@ -8,3 +8,4 @@ dist/
 public/reference.js
 public/content.json.js
 public/examples.json
+data/

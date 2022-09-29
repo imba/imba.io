@@ -42,6 +42,7 @@ def sort item
 	return item
 
 def save
+	fs.mkdirSync(dest, recursive:yes)
 	sort(child) for child in data.children
 
 	let json = JSON.stringify(data,null,2)
