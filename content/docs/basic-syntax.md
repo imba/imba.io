@@ -6,7 +6,7 @@ A good way to think of Imba is, "it’s just JavaScript". Imba compiles directly
 
 ## Literals
 
-[Watch the scrim on syntax in the Imba course](https://scrimba.com/learn/imba/intro-to-imba-syntax-cpwyK7Tz)
+[Watch the interactive tutorial on syntax in the Imba course!](https://scrimba.com/learn/imba/intro-to-imba-syntax-cpwyK7Tz)
 
 Imba syntax is familiar and often the same as JavaScript. Let's look at some examples of [literals](https://developer.mozilla.org/en-US/docs/Glossary/Literal). The comments below highlight  how Imba can be both easier to read and faster to write.
 
@@ -43,7 +43,7 @@ const alsoElement = <div.{object.name}> "{object.name} class" # Easy interpolati
 
 _Note: Differences between functions and arrow functions are covered in the [functions overview](/docs/functions)._
 
-[Watch the scrim on functions in the Imba course](https://scrimba.com/learn/imba/functions-cJLGEQCB)
+[Watch the interactive tutorial on functions in the Imba course!](https://scrimba.com/learn/imba/functions-cJLGEQCB)
 
 
 Imba uses the shorter `def` instead of the `function` keyword. `do` instead of `() => {}`. These are faster to write, read, and recognize at a glance.
@@ -73,19 +73,21 @@ Imba uses `{}` for string interpolation while JavaScript uses `${}`. If you want
 Regular string literals can be written over multiple lines, but line breaks are ignored.
 
 ```imba
+# [preview=console]
 const multipleLines = 'one
 two three'
-console.log(multipleLines) # Logs "onetwo three"
+console.log multipleLines
 ```
 
 If you need a string that spans several lines and includes line breaks, use a sequence of characters surrounded by `'''` or `"""`.
 
 ```imba
+# [preview=console]
 const lineBreaks = '''
 This string is written
 over multiple lines
 '''
-console.log(lineBreaks) # Logs "This string\nis written over\nmultiple lines"
+console.log lineBreaks
 ```
 
 Multiline strings preserves indentation, but only relative to the least indented line.
@@ -101,6 +103,7 @@ const stringIndentation = '''
 Tagged templates let you parse template literals with a function in the same way [JavaScript does](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
 
 ```imba
+# [preview=console]
 const person = 'Mike'
 const age = 28
 
@@ -116,7 +119,7 @@ def myTag(strings, personExp, ageExp)
 
 const output = myTag`That {person} is a {age}.`
 
-console.log(output) # Logs "That Mike is a youngster."
+console.log output
 ```
 
 ## Arrays
@@ -124,6 +127,7 @@ console.log(output) # Logs "That Mike is a youngster."
 Arrays work the same way as in JavaScript. In Imba you can also declare them over multiple lines, where the value of each line represents an entry in the array. Commas are optional when array elements are separated by line breaks.
 
 ```imba
+# [preview=console]
 const withCommas = [
     'one',
     'two',
@@ -138,7 +142,7 @@ const withoutCommas = [
     'four'
 ]
 
-console.log(withCommas, withoutCommas) # [ 'one', 'two', 'three', 'four' ] [ 'one', 'two', 'three', 'four' ]
+console.log withCommas, withoutCommas
 ```
 
 ## Objects
@@ -146,6 +150,7 @@ console.log(withCommas, withoutCommas) # [ 'one', 'two', 'three', 'four' ] [ 'on
 Objects work the same way as in JavaScript. As with the arrays above, commas are optional when separated by line breaks. Curly braces are optional when the separating colon makes it clear what the keys and values are.
 
 ```imba
+# [preview=console]
 const object = { a: 'foo', b: 42, c: {} }
 const person =
     name: 'Bob Smith'
@@ -154,9 +159,9 @@ const person =
 
 # Curly braces are optional as the keys and values are clear:
 def logObject(object)
-    console.log("Logging:", object)
+    console.log "Logging:", object
 
-logObject(name: 'Rincewind', profession: 'Wizzard') # Logs "Logging: { name: 'Rincewind', profession: 'Wizzard' }"
+logObject(name: 'Rincewind', profession: 'Wizzard')
 ```
 
 An array of objects can be separated with dashes:
@@ -175,30 +180,30 @@ console.log todos
 Object properties can be set dynamically by wrapping a variable with `[]`.
 
 ```imba
+# [preview=console]
 const field = 'age'
 const person = { name: 'Bob Smith', [field]: 32, gender: 'male' }
-console.log(person.age) # Logs "32"
+console.log person.age
 ```
 
 Properties work the same way as in JavaScript. They can be accessed and assigned using the `.` operator. The `const` keyword prevents re-assignment, but internals can still be modified.
 
 ```imba
+# [preview=console]
 const person = { name: 'Bob Smith', age: 32, gender: 'male' }
 person.name
 person.age = 33
-
-console.log(person.age) # Logs "33"
+console.log person.age
 ```
 
 Keys work the same way as in JavaScript.
 
 ```imba
+# [preview=console]
 const person = { name: 'Bob Smith', age: 32, gender: 'male' }
-
 person['name']
 person['age'] = 33
-
-console.log(person.age) # Logs "33"
+console.log person.age
 ```
 
 Destructuring (as defined in ES6) works the same way as in JavaScript.
@@ -206,12 +211,12 @@ Destructuring (as defined in ES6) works the same way as in JavaScript.
 _Note: Destructuring and skipping curly braces can get confusing. It is not recommended to combine these two features, as it makes the code hard to understand, and easy to cause bugs._
 
 ```imba
+# [preview=console]
 const a = 'foo'
 const b = 42
 const c = {}
 const object = { a, b, c }
-
-console.log(object) # Logs "{ a: 'foo', b: 42, c: {} }"
+console.log object
 ```
 
 
@@ -220,35 +225,36 @@ console.log(object) # Logs "{ a: 'foo', b: 42, c: {} }"
 Parenthesis can be skipped, even when setting default values.
 
 ```imba
+# [preview=console]
 def withArgument param
 	console.log param
-
-withArgument(42) # Logs "42"
+withArgument(42)
 
 def withDefaultValue name = 'Imba'
 	console.log name
-
-withDefaultValue() # Logs "Imba"
+withDefaultValue()
 ```
 
 Objects can be deconstructed like normal, and given default values.
 
 ```imba
+# [preview=console]
 def method name, { title, desc = 'no description' }
 	console.log name, title, desc
 
-console.log method('Rincewind', title: 'Wizzard') # Logs "Rincewind Wizzard no description"
+console.log method('Rincewind', title: 'Wizzard')
 ```
 
 ## Classes
 
 _Note: More details about classes are in the [class overview](/docs/classes)._
 
-[Watch the scrim on classes in the Imba course](https://scrimba.com/learn/imba/classes-cbVveMS4)
+[Watch the interactive tutorial on classes in the Imba course!](https://scrimba.com/learn/imba/classes-cbVveMS4)
 
 Classes in Imba can do the same things as classes in JavaScript, but have several additional features making them easier to use. 
 
 ```imba
+# [preview=console]
 class Todo
 	# Properties are member variables:
 	prop title
@@ -272,51 +278,82 @@ class Todo
 
 const todo = new Todo title: 'Read introduction'
 
-console.log todo # Logs "Todo { title: 'Read introduction', completed: false, due: null }"
+console.log todo
 ```
 
 Instance level methods are called on the object made from the class.
 
 ```imba
+# [preview=console]
+class Todo
+	prop title
+	prop completed = no
+	prop due = null
+	def complete
+		completed = yes
+	get overdue
+		due and due < new Date
+	static def createTodos titles
+		titles.map do(title)
+			new Todo(title: title)
+# ---
 const myTodo = new Todo title: 'Learn Imba'
 myTodo.complete()
-
-console.log myTodo # Logs "Todo { title: 'Learn Imba', completed: true, due: null }"
+console.log myTodo
 ```
 
 Class level methods are called directly on the class.
 
 ```imba
+# [preview=console]
+class Todo
+	prop title
+	prop completed = no
+	prop due = null
+	def complete
+		completed = yes
+	get overdue
+		due and due < new Date
+	static def createTodos titles
+		titles.map do(title)
+			new Todo(title: title)
+# ---
 const newTodos = Todo.createTodos ['Learn Imba', 'Eat breakfast']
-
 console.log newTodos
-# Logs:
-# [
-#   Todo { title: 'Learn Imba', completed: false, due: null },
-#   Todo { title: 'Eat breakfast', completed: false, due: null }
-# ]
 ```
-
 
 ## Loops & Iteration
 
-[Watch the scrim on loops in the Imba course](https://scrimba.com/learn/imba/loops-co2eb439ab71581a6ad3f0ea1)
+[Watch the interactive tutorial on loops in the Imba course!](https://scrimba.com/learn/imba/loops-co2eb439ab71581a6ad3f0ea1)
 
 Loops in Imba have more useful features than in JavaScript, making it easier to loop over object properties.
 
 [Iterables](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) can be looped over with `for ... of ...`.
 
 ```imba
+# [preview=console]
+class Todo
+	prop title
+	prop completed = no
+	prop due = null
+	def complete
+		completed = yes
+	get overdue
+		due and due < new Date
+	static def createTodos titles
+		titles.map do(title)
+			new Todo(title: title)
+const newTodos = Todo.createTodos ['Learn Imba', 'Eat breakfast']
+console.log newTodos
+# ---
 for todo, index of newTodos
     console.log "{todo.title} at position {index}"
-    # Logs:
-    # "Learn Imba at position 0"
-    # "Eat breakfast at position 1"
 ```
 
 To loop over keys and values in an object automatically, use the `own` keyword for the object.
 
 ```imba
+# [preview=console]
 const object =
     hello: 'world'
     learning: 'imba'
@@ -324,16 +361,11 @@ const object =
 
 for own key, value of object
     console.log "{key}: {value}"
-    # Logs:
-    # hello: world
-    # learning: imba
-    # answer: 42
 ```
 
 Looping within tags works the same way.
 
-[Watch the scrim on looping within tags in the Imba course](https://scrimba.com/learn/imba/loops-inside-tags-co59443e78abc774ac34f72f4)
-
+[Watch the interactive tutorial on looping within tags in the Imba course!](https://scrimba.com/learn/imba/loops-inside-tags-co59443e78abc774ac34f72f4)
 
 ## Regular Expressions
 
@@ -353,11 +385,12 @@ const multiline = ///
 Ranges use three dots within brackets `[0 ... 10]`, counting up until the upper number. This makes it easy to use with `myArray.length` without having to write `myArray.length - 1`.
 
 ```imba
+# [preview=console]
 const items = []
 for i in [1 ... 5]
     items.push(i)
 
-console.log items # Logs [1, 2, 3, 4]
+console.log items
 ```
 
 ## Elements
@@ -365,12 +398,19 @@ console.log items # Logs [1, 2, 3, 4]
 The web is native to Imba, so elements are "first class citizens" just like other native types.
 
 ```imba
+# [preview]
+global css ul inset:0 d:flex fld:column ja:center
+# ---
 const list = <ul title="reminders">
     <li> "Remember milk"
     <li> "Greet visitor"
+imba.mount list
 ```
 
-CSS classes are set with dots, and can be both dynamically interpolated and conditionally set. This lets you use logic inside elements, keeping the code short and simple.
+CSS classes are set with dots,
+and can be both dynamically interpolated and conditionally set.
+This lets you use logic inside elements,
+keeping the code short and simple.
 
 ```imba
 const state = 'open'
@@ -385,15 +425,19 @@ const condition = no
 Handlers work the same way.
 
 ```imba
+# [preview]
+global css .panel inset:0 d:flex ja:center
+	cursor:pointer user-select:none
+# ---
 const handler = do(event)
     console.log "Panel clicked!"
 
-<div.panel @click.prevent=handler> "Panel"
+imba.mount <div.panel @click.prevent=handler> "Panel"
 ```
 
 ## Components
 
-[Watch the scrim on tags in the Imba course](https://scrimba.com/learn/imba/tags-co83d4e259d958441d6c9b8e7)
+[Watch the interactive tutorial on tags in the Imba course!](https://scrimba.com/learn/imba/tags-co83d4e259d958441d6c9b8e7)
 
 Tags are compiled down to _extremely optimized_ native [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). By default, `data` is the name used to pass values into a tag. Using `data` is simple, but declaring each prop and its type is usually better. 
 
@@ -419,9 +463,9 @@ imba.mount <todo-app data=todos>
 
 ## Styles
 
-[Watch the scrim on inline styles in the Imba course](https://scrimba.com/learn/imba/inline-styles-coe2d48f9a05c7b17e6fb46f7)
+[Watch the interactive tutorial on inline styles in the Imba course!](https://scrimba.com/learn/imba/inline-styles-coe2d48f9a05c7b17e6fb46f7)
 
-In HTML you can set inline styles on an element with `style="display: flex;"`. Using classes is often recommended, as keeping track of these inline styles can be slow, brittle, and difficult to work with.
+In normal HTML you can set inline styles on an element with `style="display: flex;"`. Using classes is often recommended, as keeping track of these inline styles can be slow, brittle, and difficult to work with.
 
 In Imba, inline styles are much more powerful. Keeping elements, styles and logic close together can often be simpler, faster to write, and easier to read.
 
@@ -433,7 +477,7 @@ In Imba, inline styles are much more powerful. Keeping elements, styles and logi
 
 ### Shorthands
 
-[Watch the scrim on shorthands in the Imba course](https://scrimba.com/learn/imba/style-property-shorthands-co55547d5954f4b8576d0f730)
+[Watch the interactive tutorial on shorthands in the Imba course!](https://scrimba.com/learn/imba/style-property-shorthands-co55547d5954f4b8576d0f730)
 
 Single letter variable names are often considered to be an anti-pattern. Seeing the name `c`, what does it mean? `columns`? `content`? `color`? Reading code with unclear naming costs time and effort.
 
@@ -459,7 +503,7 @@ Imba developers often say these shorthand names become as familiar and natural a
 ### Scoping styles
 
 
-[Watch the scrim on scoping styles in the Imba course](https://scrimba.com/learn/imba/scoped-styles-co50f4384944f5102c6e6d8ca)
+[Watch the interactive tutorial on scoping styles in the Imba course!](https://scrimba.com/learn/imba/scoped-styles-co50f4384944f5102c6e6d8ca)
 
 Inline styles apply to the element itself, and everything within it. Changing the scope lets you apply styles to subtrees, components, tags, the entire file, or even globally.
 
