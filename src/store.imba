@@ -178,6 +178,10 @@ class Entry
 	get searchText
 		searchTitle
 
+	def matchRegex q
+		no
+
+
 
 export class File < Entry
 	
@@ -504,6 +508,11 @@ export class Root < Dir
 
 					if let ev = API.lookup(m[1])
 						ev.examples.add(item)
+				elif ref.match(/^style\./)
+					let entry = API.lookup(ref)
+					if entry
+						entry.examples.add(item)
+
 			yes
 
 	get path

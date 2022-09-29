@@ -173,8 +173,19 @@ watcher.on('all') do
 					for mod in mods
 						let ev = mod.context.name
 						see.push("@{ev}.{mod.value}")
-						
+
+					# add references to style modifiers and properties
+					let cssmods = script.tokens.filter do $1.match('style.property.modifier')
+					for val in cssmods
+						see.push("style.modifier.{val.value}")
+
+					let cssprops = script.tokens.filter do $1.match('style.property.name')
+					for val in cssprops
+						see.push("style.property.{val.value}")
+					
 					console.log item.meta
+					# remove duplicates
+					item.meta.see = see.filter do(v,i,a) a.indexOf(v) == i
 			
 			examples["/" + src] = {
 				body: item.body

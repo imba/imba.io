@@ -432,7 +432,7 @@ tag TocItem
 	level = 1
 	css pb:1
 
-	css .menu-link tween:colors 0.2s cubic-in-out px:0 pb:0
+	css .menu-link ec:0.2s cubic-in-out px:0 pb:0
 		
 	css .children pl:2 lh:0
 		

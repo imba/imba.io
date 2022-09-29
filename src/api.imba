@@ -52,7 +52,12 @@ class Matcher
 
 	def constructor query
 		#query = query
-		match = match.bind(self)
+		# check for regexp
+		if query.match(/[\^]/)
+			#regexp = new RegExp(query)
+			match = do(item) !!item..matchRegex(#regexp)
+		else
+			match = match.bind(self)
 
 	
 	def match item\Entity
@@ -87,6 +92,8 @@ class Kind
 		str += " upcase" if mods & M.Upcase
 		str += " enum" if flags & S.Enum
 		str += " option" if flags & S.EnumMember
+		str += " easing" if cat & C.CSSEasing
+		str += " transform" if cat & C.CSSTransform
 		#str = str
 		#flags = {}
 		for key in str.split(" ")
@@ -133,6 +140,8 @@ class Members < Array
 	get getters do filter(&,'getter') do $1.getter?
 	get events do filter(&,'event') do $1.event?
 	get custom do filter(&,'custom') do $1.custom?
+	get easing do filter(&,'easing') do $1.ease?
+	get preferred do filter(&,'preferred') do $1.preferred?
 	get options do filter(&,'option') do $1.kind.option
 	get native do filter(&,'native') do !$1.custom?
 	get domprops do filter(&,'domprops') do $1.tags.idl
@@ -158,7 +167,9 @@ class Members < Array
 		return #cache[key] ||= new Members(#owner,cb(),Object.assign({},#filters,{sort:key}))
 
 	def filter cb,name
+		
 		if typeof cb == 'string'
+			console.log 'filter!!',cb
 			# filter based on the kind flags
 			let matcher = Matcher.for(cb)
 			cb = matcher.match
@@ -227,8 +238,15 @@ export class Entity
 		# MAP[qualifiedName] = self
 		MAP[href] = self
 
+		for path in paths
+			MAP[path] = self
+		self
+
 	get inheritors
 		#inheritors ||= new Members(self,[],{own:1})
+
+	get paths
+		[]
 
 	get locals
 		#locals ||= Locals.for(href)
@@ -338,6 +356,9 @@ export class Entity
 		unless global?
 			return (garbleText parent.searchPath) + ".{displayName}"
 		displayName
+
+	def matchRegex regex
+		no
 
 	get qualifiedName
 		global? ? name : parent.qualifiedName + ".{displayName}"
@@ -470,6 +491,9 @@ class StyleModifierEntity < StyleEntity
 	get href
 		"/docs/css/modifiers/{name}"
 
+	get paths
+		["style.modifier.{name}"]
+
 class StylePropertyEntity < StyleEntity
 
 	get labelName
@@ -478,8 +502,14 @@ class StylePropertyEntity < StyleEntity
 	get urlName
 		"{displayName}"
 
+	get preferred?
+		return !shorthand
+
 	get href
 		"/docs/css/properties/{name}"
+	
+	get paths
+		["style.property.{name}"]
 
 	get qualifiedName
 		name # "css {name}"
@@ -491,6 +521,12 @@ class StylePropertyEntity < StyleEntity
 		return " / {shorthand.name}" if shorthand
 		return " / {proxy.name}" if proxy
 		return ""
+
+	def matchRegex regex
+		name.match(regex)
+
+	get main
+		proxy or self
 
 	get mdn
 		return if kind.custom and !proxy
@@ -680,7 +716,6 @@ const root = new class
 			if path
 				try
 					return root.lookup(path)
-		
 		
 		return entity
 

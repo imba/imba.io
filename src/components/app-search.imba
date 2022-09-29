@@ -266,7 +266,7 @@ tag app-search
 				<div$items[pos:rel pb:4] [d:none]=!hits.length @mousemove.silent=(#pointing = yes)>
 					<div$selection>
 						css h:1rh rd:md pos:abs bg:blue4/40 w:100% zi:0 y:calc($selIndex * 100%)
-							tween:all 0.1s cubic-in-out
+							ea:0.1s cubic-in-out
 							o..empty:0
 					<div[zi:1 pos:rel]>
 						for match,i in hits when i < show-hits

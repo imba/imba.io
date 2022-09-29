@@ -12,7 +12,7 @@ tag app-menu-item
 			c:gray5/90 @hover:gray9 .active:gray9
 			span of:hidden text-overflow:ellipsis ws:nowrap
 			h:1rh o:0 pe:none mb:-1rh
-			tween:all 200ms quint-out
+			ea:200ms quint-out
 
 		.children pl:15px
 		a.active + .children > .child > .item o:1 pe:auto mb:0

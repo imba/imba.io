@@ -21,12 +21,9 @@ def template str
 const snippets = {}
 
 snippets.cssprop = template `
-# in declaration
-css div
-	%%name:value
-# inline style
-<section>
-	<div[%%name:value]> ...
+css div %%name:value # declaration
+css div %%name@hover:value # with modifier
+<section> <div[%%name:value]> ... # inline style
 `
 
 snippets.stylemod = template `
@@ -52,15 +49,9 @@ css div %%alias:value
 `
 
 snippets.cssaliased = template `
-# in declaration
-css div
-	%%name:value
-# inline style
-<section>
-	<div[%%name:value]> ...
-# using alias
-css div %%alias:value
-<div[%%alias:value]>
+css div %%name:value # declaration
+css div %%name@hover:value # with modifier
+<section> <div[%%name:value]> ... # inline style
 `
 
 snippets.eventmodifier = template `
@@ -304,7 +295,8 @@ tag api-docs
 tag api-entry-examples < api-section
 	<self[hue:blue d@empty:none]>
 		if data.examples.size > 0
-			<h3> "Examples"
+			<slot>
+				<h3> "Examples"
 			<div> for item of data.examples
 				<div[mb:10 @last:4]> <app-code-block href=item.path>
 
@@ -491,15 +483,22 @@ tag api-symbol-entry < api-entry
 			<api-entry-examples data=data>
 
 		elif data.kind.css and data.kind.property
-			<api-docs data=data>
+			let main = data.main
+			<api-docs data=main>
+
 			<api-section>
-				# only if there is no syntax from the other
 				<h3> "Syntax"
-				# <app-code-block raw=snippets.cssprop(data)>
-				if data.alias
-					<app-code-block raw=snippets.cssaliased(data)>
-				else
-					<app-code-block raw=snippets.cssprop(data)>
+				# if data.alias
+				#	<app-code-block raw=snippets.cssaliased(data)>
+				# else
+				<app-code-block raw=snippets.cssprop(main)>
+				if main.alias
+					<p[my:2]> "You can also use the shorthand alias {<app-code-inline> main.alias}"
+					<app-code-block raw=snippets.cssaliased(main.shorthand)>
+
+			<api-entry-examples data=data>
+				<h3> "Examples"
+				<p[mb:2]> "Here are examples from throughout the site that utilizes this property."
 
 		elif data.kind.property
 			<api-docs data=data>

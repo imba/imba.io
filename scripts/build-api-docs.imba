@@ -217,7 +217,6 @@ const extras = {
 	WindowOrWorkerGlobalScope: {flatten: yes, skip: yes}
 }
 
-
 class Entry
 
 	static def for symbol\(ts.Symbol)
@@ -313,6 +312,15 @@ class Entry
 					proxy = Entry.for(checker.styleprop(meta.proxy))
 					mods |= ModifierFlags.ImbaSpecific
 					delete meta.proxy
+
+				if name.match(/(^ease)|(^e[atocb]?[dfw]?$)/)
+					cat |= CategoryFlags.CSSEasing
+					mods |= ModifierFlags.ImbaSpecific
+
+				if name.match(/^(x|y|z|scale|scale-x|scale-y|skew-x|skew-y|rotate)$/)
+					cat |= CategoryFlags.CSSTransform
+					mods |= ModifierFlags.ImbaSpecific
+				
 
 			if sym.isStyleModifier
 				cat |= CategoryFlags.CSSModifier

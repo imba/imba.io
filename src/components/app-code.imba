@@ -376,7 +376,7 @@ tag app-code-block < app-code
 							c:gray6 fs:sm fw:500 rdt:inherit d:hflex j:space-between
 							.item d:block c:cooler4/90 c.on:blue3 py:0.25 px:1.5 td:none fw:600 rd:lg mx:0
 								cursor:pointer
-								tween:styles 0.1s ease-in-out
+								ease:0.1s ease-in-out
 								c@hover:blue4
 								&.on bg:#354153
 						<div[d:hflex ..collapsed:none px:1 py:1].tabs> for item in files
@@ -449,9 +449,9 @@ global css app-code-file
 	.bottom-highlights pos:abs t:100% l:0 w:100% zi:5 pe:none d:hflex ai:flex-start jc:center
 
 	app-arrow
-		tween:opacity 0.2s ease-in-out
+		eo:opacity 0.2s
 		c:green3
-		svg tween:transform 0.2s ease-in-out
+		svg et:0.2s ease-in-out
 		# &.inlined
 		c:green3
 
