@@ -22,13 +22,6 @@ Mobx v6 moved away from recommending decorators due to ever changing proposals a
 The main usecase for observables in Imba is _not_ for rendering. 
 
 ```imba
-@observable
-class AppState
-
-
-```
-
-```imba
 # [preview=md]
 import {genres,movies} from 'imdb'
 
@@ -56,7 +49,3 @@ imba.mount <App>
 ```
 
 You can pass the options into the decorators
-
-## imba.when
-
-Yes
