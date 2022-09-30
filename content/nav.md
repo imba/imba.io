@@ -106,3 +106,5 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 ## Static Deployment [doc=guides/static_deployment] [href=/guides/static_deployment]
 
 ## Full Stack Deployment [doc=guides/full_stack_deployment] [href=/guides/full_stack_deployment]
+
+## Incremental Adoption [doc=guides/incremental] [href=/guides/incremental]
