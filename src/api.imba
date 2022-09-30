@@ -76,9 +76,10 @@ class Kind
 		let str = "entity"
 		str += " css" if cat & C.CSS
 		str += " article" if cat & C.Article
+		str += " decorator" if cat & C.Decorator
 		str += " accessor" if flags & S.PropertyOrAccessor
 		str += " property" if flags & S.Property
-		str += " function" if flags & S.Function
+		str += " function" if flags & S.Function and !(cat & C.Decorator)
 		str += " variable" if flags & S.Variable
 		str += " method"   if flags & S.Method
 		str += " modifier" if flags & S.Modifier
@@ -131,9 +132,11 @@ class Members < Array
 		self
 
 	get modifiers do filter(&,'modifier') do $1.modifier?
+	get decorators do filter(&,'modifier') do $1.decorator?
 	get variables do filter(&,'variable') do $1.variable?
 	get functions do filter(&,'function') do $1.function?
 	get properties do filter(&,'property') do $1.property?
+	get cssvalues do filter(&,'cssvalue') do $1 isa StyleValueEntity
 	get methods do filter(&,'method') do $1.method?
 	get accessors do filter(&,'accessor') do $1.accessor?
 	get setters do filter(&,'setter') do $1.accessor? and !$1.kind.readonly
@@ -169,7 +172,6 @@ class Members < Array
 	def filter cb,name
 		
 		if typeof cb == 'string'
-			console.log 'filter!!',cb
 			# filter based on the kind flags
 			let matcher = Matcher.for(cb)
 			cb = matcher.match
@@ -267,6 +269,7 @@ export class Entity
 	get method? do (flags & S.Method) != 0
 	get variable? do (flags & S.Variable) != 0 and !interface?
 	get function? do (flags & S.Function) != 0
+	get decorator? do (cat & C.Decorator) != 0
 	get property? do (flags & S.Property) != 0 or accessor?
 	get modifier? do (flags & S.Modifier) != 0
 	get event? do (flags & S.Event) != 0
@@ -333,6 +336,9 @@ export class Entity
 	get displayName
 		name
 
+	get shortName
+		name
+
 	get navName
 		displayName
 	
@@ -358,7 +364,7 @@ export class Entity
 		displayName
 
 	def matchRegex regex
-		no
+		name.match(regex)
 
 	get qualifiedName
 		global? ? name : parent.qualifiedName + ".{displayName}"
@@ -475,6 +481,16 @@ class ModifierEntity < Entity
 	get displayName
 		name.slice(1)
 
+class DecoratorEntity < Entity
+	get urlName
+		"{displayName}"
+
+	get qualifier
+		''
+
+	get displayName
+		name
+
 class StyleEntity < Entity
 
 	get qualifiedName
@@ -503,23 +519,26 @@ class StylePropertyEntity < StyleEntity
 		"{displayName}"
 
 	get preferred?
-		return !shorthand
+		return yes
 
 	get href
 		"/docs/css/properties/{name}"
 	
 	get paths
-		["style.property.{name}"]
+		["style.property.{name}","style.property.{alias or name}"]
 
 	get qualifiedName
 		name # "css {name}"
+
+	get shortName
+		alias or name
 
 	get qualifier
 		"css "
 
 	get detail
-		return " / {shorthand.name}" if shorthand
-		return " / {proxy.name}" if proxy
+		# return " / {shorthand.name}" if shorthand
+		return " / {alias}" if alias
 		return ""
 
 	def matchRegex regex
@@ -529,8 +548,9 @@ class StylePropertyEntity < StyleEntity
 		proxy or self
 
 	get mdn
-		return if kind.custom and !proxy
-		let name = proxy ? proxy.name : name
+		return if kind.custom
+		# and !proxy
+		# let name = proxy ? proxy.name : name
 		"https://developer.mozilla.org/en-US/docs/Web/CSS/{name}"
 
 # class StyleTypeEntity < StyleEntity
@@ -539,6 +559,9 @@ class StyleTypeEntity < StyleEntity
 
 	get href
 		"/docs/css/values/{global.escape name}"
+
+	get paths
+		["style.type.{name}"]
 
 	get displayName
 		"<{name}>"
@@ -556,11 +579,21 @@ class StyleTypeEntity < StyleEntity
 
 class StyleValueEntity < StyleEntity
 
+	get displayName
+		# only for display etc?
+		if parent isa StyleTypeEntity
+			name
+		else
+			"{parent.shortName}:{name}"
+
 	get searchPath
-		"{parent.displayName}: {displayName}"
+		displayName
+		# "{parent.displayName}: {displayName}"
 
 	get labelName
 		parent.displayName + " value"
+	
+
 
 class ArticleEntity < Entity
 
@@ -703,7 +736,7 @@ const root = new class
 			let modname = token.value
 			entity = getEventModifier(evname,modname)
 		elif token.type == 'style.property.name'
-			entity = lookup("/docs/css/properties/{token.value}")
+			entity = lookup("style.property.{token.value}")
 			
 		elif token.type == 'style.property.modifier' or token.type == 'style.selector.modifier'
 			entity = lookup("/docs/css/modifiers/{token.value}")

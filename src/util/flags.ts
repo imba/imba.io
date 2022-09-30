@@ -109,7 +109,7 @@ export const enum CategoryFlags {
     CSSEasing = 1 << 7,
     CSSFlex = 1 << 8,
     CSSTransform = 1 << 9,
-
+    Decorator = 1 << 10,
     CSS = CSSProperty | CSSModifier | CSSPseudoElement | CSSValueType | CSSValue,
 }
 

@@ -11,7 +11,10 @@ def template str
 			return cache.get(item)
 			
 		let out = str
-		out = out.replace(/%%([\w\-]+)/g) do
+		out = out.replace(/%%([\w\-\%]+)/g) do(m,k)
+			if k == '%'
+				return item
+
 			for obj in objs
 				return obj[$2] if obj[$2]
 			return item[$2] or ''
@@ -49,9 +52,9 @@ css div %%alias:value
 `
 
 snippets.cssaliased = template `
-css div %%name:value # declaration
-css div %%name@hover:value # with modifier
-<section> <div[%%name:value]> ... # inline style
+css div %%%:value # declaration
+css div %%%@hover:value # with modifier
+<section> <div[%%%:value]> ... # inline style
 `
 
 snippets.eventmodifier = template `
@@ -347,6 +350,7 @@ tag api-entry
 
 const titles = {
 	properties: 'Properties'
+	variables: 'Properties'
 }
 
 tag api-list
@@ -494,7 +498,7 @@ tag api-symbol-entry < api-entry
 				<app-code-block raw=snippets.cssprop(main)>
 				if main.alias
 					<p[my:2]> "You can also use the shorthand alias {<app-code-inline> main.alias}"
-					<app-code-block raw=snippets.cssaliased(main.shorthand)>
+					<app-code-block raw=snippets.cssaliased(main.alias)>
 
 			<api-entry-examples data=data>
 				<h3> "Examples"
