@@ -232,7 +232,7 @@ export class File < Entry
 		_model
 		
 	get complexity
-		body.length
+		meta.complexity or body.length
 
 	def overwrite body
 		if body != self.body
@@ -512,7 +512,6 @@ export class Root < Dir
 					let entry = API.lookup(ref)
 					if entry
 						entry.examples.add(item)
-
 			yes
 
 	get path

@@ -92,17 +92,14 @@ tag app-menu
 				# <app-menu-section[hue:blue] data=survey members>
 				# 	<app-menu-item[hue:orange] data=survey>
 
-				<div.icons[d:hflex ja:center ai:center cg:10px c:blue5 order:0 px:2]>
+				<div.icons[d:lbox g:10px c:blue5 order:0 px:2]>
 					css 1icon:24px
 						svg size:1icon c:hue5 @hover:hue7 stroke-width:1.5px
-					css span d:none
 					<a.indigo target='_blank' href='https://discord.gg/mkcbkRw'>
 						<svg src='../assets/icons/message-circle.svg'>
-						<span> "Chat"
 					<a.blue target='_blank' href='https://github.com/imba/imba'>
 						<svg src='../assets/icons/github.svg'>
 					<a.sky target='_blank' href='https://twitter.com/imbajs'>
 						<svg src='../assets/icons/twitter.svg'>
-					<div[fl:1]>
 				# <app-search-field[bg:warmer1 p:2 rd:lg w:180px order:-1]>
 			<div[pos:absolute b:0 h:100px l:0 r:20px bg:linear-gradient(to bottom,white/0,white) l:0 pe:none]>

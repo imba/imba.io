@@ -475,6 +475,7 @@ tag api-symbol-entry < api-entry
 			if !data.guide
 				<api-symbols kind='namespaces' data=data.all.namespaces>
 				<api-symbols kind='variables' data=data.all>
+				
 				<api-symbols kind='functions' data=data.all>
 				<api-symbols kind='interfaces' data=data.all>
 

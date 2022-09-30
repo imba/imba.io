@@ -164,10 +164,20 @@ watcher.on('all') do
 					# throw yes
 
 				if up and up.name == 'api'
+					let start = item.body.indexOf('# ---')
+					let end = (item.body.indexOf('# ---',start + 4) + 1) or item.body.length
+					let tokens = script.tokens.filter do end > $1.offset > start
+
+					item.meta.complexity = tokens.length
+
+					if item.meta.preview == 'styles'
+						item.meta.complexity *= 0.2
+				
 					let see = item.meta.see ||= []
-					let mods = script.tokens.filter do $1.match('tag.event-modifier.name')
-					
-					let events = script.tokens.filter do $1.match('tag.event.name')
+
+					let mods = tokens.filter do $1.match('tag.event-modifier.name')
+
+					let events = tokens.filter do $1.match('tag.event.name')
 					for ev in events
 						see.push("@{ev.value}")
 
@@ -176,11 +186,11 @@ watcher.on('all') do
 						see.push("@{ev}.{mod.value}")
 
 					# add references to style modifiers and properties
-					let cssmods = script.tokens.filter do $1.match('style.property.modifier')
+					let cssmods = tokens.filter do $1.match('style.property.modifier')
 					for val in cssmods
 						see.push("style.modifier.{val.value}")
 
-					let cssprops = script.tokens.filter do $1.match('style.property.name')
+					let cssprops = tokens.filter do $1.match('style.property.name')
 					for val in cssprops
 						see.push("style.property.{val.value}")
 					
