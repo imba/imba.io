@@ -9,7 +9,7 @@ Imba does not ship with any prebuilt transitions. This might change in a later v
 # ~preview=md
 import 'util/styles'
 
-css label d:hflex a:center us:none
+css label d:hflex ja:center us:none
 css input mx:1
 
 # ---

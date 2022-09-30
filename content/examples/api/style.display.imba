@@ -5,14 +5,12 @@ export const vars = {flag: 'demo-1'}
 # ---
 css .demo-1 d:flex
 css .demo-2 d:hflex
+css .demo-4 d:hflex ja:center
+css .demo-6 d:hflex ai:stretch
+css .demo-7 d:hflex jc:space-between
 css .demo-3 d:vflex
-css .demo-4 d:vbox
-css .demo-5 d:hbox
-css .demo-6 d:lbox
-css .demo-7 d:rbox
-css .demo-8 d:tbox
-css .demo-9 d:bbox
-css .demo-10 d:hbox ai:stretch
+css .demo-5 d:vflex ai:stretch
+css .demo-7 d:vflex jc:space-between
 # ---
 
 imba.mount do <.inline-demo>

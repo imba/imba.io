@@ -76,7 +76,7 @@ be available everywhere.
 ```imba app.imba
 import './controls'
 
-imba.mount do <div[pos:absolute inset:0 d:flex a:center j:center]>
+imba.mount do <div[pos:absolute inset:0 d:flex ja:center]>
     <my-component>
     <app-avatar>
 ```

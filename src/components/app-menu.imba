@@ -51,7 +51,7 @@ tag app-menu-section
 			> a c:blue6 us:none py:2 fs:sm fw:500
 
 		<a.l0.section.menu-heading href=data.href>
-			css d:hflex a:center
+			css d:hflex ai:center
 			<span[c:hue6]> data.title
 		<div.content.{data.slug}>
 			# if members or data.children

@@ -273,7 +273,7 @@ tag app-repl-preview
 	css .body rd:inherit
 
 	css .titlebar
-		pos:relative rdt:md bg:gray3 d:hflex a:center p:2 px:1 j:flex-end
+		pos:relative rdt:md bg:gray3 d:hflex ai:center p:2 px:1 j:flex-end
 		& + .body rdt:0
 		.tool c:gray6 p:1 fw:500 us:none fs:sm
 			svg w:3 h:3 c:gray5 stroke-width:3px
@@ -303,7 +303,7 @@ tag app-repl-preview
 
 			if options.titlebar
 				<.titlebar>
-					css pos:relative rdt:md bg:gray2 d:hflex a:center p:2 px:1 j:flex-end
+					css pos:relative rdt:md bg:gray2 d:hflex ai:center p:2 px:1 j:flex-end
 						bd:gray3 bdb:gray2
 					css & + .body rdt:0
 					css input bg:white rd:md bd:gray3 px:2 fs:sm mx:1 fl:1 fw:400
@@ -335,7 +335,7 @@ tag app-repl-preview
 					<button.btn @click=maximize> '⤢'
 			if commands..length or options.footer
 				<.footer>
-					css pos:relative d:hflex a:center py:2 mx:-1 j:flex-start
+					css pos:relative d:hflex ai:center py:2 mx:-1 j:flex-start
 					css .cmd c:gray6 px:2 py:1 fw:500 us:none fs:sm bg:gray1 bd:gray4
 					# <.tools[pos:abs]>
 					for command in commands

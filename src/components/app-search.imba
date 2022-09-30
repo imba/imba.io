@@ -2,7 +2,7 @@ import {ls,fs,File,Dir,find,api} from '../store'
 let isApple = try (global.navigator.platform or '').match(/iPhone|iPod|iPad|Mac/)
 
 tag Item
-	css cursor:pointer d:hflex px:2 a:center pos:rel hue:warmer
+	css cursor:pointer d:hflex px:2 ai:center pos:rel hue:warmer
 		
 	css
 		&.link hue:blue
@@ -121,7 +121,7 @@ tag app-search-field
 		css @hover
 			hue:blue
 			.keycap bg:hue0
-		<a[jc:flex-start d:hflex cursor:pointer fs:sm a:center] @click.emit('showsearch') @hotkey('mod+k|s')>
+		<a[jc:flex-start d:hflex cursor:pointer fs:sm ai:center] @click.emit('showsearch') @hotkey('mod+k|s')>
 			# css c:blue4/80 @hover:blue3
 			<svg[d:block size:16px lh:16px va:top pos:relative c:hue4] src='../assets/icons/search.svg'>
 			<span[mx:1 tt:none fw:normal fl:1 d@!500:none]> "Search docs ..."
@@ -232,8 +232,8 @@ tag app-search
 				@focus-within bg:cool9/50
 					main y:0px scale:1 o:1 pe:auto
 					
-				# bg:cool9/50
-				# main y:0px scale:1 o:1 pe:auto
+				bg:cool9/50
+				main y:0px scale:1 o:1 pe:auto
 
 			css &.search2 bg:cool9/50
 				main y:0px scale:1 o:1 pe:auto
