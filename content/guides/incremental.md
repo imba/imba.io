@@ -1,33 +1,34 @@
 # Incremental Adoption & Reusable Components
 
-Since Imba components are actual custom elements, you can use
-them with both plain HTML and most JavaScript UI frameworks
-(React, Vue, Svelte, etc.)
+Since Imba compiles to readable JavaScript, including arbitrary
+Imba code in your existing project is very easy. Moreover, since
+Imba components are actual custom elements, you can use them with
+both plain HTML projects and most JavaScript UI framework
+projects (React, Vue, Svelte, etc.)
 
-Using imported Imba components is as simple as
-appending their names with `-tag`.
-For example, if you have this Imba file:
+Using components from imported Imba files is as simple as
+appending their names with `-tag`. You don't need to export the
+tags. For example, if you import an Imba file that has *only* the
+following contents:
 
 ```imba
 tag marshmellow
   <self> "yo!"
 ```
 
-In React you can use the component with:
+In React, Vue, and Svelte you can use the component this way:
 
 ```js
 <marshmellow-tag/>
 ```
 
-See the following sections for how to import components
-depending on your configuration.
+See the following sections for how to import Imba files depending on your configuration.
 
 ## With Vite
 
-The best way to include Imba components and scripts in your
-existing non-Imba project is with [Vite](https://vitejs.dev/). If
-your existing project doesn't use Vite, try
-[#with-the-component-template](#with-the-component-template) or
+The best way to include Imba files in your existing non-Imba
+project is with [Vite](https://vitejs.dev/). If your existing
+project doesn't use Vite, try [#with-modules](#with-modules) or
 [#with-npm](#with-npm) instead.
 
 - Add `imba` and `vite-plugin-imba` to your existing project:
@@ -47,96 +48,83 @@ your existing project doesn't use Vite, try
 		plugins: [vue(),imba()],
 	```
 
-- In your app you can now import any imba files with:
+- In your app you can now import any Imba files with:
 
 	```js
 	import './filename.imba'
 	```
 
-## With The Component Template
+## With Modules
 
 If you use eslint, this option may not work without disabling
 some rules; try [#with-npm](#with-npm) instead.
 
-- Click `Use this template` on our
-	[component template](https://github.com/imba/imba-component-template)
-	and choose a name. We'll use the name `imba-component` as an example.
+- In your non-Imba project, run:
 
-- Clone your `imba-component` repository directly into your
-	non-Imba project.
-
-- Run:
-
-	```
-	cd imba-component
-	npm i
+	```bash
+	npx imba create --template component imba-project
+	cd imba-project
 	npm run build
 	```
 
-- Import the component into your non-Imba project as a module via:
+- Import the Imba project into your non-Imba project as a module via:
 
 	```js
-	import './imba-component'
+	import './imba-project'
 	```
 
 ## With NPM
 
-- Click `Use this template` on our
-[component template](https://github.com/imba/imba-component-template)
-and choose a name. We'll use the name `imba-component` as an example.
+- Anywhere on your computer, run:
 
-- Clone your `imba-component` repository into anywhere on your
-	computer.
-
-- Run:
-
-	```
-	cd imba-component
-	npm i
+	```bash
+	npx imba create --template component imba-project
+	cd imba-project
 	npm run build
 	npm link
 	```
 
-	`npm link` will expose your component as a package to the rest
-	of your computer as the `"name"` field from your component's
-	`package.json` file. By default this is `my-lib`.
+	`npm link` will expose your Imba project as a package to the
+	rest of your computer.
 
 - In your non-Imba project, run:
 
-	```
-	npm link linked_package_name
+	```bash
+	npm link imba-project
 	```
 
-- In your non-Imba project, import your component with
+- In your non-Imba project, import the Imba package with
 
 	```js
-	import 'linked_package_name'
+	import 'imba-project'
 	```
+
+Keep in mind `npm link` uses the `"name"` field from the
+`package.json` file in your Imba project, not the folder name.
+
+It's also worth noting that this method will link the Imba
+package to your non-Imba project's `node_modules` folder, but it
+will not reflect that in your non-Imba project's `package.json`
+file. If you want to share your project, you might consider
+publishing the Imba package on npm and using `npm install`
+instead of `link`.
 
 Read more about `npm link`
 [here](https://docs.npmjs.com/cli/v8/commands/npm-link).
 
 ## With Script Tags
 
-
-- Click `Use this template` on our
-[component template](https://github.com/imba/imba-component-template)
-and choose a name. We'll use the name `imba-component` as an example.
-
-- Clone your `imba-component` repository into your existing
-project's `/public` directory.
-
-- Run:
+- In your non-Imba project, run:
 
 	```bash
-	cd imba-component
-	npm i
+	npx imba create --template component imba-project
+	cd imba-project
 	npm run build
 	```
 
 - In your non-Imba project's `index.html` file, source the
-component's bundle with a script tag:
+Imba project's bundle with a script tag:
 
 	```html
-	<script src="imba-component/dist/my-lib.js"></script>
+	<script src="imba-project/dist/index.js"></script>
 	```
