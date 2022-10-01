@@ -159,8 +159,20 @@ def logObject(object)
 logObject(name: 'Rincewind', profession: 'Wizzard') # Logs "Logging: { name: 'Rincewind', profession: 'Wizzard' }"
 ```
 
+An array of objects can be separated with dashes:
+```imba
+# [preview=console]
+let todos = [
+	title:'one'
+	completed:yes
+	-
+	title:'two'
+	completed:no
+]
+console.log todos
+```
 
-They can be set dynamically by wrapping a variable with `[]`.
+Object properties can be set dynamically by wrapping a variable with `[]`.
 
 ```imba
 const field = 'age'
