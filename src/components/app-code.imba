@@ -336,7 +336,7 @@ tag app-code-block < app-code
 				$editor d:block fl:1 1 65% m:2
 				$preview
 					h:auto m:0
-					fl:0 0 auto # fl:1 1 35% 
+					fl:none
 					bd:none
 					w:280px @!900:35%
 					>>> .frame bg:clear bd:none bg:#1a212a

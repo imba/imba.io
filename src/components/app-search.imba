@@ -232,8 +232,8 @@ tag app-search
 				@focus-within bg:cool9/50
 					main y:0px scale:1 o:1 pe:auto
 					
-				bg:cool9/50
-				main y:0px scale:1 o:1 pe:auto
+				# bg:cool9/50
+				# main y:0px scale:1 o:1 pe:auto
 
 			css &.search2 bg:cool9/50
 				main y:0px scale:1 o:1 pe:auto

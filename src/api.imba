@@ -90,6 +90,7 @@ class Kind
 		str += " native" unless mods & M.ImbaSpecific
 		str += " readonly" if mods & M.Readonly
 		str += " abstract" if mods & M.Abstract
+		str += " experimental" if mods & M.Experimental
 		str += " upcase" if mods & M.Upcase
 		str += " enum" if flags & S.Enum
 		str += " option" if flags & S.EnumMember

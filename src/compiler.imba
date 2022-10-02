@@ -1,7 +1,7 @@
 import * as esml from 'es-module-lexer'
 
 const ResolveMap = {
-	'imba': 'https://unpkg.com/imba@2.0.0-alpha.215/dist/imba.mjs'
+	'imba': 'https://unpkg.com/imba@2.0.0-alpha.223/dist/imba.mjs'
 	'imdb': '/imdb.js'
 }
 

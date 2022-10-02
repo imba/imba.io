@@ -353,6 +353,8 @@ class Entry
 			delete meta.custom
 			delete meta.imba
 
+		if meta.experimental
+			mods |= ModifierFlags.Experimental
 
 		if meta.abstract
 			mods |= ModifierFlags.Abstract

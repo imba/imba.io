@@ -138,6 +138,7 @@ export const enum ModifierFlags {
     EventInterface =     1 << 18,
     NodeInterface =     1 << 19,
     CSS =     1 << 20,
+    Experimental = 1 << 21, 
     
     HasComputedFlags =   1 << 29, // Modifier flags have been computed
 

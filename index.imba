@@ -1,6 +1,7 @@
 import express from 'express'
 import np from 'path'
 import nfs from 'fs'
+import esbuild from 'esbuild?external'
 
 const app = express!
 
@@ -11,7 +12,7 @@ import {rewriteImports} from './src/compiler'
 import examples from './data/examples.json'
 
 const ResolveMap = {
-	'imba': 'https://unpkg.com/imba@2.0.0-alpha.215/dist/imba.mjs'
+	'imba': 'https://unpkg.com/imba@2.0.0-alpha.223/dist/imba.mjs'
 	'imdb': '/imdb.js'
 }
 
@@ -70,7 +71,16 @@ def compileImba file
 			sourcePath: file.path,
 			format: 'esm'
 		})
-		file.js = rewriteImports(result.toString!)
+
+		# now use esbuild
+		let js = result.js
+
+		let transformed = esbuild.transformSync(js,{
+			platform: 'browser', target: ['safari15']
+		})
+
+		js = transformed.code
+		file.js = rewriteImports(js)
 	catch e
 		console.log 'error compiling',e,file.path
 		return

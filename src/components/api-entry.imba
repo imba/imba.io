@@ -172,6 +172,8 @@ tag api-pills
 			<div.abstract> "abstract"
 		if data.kind.readonly
 			<div.readonly> "readonly"
+		if data.kind.experimental
+			<div.readonly> "experimental"
 		if data.idl?
 			<div.idl> "idl"
 
