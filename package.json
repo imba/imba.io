@@ -46,7 +46,7 @@
     "es-module-lexer": "^1.0.3",
     "esbuild": "^0.15.10",
     "express": "^4.17.1",
-    "imba": "^2.0.0-alpha.221",
+    "imba": "^2.0.0-alpha.223",
     "marked": "^0.7.0",
     "node-fetch": "^3.2.10",
     "passport": "^0.4.1",
