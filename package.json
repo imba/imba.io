@@ -49,7 +49,7 @@
     "imba": "^2.0.0-alpha.223",
     "marked": "^0.7.0",
     "node-fetch": "^3.2.10",
-    "passport": "^0.4.1",
+    "passport": "^0.6.0",
     "perfect-arrows": "^0.3.3",
     "quick-score": "^0.0.13",
     "svgpath": "^2.3.0"
