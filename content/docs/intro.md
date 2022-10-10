@@ -56,7 +56,7 @@ Follow the instructions to complete the fresh install.
 npx imba create my-app
 cd my-app
 npm install
-npm start
+npm run dev
 ```
 
 This will create a brand new app using the latest version of Imba and run it with hot reloading. Edit the `/app/client.imba` file to get started.
