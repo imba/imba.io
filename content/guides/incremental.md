@@ -52,7 +52,8 @@ JavaScript files, without any additional configuration:
 
 	```bash
 	cd non-imba-project
-	npx imba create --template module imba-project
+	npx imba create imba-project
+	# choose the module template
 	npm i ./imba-project
 	npm pkg set scripts.build-imba='cd ./imba-project && npm run build'
 	npm run build-imba
@@ -80,7 +81,8 @@ some rules, which is why [#with-npm](#with-npm) is recommended.
 - In your non-Imba project, run:
 
 	```bash
-	npx imba create --template module imba-project
+	npx imba create imba-project
+	# choose the module template
 	npm pkg set scripts.build-imba='cd ./imba-project && npm run build'
 	npm run build-imba
 	```
@@ -100,7 +102,8 @@ some rules, which is why [#with-npm](#with-npm) is recommended.
 - In your non-Imba project, run:
 
 	```bash
-	npx imba create --template module imba-project
+	npx imba create imba-project
+	# choose the module template
 	cd imba-project
 	npm run build
 	```
