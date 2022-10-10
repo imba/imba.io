@@ -114,9 +114,9 @@ Imba project's bundle with a script tag:
 
 ### With Imbac
 
-This approach is most fitting for one-off files and simple use
-cases, but It's a good option to be aware of especially if you're
-considering relying on Imba in some of your projects.
+This approach is most fitting for single files and simple use
+cases, but It's a good option to be aware of if you're
+considering adopting Imba.
 
 You can compile Imba files individually by using `imbac`:
 
@@ -125,7 +125,9 @@ npx -p imba imbac file.imba
 # results in file.js
 ```
 
-Or if you've installed Imba globally with `npm i -g imba`:
+Or if you've installed Imba globally with `npm i -g imba`, you
+can just do:
+
 ```bash
 imbac file.imba
 ```
@@ -159,7 +161,8 @@ npm run watch
 That's all you need to do.
 
 If you instead want to develop your Imba component separately and
-include it in your app later, you can just use the dev server:
+include it in your app later, you can just use the module
+template's dev server:
 
 ```
 cd ./imba-project
@@ -173,9 +176,9 @@ build` and go back to developing your non-Imba app.
 
 ### Exports
 
-Since Imba compiles to JavaScript, depending on your configuration
-you can import from Imba files/projects the same way you
-would from JavaScript files/projects:
+Since Imba compiles to JavaScript, you can import from Imba
+files/projects the same way you would from JavaScript
+files/projects depending on your configuration:
 
 ```imba
 # main.imba
@@ -185,7 +188,7 @@ export def increment
 ```
 
 ```js
-// filename.js
+// js
 
 // If you used Vite
 import { state, increment } from './main.imba'
@@ -213,7 +216,7 @@ tag `app` in its `main.imba` file. To use it, we'd import the
 Imba file and then do:
 
 ```js
-// React, Vue, Svelte
+// React, Vue, Svelte, etc.
 <app-tag/>
 ```
 
@@ -221,7 +224,7 @@ Or, if the tag name already has a dash in it, you don't need to append
 `-tag`:
 
 ```js
-// React, Vue, Svelte
+// React, Vue, Svelte, etc.
 <hello-world/>
 ```
 
@@ -251,7 +254,7 @@ However, In the case where an event is triggered by a non-Imba
 component, you can call it manually:
 
 ```js
-// filename.js
+// js
 import { state } from 'imba-project'
 state.count += 1
 globalThis.imba.commit()
@@ -288,7 +291,8 @@ that affects an Imba component is caused by a non-Imba component.
 
 #### Imports Without Vite
 
-In your Imba module or compiled file you can import from js files.
+In your Imba module or compiled file you can import from
+JavaScript files.
 
 ```imba
 # imba
@@ -300,6 +304,7 @@ import state from '../../src/main.js'
 You can declare attributes with `attr`:
 
 ```imba
+# imba
 tag app
 	attr count
 	<self@click=count++> "count is {count}"
@@ -308,6 +313,7 @@ tag app
 Then in your non-Imba app you can pass data with the attribute:
 
 ```js
+// js
 <app-tag count={20} />
 ```
 
@@ -320,6 +326,7 @@ If you're able to get a reference to an element,
 you can set the props directly:
 
 ```js
+// js
 // <app-tag id='my-app'>
 let el = document.getElementById('my-app')
 el.count += 1
@@ -344,7 +351,7 @@ Then in your non-Imba app you can read and write to `globalThis`:
 globalThis.count += 1
 ```
 
-No imports or exports required.
+**No named imports or exports required.**
 
 Though, you may not want to have a property as unspecific as
 `count` on `globalThis`. We can use something like `imba_state`
