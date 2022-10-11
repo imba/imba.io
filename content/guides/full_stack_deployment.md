@@ -1,8 +1,6 @@
-# Running Imba in production
+# Full Stack Deployment
 
-_To learn more about deploying Imba, see [the deployment guide](deployment)._
-
-Imba runs on the server and the client. This guide is for running Imba full stack - both on the server and on the client. If all you need is a static site, see [the deployment guide](deployment).
+Imba runs on the server and the client. This guide is for full-stack deployment - both on the server and on the client. If all you need is a static site, see the [static deployment guide](static_deployment).
 
 On the server, the recommended way is to use [Express](https://expressjs.com/), but anything in the JavaScript ecosystem is available to you.
 
