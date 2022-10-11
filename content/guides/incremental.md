@@ -19,11 +19,11 @@ preference.
 
 ### With Vite
 
-The easiest way to use Imba in your existing non-Imba
-project is with [Vite](https://vitejs.dev/). If your existing
-project doesn't use Vite,
-try [#with-npm](#with-npm) instead
-(or consider switching to Vite 😝).
+The easiest way to use Imba in your existing non-Imba project is
+with [Vite](https://vitejs.dev/). If your existing project
+doesn't use Vite, try
+[#with-npm](#step-1-importing-imba-files-to-nonimba-projects-with-npm)
+instead (or consider switching to Vite 😝).
 
 - Add `imba` and `vite-plugin-imba` to your existing project:
 	```bash
@@ -76,7 +76,9 @@ JavaScript files, without any additional configuration:
 ### With Modules
 
 If you use eslint, this option may not work without disabling
-some rules, which is why [#with-npm](#with-npm) is recommended.
+some rules, which is why
+[#with-npm](#step-1-importing-imba-files-to-nonimba-projects-with-npm)
+is recommended.
 
 - In your non-Imba project, run:
 
