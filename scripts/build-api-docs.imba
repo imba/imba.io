@@ -5,7 +5,7 @@ import * as ts from 'typescript/lib/tsserverlibrary'
 import imba-plugin from 'typescript-imba-plugin'
 import {SymbolFlags,ModifierFlags,CategoryFlags} from '../src/util/flags'
 
-import marked from 'marked'
+import { marked } from 'marked'
 import mdn-api from './mdn-data/api/inheritance.json'
 
 const mdrenderer = new marked.Renderer
@@ -65,7 +65,7 @@ def mdrenderer.heading text, level
 	
 def toMarkdown str, meta
 	mdstate = meta or {}
-	marked(str,{
+	marked.parse(str,{
 		renderer: mdrenderer
 		sanitize: false
 	})
