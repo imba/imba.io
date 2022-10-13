@@ -1,154 +1,132 @@
 # Decorators
 
-> [tip box yellow] This functionality is still experimental.
+> [tip box yellow] Decorators are considered an experimental feature.
 
-Decorators can be used to replace a property with a new [descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description) at runtime.
+Decorators are special functions which can be used to replace a property with a new [descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description) at runtime. This means you can alter the functionality of a method call by replacing or wrapping it with some other code.
+
+Imba includes some built-in decorators such as @observable. This page teaches you how to build your own.
+
+This example replaces the decorated function with a different message.
 
 ```imba
 # [preview=console]
-# Defining an 'example' decorator:
-def @example target, name, desc
-	console.log "The example decorator is replacing the '{name}' property at runtime."
-	desc.value = do
-		console.log "'{name}' was called, but this code is running in its place."
-	desc
+# Defining a contrived 'silence' decorator:
+def @silence target, name, descriptor
+	descriptor.value = do
+		console.log "'{name}' was called, but it is being silenced."
+	return descriptor
 
-# Using the 'example' decorator:
-class Test
-	@example def one
-		console.log("The @example decorator will replace this function.")
-	@example def two
-		console.log("This will also be replaced.")
+# Using the 'silence' decorator
+class Person
+	@silence def sayHi
+		console.log("Hello, I hope I'm not silenced!")
 
-new Test!.one!
+const someone = new Person()
+someone.sayHi!
 ```
 
 See also [additional details](#additional-details).
 
-### Guide
+## Guide to Understanding
 
-Let's say we want to do something before and after
-calling this simple function:
+Let's walk through why and how decoractors work with an example.
+
+Imagine you have a method which returns the result of a calculation like this:
 
 ```imba
-def calc
-	5 * 5
+class EasyMath
+	def multiply
+		return 5 * 3
 ```
 
-For example, what if we want to log the fact that `calc` was called
-and also log the result?
-Simple enough:
+You later realize you want to log the result of that calculation for debugging purposes, now you need to assign the calculation to a variable, then you can log the value, then return it.
 
 ```imba
 # [preview=console]
-def calc
-	console.log "In calc."
-	let result = 5*5
-	console.log result
-	result
-calc!
+class EasyMath
+	def multiply
+		console.log "Running the multiply method"
+		const result = 5 * 3
+		console.log(result)
+		return result
+
+new EasyMath().multiply!
 ```
 
-The central question here is,
-_what if we want to do this to more than one function?_
+We can make a convenient, reusable decorator that automatically logs the return value, instead of having to modify the function with additional code.
 
-We can make a `log` function and pass our `calc` function to that:
+Here's how we can define such a decorator:
+
+```imba
+def @logResult target, name, descriptor
+
+	# The original method is stored in descriptor.value
+	const originalMethod = descriptor.value
+
+	# We'll overwrite the value with a new function
+	descriptor.value = do(...originalArguments)
+
+		# call the original method
+		let result = originalMethod(...originalArguments)
+
+		# do the logging (this is the additional functionality added by the decorator)
+		console.log "Calling {name}({originalArguments.join(', ')}) returned {result}"
+
+	return descriptor
+```
+
+And here's how to use it:
 
 ```imba
 # [preview=console]
-def log fn
-	console.log "In {fn.name}."
-	let result = fn!
-	console.log result
-	result
-def calc
-	5*5
-log(calc)
-```
+def @logResult target, name, descriptor
 
-This is reusable, and `calc` is no
-longer cluttered with additional logic,
-but instead of calling `calc` we'd have to call `log(calc)`
-which isn't ideal.
+	# The original method is stored in descriptor.value
+	const originalMethod = descriptor.value
 
-What if instead of having `log` actually call anything,
-we have it return a _new_ function?
+	# We'll overwrite the value with a new function
+	descriptor.value = do(...originalArguments)
 
-```imba
-# [preview=console]
-def logify fn
-	do
-		console.log "In {fn.name}."
-		let result = fn!
-		console.log result
-		result
-def calc
-	5*5
-calc = logify(calc)
-calc!
-```
+		# call the original method
+		let result = originalMethod(...originalArguments)
 
-`logify`, in this case, is a higher order function (a function which returns a new function). This addresses our issue with the previous solution, but decorators can make it even cleaner.
+		# do the logging (this is the additional functionality added by the decorator)
+		console.log "Calling {name}({originalArguments.join(', ')}) returned {result}"
 
-Decorators allow us to do something similar to the previous example
-with a convenient syntax and additional options.
-
-```imba
-# [preview=console]
-def @log target, name, desc
-	let prev = desc.value
-	desc.value = do
-		console.log "In {name}."
-		let result = prev!
-		console.log result
-	desc
+	return descriptor
 # ---
-class Test
-	@log def calc
-		5*5
-new Test!.calc!
-# ---
+class EasyMath
+	@logResult def multiply a, b
+		return a * b
+
+	@logResult def quadruple n do n * 4
+
+const myMath = new EasyMath()
+myMath.multiply(3,5)
+myMath.quadruple(10)
 ```
 
-This is how the same functionality looks using a decorator.
-
-The decorator definition looks like this:
-
-```imba
-def @log target, name, descriptor
-	let prev = descriptor.value
-	descriptor.value = do
-		console.log "In {name}."
-		let result = prev!
-		console.log result
-	descriptor
-```
-
-We'll break down how this code works so it is easy to understand how to write your own decorators.
+## Decorator Parameters
 
 The parameters of a decorator are as follows:
 
 #### Target
 
-Target refers to the class constructor's prototype. It's not often needed.
+Target is the class constructor's prototype. It's not often needed.
 
 #### Name
 
-`name`, (sometimes called `key`), is the name of the property being decorated.
-So in the case of our calc example:
+`name`, (sometimes called `key`), is the name of the property being decorated. In the example below, the `name` sent to the `@bar` decorator would be the string `"baz"`.
 
 ```imba
-@log def calc
-	5*5
+class Foo
+	@bar def baz
+		return 'baz!'
 ```
-
-`name` would just be the string `"calc"`.
 
 #### Descriptor
 
-The descriptor value for this property.
-
-##### What is a Descriptor?
+The descriptor value for this property. You can read an overview of descriptors here: [descriptors on mdn](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description).
 
 In JavaScript, when you write:
 
@@ -158,29 +136,23 @@ obj[key] = value
 
 You could say that `obj` has a _property_ named `key`.
 However, it is not as simple as just a new key mapping to a value.
-There is some additional metadata
-associated with this property which is called the descriptor.
+There is some additional metadata associated with this property which is called the descriptor.
 
 The descriptor is an object which indicates whether the property is enumerable or not,
-writeable or not, etc. You can read more about
-[descriptors on mdn](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description),
+writeable or not, etc.
 
-The main descriptor properties we'll be using are:
+The main descriptor properties we use are:
 
 -   `descriptor.value` for functions.
 -   `descriptor.get` for getters.
 -   `descriptor.set` for setters.
 
-In the case of our calc example:
+In this example, the `descriptor.value` sent to the `@bar` decorator would be the `baz` function itself.
 
 ```imba
-# [preview=console]
-def @log target, name, desc
-	console.log desc.value
-
-class Test
-	@log def calc
-		5*5
+class Foo
+	@bar def baz
+		return 'baz!'
 ```
 
 `descriptor.value` would just be the `calc` function itself.
@@ -196,14 +168,14 @@ side effects included.
 def @log target, name, desc
 	desc.value = do
 		console.log "This will log."
-	return
+	return null
 
 class Test
 	@log def main
 		console.log "In main."
 
 let test = new Test!
-test.main!
+test.main()
 ```
 
 This might remind you of our higher order function example above,
@@ -234,133 +206,60 @@ class Test
 		return
 ```
 
-#### A more cohesive logging decorator
-
-Let's finally write our own decorator that also handles the arguments
-of the decorated function.
-
-```imba
-def @log target, name, desc
-
-	# For this example we only want this decorator to apply to functions
-	return unless typeof desc..value is 'function'
-
-	# Store the original function
-	let prev = desc.value
-
-	# Replace the decorated function with this one
-	desc.value = do(...args)
-
-		# Call the original function and store the result
-		const result = prev.apply(this, args)
-
-		# Log the name, args, and result
-		console.log name
-		console.log args
-		console.log result
-
-	# Return our new descriptor
-	desc
-```
-
-Now let's test it out:
-
-```imba
-# [preview=console]
-def @log target, name, desc
-	return unless typeof desc..value is 'function'
-	let prev = desc.value
-	desc.value = do(...args)
-		const result = prev.apply(this, args)
-		console.log "Called {name}:"
-		console.log args
-		console.log result
-	desc
-# ---
-class Test
-	@log def main a, b, c
-		a * b * c
-
-new Test!.main(5, 6, 7)
-# ---
-```
-
-Now we have a completed logging decorator.
-
-## Additional Details
+## Further Details
 
 #### Placement
 
-You can place decorators either above a property or before a property.
+You can place decorators either above a property or before a property as demonstrated in the next example.
 
 ```imba
-# [preview=console]
-def @nothing target, name, desc
-	desc
-# ---
-class Test
+class Foo
+	@bar
+	def first
+		console.log "this works"
 
-	@nothing
-	def one
-		console.log "This works."
-
-	@nothing def two
+	@bar def second
 		console.log "This works too!"
-
-let test = new Test!
-test.one!
-test.two!
-# ---
 ```
 
 #### Decorator Arguments
 
-Arguments are bound as `this` in the decorator.
+Arguments can be passed to the decorator and are bound as `this` in the decorator.
 
 ```imba
 # [preview=console]
 def @example
+	# arguments are available as 'this'
 	console.log this
+
 class Test
-	@example(1, 2, 3) def main
-		return
+	@example(1, 2, 3) def main do return
 ```
 
 #### Multiple decorators
 
+Multiple decorators can be used on a single method.
+
 ```imba
-# [preview=console]
-def @one target, name, desc
-	let prev = desc.value
-	desc.value = do
-		console.log "one"
-		prev!
-	desc
-
-def @two target, name, desc
-	let prev = desc.value
-	desc.value = do
-		console.log "two"
-		prev!
-	desc
-
 class Test
+	@one @two @three def foo
+		console.log "Called foo."
+
 	@one
 	@two
-	def main
-		console.log "Called main."
+	def bar
+		console.log "Called bar."
 
-new Test!.main!
 ```
 
 #### Implicit returns
 
-Imba implicitly returns the last statement,
+Imba implicitly returns the last statement in a function,
 so even though side effects can be used to modify the
 descriptor, if the last statement is `desc.value = do ...`,
 the `do` function will be implicitly returned.
-Since the returned function won't contain a `value` property,
-it will not update the decorated class member's `value`.
+
+Be sure to explicitly return the `desc` value if that is your intention.
 
 #### Execution context
 
