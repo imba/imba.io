@@ -1,38 +1,34 @@
 # Imba [href=/]
 
-## Overview [href=/$]
+## Home [href=/$]
 
 ## Getting Started [doc=docs/start] [href=/start]
 
-## Command Line [doc=docs/cli] [href=/cli]
+## Playground [href=/try] [target=_blank]
 
-## Resources [href=/resources] [doc=docs/resources]
+## Change Log [doc=changelog] [href=/changelog]
 
-## Playground [href=/try]
-
-# Docs [doc=docs/index] [href=/docs]
-
-## Introduction [doc=docs/intro] [href=/docs/intro]
+# Language Reference [doc=docs/index] [href=/docs]
 
 ## Basic Syntax [doc=docs/basic-syntax] [href=/docs/basic-syntax]
 
-## Variables [doc=docs/variables] [href=/docs/variables]
+### Variables [doc=docs/variables] [href=/docs/basic-syntax/variables]
 
-## Identifiers [doc=docs/identifiers] [href=/docs/identifiers]
+### Identifiers [doc=docs/identifiers] [href=/docs/basic-syntax/identifiers]
 
-## Literal Types [doc=docs/literals] [href=/docs/literals] [skip]
+### Literal Types [doc=docs/literals] [href=/docs/basic-syntax/literals] [skip]
 
-## Operators [doc=docs/operators] [href=/docs/operators]
+### Operators [doc=docs/operators] [href=/docs/basic-syntax/operators]
 
-## Functions [doc=docs/functions] [href=/docs/functions]
+### Functions [doc=docs/functions] [href=/docs/basic-syntax/functions]
 
-## Control Flow [doc=docs/control-flow] [href=/docs/control-flow]
+### Control Flow [doc=docs/control-flow] [href=/docs/basic-syntax/control-flow]
 
-## Classes [doc=docs/classes] [href=/docs/classes]
+### Classes [doc=docs/classes] [href=/docs/basic-syntax/classes]
 
-## Modules [doc=docs/modules] [href=/docs/modules]
+### Modules [doc=docs/modules] [href=/docs/basic-syntax/modules]
 
-## Types [doc=docs/types] [href=/docs/types] [skip]
+### Types [doc=docs/types] [href=/docs/basic-syntax/types] [skip]
 
 ## Elements [doc=docs/tags] [href=/docs/tags]
 
@@ -88,12 +84,11 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 ## Assets [doc=docs/assets] [href=/docs/assets]
 
-## Reference [href=/api]
-
-## Changelog [doc=changelog] [href=/changelog]
-
+## API Reference [href=/api]
 
 # Guides [href=/guides] [doc=guides/index]
+
+## Command Line [doc=docs/cli] [href=/cli]
 
 ## Declarative Rendering [doc=docs/declarative-rendering] [href=/guides/rendering]
 

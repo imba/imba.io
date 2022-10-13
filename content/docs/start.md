@@ -1,14 +1,20 @@
-# Getting Started
+# Quick Start
 
 The easiest way to get started with Imba is to use `npx` to get a brand-new project up and running.
+
+### Create a starter project
+
+Enter this command in your terminal, then follow the prompts to create a starter app.
 
 ```sh
 npx imba create my-app
 ```
 
-Follow the instructions to complete the fresh install.
+This will create a brand new app using the latest version of Imba. Run the hot reloading server with `npm run start` inside the project directory. Edit the `/app/client.imba` file to get started on your project.
 
-### Full example
+### Build for deployment
+
+To build your app for deployment, run:
 
 ```sh
 npx imba create my-app
@@ -17,19 +23,17 @@ npm install
 npm run dev
 ```
 
-This will create a brand new app using the latest version of Imba and run it with hot reloading. Edit the `/app/client.imba` file to get started.
-s
-To create a build version of the app for deployment, simply run:
+### Imba VSCode Plugin
 
-```sh
-npm build
-```
+We thoroughly recommend using our Visual Studio Code integration which has fantastic tooling when using Imba, including autocomplete for css shortcuts.
 
-### Useful tools
+[Install the VSCode plugin](https://marketplace.visualstudio.com/items?itemName=scrimba.vsimba)
 
-We thoroughly recommend using our Visual Studio Code integration which has fantastic tooling when using Imba - including autocomplete for css shortcuts.
+### Learn Imba Course
 
-- [VSCode plugin](https://marketplace.visualstudio.com/items?itemName=scrimba.vsimba)
+There is a complete Imba course available on Scrimba.com which consists of interactive screencasts where you can pause and edit the code while you learn.
+
+[Imba Course on Scrimba](https://scrimba.com/learn/imba)
 
 ### Getting help
 

@@ -26,7 +26,11 @@ tag app-menu-item
 
 	def render
 		<self[d:contents] .{data.flagstr}>
-			<a$item.item .l{level} route-to=data.href>
+			<a$item.item
+				.has-children=data.docs..length
+				.l{level}
+				route-to=data.href
+			>
 				<span> data.title
 
 			if data.docs..length
