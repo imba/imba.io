@@ -8,7 +8,7 @@ A good way to think of Imba is, "it’s just JavaScript". Imba compiles directly
 
 [Watch the scrim on syntax in the Imba course](https://scrimba.com/learn/imba/intro-to-imba-syntax-cpwyK7Tz)
 
-Imba syntax is familiar and often the same as JavaScript. Let's look at some examples of [literals](https://developer.mozilla.org/en-US/docs/Glossary/Literal). The comments below highlight  how Imba can be both easier to read and faster to write.
+Imba syntax is familiar and often the same as JavaScript. Let's look at some examples of [literals](https://developer.mozilla.org/en-US/docs/Glossary/Literal). The comments below highlight how Imba can be both easier to read and faster to write.
 
 ```imba
 const number = 42
@@ -38,13 +38,11 @@ const element = <div.large.header> "Welcome"
 const alsoElement = <div.{object.name}> "{object.name} class" # Easy interpolation, using the object above.
 ```
 
-
 ## Functions
 
 _Note: Differences between functions and arrow functions are covered in the [functions overview](/docs/functions)._
 
 [Watch the scrim on functions in the Imba course](https://scrimba.com/learn/imba/functions-cJLGEQCB)
-
 
 Imba uses the shorter `def` instead of the `function` keyword. `do` instead of `() => {}`. These are faster to write, read, and recognize at a glance.
 
@@ -57,7 +55,6 @@ def alsoFunc(a, b)
 
 const smallerFunc = do(a, b) a * b # Implicit return on one line
 ```
-
 
 ## Strings
 
@@ -159,7 +156,6 @@ def logObject(object)
 logObject(name: 'Rincewind', profession: 'Wizzard') # Logs "Logging: { name: 'Rincewind', profession: 'Wizzard' }"
 ```
 
-
 They can be set dynamically by wrapping a variable with `[]`.
 
 ```imba
@@ -202,7 +198,6 @@ const object = { a, b, c }
 console.log(object) # Logs "{ a: 'foo', b: 42, c: {} }"
 ```
 
-
 ## Methods
 
 Parenthesis can be skipped, even when setting default values.
@@ -234,7 +229,7 @@ _Note: More details about classes are in the [class overview](/docs/classes)._
 
 [Watch the scrim on classes in the Imba course](https://scrimba.com/learn/imba/classes-cbVveMS4)
 
-Classes in Imba can do the same things as classes in JavaScript, but have several additional features making them easier to use. 
+Classes in Imba can do the same things as classes in JavaScript, but have several additional features making them easier to use.
 
 ```imba
 class Todo
@@ -285,7 +280,6 @@ console.log newTodos
 # ]
 ```
 
-
 ## Loops & Iteration
 
 [Watch the scrim on loops in the Imba course](https://scrimba.com/learn/imba/loops-co2eb439ab71581a6ad3f0ea1)
@@ -321,7 +315,6 @@ for own key, value of object
 Looping within tags works the same way.
 
 [Watch the scrim on looping within tags in the Imba course](https://scrimba.com/learn/imba/loops-inside-tags-co59443e78abc774ac34f72f4)
-
 
 ## Regular Expressions
 
@@ -383,7 +376,7 @@ const handler = do(event)
 
 [Watch the scrim on tags in the Imba course](https://scrimba.com/learn/imba/tags-co83d4e259d958441d6c9b8e7)
 
-Tags are compiled down to _extremely optimized_ native [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). By default, `data` is the name used to pass values into a tag. Using `data` is simple, but declaring each prop and its type is usually better. 
+Tags are compiled down to _extremely optimized_ native [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). By default, `data` is the name used to pass values into a tag. Using `data` is simple, but declaring each prop and its type is usually better.
 
 ```imba
 # Importing a todos array from another Imba file called "data.imba":
@@ -446,7 +439,6 @@ Imba developers often say these shorthand names become as familiar and natural a
 
 ### Scoping styles
 
-
 [Watch the scrim on scoping styles in the Imba course](https://scrimba.com/learn/imba/scoped-styles-co50f4384944f5102c6e6d8ca)
 
 Inline styles apply to the element itself, and everything within it. Changing the scope lets you apply styles to subtrees, components, tags, the entire file, or even globally.
@@ -456,7 +448,7 @@ Inline styles apply to the element itself, and everything within it. Changing th
 global css p fs:15px
 
 # Set at the top level to style every <p> element in the file.
-css p color:blue7 fw:500 
+css p color:blue7 fw:500
 
 tag todo-app
     # Set at the todo-app level to style everything within the tag.
@@ -547,5 +539,5 @@ tag user-card
     <self>
         # We know what kind of object a User is now:
         <p> user.name
-        <img src=user.profile alt="Profile picture"> 
+        <img src=user.profile alt="Profile picture">
 ```

@@ -2,27 +2,23 @@
 
 > [tip box yellow] This functionality is still experimental.
 
-### TLDR
-
-You can define and use decorators to replace a property with a new
-[descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description)
-at runtime.
+Decorators can be used to replace a property with a new [descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description) at runtime.
 
 ```imba
 # [preview=console]
-# Defining decorators:
+# Defining an 'example' decorator:
 def @example target, name, desc
-	console.log "Creating new property for {name} at runtime."
+	console.log "The example decorator is replacing the '{name}' property at runtime."
 	desc.value = do
-		console.log "This function replaces the decorated one."
+		console.log "'{name}' was called, but this code is running in its place."
 	desc
 
-# Using decorators:
+# Using the 'example' decorator:
 class Test
 	@example def one
-		console.log("This will not get logged.")
+		console.log("The @example decorator will replace this function.")
 	@example def two
-		console.log("This will not get logged.")
+		console.log("This will also be replaced.")
 
 new Test!.one!
 ```
@@ -33,13 +29,16 @@ See also [additional details](#additional-details).
 
 Let's say we want to do something before and after
 calling this simple function:
+
 ```imba
 def calc
 	5 * 5
 ```
+
 For example, what if we want to log the fact that `calc` was called
 and also log the result?
 Simple enough:
+
 ```imba
 # [preview=console]
 def calc
@@ -49,10 +48,12 @@ def calc
 	result
 calc!
 ```
+
 The central question here is,
-*what if we want to do this to more than one function?*
+_what if we want to do this to more than one function?_
 
 We can make a `log` function and pass our `calc` function to that:
+
 ```imba
 # [preview=console]
 def log fn
@@ -64,13 +65,15 @@ def calc
 	5*5
 log(calc)
 ```
+
 This is reusable, and `calc` is no
 longer cluttered with additional logic,
 but instead of calling `calc` we'd have to call `log(calc)`
 which isn't ideal.
 
 What if instead of having `log` actually call anything,
-we have it return a *new* function?
+we have it return a _new_ function?
+
 ```imba
 # [preview=console]
 def logify fn
@@ -84,12 +87,12 @@ def calc
 calc = logify(calc)
 calc!
 ```
-`logify`, in this case, would be called a higher order function.
-This addresses our issue with the previous solution,
-but it's kind of awkward.
 
-Decorators allow us to do something similar to the previous snippet
+`logify`, in this case, is a higher order function (a function which returns a new function). This addresses our issue with the previous solution, but decorators can make it even cleaner.
+
+Decorators allow us to do something similar to the previous example
 with a convenient syntax and additional options.
+
 ```imba
 # [preview=console]
 def @log target, name, desc
@@ -106,8 +109,11 @@ class Test
 new Test!.calc!
 # ---
 ```
-Much cleaner.
-What does the code for our `@log` decorator look like?
+
+This is how the same functionality looks using a decorator.
+
+The decorator definition looks like this:
+
 ```imba
 def @log target, name, descriptor
 	let prev = descriptor.value
@@ -117,60 +123,74 @@ def @log target, name, descriptor
 		console.log result
 	descriptor
 ```
-It looks overwhelming but don't worry, with some patience you'll
-be writing your own decorators in no time.
+
+We'll break down how this code works so it is easy to understand how to write your own decorators.
 
 The parameters of a decorator are as follows:
+
 #### Target
-Target refers to the class constructor's prototype.
-You probably won't need this.
+
+Target refers to the class constructor's prototype. It's not often needed.
 
 #### Name
-`name`, or sometimes `key`, is the name of the property being decorated.
+
+`name`, (sometimes called `key`), is the name of the property being decorated.
 So in the case of our calc example:
+
 ```imba
 @log def calc
 	5*5
 ```
+
 `name` would just be the string `"calc"`.
 
 #### Descriptor
-In JavaScript, when you do
+
+The descriptor value for this property.
+
+##### What is a Descriptor?
+
+In JavaScript, when you write:
+
 ```imba
 obj[key] = value
 ```
-You could say that `obj` has a *property* named `key`.
-However, it is not as simple as just a new key mapping to a value.
-There is some additional metadata, if you will,
-associated with this property.
-Whether the property is enumerable or not,
-writeable or not, etc.
 
-`descriptor` is an object containing the aforementioned "value"
-of the decorated property as well as all the additional "metadata".
-You can read more about
+You could say that `obj` has a _property_ named `key`.
+However, it is not as simple as just a new key mapping to a value.
+There is some additional metadata
+associated with this property which is called the descriptor.
+
+The descriptor is an object which indicates whether the property is enumerable or not,
+writeable or not, etc. You can read more about
 [descriptors on mdn](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description),
-but the main descriptor properties we'll be using are:
-- `descriptor.value` for functions.
-- `descriptor.get` for getters.
-- `descriptor.set` for setters.
+
+The main descriptor properties we'll be using are:
+
+-   `descriptor.value` for functions.
+-   `descriptor.get` for getters.
+-   `descriptor.set` for setters.
 
 In the case of our calc example:
+
 ```imba
 # [preview=console]
-def @log target,name,desc
+def @log target, name, desc
 	console.log desc.value
 
 class Test
 	@log def calc
 		5*5
 ```
+
 `descriptor.value` would just be the `calc` function itself.
 
 #### Return value
-The return value is the new descriptor.
+
+The return value is a new descriptor.
 If the return value is null, the original descriptor is used,
 side effects included.
+
 ```imba
 # [preview=console]
 def @log target, name, desc
@@ -188,17 +208,20 @@ test.main!
 
 This might remind you of our higher order function example above,
 where we **replaced** `calc` with the function returned by `logify(calc)`:
+
 ```imba
 calc = logify(calc)
 ```
+
 It's almost exactly the same, except we have access to the entire
-descriptor, and the property being decorated is *automatically* **replaced**
+descriptor, and the property being decorated is _automatically_ **replaced**
 with the new descriptor at **runtime**.
 
 For clarity,
 notice that this code will log twice even though we're
 not calling any functions because the decorated properties are
 replaced at runtime:
+
 ```imba
 # [preview=console]
 def @example target, name, desc
@@ -212,8 +235,10 @@ class Test
 ```
 
 #### A more cohesive logging decorator
+
 Let's finally write our own decorator that also handles the arguments
 of the decorated function.
+
 ```imba
 def @log target, name, desc
 
@@ -237,6 +262,7 @@ def @log target, name, desc
 	# Return our new descriptor
 	desc
 ```
+
 Now let's test it out:
 
 ```imba
@@ -258,11 +284,13 @@ class Test
 new Test!.main(5, 6, 7)
 # ---
 ```
-Yay!
 
-### Additional Details
+Now we have a completed logging decorator.
+
+## Additional Details
 
 #### Placement
+
 You can place decorators either above a property or before a property.
 
 ```imba
@@ -286,7 +314,9 @@ test.two!
 ```
 
 #### Decorator Arguments
+
 Arguments are bound as `this` in the decorator.
+
 ```imba
 # [preview=console]
 def @example
@@ -297,6 +327,7 @@ class Test
 ```
 
 #### Multiple decorators
+
 ```imba
 # [preview=console]
 def @one target, name, desc
@@ -323,6 +354,7 @@ new Test!.main!
 ```
 
 #### Implicit returns
+
 Imba implicitly returns the last statement,
 so even though side effects can be used to modify the
 descriptor, if the last statement is `desc.value = do ...`,
@@ -331,15 +363,18 @@ Since the returned function won't contain a `value` property,
 it will not update the decorated class member's `value`.
 
 #### Execution context
+
 You might be wondering why we need to use
 [apply](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply)
 instead of just calling the function directly:
+
 ```imba
 const result = prev.apply(this, args)
 ```
 
 That has to do with the execution context of the function.
 It's an odd topic, but if you look at the output of this example:
+
 ```imba
 # [preview=console]
 def @log target, name, desc
@@ -360,19 +395,24 @@ let test = new Test!
 test.one!
 test.two!
 ```
+
 You'll notice that even though it seems like we're calling
 `one` and `two` in the same manner,
 since `one` is being called inside of this function:
+
 ```imba
 	desc.value = do
 		console.log "In @log: {this}"
 		prev!
 ```
+
 It loses its execution context. More on `this` can be found on [mdn](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this).
 
 #### Implementation
+
 For those interested, this is slightly simplified
 version of how decorators work behind the scenes:
+
 ```imba
 # [preview=console]
 # inserted at compile time
