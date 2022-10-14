@@ -282,7 +282,10 @@ Object properties can be set dynamically by wrapping a variable with `[]`.
 ```imba
 # [preview=console]
 const field = 'age'
-const person = { name: 'Bob Smith', [field]: 32, gender: 'male' }
+const person = {
+    [field]: 32 # this property name is set dynamically using a variable
+    name: 'Bob Smith'
+}
 console.log person.age
 ```
 
