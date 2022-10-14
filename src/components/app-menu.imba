@@ -30,8 +30,11 @@ tag app-menu-item
 				.has-children=data.docs..length
 				.l{level}
 				route-to=data.href
+				target=(data..options..target ?? "")
 			>
-				<span> data.title
+				<span>
+					data.title
+					<span.arrow [c:blue3]> " →" if data..options..target === "_blank"
 
 			if data.docs..length
 				<div$children.children[$count:{data.docs.length}]>

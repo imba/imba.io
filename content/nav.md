@@ -1,12 +1,6 @@
-# Imba [href=/]
+# Imba Home [href=/]
 
-## Home [href=/$]
-
-## Getting Started [doc=docs/start] [href=/start]
-
-## Playground [href=/try] [target=_blank]
-
-## Change Log [doc=changelog] [href=/changelog]
+## Quick Start [doc=docs/start] [href=/start]
 
 # Language Reference [doc=docs/index] [href=/docs]
 

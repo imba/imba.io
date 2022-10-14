@@ -1,6 +1,6 @@
 # Quick Start
 
-The easiest way to get started with Imba is to use `npx` to get a brand-new project up and running.
+The easiest way to get started with Imba is to use `npx` to get a brand-new project up and running. You can also try Imba immediately in your browser with the [Imba playground](/try/examples/apps/playground/app.imba)
 
 ### Create a starter project
 
