@@ -343,14 +343,14 @@ def withDefaultValue name = 'Imba'
 withDefaultValue()
 ```
 
-Objects can be deconstructed like normal, and given default values.
+Objects can be destructured and given default values as in Javascript
 
 ```imba
 # [preview=console]
-def method name, { title, desc = 'no description' }
-	console.log name, title, desc
+def buildCharacter name, { title, desc = 'indescribable' }
+	"{name}, {title}, {desc}"
 
-console.log method('Rincewind', title: 'Wizzard')
+console.log buildCharacter('Rincewind', {title: 'Wizzard'})
 ```
 
 ## Classes
