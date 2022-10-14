@@ -39,7 +39,7 @@ tag app-menu-item
 			if data.docs..length
 				<div$children.children[$count:{data.docs.length}]>
 					for child in data.docs
-						<app-menu-item.child data=child level=(level + 1)>
+						<app-menu-item.child data=child level=(level)>
 
 
 	

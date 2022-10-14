@@ -1,12 +1,12 @@
-# Basic Syntax
+# Syntax Overview
 
 _The first few lessons of the [Learn Imba Course](https://scrimba.com/learn/imba) cover Imba’s basic syntax._
 
-### It’s just Javascript
+#### It’s just Javascript
 
-A good way to think of Imba is, “it’s just JavaScript.” Imba compiles directly to readable JavaScript. This means that every native type with all of their methods, properties and behaviour are the exact same. So, strings are just strings, arrays are just arrays, and so on. If you'd like to manually compile an Imba file yourself, you can use the `imbac` command.
+A good way to think of Imba is, “It’s just JavaScript.” Imba compiles directly to readable JavaScript. This means that every native type with all of their methods, properties and behaviour are the exact same. So, strings are just strings, arrays are just arrays, and so on. If you'd like to manually compile an Imba file yourself, you can use the `imbac` command.
 
-### How do I do X with Imba?
+#### How do I do X with Imba?
 
 One of the most common beginner questions is, "How do I do X with Imba?" the answer is usually "However you'd do it with Javascript", whether that means using a Javascript built-in method, or a library, you can generally do it the same way with Imba. The big exception to this is anything to do with custom components, HTML tags or CSS styles which usually do have an Imba-specific approach.
 
