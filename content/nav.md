@@ -98,7 +98,7 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 ## Incremental Adoption [doc=guides/incremental] [href=/guides/incremental]
 
-# Misc
+# Other
 
 ## Command Line Tool [doc=docs/cli] [href=/cli]
 

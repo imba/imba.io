@@ -13,6 +13,10 @@ tag app-menu-item
 			span of:hidden text-overflow:ellipsis ws:nowrap
 			h:1rh o:0 pe:none mb:-1rh
 			ea:200ms quint-out
+			&.has-children
+				&@before content:"▸" c:gray4 pos:absolute t:0 b:0 d:vflex ja:center x:-10px y:-1px
+				&.active@before content:"▾" c:gray5
+
 
 		.children pl:15px
 		a.active + .children > .child > .item o:1 pe:auto mb:0

@@ -10,22 +10,19 @@ Enter this command in your terminal, then follow the prompts to create a starter
 npx imba create my-app
 ```
 
-This will create a brand new app using the latest version of Imba. Run the hot reloading server with `npm run start` inside the project directory. Edit the `/app/client.imba` file to get started on your project.
+This will create a brand new app using the latest version of Imba. Run the hot reloading server with `npm run dev` inside the project directory. Edit the `/app/client.imba` file to get started on your project.
 
 ### Build for deployment
 
-To build your app for deployment, run:
+To build your app for deployment, run this command from within your project folder:
 
 ```sh
-npx imba create my-app
-cd my-app
-npm install
-npm run dev
+npm run build
 ```
 
 ### Imba VSCode Plugin
 
-We thoroughly recommend using our Visual Studio Code integration which has fantastic tooling when using Imba, including autocomplete for css shortcuts.
+Imba's Visual Studio Code integration is highly recommended. The extension gives you full-featured tooling when using Imba, including autocomplete for css shortcuts.
 
 [Install the VSCode plugin](https://marketplace.visualstudio.com/items?itemName=scrimba.vsimba)
 
@@ -39,6 +36,5 @@ There is a complete Imba course available on Scrimba.com which consists of inter
 
 If you run into any issues, you can check out the GitHub repository or come and join us in our friendly Discord chat group.
 
-- [GitHub](https://github.com/imba/imba)
-
-- [Discord](https://discord.gg/mkcbkRw)
+-   [Join Imba Discord](https://discord.gg/mkcbkRw)
+-   [GitHub](https://github.com/imba/imba)

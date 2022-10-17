@@ -71,8 +71,8 @@ const indentedObject = # Optionally skip the commas for indented objects
 Imba also has a few of its own types which are not part of Javascript.
 
 ```imba
-const duration = 150ms # compiles to 150
-const longerDuration = 42s # compiles to (42 * 1000)
+const duration = 150ms # compiles to: 150
+const longerDuration = 42s # compiles to: (42 * 1000)
 
 const element = <div.large.header> "Welcome"
 # The compiled output of this line consists of highly-optimized memoized DOM code which is not easily human readable
