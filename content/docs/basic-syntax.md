@@ -302,6 +302,7 @@ Keys work the same way as in JavaScript.
 ```imba
 # [preview=console]
 const person = { name: 'Bob Smith', age: 32, gender: 'male' }
+
 person['name']
 person['age'] = 33
 
@@ -512,10 +513,7 @@ const list = <ul title="reminders">
 imba.mount list
 ```
 
-CSS classes are set with dots,
-and can be both dynamically interpolated and conditionally set.
-This lets you use logic inside elements,
-keeping the code short and simple.
+CSS classes are set with dots, and can be both dynamically interpolated and conditionally set. This lets you use logic inside elements, keeping the code short and simple.
 
 ```imba
 const state = 'open'
