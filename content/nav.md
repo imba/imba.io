@@ -2,6 +2,8 @@
 
 ## Quick Start [doc=docs/start] [href=/start]
 
+## Playground [href=/try] [target=_blank]
+
 # Language Reference [doc=docs/index] [href=/docs]
 
 ## Basic Syntax [doc=docs/basic-syntax] [href=/docs/basic-syntax]
@@ -82,8 +84,6 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 # Guides [href=/guides] [doc=guides/index]
 
-## Command Line [doc=docs/cli] [href=/cli]
-
 ## Declarative Rendering [doc=docs/declarative-rendering] [href=/guides/rendering]
 
 ## Transitions & Animations [doc=guides/transitions] [href=/guides/transitions]
@@ -97,3 +97,9 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 ## Full Stack Deployment [doc=guides/full_stack_deployment] [href=/guides/full_stack_deployment]
 
 ## Incremental Adoption [doc=guides/incremental] [href=/guides/incremental]
+
+# Misc
+
+## Command Line Tool [doc=docs/cli] [href=/cli]
+
+## Changelog [doc=changelog] [href=/changelog]
