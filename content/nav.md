@@ -2,29 +2,33 @@
 
 ## Quick Start [doc=docs/start] [href=/start]
 
+## Command Line Tool [doc=docs/cli] [href=/cli]
+
+## Changelog [doc=changelog] [href=/changelog]
+
 ## Playground [href=/try] [target=_blank]
 
 # Language Reference [doc=docs/index] [href=/docs]
 
 ## Basic Syntax [doc=docs/basic-syntax] [href=/docs/basic-syntax]
 
-### Variables [doc=docs/variables] [href=/docs/basic-syntax/variables]
+## Variables [doc=docs/variables] [href=/docs/basic-syntax/variables]
 
-### Identifiers [doc=docs/identifiers] [href=/docs/basic-syntax/identifiers]
+## Identifiers [doc=docs/identifiers] [href=/docs/basic-syntax/identifiers]
 
-### Literal Types [doc=docs/literals] [href=/docs/basic-syntax/literals] [skip]
+## Literal Types [doc=docs/literals] [href=/docs/basic-syntax/literals] [skip]
 
-### Operators [doc=docs/operators] [href=/docs/basic-syntax/operators]
+## Operators [doc=docs/operators] [href=/docs/basic-syntax/operators]
 
-### Functions [doc=docs/functions] [href=/docs/basic-syntax/functions]
+## Functions [doc=docs/functions] [href=/docs/basic-syntax/functions]
 
-### Control Flow [doc=docs/control-flow] [href=/docs/basic-syntax/control-flow]
+## Control Flow [doc=docs/control-flow] [href=/docs/basic-syntax/control-flow]
 
-### Classes [doc=docs/classes] [href=/docs/basic-syntax/classes]
+## Classes [doc=docs/classes] [href=/docs/basic-syntax/classes]
 
-### Modules [doc=docs/modules] [href=/docs/basic-syntax/modules]
+## Modules [doc=docs/modules] [href=/docs/basic-syntax/modules]
 
-### Types [doc=docs/types] [href=/docs/basic-syntax/types] [skip]
+## Types [doc=docs/types] [href=/docs/basic-syntax/types] [skip]
 
 ## Elements [doc=docs/tags] [href=/docs/tags]
 
@@ -97,9 +101,3 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 ## Full Stack Deployment [doc=guides/full_stack_deployment] [href=/guides/full_stack_deployment]
 
 ## Incremental Adoption [doc=guides/incremental] [href=/guides/incremental]
-
-# Other
-
-## Command Line Tool [doc=docs/cli] [href=/cli]
-
-## Changelog [doc=changelog] [href=/changelog]
