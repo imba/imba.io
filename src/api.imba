@@ -637,7 +637,7 @@ def build raw
 	return new cls(raw,kind)
 
 const all = global.$api({},build)
-console.log "api took",Date.now! - t
+# console.log "api took",Date.now! - t
 global.api2 = all
 
 const root = new class

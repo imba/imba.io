@@ -1,12 +1,12 @@
-# Basic Syntax
+# Syntax Overview
 
 _The first few lessons of the [Learn Imba Course](https://scrimba.com/learn/imba) cover Imba’s basic syntax._
 
-### It’s just Javascript
+#### It’s just Javascript
 
-A good way to think of Imba is, “it’s just JavaScript.” Imba compiles directly to readable JavaScript. This means that every native type with all of their methods, properties and behaviour are the exact same. So, strings are just strings, arrays are just arrays, and so on. If you'd like to manually compile an Imba file yourself, you can use the `imbac` command.
+A good way to think of Imba is, “It’s just JavaScript.” Imba compiles directly to readable JavaScript. This means that every native type with all of their methods, properties and behaviour are the exact same. So, strings are just strings, arrays are just arrays, and so on. If you'd like to manually compile an Imba file yourself, you can use the `imbac` command.
 
-### How do I do X with Imba?
+#### How do I do X with Imba?
 
 One of the most common beginner questions is, "How do I do X with Imba?" the answer is usually "However you'd do it with Javascript", whether that means using a Javascript built-in method, or a library, you can generally do it the same way with Imba. The big exception to this is anything to do with custom components, HTML tags or CSS styles which usually do have an Imba-specific approach.
 
@@ -71,8 +71,8 @@ const indentedObject = # Optionally skip the commas for indented objects
 Imba also has a few of its own types which are not part of Javascript.
 
 ```imba
-const duration = 150ms # compiles to 150
-const longerDuration = 42s # compiles to (42 * 1000)
+const duration = 150ms # compiles to: 150
+const longerDuration = 42s # compiles to: (42 * 1000)
 
 const element = <div.large.header> "Welcome"
 # The compiled output of this line consists of highly-optimized memoized DOM code which is not easily human readable
@@ -282,7 +282,10 @@ Object properties can be set dynamically by wrapping a variable with `[]`.
 ```imba
 # [preview=console]
 const field = 'age'
-const person = { name: 'Bob Smith', [field]: 32, gender: 'male' }
+const person = {
+    [field]: 32 # this property name is set dynamically using a variable
+    name: 'Bob Smith'
+}
 console.log person.age
 ```
 
@@ -340,14 +343,14 @@ def withDefaultValue name = 'Imba'
 withDefaultValue()
 ```
 
-Objects can be deconstructed like normal, and given default values.
+Objects can be destructured and given default values as in Javascript
 
 ```imba
 # [preview=console]
-def method name, { title, desc = 'no description' }
-	console.log name, title, desc
+def buildCharacter name, { title, desc = 'indescribable' }
+	"{name}, {title}, {desc}"
 
-console.log method('Rincewind', title: 'Wizzard')
+console.log buildCharacter('Rincewind', {title: 'Wizzard'})
 ```
 
 ## Classes
