@@ -1,69 +1,89 @@
+def buildCircle x, y, size = 30 do {x, y, size}
+def cloneObject obj do JSON.parse(JSON.stringify(obj))
+def areObjectsEqual a, b do JSON.stringify(a) === JSON.stringify(b)
+
 export class State
-	history = []
-	history_position = 0
-	circles = []	
-	selection = null
-	selection_scale = 0
-	editing = no
+	prop inspector = false
+	prop undoAmount = 0
+	prop selected = null
+	prop history = [[]]
 
-	def writeHistory type
-		console.log('wrote ', type)
-		# Overwrite redo history if such exist
-		if history_position != history.length - 1
-			history.length = history_position + 1
+	#newSize = null
+	get newSize
+		#newSize
+	
+	set newSize v
+		chopHistory() if v !== #newSize and #newSize != null
+		#newSize = v
 
-		history.push {type, circle: selection, index: circles.indexOf(selection), scale: selection.r}
-		console.log("wrote {type} to {selection.r} at length {history.length}}")
-		history_position = history.length - 1
+	get selectedCircle
+		currentView[selected]
 
-	def handleClick e
-		return editing = no if editing
-		# We need to calculate the svg offset from the top of page
-		# to calculate click relative to the svg position
-		let boundung-rect = e.target.getBoundingClientRect()
-		let svg-top = boundung-rect.y
-		let svg-right = boundung-rect.x
+	get currentRawView
+		cloneObject(history[history.length - 1 - undoAmount])
 
-		circles.push
-			cx: e.x - svg-right
-			cy: e.y - svg-top
-			r: 20
-		selection = circles[-1]
-		selection_scale = selection.r
-		writeHistory "add"
+	get currentView
+		const v = currentRawView
+		if selected != null and newSize != null
+			v[selected].size = newSize
+		return v
 
-	def handleScale
-		writeHistory "scale"
+	def commitResize
+		hideInspector()
+		if newSize != null and selected != null
+			update do(view)
+				view[selected].size = newSize
+				return view
+		newSize = null
+	
+	def chopHistory
+		# if we are in an undo, remove all future states, this is the new top state
+		if undoAmount > 0
+			history = history.slice(0, history.length - undoAmount)
+			undoAmount = 0
 
-	def setSelection i, startEditing = no
-		editing = startEditing
-		selection = circles[i]
-		selection_scale = selection.r
+	def update updateFn
+		const result = updateFn(cloneObject([...currentView]))
+		unless areObjectsEqual(currentRawView, result)
+			chopHistory()
+			history.push result
+	
+	def clearLingeringSelection
+		if selectedCircle == null
+			deselect()
 
-	def undoAction
-		# console.log(JSON.stringify({ history, history_position }))
-		editing = no
-		return if !history.length or history_position < 0
+	def showInspector do
+		newSize = selectedCircle..size
+		inspector = true
 
-		let event = history[history_position]
-		if event.type == "add"
-			circles.splice(event.index, 1)
-		elif event.type == "scale"
-			console.log({ from: circles[event.index].r, to: event.scale })
-			circles[event.index].r = event.scale
+	def hideInspector do
+		# commitResize()
+		inspector = false
+	
+	def deselect
+		selected = null
 
-		history_position-- if history_position > -1
-		
-	def redoAction
-		# console.log(JSON.stringify({ history, history_position }))
-		editing = no
-		return if !history.length or history_position == history.length
+	def add x, y do
+		commitResize()
+		deselect()
+		update do(view)
+			view.push buildCircle(x, y)
+			return view
 
-		let event = history[history_position + 1]
-		if event..type == "add"
-			circles.push(event.circle)
-		elif event..type == "scale"
-			console.log({ from: circles[event.index].r, to: event.scale })
-			circles[event.index].r = event.scale
+	def select index do
+		selected = index
+	
+	def undo
+		if newSize != null
+			commitResize()
+		undoAmount++
+		clearLingeringSelection()
 
-		history_position++ if history_position < history.length - 1
+	def redo do
+		undoAmount--
+	
+	get canUndo
+		history.length === 0 or undoAmount + 1 === history.length
+
+	get canRedo
+		undoAmount === 0
