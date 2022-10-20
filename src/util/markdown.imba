@@ -11,27 +11,66 @@ marked.setOptions({
 	smartypants: false
 })
 
+export def normalizeIndentation str
+	let lines = str.split('\n')
+	let ind = null
+
+	for line in lines
+		let m = line.match(/^[\t ]*/)[0]
+		# unless m
+		#	console.log line,m,line.match(/^[\t ]*/)
+		if line.length > m.length
+			ind = m if ind == null or ind.length > m.length
+
+	if ind
+		for line,i in lines
+			if line.indexOf(ind) == 0
+				lines[i] = line.slice(ind.length)
+	
+	return lines.join('\n')
+
 let state = {headings: [],last: null}
 
 let slugmap = {
 	'|': 'pipe'
-	'=': 'eq'
+	'=': 'E'
 	'&': 'and'
 	'!': 'n'
-	'?': 'q'
+	'?': 'Q'
 	'>': 'gt'
 	'<': 'lt'
 	'%': 'mod'
 	'*': 'star'
 	'/': 'slash'
-	'^': 'up'
+	'^': 'exp'
 	'~': 'tilde'
+}
+
+let opmap = {
+	'<<': 'bitwise-left'
+	'>>': 'bitwise-right'
+	'>>=': 'right-shift-assignment'
+	'<<=': 'left-shift-assignment'
+	'>>>=': 'unsigned-right-shift-assignment'
+	'>>>': 'bitwise-unsigned-right'
+	'&&=': 'bitwise-unsigned-right'
+	'++': 'increment'
+	'--': 'decrement'
+	'&=': 'bitwise-and-assignment'
+	'|=': 'bitwise-or-assignment'
+	'&': 'bitwise-and'
+	'|': 'bitwise-or'
+	'^=': 'bitwise-xor-assignment'
+	'^': 'bitwise-xor'
+	'~': 'bitwise-not'
+	'+': 'addition'
+	'-': 'subtraction'
+
 }
 
 let slugify = do(str)
 	str = (str.split('(')[0] or str)
 	str = str.replace(/^\s+|\s+$/g, '').toLowerCase!.trim! # trim
-
 
 	let from = "àáäâåèéëêìíïîòóöôùúüûñç·/_,:;"
 	let to   = "aaaaaeeeeiiiioooouuuunc------"
@@ -39,7 +78,7 @@ let slugify = do(str)
 	str = str.replace(/[\|\=\&\?\!\>\<\~\/\*\^\%]+/g) do
 		$1.split('').map(do slugmap[$1]).join('-')
 		# slugmap[$1] or '' # remove invalid chars
-	str = str.replace(/[^a-z0-9 -]/g, '') # remove invalid chars
+	str = str.replace(/[^a-zA-Z0-9 -\+\@]/g, '') # remove invalid chars
 	str = str.replace(/\s+/g, '-') # collapse whitespace and replace by -
 	str = str.replace(/-+/g, '-') # collapse dashes
 
@@ -54,6 +93,11 @@ let unescape = do(code)
 	code = code.replace(/\&amp;/g,"&")
 	return code
 
+let escapeCode = do(code)
+	code = code.replace(/\[/g,"&#91;")
+	code = code.replace(/\]/g,"&#93;")
+	return code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
+
 let sanitizeCode = do(code)
 	code = code.replace(/~\[/g,'')
 	code = code.replace(/\]~/g,'')
@@ -62,6 +106,24 @@ let sanitizeCode = do(code)
 let renderer = new marked.Renderer
  
 def renderer.link href, title, text
+	let apipath = null
+	if href == 'css'
+		if text[0] == '@'
+			apipath = "/api/css/{text}"
+			# return <api-link> "/css/modifiers/{text}"
+		else
+			apipath = "/docs/css/properties/{text}"
+			# return <api-link> "/css/properties/{text}"
+	elif href == 'api'
+		if text[0] == '@'
+			apipath = "/api/Element/{text}"
+		
+	if href.indexOf("api://") == 0
+		return <api-link data-path=href.slice(6) data-title=text>
+	
+	if apipath
+		return <api-link> apipath
+		
 	if href.match(/^\/.*\.md/)
 		return (<embedded-app-document data-path=href>)
 	elif href.match(/^\/examples\//) and text
@@ -78,18 +140,27 @@ def renderer.link href, title, text
 	return (<a href=href title=(title or '')> <span innerHTML=text>)
 
 def renderer.blockquote quote
-	return String(<blockquote innerHTML=quote>)
+	let flags = ""
+	quote = quote.replace(/\[([\w\s]+)\]/) do(m,fl)
+		# flags[fl] = 1
+		flags += fl
+		""
+
+	return String(<blockquote className=flags innerHTML=quote>)
 
 def renderer.paragraph text
 	# state.last = text
 	if text.indexOf("<app-code-block") == 0
 		return text
 
+	if text.indexOf('! ') == 0
+		return String(<p.large innerHTML=text.slice(2)>)
+
 	return String(<p innerHTML=text>)
 
 def renderer.heading text, level
 	let typ = "h{level}"
-	let flags = [typ]
+	let flags = []
 	let meta = {type: 'section', hlevel: level, flags: flags, level: level * 10, children: [], meta: {},options: {}}
 	let m 
 
@@ -103,7 +174,13 @@ def renderer.heading text, level
 	while m = text.match(/^\.(\w+)/)
 		flags.push(m[1])
 		text = text.slice(m[0].length)
-
+	
+	if text.indexOf('discord') >= 0
+		console.log "HEADING",text,level
+		# throw "done"
+	# if text.indexOf("[cli]") >= 0
+	# 	console.log "FOUND HEADER",text
+	# 	throw 1
 	text = text.replace(/\s*\[([\w\-]+)(?:\=([^\]]+))?\]\s*/g) do(m,key,value)
 		let flag = key.toLowerCase!
 		meta.options[flag] = value or yes
@@ -125,10 +202,12 @@ def renderer.heading text, level
 		meta.type = 'doc'
 		text = text.slice(n[0].length)
 
-	let plain = text.replace(/\<[^\>]+\>/g,'')
+	let plain = text.replace(/<\/?\w+[^>]*>/g,'')
 
-	meta.slug = meta.options.slug or slugify(plain)
-	meta.title = unescape(text)
+	meta.slug = meta.options.slug or slugify(unescape(plain))
+	# meta.slugg = plain
+	meta.title = unescape(text).replace(/<\/?\w+[^>]*>/g,'')
+	# meta.title2 = text
 
 	if text.indexOf('<code') == 0
 		# should add code-flag?
@@ -142,11 +221,20 @@ def renderer.heading text, level
 	meta.head = String(text)
 	return "<!--:H:-->{String(node)}<!--:/H:-->"
 
-def renderer.codespan code
-	code = unescape(code)
-	
+def renderer.codespan escaped
+	let code = unescape(escaped)
+
+	let m
+	let ref = null
+
+	if m = escaped.match(/^css (@?[\w\-\.]+)\:$/)
+		ref = 'css'
+
+	if ref and false
+		return String(<api-link> escaped)
+
 	let lang = 'imba'
-	if let m = code.match(/^(\w+)\$\s*/)
+	if m = code.match(/^(\w+)\$\s*/)
 		lang = m[1]
 		code = code.slice(m[0].length)
 	elif code[0] == '>'
@@ -157,8 +245,10 @@ def renderer.codespan code
 	self.code(code,lang, inline: yes)
 
 def renderer.code code, lang, opts = {}
-	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
+	let escaped = escapeCode(code)
 	let last = state.last
+
+	code = normalizeIndentation(code)
 
 	let [type,name] = lang.split(' ')
 
@@ -213,6 +303,9 @@ def renderer.table header, body
 		<tbody> '$BODY$'
 
 	return out.toString().replace('$HEADER$',header).replace('$BODY$',body)
+
+export def htmlify content, o = {}
+	marked.parse(content)
 
 export def render content, o = {}
 	let object = {toString: (do this.body), toc: [],meta: {}}
@@ -273,7 +366,7 @@ export def render content, o = {}
 	let prev = object
 	let intro = segments[0]
 
-	console.log 'snippets',Object.keys(state.files)
+	# console.log 'snippets',Object.keys(state.files)
 	object.#files = state.files
 
 	for html,i in segments.slice(1)
@@ -345,6 +438,7 @@ export def render content, o = {}
 
 	if object.children.length == 1
 		# console.log 'children length is one!!',object.children[0]
+		object.children[0].#files = object.#files
 		return object.children[0]
 
 	return object

@@ -14,5 +14,5 @@ tag app-canvas
 		$canvas.width = offsetWidth * dpr
 		$canvas.height = offsetHeight * dpr
 
-	<self @resize=resized @touch.stop.fit(self)=draw>
+	<self @resize=resized @touch.prevent.moved.fit(self)=draw>
 		<canvas$canvas[pos:abs w:100% h:100%]>

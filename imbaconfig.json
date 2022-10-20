@@ -1,6 +1,7 @@
 {
 	"paths": {
-		"icons/*": ["src/assets/icons/*"]
+		"icons/*": ["src/assets/icons/*"],
+		"codicons/*": ["src/assets/codicons/*"]
 	},
 	"options": {
 		"node": {

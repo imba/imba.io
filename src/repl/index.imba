@@ -1,5 +1,4 @@
 import './monaco'
-import { @watch } from '../decorators'
 import {ls, File, Dir} from '../store'
 import * as sw from '../sw/controller'
 
@@ -77,7 +76,7 @@ tag app-repl
 		# $placeholder = self # for the router
 		$options = {lineNumbers: true}
 
-		$iframe = <iframe.(position:absolute width:100% height:100%)>
+		$iframe = new <iframe[pos:absolute width:100% height:100%]>
 		$iframe.src = 'about:blank'
 
 		$iframe.replify = do(win)
@@ -89,7 +88,7 @@ tag app-repl
 				$console.context = win
 				$console.native = win.console
 				win.console.log = $console.log.bind($console)
-				win.console.info = $console.info.bind($console)
+				win.console.info = $console.log.bind($console)
 
 		$iframe.onload = do
 			try
@@ -149,7 +148,8 @@ tag app-repl
 
 	def routeDidResolve route,match
 		let src = router.pathname.slice(4)
-		console.log 'routeDidResolve',match,src
+		# console.log 'routeDidResolve',match,src
+		
 		let item = ls(src)
 		if item isa File
 			currentFile = item
@@ -233,7 +233,7 @@ tag app-repl
 						&.active bg:gray9/20 c:white fw:bold
 
 				<.scroller[pt:3 l:abs scroll-y inset:0 pb:5]>
-					<div$back[d:none @lg:block px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline] @click=leave> "⇦ back to site"
+					<div$back[px:5 pb:3 fs:sm fw:500 c:blue4 td@hover:underline] @click=leave> "⇦ back to site"
 					<div.items> for child in examples.folders when child.data.sorted
 						<h5[p:1 7 fs:xs c:cooler5 fw:bold tt:uppercase]> child.title
 						<div[pb:5]> for item in child.folders
@@ -245,11 +245,11 @@ tag app-repl
 					<span hotkey='left' @click=goPrev>
 					<span hotkey='right' @click=goNext>
 					<span hotkey='esc' @click=leave>
-					<div[d:flex flw:wrap cursor:default]> for file in project..children
+					<div[d:flex flw:wrap cursor:default]> for file in (project..children or [])
 						<a.tab route-to.replace="/try{file.path}" .dirty=file.dirty .errors=file.hasErrors>
 							<span.circ>
 							<span.name> file.basename
-							<span[d.imba:none].ext.{file.ext}> "." + file.ext
+							<span.ext.{file.ext}> "." + file.ext
 				
 					<div[flex:1]>
 					

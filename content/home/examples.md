@@ -16,7 +16,7 @@ Imba works just as well on the server as on the client. It interoperates fully w
 
 # Styling Evolved
 
-Inspired by tailwind, Imba brings styles directly into your code. Styles can be scoped to files, components, and even parts of your tag trees. [Style modifiers](/css/modifiers) like `@hover`, `@lg`, `@landscape` and `@dark` can be used for extremely concise yet powerful styling.
+Inspired by tailwind, Imba brings styles directly into your code. Styles can be scoped to files, components, and even parts of your tag trees. [Style modifiers](/docs/css/modifiers) like `@hover`, `@lg`, `@landscape` and `@dark` can be used for extremely concise yet powerful styling.
 
 [demo](/examples/simple-clock?&windowed=1&title=Clocks&ar=1)
 
@@ -35,7 +35,7 @@ Imba comes with a built-in bundler based on the blazing fast [esbuild](https://e
 
 Getting started with Imba is as simple as running `npx imba create hello-world` in your terminal to create a new imba project based on a simple template.
 
-Make sure to install the [VS Code plugin](https://marketplace.visualstudio.com/items?itemName=scrimba.vsimba). It provides fantastic auto-completion with type inference, style previews, semantic coloring and much more. Read the [documentation](/language/introduction) for a thorough introduction to the language.
+Make sure to install the [VS Code plugin](https://marketplace.visualstudio.com/items?itemName=scrimba.vsimba). It provides fantastic auto-completion with type inference, style previews, semantic coloring and much more. Read the [documentation](/docs/intro) for a thorough introduction to the language.
 
 # Basic Syntax [quick-tour]
 

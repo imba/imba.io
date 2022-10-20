@@ -2,7 +2,7 @@ import {highlight,clean} from '../util/highlight'
 import * as sw from '../sw/controller'
 import {ls,fs,File,Dir} from '../store'
 import { getArrow,getBoxToBoxArrow } from "perfect-arrows"
-
+import API from '../api'
 import './app-arrow'
 import './app-popover'
 import '../repl/browser'
@@ -24,6 +24,9 @@ tag app-code-block < app-code
 		>>> .code-head d:none
 		>>> .code-foot d:none
 		>>> span.region.hl pos:relative
+		>>> span.doc-ref @hover
+			bg:black/10 td:underline rd:md
+			cursor:help
 
 		&.has-focus >> span@not(.focus)@not(._style) opacity: 0.6
 		&.has-hide >>> span.hide d:none
@@ -63,7 +66,7 @@ tag app-code-block < app-code
 		pl:4
 		zi:4
 		>>> .frame rd:inherit
-		>>> .controls d:none
+		>>> $controls d:none
 
 		pos:relative
 		l:0
@@ -114,7 +117,10 @@ tag app-code-block < app-code
 			if options.dir
 				file = example
 				example = example.parent
-			
+				
+			if example
+				meta = example.meta or {}
+
 		Object.assign(options,meta)
 
 		if example isa File
@@ -130,14 +136,17 @@ tag app-code-block < app-code
 		maxLines = Math.max(...lineCounts)
 		minLines = Math.min(...lineCounts)
 		render!
+		
+	set raw value
+		if #raw =? value
+			file = File.temporary(value,'imba')
+			files = [file]
+		
 
 	def hydrate
 		files = []
 		file = null
 		demo = {}
-		# manual style fixing
-		flags.add(_ns_)
-		flags.add(_ns_ + "_")
 
 		let lineCounts = []
 		let meta = JSON.parse(dataset.meta or '{}')
@@ -171,7 +180,9 @@ tag app-code-block < app-code
 				}
 				let file = fs.register(path + '/' + data.name,data)
 				files.push(file)
-			example = files[0]
+				
+			if parts.length
+				example = files[0]
 
 
 		for file in files
@@ -195,20 +206,6 @@ tag app-code-block < app-code
 	def unmount
 		unschedule!
 
-	def run
-		let source = ""
-		for item in parentNode.querySelectorAll('app-code-block.shared')
-			source += item.code.plain + '\n'
-
-		source += code.plain
-
-		let lines = source.split('\n')
-		let last = lines.reverse!.find do !$1.match(/^[\t\s]*$/) and $1[0] != '\t'
-		if let m = (last and last.match(/^tag ([\w\-]+)/))
-			source += "\n\nimba.mount <{m[1]}>"
-
-		emit('run',{code: source})
-
 	def openFile file
 		self.file = file
 		render!
@@ -231,11 +228,27 @@ tag app-code-block < app-code
 			if vref
 				el.classList.add('highlight') for el in getElementsByClassName(vref)
 			hlvar = vref
+		
+		let tokel = e.target.closest('[data-nr]')
+		let token = tokel and file.highlighted.tokens[tokel.dataset.nr]
 
+		if tokel and token
+			if tokel.#awakened =? yes
+				awakenToken(tokel,token)
 		
 		let rule = e.target.closest('.scope-rule')
 		if #hoveredRule =? rule
 			focusStyleRule(e) if rule and !#clickedRules
+			
+	def awakenToken el, token
+		return unless token..match
+		let entity = API.getEntityForToken(token)
+		
+		if entity
+			# console.log 'got entity?',token,entity
+			el.#entity = entity
+			el.flags.add('doc-ref')
+
 	
 	def setStateFlag e
 		let value = e.target.textContent.slice(1)
@@ -274,19 +287,21 @@ tag app-code-block < app-code
 	def intersecting e
 		# log 'snippet intersecting',e
 		flags.toggle('entered',e.isIntersecting)
-
+		
 	def render
-		return unless code or file
+		return unless file
 		let name = (files[0] && files[0].name or '')
 		let fflags = name.replace(/\.+/g,' ')
 		let hl = file and file.highlighted
 
 		<self.p3d.snippet.{options.preview}.{fflags} .preview-{options.preview} .multi=(files.length > 1)
-			tabindex=-1
+			tabIndex=-1
 			@click.sel('.scope-rule *,.scope-rule')=focusStyleRule
+			@click.sel('.doc-ref').!mod=(router.go(e.target.#entity.href))
+			@click.sel('.doc-ref').mod=(window.open(e.target.#entity.href))
 			@keydown.esc.stop=(#clickedRules = no)
-			@pointerover.silence=pointerover
-			@intersect.silence=intersecting
+			@pointerover.silent=pointerover
+			@intersect.silent=intersecting
 			>
 			
 
@@ -321,9 +336,10 @@ tag app-code-block < app-code
 				$editor d:block fl:1 1 65% m:2
 				$preview
 					h:auto m:0
-					fl:0 0 auto # fl:1 1 35% 
+					fl:none
+					bd:none
 					w:280px @!900:35%
-					>>> .frame bg:clear bd:none
+					>>> .frame bg:clear bd:none bg:#1a212a
 				.actions d:none
 
 				@!580
@@ -332,6 +348,7 @@ tag app-code-block < app-code
 
 				# p:1lh of:visible h:auto pr:40%
 				>>> $code
+					py:10px px:10px h:auto
 					pre ws:pre-line
 					pre,b d:contents
 					span d:none
@@ -353,22 +370,24 @@ tag app-code-block < app-code
 
 			<main$snippet.p3d.snippet-body @exports=bindExports(e.detail)>
 				<div$editor.code.p3d .tabbed=(files.length >= 2)>
-					css .actions o:0
+					css .actions o:0 transition:opacity 100ms
 					css @hover .actions o:1
 					<div$tabbar .collapsed=(files.length < 2)>
 						css pos:relative zi:2 bg:#3d4253
 							c:gray6 fs:sm fw:500 rdt:inherit d:hflex j:space-between
 							.item d:block c:cooler4/90 c.on:blue3 py:0.25 px:1.5 td:none fw:600 rd:lg mx:0
-								tween:styles 0.1s ease-in-out
+								cursor:pointer
+								ease:0.1s ease-in-out
 								c@hover:blue4
 								&.on bg:#354153
 						<div[d:hflex ..collapsed:none px:1 py:1].tabs> for item in files
-							<a.tab.item .on=(file==item) @click.stop.silence=openFile(item)> item.name
+							<a.tab.item .on=(file==item) @click.stop.silent=openFile(item)> item.name
 						<div[px:2 py:1 zi:2].actions>
-							<div.item @click=openInEditor> "open"
-						css	&.collapsed .actions pos:abs t:0 r:0
+							<div.item @click=openInEditor> "edit"
+								css @not(@hover) c:warm1
+						css &.collapsed .actions pos:abs t:0 r:0
 					if file
-						<app-code-file.p3d $key=file.id file=file data=hl>
+						<app-code-file.p3d key=file.id file=file data=hl>
 				if options.windowed
 					<repl-browser$browser.browser-bounds
 						options=options
@@ -387,6 +406,8 @@ tag app-code-block < app-code
 						mode=options.preview
 						@loaded=demoLoaded
 					>
+			if file and file.meta.foot
+				<div.markdown[my:2 bdl:1px dashed gray3 rdbl:6px ml:3 pl:3 c:gray5 pb:2] innerHTML=file.meta.foot>
 
 css app-arrow c:green5
 	>>>
@@ -413,52 +434,6 @@ tag app-code-annotation
 			css .box pos:abs ml:3ex mt:-4ex
 			<span.box> <span[ff:notes fw:400 c:yellow2 fs:md]> options.comment
 
-tag app-code-highlight
-	prop x = 0
-	prop y = 0
-	css transform-style:preserve-3d
-	css .anchor pos:abs inset:0 pe:none
-	
-	css &.line .anchor l:100% b:60% t:10%
-
-	css app-arrow >>>
-		path stroke:currentColor stroke-linecap:round
-		polygon fill:currentColor stroke-linejoin:round
-		$end d:none
-		$start stroke:currentColor stroke-width:2px
-
-	def setup
-		from = frame.querySelector(data.sel)
-	
-	def mount
-		unless $arrow
-			$arrow = <app-arrow frame=frame from=from to=$anchor data=data>
-			frame.$arrows.appendChild($arrow)
-			style.top = (data.oy * 100)%
-			style.left = (data.ox * 100)%
-			$tip = <app-popover data=data target=from frame=frame>
-			frame.appendChild($tip)
-
-
-		self
-
-	def toggleFlag flag, bool
-		flags.toggle(flag,bool)
-		$arrow..flags.toggle(flag,bool)
-
-	def refresh
-		$arrow..render!
-		render!
-
-	def serialize
-		"# ~{data.pattern}|{$arrow.serialize!}~ {data.text}"
-		
-	def render
-		<self[d:block x:{x}px y:{y}px z:{data.oz}px pos:absolute]>
-			<div$anchor>
-			<div$box @touch.silent.sync(self)=refresh> data.text
-			<div$line[w:100px h:2px bg:green4 pos:abs]>
-
 global css app-code-file
 
 	.item mx:2 pos:relative pe:auto
@@ -475,9 +450,9 @@ global css app-code-file
 	.bottom-highlights pos:abs t:100% l:0 w:100% zi:5 pe:none d:hflex ai:flex-start jc:center
 
 	app-arrow
-		tween:opacity 0.2s ease-in-out
+		eo:opacity 0.2s
 		c:green3
-		svg tween:transform 0.2s ease-in-out
+		svg et:0.2s ease-in-out
 		# &.inlined
 		c:green3
 
@@ -486,6 +461,7 @@ global css app-code-file
 		app-arrow $scale:0.85 o:0
 
 tag app-code-file
+	prop file
 
 	def setup
 		hlpos = {x: 0, y: 0}
@@ -493,10 +469,8 @@ tag app-code-file
 		tipMode = 'sm'
 		self
 
-	
-
 	def printAnnotations
-		let out = for item in querySelectorAll('app-popover')
+		let out = for item\<app-popover> in querySelectorAll('app-popover')
 			item.serialize!
 
 		await global.navigator.clipboard.writeText(out.join('\n'))
@@ -523,7 +497,7 @@ tag app-code-file
 
 		$overlays.style.width = $anchor.cachedWidth + 'px'
 		$overlays.style.height = $anchor.cachedHeight + 'px'
-		for item in $overlays.children
+		for item\<app-popover> in $overlays.children
 			item.relayout!
 		yes
 
@@ -532,11 +506,11 @@ tag app-code-file
 		.item outline:1px dashed blue4
 
 	<self[d:block pos:relative] .debug=(window.debug) @intersect.in.once.silent=intersect>
-		<div$sizer[pos:abs t:0 l:0 w:2vw h:2vh pe:none] @resize.silent.debounce(50ms)=relayout>
+		<div$sizer.sizer[pos:abs t:0 l:0 w:2vw h:2vh pe:none] @resize.silent.debounce(50ms)=relayout>
 		<code$code[ff:mono].{data.flags} @scroll.passive=scrolled>
 			<span$anchor[pos:abs]> " "
 			<pre$pre[w:100px ta:left].code innerHTML=data.html>
-		<$overlays[pos:abs t:0 l:0 h:100% w:100% pe:none].p3d>
+		<$overlays.overlays[pos:abs t:0 l:0 h:100% w:100% pe:none].p3d>
 			for hl in data.highlights
 				<app-popover frame=self data=hl>
 		if window.debug

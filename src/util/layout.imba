@@ -1,6 +1,6 @@
 let cache = new Map
 
-extend tag element
+extend class HTMLElement
 	get layoutCache
 		let val = cache.get(self)
 		val || cache.set(self,val = {})
@@ -11,6 +11,7 @@ extend tag element
 		return val
 
 	get cachedWidth
+		# Element.prototype.offsetWidth
 		layoutCache.width ||= offsetWidth
 
 	get cachedHeight
@@ -35,7 +36,6 @@ extend tag element
 			width: offsetWidth
 			height: offsetHeight
 		}
-	
 
 window.addEventListener('resized') do(e)
 	cache.clear!

@@ -1,18 +1,30 @@
 import express from 'express'
 import np from 'path'
 import nfs from 'fs'
+import esbuild from 'esbuild?external'
 
 const app = express!
 
 const imbac = require 'imba/compiler'
 
-import examples from './public/examples.json'
+import {rewriteImports} from './src/compiler'
+
+import examples from './data/examples.json'
+
+const ResolveMap = {
+	'imba': 'https://unpkg.com/imba@2.0.0-alpha.223/dist/imba.mjs'
+	'imdb': '/imdb.js'
+}
+
+const importMap = {
+	imports: ResolveMap
+}
 
 app.get(/__sw(_\d+)?__\.js/) do(req,res)
-	const asset = import('./src/sw/worker.imba?as=webworker')
-	res.sendFile asset.absPath
+	const asset = import('./src/sw/worker.imba?worker')
+	res.sendFile asset.path
 
-app.use(express.static('public'))
+app.use(express.static('dist/public'))
 
 app.get(/__blank__\.html/) do(req,res)
 	res.send String <div>
@@ -21,12 +33,14 @@ app.get(/^\/repl-\d+\//) do(req,res)
 	return res.sendStatus(404)
 
 const indexTemplate = "
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset='UTF-8'>
 		<title>Playground</title>
 		<script>try \{ window.frameElement.replify(this) \} catch(e)\{\}</script>
 		<link href='/preflight.css' rel='stylesheet'>
+		<script type='importmap'>{JSON.stringify(importMap)}</script>
 	</head>
 	<body>
 		<script type='module' src='/examples/helpers.imba'></script>
@@ -37,20 +51,17 @@ const indexTemplate = "
 	</body>
 </html>"
 
-const ResolveMap = {
-	'imba': import('./src/imba.imba?as=web,module').url
-	'imdb': '/imdb.js'
-}
+
 
 def compileImba file
 	try
+		# console.log 'compile imba!!',file.path
 		let body = file.body
-		# enforce tabs
 		body = body.replace(/[ ]{4}/g,'\t')
 		# rewrite certain special things
 		body = body.replace(/# @(show|log)( .*)?\n(\t*)/g) do(m,typ,text,tabs)
 			m + "${typ} '{(text or '').trim!}', "
-		body = body.replace(/from 'imdb'/g,'from "/imdb.js"')
+		# body = body.replace(/from 'imdb'/g,'from "/imdb.js"')
 		body = body.replace(/(import [^\n]*')(\w[^']*)(?=')/g) do(m,start,path)
 			# console.log 'rewrite',path,'to',"/repl/examples/{path}"
 			start + "/examples/{path}"
@@ -58,10 +69,18 @@ def compileImba file
 		let result = imbac.compile(body,{
 			platform: 'web',
 			sourcePath: file.path,
-			format: 'esm',
-			resolve: ResolveMap
+			format: 'esm'
 		})
-		file.js = result.toString!
+
+		# now use esbuild
+		let js = result.js
+
+		let transformed = esbuild.transformSync(js,{
+			platform: 'browser', target: ['safari15']
+		})
+
+		js = transformed.code
+		file.js = rewriteImports(js)
 	catch e
 		console.log 'error compiling',e,file.path
 		return
@@ -69,12 +88,16 @@ def compileImba file
 
 
 # responding to the code
+app.get "/learn", do(req, res) res.redirect "https://scrimba.com/learn/imba"
+app.get "/community", do(req, res) res.redirect "https://discord.gg/J6h6ubesbk"
+app.get "/disc", do(req, res) res.redirect "https://discord.gg/J6h6ubesbk"
+app.get "/gh", do(req, res) res.redirect "https://github.com/imba/imba.io/issues"
 app.get('/examples/*') do(req,res)
 	let path = req.url
 	let file = examples[path]
 	let nohtml = path.replace(/\.html$/,'')
 	let ext = np.extname(path)
-	console.log "responding to",req.url,path,!!file
+	# console.log "responding to",req.url,path,!!file
 
 	if !file and examples[nohtml]
 		res.type('html')
@@ -174,10 +197,11 @@ app.get(/\.*/) do(req,res)
 			<link rel="preconnect" href="https://fonts.gstatic.com">
 			<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@900&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 			# <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet">
-
+			<style src='*'>
 		<body tabIndex='-1'>
-			<script src="./public/content.json.js?as=iife">
-			<script type="module" src="./src/index.imba">
+		# <script src="./public/content.json.js?as=iife">
+		<script src="./data/reference.js?iife">
+		<script type="module" src="./src/index.imba">
 
 # pass through imba serve to automatically
 # serve assets in an optimised manner

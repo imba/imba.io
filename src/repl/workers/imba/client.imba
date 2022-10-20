@@ -48,7 +48,7 @@ export class WorkerManager
 		worker.withSyncedResources(resources).then do client
 
 export def setupMode modeId
-	let url = import('./worker?as=webworker').url
+	let url = import('./worker?worker&url')
 	console.log 'starting worker at',url
 	let client = new WorkerManager(url, {})
 	let worker = client.getLanguageServiceWorker.bind(client)

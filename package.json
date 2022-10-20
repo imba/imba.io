@@ -19,9 +19,13 @@
   },
   "scripts": {
     "start": "imba -w index.imba",
-    "dev": "imba -w index.imba",
-    "build": "imba scripts/bundle-content.imba && imba build index.imba",
-    "watch": "imba scripts/bundle-content.imba -- -w",
+    "dev": "imba -wSM index.imba",
+    "build": "npm run build-content && npm run build-api-docs && imba build index.imba",
+    "watch": "imba scripts/build-content.imba -- -w",
+    "build-site": "imba build index.imba",
+    "build-content": "imba scripts/build-content.imba",
+    "watch-content": "imba scripts/build-content.imba -- -w",
+    "build-api-docs": "imba --node.external typescript scripts/build-api-docs.imba",
     "build-examples": "cd content/examples/express && imba build app.imba",
     "docker-build": "docker build -t imba.io:`git log --pretty=format:'%h' HEAD -n1` .",
     "docker-deploy": "docker push imba.io:`git log --pretty=format:'%h' HEAD -n1`",
@@ -33,17 +37,25 @@
   "homepage": "http://imba.io",
   "repository": {
     "type": "git",
-    "url": "git://github.com/somebee/imba.io.git"
+    "url": "git://github.com/imba/imba.io.git"
   },
   "dependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^13.13.52",
     "chokidar": "^3.5.2",
+    "es-module-lexer": "^1.0.3",
+    "esbuild": "^0.15.10",
     "express": "^4.17.1",
-    "imba": "^2.0.0-alpha.155",
-    "marked": "^0.7.0",
-    "passport": "^0.4.1",
+    "imba": "^2.0.0-alpha.223",
+    "marked": "^4.1.0",
+    "node-fetch": "^3.2.10",
+    "passport": "^0.6.0",
     "perfect-arrows": "^0.3.3",
+    "quick-score": "^0.0.13",
     "svgpath": "^2.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4",
+    "typescript-imba-plugin": "^1.2.8"
   }
 }

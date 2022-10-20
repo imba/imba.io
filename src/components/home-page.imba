@@ -15,12 +15,12 @@ const examples = {
 
 import {ls,fs,File,Dir} from '../store'
 
-import './app-carousel'
-
 css .gradient
 	bg: linear-gradient(to right,indigo7,blue6,pink6)
 	-webkit-background-clip:text
 	-webkit-text-fill-color:transparent
+	width: max-content
+	margin-right: auto
 
 css .card-demo w:100% rd:xl
 	>>> main d:hflex bg:$bg p:0
@@ -136,37 +136,57 @@ tag home-page
 		1dw:420px # custom demo-width unit
 		1gw:3vw @lg:5vw @xl:8vw # custom gutter-width unit
 		1yp:1px @md:3px @lg:4px
-		d:vflex a:center of:hidden
+
+
+		1lgfs:18px @md:24px
+		1pfs:16px @md:20px
+
+		1cw:100%
+		d:vflex ai:center of:hidden
 		transform-style:preserve-3d
 		perspective:1000px
 		perspective-origin:50% 200px
 		$smx:50%
+		# max-width:990px
+		# ml:$page-margin-left
+		# max-width: calc(990px + $page-margin-left)
+		pl:$page-margin-left
+		pr:$page-margin-right
+		pt:8
+
+		
 
 		home-section pos:relative
 		home-section,figure d:vflex ja:center as:stretch
-		h1,h2,h3,nav,article w:1cw
+		nav,article w:100%
+
 		h1,h22 ff:brand ws:pre-line pb:6
-			fs:34px/0.9 @xs:50px/0.9 @sm:60px/0.9 @md:90px/0.9 @lg:116px/0.9 @1100:122px/0.9
+			fs:34px/0.9 @xs:50px/0.9 @sm:60px/0.9 @md:90px/0.9 @1120:100px/0.9 @1220:112px/0.9
+
 		h2.small
 			fs:34px/0.9 @xs:40px/0.9 @sm:50px/0.9 @md:80px/0.9 @lg:90px/0.9
+
 		h3 c:cool8
 			fs:xl/1.5 @md:2xl/1.5
+
 		h4 pb:6 fw:500 ta:left
 			fs:24px/0.9 @xs:30px/0.9 @md:32px/0.9 @lg:32px/0.9
+
 		article p fs:lg/1.4
 
 	css self >>> app-code-block
 		main
 			$tabbar bg:clear px:2 pt:2 d.collapsed:none
+
 		rd@force:lg
 
 		main
-			$tabbar bg:clear px:2 pt:2 d.collapsed:none
+			$tabbar bg@force:clear px:2 pt:2 d.collapsed:none
 
 		$editor rd:lg
 			$code h@force:calc($mainLines * 1lh) p@force:2lh
 			&.tabbed
-				$tabbar px:2 bg:clear pt:2
+				$tabbar px:2 bg@force:clear pt:2
 				$code pt@force:0.5lh
 
 		$preview z:10px
@@ -187,15 +207,15 @@ tag home-page
 			.browser-bounds
 				w:35%
 
-		@!800
-			$editor rd@force:0
+		@!768
+			# $editor rd@force:0
 			$editor
-				$code pb@force:24
+				$code pb@force:20
 			.browser-bounds
-				pos:rel r:auto l:auto t:0 y:0% mt:-14 mx:auto
-				w:calc(100vw - 40px) h:calc(50vh - 40px)
+				pos:rel r:auto l:auto t@force:0 y:0% mt:-10 mx:auto
+				w:calc(100vw - 96px) h:calc(50vh - 96px)
 				min-height:240px
-				max-width:calc(100vw - 40px)
+				max-width:calc(100vw - 96px)
 
 
 		$snippet
@@ -214,39 +234,48 @@ tag home-page
 	css self >>> .markdown
 			d:contents
 			.content d:contents
-			.h2 fw:700 fs:44px/1 pb:6
-			.content > p@first fs:2xl
-			p my:3 fs:xl
+			.h2 fw:700 fs:44px/1 pb:2 w:100%
+			.content > p@first fs:1lgfs
+			p my:3 fs:1pfs
 				a td:underline c:blue7
-			blockquote ta:center
+			blockquote ta:center mb:0 py:0 bg:clear
 			# 1cw:calc(100vw - 80px) @1000:760px @1300:860px
-			1cw:calc(100vw - 80px) @1000:860px
+			# 1cw:calc(100vw - 80px) @1000:860px
+
+			app-code-block w:100%
 			
-			.h2,p,app-code-block
-				w:1cw
+			# .h2,p,app-code-block
+			# 	w:1cw
 
 			app-code-block + blockquote mt:-6
 				p fs:md c:cooler5
 
 			app-code-block my:10
 
-			@!800
-				app-code-block w:100% rd:0
+			# @!800
+			#	app-code-block w:100% rd:0
 
 	css self >>> home-section
-		& > .bg pe:none
-		&.s0 > .bg pos:abs inset:0 z:-40px t:10px b:0px scale-x:1.3 rotate:1deg bg:blue1
-		&.s2 > .bg pos:abs inset:0 z:-38px t:-30px b:-20px scale-x:1.3 rotate:-1deg bg:indigo1
-		&.s4 > .bg pos:abs inset:0 z:-36px t:-30px b:-20px scale-x:1.3 rotate:-1deg bg:sky1
-		&.s6 > .bg pos:abs inset:0 z:-34px t:-30px b:-20px scale-x:1.3 rotate:-0.5deg bg:warmer1
+		px:6
+		max-width:990px
+		& > .bg pe:none rd:20px mx:-15px t:-20px o:1
+		&.s0 hue:blue
+		&.s2 hue:indigo
+		&.s4 hue:sky
+		&.s6 hue:warmer
+
+		&.s0 > .bg pos:abs inset:0 z:-2px t:-20px b:0px rotate:0.5deg bg:blue0
+		&.s2 > .bg pos:abs inset:0 z:-2px t:-20px b:-20px rotate:-0.6deg bg:indigo0
+		&.s4 > .bg pos:abs inset:0 z:-2px t:-20px b:-20px rotate:0.3deg bg:sky0
+		&.s6 > .bg pos:abs inset:0 z:-2px t:-20px b:-20px rotate:-0.5deg bg:warmer1
 
 		&.quick-tour @important
 			py:0
 			.h2 d:none
-			> .bg pos:abs inset:0 z:-35px t:-30px b:-20px scale-x:1.3 rotate:0.5deg bg:#222c39
+			> .bg pos:abs inset:0 z:-35px t:-30px b:-20px scale-x:1 rotate:0.3deg bg:#222c39
 
 			.content d:grid gtc: 1fr 1fr
-				w:900px pb:80px
+				w:100% pb:40px pt:20px
 				app-code-block w:auto my:8 pl:8
 				code$code d:contents
 
@@ -313,7 +342,6 @@ tag home-page
 		# let poy = Math.round(sy + window.innerHeight * 0.5)
 		#scry = Math.round(sy + window.innerHeight * 0.5)
 		relayout!
-		# style.perspectiveOrigin = "50% {poy}px"
 		return
 
 	def resizing e
@@ -324,31 +352,49 @@ tag home-page
 
 	def render
 		<self @resize.silent.debounce(100ms)=resizing>
+			<.breadcrumb[ta:left w:100% px:6]>
+				<span> <a href="/"> "Imba"
+				<span.self> <a href="/"> "The friendly full-stack language"
+				<app-search-field>
+			# <div[h:22px ta:left w:100% px:6 fw:500]> "Imba / Welcome"
 			# <rotating-shapes>
-			<home-section[pt:40yp pb:10yp]>
-				<h1[py:5].gradient> `Build Fast, Fast.`
-				<div[w:1cw d:block @870:hgrid mt:10]>
-					<div[w:2cols max-width:590px ml:2 fs:xl/1.8 mr:4]>
+			<home-section[pt:10yp pb:10yp]>
+				# <h1[py:5].gradient> `Build Fast, Fast.`
+				<h1[py:5 fs:120px/1].gradient> `Imba`
+				# <div[fs:60px/1]> 'Build Things Fast'
+				<div[mt:6]>
+					css d:hflex flw:wrap g:10px cg:30px
+					<div[fs:xl/1.8 fl:100 1 470px]>
 						<p[c:cool8]> `Imba is a Web programming language that's fast in two ways: Imba's time-saving syntax with built-in tags and styles results in less typing and switching files so you can {<u> 'build things fast.'} Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM libraries, so you can {<u> 'build fast things.'}`
 						<div[d:block @480:hflex fs:md @580:lg  mx:-2 my:4]>
 							css a rd:xl m:2 p:2 bg:green3 bd:green3-5 bcb:green5 px:4 c:green8 fw:bold d:block ta:center
 								@hover bg:green3-3
-							<a href="/language/introduction"> "Get started"
+							<a href="/docs/intro#getting-started"> "Get started"
 							css div rd:xl bd:gray2 bg:gray1 m:2 p:2 pr:4 c:gray6 ff:mono bs:solid fw:bold
 								fs:sm @580:17px ls:-0.3px d:hflex ja:center
 								@before content: '>' c:gray3  px:1
 							<div> "npx imba create hello-world"
-					<ul>
+					<ul[min-width:320px fl:1 0 330px]>
 						css d:block rd:lg p:6 fs:lg bxs:xxs,lg bg:white/70 h:auto as:start
 							@!1024 p:4 fs:md
 							@!870 d:none
 						for usp in usps
-							<li[py:1 d:hflex a:center px:2 pr:6]>
+							<li[py:1 d:hflex ai:center px:2 pr:6]>
 								<svg[mr:3 size:16px c:purple7] src='icons/arrow-right.svg'>
 								<span> usp
+			
+			<home-section[my:10px mb:30px]>
+				css c:yellow9 fs:xl
+				<.bg [pos:abs inset:0 z:-2px t:-20px b:-20px rotate:0.1deg bg:yellow1]>
+				<div[d:vflex ja:center]>
+					<span[c:yellow9 fw:600]> "We are overhauling the docs, and we need your help!"
+					<span[fs:md]> "Do you have a few minutes to answer what you think is missing? "
+					<a[c:blue6 td:underline] href='https://form.typeform.com/to/GdMKZMBh'> 'Take Survey'
+					
+
 	
 			for item,i in ls('/home/examples').children
-				<home-section[py:20] .s{i} .{item.flagstr}>
+				<home-section[my:10 py:10] .s{i} .{item.flagstr}>
 					<.bg>
 					<.markdown>
 						<.h2.html.title.gradient innerHTML=item.head>
@@ -363,13 +409,3 @@ tag home-page
 						<div[pos:abs inset:0 bg:warmer2 rd:lg z:-4px]>
 						<div.body[w: <460px]> `A benchmark was conducted by comparing a Todo MVC implementation across frameworks. The benchmark steps through a deterministic sequence of state alterations measuring the time taken to reconcile the whole application view after: Toggling an item, removing an item, inserting an item, renaming an item, and doing nothing.`
 						<bench-graph[ml:auto as:flex-end z:-3px]>
-
-			if false
-				<home-section[py:20]>
-					<h2.gradient[ta:center]> `Imba Syntax`
-					<p> `Inspired by Tailwindcss, Imba features a rich syntax for styling components`
-					<app-carousel renderer=carousel-item> for item in ['sizing','layouts','appearance','transform','colors',	'appearance','transform','colors','appearance']
-						<figure[px:4]>
-							let preview = item == 'layouts' ? 'inline' : 'styles'
-							<app-code-block[w:100%].card-demo href=`/examples/css/{item}.imba?preview={preview}`>
-							<p[mt:4]> `Some text about this card here`

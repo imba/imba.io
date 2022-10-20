@@ -5,7 +5,7 @@ tag app-clock
 		<header[fs:xl fw:700 ta:center c:gray8/40 p:2]> name
 		<div[rd:1 bg:gray8 h:13vmin w:5px rotate:{ts / 720}]>
 		<div[rd:1 bg:gray6 h:18vmin w:4px rotate:{ts / 60}]>
-		<div[rd:1 bg:red5 h:21vmin w:2px rotate:{ts}]>
+		<div[rd:1 bg:red5 h:21vmin w:2px rotate:{ts % 1000}]>
 		<div[rd:full bg:red5 size:10px y:50%]>
 
 tag app

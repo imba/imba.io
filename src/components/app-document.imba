@@ -1,8 +1,11 @@
 import {ls,types,Section,Doc} from '../store'
-
+import {icons} from '../api'
 import '../repl/preview'
+import './api-entry'
 
 const Sheets = {}
+
+css element o:1
 
 Sheets.operators = [
 	{name: 'All',regex: /.*/}
@@ -22,7 +25,28 @@ tag doc-anchor
 		yes
 
 	def render
-		<self @intersect.silence=entered>
+		<self @intersect.silent=entered>
+
+tag doc-pages
+
+	css d:vgrid g:4 my:6
+	css .item py:4 px:6 d:block ai:center
+		bd:1px solid gray3 rd:lg bc:gray2
+		bg:gray0 @hover:gray1
+		>>> p my@force:0
+
+
+	def hydrate
+		data = closest('app-document').data
+
+	def render
+		<self>
+			for item in data.children
+				<a.item href=item.href>
+					<span[d:hflex ai:center c:blue6 fs:18px fw:600]>
+						<span[fl:1]> item.title
+						<svg src=icons.right>
+					# <span[c:gray4 fs:sm/1.2 td@hover:none] innerHTML=item.html>
 
 tag app-document-nav
 
@@ -87,13 +111,11 @@ tag doc-section-filters
 			for item in filters
 				<button bind=selection value=item> item.name
 
-tag doc-section
 
-	css >>> li
-		fs:md/1.3 py:3px pl:6 pos:relative
-		@before content: "•" w:6 ta:center l:0 pos:absolute d:block c:teal5
-		> p > code d:table mb:1 fw:600
-		> mt@first:0 mb@last:0
+
+	
+tag doc-section
+	prop body-only
 
 	css my:1em d:block
 		mt:8 .h1:12 .h2:12 .h3:8 @first:8
@@ -101,19 +123,10 @@ tag doc-section
 	css &.hide d:none
 	css &.collapsed > .body d:none
 
-	# css &.tip border:1px solid gray3/50 rd:md p:4 bg:orange2
-
-	css .html
-		>> * mt@first:0 mb@last:0
-		>>> a c:blue7 td@hover:underline
-
-		>>> app-code-inline
-			d:inline-block fs:0.75em ff:mono lh:1.25em
-			bg: gray3/35 rd:sm va:middle p:0.1em 5px
-			-webkit-box-decoration-break: clone
-
 	css .snippet,.h5 $bg:orange2 $hbg:teal4 $hc:teal9
 	css .op $hbg:teal4 $hc:teal9
+	css .tip hue:orange
+
 	css .tip $bg:orange2 $hbg:orange4 $hc:orange8
 	css .orange $bg:orange2 $hbg:orange4 $hc:orange8
 	css .yellow $bg:yellow2 $hbg:yellow4 $hc:yellow8
@@ -121,16 +134,10 @@ tag doc-section
 	css .green $bg:green2 $hbg:green4 $hc:green8
 	css .neutral $bg:gray2 $hbg:gray4 $hc:gray8
 
-	css .head pos:relative c:#3A4652 bc:gray3/75 d:block
-		&.h1 fs:34px/1.4 fw:600 pb:2
-		&.h2 fs:26px/1.2 fw:600 pb:3 bwb:0px mb:0
-		&.h3 fs:22px/1.2 fw:500 pb:3 bwb:0px mb:0
-		&.h4 fs:20px/1.2 fw:500 pb:2 bwb:0px mb:0
+	css .head pos:relative c:#3A4652 d:block
+		&.h1 fs:34px/1.4 fw:600 pb:2 pt:4
+		&.h2 fs:26px/1.2 fw:600 pb:3
 
-		&.zl1 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3 bdb:2px solid currentColor
-		&.zh2.zl2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
-		&.zl2 fs:20px/1.2 fw:500 pb:3 bwb:0px mb:3
-		&.zl3 fs:18px/1.2 fw:500 pb:3 bwb:0px mb:3
 		&.tip fs:16px/1.2 fw:500 pb:3 bwb:0 mb:0
 
 		&.tip,&.h5,&.op c:$hc fs:14px/1.2 fw:500 zi:2 pb:0 mb:-1 bwb:0 mb.tip:-3 mb.op:-3
@@ -161,6 +168,12 @@ tag doc-section
 		&.intersect-modifier
 			.title prefix: "@intersect."
 
+		&.cli >>>
+			# bc:gray1
+			# .title ff:mono bg:gray1 px:1 py:0.5 rd:md fw:600
+			em fw:normal font-style:normal
+			app-code-inline fs:inherit fw:inherit ff:sans d:contents
+
 		.tab mr:3 fw:500 td:none @hover:none
 			outline@focus:none
 			c:blue6 @hover:gray7 .active:gray9
@@ -182,22 +195,11 @@ tag doc-section
 
 	css .body
 
-		&.tip mt:-2 pb:1 ml:0 rd:md p:4 bg:$bg
-			>>> p fs:md- c:gray9/70
+		&.tip mt:-2 pb:1 ml:0 rd:md p:4 bg:hue1
+			>>> p fs:md- c:gray9/70 my:0
 
-		>>> p my:3
-
-		>>> blockquote
-			bg:gray2 my:3 p:2 px:3
-			color:gray8 fs:md-
-			p fs:md-
-			> mt@first:0 mb@last:0
-		
-		>>> app-code-block + app-code-block
-			mt:4
-
-		>>> app-code-block + blockquote
-			bdl:3px solid gray2 mx:3 p:0 pl:3 c:gray6 bg:clear
+		# >>> app-code-block + blockquote
+		# 	bdl:3px solid gray2 mx:3 p:0 pl:3 c:gray6 bg:clear
 
 		>>> table
 			w:100% bdb:1px solid gray2
@@ -222,7 +224,7 @@ tag doc-section
 			fs:18px/1.2 fw:500 pb:3
 	
 	css .marktext
-		bg:yellow3 d:block px:0.5 rd:xl p:10px 15px fs:sm c:yellow7 fw:500
+		bg:yellow2 d:block px:0.5 rd:lg p:10px 15px fs:sm c:yellow7 fw:500
 		-webkit-box-decoration-break: clone
 		& a td: underline
 
@@ -270,8 +272,8 @@ tag doc-section
 			@intersect("-70px 0% -20% 0%").silent=intersecting
 		>
 
-			if data.head
-				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} id=data.hash>
+			if data.head and !body-only
+				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} .h{data.data.hlevel} id=data.hash>
 					css svg d:inline size:5
 					css .legend ml:1 c:gray5 fs:md
 					<a[pos:absolute l:-20px c:gray5 o:0] href=data.href> '#'
@@ -294,7 +296,22 @@ tag doc-section
 					<.sections>
 						for item in data.sections
 							<doc-section query=filter data=item level=(level+1)>
+							
+
+tag api-doc-section < doc-section
+	
+	def render
+		<self.html>
+			unless body-only
+				<div.title .h{data.data.hlevel} innerHTML=data.head>
+			<.content innerHTML=(data.html or '')>
+			<.sections> for item in data.sections
+				<api-doc-section data=item>
+
+let FIRST_DOC_MOUNT = no
+
 tag app-document
+	prop breadcrumbs
 
 	css color: #4a5568 lh: 1.625
 	css $content > mb@last:0 mt@first:0
@@ -304,19 +321,33 @@ tag app-document
 	get scroller
 		document.scrollingElement
 
+	get doc
+		data and data.doc or data
+
 	prop hash @set
 		let section = getSectionForHash(e.value)
 		reveal(section) if section
-
-	def mount
-		# document.scrollingElement.scrollTop = 0
+		
+	prop data @set
+		syncScroll! if mounted?
+	
+	def syncScroll
+		if FIRST_DOC_MOUNT =? yes
+			# console.log 'skip first syncScroll'
+			return
+		# console.log 'syncScroll'
 		let hash = document.location.hash.slice(1)
+		# console.log 'section for hash?!',hash
 		let subsection = getSectionForHash(hash)
 		if subsection
 			reveal(subsection)
 		else
-			window.scrollTo({left: 0,top: restoreScrollTop or 0,behavior: 'auto'})
-			scroller.scrollTop = restoreScrollTop or 0
+			let target = 0 # restoreScrollTop or 0
+			window.scrollTo({left: 0,top: target,behavior: 'auto'})
+			scroller.scrollTop = target
+
+	def mount
+		syncScroll!
 
 	def unmount
 		let val = scroller.scrollTop
@@ -324,12 +355,12 @@ tag app-document
 
 	def getSectionForHash hash
 		hash = hash.slice(1) if hash[0] == '#'
-		return hash and data and data.descendants.find do $1.hash == hash
+		return hash and doc and doc.descendants.find do $1.hash == hash
 				
 
 	def reveal section
 		let view = querySelector ".entry-{section.id}.head"
-		view..scrollIntoView!
+		view..scrollIntoView(yes)
 		self
 
 	def refocus
@@ -357,63 +388,105 @@ tag app-document
 
 	def render
 		let doc = data
-		return unless doc	
+		return unless doc
 
+		doc = data.doc or doc
+		# console.log 'render document?!'
+		<self.markdown[d:block d:hflex] @refocus.silent=refocus>
+			<.main[max-width:768px w:768px px:6 fl:1 1 auto pb:24 pt:8]>
+				<.breadcrumb>
+					<span[d@800:none]> <a href='/'> "Imba"
+					for item in breadcrumbs
+						<span> <a href=item.href .self=(item == data)> item.navName or item.name
+					<app-search-field>
+				<div[d:hflex ja:center bg:yellow2 p:3 4 rd:lg c:yellow9 mt:2 fs:xs d:none]>
+					<div[fl:1 d:vflex]>
+						<span[c:yellow9 fw:600 fs:sm]> "We are overhauling the docs, and we need your help!"
+						<span[c:yellow8]> "Do you have a few minutes to answer what you think is missing? "
+					<a[c:blue6 td:underline fs:sm fw:600] href='https://form.typeform.com/to/GdMKZMBh'> 'Take Survey'
+				<div$content>
+					if doc.api?
+						<api-symbol-entry key=doc.href data=doc>
+					else
+						<doc-section key=doc.id data=doc level=0>
+						if !doc.path.indexOf('/api/') == 0
+							<app-document-nav data=data>
+
+			<.aside[fl:1 0 240px d@!1120:none]>
+				<$toc[d:block pos:sticky t:0px h:100vh ofy:auto pt:32px pb:10 pl:4 -webkit-overflow-scrolling:touch max-width:300px pr:4
+				].no-scrollbar>
+					if doc.api?
+						<api-entry-toc data=doc>
+					else
+						<app-document-toc[d:block max-width:360px] key=doc.href data=doc>
+
+tag app-api-entry < app-document
+		
+	def render
 		<self.markdown[d:block pb:24 pt:4 d:hflex] @refocus.silent=refocus>
 			<.main[max-width:768px w:768px px:6 fl:1 1 auto pt:4]>
-				<div$content>
-					<doc-section $key=doc.id data=doc level=0>
-				<app-document-nav data=doc>
-			<.aside[fl:1 0 240px d@!1120:none]>
-				<$toc[d:block pos:sticky t:64px h:calc(100vh - 64px) ofy:auto pt:4 pb:10 -webkit-overflow-scrolling:touch]>
-					<app-document-toc[d:block max-width:360px] data=doc>
-
+				<div$content> "HELLO"
+			
 
 tag TocItem
 	level = 1
+	css pb:1
 
-	css .menu-link tween:colors 0.2s cubic-in-out
+	css .menu-link ec:0.2s cubic-in-out px:0 pb:0
+		
+	css .children pl:2 lh:0
+		
+	css &.h3 > a fs:sm-
+	css &.h4 > a fs:sm-
 
 	css &.in-focus
 		> a c:gray9
-
+	
+	css &.toc-pills
+		> a py:0 px:0 fs:xxs fw:bold tt:uppercase c:gray5
+			
 	css &.toc-pills > .children
-		pl:1.5
-		> .child
-			d:inline-block m:0.5 ff:mono fs:xs va:top
-			> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
-			&.in-focus > a c:blue9 bg:blue3
-			&.cssvalue > a bg:sky2 c:sky6
+		pl:1.5 mb:1 px:0 ml:-0.5 pl:0
+		# > .child
+		# 	d:inline-block m:0.5 ff:mono fs:xs va:top
+		# 	> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
+		# 	&.in-focus > a c:blue9 bg:blue3
+		# 	&.cssvalue > a bg:sky2 c:sky6
 	
 	css &.toc-hide d@force:none
 
-	css &.op
+	css &.pill
+		hue:blue
 		d:inline-block m:0.5 ff:mono fs:xs va:top
-		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
-		&.in-focus > a c:blue9 bg:blue3
-
-
+		> a d:block bg:hue2 c:hue6 rd:sm fw:700 fs:xs va:top px:1.5 py:0.5
+		&.in-focus > a c:hue8 bg:hue3
+		
+		&.op hue:amber
+		&.keyword hue:amber
 	
-	css &.event-modifierz
-		d:inline-block m:0.5 ff:mono fs:xs va:top
-		> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top
-		&.in-focus > a c:blue9 bg:blue3
+	css &.event-modifier hue:indigo
+	# 	d:inline-block m:0.5 ff:mono fs:xs va:top p:0
+	# 	> a d:block bg:blue2 c:blue6 rd:sm fw:700 fs:xs va:top px:1.5 py:0.5
+	# 	&.in-focus > a c:blue9 bg:blue3
 
-	<self[c:gray6] .{data.flagstr}>
+	<self[c:gray6] .{data.flagstr} .pill=data.pill?>
 		<a.menu-link[c@hover:gray8] href=data.href data=data innerHTML=data.tocTitle>
-		if level < 2
-			<.children[pl:2 lh:0]> for item in data.parts when item.level < 45
+		if level < 2 or data.toc?
+			<.children> for item in data.parts when item.level < 45
 				<TocItem.child data=item level=(level + 1)>
 
 
 tag app-document-toc
 	<self[pr:10]>
-		<div.menu-heading[c:gray5]> "On this page"
-		<.children> for item in data.parts
+		<div.menu-heading[c:gray5 px:0]> "On this page"
+		<.children> for item in data.sections
 			<TocItem data=item level=1>
 
-		<.wip[mt:4 w: <240px ml:2 fs:sm- c:gray6 bdl:2px solid yellow4 pl:3 py:1]>
-			<div[my:-2]> "Documentation is a work-in-progress. We are actively looking for contributors. If you can help, have feedback, or want to ask questions, please reach out {<a href="https://discord.gg/mkcbkRw"> "on discord"}."
+		<.wip>
+			css w: <200px fs:sm- bg:yellow2/80 px:4 py:3 rd:md bdl:none c:yellow9 mt:4
+			<div[fw:bold]> "We are overhauling the docs, and we need your help!"
+			<div[my:4]> "Do you have a few minutes to answer what you think is missing?"
+			<a[td:underline fs:lg c:blue7] href="https://form.typeform.com/to/GdMKZMBh"> "Take survey"
 	
 tag embedded-app-document
 	def hydrate

@@ -1,4 +1,8 @@
-import { ImbaDocument,Monarch,highlight as imbaHighlight,M } from 'imba/program'
+import { ImbaDocument,Monarch2,highlight as imbaHighlight,M2 } from 'imba/program'
+import ImbaDoc,{Monarch,M} from '../../scripts/lexer'
+
+import {tokenizer as JSGrammar } from '../repl/languages/javascript'
+
 
 const cache = {}
 
@@ -95,7 +99,15 @@ export def highlight str,lang
 
 	let tokens = []
 	if lang != 'imba'
-		if let tokenizer = Monarch.getTokenizer(lang)
+		let tokenizer = {
+			js: JSGrammar
+			javascript: JSGrammar
+			json: JSGrammar
+		}[lang]
+
+		tokenizer ||= Monarch.getTokenizer(lang)
+
+		if tokenizer
 			let lines = str.split('\n')
 			let state = tokenizer.getInitialState!
 
@@ -110,7 +122,6 @@ export def highlight str,lang
 					tokens.push(tok)
 				
 				state = lexed.endState
-
 		else
 			let lines = str.split('\n')
 			for line,i in lines
@@ -118,8 +129,11 @@ export def highlight str,lang
 				tokens.push({type: 'text', value: line, offset:0})
 			
 	else
-		tokens = ImbaDocument.tmp(str).parse!
-
+		out.doc = ImbaDoc.tmp(str)
+		tokens = out.doc.parse!
+	
+	out.tokens = tokens
+	
 	###
 	let html = imbaHighlight(tokens)
 	out.html = html # parts.join('')
@@ -345,7 +359,7 @@ export def highlight str,lang
 
 		if typ != 'white' and typ != 'line'
 			let inner = escape(value or '')
-			value = "<span class='{classify types} o{token.offset}{classNames}' data-rawtypes='{token.type}'>"
+			value = "<span class='{classify types} o{token.offset}{classNames}' data-rawtypes='{token.type}' data-nr='{i}'>"
 			value += inner
 			value += '</span>'
 		elif typ == 'white'
@@ -365,10 +379,18 @@ export def highlight str,lang
 
 			value = val
 
-		if typ == 'comment' and token.value == '# ---\n'
+		if typ == 'comment' and token.value == '# ---'
 			if !head
 				let prev = tokens[i - 1]
-				let ind = indent
+				let next = tokens[i + 1]
+				
+				next.skip = yes
+				let nr = token.offset - 1
+				let ind = 0
+				while str[nr--] == '\t'
+					ind++
+				# let ind2 = indent
+				# console.warn "ind?",ind,ind2
 				parts.unshift("<div class='code-head ind{ind}'>")
 				parts.push('</div>')
 				head = token
@@ -400,3 +422,4 @@ export def highlight str,lang
 	cache[str] = out
 	return out
 	# return (<code.{Object.keys(flags).join(' ')} innerHTML=html>).outerHTML
+	

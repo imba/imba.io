@@ -1,5 +1,6 @@
 global css
 	@focus outline:none
+	html,body m:0 min-height:100vh
 
 	body
 		d:grid gaf:row ac:center jc:stretch ji:center gap:2 p:2
@@ -74,7 +75,7 @@ global css
 	button
 		d:grid gaf:column ja:center gap:2
 		py:1 px:3 fw:400 min-width:6 min-height:8
-		bw:1 bc:gray4 rd:2
+		bw:1px bc:gray4 rd:2
 		fs:md/1.2
 		c:gray7 @hover:gray8
 		bg:gray1 @hover:gray2 @active:gray3
@@ -90,13 +91,26 @@ global css
 		px:2 py:1 fs:sm
 
 	.pill rd:2 bg:teal2 fs:xs c:teal7 py:1 px:2
+	
+	.clickable
+		inset:0 bg:gray1 p:2 of:hidden d:hflex ja:center
+		@before content: "click anywhere" c:gray3 fs:xl fw:500
 
 	.rect
 		cursor:pointer
 		fs:sm c:black/70
 		touch-action:none
-		d:flex jc:center ai:center rd:sm min-width:8 min-height:8
+		d:flex jc:center ai:center rd:sm min-width:8 min-height:8 ta:center
+
+	.box
+		cursor:pointer
+		fs:sm c:black/70
+		touch-action:none
+		d:flex jc:center ai:center rd:sm min-width:8 min-height:8 ta:center
 		bg:purple3/60 @hover:purple3/90
+		
+	.alert
+		bd:blue6 bg:blue5 d:hflex ja:center c:white rd:sm p:2 px:3 pos:absolute inset:24px
 
 	.tags
 		m: -4px
@@ -227,6 +241,11 @@ global css .inline-demo
 		bgc:white/25
 
 	.base bgc:yellow2 size:80px
+
+	&.layouts
+		.layout-box g:1px p:1 rd:2px size:180px bd:1px dashed cooler4/50 bg:cooler7/10
+		# > div g:1 p:1 rd:2px size:180px bd:1px dashed cooler4/50 bg:cooler7/10
+		.child rd:3px min-width:20px min-height:20px bg:teal4 w:20px
 
 	&.typography
 		c:white fs:xl
