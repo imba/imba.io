@@ -12,21 +12,21 @@
 
 ## Basic Syntax [doc=docs/basic-syntax] [href=/docs/basic-syntax]
 
-## Variables [doc=docs/variables] [href=/docs/basic-syntax/variables]
+### Variables [doc=docs/variables] [href=/docs/basic-syntax/variables]
 
-## Identifiers [doc=docs/identifiers] [href=/docs/basic-syntax/identifiers]
+### Identifiers [doc=docs/identifiers] [href=/docs/basic-syntax/identifiers]
 
-## Literal Types [doc=docs/literals] [href=/docs/basic-syntax/literals] [skip]
+### Literal Types [doc=docs/literals] [href=/docs/basic-syntax/literals] [skip]
 
-## Operators [doc=docs/operators] [href=/docs/basic-syntax/operators]
+### Operators [doc=docs/operators] [href=/docs/basic-syntax/operators]
 
-## Functions [doc=docs/functions] [href=/docs/basic-syntax/functions]
+### Functions [doc=docs/functions] [href=/docs/basic-syntax/functions]
 
-## Control Flow [doc=docs/control-flow] [href=/docs/basic-syntax/control-flow]
+### Control Flow [doc=docs/control-flow] [href=/docs/basic-syntax/control-flow]
 
-## Classes [doc=docs/classes] [href=/docs/basic-syntax/classes]
+### Classes [doc=docs/classes] [href=/docs/basic-syntax/classes]
 
-## Modules [doc=docs/modules] [href=/docs/basic-syntax/modules]
+### Modules [doc=docs/modules] [href=/docs/basic-syntax/modules]
 
 ## Types [doc=docs/types] [href=/docs/basic-syntax/types] [skip]
 
