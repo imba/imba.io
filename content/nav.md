@@ -86,6 +86,8 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 ## API Reference [href=/api]
 
+## Observable [doc=docs/observable] [href=/docs/observable]
+
 # Guides [href=/guides] [doc=guides/index]
 
 ## Declarative Rendering [doc=docs/declarative-rendering] [href=/guides/rendering]
