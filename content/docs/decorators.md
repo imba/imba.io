@@ -2,11 +2,11 @@
 
 > [tip box yellow] Decorators are considered an experimental feature.
 
-Decorators are special functions which can be used to replace a property with a new [descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description) at runtime. This means you can alter the functionality of a method call by replacing or wrapping it with some other code.
+Decorators are special functions which can alter the functionality of a method call by replacing or wrapping it with some other code. Decorators do this by modifying a property (usually a method) with a new [descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description) at runtime.
 
-Imba includes some built-in decorators such as @observable. This page teaches you how to build your own.
+Imba includes some built-in decorators such as [@observable](/docs/observable). This page teaches you how to build your own.
 
-This example replaces the decorated function with a different message.
+The following example defines a decorators which replaces decorated function, to display a message.
 
 ```imba
 # [preview=console]
@@ -25,7 +25,7 @@ const someone = new Person()
 someone.sayHi!
 ```
 
-See also [additional details](#additional-details).
+Skip to [Technical Details](#technical-details).
 
 ## Guide to Understanding
 
@@ -69,8 +69,9 @@ def @logResult target, name, descriptor
 		# call the original method
 		let result = originalMethod(...originalArguments)
 
-		# do the logging (this is the additional functionality added by the decorator)
-		console.log "Calling {name}({originalArguments.join(', ')}) returned {result}"
+		# do the custom logging
+		console.log
+			"Calling {name}({originalArguments.join(', ')}) returned {result}"
 
 	return descriptor
 ```
@@ -105,6 +106,8 @@ const myMath = new EasyMath()
 myMath.multiply(3,5)
 myMath.quadruple(10)
 ```
+
+Now that the `@logResult` decorator function is defined, you are able to add `@logResult` in front of any method definition to make use of the decorator.
 
 ## Decorator Parameters
 
@@ -178,19 +181,8 @@ let test = new Test!
 test.main()
 ```
 
-This might remind you of our higher order function example above,
-where we **replaced** `calc` with the function returned by `logify(calc)`:
-
-```imba
-calc = logify(calc)
-```
-
-It's almost exactly the same, except we have access to the entire
-descriptor, and the property being decorated is _automatically_ **replaced**
-with the new descriptor at **runtime**.
-
 For clarity,
-notice that this code will log twice even though we're
+notice that the following code will log twice even though we're
 not calling any functions because the decorated properties are
 replaced at runtime:
 
@@ -206,7 +198,7 @@ class Test
 		return
 ```
 
-## Further Details
+## Technical Details
 
 #### Placement
 
