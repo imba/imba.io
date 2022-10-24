@@ -6,14 +6,40 @@ Imba compiles to JavaScript. In the context of APIs you can think of it like Typ
 
 The global `imba` object contains functions, constants and classes that are included with Imba. Imba also extends the built-in `Element` with certain properties. All items that are imba-specific are marked with a ★ symbol throughout the documentation.
 
-### Imba Functions
+### Properties
+<api-list>imba.own.variables</api-list>
+
+### Functions
 <api-list>imba.own.functions</api-list>
 
-### Imba Interfaces
+### Decorators
+<api-list>imba.own.decorators</api-list>
+
+### Interfaces
 <api-list>imba.own.interfaces</api-list>
 
 ## Global interfaces
 <api-list>own.interfaces</api-list>
+
+# /docs/css/properties/display
+
+The display CSS property sets whether an element is treated as a block or inline element and the layout used for its children, such as flow layout, grid or flex.
+
+Formally, the display property sets an element's inner and outer display types. The outer type sets an element's participation in flow layout; the inner type sets the layout of children. Some values of display are fully defined in their own individual specifications; for example the detail of what happens when display: flex is declared is defined in the CSS Flexible Box Model specification.
+
+## Values
+<api-list>css.display.all.cssvalues ^[^-]</api-list>
+
+# /docs/css/properties/align-items
+<api-list>css.align-items.all.cssvalues ^[^-]</api-list>
+
+# /docs/css/values/timing-function
+
+<api-list>style.type.timing-function ^[^-]</api-list>
+
+# /docs/css/properties/margin
+
+[demo](/examples/css/colors.imba?preview=styles)
 
 # /api/Element/@touch
 
@@ -41,6 +67,14 @@ def load
     state.items = await res.json!
     imba.commit!
 ```
+
+# /api/imba/locals
+
+Documentation coming
+
+# /api/imba/session
+
+Documentation coming
 
 # /api/Element/@hotkey
 

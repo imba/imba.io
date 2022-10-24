@@ -305,7 +305,7 @@ def renderer.table header, body
 	return out.toString().replace('$HEADER$',header).replace('$BODY$',body)
 
 export def htmlify content, o = {}
-	marked(content)
+	marked.parse(content)
 
 export def render content, o = {}
 	let object = {toString: (do this.body), toc: [],meta: {}}

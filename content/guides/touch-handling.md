@@ -1,3 +1,0 @@
-# Touch Handling
-
-Yes

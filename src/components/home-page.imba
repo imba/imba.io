@@ -142,7 +142,7 @@ tag home-page
 		1pfs:16px @md:20px
 
 		1cw:100%
-		d:vflex a:center of:hidden
+		d:vflex ai:center of:hidden
 		transform-style:preserve-3d
 		perspective:1000px
 		perspective-origin:50% 200px
@@ -379,7 +379,7 @@ tag home-page
 							@!1024 p:4 fs:md
 							@!870 d:none
 						for usp in usps
-							<li[py:1 d:hflex a:center px:2 pr:6]>
+							<li[py:1 d:hflex ai:center px:2 pr:6]>
 								<svg[mr:3 size:16px c:purple7] src='icons/arrow-right.svg'>
 								<span> usp
 			

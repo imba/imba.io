@@ -181,7 +181,7 @@ tag app-root
 				# 	<a[p:1 2 fw:600 ml:10px rd:12px bgc:hsla(213.12, 93.90%, 67.84%, 1) c:hsla(215.00, 27.91%, 16.86%, 98%) @hover:white d@lt-md:none] href="https://jobs.scrimba.com" title="well, actually Scrimba is hiring - but learn to code in Imba with pay! "> "We are hiring!"
 						
 						
-				<div[flex:1 a:center jc:flex-start va:middle d:hflex]>
+				<div[flex:1 ac:center jc:flex-start va:middle d:hflex]>
 					<a[mr:4 jc:flex-start d:inline-flex cursor:pointer fs:sm mx:1 a:center] @click.emit('showsearch') @hotkey('mod+k|s')>
 						css c:blue4/80 @hover:blue3
 						<svg[ml:1 d:block @md:none size:16px va:top pos:relative t:2px] src='./assets/icons/search.svg'>

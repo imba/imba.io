@@ -5,7 +5,7 @@ import * as ts from 'typescript/lib/tsserverlibrary'
 import imba-plugin from 'typescript-imba-plugin'
 import {SymbolFlags,ModifierFlags,CategoryFlags} from '../src/util/flags'
 
-import marked from 'marked'
+import { marked } from 'marked'
 import mdn-api from './mdn-data/api/inheritance.json'
 
 const mdrenderer = new marked.Renderer
@@ -65,7 +65,7 @@ def mdrenderer.heading text, level
 	
 def toMarkdown str, meta
 	mdstate = meta or {}
-	marked(str,{
+	marked.parse(str,{
 		renderer: mdrenderer
 		sanitize: false
 	})
@@ -310,8 +310,12 @@ class Entry
 				flags = SymbolFlags.Property
 				if meta.proxy
 					proxy = Entry.for(checker.styleprop(meta.proxy))
+					proxy.meta.aliases ||= []
+					proxy.meta.aliases.push(name)
 					mods |= ModifierFlags.ImbaSpecific
 					delete meta.proxy
+					return null
+				
 
 				if name.match(/(^ease)|(^e[atocb]?[dfw]?$)/)
 					cat |= CategoryFlags.CSSEasing
@@ -343,11 +347,14 @@ class Entry
 
 		# if mods
 		#	console.log 'checkFlags',name,mods,mods & ts.ModifierFlags.Readonly
-		if meta.custom or (meta.imba and sym.#kind != 'event')
+		if meta.custom or (meta.imba and sym.#kind != 'event' and (cat & CategoryFlags.CSS) == 0)
 			mods |= ModifierFlags.ImbaSpecific
+
 			delete meta.custom
 			delete meta.imba
 
+		if meta.experimental
+			mods |= ModifierFlags.Experimental
 
 		if meta.abstract
 			mods |= ModifierFlags.Abstract
@@ -393,8 +400,16 @@ class Entry
 
 		
 		if name[0] == '@' and !css?
-			kind = 'modifier'
-			flags = SymbolFlags.Modifier
+			# only when defined on events?
+			# console.log parent.name
+			if parent.name.indexOf('Event') >= 0
+				kind = 'modifier'
+				flags = SymbolFlags.Modifier # should use category flags for these instead
+			else
+				kind = 'decorator'
+				cat |= CategoryFlags.Decorator
+				flags ~= SymbolFlags.Function
+				
 
 		if sym.#kind == 'event'
 			kind = 'event'
@@ -489,7 +504,7 @@ def serialize entries = allEntries
 def run
 	let arr = checker.sym('Array')
 	let sch = checker.sym('imba.Scheduler')
-	let inc = ['UIEvent','imba.Scheduler','imba.Component','ImbaEvents','HTMLElementTagNameMap','imbacss','Math','String','Number']
+	let inc = ['UIEvent','imba.Scheduler','imba.Component','ImbaEvents','HTMLElementTagNameMap','imbacss','Math','String','Number','imba.scheduler','imba.locals','imba.session']
 	# ,'ImbaIntersectEvent','ImbaHotkeyEvent','ImbaResizeEvent','ImbaTouch','ImbaEvents'
 
 	let events = checker.props('ImbaEvents')

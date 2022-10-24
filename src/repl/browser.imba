@@ -135,7 +135,7 @@ tag repl-browser
 				css of:hidden d:vflex bg:white rd:inherit pos:rel fl:1
 				<div$titlebar @touch.self.lock.round.sync(dims,'x','y')>
 					css pos:relative rdt:md bg:gray2
-						d:vflex a:center j:flex-end
+						d:vflex ai:center jc:flex-end
 						bd:gray3 bdb:gray2 p:1
 						cursor:grab
 					css .tool

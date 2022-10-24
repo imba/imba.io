@@ -1,6 +1,5 @@
 global css
 	@focus outline:none
-
 	html,body m:0 min-height:100vh
 
 	body
@@ -242,6 +241,11 @@ global css .inline-demo
 		bgc:white/25
 
 	.base bgc:yellow2 size:80px
+
+	&.layouts
+		.layout-box g:1px p:1 rd:2px size:180px bd:1px dashed cooler4/50 bg:cooler7/10
+		# > div g:1 p:1 rd:2px size:180px bd:1px dashed cooler4/50 bg:cooler7/10
+		.child rd:3px min-width:20px min-height:20px bg:teal4 w:20px
 
 	&.typography
 		c:white fs:xl
