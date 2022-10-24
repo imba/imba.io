@@ -276,7 +276,19 @@ tag doc-section
 				<div.head[scroll-margin-top:80px] .{data.flagstr} .l{level} .h{data.data.hlevel} id=data.hash>
 					css svg d:inline size:5
 					css .legend ml:1 c:gray5 fs:md
-					<a[pos:absolute l:-20px c:gray5 o:0] href=data.href> '#'
+					css x:-10px
+						.anchor-container w:1em pos:absolute l:0px x:-100% 
+						a.anchor o:0 transition:opacity 75ms ease c:gray4 fw:300
+						&@hover a.anchor o:1
+
+					if level > 0
+						# only show the little anchor link symbols next to headers > level 0
+						# because level 0 is the top page header, which is the page you are already on
+						# the container is there to provide a little non-clickable space on the right of the # symbol
+						# which bridges the gap between the symbol and the header, so you can mouse between them
+						# without un-hovering momentarily
+						<div.anchor-container> <a.anchor href=data.href> '#'
+
 					<span.html.title innerHTML=data.head>
 					if data.legend
 						<span.legend> data.legend
