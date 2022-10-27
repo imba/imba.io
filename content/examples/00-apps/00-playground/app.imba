@@ -25,7 +25,6 @@ tag app
 		css .glow transform:scale(1.1) filter:drop-shadow(0 0 4em red4)
 		# Conditionally apply classes with booleans
 		<img.wing .glow=glow src="https://raw.githubusercontent.com/imba/branding-imba/master/yellow-wing-logo/imba.svg">
-		css @lt-lg d:none
 		<h1[c:yellow4 fs:3.2em]> "Imba"
 		# Imba automatically re-renders after every handled event
 		<app-counter @pointerover=(glow=yes) @pointerleave=(glow=no)>
