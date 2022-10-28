@@ -19,6 +19,19 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Parent Element Selector
+
+```
+css @.blue bg:blue
+```
+If parent element has class use existing rich selector.
+
+## Error events
+
+```
+@error.trap
+```
+
 ## Custom Event Modifiers
 
 ```imba
@@ -80,3 +93,9 @@ tag app
 
 imba.mount <app>
 ```imba
+
+## Adjusting HSL
+
+```
+css bg:blue3-3
+```
