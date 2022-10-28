@@ -104,6 +104,8 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 ## Changelog [doc=changelog] [href=/changelog]
 
+## Undocumented [doc=docs/undocumented] [href=/undocumented]
+
 ## Command Line Tool [doc=docs/cli] [href=/cli]
 
 ## Playground [href=/try] [target=_blank]

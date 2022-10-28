@@ -1,7 +1,7 @@
 # Undocumented
 
 Imba is moving extremely quickly and documenting every feature
-becomes a challenge. We intend to continually revise the
+becomes challenging. We intend to continually revise the
 documentation as much as possible, but instead of not documenting
 features *at all* until we have time, it's better to at least
 expose them to power users who want to learn as much as possible
