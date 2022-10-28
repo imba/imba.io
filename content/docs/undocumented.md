@@ -19,12 +19,17 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
-## Parent Element Selector
+## &. and @.
 
+If the current element has class `.blue`:
+```imba
+css &.blue bg:blue
 ```
+
+If parent element has class use existing rich selector:
+```imba
 css @.blue bg:blue
 ```
-If parent element has class use existing rich selector.
 
 ## Error events
 
