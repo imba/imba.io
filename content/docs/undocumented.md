@@ -21,7 +21,7 @@ out on [Discord](/disc).
 
 ## Custom Event Modifiers
 
-```
+```imba
 const p = console.log
 
 import * as fui from '@floating-ui/dom'
