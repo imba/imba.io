@@ -97,7 +97,7 @@ tag app
 	<self> 'manual flags'
 
 imba.mount <app>
-```imba
+```
 
 ## Adjusting HSL
 
