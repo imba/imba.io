@@ -1,4 +1,4 @@
-# Undocumented
+# <a href="https://github.com/imba/imba.io/edit/master/content/docs/undocumented.md">Undocumented</a>
 
 Imba is moving extremely quickly and documenting every feature
 becomes challenging. We intend to continually revise the
