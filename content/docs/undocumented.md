@@ -10,7 +10,7 @@ polished as the rest of the docs.
 
 This also serves as a list of things that need to be documented
 more formally, which is better than having all of them in our
-personal notes. Contributions are very welcome, especially:
+personal notes. Contributions are highly appreciated, especially:
 
 - Polishing any of these examples or creating your own examples.
 - Moving examples to a relevant location on the documentation.
