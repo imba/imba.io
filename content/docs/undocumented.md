@@ -104,3 +104,17 @@ imba.mount <app>
 ```
 css bg:blue3-3
 ```
+
+## Class.inherited hook
+
+Imba provides a way of interacting with a class when it is declared as the parent of another class. If your parent class has a static `inherited` method, it will be called with the subclass as an argument whenever some class inherits from it.
+
+```imba
+class Base
+	static def inherited subclass
+		console.log 'was inherited by',subclass
+
+class User < Base
+
+# => was inherited by [User]
+```
