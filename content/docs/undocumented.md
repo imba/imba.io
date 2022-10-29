@@ -153,3 +153,22 @@ global css body
 	# different background when opening in standalone mode
 	bg:white @standalone:gray
 ```
+
+Add a modifier whenever a certain element is opened
+
+```imba
+tag base-page
+	get ref do nodeName.toLowerCase!
+	def mount do document.flags.add("mod-{ref}")
+	def mount do document.flags.remove("mod-{ref}")
+
+tag home-page < base-page
+tag about-page < base-page
+
+# Whenever a page is mounted the tag-name of the page
+# can be used as a modifier globally in your styles
+global css
+	body hue:blue @home-page:indigo
+	header d:hflex @home-page:none
+
+```
