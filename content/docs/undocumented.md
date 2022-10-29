@@ -127,3 +127,29 @@ This is in undocumented because it is _very likely_ be removed for the final rel
 css div w:100px <80vw # width:100px max-width:80vw
 css div h:80% >100px # height:80% min-height:100px
 ```
+
+## Custom css modifiers
+
+When you use an undefined `@modifier` in styles, it defaults to check for a `mod-nameofmodifier` class on the root element. So it is easy to use / add your own.
+
+```imba
+if state.user
+	document.flags.add('mod-logged-in')
+
+css div
+	# you can use the @logged-in modifier anywhere in your app
+	# it is true when html.mod-logged-in matches
+	d:block @logged-in:none
+```
+
+Let's say you have a PWA and want specific styles when the app is opened outside of browser:
+```imba
+# set mod-standalone if we match that displayMode
+document.flags.toggle('mod-standalone',
+	window.matchMedia('(display-mode: standalone)').matches
+)
+
+global css body
+	# different background when opening in standalone mode
+	bg:white @standalone:gray
+```
