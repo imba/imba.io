@@ -118,3 +118,12 @@ class User < Base
 
 # => was inherited by [User]
 ```
+
+## Define min/max width/height with shorthand
+
+This is in undocumented because it is _very likely_ be removed for the final release. Currently it is possible to declare both min and max width/height with `>val` and `<val` in css props.
+
+```imba
+css div w:100px <80vw # width:100px max-width:80vw
+css div h:80% >100px # height:80% min-height:100px
+```
