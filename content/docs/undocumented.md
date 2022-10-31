@@ -172,3 +172,11 @@ global css
 	header d:hflex @home-page:none
 
 ```
+
+## Preventing multiple events
+
+```
+@click.cooldown.confirm
+```
+
+If you don't provide a time for the cooldown, it will not allow any more events through until the promise of the callback has finished.
