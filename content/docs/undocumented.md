@@ -19,6 +19,13 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## CSS Color Variables
+
+```
+css #site-bg:gray85
+css bg:#site-bg
+```
+
 ## &. and @.
 
 If the current element has class `.blue`:
