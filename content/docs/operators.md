@@ -472,7 +472,7 @@ delete object.one
 
 ```imba
 class Game
-  prop turn
+	prop turn
 	prop tiles
 	prop moves
 	prop winner
