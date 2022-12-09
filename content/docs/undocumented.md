@@ -19,6 +19,12 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Font Size
+
+```imba
+fs:md-
+```
+
 ## CSS Color Variables
 
 ```
