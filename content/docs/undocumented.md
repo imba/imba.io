@@ -19,6 +19,14 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Swallowing all hotkeys
+
+If, for example, you have a modal, and want to prevent all hotkeys:
+
+```imba
+@hotkey('*').global
+```
+
 ## Specific Parent Selector
 
 You can select a specific parent up the chain:
