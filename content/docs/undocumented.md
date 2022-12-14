@@ -19,6 +19,21 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Specific Parent Selector
+
+You can select a specific parent up the chain:
+
+```imba
+css ^.collapsed # if the direct parent has class .collapsed
+css ^^^.collapsed # if the parent's parent's parent has class .collapsed
+```
+
+This is most useful for pseudo states:
+
+```imba
+css c^@hover:blue
+```
+
 ## Parent Selector
 
 This will apply opacity 0 if the `.collapsed` class is found *anywhere*
