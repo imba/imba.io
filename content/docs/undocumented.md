@@ -19,6 +19,15 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Parent Selector
+
+This will apply opacity 0 if the `.collapsed` class is found *anywhere*
+in the parent heirarchy chain, all the way to root.
+
+```imba
+css o..collapsed:0
+```
+
 ## Color Precision
 
 ```imba
