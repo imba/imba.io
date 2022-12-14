@@ -19,6 +19,16 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Color Precision
+
+```imba
+css c:blue4
+css c:blue440
+css c:blue450
+css c:blue465
+css c:blue5
+```
+
 ## Tip: Globals & console.log
 
 Writing `console.log` all the time feels quite verbose.
