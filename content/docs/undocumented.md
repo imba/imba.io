@@ -19,7 +19,7 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
-## Tip: console.log
+## Tip: Globals & console.log
 
 Writing `console.log` all the time feels quite verbose.
 You might fancy writing `global.L = console.log` in your main/shared file.
@@ -34,6 +34,8 @@ instead of
 ```imba
 console.log "hello"
 ```
+
+We use a capital name because lowercase names in Imba imply `self`.
 
 ## Font Size
 
