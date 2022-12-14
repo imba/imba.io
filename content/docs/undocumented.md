@@ -19,6 +19,29 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Any @ Selector Gets Collapsed
+
+```imba
+css @hover @focus @checked
+```
+
+The above essentially gets compiled to
+
+```imba
+css @hover@focus@checked
+```
+
+The same with `@.collapsed @.show-more`
+
+If you want to nest them you'd do
+
+```imba
+css @hover
+	*@focus
+```
+
+This is usually what you want with psuedo selectors.
+
 ## Super
 
 In any inheritor class or tag, calling `super!` will call the inherited object's function.
