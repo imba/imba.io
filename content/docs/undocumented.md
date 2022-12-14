@@ -19,6 +19,22 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Tip: console.log
+
+Writing `console.log` all the time feels quite verbose.
+You might fancy writing `global.L = console.log` in your main/shared file.
+This way you expose `L` to your entire app and can just do:
+
+```imba
+L "hello"
+```
+
+instead of
+
+```imba
+console.log "hello"
+```
+
 ## Font Size
 
 ```imba
