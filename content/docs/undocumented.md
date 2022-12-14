@@ -19,6 +19,29 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Super
+
+In any inheritor class or tag, calling `super!` will call the inherited object's function.
+
+```imba
+tag modal
+	def test
+		console.log "hello"
+		
+tag my-modal < modal
+	def test
+		super!
+		console.log "hello again"
+```
+
+Writing `super` without `()` or `!` will essentially call the super function with `...args`
+
+You can also call other functions by using `super`:
+
+```imba
+super.setup!
+```
+
 ## Swallowing all hotkeys
 
 If, for example, you have a modal, and want to prevent all hotkeys:
