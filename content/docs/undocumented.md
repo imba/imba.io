@@ -19,6 +19,35 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## PWAs With Imba
+
+This assumes you're using the Vite bundler.
+You can create an imba project that uses the vite bundler with `npx imba create`.
+
+It's insanely easy to get caching with service workers using Vite.
+Literally all you have to do is install a vite plugin and add it to the plugin list:
+
+```sh
+npm i vite-plugin-pwa -D
+```
+
+vite.config.js:
+
+```imba
+import { imba } from 'vite-plugin-imba';
+import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
+
+export default defineConfig({
+	base: '',
+	plugins: [imba(),VitePWA()],
+});
+
+```
+
+When you run `vite build`, it'll automatically create a service worker for you
+and cache requests so your page will load offline and instantly.
+
 ## Any @ Selector Gets Collapsed
 
 ```imba
