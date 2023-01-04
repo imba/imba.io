@@ -367,13 +367,15 @@ tag home-page
 					<div[fs:xl/1.8 fl:100 1 470px]>
 						<p[c:cool8]> `Imba is a Web programming language that's fast in two ways: Imba's time-saving syntax with built-in tags and styles results in less typing and switching files so you can {<u> 'build things fast.'} Imba's groundbreaking memoized DOM is an order of magnitude faster than virtual DOM libraries, so you can {<u> 'build fast things.'}`
 						<div[d:block @480:hflex fs:md @580:lg  mx:-2 my:4]>
-							css a rd:xl m:2 p:2 bg:green3 bd:green3-5 bcb:green5 px:4 c:green8 fw:bold d:block ta:center
-								@hover bg:green3-3
-							<a href="/docs/intro#getting-started"> "Get started"
+							css a rd:xl m:2 p:2 bg:hue3 bd:hue3 bcb:hue5 px:4 c:hue8 fw:bold d:block ta:center
+								transition:background 300ms
+								@hover bg:hue4/85
+							<a[hue:green] href="/docs/intro#getting-started"> "Get started"
+							<a[hue:blue] href="/try/examples/apps/playground/app.imba"> "Demo"
 							css div rd:xl bd:gray2 bg:gray1 m:2 p:2 pr:4 c:gray6 ff:mono bs:solid fw:bold
 								fs:sm @580:17px ls:-0.3px d:hflex ja:center
 								@before content: '>' c:gray3  px:1
-							<div> "npx imba create hello-world"
+							<div> "npx imba create"
 					<ul[min-width:320px fl:1 0 330px]>
 						css d:block rd:lg p:6 fs:lg bxs:xxs,lg bg:white/70 h:auto as:start
 							@!1024 p:4 fs:md
@@ -382,17 +384,7 @@ tag home-page
 							<li[py:1 d:hflex ai:center px:2 pr:6]>
 								<svg[mr:3 size:16px c:purple7] src='icons/arrow-right.svg'>
 								<span> usp
-			
-			<home-section[my:10px mb:30px]>
-				css c:yellow9 fs:xl
-				<.bg [pos:abs inset:0 z:-2px t:-20px b:-20px rotate:0.1deg bg:yellow1]>
-				<div[d:vflex ja:center]>
-					<span[c:yellow9 fw:600]> "We are overhauling the docs, and we need your help!"
-					<span[fs:md]> "Do you have a few minutes to answer what you think is missing? "
-					<a[c:blue6 td:underline] href='https://form.typeform.com/to/GdMKZMBh'> 'Take Survey'
-					
 
-	
 			for item,i in ls('/home/examples').children
 				<home-section[my:10 py:10] .s{i} .{item.flagstr}>
 					<.bg>

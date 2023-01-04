@@ -1,15 +1,19 @@
-tag x-app
-	css .blue bg:blue2 @hover:blue3 color:blue8
-	css .teal bg:teal2 @hover:teal3 color:teal8
-	css .yellow bg:yellow2 @hover:yellow3 color:yellow8
-	css .red bg:red2 @hover:red3 color:red8 
-	css .item p:4 flex:1 rd:3 m:4
+let query = ""
+let words = ["apple", "orange", "strawberry", "banana"]
 
-	def render
-		<self [d:flex flw:wrap]>
-			<div.blue.item> "One"
-			<div.red.item> "Two"
-			<div.teal.item> "Three"
-			<div.yellow.item> "Four"
+tag app
 
-imba.mount <x-app>
+	get filtered-words
+		words.filter do $1.toLowerCase!.includes(query)
+
+	<self>
+		css d:vflex w:max-content p:5 g:1
+
+		<input bind=query>
+			css bg:blue0 rd:2 outline:none p:1 3 bd:1px solid blue3
+
+		for word in filtered-words
+			<div> word
+				css bg:gray1 rd:2 p:1 3 bdb:1px solid gray2 c:gray6 mb:1 bxs:xs
+
+imba.mount <app>

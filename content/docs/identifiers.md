@@ -80,10 +80,10 @@ Identifiers `$0`, `$1`, `$2` and so forth are not valid variable names – as th
 
 ## Global Identifiers
 
-Identifiers starting with an uppercase letter are global-first, meaning that they will not be implicitly scoped.
-
-> Example showing global identifiers vs local identifiers
-
+Identifiers starting with an uppercase letter are global-first,
+meaning that they will not be implicitly scoped.
+See [implicit self](/docs/basic-syntax/variables#implicit-self)
+for more information.
 
 ## Reserved Identifiers
 

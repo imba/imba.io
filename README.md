@@ -4,11 +4,23 @@ Imba's official website and documentation.
 # Contributing
 Contributing guide [below](#contributing-guide).
 
-Contributions and suggestions are very welcome,
-just ask before making any non-obvious changes.
-You can reach out to us on [Discord](https://discord.gg/mkcbkRw),
-create an issue here on Github,
-or take our [survey](https://form.typeform.com/to/GdMKZMBh).
+Contributions are highly appreciated. The easiest way to
+contribute to the documentation is by editing
+[`/content/docs/undocumented.md`](/content/docs/undocumented.md).
+This includes:
+
+- Polishing any of the undocumented examples or creating your own
+	examples.
+
+- Moving examples from undocumented to a relevant location on the
+	documentation.
+
+- Coming up with proper names for undocumented features with
+	ambiguous names.
+
+For big changes it's best to ask first. You can reach out to us
+on [Discord](https://discord.gg/mkcbkRw) or create an issue here
+on Github. We don't bite!
 
 ## Installation
 ```bash

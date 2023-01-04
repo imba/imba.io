@@ -92,6 +92,7 @@ app.get "/learn", do(req, res) res.redirect "https://scrimba.com/learn/imba"
 app.get "/community", do(req, res) res.redirect "https://discord.gg/J6h6ubesbk"
 app.get "/disc", do(req, res) res.redirect "https://discord.gg/J6h6ubesbk"
 app.get "/gh", do(req, res) res.redirect "https://github.com/imba/imba.io/issues"
+app.get "/templates", do(req, res) res.redirect "https://github.com/orgs/imba/repositories?q=template&type=all&language=&sort=stargazers"
 app.get('/examples/*') do(req,res)
 	let path = req.url
 	let file = examples[path]

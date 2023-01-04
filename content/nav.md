@@ -1,16 +1,10 @@
 # Imba Home [href=/]
 
-## Quick Start [doc=docs/start] [href=/start]
+## Get Started [doc=docs/start] [href=/start]
 
-## Command Line Tool [doc=docs/cli] [href=/cli]
+# Scripting [doc=docs/index] [href=/docs]
 
-## Changelog [doc=changelog] [href=/changelog]
-
-## Playground [href=/try] [target=_blank]
-
-# Language Reference [doc=docs/index] [href=/docs]
-
-## Basic Syntax [doc=docs/basic-syntax] [href=/docs/basic-syntax]
+### Introduction [doc=docs/basic-syntax] [href=/docs/basic-syntax]
 
 ### Variables [doc=docs/variables] [href=/docs/basic-syntax/variables]
 
@@ -29,6 +23,8 @@
 ### Modules [doc=docs/modules] [href=/docs/basic-syntax/modules]
 
 ## Types [doc=docs/types] [href=/docs/basic-syntax/types] [skip]
+
+# UI
 
 ## Elements [doc=docs/tags] [href=/docs/tags]
 
@@ -80,13 +76,13 @@ Defining and using custom style units.
 
 Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
-## Routing [doc=docs/routing] [href=/docs/routing]
-
 ## Assets [doc=docs/assets] [href=/docs/assets]
 
 ## Decorators [doc=docs/decorators] [href=/docs/decorators]
 
 ## Observable [doc=docs/observable] [href=/docs/observable]
+
+## Routing [doc=docs/routing] [href=/docs/routing]
 
 # Guides [href=/guides] [doc=guides/index]
 
@@ -103,3 +99,17 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 ## Full Stack Deployment [doc=guides/full_stack_deployment] [href=/guides/full_stack_deployment]
 
 ## Incremental Adoption [doc=guides/incremental] [href=/guides/incremental]
+
+## Observable [doc=docs/observable] [href=/docs/observable]
+
+# Other
+
+## API Reference [href=/api]
+
+## Changelog [doc=changelog] [href=/changelog]
+
+## Undocumented [doc=docs/undocumented] [href=/undocumented]
+
+## Command Line Tool [doc=docs/cli] [href=/cli]
+
+## Playground [href=/try] [target=_blank]
