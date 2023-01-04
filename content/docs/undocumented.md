@@ -19,6 +19,10 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## CSS variables and durations
+
+You can't use css variables to dynamically assign durations, you can either use custom units (`1animtime:10s`) or an interpolated value (`ease:{10}s`).
+
 ## PWAs With Imba
 
 This assumes you're using the Vite bundler.
