@@ -19,6 +19,35 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Accessors
+
+Imba allows you to delegate an object as the accessor for a field. Accessors
+must conform to an interface. Namely, they must have a `$get`
+method and a `$set` method.
+
+```imba
+class Uppercase
+
+	def $set value, target, key
+		target[key] = value
+
+	def $get target, key
+		target[key].toUpperCase!
+
+let upcase = new Uppercase
+
+class User
+	name as upcase
+
+let user = new User
+user.name = "sindre"
+console.log user.name
+# SINDRE
+```
+
+Here, we are essentially delegating the `upcase` object as the
+manager for getting and setting `name`.
+
 ## CSS value aliases
 
 We've started to implement some value aliases, such as `pos:abs` and `pos:rel`. One caveat is that these shorthands can't be interpolated since
