@@ -19,6 +19,11 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## CSS value aliases
+
+We've started to implement some value aliases, such as `pos:abs` and `pos:rel`. One caveat is that these shorthands can't be interpolated since
+they're determined at compile time.
+
 ## CSS variables and durations
 
 You can't use css variables to dynamically assign durations, you can either use custom units (`1animtime:10s`) or an interpolated value (`ease:{10}s`).
