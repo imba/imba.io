@@ -19,6 +19,40 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Semantic Div Naming
+
+Because Imba's css is so quick to write and flexible, the majority of the time it makes sense
+to put css directly under elements as opposed to making a class or separate stylesheet:
+
+```imba
+tag app
+	<self>
+		<div>
+			css bg:blue
+```
+
+But then everything that's not a custom element ends up being named `div`.
+So you might put a semantic class name there that doesn't actually have any styles:
+
+```imba
+tag app
+	<self>
+		<.blue-thing>
+			css bg:blue
+```
+
+It's nice because it's much easier to see what a certain layout is by reading an actual name.
+The issue with this is that you have to worry about `.blue-thing` being defined somewhere else.
+
+At Scrimba we've adopted the convention of using `%`:
+
+```imba
+tag app
+	<self>
+		<%blue-thing>
+			css bg:blue
+```
+
 ## Flex Layouts
 
 Imba supports flex layouts that follow a 3-character pattern: `vh` `tbcs` `lrcs`.
