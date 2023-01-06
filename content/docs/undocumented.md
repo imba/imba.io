@@ -19,6 +19,24 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## `def` In Objects
+
+If you want to add a function to an object, you don't have to do:
+
+```imba
+let obj =
+	add: do(a, b)
+		a + b
+```
+
+You can just use the normal `def` syntax:
+
+```imba
+let obj =
+	def add a, b
+		a+ b
+```
+
 ## Flex Layouts
 
 Imba supports flex layouts that follow a 3-character pattern: `vh` `tbcs` `lrcs`.
