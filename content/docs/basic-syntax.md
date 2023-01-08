@@ -134,7 +134,7 @@ The ternary operator from Javascript is supported, but you can also use an `if`/
 
 ```imba
 # Ternary:
-console.log amount > max 'too much' : 'not enough'
+console.log amount > max ? 'too much' : 'not enough'
 
 # Single line if/then/else:
 console.log if amount > max then 'too much' else 'not enough'
