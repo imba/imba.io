@@ -43,7 +43,7 @@ imba.mount <app-example>
 
 ### Named Slots [preview=md]
 
-You can also add named slots using `<slot name=...>` and render into them using `<el for=slotname>` in the outer rendering.
+You can also add named slots using `<slot name=...>` and render into them using `<el slot=slotname>` in the outer rendering.
 
 ```imba
 # ~preview
