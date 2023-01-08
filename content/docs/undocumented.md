@@ -19,6 +19,10 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Autorun Order
+
+Autorun functions will run in the order they are declared.
+
 ## `def` In Objects
 
 If you want to add a function to an object, you don't have to do:
