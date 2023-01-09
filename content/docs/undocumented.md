@@ -19,6 +19,17 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Autorun Reactions
+
+```imba
+@observable one = ''
+@observable two = ''
+@autorun def my-function stop-observing
+	one
+	stop-observing!
+	two # this will not trigger this autorun function even though it is observable
+```
+
 ## Autorun Order
 
 Autorun functions will run in the order they are declared.
