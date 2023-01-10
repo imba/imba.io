@@ -26,7 +26,7 @@ out on [Discord](/disc).
 @observable two = ''
 @autorun def my-function stop-observing
 	one
-	stop-observing!
+	stop-observing! if stop-observing
 	two # this will not trigger this autorun function even though it is observable
 ```
 
