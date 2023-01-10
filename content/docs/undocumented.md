@@ -22,6 +22,7 @@ out on [Discord](/disc).
 ## Custom Events
 
 ```imba
+# [preview=console]
 global.L = console.log
 
 tag app-button < button
