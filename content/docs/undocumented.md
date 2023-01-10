@@ -19,6 +19,29 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](/disc).
 
+## Custom Events
+
+```imba
+global.L = console.log
+
+tag app-button < button
+
+	def on$click mods, context, handler, o
+		L "self", self
+		L "mods", mods
+		L "context", context
+		L "handler", handler
+		L "o", o
+		self.addEventListener('click',handler,o)
+
+tag app
+
+	<self>
+		<app-button @click.log('clicked')> "log"
+
+imba.mount <app>
+```
+
 ## Autorun Reactions
 
 ```imba
