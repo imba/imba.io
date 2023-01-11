@@ -43,6 +43,8 @@ tag app
 imba.mount <app>
 ```
 
+`o` refers to `options`/`useCapture`: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#parameters
+
 ## Autorun Reactions
 
 ```imba
