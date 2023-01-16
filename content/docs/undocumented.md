@@ -19,7 +19,7 @@ personal notes. Contributions are highly appreciated, especially:
 - Coming up with proper names for ambiguous features.
 
 If you have questions about any of these, don't hesitate to reach
-out on [Discord](/disc).
+out on [Discord](https://discord.gg/mkcbkRw).
 
 ## Custom Events
 
