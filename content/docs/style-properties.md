@@ -10,7 +10,7 @@ Imba supports all regular css properties. For a full reference on all css proper
 
 #### Display Values
 
-<api-list>css.display.all ^[vhlrtb]?(flex|box)</api-list>
+<api-list>css.display.all ^[hv]?(flex)</api-list>
 
 ## Grid Layout
 
