@@ -20,12 +20,15 @@ and edit the code while you learn.
 
 You can also read through our extensive [documentation](/docs).
 
+There is also additional content on the official Imba [YouTube Channel](https://www.youtube.com/@imbajs/videos).
+
 ### Getting help
 
-If you run into any issues, you can check out the GitHub repository or come and join us in our friendly Discord chat group.
-
--   [Discord](https://discord.gg/mkcbkRw)
--   [GitHub](https://github.com/imba/imba)
+If you have any questions or run into any issues, don't hesitate to
+reach out on
+[Discord](https://discord.gg/mkcbkRw)
+or
+[Github](https://github.com/imba/imba)!
 
 ### Imba VSCode Plugin
 
