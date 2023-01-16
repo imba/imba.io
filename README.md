@@ -36,9 +36,6 @@ npm i
 # build
 npm run build
 
-# package content from content/ (continously)
-npm run watch
-
 # run server
 npm run dev
 ```
