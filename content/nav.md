@@ -72,6 +72,8 @@ Reference for all style modifiers.
 
 Defining and using custom style units.
 
+### Colors [doc=docs/colors] [href=/docs/css/colors]
+
 ### Values [doc=docs/style-data-types] [href=/docs/css/values]
 
 Reference for all css data types like `<color>`, `<angle>` and `<length>`
