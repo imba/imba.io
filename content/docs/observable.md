@@ -1,5 +1,7 @@
 # Observable
 
+> [tip box yellow] This is considered an [experimental](/experimental) feature.
+
 ### TLDR
 
 Imba provides MobX-like reactivity implemented as decorators.

@@ -1,6 +1,6 @@
 # Decorators
 
-> [tip box yellow] Decorators are considered an experimental feature.
+> [tip box yellow] This is considered an [experimental](/experimental) feature.
 
 Decorators are special functions which can alter the functionality of a method call by replacing or wrapping it with some other code. Decorators do this by modifying a property (usually a method) with a new [descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#description) at runtime.
 

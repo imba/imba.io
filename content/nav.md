@@ -2,7 +2,7 @@
 
 ## Get Started [doc=docs/start] [href=/start]
 
-# Scripting [doc=docs/index] [href=/docs]
+# Scripting [doc=docs/scripting] [href=/docs]
 
 ### Introduction [doc=docs/basic-syntax] [href=/docs/basic-syntax]
 
@@ -24,7 +24,7 @@
 
 ## Types [doc=docs/types] [href=/docs/basic-syntax/types] [skip]
 
-# UI
+# UI [href=/ui] [doc=docs/ui]
 
 ## Elements [doc=docs/tags] [href=/docs/tags]
 
@@ -96,18 +96,20 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 ## Incremental Adoption [doc=guides/incremental] [href=/guides/incremental]
 
-## Decorators [doc=docs/decorators] [href=/docs/decorators]
-
-### Observable [doc=docs/observable] [href=/docs/observable]
-
-# Other
+# Other [href=/other] [doc=docs/other]
 
 ## API Reference [href=/api]
 
 ## Changelog [doc=changelog] [href=/changelog]
 
-## Undocumented [doc=docs/undocumented] [href=/undocumented]
-
 ## Command Line Tool [doc=docs/cli] [href=/cli]
 
 ## Playground [href=/try] [target=_blank]
+
+# Experimental [href=/experimental] [doc=docs/experimental]
+
+## Undocumented [doc=docs/undocumented] [href=/undocumented]
+
+## Decorators [doc=docs/decorators] [href=/docs/decorators]
+
+## Observable [doc=docs/observable] [href=/docs/observable]

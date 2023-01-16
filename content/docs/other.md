@@ -1,3 +1,3 @@
-# Language Reference
+# Other
 
 <doc-pages></doc-pages>
