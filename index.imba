@@ -89,7 +89,6 @@ def compileImba file
 
 # responding to the code
 app.get "/learn", do(req, res) res.redirect "https://scrimba.com/learn/imba"
-app.get "/gh", do(req, res) res.redirect "https://github.com/imba/imba.io/issues"
 app.get "/templates", do(req, res) res.redirect "https://github.com/orgs/imba/repositories?q=template&type=all&language=&sort=stargazers"
 app.get('/examples/*') do(req,res)
 	let path = req.url

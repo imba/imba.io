@@ -25,7 +25,7 @@ You can also read through our extensive [documentation](/docs).
 If you run into any issues, you can check out the GitHub repository or come and join us in our friendly Discord chat group.
 
 -   [Discord](https://discord.gg/mkcbkRw)
--   [GitHub](/gh)
+-   [GitHub](https://github.com/imba/imba)
 
 ### Imba VSCode Plugin
 

@@ -2,7 +2,7 @@
 
 > If you have any questions or even information that you feel
 should be added to this guide, please don't hesitate to reach out
-on [Discord](https://discord.gg/mkcbkRw) or [Github](/gh). We want to save prospective
+on [Discord](https://discord.gg/mkcbkRw) or [Github](https://github.com/imba/imba). We want to save prospective
 users time.
 
 Since Imba compiles to readable JavaScript, including arbitrary
@@ -242,7 +242,7 @@ changes and share state.
 
 > If you have any suggestions for this guide, including both practical
 and framework-specific, please don't hesitate to reach out on
-[Discord](https://discord.gg/mkcbkRw) or [Github](/gh).
+[Discord](https://discord.gg/mkcbkRw) or [Github](https://github.com/imba/imba).
 
 ### Rendering Changes
 
