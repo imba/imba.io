@@ -86,16 +86,11 @@ def compileImba file
 		return
 	return file.js
 
-
-# responding to the code
-app.get "/learn", do(req, res) res.redirect "https://scrimba.com/learn/imba"
-app.get "/templates", do(req, res) res.redirect "https://github.com/orgs/imba/repositories?q=template&type=all&language=&sort=stargazers"
 app.get('/examples/*') do(req,res)
 	let path = req.url
 	let file = examples[path]
 	let nohtml = path.replace(/\.html$/,'')
 	let ext = np.extname(path)
-	# console.log "responding to",req.url,path,!!file
 
 	if !file and examples[nohtml]
 		res.type('html')
