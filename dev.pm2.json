@@ -1,0 +1,15 @@
+{
+	apps: [
+		{
+			name: "watch-imba",
+			script : "npm run watch-imba",
+			env: {
+				"PORT": "3035"
+			}
+		},
+		{
+			name: "watch-content",
+			script : "npm run watch-content"
+		}
+	]
+}
