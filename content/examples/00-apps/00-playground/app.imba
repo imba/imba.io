@@ -1,15 +1,19 @@
-let query = ""
-let words = ["apple", "orange", "strawberry", "banana"]
+let query = ''
+let words = ['apple', 'orange', 'strawberry', 'banana']
 
 tag app
 
 	get filtered-words
 		words.filter do $1.toLowerCase!.includes(query)
 
+	def add-word
+		words.push query
+		query = ''
+
 	<self>
 		css d:vflex w:max-content p:5 g:1
 
-		<input bind=query>
+		<input bind=query @hotkey('return').force=add-word>
 			css bg:blue0 rd:2 outline:none p:1 3 bd:1px solid blue3
 
 		for word in filtered-words
