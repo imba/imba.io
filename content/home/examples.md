@@ -12,7 +12,7 @@ Imba is neither an academic exercise or a toy project. We've built Imba over man
 
 [demo](/examples/express/app.imba?dir=1&preview=md&windowed=1&title=HN%20Clone&url=https://simple-hn.imba.io/top)
 
-Imba works just as well on the server as on the client. It interoperates fully with the npm + node ecosystem. The whole stack of [scrimba.com](https://scrimba.com) is written in Imba.
+Imba works just as well on the server as on the client. It interoperates fully with the npm + node ecosystem. The whole stack of [Scrimba](https://scrimba.com) is written in Imba.
 
 # Styling Evolved
 
@@ -33,9 +33,11 @@ Imba comes with a built-in bundler based on the blazing fast [esbuild](https://e
 
 # Getting Started
 
-Getting started with Imba is as simple as running `npx imba create hello-world` in your terminal to create a new imba project based on a simple template.
-
-Make sure to install the [VS Code plugin](https://marketplace.visualstudio.com/items?itemName=scrimba.vsimba). It provides fantastic auto-completion with type inference, style previews, semantic coloring and much more. Read the [documentation](/docs/intro) for a thorough introduction to the language.
+Getting started with Imba is as simple as running `npx imba create` in
+your terminal. See our
+[getting started](docs/start)
+page for more information about learning Imba, getting help, and
+tooling.
 
 # Basic Syntax [quick-tour]
 
@@ -105,7 +107,7 @@ for member,index in array
 
 # Join us!
 
-We are a small but active community of early Imba users. Jump on our [Discord](https://discord.gg/mkcbkRw) to say hi! Recordings of all our community meetings can be found [here](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
+We are a small but active community of early Imba users. Jump on our [Discord](https://discord.gg/mkcbkRw) to say hi! Recordings of all our community meetings can be found on the official Imba [YouTube Channel](https://www.youtube.com/playlist?list=PLf1a9PYKGPdl3OMBHV72Oz23eFy9q51jJ).
 
 Imba has been under active development for 6+ years now, and activity is only ramping up. We're looking for contributors who would like to help improve documentation and the ecosystem around Imba.
 
