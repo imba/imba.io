@@ -7,13 +7,21 @@ To make it easier to add consistent shortcuts throughout your apps, Imba include
 ```imba
 # supply the key combo in the @hotkey(arguments)
 <div @hotkey('ctrl+shift+k')=handler>
+
 # gmail style sequences
 <div @hotkey('g i')=handler>
-<div @hotkey('g a')=handler>
+
 # hotkey without a handler defaults to click
 <div @hotkey('mod+n') @click=clickHandler>
+
 # hotkey without a handler on a form field will focus
 <input @hotkey('s') placeholder="Search...">
+
+# multiple hotkeys
+<input @hotkey('mod+k|s')>
+
+# capture all hotkeys
+<div @hotkey('*').global>
 ```
 
 ### Usage
