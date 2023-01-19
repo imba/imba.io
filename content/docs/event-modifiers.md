@@ -18,7 +18,7 @@
 
 ### Touch Modifiers
 
-<api-list>imba.Touch.own.modifiers</api-list>
+<api-list>Touch.own.modifiers</api-list>
 
 ### Custom Modifiers
 
