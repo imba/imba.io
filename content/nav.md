@@ -88,8 +88,6 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 ## Declarative Rendering [doc=docs/declarative-rendering] [href=/guides/rendering]
 
-## Transitions & Animations [doc=guides/transitions] [href=/guides/transitions]
-
 ## Using Imba Router [doc=docs/routing] [href=/guides/routing] [skip]
 
 ## Keyboard Shortcuts [doc=guides/shortcuts] [href=/guides/shortcuts]
@@ -117,3 +115,5 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 ## Decorators [doc=docs/decorators] [href=/docs/decorators]
 
 ## Observable [doc=docs/observable] [href=/docs/observable]
+
+## Ease Transitions [doc=guides/transitions] [href=/guides/transitions]
