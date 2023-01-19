@@ -50,6 +50,8 @@ Deep-dive into event handling syntax and features.
 
 Reference for all event modifiers.
 
+### Hotkeys [doc=docs/hotkeys] [href=/docs/events/hotkeys]
+
 ### Reference [doc=docs/event-reference] [href=/docs/events/reference]
 
 Reference for all events and their interfaces.
