@@ -4,7 +4,7 @@
 
 # Scripting [doc=docs/scripting] [href=/docs]
 
-### Introduction [doc=docs/basic-syntax] [href=/docs/basic-syntax]
+### Introduction [doc=docs/basic-syntax] [href=/docs/introduction]
 
 ### Variables [doc=docs/variables] [href=/docs/basic-syntax/variables]
 
