@@ -86,13 +86,15 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 # Guides [href=/guides] [doc=guides/index]
 
-## Declarative Rendering [doc=docs/declarative-rendering] [href=/guides/rendering]
-
 ## Using Imba Router [doc=docs/routing] [href=/guides/routing] [skip]
 
-## Static Deployment [doc=guides/static_deployment] [href=/guides/static_deployment]
+## Deployment [doc=guides/deployment] [href=/guides/deployment]
 
-## Full Stack Deployment [doc=guides/full_stack_deployment] [href=/guides/full_stack_deployment]
+### Static Deployment [doc=guides/static_deployment] [href=/guides/deployment/static]
+
+### Full Stack Deployment [doc=guides/full_stack_deployment] [href=/guides/deployment/full_stack]
+
+## Declarative Rendering [doc=docs/declarative-rendering] [href=/guides/rendering]
 
 ## Incremental Adoption [doc=guides/incremental] [href=/guides/incremental]
 

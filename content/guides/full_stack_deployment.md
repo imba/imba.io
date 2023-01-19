@@ -1,7 +1,5 @@
 # Full Stack Deployment
 
-Imba runs on the server and the client. This guide is for full-stack deployment - both on the server and on the client. If all you need is a static site, see the [static deployment guide](static_deployment).
-
 On the server, the recommended way is to use [Express](https://expressjs.com/), but anything in the JavaScript ecosystem is available to you.
 
 There's a whole world of advice about how to structure Express applications, how to run Node.js in production, and keeping a website stable. From our experience of using Imba in production at [Scrimba](https://scrimba.com), we recommend using [PM2](https://github.com/Unitech/pm2). 

@@ -1,7 +1,5 @@
 # Static Deployment
 
-Imba runs on the server and the client. This guide is for client-only deployment. If what you need is a full stack site, with both a client and server, see the [full stack deployment guide](full_stack_deployment).
-
 _These instructions assume you are using our [imba-vite-template](https://github.com/imba/imba-vite-template). Not all static site hosts are ready for Node v18, **we recommend Node v16 for static sites**._
 
 Imba transpiles to JavaScript, HTML and CSS. Using Vite as its bundler means you can follow [Vite's deploy instructions](https://vitejs.dev/guide/static-deploy.html).
