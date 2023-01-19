@@ -1,9 +1,15 @@
 # Transitions & Animation [preview=md]
 
-Imba has **experimental support** for transitioning when elements are added to and removed from the document. If you set an `ease` attribute on a tag, ie. `<my-element ease>`, imba makes it possible to easily style the enter-state and exit-state of the element and its children, as well as the timing and easing of this transition.
+> [tip box yellow] This is considered an [experimental](/experimental) feature.
 
-Imba does not ship with any prebuilt transitions. This might change in a later version, but the idea is that the syntax for styling is powerful enough to easily create your own transitions. 
+Imba has support for transitioning when elements are added to and removed from
+the document. If you set an `ease` attribute on a tag, ie. `<my-element ease>`,
+imba makes it possible to easily style the enter-state and exit-state of the
+element and its children, as well as the timing and easing of this transition.
 
+Imba does not ship with any prebuilt transitions. This might change in a later
+version, but the idea is that the syntax for styling is powerful enough to
+easily create your own transitions.
 
 ```imba
 # ~preview=md
