@@ -1,4 +1,4 @@
-# Using Router
+# Router
 
 Imba comes with a built-in router that works on both the client and
 server. It requires no setup and simply introduces the

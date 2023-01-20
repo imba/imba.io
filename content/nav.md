@@ -82,7 +82,7 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 
 ## Assets [doc=docs/assets] [href=/docs/assets]
 
-## Routing [doc=docs/routing] [href=/docs/routing]
+## Router [doc=docs/router] [href=/docs/router]
 
 # Guides [href=/guides] [doc=guides/index]
 
