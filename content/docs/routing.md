@@ -1,143 +1,257 @@
 # Using Router
 
-Imba comes with a built-in router that works on both client and server. It requires no setup and merely introduces the [route](api://Element.route) and [route-to](api://Element.route-to) properties on elements. The router for your 
-application is always available via [imba.router](api://imba.router).
+Imba comes with a built-in router that works on both the client and
+server. It requires no setup and simply introduces the
+[route](api://Element.route) and [route-to](api://Element.route-to)
+properties on elements.
 
-```imba app.imba
-# [preview=lg] [titlebar] [route=/home]
-import './styles.imba'
-import './about.imba'
-
-tag App
-    <self>
-        <nav>
-            <a route-to='/home'> "Home"
-            <a route-to='/about'> "About"
-            <a href='/more'> "More"
-
-        <div route='/home'> "Welcome"
-        <about-page route='/about'>
-        <div route='/more'> "More..."
-
-imba.mount <App.app>
-```
-
-```imba about.imba
-tag about-page < main
-    <self>
-        <aside>
-            <a route-to="team"> "Team"
-            <a route-to="contact"> "Contact"
-        <section>
-            <div route=''> "Stuff about us. Click the links to the right"
-            <div route='team'> "Our team"
-            <div route='contact'> "Contact us at"
-```
-
-```imba styles.imba
-import 'util/styles'
-# ---
-global css @root
-    # links using route-to gets an .active flag when the
-    # route is matching
-    a.active td:none c:gray8
-    aside fl:0 0 120px d:vflex j:flex-start px:2 bdr:gray3 fs:sm
-    main d:hflex ac:stretch
-    section fl:1
-```
-
-As you can see with the `More` link, regular links with `href` attributes will also be intercepted by the router. The difference is that [route-to](api://Element.route-to) adds some powerful features like nested routes (see below), and [route-to](api://Element.route-to) will automatically add an `active` class to the element whenever the route it links to is matching.
-
-## Route matching
-
-When using [route](api://Element.route) to determine when components should render, the string you pass to route is a regex pattern which will be tested against the current route. Thus if you have multiple components that match part of the request path, they will all render, as shown in this example:
-
-```imba matching.imba
+```imba
+# [preview=md] [titlebar] [route=/home]
 tag app
 	<self>
-		<nav>
-			<a route-to="/"> "Home Page"
-			<a route-to="/test"> "Test Page"
-			<a route-to="/test/inner"> "Inner Page"
-		
-		<home route="/"> # this will render on /, /test, and /test/inner
-		<test route="/test"> # this will render on /test and /test/inner
-		<inner route="/test/inner"> # this will render on /test/inner
+
+		<nav[d:box g:4 c:blue6]>
+			<a route-to='/home'> 'Home'
+			<a route-to='/about'> 'About'
+
+		<[d:box h:100%]>
+
+			<div route='/home'>
+				'Home page.'
+
+			<div route='/about'>
+				'About page.'
+
+imba.mount <app>
 ```
 
-If you want these to be _exact matches_ only, then you should use `$` at the end of the path, as shown below. This is true for both the [route-to](api://Element.route-to) and [route](api://Element.route) calls:
+Elements with the `route` property will display when the provided
+route matches the contents of the address bar.
 
-```imba exact-matching.imba
+`route-to` essentially works like `href`,
+except it:
+- Enables nested routes.
+- Automatically adds an `active` class to the element whenever the
+	route it links to is matching.
+
+### Exact Routes
+
+Any route that ends with `/` will be treated as an exact route.
+
+```imba
+# [preview=md] [titlebar] [route=/home]
 tag app
 	<self>
-		<nav>
-			<a route-to="/$"> "Home Page"
-			<a route-to="/test$"> "Test Page"
-			<a route-to="/test/inner$"> "Inner Page"
-		
-		<home route="/$"> # this will only render on /
-		<test route="/test$"> # this will only render on /test
-		<inner route="/test/inner$"> # this will only render on /test/inner
+
+		<nav[d:box g:4 c:blue6]>
+			<a route-to='/home'> 'Home'
+			<a route-to='/home/test'> 'Test'
+
+		<[d:box h:100%]>
+
+			<div route='/home/'>
+				'Home page.'
+
+imba.mount <app>
 ```
+
+Notice how the `Test` path doesn't go to the home page because
+the home page route ends in a slash (`/home/`).
+
+### Wildcard Routes
+
+Any route that ends with `*` will be treated as a catch-all for that
+path. Let's fix the previous example:
+
+```imba
+# [preview=md] [titlebar] [route=/home]
+tag app
+	<self>
+
+		<nav[d:box g:4 c:blue6]>
+			<a route-to='/home'> 'Home'
+			<a route-to='/home/test'> 'Test'
+
+		<[d:box h:100%]>
+
+			<div route='/home/*'>
+				'Home page.'
+
+imba.mount <app>
+```
+
+We can use this to create a fallback route with `route='/*'` that will
+match all routes.
+
+
+> [tip box blue] For the time being, routes that don't end in a slash will also be
+considered wildcard routes. That means that `/home/*` and `/home` are
+the same.
 
 ## Nested Routes
 
-Routes that do not start with `/` will be treated as nested routes, and resolve relative to the closest parent route. This works for both [route](api://Element.route) and [route-to](api://Element.route-to).
+Routes that do not start with `/` will be treated as nested routes,
+and resolve relative to the closest parent route. This works for both
+[route](api://Element.route) and [route-to](api://Element.route-to).
+
+```imba
+# [preview=md] [titlebar] [route=/home]
+tag app
+	<self>
+
+		<[d:box h:100%]>
+
+			<div route='/home'>
+				css d:vbox
+
+				<a route-to='nested'> 'Nested'
+					css c:blue6
+
+				'Home page.'
+
+				<div route='nested'>
+					'Nested page.'
+
+imba.mount <app>
+```
 
 ## Dynamic Routes
 
-To map a url pattern to a component, you can use dynamic segments in your routes. A dynamic segment starts with `:`. So the pattern `/user/:id` with match `/user/1`, `/user/2` etc. You can have multiple dynamic segments in a route, like `/genre/:id/movies/:page`. All segments map to corresponding fields in `route.params`. When using nested routes, even the params from parent routes will be available in `route.params`.
+To map a url pattern to a component, you can use dynamic segments in
+your routes. A dynamic segment starts with `:`. So the pattern
+`/user/:id` with match `/user/1`, `/user/2` etc.
 
-```imba app.imba
-# [preview=lg] [titlebar] [route=/genre/drama]
-import 'util/styles'
-# ---
-import {genres} from 'imdb'
+```imba
+# [preview=md] [titlebar] [route=/user/1]
+tag User
+	<self>
+		route.params.id
 
-tag Genre
-    <self> "Genre with id {route.params.id}"
+tag app
+	<self>
 
-tag App
-    <self>
-        # render links for all genres
-        <nav> for item in genres.top
-            <a route-to="/genre/{item.id}"> item.title
-        <Genre.page route="/genre/:id">
-# ---
-imba.mount <App.app>
+		<nav[d:box g:4 c:blue6]>
+			<a route-to="/user/1"> "User 1"
+			<a route-to="/user/2"> "User 2"
+
+		<[d:box h:100%]>
+
+			<User route="/user/:id">
+
+imba.mount <app>
 ```
+
+You can also have multiple dynamic segments in a route, like
+`/user/:user-id/post/:post-id`. All segments map to corresponding
+fields in `route.params`. When using nested routes, even the params
+from parent routes will be available in `route.params`.
+
+## Route Precedence
+
+Route ordering matters. In the following example, because the route
+`/*` is the first route and matches all routes, the only page that
+will be shown is the fallback page, no matter the route.
+
+```imba
+# [preview=md] [titlebar] [route=/home]
+tag app
+	<self>
+
+		<nav[d:box g:4 c:blue6]>
+			<a route-to='/home'> 'Home'
+			<a route-to='/about'> 'About'
+
+		<[d:box h:100%]>
+
+			<div route='/*'>
+				'Fallback route.'
+
+			<div route='/home'>
+				'Home page.'
+
+			<div route='/about'>
+				'About page.'
+
+imba.mount <app>
+```
+
+Route precedence also applies to dynamic routes:
+
+```imba
+# [preview=md] [titlebar] [route=/items]
+tag app
+	<self>
+
+		<nav[d:box g:4 c:blue6]>
+			<a route-to='/items'> 'Items'
+			<a route-to='/items/new'> 'New'
+			<a route-to='/items/some-id'> 'ID'
+
+		<[d:box h:100%]>
+
+			<div route='/items/'>
+				'Home page.'
+
+			<div route='/items/new'>
+				'New page.'
+
+			<div route='/items/:id'>
+				'ID page.'
+
+imba.mount <app>
+```
+
+Notice how the `/items/new` route interferes with `/items/:id`.
 
 ## Loading Data
 
-In the example above, the same `<Genre>` component is used when switching between genres. As you can see, the `id` segment from the route is available via `route.params.id`, and it changes when we switch between genres.
+If you want to do something when the params change you can define a
+`routed` method on your component. This will be called whenever the
+route changes, and supply the new params, and a state object that is
+unique for each matched route, but consistent over time (ie. when
+navigating back to a previously matched set of params).
 
-If you want to do something when the params change you can define a `routed` method on your component. This will be called whenever the route changes, and supply the new params, and a state object that is unique for each matched route, but consistent over time (ie. when navigating back to a previously matched set of params).
+If you load anything asynchronously inside `routed` (using `await`),
+the component will delay rendering until `routed` has finished.
 
-If you load anything asynchronously inside `routed` (using `await`), the component will delay rendering until `routed` has finished.
+A nice feature of the imba router is that the `params` of any
+particular route match are constant. Matching `/genre/:id` with the
+url `/genre/action` will always return the same `params` object!
+This is useful for memoizing data etc.
 
-A nice feature of the imba router is that the `params` of any particular route match are constant. Matching `/genre/:id` with the url `/genre/action` it will always return the same `params` object! This is useful for memoizing data etc. (More documentations and examples of usecases will come before final release)
-
-In addition to this, `route.state` will always return an object that is unique *per match*, but consistent over time. This is very useful for caching data etc for a `component<->matching-route` combination.
+In addition to this, `route.state` will always return an object that
+is unique *per match*, but consistent over time. This is very useful
+for caching data for a `component <--> matching-route` combination.
 
 ```imba app.imba
-# [preview=lg] [titlebar] [route=/genre/drama]
+# [preview=md] [titlebar] [route=/genre/drama]
 import 'util/styles'
 # ---
 import {genres} from 'imdb'
 
 tag Genre
+
     def routed params, state
         console.log 'routed',params
         data = state.genre ||= await genres.fetch(params.id)
 
     <self[d:vflex o@suspended:0.4]>
         <div> "{data.title} has {data.movies.length} movies in top 250"
-# ---
-tag App
-    <self>
+
+tag app
+    <self.app>
         <nav> for item in genres.top
             <a route-to="/genre/{item.id}"> item.title
         <Genre.page route="/genre/:id">
-imba.mount <App.app>
+
+imba.mount <app>
 ```
-As you can see in the example above, we cache data in the `state` object supplied to `routed`. This will make sure you don't refetch the data when you click on a genre you've seen before.
+
+As you can see in the example above, we cache data in the `state`
+object supplied to `routed`. This will make sure you don't refetch the
+data when you click on a genre you've seen before.
+
+## Additional Information
+
+The router for your application is always available via
+[imba.router](api://imba.router).
