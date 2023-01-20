@@ -92,7 +92,7 @@ the same.
 
 Routes that do not start with `/` will be treated as nested routes,
 and resolve relative to the closest parent route. This works for both
-[route](api://Element.route) and [route-to](api://Element.route-to).
+`route` and `route-to`.
 
 ```imba
 # [preview=md] [titlebar] [route=/home]
