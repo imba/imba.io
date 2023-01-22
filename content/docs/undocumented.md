@@ -21,6 +21,25 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Class Constructors
+
+You can pass an object to class constructors to set instance properties:
+
+```imba
+global.L = console.log
+
+class Note
+	content = 'hello'
+
+let note = new Note({content:'world'})
+
+L note
+
+let obj = JSON.parse(JSON.stringify(note))
+
+L new Note(obj)
+```
+
 ## Custom Events
 
 ```imba
