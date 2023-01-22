@@ -26,6 +26,7 @@ out on [Discord](https://discord.gg/mkcbkRw).
 You can pass an object to class constructors to set instance properties:
 
 ```imba
+# [preview=console]
 global.L = console.log
 
 class Note
