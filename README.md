@@ -2,11 +2,11 @@
 Imba's official website and documentation.
 
 # Contributing
-Contributing guide [below](#contributing-guide).
 
 Contributions are highly appreciated. The easiest way to
 contribute to the documentation is by editing
-[`/content/docs/undocumented.md`](/content/docs/undocumented.md).
+[/content/docs/undocumented.md](/content/docs/undocumented.md).
+
 This includes:
 
 - Polishing any of the undocumented examples or creating your own
