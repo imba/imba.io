@@ -199,4 +199,4 @@ app.get(/\.*/) do(req,res)
 # pass through imba serve to automatically
 # serve assets in an optimised manner
 
-imba.serve app.listen(3187)
+imba.serve app.listen(process.env.PORT or 3187)
