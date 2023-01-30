@@ -18,7 +18,7 @@
     "node": ">=13.10.0"
   },
   "scripts": {
-    "dev": "npm run build && concurrently 'npm run watch-content' 'PORT=3035 npm run watch-imba'",
+    "dev": "npm run build && concurrently \"npm run watch-content\" \"npm run watch-imba\"",
     "watch-imba": "imba -wSM index.imba",
     "watch-content": "imba scripts/build-content.imba -- -w",
     "build": "npm run build-content && npm run build-api-docs && imba build index.imba",
