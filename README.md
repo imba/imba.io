@@ -23,20 +23,13 @@ on [Discord](https://discord.gg/mkcbkRw) or create an issue here
 on Github. We don't bite!
 
 ## Installation
+
+Fork the repository, then:
+
 ```bash
-# fork the repository and clone your fork
 git clone https://github.com/your-fork/imba.io
-
-# enter the folder
 cd imba.io
-
-# install dependencies
 npm i
-
-# build
-npm run build
-
-# run server
 npm run dev
 ```
 
