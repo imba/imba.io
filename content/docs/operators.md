@@ -552,20 +552,6 @@ class Item
     console.log name,title,desc
 ```
 
-### prop [keyword]
-
-A prop allows a tag property to be set from the outside
-
-```imba
-  prop name
-
-  # With default value
-  prop name = "John Smith"
-
-  # With VS Code type annotations
-  prop name\string = "Guest user"
-```
-
 ### attr [keyword]
 
 ```imba
