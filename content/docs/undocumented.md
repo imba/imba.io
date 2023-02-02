@@ -44,6 +44,21 @@ You can use them in css as units:
 css w:1elw h:1elh
 ```
 
+You can also pass in custom element names:
+
+```imba
+tag app
+	<self @resize.css(1sectionwidth,1sectionheight)>
+		css s:50px bg:rose4
+```
+
+Results in:
+
+```css
+    --u_sectionwidth: 50;
+    --u_sectionheight: 50;
+```
+
 ## Class Constructors
 
 You can pass an object to class constructors to set instance properties:
