@@ -21,6 +21,29 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Resize CSS Modifier
+
+The `css` modifier for the `@resize` event will set the units `elw` and `elh` on the element on resize:
+
+```imba
+tag app
+	<self @resize.css>
+		css s:50px bg:rose4
+```
+
+If you inspect `<app>`:
+
+```css
+    --u_elw: 50;
+    --u_elh: 50;
+```
+
+You can use them in css as units:
+
+```imba
+css w:1elw h:1elh
+```
+
 ## Class Constructors
 
 You can pass an object to class constructors to set instance properties:
