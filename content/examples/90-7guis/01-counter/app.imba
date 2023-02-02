@@ -3,7 +3,7 @@ import 'util/styles'
 # https://github.com/eugenkiss/7guis/wiki#counter
 
 tag app-counter
-	prop count = 0
+	count = 0
 
 	<self[d:hflex cg:2]>
 		<input[w:10rem] type='number' bind=count>

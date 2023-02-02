@@ -77,7 +77,7 @@ global css body > * pos:abs inset:6 rd:md of:hidden
 import {genres} from 'imdb'
 
 tag Panel
-	prop split = 30
+	split = 30
 
 	<self[d:flex fs:xs bg:teal0]>
 		<div[p:2 bg:teal1 flb:{split}%]> "Menu"
@@ -154,10 +154,10 @@ css .thumb h:4 w:2 bg:blue7 d:block pos:absolute x:-50% t:50% y:-50% rd:sm
 css .thumb b x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray6
 
 tag slider
-	prop min = -50
-	prop max = 50
-	prop step = 1
-	prop value = 0
+	min = -50
+	max = 50
+	step = 1
+	value = 0
 
 	<self @touch.fit(min,max,step)=(value = e.x)>
 		<.thumb[l:{100 * (value - min) / (max - min)}%]> <b> value

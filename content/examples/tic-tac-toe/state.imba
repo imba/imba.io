@@ -5,10 +5,10 @@ const combos = [
 ]
 
 export default class Game
-	prop turn = 0
-	prop tiles = new Array(9)
-	prop moves = []
-	prop winner
+	turn = 0
+	tiles = new Array(9)
+	moves = []
+	winner
 
 	def place index
 		return if tiles[index] or winner

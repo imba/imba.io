@@ -16,7 +16,7 @@ export tag Box
 		@nth-of-type(5) bg:pink3
 		@nth-of-type(6) bg:yellow3
 
-	prop x = 0
-	prop y = 0
+	x = 0
+	y = 0
 
 	<self[x:{x} y:{y}] @touch.moved.sync(self)> <slot> "box"

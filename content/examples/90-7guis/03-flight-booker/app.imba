@@ -1,9 +1,9 @@
 import 'util/styles'
 # https://github.com/eugenkiss/7guis/wiki#flight-booker
 tag flight-booker
-	prop isReturn = false
-	prop start = (new Date).toISOString!.slice(0,10)
-	prop end = start
+	isReturn = false
+	start = (new Date).toISOString!.slice(0,10)
+	end = start
 
 	def bookFlight
 		let type = isReturn ? 'return' : 'one-way'

@@ -16,7 +16,7 @@ Or as a property of a tag:
 ```imba
 # store state as a property on a tag
 tag Counter
-    prop count = 0
+    count = 0
     <self>
         <div> count
         <button @click=(count = count + 1)> "Add One"

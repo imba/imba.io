@@ -3,7 +3,7 @@ global css body > * pos:abs inset:0 fs:xs
 global css aside bg:gray1
 # ---
 tag Panel
-	prop split = 30
+	split = 30
 
 	<self[d:flex]>
 		<aside[flb:{split}%]> "Menu"

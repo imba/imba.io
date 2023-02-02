@@ -5,8 +5,8 @@ css mark pos:absolute
 css li d:inline-block px:1 m:1 rd:2 fs:xs bg:gray1
 # ---
 tag app
-	prop title = "Hey"
-	prop point = {x:100, y: 100}
+	title = "Hey"
+	point = {x:100, y: 100}
 	
 	css pos:abs inset:0 p:8 cursor:default
 

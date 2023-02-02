@@ -1,6 +1,6 @@
 tag app-canvas
-	prop dpr = window.devicePixelRatio
-	prop state = {}
+	dpr = window.devicePixelRatio
+	state = {}
 
 	def draw e
 		let path = e.#path ||= new Path2D

@@ -1,5 +1,5 @@
 export tag Tile
-	prop nr
+	nr
 
 	css d:flex ja:center bg:blue6 bg@odd:blue5 fs.won:50px
 

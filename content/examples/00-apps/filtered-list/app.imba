@@ -1,7 +1,7 @@
 import {movies} from 'imdb'
 
 tag App
-	prop query
+	query
 
 	def match movie
 		!query or movie.title.toLowerCase!.indexOf(query) >= 0

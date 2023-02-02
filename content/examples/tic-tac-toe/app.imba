@@ -6,7 +6,7 @@ css .tiles
 	d:grid grid: 1fr 1fr 1fr / 1fr 1fr 1fr
 	
 tag App
-	prop game = new Game
+	game = new Game
 
 	<self[d:vflex pos:abs inset:0]>
 		<div.tiles> for tile,i in game.tiles

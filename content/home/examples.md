@@ -62,9 +62,9 @@ let object = {name: 'Imba', type: 'language'}
 ```imba
 class Todo
     # properties
-    prop title
-    prop completed = no
-    prop due = null
+    title
+    completed = no
+    due = null
 
     # methods
     def complete

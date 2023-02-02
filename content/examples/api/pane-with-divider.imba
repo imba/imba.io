@@ -3,7 +3,7 @@ import 'util/styles'
 
 # ---
 tag Panel
-	prop split = 70
+	split = 70
 
 	<self[d:flex pos:absolute inset:0]>
 		<div[bg:teal2 flex-basis:{split}%]>

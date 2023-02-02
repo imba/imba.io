@@ -1,7 +1,7 @@
 import { Todo } from './todo.imba'
 
 tag App
-	prop items = [new Todo('Hello'),new Todo('Hello again')]
+	items = [new Todo('Hello'),new Todo('Hello again')]
 
 	def add title
 		items.push(new Todo(title))

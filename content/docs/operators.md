@@ -471,10 +471,10 @@ delete object.one
 
 ```imba
 class Game
-	prop turn
-	prop tiles
-	prop moves
-	prop winner
+	turn
+	tiles
+	moves
+	winner
 
 	def constructor
 		moves = []
@@ -515,8 +515,8 @@ for item, i in items
 
 ```imba
 class Item
-    prop price = 100
-    prop taxRate = 20
+    price = 100
+    taxRate = 20
 
     get totalPrice
         price * (1 + taxRate / 100)

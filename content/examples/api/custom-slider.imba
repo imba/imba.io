@@ -8,10 +8,10 @@ css .thumb b x:-50% l:50% b:100% w:5 ta:center pos:absolute d:block fs:xs c:gray
 
 # ---
 tag Slider
-	prop min = -50
-	prop max = 50
-	prop step = 1
-	prop value = 0
+	min = -50
+	max = 50
+	step = 1
+	value = 0
 
 	<self @touch.fit(min,max,step)=(value = e.x)>
 		<.thumb[l:{100 * (value - min) / (max - min)}%]> <b> value

@@ -2,7 +2,7 @@
 import 'util/styles'
 # ---
 tag App
-	prop box = {}
+	box = {}
 
 	<self[d:block inset:0 ta:center]>
 		<div[fs:sm]> "Size is {box.width} - {box.height}"

@@ -3,7 +3,7 @@
 import {genres} from 'imdb'
 
 tag Card
-	prop shown = 1
+	shown = 1
 	css bg:gray3 d:vflex ja:center c:white rd:md pos:relative
 
 	<self[o:{shown}] @intersect(20)=(shown = e.ratio)>

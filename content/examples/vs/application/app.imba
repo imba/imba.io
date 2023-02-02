@@ -1,6 +1,6 @@
 tag TodoApp < div
-	prop newtitle = ''
-	prop items = []
+	newtitle = ''
+	items = []
 
 	def add
 		items.push(text: newtitle)

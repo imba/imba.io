@@ -126,8 +126,8 @@ Imba also allows `?` at the end of identifiers for methods, properties, and vari
 
 ```imba
 tag sized-list
-    prop items = []
-    prop size = 10
+    items = []
+    size = 10
 
     get empty? do !items.length
 ```

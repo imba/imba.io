@@ -3,10 +3,10 @@ def cloneObject obj do JSON.parse(JSON.stringify(obj))
 def areObjectsEqual a, b do JSON.stringify(a) === JSON.stringify(b)
 
 export class State
-	prop inspector = false
-	prop undoAmount = 0
-	prop selected = null
-	prop history = [[]]
+	inspector = false
+	undoAmount = 0
+	selected = null
+	history = [[]]
 
 	#newSize = null
 	get newSize

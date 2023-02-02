@@ -14,7 +14,7 @@ let my-dashed-var = yes
 let object = {dashed-key: 1, other-key: 2}
 
 class Item
-    prop full-name\string
+    full-name\string
 
     def rename new-name
         full-name = new-name
@@ -35,8 +35,8 @@ Imba also allows `?` at the end of identifiers for methods, properties, and vari
 
 ```imba
 tag sized-list
-    prop items = []
-    prop size = 10
+    items = []
+    size = 10
 
     get empty?
         !items.length

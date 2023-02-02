@@ -69,7 +69,7 @@ These identifiers will **not** use implicit self, since they are resolved as glo
 
 ```imba
 class Loader
-    prop window
+    window
 
     def setup
         window # Ooops, reference to the global window

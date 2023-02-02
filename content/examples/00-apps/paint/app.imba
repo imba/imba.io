@@ -1,7 +1,7 @@
 const dpr = window.devicePixelRatio
 
 tag app-paint
-	prop size = 500
+	size = 500
 	
 	def draw e
 		let path = e.$path ||= new Path2D

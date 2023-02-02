@@ -3,8 +3,8 @@ import 'util/styles'
 
 tag app-timer
 
-	prop duration = 5000
-	prop step = 50
+	duration = 5000
+	step = 50
 	
 	elapsed = 0
 

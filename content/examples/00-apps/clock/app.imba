@@ -1,5 +1,5 @@
 tag app-clock
-	prop utc
+	utc
 
 	css pos:relative w:100% py:50% rd:2 bg:gray3
 

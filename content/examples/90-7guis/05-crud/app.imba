@@ -9,14 +9,14 @@ let people = [
 
 tag app-crud
 
-	prop index = 0 @set
+	index = 0 @set
 		first = selected..first || ""
 		last = selected..last || ""
 		query = ""
 	
-	prop query = ""
-	prop first = people[0].first
-	prop last = people[0].last
+	query = ""
+	first = people[0].first
+	last = people[0].last
 
 	get selected do people[index]
 	

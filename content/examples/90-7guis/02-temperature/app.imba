@@ -3,7 +3,7 @@ import 'util/styles'
 # https://github.com/eugenkiss/7guis/wiki#counter
 
 tag app-temperature
-	prop f = 32
+	f = 32
 
 	get c
 		(5 / 9 * (f - 32)).toFixed(1)

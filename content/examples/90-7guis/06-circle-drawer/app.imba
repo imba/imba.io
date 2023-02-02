@@ -6,7 +6,7 @@ global css html,body w:100% h:100% m:0 p:0 fs:13px
 
 tag circle-drawer
 
-	prop state = new State()
+	state = new State()
 
 	css
 		.canvas inset:0 bgc:gray1
@@ -40,8 +40,8 @@ tag circle-drawer
 						<button @click=state.hideInspector> "Done"
 
 tag Circles
-	prop circles = []
-	prop selectedIndex = null
+	circles = []
+	selectedIndex = null
 	css .circle bgc:gray3 pos:absolute rd:full shadow:0 0 0 1px gray4 x:-50% y:-50%
 		&.selected bgc:gray4 shadow:0 0 0 1px gray5
 	<self>

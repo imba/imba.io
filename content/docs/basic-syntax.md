@@ -365,9 +365,9 @@ Classes in Imba can do the same things as classes in JavaScript, but have severa
 # [preview=console]
 class Todo
 	# Properties are member variables:
-	prop title
-	prop completed = no
-	prop due = null
+	title
+	completed = no
+	due = null
 
 	# Methods are instance level functions:
 	def complete
@@ -394,9 +394,9 @@ Instance level methods are called on the object made from the class.
 ```imba
 # [preview=console]
 class Todo
-	prop title
-	prop completed = no
-	prop due = null
+	title
+	completed = no
+	due = null
 	def complete
 		completed = yes
 	get overdue
@@ -415,9 +415,9 @@ Class level methods are called directly on the class.
 ```imba
 # [preview=console]
 class Todo
-	prop title
-	prop completed = no
-	prop due = null
+	title
+	completed = no
+	due = null
 	def complete
 		completed = yes
 	get overdue
@@ -441,9 +441,9 @@ Loops in Imba have more useful features than in JavaScript, making it easier to 
 ```imba
 # [preview=console]
 class Todo
-	prop title
-	prop completed = no
-	prop due = null
+	title
+	completed = no
+	due = null
 	def complete
 		completed = yes
 	get overdue
@@ -685,8 +685,8 @@ def multiply a\number, b\number
 
 # Rewriting the todo-tag with annotated props makes it easier to understand and use.
 tag todo-item
-    prop completed = no
-    prop title\string
+    completed = no
+    title\string
 
     <self .completed=completed>
         <input bind=completed type='checkbox'>
@@ -702,7 +702,7 @@ import type { User } from './models'
 
 tag user-card
     # The User is annotated here, so we only need the type:
-    prop user\User
+    user\User
 
     <self>
         # We know what kind of object a User is now:

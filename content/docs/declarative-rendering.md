@@ -219,7 +219,7 @@ import 'util/styles'
 global css body d:block
 # ---
 tag app-clock
-	prop utc
+	utc
 	
 	def render
 		let ts = Date.now! / 60000 + utc * 60

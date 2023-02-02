@@ -158,7 +158,7 @@ However, __there is nothing special about the data property__, besides it being 
 
 ```imba
 tag movie-item
-    prop movie
+    movie
     # using references to data
     <self> <em> movie.title
 
@@ -174,7 +174,7 @@ When you are dealing with known data-structures it can be useful to set the type
 
 ```imba
 tag movie-item
-    prop data\Movie
+    data\Movie
     <self> <em> data.title
 
 <div> for movie in movies
@@ -188,7 +188,7 @@ Sometimes when working with complex data objects it might be useful to define so
 
 ```imba
 tag movie-item
-    prop data\Movie
+    data\Movie
     get director do data.director
     get genres do data.genres
 
