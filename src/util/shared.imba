@@ -1,2 +1,2 @@
 extend class HTMLIFrameElement
-	prop replify
+	replify

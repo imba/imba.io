@@ -2,8 +2,8 @@ import {SemanticTokenTypes,SemanticTokenModifiers,M} from 'imba/program'
 
 export class Adapter
 	
-	prop worker
-	prop selector
+	worker
+	selector
 
 	constructor defaults, selector, worker
 		defaults = defaults

@@ -4,7 +4,7 @@ const scope = document.location.pathname.replace(/\/\w+\.html/,'')
 console.log 'bridge for scope',scope
 
 const client = new class
-	prop registration
+	registration
 
 	def constructor
 		sw = window.navigator.serviceWorker

@@ -101,7 +101,7 @@ tag doc-section-filters
 		c:gray6 @hover:gray7 .checked:gray9
 		bdb:2px solid bc:clear .checked:teal6
 
-	prop filter
+	filter
 
 	get filters
 		Sheets[data.options.sheet]
@@ -115,7 +115,7 @@ tag doc-section-filters
 
 	
 tag doc-section
-	prop body-only
+	body-only
 
 	css my:1em d:block
 		mt:8 .h1:12 .h2:12 .h3:8 @first:8
@@ -236,7 +236,7 @@ tag doc-section
 
 	css &.debug bd:1px solid gray3 rd:sm p:4 .in-focus:green6
 
-	prop query
+	query
 
 	set filters value
 		console.log 'setting filters',value
@@ -323,7 +323,7 @@ tag api-doc-section < doc-section
 let FIRST_DOC_MOUNT = no
 
 tag app-document
-	prop breadcrumbs
+	breadcrumbs
 
 	css color: #4a5568 lh: 1.625
 	css $content > mb@last:0 mt@first:0
@@ -336,11 +336,11 @@ tag app-document
 	get doc
 		data and data.doc or data
 
-	prop hash @set
+	hash @set
 		let section = getSectionForHash(e.value)
 		reveal(section) if section
 		
-	prop data @set
+	data @set
 		syncScroll! if mounted?
 	
 	def syncScroll

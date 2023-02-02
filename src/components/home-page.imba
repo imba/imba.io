@@ -76,7 +76,7 @@ tag home-section
 		<slot>
 
 tag rotating-shapes
-	prop size = 300
+	size = 300
 	def setup
 		<self.p3d>
 			css d:block pos:abs z:-10px w:100vw h:300px

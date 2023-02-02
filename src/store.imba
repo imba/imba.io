@@ -27,8 +27,8 @@ const extToLanguage =
 	html: 'html'
 
 class Entry
-	prop dirty @set imba.commit!
-	prop hasErrors @set imba.commit!
+	dirty @set imba.commit!
+	hasErrors @set imba.commit!
 
 	static def create data, parent
 		let typ = types[data.type] or Entry
@@ -324,7 +324,7 @@ export class Section < Markdown
 export class Category < Entry
 
 export class Dir < Entry
-	prop examples
+	examples
 
 	constructor data, parent
 		super

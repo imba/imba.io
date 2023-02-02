@@ -37,15 +37,15 @@ const editorOptions = {
 tag app-divider
 
 tag app-repl
-	prop fs
+	fs
 	
-	prop project @set
+	project @set
 		if e.value
 			if (!currentFile or currentFile.parent != e.value)
 				currentFile = e.value.files[0]
 			run!
 		
-	prop currentFile @set
+	currentFile @set
 		console.log 'current file did set',e
 
 		if monaco and e.value
@@ -55,7 +55,7 @@ tag app-repl
 		if !project.childByName('index.html') and !project.childByName('app.imba')
 			run!
 	
-	prop url @set
+	url @set
 		let src = `{sw.scope}{e.value}`
 		try
 			$iframe.src = src

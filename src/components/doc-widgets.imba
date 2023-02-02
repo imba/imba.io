@@ -93,7 +93,7 @@ tag doc-style-easings
 				<.dd> val
 
 tag doc-util-output
-	prop name
+	name
 
 	<self>
 		for own k,v of data

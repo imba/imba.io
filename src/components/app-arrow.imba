@@ -125,8 +125,8 @@ export def rectAnchor rect, ax = 0.5, ay = 0.5
 
 
 tag app-arrow
-	prop from
-	prop to
+	from
+	to
 
 	css @before test
 		d:block
@@ -201,8 +201,8 @@ tag app-arrow
 					<svg:polygon$start points="0,-3 6,0, 0,3" transform=norm.start>
 
 tag Point
-	prop x = 0
-	prop y = 0
+	x = 0
+	y = 0
 
 	<self[x:{x}px y:{y}px] @touch.sync(self)>
 

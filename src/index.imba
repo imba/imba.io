@@ -29,8 +29,8 @@ extend tag element
 		global.site
 	
 tag app-root
-	prop doc
-	prop show-menu
+	doc
+	show-menu
 
 	def setup
 		global.site = self

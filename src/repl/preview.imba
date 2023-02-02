@@ -12,21 +12,21 @@ class Demo
 		win.$commit!
 
 tag app-repl-preview
-	prop url @set
+	url @set
 		refresh! if $entered
 
-	prop root
-	prop w = 2000
-	prop scale = 1
-	prop size = 'auto-auto'
-	prop mode
-	prop file
-	prop options = {}
-	prop $win
-	prop $doc
-	prop demo
-	prop exports
-	prop src
+	root
+	w = 2000
+	scale = 1
+	size = 'auto-auto'
+	mode
+	file
+	options = {}
+	$win
+	$doc
+	demo
+	exports
+	src
 
 	def build
 		t0 = Date.now!

@@ -5,7 +5,7 @@ import {ImbaDocument} from 'imba/program'
 # this should talk to the languageservice
 class ImbaWorker
 
-	prop ctx
+	ctx
 
 	constructor ctx, options
 		ctx = ctx

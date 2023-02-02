@@ -2,8 +2,8 @@ import {ls} from '../store'
 
 tag app-menu-item
 
-	prop data
-	prop level = 0
+	data
+	level = 0
 	get active?
 		$item.className.split(/\b/).includes('active')
 
@@ -54,8 +54,8 @@ tag app-menu-section
 	css a cursor:pointer
 	css .section.active + .content d:block
 
-	prop bodyheight = 'auto'
-	prop members
+	bodyheight = 'auto'
+	members
 
 	<self>
 		css d:block

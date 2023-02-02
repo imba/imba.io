@@ -88,14 +88,14 @@ tag app-code-block < app-code
 			$scroller max-height@force:140px p:1 fs:sm
 		
 
-	prop lang
-	prop options = {}
-	prop dir
-	prop files
-	prop file
-	prop size
-	prop hlvar
-	prop editorHeight = 0
+	lang
+	options = {}
+	dir
+	files
+	file
+	size
+	hlvar
+	editorHeight = 0
 
 	set href href
 		return unless #href =? href
@@ -273,7 +273,7 @@ tag app-code-block < app-code
 				demo.vars.flag = sel.slice(1)
 				demo.commit!
 
-	prop focusedRule @set
+	focusedRule @set
 		if e.oldValue
 			e.oldValue.flags.remove('_selected_')
 		if e.value
@@ -461,7 +461,7 @@ global css app-code-file
 		app-arrow $scale:0.85 o:0
 
 tag app-code-file
-	prop file
+	file
 
 	def setup
 		hlpos = {x: 0, y: 0}

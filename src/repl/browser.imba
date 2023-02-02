@@ -46,15 +46,15 @@ class Rect
 tag repl-browser
 	dims = new Rect(50,50,300,240)
 
-	prop options
-	prop root
-	prop file
-	prop mode
-	prop demo
-	prop $win
-	prop $doc
-	prop $console
-	prop exports
+	options
+	root
+	file
+	mode
+	demo
+	$win
+	$doc
+	$console
+	exports
 
 	css d:block pe:none
 

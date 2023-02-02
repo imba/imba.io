@@ -34,9 +34,9 @@ tag log-tag
 	css .child mx:1 d:block
 	css .more color:gray5 px:1 rd:2 bg.hover:gray1 cursor:pointer
 
-	prop context
-	prop depth
-	prop expanded = undefined
+	context
+	depth
+	expanded = undefined
 
 	def toggle
 		expanded = !expanded
@@ -101,7 +101,7 @@ tag repl-console-item
 		&[data-count=1] @before d:none
 
 
-	prop duration
+	duration
 
 	def render
 		<self.item>
@@ -142,10 +142,10 @@ tag repl-console
 	
 	css $header bg:gray2 p:2 px:3 d:hflex ..transient:none
 
-	prop native
-	prop context
-	prop count = 0
-	prop mode
+	native
+	context
+	count = 0
+	mode
 
 	get isTransient
 		mode == 'transient'

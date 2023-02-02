@@ -178,9 +178,9 @@ tag api-pills
 			<div.idl> "idl"
 
 tag api-li < api-el
-	prop href
-	prop mdn = no
-	prop name
+	href
+	mdn = no
+	name
 
 	css d:hflex ja:center ws:nowrap jc:flex-start min-height:1rh
 		a d:hflex ai:baseline ws:pre
@@ -256,7 +256,7 @@ tag api-links
 				<api-link .pill=pills data=item>
 			
 tag api-parents
-	prop members = []
+	members = []
 
 	<self>
 		let up = data.parents
