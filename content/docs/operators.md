@@ -300,7 +300,6 @@ if object.value != input
 ```
 The reassignment may seem unnecessary at first, but since memoization is an oft-used pattern in Imba, this is a very convenient addition.
 
-
 ## Bitwise Operators [toc-pills]
 
 ### & [op=bitwise]
@@ -476,7 +475,7 @@ class Game
 	prop tiles
 	prop moves
 	prop winner
-	
+
 	def constructor
 		moves = []
 		tiles = new Array(9)
@@ -518,10 +517,10 @@ for item, i in items
 class Item
     prop price = 100
     prop taxRate = 20
-  
+
     get totalPrice
         price * (1 + taxRate / 100)
-  
+
     def render
         <self>
             <input bind=price>
@@ -543,11 +542,11 @@ class Item
 ```imba
   def multiply a, b
     a * b
-  
+
   # default values
   def method name = 'imba'
     console.log param
-  
+
   # destructuring parameters
   def method name, {title, desc = 'no description'}
     console.log name,title,desc
@@ -559,7 +558,7 @@ A prop allows a tag property to be set from the outside
 
 ```imba
   prop name
-  
+
   # With default value
   prop name = "John Smith"
 
