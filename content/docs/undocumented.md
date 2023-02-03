@@ -21,6 +21,16 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Cooldown Flag
+
+The cooldown event modifier will flag the `cooldown` class on the target element.
+
+```imba
+<button @click.cooldown(1s)=handler>
+	css @.cooldown bg:blue
+	"On click, will flash blue and not be clickable for 1s"
+```
+
 ## Resize CSS Modifier
 
 The `css` modifier for the `@resize` event will set the units `elw` and `elh` on the element on resize:
