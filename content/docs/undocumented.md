@@ -21,6 +21,19 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Platform
+
+```imba
+if $node$
+	'Node'
+if $browser$
+	'Browser'
+if $worker$
+	'Worker'
+if $web$
+	'Web'
+```
+
 ## Dataset Props
 
 ```imba
