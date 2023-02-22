@@ -21,6 +21,14 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Dataset Props
+
+```imba
+tag app
+	def mount
+		dataset.payload = "test" # sets the `data-payload` attribute on <app>
+```
+
 ## Cooldown Flag
 
 The cooldown event modifier will flag the `cooldown` class on the target element.
