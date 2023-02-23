@@ -24,7 +24,7 @@ app.get(/__sw(_\d+)?__\.js/) do(req,res)
 	const asset = import('./src/sw/worker.imba?worker')
 	res.sendFile asset.path
 
-app.use(express.static('dist/public'))
+app.use(express.static('dist/public',maxAge:'1m'))
 
 app.get(/__blank__\.html/) do(req,res)
 	res.send String <div>
