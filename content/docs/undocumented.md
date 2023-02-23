@@ -21,6 +21,70 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Letting Branch Results
+
+This is a common pattern:
+
+```imba
+def example
+	let obj
+	try
+		obj = JSON.parse("this will error")
+	catch e
+		obj = {}
+	console.log obj # logs {}
+
+example!
+```
+
+Instead we can do:
+
+```imba
+def example
+	let obj =
+		try
+			JSON.parse("this will error")
+		catch e
+			{}
+	console.log obj # logs {}
+
+example!
+```
+
+Or with less lines:
+
+```imba
+def example
+	let obj =
+		try JSON.parse("this will error")
+		catch e {}
+	console.log obj # logs {}
+
+example!
+```
+
+Or in one line:
+
+```imba
+def example
+	let obj = try JSON.parse("this will error") catch e {}
+	console.log obj # logs {}
+
+example!
+```
+
+Or without a catch:
+
+```imba
+def example
+	let obj = try JSON.parse("this will error")
+	console.log obj # logs undefined
+
+example!
+```
+
+This can also be done with if/else statements.
+
 ## Platform
 
 ```imba
