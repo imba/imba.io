@@ -11,13 +11,13 @@ tag app
 		query = ''
 
 	<self>
-		css d:vflex w:max-content p:5 g:1
+		css d:vflex w:max-content p:5 g:1.5
 
 		<input bind=query @hotkey('return').force=add-word>
 			css bg:blue0 rd:2 outline:none p:1 3 bd:1px solid blue3
 
 		for word in filtered-words
 			<div> word
-				css bg:gray1 rd:2 p:1 3 bdb:1px solid gray2 c:gray6 mb:1 bxs:xs
+				css bg:gray1 rd:2 p:1 3 bdb:1px solid gray2 c:gray6 bxs:xs
 
 imba.mount <app>
