@@ -21,18 +21,27 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Spread Shorthand
+```imba
+# [preview=console]
+let x = [1, 2, 3]
+console.log(*x)
+console.log(...x)
+```
+
 ## Letting Branch Results
 
 This is a common pattern:
 
 ```imba
+# [preview=console]
 def example
 	let obj
 	try
 		obj = JSON.parse("this will error")
 	catch e
 		obj = {}
-	console.log obj # logs {}
+	console.log obj
 
 example!
 ```
@@ -40,13 +49,14 @@ example!
 Instead we can do:
 
 ```imba
+# [preview=console]
 def example
 	let obj =
 		try
 			JSON.parse("this will error")
 		catch e
 			{}
-	console.log obj # logs {}
+	console.log obj
 
 example!
 ```
@@ -54,11 +64,12 @@ example!
 Or with less lines:
 
 ```imba
+# [preview=console]
 def example
 	let obj =
 		try JSON.parse("this will error")
 		catch e {}
-	console.log obj # logs {}
+	console.log obj
 
 example!
 ```
@@ -66,9 +77,10 @@ example!
 Or in one line:
 
 ```imba
+# [preview=console]
 def example
 	let obj = try JSON.parse("this will error") catch e {}
-	console.log obj # logs {}
+	console.log obj
 
 example!
 ```
@@ -76,9 +88,10 @@ example!
 Or without a catch:
 
 ```imba
+# [preview=console]
 def example
 	let obj = try JSON.parse("this will error")
-	console.log obj # logs undefined
+	console.log obj
 
 example!
 ```
