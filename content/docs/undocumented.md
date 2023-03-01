@@ -23,7 +23,7 @@ out on [Discord](https://discord.gg/mkcbkRw).
 
 ## `arguments` shorthand
 
-In line with `$1`, `$2`, etc. positional params, `$0` refers to an arguments object.
+In line with `$1`, `$2`, etc. positional params, `$0` refers to [the arguments object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments#arguments_is_an_array-like_object).
 
 ## Spread Shorthand
 ```imba
