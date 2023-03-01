@@ -21,6 +21,10 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## `arguments` shorthand
+
+In line with `$1`, `$2`, etc. positional params, `$0` refers to an arguments object.
+
 ## Spread Shorthand
 ```imba
 # [preview=console]
