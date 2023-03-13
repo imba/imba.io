@@ -21,6 +21,19 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Dotenv Support
+
+Imba ships with built in [dotenv](https://www.npmjs.com/package/dotenv) support by looking for a `.env` file in the current working directory
+(or traversing the filesystem upwards until it finds one),
+the contents of which will be accessable from `process.env`. The `.env` file has the following syntax:
+
+```
+S3_BUCKET="YOURS3BUCKET"
+SECRET_KEY="YOURSECRETKEYGOESHERE"
+```
+
+Accessing these variables in an imba file is as simple as `process.env.S3_BUCKET`. No configuration necessary.
+
 ## `arguments` shorthand
 
 In line with `$1`, `$2`, etc. positional params, `$0` refers to [the arguments object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments#arguments_is_an_array-like_object).
