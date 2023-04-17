@@ -319,7 +319,7 @@ Imba supports the `await` keyword, which compiles directly to async/await in Jav
 ```imba await.imba
 def load url
     let res = await window.fetch url
-    return res.json
+    return await res.json!
 
 let data = await load "/some/url"
 ```
@@ -328,7 +328,7 @@ let data = await load "/some/url"
 ```imba
 def load url
     window.fetch(url).then do(res)
-        return res.json
+        return res.json!
 
 load("/some/url").then do(data)
     # do something with data
