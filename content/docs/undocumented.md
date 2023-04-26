@@ -21,6 +21,12 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Generic Media Queries
+
+```
+@media(hover: hover)
+```
+
 ## Dotenv Support
 
 Imba ships with built in [dotenv](https://www.npmjs.com/package/dotenv) support by looking for a `.env` file in the current working directory
