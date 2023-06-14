@@ -21,6 +21,10 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Platform Imports
+
+If you name a file `os.node.imba` and another `os.imba` and import `os` it will import the one for the relevant platform.
+
 ## Generic Media Queries
 
 ```
