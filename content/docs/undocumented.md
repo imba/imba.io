@@ -21,6 +21,18 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Circles
+
+```
+rd:full
+```
+
+compiles to
+
+```
+border-radius:9999px
+```
+
 ## Platform Imports
 
 If you name a file `os.node.imba` and another `os.imba` and import `os` it will import the one for the relevant platform.
