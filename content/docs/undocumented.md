@@ -21,6 +21,14 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Emitting events on elements
+
+`Element` is extended with an `emit` function.
+
+```
+some_element.emit('event_name')
+```
+
 ## Circles
 
 ```
