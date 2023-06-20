@@ -21,6 +21,15 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## General code events
+
+In Imba you can emit and listen to events without needing the DOM:
+
+```
+imba.emit 'hello'
+imba.listen 'hello'
+```
+
 ## Emitting events on elements
 
 `Element` is extended with an `emit` function.
@@ -51,11 +60,13 @@ If you name a file `os.node.imba` and another `os.imba` and import `os` it will 
 @media(hover: hover)
 ```
 
-## Dotenv Support
+## .env
 
-Imba ships with built in [dotenv](https://www.npmjs.com/package/dotenv) support by looking for a `.env` file in the current working directory
-(or traversing the filesystem upwards until it finds one),
-the contents of which will be accessable from `process.env`. The `.env` file has the following syntax:
+Imba will automatically traverse up the file tree starting from
+**the dirname of the file you ran with imba** in search for a `.env` file.
+The contents will be accessable from `process.env`.
+
+The `.env` file has the following syntax:
 
 ```
 S3_BUCKET="YOURS3BUCKET"
@@ -63,6 +74,9 @@ SECRET_KEY="YOURSECRETKEYGOESHERE"
 ```
 
 Accessing these variables in an imba file is as simple as `process.env.S3_BUCKET`. No configuration necessary.
+
+Note that, unlike the dotenv library, Imba will not use the cwd to search for the `.env` file,
+but rather the dirname of the file you ran.
 
 ## `arguments` shorthand
 
