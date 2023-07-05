@@ -21,6 +21,25 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## No Hashing
+
+If you want to bundle with no hashing, for now you need to use Vite as a bundler and specify the output filename:
+
+```
+export default defineConfig({
+  ...
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]'
+      }
+    }
+  }
+})
+```
+
 ## General code events
 
 In Imba you can emit and listen to events without needing the DOM:
