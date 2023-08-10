@@ -21,6 +21,35 @@ personal notes. Contributions are highly appreciated, especially:
 If you have questions about any of these, don't hesitate to reach
 out on [Discord](https://discord.gg/mkcbkRw).
 
+## Awaits
+
+You can await desired changes to observable properties with `imba.awaits`,
+which takes a callback that will be called every time the property is changed until the callback returns a truthy value.
+
+```imba
+# [preview=console]
+let user = new class User
+	@observable first_name = 'first'
+
+setTimeout(&,100ms) do
+	user.first_name = 'updated'
+
+setTimeout(&,200ms) do
+	user.first_name = 'again'
+
+imba.awaits do
+	L user.first_name
+	user.first_name is 'updated'
+```
+
+Notice how it stops logging after the name is `updated`.
+
+You can also await the call to `imba.awaits`:
+
+```imba
+await imba.awaits do user.first_name is 'updated'
+```
+
 ## No Hashing
 
 If you want to bundle with no hashing, for now you need to use Vite as a bundler and specify the output filename:
