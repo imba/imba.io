@@ -38,7 +38,7 @@ setTimeout(&,200ms) do
 	user.first_name = 'again'
 
 imba.awaits do
-	L user.first_name
+	console.log user.first_name
 	user.first_name is 'updated'
 ```
 
