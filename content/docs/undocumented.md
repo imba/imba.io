@@ -27,29 +27,18 @@ You can await desired changes to observable properties with `imba.awaits`,
 which takes a callback that will be called every time the property is changed until the callback returns a truthy value.
 
 ```imba
-# [preview=console]
 let user = new class User
 	@observable first_name = 'first'
 
-def main
-	setTimeout(&,100ms) do
-		user.first_name = 'updated'
-	
-	setTimeout(&,200ms) do
-		user.first_name = 'again'
-	
-	await imba.awaits do
-		console.log user.first_name
-		user.first_name is 'updated'
-main!
-```
+setTimeout(&,100ms) do
+	user.first_name = 'updated'
 
-Notice how it stops logging after the name is `updated`.
+setTimeout(&,200ms) do
+	user.first_name = 'again'
 
-You can also await the call to `imba.awaits`:
-
-```imba
-await imba.awaits do user.first_name is 'updated'
+await imba.awaits do
+	console.log user.first_name
+	user.first_name is 'updated'
 ```
 
 ## No Hashing
