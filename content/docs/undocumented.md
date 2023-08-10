@@ -31,15 +31,17 @@ which takes a callback that will be called every time the property is changed un
 let user = new class User
 	@observable first_name = 'first'
 
-setTimeout(&,100ms) do
-	user.first_name = 'updated'
-
-setTimeout(&,200ms) do
-	user.first_name = 'again'
-
-imba.awaits do
-	console.log user.first_name
-	user.first_name is 'updated'
+def main
+	setTimeout(&,100ms) do
+		user.first_name = 'updated'
+	
+	setTimeout(&,200ms) do
+		user.first_name = 'again'
+	
+	await imba.awaits do
+		console.log user.first_name
+		user.first_name is 'updated'
+main!
 ```
 
 Notice how it stops logging after the name is `updated`.
