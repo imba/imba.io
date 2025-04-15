@@ -148,7 +148,7 @@ tag app-popover
 
 				style.transform = "translate3d({fromX}px,{fromY}px,0px)"
 
-				$line.style.transform = "rotate({rot}deg) rotateY({-yrot}deg)"
+				$line.style.transform = "translateZ(1px) rotate({rot}deg) rotateY({-yrot}deg)"
 				$box.style.transform = "translate({tax * -100}%,{tay * -100}%)"
 	
 				# $end.style.transform = "translate({ax}%,-50%) translate3d({x}px,{y}px,{z}px)"
