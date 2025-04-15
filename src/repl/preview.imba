@@ -12,8 +12,12 @@ class Demo
 		win.$commit!
 
 tag app-repl-preview
-	url @set
-		refresh! if $entered
+	set url val
+		if #url =? val
+			refresh! if $entered
+
+	get url
+		#url
 
 	root
 	w = 2000

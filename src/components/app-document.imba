@@ -336,12 +336,20 @@ tag app-document
 	get doc
 		data and data.doc or data
 
-	hash @set
-		let section = getSectionForHash(e.value)
-		reveal(section) if section
-		
-	data @set
-		syncScroll! if mounted?
+	set hash val
+		if #hash =? val
+			let section = getSectionForHash(val)
+			reveal(section) if section
+	
+	get hash
+		#hash
+
+	set data val
+		if #data =? val
+			syncScroll! if mounted?
+
+	get data
+		#data
 	
 	def syncScroll
 		if FIRST_DOC_MOUNT =? yes

@@ -39,28 +39,35 @@ tag app-divider
 tag app-repl
 	fs
 	
-	project @set
-		if e.value
-			if (!currentFile or currentFile.parent != e.value)
-				currentFile = e.value.files[0]
-			run!
-		
-	currentFile @set
-		console.log 'current file did set',e
+	set project val
 
-		if monaco and e.value
-			monaco.setModel(e.value.model)
-
-		project = e.value.parent
-		if !project.childByName('index.html') and !project.childByName('app.imba')
+		if #project =? val
+			if (!currentFile or currentFile.parent != val)
+				currentFile = val.files[0]
 			run!
 	
-	url @set
-		let src = `{sw.scope}{e.value}`
-		try
-			$iframe.src = src
-		catch e
-			sw.load!.then do $iframe.src = src
+	get project
+		#project
+		
+	set currentFile val
+		if #currentFile =? val
+			console.log 'current file did set',e
+			if monaco and val
+				monaco.setModel(val.model)
+
+			project = val.parent
+			if !project.childByName('index.html') and !project.childByName('app.imba')
+				run!
+	get currentFile
+		#currentFile
+	
+	set url val
+		if #url =? val
+			let src = `{sw.scope}{val}`
+			try
+				$iframe.src = src
+			catch e
+				sw.load!.then do $iframe.src = src
 
 	get monaco
 		return $monaco if !global.monaco or $monaco or !$editor

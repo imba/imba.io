@@ -12,7 +12,8 @@ import {rewriteImports} from './src/compiler'
 import examples from './data/examples.json'
 
 const ResolveMap = {
-	'imba': 'https://unpkg.com/imba@2.0.0-alpha.223/dist/imba.mjs'
+	'imba': 'https://unpkg.com/imba@2.0.0-alpha.243/dist/imba.mjs'
+	'imba/runtime': 'https://unpkg.com/imba@2.0.0-alpha.243/src/imba/runtime.mjs'
 	'imdb': '/imdb.js'
 }
 

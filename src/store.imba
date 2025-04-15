@@ -27,8 +27,20 @@ const extToLanguage =
 	html: 'html'
 
 class Entry
-	dirty @set imba.commit!
-	hasErrors @set imba.commit!
+	
+	set dirty val
+		if #dirty =? val
+			imba.commit!
+
+	get dirty
+		#dirty
+	
+	set hasErrors val
+		if #hasErrors =? val
+			imba.commit!
+
+	get hasErrors
+		#hasErrors
 
 	static def create data, parent
 		let typ = types[data.type] or Entry
@@ -37,7 +49,7 @@ class Entry
 			parent.children.push(item)
 		return item
 
-	constructor data, parent
+	def constructor data, parent
 		id = counter++
 		dirty = no
 		parent = parent

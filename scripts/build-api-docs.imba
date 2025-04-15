@@ -42,7 +42,7 @@ def mdrenderer.code code, lang, opts = {}
 	
 	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
 	let nr = ++codeblocknr
-	return String(<app-code-block data-path="/docs"> <code data-name="{nr}.imba" data-lang=lang> escaped)
+	return String(new <app-code-block data-path="/docs"> <code data-name="{nr}.imba" data-lang=lang> escaped)
 
 def mdrenderer.codespan code
 	let m
@@ -54,10 +54,10 @@ def mdrenderer.codespan code
 		o.kind = 'eventmodifier'
 		
 	if o.kind
-		return String(<api-link name=code> code)
+		return String(new <api-link name=code> code)
 
 	let escaped = code.replace(/\</g,'&lt;').replace(/\>/g,'&gt;')
-	return String(<code> escaped)
+	return String(new <code> escaped)
 
 def mdrenderer.heading text, level
 	mdstate[text] = yes
@@ -122,6 +122,8 @@ ts.sys.require = do(initialPath\string, moduleName\string)
 
 # use the local imba version?
 global.IMBA_TYPINGS_DIR = np.resolve(__dirname,'..','node_modules','imba','typings')
+global.IMBA_TYPINGS_DIR = np.resolve('/Users/sindre/repos/imba/packages','imba','typings')
+global.IMBA_TYPINGS_DIR = np.resolve('/Users/sindre/repos/imba/packages/typescript-imba-plugin','typings')
 # global.IMBA_TYPINGS_DIR = np.resolve(__dirname,'..','..','typings')
 
 let options = {

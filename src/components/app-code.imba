@@ -273,12 +273,11 @@ tag app-code-block < app-code
 				demo.vars.flag = sel.slice(1)
 				demo.commit!
 
-	focusedRule @set
-		if e.oldValue
-			e.oldValue.flags.remove('_selected_')
-		if e.value
-			e.value.flags.add('_selected_')
-
+	set focusedRule val
+		let prev = #focusedRule
+		if #focusedRule =? val
+			prev..flags..remove('_selected_')
+			val..flags..add('_selected_')
 
 	def demoLoaded e
 		# console.log 'demo loaded',e

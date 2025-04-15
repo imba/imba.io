@@ -232,8 +232,8 @@ export class Entity
 				curr.inheritors.push(self)
 				curr = curr.inherits
 
-		for mixin in implements
-			mixin.implementors.push(self)
+		for item in implements
+			item.implementors.push(self)
 
 		if proxy
 			proxy.shorthand = self			
@@ -415,8 +415,8 @@ export class Entity
 			for item in members
 				add(item)
 				
-			for mixin in implements
-				for item in mixin.members
+			for mix in implements
+				for item in mix.members
 					add(item)
 				# arr.push(...mixin.members)
 			new Members(self,arr)
