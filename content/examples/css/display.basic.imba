@@ -3,14 +3,10 @@ import 'util/styles'
 export const vars = {flag: 'demo-1'}
 
 # ---
-css .demo-1 d:flex
-css .demo-2 d:hflex
-css .demo-4 d:hflex ja:center
-css .demo-6 d:hflex ai:stretch
-css .demo-7 d:hflex jc:space-between
-css .demo-3 d:vflex
-css .demo-5 d:vflex ai:stretch
-css .demo-7 d:vflex jc:space-between
+css .demo-1 d:block # horizontal top left
+css .demo-2 d:inline # horizontal top center
+css .demo-3 d:inline-block # horizontal top right
+css .demo-4 d:flex # ...
 # ---
 
 imba.mount do <.inline-demo>

@@ -3,6 +3,17 @@ global.imbac = imbac
 
 import {rewriteImports} from '../compiler'
 
+const ResolveMap = {
+	'imba': 'https://unpkg.com/imba@2.0.0-alpha.243/dist/imba.mjs'
+	'imba/runtime': 'https://unpkg.com/imba@2.0.0-alpha.243/src/imba/runtime.mjs'
+	'imdb': '/imdb.js'
+}
+
+const importMap = {
+	imports: ResolveMap
+}
+
+
 const mimeTypeMap = {
 	'html': 'text/html;charset=utf-8'
 	'css': 'text/css;charset=utf-8'
@@ -20,15 +31,17 @@ const mimeTypeMap = {
 const indexTemplate = "
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset='UTF-8'>
+	<head>
+		<meta charset='UTF-8'>
 		<title>Playground</title>
 		<link href='/preflight.css' rel='stylesheet'>
-    </head>
-    <body>
+		<!--head-->
+		<script type='importmap'>{JSON.stringify(importMap)}</script>
+  </head>
+	<body>
 		<script type='module' src='/repl/examples/helpers.imba'></script>
-        <script type='module' src='./index.imba'></script>
-    </body>
+		<script type='module' src='./index.imba'></script>
+	</body>
 </html>"
 
 const clientServiceMap = {}
@@ -219,7 +232,7 @@ class Worker
 			if name.match(/\.imba\.html/)
 				# console.log "return html for imba example?"
 				let js = 'try { window.frameElement.replify(this) } catch(e){ }'
-				let body = "<script>window.ServiceSessionID = '{clientId}'; window.ImbaFiles = \{\}; {js}</script>" + indexTemplate.replace(/index\.imba/g,basename)
+				let body = indexTemplate.replace(/index\.imba/g,basename).replace('<!--head-->', "<script>window.ServiceSessionID = '{clientId}'; window.ImbaFiles = \{\}; {js}</script>")
 				let resp = new Response(body,status: 200,headers: {'Content-Type': 'text/html'})
 				return resolve(resp)
 

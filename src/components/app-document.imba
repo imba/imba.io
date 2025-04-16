@@ -419,11 +419,6 @@ tag app-document
 					for item in breadcrumbs
 						<span> <a href=item.href .self=(item == data)> item.navName or item.name
 					<app-search-field>
-				<div[d:hflex ja:center bg:yellow2 p:3 4 rd:lg c:yellow9 mt:2 fs:xs d:none]>
-					<div[fl:1 d:vflex]>
-						<span[c:yellow9 fw:600 fs:sm]> "We are overhauling the docs, and we need your help!"
-						<span[c:yellow8]> "Do you have a few minutes to answer what you think is missing? "
-					<a[c:blue6 td:underline fs:sm fw:600] href='https://form.typeform.com/to/GdMKZMBh'> 'Take Survey'
 				<div$content>
 					if doc.api?
 						<api-symbol-entry key=doc.href data=doc>
@@ -501,12 +496,6 @@ tag app-document-toc
 		<div.menu-heading[c:gray5 px:0]> "On this page"
 		<.children> for item in data.sections
 			<TocItem data=item level=1>
-
-		<.wip>
-			css w: <200px fs:sm- bg:yellow2/80 px:4 py:3 rd:md bdl:none c:yellow9 mt:4
-			<div[fw:bold]> "We are overhauling the docs, and we need your help!"
-			<div[my:4]> "Do you have a few minutes to answer what you think is missing?"
-			<a[td:underline fs:lg c:blue7] href="https://form.typeform.com/to/GdMKZMBh"> "Take survey"
 	
 tag embedded-app-document
 	def hydrate

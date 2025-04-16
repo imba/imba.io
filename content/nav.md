@@ -56,33 +56,25 @@ Reference for all event modifiers.
 
 Reference for all events and their interfaces.
 
-## Styles [doc=docs/styles] [href=/docs/css]
+# Styling [doc=docs/styles] [href=/docs/css]
 
-### Syntax [doc=docs/style-syntax] [href=/docs/css/syntax]
+## Syntax [doc=docs/style-syntax] [href=/docs/css/syntax]
 
 Basic descriptions of how to write styles in imba.
 
-### Properties [doc=docs/style-properties] [href=/docs/css/properties]
+## Properties [doc=docs/style-properties] [href=/docs/css/properties]
 
 Reference for all shorthands and regular css properties.
 
-### Modifiers [doc=docs/style-modifiers] [href=/docs/css/modifiers]
+## Modifiers [doc=docs/style-modifiers] [href=/docs/css/modifiers]
 
 Reference for all style modifiers.
 
-### Custom Units [doc=docs/style-units] [href=/docs/css/units]
+## Custom Units [doc=docs/style-units] [href=/docs/css/units]
 
 Defining and using custom style units.
 
-### Colors [doc=docs/colors] [href=/docs/css/colors]
-
-### Values [doc=docs/style-data-types] [href=/docs/css/values]
-
-Reference for all css data types like `<color>`, `<angle>` and `<length>`
-
-## Assets [doc=docs/assets] [href=/docs/assets]
-
-## Router [doc=docs/router] [href=/docs/router]
+## Colors [doc=docs/colors] [href=/docs/css/colors]
 
 # Guides [href=/guides] [doc=guides/index]
 
@@ -99,6 +91,10 @@ Reference for all css data types like `<color>`, `<angle>` and `<length>`
 ## Incremental Adoption [doc=guides/incremental] [href=/guides/incremental]
 
 # Other [href=/other] [doc=docs/other]
+
+## Assets [doc=docs/assets] [href=/docs/assets]
+
+## Router [doc=docs/router] [href=/docs/router]
 
 ## API Reference [href=/api]
 

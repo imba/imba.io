@@ -281,7 +281,7 @@ global css @root
 	--code-tag: #e9e19b;
 	--code-tag-event: #fff9c3;
 	--code-tag-reference: #ffae86;
-	--code-tag-angle: #9d9755/50; # #9d9755
+	--code-tag-angle: #9d9755; # #9d9755
 	--code-type: #8097b2; # #839fc7;
 	--code-type-delimiter:#5e6c7d;
 	--code-property: #F7FAFC;
@@ -327,8 +327,8 @@ global css .markdown
 	.mh4 fs:20px/1.2 fw:500 pb:2 bwb:0px mb:0
 
 global css .code
-	tab-size:4
-	-moz-tab-size:4
+	tab-size:2
+	-moz-tab-size:2
 	cursor:default
 	fw:500
 
@@ -373,8 +373,8 @@ global css .code
 	.constant color: var(--code-constant)
 	
 	.tag.reference color: var(--code-tag-reference)
-	.tag.open color: var(--code-tag-angle) o:0.5
-	.tag.close color: var(--code-tag-angle) o:0.5
+	.tag.open color: var(--code-tag-angle) o:0.75
+	.tag.close color: var(--code-tag-angle) o:0.75
 	.tag.event color: var(--code-tag-event)
 	.tag.event-modifier color: var(--code-tag-event)
 	.tag.mixin color: var(--code-mixin) fw:bold

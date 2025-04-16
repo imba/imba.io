@@ -30,7 +30,19 @@ The global `imba` object contains functions, constants and classes that are incl
 
 The display CSS property sets whether an element is treated as a block or inline element and the layout used for its children, such as flow layout, grid or flex.
 
-Formally, the display property sets an element's inner and outer display types. The outer type sets an element's participation in flow layout; the inner type sets the layout of children. Some values of display are fully defined in their own individual specifications; for example the detail of what happens when display: flex is declared is defined in the CSS Flexible Box Model specification.
+In addition to the regular display values, Imba defines a bunch of shorthands for common layouts. For flexboxes you
+can quickly declare most flex-layouts using a three-letter alias, where the first letter denotes [v]ertical or [h]orizontal. The second character denotes the vertical aligment, and the third character denotes the horizontal alignment.
+
+### Regular display values
+[demo](/examples/css/display.basic.imba?preview=styles)
+> All regular display properties works just like in css.
+
+### Shorthands for flex-direction:column layouts 
+[demo](/examples/css/display.imba?preview=styles)
+
+### Shorthands for flex-direction:row layouts
+[demo](/examples/css/display.h.imba?preview=styles)
+
 
 ## Values
 
@@ -44,9 +56,32 @@ Formally, the display property sets an element's inner and outer display types. 
 
 <api-list>style.type.timing-function ^[^-]</api-list>
 
+# /docs/css/properties/font-weight
+
+```imba
+# [preview=styles]
+import 'util/styles'
+export const vars = {flag: 'demo-1'}
+
+# ---
+css .demo-1 fw:100
+css .demo-2 fw:900
+css .demo-3 fw:normal
+css .demo-4 fw:bold
+css .demo-5 fw:lighter
+css .demo-6 fw:bolder
+# ---
+
+imba.mount do <.inline-demo.typography> <div.{vars.flag}> 'Text'
+```
+
 # /docs/css/properties/margin
 
-[demo](/examples/css/colors.imba?preview=styles)
+
+
+# /docs/css/properties/color
+
+> For the actual list of built-in colors and more, see **[Colors](/docs/css/colors)**
 
 # /api/Element/@touch
 

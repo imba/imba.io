@@ -222,7 +222,7 @@ global css .striped
 
 global css .inline-demo
 	d:hflex pos:absolute inset:0 ja:center
-	div d:flex ja:center
+	div d:flex # ja:center
 
 	.filled
 		pos:absolute inset:0 d:flex ja:center rd:sm
