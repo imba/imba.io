@@ -45,7 +45,7 @@
     "es-module-lexer": "^1.0.3",
     "esbuild": "^0.15.10",
     "express": "^4.17.1",
-    "imba": "^2.0.0-alpha.243",
+    "imba": "^2.0.0-alpha.245",
     "marked": "^4.1.0",
     "node-fetch": "^3.2.10",
     "passport": "^0.6.0",
@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
-    "typescript": "^4.4.4",
-    "typescript-imba-plugin": "^1.2.8"
+    "typescript": "5.7",
+    "typescript-imba-plugin": "^1.8.1"
   }
 }

@@ -121,10 +121,7 @@ ts.sys.require = do(initialPath\string, moduleName\string)
 	old.apply(ts.sys,arguments)
 
 # use the local imba version?
-global.IMBA_TYPINGS_DIR = np.resolve(__dirname,'..','node_modules','imba','typings')
-global.IMBA_TYPINGS_DIR = np.resolve('/Users/sindre/repos/imba/packages','imba','typings')
-global.IMBA_TYPINGS_DIR = np.resolve('/Users/sindre/repos/imba/packages/typescript-imba-plugin','typings')
-# global.IMBA_TYPINGS_DIR = np.resolve(__dirname,'..','..','typings')
+global.IMBA_TYPINGS = np.resolve(__dirname,'..','node_modules','typescript-imba-plugin','typings','imba.d.ts')
 
 let options = {
 	host: ts.sys
@@ -140,12 +137,15 @@ let root = np.resolve(__dirname)
 let abs = do(...parts) np.resolve(__dirname,'docs',...parts)
 	
 console.log root
-project.openClientFile(abs('index.imba'))
+# process.exit(0)
+project.openClientFile(abs('project.imba'))
 console.log !!global.ils
 
 # now go through and generate stuff?
-let script = global.ils.getImbaScript('index.imba')
+let script = global.ils.getImbaScript('project.imba')
 let checker = script.getTypeChecker!
+
+
 
 def getFileName node
 	return '' unless node
@@ -165,6 +165,11 @@ def write name, data
 def getDocs item,meta
 	let raw = item.getDocumentationComment(checker.checker)
 	let md = ''
+
+	for val in raw
+		if val.text.includes('silent')
+			console.log "FOUND docs?!?!",raw
+
 	let docs = raw.map do(item)
 		let text = item.text
 		md += item.text
@@ -176,6 +181,8 @@ def getDocs item,meta
 	if md == ''
 		return ''
 	
+	if md.includes('silent')
+		console.log 'to markdown',md
 	return toMarkdown(md,meta)
 
 
@@ -194,9 +201,9 @@ def getMeta sym
 
 	return tags
 	
-
 let globalSym = checker.resolve('globalThis')
 let globalEventTarget = checker.resolve('EventTarget')
+
 let cssns = checker.checker.getMergedSymbol(checker.resolve('imbacss'))
 
 cssns.#imbaName = 'css'
@@ -229,7 +236,7 @@ class Entry
 
 		if symbol.flags & ts.SymbolFlags.Transient
 			let other = checker.type(symbol).symbol
-			console.warn "TRANSIENT {symbol.imbaName}"
+			# console.warn "TRANSIENT {symbol.imbaName}"
 
 		symbol.#entry ||= new self(symbol)
 
@@ -271,10 +278,6 @@ class Entry
 		meta = getMeta(sym)
 
 		let extra = extras[name] or {}
-
-		if name == 'Int8Array'
-			console.log sym
-			# throw "done!"
 
 		if meta.deprecated or name == 'TObject'
 			return
@@ -368,10 +371,6 @@ class Entry
 		let mdn = mdn-api[name]
 
 		if base[0]
-			# tons of weird tweaks
-			if name == 'ChildNode'
-				console.log "childnode inherits?",base
-
 			unless name == 'Navigator'
 				inherits = Entry.for(base.shift!.symbol)
 
@@ -444,7 +443,7 @@ class Entry
 				continue if mname == 'prototype'
 
 				if added[mname]
-					console.log "was already added {name} {mname}"
+					# console.log "was already added {name} {mname}"
 					continue
 
 				added[mname] = yes
@@ -475,6 +474,9 @@ class Entry
 			let o = []
 			for own k,v of data
 				continue if v isa Array and v.length == 0
+
+				if k == 'meta' and v..click
+					console.log 'output meta!',v,data
 
 				unless v == null
 					o.push "{k}:{stringify(v,ctx)}"
@@ -514,7 +516,7 @@ def run
 
 	for item in glob
 		let name = item.imbaName
-		console.log item.imbaName
+		# console.log item.imbaName
 		if name.match(/^parseInt/) or Globals[name]
 			inc.push(item)
 		# if name.match(/^[A-Z]/)
